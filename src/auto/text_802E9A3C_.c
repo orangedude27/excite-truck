@@ -1051,7 +1051,7 @@ void fn_802EBE2C(void) {
     extern void fn_802E61EC(int, float);
     extern void fn_802E61BC(int);
     extern void OSInitMutex(void *);
-    extern void fn_802E3DCC(void);
+    extern void InitSDFileSystemHandle(void);
     extern int OSCreateThread();
     extern void fn_802E2E0C();
     extern void OSResumeThread(void *);
@@ -1097,7 +1097,7 @@ void fn_802EBE2C(void) {
     lbl_805600D0 = 0;
     OSInitMutex(&lbl_805584A0);
     fn_802E9CF0();
-    fn_802E3DCC();
+    InitSDFileSystemHandle();
     lbl_80560062 = 1;
     lbl_80560063 = off;
     if (OSCreateThread(&lbl_805584B8, fn_802EAB28, 0, &lbl_805544A0 + 0x3FE0, 0x3FE0, 14, 1) == 0) {
