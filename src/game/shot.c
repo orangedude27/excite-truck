@@ -200,10 +200,8 @@ s32 fn_802E4A10(void) { return (lbl_8055FF5A >> 12) & 0xF; }
 
 extern u8 gKeyboardStateTable[];
 u8 isKeyPressed(s32 keyCode) {
-    /* Current pressed state of keyboard scan code keyCode (256-entry key-state table). */
-#define gKeyStateTable gKeyboardStateTable
-    return gKeyStateTable[keyCode];
-#undef gKeyStateTable
+    /* Return the current pressed state of keyboard scan code keyCode. */
+    return gKeyboardStateTable[keyCode];
 }
 
 /* When a saved-state pointer is valid, zero a 64-word scratch snapshot on the stack; otherwise do nothing. */ void fn_802E4A2C(void) {
