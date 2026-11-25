@@ -33,10 +33,14 @@ void fn_802E46B0(void) {
     /* Boot-time init of the screenshot/key-history subsystem: reset the last-input
        timestamp, clear the recent-key history, invalidate the saved-state pointer
        (a negative value means "no state captured"), then run the init hook. */
-    lbl_8055FF5C = 0;
+#define lastInputTime  lbl_8055FF5C
+#define gSavedStatePtr lbl_8055D1C0
+    lastInputTime = 0;
     fn_802E47E8();
-    lbl_8055D1C0 = (void *)-1;
+    gSavedStatePtr = (void *)-1;
     fn_802E46AC();
+#undef lastInputTime
+#undef gSavedStatePtr
 }
 void fn_802E46E4(void) {
     /* Invalidate the saved-state pointer (a negative value means "no state captured"). */
