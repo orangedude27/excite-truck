@@ -1158,7 +1158,7 @@ extern float lbl_8055D01C;
 void DrawList_applyGlobalDirection(void) {
 #define s_direction lbl_804C1440
 #define s_drawScalar lbl_8055D01C
-#define ApplyDirection fn_802D01B0
+#define ApplyDirection gxSetDefaultLightDirection
     /* Applies the global 3-component direction vector and draw scalar to the draw state. */
     ApplyDirection(s_direction, s_drawScalar);
 #undef s_direction

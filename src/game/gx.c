@@ -781,7 +781,7 @@ void fn_802CF850(void) {
     extern void fn_802D0188(unsigned char, unsigned char, unsigned char);
     extern void fn_802D0160(unsigned char, unsigned char, unsigned char);
     extern void fn_802D007C(float);
-    extern void fn_802D01B0(float *, float);
+    extern void gxSetDefaultLightDirection(float *, float);
     extern void fn_802D01E0(int, int, int, int);
     extern void fn_802D0368(float, float, float, float);
     extern void fn_802D03F4(float *, float);
@@ -871,7 +871,7 @@ void fn_802CF850(void) {
     spC[0] = lbl_80564F88;
     spC[1] = lbl_80564F90;
     spC[2] = lbl_80564F88;
-    fn_802D01B0(spC, lbl_80564F8C);
+    gxSetDefaultLightDirection(spC, lbl_80564F8C);
     fn_802D01E0(0, 0, lbl_8055CFF0, lbl_8055CFF4);
     fn_802D0368(lbl_80564F94, lbl_80564F98, lbl_80564F9C, lbl_80564F8C);
 
@@ -1270,7 +1270,7 @@ void fn_802D0188(unsigned char a, unsigned char b, unsigned char c) {
 }
 #pragma push
 #pragma opt_propagation off
-void fn_802D01B0(float *p, float v) {
+void gxSetDefaultLightDirection(float *p, float v) {
     extern char lbl_804C97D0;
     float z, y, x;
     float *out;
