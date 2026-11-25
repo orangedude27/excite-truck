@@ -1153,10 +1153,10 @@ int setLightAmbientColor(int packedColor) {
     return previousColor;
 }
 
-extern char lbl_804C1440[];
+extern char gGlobalDrawDirection[];
 extern float lbl_8055D01C;
 void DrawList_applyGlobalDirection(void) {
-#define s_direction lbl_804C1440
+#define s_direction gGlobalDrawDirection
 #define s_drawScalar lbl_8055D01C
 #define ApplyDirection gxSetDefaultLightDirection
     /* Applies the global 3-component direction vector and draw scalar to the draw state. */
@@ -1175,7 +1175,7 @@ void DrawList_applyGlobalDirection(void) {
     DrawList_applyGlobalDirection();
     return previous;
 }
-#define globalDirection lbl_804C1440 /* global 3-component direction vector */
+#define globalDirection gGlobalDrawDirection /* global 3-component direction vector */
 #pragma dont_inline on
 /* Copy the 3-component direction into the global direction vector and reapply it to the draw state with DrawList_applyGlobalDirection. */ void DrawList_setGlobalDirection(float *direction) {
     /* Store a 3-component direction in the global and reapply it to the draw list. */
@@ -1190,9 +1190,9 @@ void DrawList_applyGlobalDirection(void) {
 }
 #pragma dont_inline reset
 #undef globalDirection
-/* Return a pointer to the global 3-component draw direction vector (lbl_804C1440). */
+/* Return a pointer to the global 3-component draw direction vector (gGlobalDrawDirection). */
 void *fn_802C9A40(void) {
-    #define globalDirection lbl_804C1440
+    #define globalDirection gGlobalDrawDirection
     return globalDirection;
     #undef globalDirection
 }
