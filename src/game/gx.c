@@ -1556,7 +1556,7 @@ extern void GXLoadTexMtxImm(void *, unsigned int, unsigned char);
 extern int gTileGridWidth;
 extern int gTileGridHeight;
 extern signed char lbl_8055FD90;
-extern unsigned char lbl_8055FD18;
+extern unsigned char gTileGridMode;
 extern int lbl_8055D10C;
 extern int lbl_8055FDC0;
 extern int lbl_8055FDC4;
@@ -1574,7 +1574,7 @@ int FileOpenSecondary(unsigned char *);
 void gxSetTileGrid(int columns, int rows, unsigned char mode) {
 #define tileGridWidth gTileGridWidth
 #define tileGridHeight gTileGridHeight
-#define tileModeFlag lbl_8055FD18
+#define tileModeFlag gTileGridMode
     tileModeFlag = mode;
     tileGridWidth = (unsigned long)columns;
     tileGridHeight = (unsigned long)rows;
@@ -1695,7 +1695,7 @@ void fn_802D09E8(void)
       }
       lbl_8055FDC4 = KERNEL_GetTimeMs();
       fn_802E30C8(base + 0x43C, lbl_804C9830);
-      if (lbl_8055FD18 == 0)
+      if (gTileGridMode == 0)
       {
         ((void (*)(int, int, int)) fn_802D0914)(lbl_8055D10C, gXfbBlock[2] * gTileGridWidth, gXfbBlock[3] * gTileGridHeight);
       }
@@ -3534,7 +3534,7 @@ extern int fn_802CFF64(int);
 extern unsigned char lbl_8055FD78;
 extern int gTileGridWidth;
 extern int gTileGridHeight;
-extern unsigned char lbl_8055FD18;
+extern unsigned char gTileGridMode;
 extern int GXSetCullMode(int);
 extern int GXSetDrawSyncCallback(void);
 extern int VIFlush(void);
