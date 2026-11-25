@@ -2844,9 +2844,9 @@ void fn_802D2B0C(void) {
 extern char lbl_804C97D0;
 #pragma small_data off
 __declspec(section ".rodata") extern char lbl_804C97D0;
-/* Return a pointer to the default light's float direction vector (DefaultLight.pos at +0xC). */ void *gxGetDefaultLightDirection(void) {
+void *gxGetDefaultLightDirection(void) {
 #define sDefaultLight lbl_804C97D0
-    /* Return a pointer to the default light's float direction vector (DefaultLight.pos at +0xC). */
+    /* Return the default light's direction vector (its float pos field at +0xC). */
     return &sDefaultLight + 0xC;
 #undef sDefaultLight
 }
