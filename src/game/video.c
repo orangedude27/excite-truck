@@ -934,13 +934,13 @@ extern void fn_80117618(s32, void *);
 extern s32 fn_802E1BB4(void *);
 extern void fn_801176FC(s32, void *);
 /* Open a Bink movie into this video object, logging open/failure status. */
-void fn_802E0EAC(void *arg0) {
+/* VideoObject movie loader: free the current Bink, resolve and open the movie file by its name at +8, and store the new handle at +4. */ void fn_802E0EAC(void *videoObj) {
     s32 movieIndex;
     char name[0x20];
     char *messages = (char *)lbl_8034CB68;
     s32 binkHandle;
-    unsigned char *video = arg0;
-    VideoObject_FreeBink(arg0);
+    unsigned char *video = videoObj;
+    VideoObject_FreeBink(videoObj);
     movieIndex = FileLookup(video + 8);
     if (movieIndex != -1) {
         ((void (*)(s32, void *, s32))fn_802E3804)(movieIndex, name, 0x20);
