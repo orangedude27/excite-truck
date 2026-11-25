@@ -37,7 +37,7 @@ extern void fn_802C7A44(void);
 extern int DrawModelInstance(int);
 extern void submitModelBatch(void);
 extern float lbl_805630A0;
-extern unsigned char lbl_80488964[];
+extern unsigned char sRequestedPosition[];
 extern void fn_802C6CF8(int);
 
 /* Model transform handed to fn_802C70AC: a 3x3 basis stored as three column
@@ -137,7 +137,7 @@ int fn_80202378(int arg0, int arg1, int arg2, int arg3) {
 #pragma pop
 /* Return a pointer to the stored requested position vector. */
 void *fn_802023C8(void) {
-#define sRequestedPos lbl_80488964
+#define sRequestedPos sRequestedPosition
     return sRequestedPos;
 #undef sRequestedPos
 }
@@ -458,9 +458,9 @@ void submitModelBatch(void);
     a = position[0];
     b = position[1];
     c = position[2];
-    ((float *)lbl_80488964)[0] = a;
-    ((float *)lbl_80488964)[1] = b;
-    ((float *)lbl_80488964)[2] = c;
+    ((float *)sRequestedPosition)[0] = a;
+    ((float *)sRequestedPosition)[1] = b;
+    ((float *)sRequestedPosition)[2] = c;
     sRequestedPosPending = 1;
 }
 #pragma pop
