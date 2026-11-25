@@ -617,11 +617,9 @@ extern int fn_80128668(void);
     return object;
 }
 
-/* Return the "Voice Mixer" name string. */
+/* Return the backend name string "Voice Mixer" (vtable slot +0xC of the Voice Mixer device). */
 void *VoiceMixerDevice_GetName(void) {
-#define sVoiceMixerName gVoiceMixerName
-    return sVoiceMixerName;
-#undef sVoiceMixerName
+    return gVoiceMixerName;
 }
 
 /* Reset the sound-voice allocator state: clear the active flag and in-use count, then set its capacity to 32 voices. */ void VoiceSound_ResetState(void) {
