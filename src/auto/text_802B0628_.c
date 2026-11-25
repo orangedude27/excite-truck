@@ -22,7 +22,7 @@ extern void fn_802C28C0(void);
 extern void fn_802C8BD0();
 extern void DrawList_RestoreNormalMode(void);
 extern void fn_802DBF00(void);
-extern void fn_802DBF30(void);
+extern void CpuLight_ResetFrameState(void);
 extern void fn_802DC078(int, int, int, int, int, int);
 extern void fn_802BB0FC(int, int);
 extern void fn_802BB3B8(int, int);
@@ -724,7 +724,7 @@ void fn_802B14B4(void *arg0) {
                 fn_802CADD0(-1, 3);
             }
         }
-        fn_802DBF30();
+        CpuLight_ResetFrameState();
         DrawList_RestoreNormalMode();
         fn_802C2C00(savedState);
         savedState = fn_802B1BE4((char *)arg0 + 0x318);
