@@ -252,7 +252,7 @@ dispatch:
 #define getWpadMotorConfig ConfigGetWpadMotorMode  /* config getter: 1 when WPAD rumble is enabled */
 void RjoyUpdateMotorEnabled(void) {
     /* Cache the WPAD rumble config setting into rjoy's motor-enabled flag. */
-    sRjoyMotorEnabled = getWpadMotorConfig();
+    gRjoyMotorEnabled = ConfigGetWpadMotorMode();
 }
 
 extern void fn_8005EE78();
