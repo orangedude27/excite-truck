@@ -647,7 +647,7 @@ void *fn_802C5EFC(int textureSlotId) {
 extern void *fn_8012850C(int, void *);
 extern void *fn_8002F37C(void *, void *, void *, int, int);
 extern char jumptable_8034B1B8[];
-extern void fn_802C6068(void *);
+extern void ModelDisplayNode_PoolInit(void *);
 extern void MRModel_InitDisplayEntryRefCount(s32 *);
 void fn_802C5F48(void) {
     struct SubList {
@@ -680,7 +680,7 @@ void fn_802C5F48(void) {
 
     e70->capacity = 0x400;
     memory = fn_8012850C(0x4010, jumpTable + 0x70);
-    e70->buf = fn_8002F37C(memory, (void (*)(void *))fn_802C6068, 0, 0x10, 0x400);
+    e70->buf = fn_8002F37C(memory, (void (*)(void *))ModelDisplayNode_PoolInit, 0, 0x10, 0x400);
     e70->count = zero;
 
     e58->capacity = 0x400;
@@ -696,7 +696,7 @@ void fn_802C5F48(void) {
 
 #pragma scheduling on
 /* Pool element init callback: clear the 16-bit active flag at +0x04 of an entry. */
-void fn_802C6068(void *entry) {
+void ModelDisplayNode_PoolInit(void *entry) {
     *(s16 *)((char *)entry + 4) = 0;
 }
 
