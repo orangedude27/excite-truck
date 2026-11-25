@@ -1430,9 +1430,8 @@ scan_done:
     }
 }
 
-void TexClearRequestRefs(void *mgr, unsigned int request) {
-    /* Detach the given load request from every loaded texture in the manager's
-       +0xC list: clear each node's owner field that points at it. */
+void TexClearRequestRefs(void *texMgr, unsigned int request) {
+    /* Clear a pending texture request from every loaded-texture record in the manager's +0xC list. */
     typedef struct TexNode {
         /* 0x00 */ char *name;
         /* 0x04 */ int texHandle;
@@ -1441,7 +1440,7 @@ void TexClearRequestRefs(void *mgr, unsigned int request) {
         /* 0x10 */ struct TexNode *next;
     } TexNode;
     TexNode *node;
-    node = *(TexNode **)((char *)mgr + 0xC);
+    node = *(TexNode **)((char *)texMgr + 0xC);
     while (node != 0) {
         if ((unsigned int)node->request == request)
             node->request = 0;
