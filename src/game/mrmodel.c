@@ -33,7 +33,7 @@ extern int gModelInstances[];
 extern int lbl_804C13A8[];
 extern int gModelNameOverrideTable[];
 extern const char lbl_8034B1D8[];
-extern s8 lbl_8055FC20;
+extern s8 gModelBatchActive;
 extern s8 gModelDisplayDirty;
 extern void fn_802C8B98(int, void *);
 extern int fn_802D0514(void *);
@@ -61,7 +61,7 @@ extern int fn_802C9638(void *, unsigned char *, float);
  * group holds the ModelElements of the model that belong to it, and an element
  * keeps one display-node pointer per instance from +0x14.  fn_802C53C4 links a
  * display entry into a node's list and fn_802C5720 sorts those entries and
- * submits them; lbl_8055FC20 says whether the caller is batching the submits
+ * submits them; gModelBatchActive says whether the caller is batching the submits
  * (beginModelBatch sets it, submitModelBatch clears it), and lbl_8055D008 is the mask of
  * group bits the caller wants drawn (fn_802C70AC and fn_802C7458 set it per
  * call). */
@@ -295,12 +295,12 @@ void fn_802C57B0(void) { }
  * a display entry for each element the model draws here into that element's
  * display node for this instance, and hands the node's id to fn_802CC550 with
  * the caller's distance.  Unless the caller is batching submits
- * (lbl_8055FC20), the entry list is emptied first and sorted and submitted
+ * (gModelBatchActive), the entry list is emptied first and sorted and submitted
  * afterwards.  Elements of type 4, 6, 9 and 11, and every type from 13 up, are
  * left to the other passes (fn_802C729C and fn_802C74D8 pick those up). */
 void fn_802C57B4(int instanceId, int transformId, int entryId, unsigned char status, float distance) {
     extern int lbl_8055D008;
-    extern s8 lbl_8055FC20;
+    extern s8 gModelBatchActive;
     extern void mrModelResetDisplayEntries(void);
     extern void fn_802C5720(int);
     extern void fn_802C57B0(void);
@@ -320,7 +320,7 @@ void fn_802C57B4(int instanceId, int transformId, int entryId, unsigned char sta
 
     instance = (struct ModelInstance *)MRModel_GetInstance(instanceId);
     groups = instance->groups;
-    if ((u8)lbl_8055FC20 == 0) {
+    if ((u8)gModelBatchActive == 0) {
         mrModelResetDisplayEntries();
     }
     nodeSlotOffset = instance->nodeSlot << 2;
@@ -365,7 +365,7 @@ void fn_802C57B4(int instanceId, int transformId, int entryId, unsigned char sta
             }
         }
     }
-    if ((u8)lbl_8055FC20 == 0) {
+    if ((u8)gModelBatchActive == 0) {
         fn_802C5720(-1);
     }
 }
@@ -1548,7 +1548,7 @@ void fn_802C74D8(int arg0, void *arg1, int arg2) {
         out[2] = tz;
     }
     if (fn_802C94A0(out, &local.status, &local.scalar, *(float *)((char *)entry + 0x1C))) {
-        if ((u8)lbl_8055FC20 != 0) {
+        if ((u8)gModelBatchActive != 0) {
             node = fn_802C5EFC(a2);
             a1 = (void *)fn_802D0514(a1);
             for (i = 0; i < *(int *)entry; i++) {
@@ -1779,19 +1779,19 @@ extern void fn_802DA550(void);
  * arguments pass through unchanged; callers declare this with the same signature. */
 void fn_802C7A40(void) { fn_802DA550(); }
 
-extern s8 lbl_8055FC20;
+extern s8 gModelBatchActive;
 extern void mrModelResetDisplayEntries(void);
 /* Begin a model-draw batch: mark submits as batched and empty the display
  * entry pool (mrModelResetDisplayEntries) — paired with submitModelBatch, which submits and clears. */
 void beginModelBatch(void) {
-#define s_modelBatchActive lbl_8055FC20
+#define s_modelBatchActive gModelBatchActive
     s_modelBatchActive = 1;
 #undef s_modelBatchActive
     mrModelResetDisplayEntries();
 }
 
 /* End a model draw batch: refresh all nine sort groups (level 0 means all) and clear the batch-active flag set by beginModelBatch. */ /* End a model draw batch: refresh all nine sort groups (level 0 means all) and clear the batch-active flag set by beginModelBatch. */ void submitModelBatch(void) {
-#define s_modelBatchActive lbl_8055FC20
+#define s_modelBatchActive gModelBatchActive
     /* Submit all nine model sort groups and clear the batch flag. */
     int groupId = 0;
 
@@ -1905,7 +1905,7 @@ void fn_802C7AE0(int arg0, void *arg1, int arg2, float farg0) {
     }
 }
 #pragma opt_propagation reset
-extern signed char lbl_8055FC20;
+extern signed char gModelBatchActive;
 extern int fn_802C9C58(int);
 extern void *DrawList_getCurrentMatrix(void);
 extern float PSQUATMultiply(void *, void *);
@@ -1978,7 +1978,7 @@ void fn_802C7D54(int arg0, const float *arg1, int arg2, float fa, float fb, floa
     }
     if (fn_802C94A0(out, &local.status, &local.scalar, rot[-1]) != 0) {
         r20 = fn_802D0514((void *)arg1);
-        if ((unsigned char)lbl_8055FC20 == 0) {
+        if ((unsigned char)gModelBatchActive == 0) {
             mrModelResetDisplayEntries();
         }
         groups = instance->groups;
@@ -2063,7 +2063,7 @@ void fn_802C7D54(int arg0, const float *arg1, int arg2, float fa, float fb, floa
                 }
             }
         }
-        if ((unsigned char)lbl_8055FC20 == 0) {
+        if ((unsigned char)gModelBatchActive == 0) {
             fn_802C5720(-1);
         }
     }
