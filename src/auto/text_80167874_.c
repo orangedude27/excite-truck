@@ -667,11 +667,11 @@ void fn_80168104(void) {
 void fn_80168328(void)
 {
   extern s32 lbl_8055E354;
-  extern void fn_801678D8(void);
+  extern void fn_801678D8();
   s32 *root;
   s32 flag;
   s32 *base;
-  s32 one = 1;
+  s32 one;
   s32 **table;
   s32 j;
   s32 i;
@@ -680,7 +680,8 @@ void fn_80168328(void)
   s32 count;
   s32 *slot;
   root = (s32 *) lbl_8055E354;
-  fn_801678D8();
+  do { fn_801678D8(); } while (0);
+  one = 1;
   table = (s32 **)((u8 *)root + 0x1D4CC);
   i = 0;
   offset = 0;
@@ -693,9 +694,9 @@ void fn_80168328(void)
       count = *((s32 *) (entry + 0x18));
       for (j = 0; j < count; j++)
       {
-        flag = 0;
         base = *(s32 **)root;
         slot = (s32 *) ((u8 *)base + (((*((s32 *) (entry + 0x14))) + j) * 0x18));
+        flag = 0;
         if (((*slot) != 0) && ((*(((u8 *) slot) + 0x14)) == 0))
         {
           flag = 1;
