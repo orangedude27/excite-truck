@@ -12,7 +12,7 @@
 
 extern s32 fn_80128668(s32 *);
 extern s32 fn_802C4C80(s32);
-extern s32 fn_802C4FF8(const char *);
+extern s32 gxCanvasStringWidth(const char *);
 extern s32 stampGetOffsets(s32, s32 *, s32 *);
 extern s32 fn_802C501C(void);
 extern s32 fn_802C4EFC(s32);
@@ -45,7 +45,7 @@ s32 fn_801E4A6C(s32 *fontTable, const u8 *text) {
         }
         return totalWidth;
     }
-    return fn_802C4FF8((const char *)text);
+    return gxCanvasStringWidth((const char *)text);
 }
 /* Returns the total width of up to count characters from text. If fontTable
  * is non-null, sums per-character widths from the 16-bit table at
@@ -63,7 +63,7 @@ s32 fn_801E4AB0(s32 *fontTable, const u8 *text, s32 count) {
         }
         return sum;
     }
-    return fn_802C4FF8((const char *)text);
+    return gxCanvasStringWidth((const char *)text);
 }
 #pragma scheduling invalid_target
 /* Return the glyph/advance width for a font object, or the default canvas char width when no object is provided. */
