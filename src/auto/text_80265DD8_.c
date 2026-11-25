@@ -1410,6 +1410,9 @@ void fn_802682B0(void *object) {
     *(float *)(p + 0xbc) = lbl_8055F47C;
 }
 
+#pragma push
+#pragma ppc_psq_save off
+#pragma use_lmw_stmw off
 void fn_80268358(void *arg0) {
     struct Obj {
         int w0;
