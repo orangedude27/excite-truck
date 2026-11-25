@@ -766,7 +766,7 @@ void *fn_802E0BA4(void) {
  * release the movie object's heap block. The incoming movie pointer stays in
  * r3 and is passed straight through to both calls.
  */
-void fn_802E0BE0(void) {
+void BinkMovie_FreeObject(void) {
     videoFreeHook();
     freeVideoObject();
 }
@@ -1090,13 +1090,13 @@ s32 fn_802E11A4(const char *name, u8 mode) {
 /* Log "drMovieUnload" and tear down a Bink movie: run the free hook, close the loaded Bink handle, then free the movie object. */ void BinkMovie_Unload(void *movie) {
     extern void fn_802E30C8(const char *, ...);
     extern void *fn_802E0BA4(void);
-    extern void fn_802E0BE0(void);
+    extern void BinkMovie_FreeObject(void);
     extern void VideoObject_FreeBink();
     extern char lbl_8034CBD0[];
     fn_802E30C8(lbl_8034CBD0);
     ((void (*)(void *))fn_802E0BA4)(movie);
     VideoObject_FreeBink();
-    ((void (*)(void *))fn_802E0BE0)(movie);
+    ((void (*)(void *))BinkMovie_FreeObject)(movie);
 }
 
 #pragma opt_common_subs off
