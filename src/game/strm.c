@@ -146,5 +146,5 @@ void fn_802E746C(int index, int *outStartSector, int *outSize) {
 void fn_802E7544(void) { fn_802E3990(); }
 
 /* Close the file/stream handle by value; closeFileHandle takes the handle by address and invalidates it. */
-void closeStreamHandle(int handle) { closeFileHandle(&handle); }
+/* Close a file/stream handle passed by value: forward its address so closeFileHandle invalidates the local copy. */ void closeStreamHandle(int handle) { closeFileHandle(&handle); }
 
