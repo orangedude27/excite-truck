@@ -84,7 +84,7 @@ void copyCpuLightTextures(void *dest, int mode) {
 }
 
 #pragma scheduling on
-int fn_802DB378(int mode, int textureIndex) {
+int CpuLight_GetTevColorInput(int mode, int textureIndex) {
     /* TEV color input for GXSetTevOrder: GX_COLOR0A0 (4) for the first texture in mode 2, else GX_COLOR_NULL (0xFF). */
     int color = 0xFF;
     if (mode == 2) {
@@ -208,7 +208,7 @@ int fn_802DB69C(void **texObjs, int mode) {
         }
         {
             int curTevStage = tevStage++;
-            GXSetTevOrder(curTevStage, texIndex, baseTexMap, fn_802DB378(mode, texIndex));
+            GXSetTevOrder(curTevStage, texIndex, baseTexMap, CpuLight_GetTevColorInput(mode, texIndex));
         }
         objIter++;
         texIndex++;
