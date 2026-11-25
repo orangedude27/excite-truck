@@ -15,7 +15,7 @@ void *memset(void *, int, unsigned int);
 extern void *memcpy(void *, const void *, unsigned int);
 #pragma scheduling off
 /* Clears the whole event-handler registry (all 18 event-type rows of handlers). */
-void Event_ClearAllHandlers(void) {
+/* Zeroes the entire event-handler registry: all 18 event types, four handler slots each (EventHandlerRow), in one memset. */ void Event_ClearAllHandlers(void) {
     memset(gEventHandlers, 0, 18 * sizeof(EventHandlerRow));
 }
 #pragma scheduling invalid_target
