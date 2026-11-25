@@ -791,6 +791,8 @@ unsigned long long KERNEL_GetTimeUs(void)
 /* Busy-wait until the microsecond timer from KERNEL_GetTimeUs shows that
  * `milliseconds` have elapsed, quitting early if the timer jumps backwards. */
 void KERNEL_WaitMilliseconds(int milliseconds) {
+    /* Busy-wait until KERNEL_GetTimeUs has advanced by milliseconds * 1000 us;
+     * also stop if the microsecond counter wraps backwards. */
     long long limitUs = (long long)milliseconds * 1000;
     u64 startUs = KERNEL_GetTimeUs();
     u64 nowUs;
