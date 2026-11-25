@@ -1010,16 +1010,16 @@ extern "C" s32 fn_800A59FC(void *arg0) {
     s32 base = (u16)x + state->value2;
     state->result24 = (s16)x;
     s32 scaled = state->value7 * state->valueC;
-    s32 total = scaled + base;
+    s32 total = (state->value7 * state->valueC) + ((u16)x + state->value2);
     state->result30 = total;
-    u32 quotient = ((u32)state->value8 - total) >> state->shift1;
+    u32 quotient = ((u32)state->value8 - ((state->value7 * state->valueC) + base)) >> state->shift1;
     state->result34 = quotient;
     if (quotient < 0xFF5) {
         state->status = 0;
-        state->result2C = state->value2 + scaled;
+        state->result2C = state->value2 + (state->value7 * state->valueC);
     } else if (quotient < 0xFFF5) {
         state->status = 1;
-        state->result2C = state->value2 + scaled;
+        state->result2C = state->value2 + (state->value7 * state->valueC);
     } else {
         state->status = 2;
         state->result2C = 0;
