@@ -1548,7 +1548,7 @@ void fn_80268358(void *arg0) {
             frame.v48[0] = entryPtr[3];
             frame.v48[1] = entryPtr[4];
             frame.v48[2] = entryPtr[5];
-            fn_80268358_vecmat(frame.v3C, frame.v48, matPtr);
+            VECMAT_80268358(frame.v3C, frame.v48, matPtr);
             frame.v3C[0] += matPtr[9];
             frame.v3C[1] += matPtr[10];
             frame.v3C[2] += matPtr[11];
