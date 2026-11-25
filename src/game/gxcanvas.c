@@ -781,7 +781,7 @@ void fn_802C3D74(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight,
     height = srcBottom - srcTop;
     if (gxCanvasClipBlitRect((void *)dstCanvas, &clipX, &clipY, &srcX, &srcY, &width, &height) != 0) {
         src = (u16 *)gxCanvasGetPixelAddr((void *)srcCanvas, srcX, srcY);
-        dst = (s32 *)gxCanvasGetPixelAddr32((void *)dstCanvas, clipX, clipY);
+        dst = (s32 *)fn_802C3060((void *)dstCanvas, clipX, clipY);
         /* Pixels to step over the ones a row does not hold, per canvas. */
         srcSkip = (((GxCanvas *)srcCanvas)->rowBytes - width * 2) / 2;
         dstSkip = (((GxCanvas *)dstCanvas)->rowBytes - width * 4) / 4;
