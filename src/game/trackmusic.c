@@ -48,7 +48,7 @@ extern long *lbl_8055B654;
 extern int fn_8012E938(int);
 extern void fn_8012E81C(void);
 extern long fn_802EC294(long, long);
-extern char lbl_80489CA0[16];
+extern char gTrackMusicBuffers[16];
 extern long fn_8020F608(long, long);
 // Shuffled track play order: m_entries holds m_count indices into the
 // track-music list; lbl_8055EEC4 is the next cursor into this order.
@@ -158,9 +158,9 @@ void fn_8020F5DC(void) {
 #pragma dont_inline on
 #pragma scheduling invalid_target
 void *getTrackMusicBuffer(long trackIndex) {
-    /* Return the 0x1900-byte track-music buffer for trackIndex within the trackMusicBuffer table (lbl_80489CA0). */
+    /* Return the 0x1900-byte track-music buffer for trackIndex within the trackMusicBuffer table (gTrackMusicBuffers). */
     long byteOffset = (trackIndex << 6) * 100;
-    return (void *)((char *)&lbl_80489CA0 + byteOffset);
+    return (void *)((char *)&gTrackMusicBuffers + byteOffset);
 }
 #pragma scheduling on
 #pragma dont_inline reset
@@ -681,8 +681,8 @@ void fn_8021031C(void) {
     long resourceTag;
     char *trackMusicBuffer;
     resourceTag = TMUS_TAG;
-    trackMusicBuffer = lbl_80489CA0;
-    memset(&lbl_80489CA0, 0, BUFFER_SIZE);
+    trackMusicBuffer = gTrackMusicBuffers;
+    memset(&gTrackMusicBuffers, 0, BUFFER_SIZE);
     fn_802E6BD8(resourceTag, 0, trackMusicBuffer, BUFFER_SIZE, 0);
     fn_8000DBC8(&fn_8020F6E0);
 #undef BUFFER_SIZE
