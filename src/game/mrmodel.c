@@ -1250,7 +1250,7 @@ void fn_802C6FA8(void *groupList) {
 }
 
 extern void mrModelNoopGroupHook(void);
-void mrModelUnregisterTextures(void *groupList) {
+/* Walk every group in groupList through VisitGroupIds using a no-op per-group hook (pair of mrModelRegisterTextures, called when releasing a model). */ void mrModelUnregisterTextures(void *groupList) {
     /* Visit every group in groupList with the no-op per-group hook mrModelNoopGroupHook. */
     ((void (*)(void *, void *))VisitGroupIds)(groupList, mrModelNoopGroupHook);
 }
