@@ -149,7 +149,7 @@ extern "C" void VoiceSoundPool_Free(void *voiceSound) {
 #pragma pop
 
 #pragma scheduling invalid_target
-void VoiceMixerDevice_Init(VoiceMixerDevice *mixer) {
+/* Voice-mixer device constructor: install the Voice Mixer vtable and clear the device state word. */ void VoiceMixerDevice_Init(VoiceMixerDevice *mixer) {
     /* Voice-mixer device constructor: install the callback table and clear the state word. */
     mixer->callbacks = gVoiceMixerVtable;
     mixer->state = 0;
