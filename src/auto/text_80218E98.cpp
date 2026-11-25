@@ -578,7 +578,7 @@ extern char lbl_8033F768[];
 extern "C" u32 *fn_80216708(void);
 extern "C" s32 fn_80218F34(void *, s32, s32, s32, s32, s32);
 extern "C" void fn_8022B91C(s32, s32, s32, s32, s32);
-extern "C" s32 fn_802C51AC(s32);
+extern "C" s32 gxGetImageFrameCount(s32);
 extern "C" s32 fn_802C5310(s32, s32, f32, f32, f32);
 extern "C" void fn_80230C30(f32 *, f32 *, s32, s32);
 extern "C" void fn_802353F4(s32, s32, f32, f32, f32);
@@ -1753,9 +1753,9 @@ extern "C" void *fn_8021AC24(void *widget, s32 x, s32 y, s32 imageId, s32 unused
 extern "C" void fn_8021ACC0(void *widget, s32 value) {
     /* Stores a value and queries the widget's image/resource handle count. */
     fn_802C3034(value);
-    fn_802C51AC(*(s32 *)((u8 *)widget + 0x250));
-    if (fn_802C51AC(*(s32 *)((u8 *)widget + 0x250)) > 0)
-        fn_802C51AC(*(s32 *)((u8 *)widget + 0x250));
+    gxGetImageFrameCount(*(s32 *)((u8 *)widget + 0x250));
+    if (gxGetImageFrameCount(*(s32 *)((u8 *)widget + 0x250)) > 0)
+        gxGetImageFrameCount(*(s32 *)((u8 *)widget + 0x250));
 }
 
 #pragma push
@@ -1773,12 +1773,12 @@ extern "C" void fn_8021AD10(void *arg0) {
         value = 0;
     }
 
-    if (fn_802C51AC(*(s32 *)((u8 *)arg0 + 0x250)) == 3 && value == 3) {
+    if (gxGetImageFrameCount(*(s32 *)((u8 *)arg0 + 0x250)) == 3 && value == 3) {
         value = 1;
     }
 
-    if (fn_802C51AC(*(s32 *)((u8 *)arg0 + 0x250)) > 0) {
-        value %= fn_802C51AC(*(s32 *)((u8 *)arg0 + 0x250));
+    if (gxGetImageFrameCount(*(s32 *)((u8 *)arg0 + 0x250)) > 0) {
+        value %= gxGetImageFrameCount(*(s32 *)((u8 *)arg0 + 0x250));
     }
 
     screenX = *(s32 *)((u8 *)arg0 + 4) - lbl_8055FB9C / 2;
@@ -2309,7 +2309,7 @@ extern "C" void fn_8021BC20(void *widget, void *unused) {
                 cellX + *(s32 *)((u8 *)widget + 0x260));
             if (*(s32 *)((u8 *)widget + 0x258) != 0) {
                 fn_802C5320(*(s32 *)((u8 *)widget + 0x258),
-                    tag % fn_802C51AC(*(s32 *)((u8 *)widget + 0x258)),
+                    tag % gxGetImageFrameCount(*(s32 *)((u8 *)widget + 0x258)),
                     iconX, iconY, lbl_805634A8, lbl_805634FC, lbl_805634FC);
             }
         }
@@ -4396,54 +4396,53 @@ extern "C" void fn_801A7A5C(void);
 extern "C" s32 fn_802146BC(void *, s32, s32, s32, void *, s32, s32, s32);
 extern "C" void fn_802194FC(void *);
 #pragma use_lmw_stmw off
-extern "C" void fn_8021F4F0(void *arg0, void *) {
-    s32 args[30];
-
-    fn_801A7A5C();
-    strcpy((char *)lbl_80490934, (char *)arg0 + 0x254);
-    *(s32 *)((char *)lbl_80490934 + 0x18) = *(s32 *)((char *)arg0 + 0x270);
-
-    ((volatile s32 *)args)[1] = *((volatile s32 *)&lbl_802F9EE0[1]);
-    args[0] = lbl_802F9EE0[0];
-    args[2] = lbl_802F9EE0[2];
-    args[3] = lbl_802F9EE0[3];
-    args[4] = lbl_802F9EE0[4];
-    args[5] = (s32)&lbl_8055B890;
-    args[6] = 3;
-    args[7] = (s32)lbl_8033D9A4;
-    args[8] = 0x80;
-    args[9] = 0;
-    args[10] = (s32)&lbl_8055B898;
-    args[11] = 3;
-    args[12] = *(s32 *)((char *)arg0 + 0x26c);
-    args[13] = 0x80;
-    args[14] = 0;
-    args[15] = (s32)&lbl_8055B8A0;
-    args[16] = 0;
-    args[17] = 0;
-    args[18] = -1;
-    args[19] = 0;
-    args[20] = (s32)&lbl_8055B860;
-    args[21] = 6;
-    args[22] = 0;
-    args[23] = -1;
-    args[24] = 0x1b;
-    args[25] = lbl_80490920[0];
-    args[26] = lbl_80490920[1];
-    args[27] = lbl_80490920[2];
-    args[28] = lbl_80490920[3];
-    args[29] = lbl_80490920[4];
-    args[1] = (s32)&args[5];
-
-    if (fn_802146BC(args, -999, -999, 1,
-                    (void *)lbl_802F9EE0[4],
-                    lbl_802F9EE0[3], lbl_802F9EE0[2], lbl_802F9EE0[0]) == -2) {
-        strcpy((char *)arg0 + 0x254, (char *)lbl_80490934);
-        fn_80219718(arg0);
-    }
-    fn_802194FC(arg0);
-    if (*((u8 *)arg0 + 0x1a) != 0)
-        *((u8 *)arg0 + 0x234) = 1;
+extern "C" void fn_8021F4F0(void *arg0, void *)
+{
+  s32 args[30];
+  fn_801A7A5C();
+  strcpy((char *) lbl_80490934, ((char *) arg0) + 0x254);
+  *((s32 *) (((char *) lbl_80490934) + 0x18)) = *((s32 *) (((char *) arg0) + 0x270));
+  args[1] = lbl_802F9EE0[1];
+  args[0] = lbl_802F9EE0[0];
+  args[2] = lbl_802F9EE0[2];
+  args[3] = lbl_802F9EE0[3];
+  args[4] = lbl_802F9EE0[4];
+  args[5] = (s32) (&lbl_8055B890);
+  args[6] = 3;
+  args[7] = (s32) lbl_8033D9A4;
+  args[8] = 0x80;
+  args[9] = 0;
+  args[10] = (s32) (&lbl_8055B898);
+  args[11] = 3;
+  args[12] = *((s32 *) (((char *) arg0) + 0x26c));
+  args[13] = 0x80;
+  args[14] = 0;
+  args[15] = (s32) (&lbl_8055B8A0);
+  args[16] = 0;
+  args[17] = 0;
+  args[18] = ((((((((((-1) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu;
+  args[19] = 0;
+  args[20] = (s32) (&lbl_8055B860);
+  args[21] = 6;
+  args[22] = 0;
+  args[23] = -1;
+  args[24] = 0x1b;
+  args[25] = lbl_80490920[0];
+  args[26] = lbl_80490920[1];
+  args[27] = lbl_80490920[2];
+  args[28] = lbl_80490920[3];
+  args[29] = lbl_80490920[4];
+  args[1] = (s32) (&args[5]);
+  if (fn_802146BC(args, -999, -999, 1, (void *) lbl_802F9EE0[4], lbl_802F9EE0[3], (((lbl_802F9EE0[2] & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) & 0xFFFFu, lbl_802F9EE0[0]) == (-2))
+  {
+    strcpy(((char *) arg0) + 0x254, (char *) lbl_80490934);
+    fn_80219718(arg0);
+  }
+  fn_802194FC(arg0);
+  if ((*(((u8 *) arg0) + 0x1a)) != 0)
+  {
+    *(((u8 *) arg0) + 0x234) = 1;
+  }
 }
 /* Horizontal slider widget (vtable lbl_8033E878, constructed by fn_8021F678). */
 typedef struct SliderWidget {
@@ -5992,8 +5991,8 @@ extern "C" void* __dt__14CollisionSpaceFv_80222998(void* this_, s32 flag) {
 extern "C" void fn_802229FC(void *object) {
     /* Dispose of an object's art-set handle at +0x4: if it still holds pictures,
      * the picture-count helper is invoked a second time (as in the original). */
-    if (fn_802C51AC(*(s32 *)((u8 *)object + 4)) != 0) {
-        fn_802C51AC(*(s32 *)((u8 *)object + 4));
+    if (gxGetImageFrameCount(*(s32 *)((u8 *)object + 4)) != 0) {
+        gxGetImageFrameCount(*(s32 *)((u8 *)object + 4));
     }
 }
 
@@ -6005,14 +6004,14 @@ extern "C" void fn_80222A3C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) 
     register f32 value;
 
     /* If object has a valid image/resource, compute screen coords and draw frame arg4 (when not -1). */
-    if (fn_802C51AC(*(s32 *)((u8 *)arg0 + 4)) != 0) {
+    if (gxGetImageFrameCount(*(s32 *)((u8 *)arg0 + 4)) != 0) {
         value = lbl_805634A8;
         spC = value;
         sp8 = value;
         fn_80230C30(&spC, &sp8, arg1, arg2);
         if ((u32)(arg4 + 0x10000) != 0xFFFFU) {
             fn_802C5320(*(s32 *)((u8 *)arg0 + 4),
-                        arg4 % fn_802C51AC(*(s32 *)((u8 *)arg0 + 4)),
+                        arg4 % gxGetImageFrameCount(*(s32 *)((u8 *)arg0 + 4)),
                         spC, sp8, value,
                         *(f32 *)((u8 *)arg0 + 8),
                         *(f32 *)((u8 *)arg0 + 0xC));
@@ -6048,7 +6047,7 @@ extern "C" s32 fn_80222B48(void *self, s32 unused1, s32 unused2, s32 x, s32 y) {
 
 extern "C" s32 fn_80222BD4(void *self) {
     /* Query the image/resource-set handle stored at +4 of this object. */
-    return fn_802C51AC(*(s32*)((u8*)self + 4));
+    return gxGetImageFrameCount(*(s32*)((u8*)self + 4));
 }
 
 extern "C" char lbl_8033E560[];
@@ -7216,7 +7215,7 @@ extern "C" void fn_802248FC(void *arg0) {
     s32 delta;
     s32 rem;
     rem = *(s32 *)(self + 0x10) - *(s32 *)(self + 8);
-    s32 divisor = fn_802C51AC(*(s32 *)(self + 0x280));
+    s32 divisor = gxGetImageFrameCount(*(s32 *)(self + 0x280));
     s32 value = *(s32 *)(self + 0x244);
     delta = value % divisor;
     s32 got = ((Vf78x *)arg0)->get();

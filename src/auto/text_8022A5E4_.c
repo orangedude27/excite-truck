@@ -806,7 +806,7 @@ int fn_8022B620(int styleIndex, const char *text) {
 void fn_8022B91C(void *unused, int x, int y, char *text, unsigned int flagsArg) {
     extern int stampGetFrameCount(int);
     extern int fn_802C4C90(int, int, int, int, int);
-    extern int fn_802C51AC(void);
+    extern int gxGetImageFrameCount(void);
     extern int Abend_Panic(const char *, ...);
     extern void fn_801E4DBC(int, int, int, int, int, const char *, unsigned long);
     extern char *strchr(const char *, int);
@@ -822,7 +822,7 @@ void fn_8022B91C(void *unused, int x, int y, char *text, unsigned int flagsArg) 
         fn_802C4C90(*(int *)((char *)ctx + 0x64), x, y,
                     flagsArg % stampGetFrameCount(*(int *)((char *)ctx + 0x64)), 0);
     } else if ((state = *(int *)((char *)ctx + 0x68)) != 0) {
-        ((int (*)(int))fn_802C51AC)(state);
+        ((int (*)(int))gxGetImageFrameCount)(state);
     }
     if (text == 0) return;
     if (*(int *)((char *)ctx + 8) != 0) return;
@@ -901,7 +901,7 @@ extern double fn_8002EFB4(float arg0, double arg1);
 extern float fn_8023659C(void);
 extern float fn_80235EF0(int arg0, int arg1);
 extern float fn_80235F64(int arg0, int arg1);
-extern int fn_802C51AC();
+extern int gxGetImageFrameCount();
 extern int fn_80235FD8();
 extern void fn_802C5310();
 extern void fn_802354A0();
@@ -1002,7 +1002,7 @@ void fn_8022BD40(int arg0, int i19arg, int arg2_, unsigned char i20_, float farg
     }
     if (*(int *)((char *)base + 0x68) != 0) {
         ((void (*)(float *, float *, float, float))fn_8022BB60)(&sp28, &sp24, f0v, f28v);
-        fn_802C5310(*(int *)((char *)base + 0x68), arg2copy % fn_802C51AC(*(int *)((char *)base + 0x68)), sp28, sp24, lbl_8056358C);
+        fn_802C5310(*(int *)((char *)base + 0x68), arg2copy % gxGetImageFrameCount(*(int *)((char *)base + 0x68)), sp28, sp24, lbl_8056358C);
     } else if (*(int *)((char *)base + 0x6C) != 0) {
         ((void (*)(float *, float *, float, float))fn_8022BB60)(&sp20, &sp1C, f0v, f28v);
         fl = *(int *)((char *)base + 0x38);

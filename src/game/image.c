@@ -39,7 +39,7 @@ void fn_802C519C(void* artSet) {
 
 /* Returns the number of frames in the image resource set behind @p image
  * (the linked-entry count from fn_80235FD8), or 1 for a null handle. */
-int fn_802C51AC(void* image) {
+int gxGetImageFrameCount(void* image) {
     if (image != 0) return fn_80235FD8();
     return 1;
 }
