@@ -422,7 +422,7 @@ enum { RST0_HEADER_SIZE = 0x34 };
 #define Rst0Header_validate fn_8012A6C8
 extern "C" s32 fn_8012A388(void *);
 extern "C" s32 fn_802E7544(s32);
-extern "C" void fn_802E7548(s32);
+extern "C" void closeStreamHandle(s32);
 extern "C" const char lbl_8032AC68[];
 extern "C" s32 fn_8012A470(void *, s32, void *, void *);
 extern "C" s32 fn_80132E7C(void *, s32);
@@ -1528,7 +1528,7 @@ extern "C" s32 fn_8012CC24(void *arg0, void *arg1) {
 
     if (*(s32 *)(self + 0xB8) == 2 && fn_802E7544(*(s32 *)(self + 0xB4)) != 0 &&
         ((u32 (*)(void *))fn_8012D3D0)(arg0) != 0) {
-        fn_802E7548(*(s32 *)(self + 0xB4));
+        closeStreamHandle(*(s32 *)(self + 0xB4));
         *(s32 *)(self + 0xB4) = -1;
         fn_8012D33C((u32 *)(self + 0x6C), (u32 *)*(void **)(self + 0xC8));
         fn_8012A80C((s32)(self + 0x6C));
@@ -1565,7 +1565,7 @@ extern "C" s32 fn_8012CC24(void *arg0, void *arg1) {
         s32 index;
 
         if (*(s32 *)(self + 0xB4) != -1) {
-            fn_802E7548(*(s32 *)(self + 0xB4));
+            closeStreamHandle(*(s32 *)(self + 0xB4));
             *(s32 *)(self + 0xB4) = -1;
         }
         count = 0;
@@ -1899,7 +1899,7 @@ extern "C" void fn_8012D1A8(s32 arg0) {
     switch (*(s32 *)(self + 0xB8)) {
     case 2:
         if (*(s32 *)(self + 0xB4) != -1) {
-            fn_802E7548(*(s32 *)(self + 0xB4));
+            closeStreamHandle(*(s32 *)(self + 0xB4));
             *(s32 *)(self + 0xB4) = -1;
         }
         for (i = 0, off = 0; i < *(s32 *)(self + 0x8C); i++, off += 0x44) {
@@ -1995,7 +1995,7 @@ extern "C" void fn_8012D40C(s32 arg0) {
     u8 parseBuffer[0x40];
     state = object[0xB8 / 4];
     if (state == 2 && fn_802E7544(object[0xB4 / 4]) != 0) {
-        fn_802E7548(object[0xB4 / 4]);
+        closeStreamHandle(object[0xB4 / 4]);
         object[0xB4 / 4] = -1;
         data = *(u8 **)(self + 0xC8);
         *(s32 *)(self + 0x6C) = *(s32 *)(data + 0);
@@ -2044,7 +2044,7 @@ extern "C" void fn_8012D40C(s32 arg0) {
     switch (state) {
     case 2:
         if (object[0xB4 / 4] != -1) {
-            fn_802E7548(object[0xB4 / 4]);
+            closeStreamHandle(object[0xB4 / 4]);
             object[0xB4 / 4] = -1;
         }
         count = 0;
@@ -3503,7 +3503,7 @@ extern "C" s32 fn_8012C7FC(void *request, s32 *outValue) {
     void *loadedData;
     handle = *(s32 *)((char *)request + 0xC);
     if (handle != -1 && fn_802E7544(handle)) {
-        fn_802E7548(*(s32 *)((char *)request + 0xC));
+        closeStreamHandle(*(s32 *)((char *)request + 0xC));
         *(s32 *)((char *)request + 0xC) = -1;
     }
     handle = *(s32 *)((char *)request + 0xC);
@@ -3524,13 +3524,13 @@ extern "C" s32 fn_8012C7FC(void *request, s32 *outValue) {
     return result;
 }
 #pragma pop
-extern "C" void fn_802E7548(s32);
+extern "C" void closeStreamHandle(s32);
 extern "C" u8 lbl_8032AC88[];
 /* Cancels the active stream read on a stream request, if any, and clears its handle and data pointer. */
 extern "C" void fn_8012C90C(void *request) {
     s32 handle = *(s32 *)((u8 *)request + 0xC);
     if (handle != -1) {
-        fn_802E7548(handle);
+        closeStreamHandle(handle);
         *(s32 *)((u8 *)request + 0xC) = -1;
         *(s32 *)((u8 *)request + 0x10) = 0;
     }

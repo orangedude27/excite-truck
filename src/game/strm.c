@@ -146,5 +146,5 @@ void fn_802E746C(int index, int *outStartSector, int *outSize) {
 void fn_802E7544(void) { fn_802E3990(); }
 
 /* Close the file/stream handle by value; fn_802E3734 takes the handle by address and invalidates it. */
-void fn_802E7548(int handle) { fn_802E3734(&handle); }
+void closeStreamHandle(int handle) { fn_802E3734(&handle); }
 
