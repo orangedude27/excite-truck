@@ -624,13 +624,13 @@ void *fn_8020B314(void) {
 #undef sVoiceMixerName
 }
 
-void VoiceSound_ResetState(void) {
+/* Reset the sound-voice allocator state: clear the active flag and in-use count, then set its capacity to 32 voices. */ void VoiceSound_ResetState(void) {
     /* Reset the sound-voice state block at sVoiceState: clear the flag and
      * used count, then set its capacity to 32 voices. */
-    volatile unsigned char *voiceState = sVoiceState;
-    voiceState[0] = 0;
-    *(volatile int *)(voiceState + 4) = 0;
-    *(volatile int *)(voiceState + 8) = 0x20;
+    volatile unsigned char *state = sVoiceState;
+    state[0] = 0;
+    *(volatile int *)(state + 4) = 0;
+    *(volatile int *)(state + 8) = 0x20;
 }
 
 extern void fn_802E5824(void); /* SPU voice layer, slot +0x40 of the device: empty here */
