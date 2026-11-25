@@ -77,7 +77,7 @@ void fn_80127B5C(int arg0) {
  * It has nothing to do: the hook table at lbl_8041E098 sits in .bss (168 bytes =
  * an 8-byte header -- iteration flag at +0, entry count at +4 -- followed by 10
  * 16-byte entries of callback/object/name/deleted), so it is already empty when
- * the kernel start-up sequence (fn_802E2A5C) calls this.  fn_80127EF8 is the
+ * the kernel start-up sequence (KERNEL_Init) calls this.  fn_80127EF8 is the
  * matching shut-down, which reports the hooks that were never removed. */
 void fn_80127C8C(void) {
 

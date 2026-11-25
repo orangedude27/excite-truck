@@ -574,7 +574,7 @@ void KERNEL_ReportStackUsage(void) {
 #undef StackGuardInfo
 }
 
-/* Empty placeholder in the kernel startup sequence (fn_802E2A5C): the paired
+/* Empty placeholder in the kernel startup sequence (KERNEL_Init): the paired
  * subsystem needs no initialization in this build. Its shutdown counterpart is
  * fn_802E2A58. */
 void fn_802E2A54(void) {}
@@ -635,7 +635,7 @@ struct StartupCalendar {
  * area with 0x53FFEEDD and fn_802E2A1C, registered under the name "check_stack",
  * reports "STACK OVERRUN!" once that marker is gone.  Returning 1 is main()'s cue to
  * run the matching shutdown (KERNEL_Shutdown) and panic. */
-/* Brings up the OS and all engine subsystems in order, logs the console's start date/time, then arms the stack-guard check and returns 1 so main() runs the matching shutdown. */ int fn_802E2A5C(void) {
+/* Brings up the OS and all engine subsystems in order, logs the console's start date/time, then arms the stack-guard check and returns 1 so main() runs the matching shutdown. */ int KERNEL_Init(void) {
     struct StartupCalendar startTime;
     char * const base = lbl_8034CCE0;
     OSInit();
@@ -689,7 +689,7 @@ extern void File_ShutdownSubsystem(void);
 extern void fn_802E77AC(void);
 extern void fn_802E2A1C(void);
 extern int fn_80004D64(void *);
-extern int fn_802E2A5C(void);
+extern int KERNEL_Init(void);
 extern void fn_80004E20(void);
 extern void KERNEL_Shutdown(void);
 /* Shut down every engine/kernel subsystem in reverse startup order; unregister the stack-overrun check first. */
@@ -723,7 +723,7 @@ int main(void) {
 
     /* Initialize from boot arguments, run the main loop, then shut down; panic if it returns. */
     if (fn_80004D64(bootArgs) != 0) {
-        if (fn_802E2A5C() != 0) {
+        if (KERNEL_Init() != 0) {
             fn_80004E20();
             KERNEL_Shutdown();
         }
@@ -771,7 +771,7 @@ unsigned long long KERNEL_GetTimeUs(void)
 #pragma scheduling on
 /* Store the console's real date and time (RTC ticks from OSGetTime(), broken
  * out by OSTicksToCalendarTime()) into the halfword-packed calendar struct
- * fn_802E2A5C logs "date:" and "time:" from at start-up.  The month is kept
+ * KERNEL_Init logs "date:" and "time:" from at start-up.  The month is kept
  * 1-12 here, unlike the OS calendar's 0-11. */
 /* Read the console RTC and store the current date/time into the halfword-packed startup calendar, converting the month from 0-based to 1-based. */ void KERNEL_ReadStartupCalendar(void *calendarOut) {
     struct OSTimeCalendar calendar;
@@ -948,7 +948,7 @@ extern void fn_801293C4(void);
 extern void File_ShutdownSubsystem(void);
 extern void fn_802E77AC(void);
 extern int fn_80004D64(void *);
-extern int fn_802E2A5C(void);
+extern int KERNEL_Init(void);
 extern void fn_80004E20(void);
 extern void OSPanic(const char *, int, const char *, ...);
 extern char lbl_8034CD8C[];
