@@ -21,7 +21,7 @@ extern unsigned char lbl_8055FD50;
 #pragma dont_inline fn_802D2ED8
 #pragma dont_inline GXReinit
 #pragma dont_inline fn_802D1B58
-extern int lbl_804C9760[];
+extern int gXfbBlock[];
 #pragma small_data off
 extern __declspec(section ".data") unsigned int lbl_804C9940;
 #pragma small_data on
@@ -218,7 +218,7 @@ unsigned char fn_802CEA1C(unsigned int argbColor) {
 /* Allocate and clear the EFB copy buffer based on the current render mode dimensions. */
 void fn_802CEA34(void) {
 #define sCurrentRenderMode gCurrentRenderMode
-#define sXfbCopyInfo       lbl_804C9760
+#define sXfbCopyInfo       gXfbBlock
 #define kXfbAllocTag       lbl_8055D0F0  /* "xfb.a" */
     unsigned char *renderMode = (unsigned char *)sCurrentRenderMode;
     unsigned short fbWidth = *(unsigned short *)(renderMode + 4);
@@ -516,7 +516,7 @@ void fn_802CF10C(void) {
     if (lbl_8055FD50 != 0 || st[1] != 0) {
         if (st[0] != 0) {
             int* sti = (int*)st;
-            int* fb = lbl_804C9760;
+            int* fb = gXfbBlock;
             int fb1;
             int i;
             st[0] = 0;
@@ -534,7 +534,7 @@ void fn_802CF10C(void) {
             return;
         }
         {
-            int* fb = lbl_804C9760;
+            int* fb = gXfbBlock;
             unsigned char* fbBase = (unsigned char*)fb[1];
             DCInvalidateRange((void*)fbBase, fb[2] * fb[3] * 2);
             {
@@ -579,7 +579,7 @@ void fn_802CF10C(void) {
                 }
             }
             {
-                int* fbFlush = lbl_804C9760;
+                int* fbFlush = gXfbBlock;
                 DCFlushRange((void*)fbFlush[1], fbFlush[4] * (fbFlush[2] * fbFlush[3]));
             }
         }
@@ -721,7 +721,7 @@ void fn_802CF830(void) {
 
 int GX_IsXFBSet(void) {
     /* Return nonzero when an external frame buffer is currently set: entry [1] of the GX_XFB block holds the buffer being drawn into and shown. */
-    return lbl_804C9760[1] != 0;
+    return gXfbBlock[1] != 0;
 }
 
 extern void GXSetCopyClear(unsigned char *, int);
@@ -905,7 +905,7 @@ void fn_802CF850(void) {
  *   GX_DYNAMIC_DATA       0x177000-byte GX dynamic-data (display list) buffer
  *                         the frame is flushed out of, see HomeMenu_drawUIAndFlush
  *   GX_DYNAMIC_HIGH_WATER high-water mark of GX_DYNAMIC_DATA, reported here */
-#define GX_XFB_BLOCK lbl_804C9760
+#define GX_XFB_BLOCK gXfbBlock
 #define GX_SCREEN_TEX_BUFFER lbl_804C9940
 #define GX_WORK_MEMORY lbl_8055FD68
 #define GX_RECORD_TABLE lbl_8055FDB0
@@ -1509,7 +1509,7 @@ void fn_802D07E4(char* arg0, int arg1) {
     extern int lbl_8055D0C0;
     extern signed char lbl_8055FD90;
     extern unsigned char lbl_804C9830[];
-    extern int lbl_804C9760[];
+    extern int gXfbBlock[];
     extern char lbl_8034C0EC[], lbl_8034C108[];
     extern void fn_802E30C8(const char*, ...);
     unsigned char *src = (unsigned char *)arg0;
@@ -1543,7 +1543,7 @@ copy:
 done:
     if (arg1 != 0) {
         register const char *fmt = lbl_8034C108;
-        register int *base = lbl_804C9760;
+        register int *base = gXfbBlock;
         register int v = lbl_8055D0BC;
         fn_802E30C8(fmt, v * base[2], lbl_8055D0C0 * base[3], base, v);
         lbl_8055D0B8 = 0;
@@ -1562,7 +1562,7 @@ extern int lbl_8055FDC0;
 extern int lbl_8055FDC4;
 extern float lbl_80564F80;
 extern char lbl_8034BD18[];
-extern int lbl_804C9760[];
+extern int gXfbBlock[];
 extern unsigned char lbl_804C9830[];
 void fn_802D0914(int, short, short);
 void fn_802D09E4(void);
@@ -1697,7 +1697,7 @@ void fn_802D09E8(void)
       fn_802E30C8(base + 0x43C, lbl_804C9830);
       if (lbl_8055FD18 == 0)
       {
-        ((void (*)(int, int, int)) fn_802D0914)(lbl_8055D10C, lbl_804C9760[2] * lbl_8055D0BC, lbl_804C9760[3] * lbl_8055D0C0);
+        ((void (*)(int, int, int)) fn_802D0914)(lbl_8055D10C, gXfbBlock[2] * lbl_8055D0BC, gXfbBlock[3] * lbl_8055D0C0);
       }
     }
     if (((long) lbl_8055D0B8) < ((long) (lbl_8055D0BC * lbl_8055D0C0)))
@@ -1705,7 +1705,7 @@ void fn_802D09E8(void)
       rem = ((long) lbl_8055D0B8) % lbl_8055D0BC;
       div = ((long) lbl_8055D0B8) / lbl_8055D0BC;
       fn_802E30C8(base + 0x458, (char *) (lbl_8055D0B8 + 1));
-      ((void (*)(int, int, int, int, int, int)) fn_802D0910)(lbl_8055D10C, lbl_804C9760[2] * rem, lbl_804C9760[3] * div, lbl_804C9760[2] * lbl_8055D0BC, lbl_804C9760[3] * lbl_8055D0C0, lbl_804C9760[2]);
+      ((void (*)(int, int, int, int, int, int)) fn_802D0910)(lbl_8055D10C, gXfbBlock[2] * rem, gXfbBlock[3] * div, gXfbBlock[2] * lbl_8055D0BC, gXfbBlock[3] * lbl_8055D0C0, gXfbBlock[2]);
       lbl_8055D0B8++;
     }
     if (((long) lbl_8055D0B8) >= ((long) (lbl_8055D0BC * lbl_8055D0C0)))
@@ -1760,7 +1760,7 @@ void fn_802D0C98(void) {
     extern unsigned int lbl_8055FD74;
     extern unsigned char lbl_8055D0C4;
     extern void *gCurrentRenderMode;
-    extern int lbl_804C9760[];
+    extern int gXfbBlock[];
     unsigned short temp_r31;
     int temp_r30 = 0;
     unsigned char *display;
@@ -1781,8 +1781,8 @@ void fn_802D0C98(void) {
     GXSetCopyFilter(*((unsigned char *)gCurrentRenderMode + 0x19),
                     (unsigned char *)gCurrentRenderMode + 0x1A, 1,
                     (unsigned char *)gCurrentRenderMode + 0x32);
-    GXCopyDisp((void *)lbl_804C9760[1], 1);
-    VISetNextFrameBuffer((void *)lbl_804C9760[1]);
+    GXCopyDisp((void *)gXfbBlock[1], 1);
+    VISetNextFrameBuffer((void *)gXfbBlock[1]);
     if (lbl_8055FD48 > 0) {
         lbl_8055FD48 -= 1;
         VISetBlack(1);
@@ -1791,7 +1791,7 @@ void fn_802D0C98(void) {
         VISetBlack(0);
     }
     VIFlush();
-    lbl_804C9760[1] = lbl_804C9760[0];
+    gXfbBlock[1] = gXfbBlock[0];
     gxMarkAllStateDirty();
 }
 
@@ -2928,7 +2928,7 @@ int GX_GetXFB(int *outWidth, int *outHeight) {
  * that buffer (and sets the in-use flag this clears) so the on-screen message
  * box can be drawn straight into it.
  *
- * The block GX_XFB_BLOCK (lbl_804C9760) holds:
+ * The block GX_XFB_BLOCK (gXfbBlock) holds:
  *   [0] base of the allocated buffer   [3] height in rows
  *   [1] buffer drawn into and shown    [4] bytes per pixel (2)
  *   [2] width in pixels                [0x14] in-use flag, as a byte */
@@ -3538,7 +3538,7 @@ extern unsigned char lbl_8055FD18;
 extern int GXSetCullMode(int);
 extern int GXSetDrawSyncCallback(void);
 extern int VIFlush(void);
-extern int lbl_804C9760[];
+extern int gXfbBlock[];
 extern int DCFlushRange(void *, unsigned long);
 extern int VISetNextFrameBuffer(void *);
 extern int VIWaitForRetrace(void);
@@ -3569,7 +3569,7 @@ extern unsigned char gAlphaCompareAppliedRef;
 extern unsigned char sGxResetRegisterPending;
 extern char sGxResetCallbackName;
       extern void KERNEL_AddResetCallback(void (*)(void), void *);
-    extern int lbl_804C9760[];
+    extern int gXfbBlock[];
 
 /* Compute the view transform as the inverse of the camera transform: copy and
    transpose the camera rotation, rotate and negate its translation, then make
