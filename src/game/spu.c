@@ -1025,7 +1025,7 @@ void fn_802E61D8(void *channel) {
 }
 
 void spuSetVoiceSurroundPan(void *voice, float surroundPan) {
-    /* Set a voice's surround pan, forcing it to the default (1.0) unless the output mode is surround (2). */
+    /* Set a voice channel's surround pan, forcing it to the default (1.0) unless sound output is in surround mode (2). */
     if ((int)SoundOutputMode == 2) {
         ((struct SpuChannel *)voice)->surroundPan = surroundPan;
         return;
