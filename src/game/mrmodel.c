@@ -154,7 +154,7 @@ int fn_802C544C(void **leftEntryPtr, void **__restrict rightEntryPtr) {
 }
 /* Return the 8-byte {items, count} record for a 1-based detail level in the
  * level table at lbl_804C1348 (levels 1..9). */
-void *fn_802C54B4(int level) { return (void *)(lbl_804C1348 + (level - 1) * 8); }
+void *MRModel_GetDetailLevelRecord(int level) { return (void *)(lbl_804C1348 + (level - 1) * 8); }
 
 /* Return bits 8-15 (the second byte) of the given value as an unsigned byte. */
 unsigned char fn_802C54CC(unsigned int value) { return (unsigned char)(value >> 8); }
@@ -199,7 +199,7 @@ void fn_802C54D4(void) {
     count = lbl_804C1390[0];
     qsort((void *)list[2], count, 4, (int (*)(void *, void *))fn_802C544C);
     level = 1;
-    table = fn_802C54B4(level);
+    table = MRModel_GetDetailLevelRecord(level);
     *(void **)table = (void *)list[2];
     for (itemIndex = 0, itemOffset = 0;
          itemIndex < lbl_804C1390[0];
@@ -210,7 +210,7 @@ void fn_802C54D4(void) {
             count = (int)((char *)(void *)list[2] + itemOffset -
                           (char *)*(void **)table) / 4;
             *(int *)((char *)table + 4) = count;
-            table = fn_802C54B4(level);
+            table = MRModel_GetDetailLevelRecord(level);
             *(void **)table = (char *)(void *)list[2] + itemOffset;
         }
     }
@@ -218,7 +218,7 @@ void fn_802C54D4(void) {
                   lbl_804C1390[0] * 4 - (char *)*(void **)table) / 4;
     *(int *)((char *)table + 4) = count;
     while (++level <= 9) {
-        table = fn_802C54B4(level);
+        table = MRModel_GetDetailLevelRecord(level);
         *(int *)((char *)table + 4) = 0;
     }
     *(volatile unsigned char *)&gModelDisplayDirty = 0;
@@ -265,7 +265,7 @@ extern int lbl_804C1390[];
     int index;
     fn_802C54D4();
     if (level > 0) {
-        void *entry = fn_802C54B4(level);
+        void *entry = MRModel_GetDetailLevelRecord(level);
         entries = *(void ***)entry;
         itemCount = *(int *)((char *)entry + 4);
     } else {
