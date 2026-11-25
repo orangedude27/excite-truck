@@ -783,15 +783,16 @@ extern "C" void fn_8020899C(void* mgr, void* voice) {
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_802089B0(void* self) {
-    class Obj {
+    class SoundObj {
     public:
         virtual void destroy(int);
     };
-    /* If the sound object exists, invoke its virtual destroy with flag 1. */
+    /* Null-safe deleting destructor: if a sound object exists, call its virtual
+       destroy with flag 1 (tear it down and free its storage). */
     if (self == 0) {
         return;
     }
-    ((Obj*)self)->destroy(1);
+    ((SoundObj*)self)->destroy(1);
 }
 /* CodeWarrior deleting-destructor helper: when deleteFlag > 0, free a non-null object via operator delete (fn_80128668), then return the object. */ extern "C" signed long fn_802089D0(signed long object, signed long deleteFlag) {
     if ((object != 0) && (deleteFlag > 0)) {
