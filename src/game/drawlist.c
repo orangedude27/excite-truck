@@ -1303,7 +1303,7 @@ void* fn_802C9C50(void) {
     return lbl_8055FC5C;
 }
 
-int fn_802C9C58(int cullMode) {
+/* setCullMode: set the cached cull mode (lbl_8055FC30), reapply it through gxApplyCullMode, and return the mode it replaced; callers save the return and restore it afterwards. */ int fn_802C9C58(int cullMode) {
     /* Set the cached cull mode, apply it to GX, and return the previous value. */
     int previousCullMode = lbl_8055FC30;
     lbl_8055FC30 = cullMode;
