@@ -89,7 +89,7 @@ extern int gxGetImageHeight(int);
 extern int fn_802C4EE4(int);
 extern int gxGetImageWidth();
 extern unsigned long strlen(const char *);
-extern void fn_802C4F2C(int, int *, int *);
+extern void stampGetOffsets(int, int *, int *);
 extern int fn_801E4AB0(int, char *, int);
 extern char *strchr(const char *, int);
 __declspec(section ".sdata") extern char lbl_8055B8C0[];
@@ -403,7 +403,7 @@ void fn_8022ACFC(int unused, char *str, float *outMinX, float *outMinY, float *o
     if (h) {
         int a, b, hh;
         float t;
-        fn_802C4F2C(h, &a, &b);
+        stampGetOffsets(h, &a, &b);
         n = fn_802C4EE4(*(int *)(p + 0x64));
         hh = fn_802C4EFC(*(int *)(p + 0x64));
         minX = x0 - (float)a;

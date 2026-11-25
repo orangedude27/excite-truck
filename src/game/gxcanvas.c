@@ -1373,7 +1373,7 @@ s32 fn_802C4F14(s32* fields) {
     return 0;
 }
 
-void fn_802C4F2C(void *object, s32 *outFirst, s32 *outSecond) {
+void stampGetOffsets(void *object, s32 *outFirst, s32 *outSecond) {
     /* Copy the two 32-bit metrics at offsets 8 and 12 of a font/bitmap object
      * into the outputs; zero both when the object pointer is null. */
     if (object == 0) {

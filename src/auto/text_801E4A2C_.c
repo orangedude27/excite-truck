@@ -13,7 +13,7 @@
 extern s32 fn_80128668(s32 *);
 extern s32 fn_802C4C80(s32);
 extern s32 fn_802C4FF8(const char *);
-extern s32 fn_802C4F2C(s32, s32 *, s32 *);
+extern s32 stampGetOffsets(s32, s32 *, s32 *);
 extern s32 fn_802C501C(void);
 extern s32 fn_802C4EFC(s32);
 extern void fn_801E4BEC(s32, s32, s32, s32, s32, const char *, ...);
@@ -72,21 +72,21 @@ s32 fn_801E4B00(s32 *fontObject) {
     s32 width;
     if (fontObject != 0) {
         width = 0;
-        fn_802C4F2C(*fontObject, &scratch, &width);
+        stampGetOffsets(*fontObject, &scratch, &width);
         return width;
     }
     return fn_802C501C();
 }
 #pragma scheduling on
 /* Returns the baseline offset of a bitmap font: its image height minus the
- * glyph advance reported by fn_802C4F2C, or 0 when no font is supplied. */
+ * glyph advance reported by stampGetOffsets, or 0 when no font is supplied. */
 s32 fn_801E4B48(s32 *fontObject) {
     s32 scratch;
     s32 advance;
     s32 baseline;
     if (fontObject != 0) {
         advance = 0;
-        fn_802C4F2C(*fontObject, &scratch, &advance);
+        stampGetOffsets(*fontObject, &scratch, &advance);
         baseline = fn_802C4EFC(*fontObject) - advance;
     } else {
         baseline = 0;

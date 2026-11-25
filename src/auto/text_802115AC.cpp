@@ -2618,7 +2618,7 @@ extern "C" void fn_80215618(void *self, s32 arg1, s32 arg2, s32 value) {
     fn_802C4C90(*(s32 *)((char *)self + 4), arg1, arg2, rem, 0);
 }
 
-extern "C" void fn_802C4F2C(s32, s32 *, s32 *);
+extern "C" void stampGetOffsets(s32, s32 *, s32 *);
 extern "C" s32 fn_802C4EE4(s32);
 extern "C" s32 fn_802C4EFC(s32);
 #pragma use_lmw_stmw off
@@ -2631,7 +2631,7 @@ extern "C" void fn_8021568C(void *arg0, s32 x, s32 y,
     s32 originX = 0;
     s32 originY = 0;
 
-    fn_802C4F2C(*(s32 *)((u8 *)arg0 + 4), &originX, &originY);
+    stampGetOffsets(*(s32 *)((u8 *)arg0 + 4), &originX, &originY);
     *outLeft = x - originX;
     *outTop = y - originY;
     *outRight = *outLeft + fn_802C4EE4(*(s32 *)((u8 *)arg0 + 4));
@@ -2650,7 +2650,7 @@ extern "C" s32 fn_80215730(void *arg0) {
   void fn_802C2FC4(int);
   s32 fn_80128668(void *);
 extern "C" void fn_802C40E8(void *, s32, s32);
-void fn_802C4F2C(int, int *, int *);
+void stampGetOffsets(int, int *, int *);
 int fn_802C4EE4(int);
 int fn_802C4EFC(int);
 extern "C" char lbl_8033D504[];
