@@ -789,7 +789,7 @@ void fn_802324D8(void) {
 #pragma pop
 extern void *fn_8012C370(const char *, s32, u32 *, s32 *, u8 *, u8 *);
 extern void fn_80028E00(char *, const char *);
-extern s32 fn_802CAC34(char *, s32);
+extern s32 RegisterTextureWithResource(char *, s32);
 extern u32 lbl_8055B9D4;
 
 #pragma push
@@ -897,7 +897,7 @@ s32 fn_80232578(const char *name) {
     if (strlen(nameBuffer.name) > 0x10) {
         ((void (*)(const char *, ...))Abend_Panic)(stringBase + GTEX_MSG_NAME_TOO_LONG, nameBuffer.name, 0x10, strlen(nameBuffer.name));
     }
-    index = fn_802CAC34(nameBuffer.name, ((GTexBlock *)data)->texture);
+    index = RegisterTextureWithResource(nameBuffer.name, ((GTexBlock *)data)->texture);
     if (index == -1) {
         ((void (*)(const char *, ...))fn_802E30C8)(stringBase + GTEX_MSG_NO_RESOURCE);
         return 0;
