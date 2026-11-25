@@ -1487,7 +1487,8 @@ extern "C" s32 fn_8019C854(void* arg0, void* arg1) {
 #pragma paired off
 #pragma paired_single off
 #pragma processor 750
-#pragma scheduling on
+#pragma opt_lifetimes off
+#pragma opt_propagation off
 extern "C" s32 fn_8019CCCC(void* arg0, Vec* arg1, void* arg2, f32 farg0) {
     if (fn_8019B08C(arg0, arg1, arg2, farg0) != 0) {
         return 1;
