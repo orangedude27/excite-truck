@@ -146,8 +146,8 @@ u32 PPCMffpscr(void) {
 /* Write val to the Floating-Point Status and Control Register (FPSCR):
  * zero-extend the 32-bit value into a 64-bit word, then load and store it
  * through f31 with mtfsf. */
-void PPCMtfpscr(register u32 val) {
-    PPC_MTFSF(val);
+/* Write fpscrValue to the Floating-Point Status and Control Register (FPSCR) via mtfsf. */ void PPCMtfpscr(register u32 fpscrValue) {
+    PPC_MTFSF(fpscrValue);
 }
 
 asm u32 PPCMfhid2(void) {
