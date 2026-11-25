@@ -103,7 +103,7 @@ void fn_802C5320(void* imageSet, void* picture) { if (imageSet != 0) fn_802354A0
 /* Guarded image-draw wrapper: if artSet is non-null, draw picture `pictureIndex`
    as a textured quad with color -1 (use the texture's own tint). The caller's
    third float (unusedZ) is discarded; the rest are forwarded to the drawer. */
-void fn_802C5334(void* artSet, int pictureIndex, float x, float y, float unusedZ,
+/* If artSet is non-null, draw picture `pictureIndex` with color -1 (the texture's own tint), forwarding x/y plus width, height and UVs to fn_80235758. The caller's third float (unusedZ) is dropped and the remaining floats shift down one register. */ void fn_802C5334(void* artSet, int pictureIndex, float x, float y, float unusedZ,
                  float width, float height, float u0, float v0, float u1, float v1) {
     if (artSet != 0)
         ((void (*)(void*, int, int, float, float, float, float, float, float, float, float))fn_80235758)(
