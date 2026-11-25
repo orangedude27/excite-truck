@@ -1048,7 +1048,7 @@ void fn_802E6238(void) {}
  * float from the sound's unused +0x34 field here, but this build discards it. */
 void fn_802E623C(void) {}
 
-void spuSetVoiceAuxFlags(void* voice, int flags) {
+/* Set a voice handle's auxiliary send flags (SND_SetAuxFlags, offset 0x18). */ void spuSetVoiceAuxFlags(void* voice, int flags) {
     // Set a voice handle's auxiliary send flags (SND_SetAuxFlags), stored at +0x18.
     *(int*)((char*)voice + 0x18) = flags;
 }
