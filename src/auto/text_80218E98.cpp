@@ -3524,10 +3524,10 @@ extern "C" s32 fn_8021D97C(void *arg0, s32 arg1) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 extern "C" void fn_8021DB58(u8 *self) {
-    /* Draws the two value rows of a memory card entry: each row asks its
-       ValueSource for a formatted string and texture, positions a sprite panel
-       over the screen-centred rect, and fades/slides the row in over its
-       0.3 s lifetime. */
+    /* Draw the widget's two value rows: choose each row's arrow style from the
+       ValueSource's active/selection state, slide its panel in from 10 px over
+       0.3 s while fading its alpha from opaque to clear over 0.15 s, then look
+       up text padding/alignment and emit both rows as textured quads. */
     struct ValueSource {
         int a, b, c;
         virtual s32 isActive();
@@ -3541,8 +3541,8 @@ extern "C" void fn_8021DB58(u8 *self) {
         virtual s32 isRow0Hidden();
         virtual s32 isRow1Hidden();
     };
-    s32 isSelected;
-    s32 state1;
+    s32 selected;
+    s32 row1Style;
     f32 slide0;
     f32 slide1;
     f32 rowHeight;
@@ -3551,12 +3551,12 @@ extern "C" void fn_8021DB58(u8 *self) {
 
     ValueSource *source = *(ValueSource **)(self + 0x254);
     if (source->isActive() != 0) {
-        isSelected = (*(ValueSource **)(self + 0x254))->getSelection();
+        selected = (*(ValueSource **)(self + 0x254))->getSelection();
     } else {
-        isSelected = 0;
+        selected = 0;
         s32 *selection = *(s32 **)(self + 0x258);
         if (selection != 0 && *(s32 *)(self + 0x25C) == *selection)
-            isSelected = 1;
+            selected = 1;
     }
     f32 originX = lbl_805634A8;
     f32 originY = lbl_805634A8;
@@ -3565,44 +3565,44 @@ extern "C" void fn_8021DB58(u8 *self) {
     rowHeight = *(f32 *)((u8 *)lbl_8055E050 + 0x70) + frameIndex;
     f32 rectHeight = (f32)(*(s32 *)(self + 0x10) - *(s32 *)(self + 8));
     fn_80219660(self);
-    s32 state0;
-    if (isSelected != 0) {
+    s32 row0Style;
+    if (selected != 0) {
         if (lbl_805634E8 + *(f32 *)(self + 0x260) >= fn_8023659C())
-            state0 = 2;
+            row0Style = 2;
         else
-            state0 = 1;
+            row0Style = 1;
     } else {
-        state0 = 0;
+        row0Style = 0;
     }
-    if (isSelected != 0) {
+    if (selected != 0) {
         if (lbl_805634E8 + *(f32 *)(self + 0x264) >= fn_8023659C())
-            state1 = 2;
+            row1Style = 2;
         else
-            state1 = 1;
+            row1Style = 1;
     } else {
-        state1 = 0;
+        row1Style = 0;
     }
-    s32 id0 = fn_80211660(0);
-    s32 id1 = fn_80211660(1);
-    f32 now0 = fn_8023659C();
-    f32 fade0 = lbl_805634A4;
-    f32 raw0 = ((lbl_805634E8 + *(f32 *)(self + 0x260)) - now0 - lbl_805634A8) / lbl_805634E8;
-    fade0 = (fade0 < raw0) ? fade0 : raw0;
-    fade0 = (fade0 > lbl_805634A8) ? fade0 : lbl_805634A8;
-    slide0 = lbl_805634A8 + fade0 * lbl_805634C8;
-    f32 now1 = fn_8023659C();
-    f32 fade1 = lbl_805634A4;
-    f32 raw1 = ((lbl_805634E8 + *(f32 *)(self + 0x264)) - now1 - lbl_805634A8) / lbl_805634E8;
-    fade1 = (fade1 < raw1) ? fade1 : raw1;
-    fade1 = (fade1 > lbl_805634A8) ? fade1 : lbl_805634A8;
-    slide1 = lbl_805634A8 + fade1 * lbl_805634C8;
-    s32 textWidth = fn_8022AB18(*(s32 *)(self + 0x268), 0, 3);
-    f32 textWidthF = (f32)textWidth;
-    x1 = originX + textWidthF;
-    fn_8022AAA8(*(void **)(self + 0x268), (*(ValueSource **)(self + 0x254))->getText(textWidthF));
-    textWidth = fn_8022AB18(*(s32 *)(self + 0x268), 1, 3);
-    originY = originY - (f32)textWidth;
-    x0 = (x1 - fn_80235EF0(id0, state0)) - slide0;
+    s32 arrow0 = fn_80211660(0);
+    s32 arrow1 = fn_80211660(1);
+    f32 nowSlide0 = fn_8023659C();
+    f32 slideFade0 = lbl_805634A4;
+    f32 slideT0 = ((lbl_805634E8 + *(f32 *)(self + 0x260)) - nowSlide0 - lbl_805634A8) / lbl_805634E8;
+    slideFade0 = (slideFade0 < slideT0) ? slideFade0 : slideT0;
+    slideFade0 = (slideFade0 > lbl_805634A8) ? slideFade0 : lbl_805634A8;
+    slide0 = lbl_805634A8 + slideFade0 * lbl_805634C8;
+    f32 nowSlide1 = fn_8023659C();
+    f32 slideFade1 = lbl_805634A4;
+    f32 slideT1 = ((lbl_805634E8 + *(f32 *)(self + 0x264)) - nowSlide1 - lbl_805634A8) / lbl_805634E8;
+    slideFade1 = (slideFade1 < slideT1) ? slideFade1 : slideT1;
+    slideFade1 = (slideFade1 > lbl_805634A8) ? slideFade1 : lbl_805634A8;
+    slide1 = lbl_805634A8 + slideFade1 * lbl_805634C8;
+    s32 pad = fn_8022AB18(*(s32 *)(self + 0x268), 0, 3);
+    f32 padF = (f32)pad;
+    x1 = originX + padF;
+    fn_8022AAA8(*(void **)(self + 0x268), (*(ValueSource **)(self + 0x254))->getText(padF));
+    pad = fn_8022AB18(*(s32 *)(self + 0x268), 1, 3);
+    originY = originY - (f32)pad;
+    x0 = (x1 - fn_80235EF0(arrow0, row0Style)) - slide0;
     x1 += slide1;
     s32 alignFlags = fn_8022AA84(*(s32 *)(self + 0x268));
     if (alignFlags & 4) {
@@ -3620,31 +3620,31 @@ extern "C" void fn_8021DB58(u8 *self) {
     s32 color1 = -1;
     ValueSource *source0 = *(ValueSource **)(self + 0x254);
     if (source0 == 0 || source0->isRow0Hidden() == 0) {
-        f32 nowC = fn_8023659C();
-        f32 fade = lbl_805634A4;
-        f32 raw = ((nowC - *(f32 *)(self + 0x260)) - lbl_805634A8) / lbl_80563504;
-        fade = (fade < raw) ? fade : raw;
-        fade = (fade > lbl_805634A8) ? fade : lbl_805634A8;
-        color0 = ((s32)(lbl_80563508 + fade * lbl_8056350C) << 24) | 0xFFFFFF;
+        f32 nowColor = fn_8023659C();
+        f32 alphaFade = lbl_805634A4;
+        f32 alphaT = ((nowColor - *(f32 *)(self + 0x260)) - lbl_805634A8) / lbl_80563504;
+        alphaFade = (alphaFade < alphaT) ? alphaFade : alphaT;
+        alphaFade = (alphaFade > lbl_805634A8) ? alphaFade : lbl_805634A8;
+        color0 = ((s32)(lbl_80563508 + alphaFade * lbl_8056350C) << 24) | 0xFFFFFF;
     }
     ValueSource *source1 = *(ValueSource **)(self + 0x254);
     if (source1 == 0 || source1->isRow1Hidden() == 0) {
-        f32 nowC = fn_8023659C();
-        f32 fade = lbl_805634A4;
-        f32 raw = ((nowC - *(f32 *)(self + 0x264)) - lbl_805634A8) / lbl_80563504;
-        fade = (fade < raw) ? fade : raw;
-        fade = (fade > lbl_805634A8) ? fade : lbl_805634A8;
-        color1 = ((s32)(lbl_80563508 + fade * lbl_8056350C) << 24) | 0xFFFFFF;
+        f32 nowColor = fn_8023659C();
+        f32 alphaFade = lbl_805634A4;
+        f32 alphaT = ((nowColor - *(f32 *)(self + 0x264)) - lbl_805634A8) / lbl_80563504;
+        alphaFade = (alphaFade < alphaT) ? alphaFade : alphaT;
+        alphaFade = (alphaFade > lbl_805634A8) ? alphaFade : lbl_805634A8;
+        color1 = ((s32)(lbl_80563508 + alphaFade * lbl_8056350C) << 24) | 0xFFFFFF;
     }
-    if ((*(ValueSource **)(self + 0x254) == 0 || (*(ValueSource **)(self + 0x254))->isRow0Hidden() != 0 || (f32)__fabs((double)slide0) > *(f32 *)&lbl_80558DC4) && id0 != 0) {
-        f32 glyphWidth = fn_80235EF0(id0, state0);
-        f32 glyphHeight = fn_80235F64(id0, state0);
-        fn_802354A0(id0, state0, color0, x0, originY + glyphHeight * lbl_805634C4, lbl_805634A8, glyphWidth, glyphHeight);
+    if ((*(ValueSource **)(self + 0x254) == 0 || (*(ValueSource **)(self + 0x254))->isRow0Hidden() != 0 || (f32)__fabs((double)slide0) > *(f32 *)&lbl_80558DC4) && arrow0 != 0) {
+        f32 arrowWidth = fn_80235EF0(arrow0, row0Style);
+        f32 arrowHeight = fn_80235F64(arrow0, row0Style);
+        fn_802354A0(arrow0, row0Style, color0, x0, originY + arrowHeight * lbl_805634C4, lbl_805634A8, arrowWidth, arrowHeight);
     }
-    if ((*(ValueSource **)(self + 0x254) == 0 || (*(ValueSource **)(self + 0x254))->isRow1Hidden() != 0 || (f32)__fabs((double)slide1) > *(f32 *)&lbl_80558DC4) && id1 != 0) {
-        f32 glyphWidth = fn_80235EF0(id1, state1);
-        f32 glyphHeight = fn_80235F64(id1, state1);
-        fn_802354A0(id1, state1, color1, x1, originY + glyphHeight * lbl_805634C4, lbl_805634A8, glyphWidth, glyphHeight);
+    if ((*(ValueSource **)(self + 0x254) == 0 || (*(ValueSource **)(self + 0x254))->isRow1Hidden() != 0 || (f32)__fabs((double)slide1) > *(f32 *)&lbl_80558DC4) && arrow1 != 0) {
+        f32 arrowWidth = fn_80235EF0(arrow1, row1Style);
+        f32 arrowHeight = fn_80235F64(arrow1, row1Style);
+        fn_802354A0(arrow1, row1Style, color1, x1, originY + arrowHeight * lbl_805634C4, lbl_805634A8, arrowWidth, arrowHeight);
     }
 }
 #pragma pop
