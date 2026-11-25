@@ -140,8 +140,8 @@ void fn_8020F444(void) {
 #pragma scheduling on
  
 #pragma dont_inline on
-/* Mark all three track-music songs as loaded by setting their song-loaded flags to 1; counterpart of TrackMusic_markSongsUnloaded. */ /* Mark all three track-music songs as loaded by setting their gTrackMusicSongLoaded flags to 1; counterpart of TrackMusic_markSongsUnloaded. */ /* Mark all three track-music songs as loaded by setting their gTrackMusicSongLoaded flags to 1; counterpart of TrackMusic_markSongsUnloaded. */ void TrackMusic_MarkAllLoaded(void) {
-    /* Mark all three track-music load slots as loaded (the inverse of TrackMusic_markSongsUnloaded). */
+/* Mark all three track-music songs as loaded by setting their gTrackMusicSongLoaded flags to 1; counterpart of TrackMusic_markSongsUnloaded. */
+void TrackMusic_MarkAllLoaded(void) {
     gTrackMusicSongLoaded2 = 1;
     gTrackMusicSongLoaded1 = 1;
     gTrackMusicSongLoaded0 = 1;
