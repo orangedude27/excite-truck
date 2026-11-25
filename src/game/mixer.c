@@ -405,25 +405,19 @@ void* fn_802090CC(void) {
     return lbl_8055B4D8;
 }
 
+/* Open a mixer volume handle for `name`, initialized to full volume (1.0f);
+ * return the new handle, or NULL when all MIXER_VOLUME_HANDLE_MAX slots are in
+ * use. */
 void *fn_802090D4(int name) {
-    /* Open a mixer volume handle for name, initialized to full volume (1.0f), and return it, or NULL if the table is full. */
-    struct Entry {
-        float value;
-        int id;
-    };
-    struct State {
-        struct Entry entries[8];
-        int count;
-    };
-    struct State *state = (struct State *) lbl_80489258;
-    int index = state->count;
+    struct MixerVolumeHandle *table = MIXER_VOLUME_HANDLES;
+    int slotIndex = MIXER_VOLUME_HANDLE_COUNT;
     void *handle;
     handle = 0;
-    if (((unsigned int) state->count) < 8U) {
-        state->count = state->count + 1;
-        handle = ((char *) state) + (index * 8);
-        *((int *) (((char *) handle) + 4)) = name;
-        *((float *) (((char *) state) + (index * 8))) = lbl_80563230;
+    if (((unsigned int)MIXER_VOLUME_HANDLE_COUNT) < MIXER_VOLUME_HANDLE_MAX) {
+        MIXER_VOLUME_HANDLE_COUNT = MIXER_VOLUME_HANDLE_COUNT + 1;
+        handle = (char *)table + slotIndex * 8;
+        *(int *)((char *)handle + 4) = name;
+        *(float *)((char *)table + slotIndex * 8) = lbl_80563230;
     }
     return handle;
 }
