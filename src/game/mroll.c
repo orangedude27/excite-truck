@@ -25,23 +25,23 @@ extern char lbl_803425A8[];
 extern char kStatLabelFontName[];
 extern s32 ArtSetGet(char *, s32, char *, s32);
 extern s32 fn_80232578(char *, char *, s32);
-extern char lbl_80498828[];
+extern char gMRollPlayerSlots[];
 extern void *MRollStatLabel_init(void *);
 extern void Abend_Panic(char *, ...);
 typedef struct Fn241820VT { int pad[3]; int (*isActive)(void *); } Fn241820VT;
 typedef struct Fn241820Obj { char pad[0xc]; Fn241820VT *vt; } Fn241820Obj;
 typedef int (*Fn241820IsActive)(void *);
-/* Clear the player-info table (lbl_80498828): set the id word of each of its
+/* Clear the player-info table (gMRollPlayerSlots): set the id word of each of its
  * two 0x10-byte slots to -1, marking both slots empty. */
 void fn_8023FE20(void) {
-    register int *slots = (int *)lbl_80498828;
+    register int *slots = (int *)gMRollPlayerSlots;
     *slots++ = -1;
     slots[3] = -1;
 }
 
 s32 fn_8023FE34(void) {
-    /* Count the active (id >= 0) player slots in g_MRollPlayerSlots (lbl_80498828). */
-    register s32 *cursor = (s32 *)lbl_80498828;
+    /* Count the active (id >= 0) player slots in g_MRollPlayerSlots (gMRollPlayerSlots). */
+    register s32 *cursor = (s32 *)gMRollPlayerSlots;
     s32 activeCount = 0;
     if (*cursor++ >= 0) activeCount = 1;
     if (cursor[3] < 0) return activeCount;
@@ -50,7 +50,7 @@ s32 fn_8023FE34(void) {
 
 extern char lbl_803422C0[]; /* "mroll.cpp: get_player_info got bad index %d (there are only %d p..." */
 
-/* g_MRollPlayerSlots (lbl_80498828): two 0x10-byte player-info slots; slot[0] < 0 means empty. */
+/* g_MRollPlayerSlots (gMRollPlayerSlots): two 0x10-byte player-info slots; slot[0] < 0 means empty. */
 typedef struct MRollPlayerSlot {
     s32 id;      /* +0x00 */
     s32 pad1;    /* +0x04 */
@@ -62,24 +62,24 @@ typedef struct MRollPlayerSlot {
 /* Looks up the nth active player-info slot in g_MRollPlayerSlots and returns
  * its stored fields (and id); aborts on a bad index. */
 /* Looks up the nth active player-info slot in g_MRollPlayerSlots and returns its stored fields (and id); aborts on a bad index. */ void fn_8023FE60(s32 playerIndex, s32 *outField2, s32 *outField3, s32 *outId) {
-    register s32 *cursor = (s32 *)lbl_80498828; /* g_MRollPlayerSlots */
+    register s32 *cursor = (s32 *)gMRollPlayerSlots; /* g_MRollPlayerSlots */
     register s32 activeCount = 0;
     register s32 slotIndex = 0;
     for (; slotIndex < 2; cursor += 4, slotIndex++) {
         if (cursor[0] < 0) continue;
         if (activeCount == playerIndex) {
             if (outField2 != 0) {
-                register s32 *table = (s32 *)lbl_80498828;
+                register s32 *table = (s32 *)gMRollPlayerSlots;
                 table += slotIndex * 4;
                 *outField2 = table[2];
             }
             if (outField3 != 0) {
-                register s32 *table = (s32 *)lbl_80498828;
+                register s32 *table = (s32 *)gMRollPlayerSlots;
                 table += slotIndex * 4;
                 *outField3 = table[3];
             }
             if (outId != 0)
-                *outId = *(s32 *)((char *)lbl_80498828 + slotIndex * 16);
+                *outId = *(s32 *)((char *)gMRollPlayerSlots + slotIndex * 16);
             return;
         }
         activeCount++;
@@ -225,7 +225,7 @@ struct MRollTwoPlayers {
     MRollPlayerData p1;
     MRollTwoPlayers() {}
     MRollTwoPlayers(s32 arg0)
-        : p0(lbl_80498828, arg0), p1(lbl_80498828 + 0x10, arg0) {}
+        : p0(gMRollPlayerSlots, arg0), p1(gMRollPlayerSlots + 0x10, arg0) {}
 };
 struct MRollFocusEntry {
     void *target;
@@ -444,7 +444,7 @@ s32 fn_802407F0(s32 object, s32 deleteFlag) {
 /* One player's record (truck) choice, built by fn_80240BA4 and destroyed by fn_80240830.
    Vtable lbl_80342618 sits at +0xC (the shared base covers +0x00..+0x0B: u8 flag,
    s32 id = -1, u8 active).  fn_8023FF1C places two of them, one per player slot
-   in g_MRollPlayerSlots (lbl_80498828). */
+   in g_MRollPlayerSlots (gMRollPlayerSlots). */
 typedef struct MRollRecordOption {
     u8 base[0xC];        /* +0x00: shared non-virtual base */
     void *vtable;        /* +0x0C: lbl_80342618 */
@@ -957,7 +957,7 @@ s32 fn_802411A4(s32 *outResult) {
 #pragma dont_inline on
 extern void fn_8023FE20(void);
 /* MRoll_Reset: non-inlined wrapper that tail-calls fn_8023FE20 to reset the
- * mroll player slots (lbl_80498828) to -1 before truck selection. */
+ * mroll player slots (gMRollPlayerSlots) to -1 before truck selection. */
 void fn_802411C8(void) { fn_8023FE20(); }
 #pragma dont_inline reset
 
