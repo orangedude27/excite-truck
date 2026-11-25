@@ -1610,6 +1610,7 @@ void fn_80268358(void *arg0) {
     *(float *)((char *)arg0 + 0xBC) = a + w * (b2 - a);
     fn_8026E850(frame.v30, frame.v24, arg0, frame.v18);
 }
+#pragma pop
 
 void fn_80268B94(int frameIndex) {
     /* Snap both camera-path keyframe indices to frameIndex and clear the search hint. */
