@@ -128,7 +128,7 @@ struct MListEntry {
     return entryA->getSortKey() - entryB->getSortKey();
 }
 #pragma cplusplus reset
-extern int fn_802CAC28(void *, int);
+extern int RegisterTextureByName(void *, int);
 extern void Abend_Panic(const char *, ...);
 extern void *memset(void *, int, unsigned int);
 extern void qsort(void *, unsigned int, unsigned int, int (*)(const void *, const void *));
@@ -149,7 +149,7 @@ void fn_802CCE24(void *arg0) {
         goto loop_2_test;
 loop_2_body:
         record = *(unsigned char **)((char *)arg0 + 0x34) + var_r27;
-        *(int *)(record + 0x10) = fn_802CAC28(record, 0);
+        *(int *)(record + 0x10) = RegisterTextureByName(record, 0);
         var_r27 += 0x1C;
         var_r28 += 1;
 loop_2_test:

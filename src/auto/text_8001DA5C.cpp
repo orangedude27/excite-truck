@@ -74,7 +74,7 @@ extern char lbl_802FDC84[], lbl_802FDC5C[], lbl_802FDC48[], lbl_802FDC34[];
 extern "C" int lbl_802FDC98[];
 extern "C" void* fn_80145E70(void*);
 extern "C" void* fn_801284F8(u32, void*);
-extern "C" void* fn_802CAC28(void*, s32);
+extern "C" void* RegisterTextureByName(void*, s32);
 extern "C" void* fn_80207848(void*, s32);
 extern char lbl_80558D08[4];
 __declspec(section ".data") extern f32 lbl_80558DC4;
@@ -106,12 +106,13 @@ extern f64 lbl_80560468;
 #pragma push
 #pragma scheduling invalid_target
 extern "C" f32 fn_8001DA5C(s32 arg0) {
+    s32 remainder;
     s32 quotient = lbl_8055E3C4 / arg0;
     f32 fraction = (f32)(lbl_8055E3C4 - quotient * arg0);
     f32 angle = (f32)arg0;
     f32 scale = lbl_80560460;
-    f32 x = (scale * fraction) / angle;
-    return lbl_80560464 + lbl_80560464 * (f32)sin((double)x);
+    f32 x = scale * fraction / angle;
+    return lbl_80560464 + lbl_80560464 * (f32)sin(x);
 }
 #pragma pop
 extern "C" void fn_8001DAD8(void) {
@@ -136,7 +137,8 @@ extern "C" f32 fn_8001DAE8(void) {
 
 #pragma dont_inline on
 extern "C" f32 fn_8001DAF0(void *arg0) {
-    f32 value = (fn_8001DAE8() - *(f32 *)((u8 *)arg0 + 4)) / *(f32 *)arg0;
+    register f32 called = fn_8001DAE8();
+    f32 value = (called - *(f32 *)((u8 *)arg0 + 4)) / *(f32 *)arg0;
     f32 result = lbl_80560470;
     result = result < value ? result : value;
     result = result > lbl_80560474 ? lbl_80560474 : result;
@@ -145,33 +147,33 @@ extern "C" f32 fn_8001DAF0(void *arg0) {
 
 #pragma scheduling invalid_target
 extern "C" void fn_8001DB54(void) {
-    void* object;
-    u32 base = (u32)lbl_802FDB68;
+    register void* object;
+    const char* base = lbl_802FDB68;
 
-    lbl_8055D5F4 = (void**)fn_80145E70((char*)base + 0);
-    lbl_8055D5F8 = (void**)fn_80145E70((char*)base + 0xC);
-    lbl_8055D5FC = (void**)fn_80145E70((char*)base + 0x1C);
-    lbl_8055D600 = (void**)fn_80145E70((char*)base + 0x28);
-    lbl_8055D604 = (void**)fn_80145E70((char*)base + 0x38);
+    lbl_8055D5F4 = (void**)fn_80145E70((void*)(base + 0));
+    lbl_8055D5F8 = (void**)fn_80145E70((void*)(base + 0xC));
+    lbl_8055D5FC = (void**)fn_80145E70((void*)(base + 0x1C));
+    lbl_8055D600 = (void**)fn_80145E70((void*)(base + 0x28));
+    lbl_8055D604 = (void**)fn_80145E70((void*)(base + 0x38));
 
-    object = fn_801284F8(0xC, (char*)base + 0x48);
+    object = fn_801284F8(0xC, (void*)(base + 0x48));
     if (object != 0) {
         *(void**)object = lbl_802FDC98;
-        *(void**)((u8*)object + 4) = fn_802CAC28((char*)base + 0x58, 0);
+        *(void**)((u8*)object + 4) = RegisterTextureByName((void*)(base + 0x58), 0);
     }
     lbl_80358680[0] = object;
 
-    object = fn_801284F8(0x64, (char*)base + 0x68);
+    object = fn_801284F8(0x64, (void*)(base + 0x68));
     if (object != 0) *(void**)object = lbl_802FDC84;
     lbl_80358680[1] = object;
 
-    object = fn_801284F8(0x38, (char*)base + 0x78);
+    object = fn_801284F8(0x38, (void*)(base + 0x78));
     if (object != 0) {
         f32 initial_value = lbl_80560478;
         *(void**)object = lbl_802FDC70;
         fn_8001DAE0((f32*)((u8*)object + 0x28), initial_value);
         fn_8001DAE0((f32*)((u8*)object + 0x30), lbl_80560464);
-        *(void**)((u8*)object + 0x24) = fn_80207848((char*)base + 0x88, 1);
+        *(void**)((u8*)object + 0x24) = fn_80207848((void*)(base + 0x88), 1);
         *(s32*)((u8*)object + 4) = -1;
         *(s32*)((u8*)object + 8) = -1;
         *(s32*)((u8*)object + 0xC) = -1;
@@ -183,15 +185,15 @@ extern "C" void fn_8001DB54(void) {
     }
     lbl_80358680[2] = object;
 
-    object = fn_801284F8(0x44, (char*)base + 0x98);
+    object = fn_801284F8(0x44, (void*)(base + 0x98));
     if (object != 0) *(void**)object = lbl_802FDC5C;
     lbl_80358680[3] = object;
 
-    object = fn_801284F8(4, (char*)base + 0xA8);
+    object = fn_801284F8(4, (void*)(base + 0xA8));
     if (object != 0) *(void**)object = lbl_802FDC48;
     lbl_80358680[4] = object;
 
-    object = fn_801284F8(4, (char*)base + 0xB8);
+    object = fn_801284F8(4, (void*)(base + 0xB8));
     if (object != 0) *(void**)object = lbl_802FDC34;
     lbl_80358680[5] = object;
 }

@@ -97,7 +97,7 @@ s32 fn_802A5384(s32);
 void fn_802A53B0(void *, s32);
 s32 fn_80287B38(void *);
 s32 fn_802A5878(void);
-s32 fn_802CAC28(void *, s32);
+s32 RegisterTextureByName(void *, s32);
 void *fn_802AE414(void *);
 s32 fn_802C6FC0(void *, s32, s32);
 s32 fn_800216F4(void);
@@ -221,7 +221,7 @@ extern "C" void fn_802A4ADC(void) {
     if (fn_800167F4() == 1) fn_802A5384(playerData);
     fn_80287B38((void *)fn_802A53B0);
     fn_802A5878();
-    lbl_8055F89C = fn_802CAC28((char *)stringBase + 0x28, 0);
+    lbl_8055F89C = RegisterTextureByName((char *)stringBase + 0x28, 0);
     {
         s32 modelPath = (s32)((char *)stringBase + 0x38);
         struct Dummy *weatherManager = (struct Dummy *)fn_802AE414(&lbl_8055CBC8);
@@ -810,8 +810,8 @@ void *fn_802A5AE8(void *arg0, s32 arg1, s32 arg2) {
     s32 buffer = ((s32 (*)(s32, void *, s32, s32))fn_8012850C)(size + 0x10, lbl_80349CA0, arg1, arg1 * 0xC);
     *(s32 *)arg0 = fn_8002F37C(buffer, (void *)fn_8001BA68, 0, 0xC, arg1);
     *(s32 *)((u8 *)arg0 + 8) = arg1;
-    *(s32 *)((u8 *)arg0 + 0xC) = fn_802CAC28((void *)lbl_8055CBBC, 0);
-    *(s32 *)((u8 *)arg0 + 0x10) = fn_802CAC28((void *)lbl_8055CBB8, 0);
+    *(s32 *)((u8 *)arg0 + 0xC) = RegisterTextureByName((void *)lbl_8055CBBC, 0);
+    *(s32 *)((u8 *)arg0 + 0x10) = RegisterTextureByName((void *)lbl_8055CBB8, 0);
     *(s32 *)((u8 *)arg0 + 0x1C) = arg2;
     fn_802A5C1C(arg0);
     return arg0;
@@ -1244,7 +1244,7 @@ s32 fn_802A6944(s32 arg0, s32 arg1, s32 arg2) {
         0xC,
         arg1);
     object[2] = arg1;
-    object[3] = fn_802CAC28((void *)lbl_8055CBC0, 0);
+    object[3] = RegisterTextureByName((void *)lbl_8055CBC0, 0);
     object[4] = arg2;
     fn_802A6A44(object);
     return arg0;
@@ -1715,7 +1715,7 @@ extern "C" s32 fn_802A7370(s32 arg0, void *arg1) {
         *(f32 *)(arg0 + 0x28) = v.z;
     }
     {
-        s32 h = fn_802CAC28(obj->v3(&lbl_8055CC18), 0);
+        s32 h = RegisterTextureByName(obj->v3(&lbl_8055CC18), 0);
         f32 inv = lbl_80564850 / *(f32 *)(arg0 + 8);
         *(s32 *)(arg0 + 0x2C) = h;
         *(f32 *)(arg0 + 0x30) = (f32)fn_8002F208(inv);

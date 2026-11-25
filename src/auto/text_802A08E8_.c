@@ -49,7 +49,7 @@ s32 fn_802A0944(void *arg0)
 
 extern void fn_8012850C(void *, void *);
 extern void *fn_8002F37C(void *, int, int, int);
-extern int fn_802CAC28(void *, int);
+extern int RegisterTextureByName(void *, int);
 extern void Event_RegisterHandler(int, unsigned int);
 extern void fn_802A0AF8(void);
 extern char lbl_803498E0[];
@@ -98,7 +98,7 @@ void fn_802A09B0(void) {
         *(s32 *)(base + 0x254) = zero;
         offset += 0x2A0;
     }
-    lbl_8055CB68 = fn_802CAC28(lbl_803498EC, 0);
+    lbl_8055CB68 = RegisterTextureByName(lbl_803498EC, 0);
     Event_RegisterHandler((int)fn_802A0944, 6);
 }
 
@@ -124,7 +124,7 @@ void fn_802A0AFC(void) {
 #define UnregisterEventHandler fn_801EF024
 #define ReleaseTexture fn_802CAC54
 #define FreeBlock fn_80128670
-#define TEXTURE_HANDLE_FREE (-2) /* fn_802CAC28's "no texture" handle value */
+#define TEXTURE_HANDLE_FREE (-2) /* RegisterTextureByName's "no texture" handle value */
 #define BLOCK_HEADER 0x10        /* header fn_8012850C puts before the block it returns */
 
     UnregisterEventHandler(ChainLinkEventHandler);

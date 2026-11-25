@@ -42,7 +42,7 @@ extern int fn_8012C33C(void*);
 extern void* fn_80131808(void*);
 extern void fn_80131818(void*);
 extern int fn_802CB128(int, int, int, int);
-extern void* fn_802CAC28(void*, int);
+extern void* RegisterTextureByName(void*, int);
 extern void DrawList_beginFrame(void);
 extern void DrawList_shutdown(void);
 typedef struct { int pad[2]; void* (*get)(void*,void*); int pad2[6]; float (*f)(void*,void*); float (*def)(void*,void*,float); int pad3[4]; unsigned long long (*vec)(void*,void*); } VTable;
@@ -164,12 +164,12 @@ extern "C" void* fn_80019C68(int arg0) {
  }
  fn_80131818(resource);
  *(int*)(p+4)=fn_802CB128((int)*(float*)(p+28),(int)*(float*)(p+28),0,0x21);
- *(int*)(p+12)=(int)fn_802CAC28(base+100,0);
- *(int*)(p+8)=(int)fn_802CAC28(base+112,0);
+ *(int*)(p+12)=(int)RegisterTextureByName(base+100,0);
+ *(int*)(p+8)=(int)RegisterTextureByName(base+112,0);
  DrawList_beginFrame(); fn_8001B7BC(p); DrawList_shutdown();
  *(TruckDraw**)(p+16)=new(base+128) TruckDraw;
- *(int*)(p+20)=(int)fn_802CAC28(base+140,0);
- *(int*)(p+24)=(int)fn_802CAC28(base+152,0);
+ *(int*)(p+20)=(int)RegisterTextureByName(base+140,0);
+ *(int*)(p+24)=(int)RegisterTextureByName(base+152,0);
  *(int*)(p+68)=arg0;
  return p;
  }
@@ -892,7 +892,7 @@ extern int fn_8012C33C(void*);
 extern void* fn_80131808(void*);
 extern void fn_80131818(void*);
 extern int fn_802CB128(int, int, int, int);
-extern void* fn_802CAC28(void*, int);
+extern void* RegisterTextureByName(void*, int);
 extern void DrawList_beginFrame(void);
 extern void DrawList_shutdown(void);
 

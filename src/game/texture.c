@@ -42,7 +42,7 @@ void fn_802DBDE8(int, int);
 extern char lbl_8055D07D;
 extern float lbl_80564F30;
 #pragma scheduling invalid_target
-extern void fn_802CAC28(int, int);
+extern void RegisterTextureByName(int, int);
 extern void *fn_801284F8(int, void *);
 extern int lbl_8055D080;
 extern void fn_801282EC(int);
@@ -64,11 +64,11 @@ extern void fn_801282F4(void);
         recordOffset += 0x4C;
     } while (slotIndex < 0x200);
     gActiveTextureSlot = -2;
-    textureId = ((int (*)(int, int))fn_802CAC28)(lbl_8055D038, 0);
+    textureId = ((int (*)(int, int))RegisterTextureByName)(lbl_8055D038, 0);
     gDefaultTextureSlot = textureId;
     if (textureId == -1)
         Abend_Panic(messages + 0x40, lbl_8055D038);
-    textureId = ((int (*)(int, int))fn_802CAC28)((int)(messages + 0x60), 0);
+    textureId = ((int (*)(int, int))RegisterTextureByName)((int)(messages + 0x60), 0);
     lbl_8055D03C = textureId;
     if (textureId != -1) {
         fn_802E30C8(messages + 0x6C);
@@ -496,7 +496,7 @@ copy2_done:
 #pragma dont_inline reset
 #pragma scheduling on
 #pragma use_lmw_stmw reset
-void fn_802CAC28(int name, int sceneId) {
+void RegisterTextureByName(int name, int sceneId) {
     /* Register a named texture with a scene id and fixed type 0xE, with no backing resource. */
     fn_802CA898(name, sceneId, 0, 0xE);
 }

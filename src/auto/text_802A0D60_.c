@@ -296,7 +296,7 @@ extern s32 fn_802A0FBC(void);
 extern void fn_802A1120(float *, float *);
 extern void fn_802A92CC(void);
 extern s32 DrawListWrapper_create(s32);
-extern s32 fn_802CAC28(void *, s32);
+extern s32 RegisterTextureByName(void *, s32);
 extern char lbl_80349914[];
 extern float lbl_8055F848;
 extern float lbl_8055F850[2];
@@ -316,7 +316,7 @@ void fn_802A1290(void) {
     float t, offsetX, offsetY;
     fn_802A92CC();
     if (fn_802A0FBC() != 0) {
-        lbl_8055F844 = fn_802CAC28(lbl_80349914, 0);
+        lbl_8055F844 = RegisterTextureByName(lbl_80349914, 0);
         n = (s32)(lbl_80564704 / lbl_80564708) | 1;
         sz = lbl_80564708 * (float)n;
         lbl_8055F840 = DrawListWrapper_create(n * 12 / 2);

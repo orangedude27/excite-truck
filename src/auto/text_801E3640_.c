@@ -33,7 +33,7 @@ extern int fn_802C6CF8(int);
 extern int lbl_8055EA6C, lbl_8055EA64;
 extern float lbl_8055EA68, lbl_80562D08;
 extern char lbl_80339910[], lbl_80339920[];
-extern int fn_802CAC28(char *, int);
+extern int RegisterTextureByName(char *, int);
 extern int fn_802C6FC0(char *, int, int);
 extern int fn_802C7760(void *, float *, float *, float *, float *, float *, float *);
 #pragma push
@@ -150,7 +150,7 @@ void fn_801E3C04(void) {
     float a, b, d, e, c, f;
     float t;
     int tmp;
-    tmp = fn_802CAC28(lbl_80339910, 0);
+    tmp = RegisterTextureByName(lbl_80339910, 0);
     lbl_8055EA6C = tmp;
     tmp = fn_802C6FC0(lbl_80339920, 0, 0);
     lbl_8055EA64 = tmp;

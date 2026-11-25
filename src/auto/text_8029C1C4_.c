@@ -15,7 +15,7 @@ typedef struct GridRecord_8029D644 {
     float f14;
 } GridRecord_8029D644;
 extern float PSQUATMultiply(float *, float *);
-extern void *fn_802CAC28(int, int);
+extern void *RegisterTextureByName(int, int);
 extern float lbl_8056465C;
 extern float lbl_80564628;
 extern int lbl_804B5030[];
@@ -691,7 +691,7 @@ void *fn_8029D148(void *arg0, void *arg1, float *arg2, int arg3) {
     extern void *memset(void *, int, unsigned int);
     extern void Abend_Panic(const char *, ...);
     extern float PSQUATMultiply(float *, float *);
-    extern void *fn_802CAC28(int, int);
+    extern void *RegisterTextureByName(int, int);
     extern void fn_8014E740(float *, float, float, float, float, float, float, float, float, float, float, float, float, float, float);
     extern char lbl_80349560[];
     extern float lbl_80564628, lbl_80564658, lbl_8056465C, lbl_80564678;
@@ -782,7 +782,7 @@ void *fn_8029D148(void *arg0, void *arg1, float *arg2, int arg3) {
 
     twice = *(int *)((char *)arg0 + 0xC) << 1;
     *(void **)((char *)arg0 + 0x70) = fn_8012850C(twice * 0x18, base + 0x178);
-    *(void **)((char *)arg0 + 0x74) = fn_802CAC28(arg3, 0);
+    *(void **)((char *)arg0 + 0x74) = RegisterTextureByName(arg3, 0);
 
     f12 = *(float *)((char *)arg2 + 0xC);
     f7 = lbl_8056465C;
@@ -1427,7 +1427,7 @@ void *fn_8029E754(void *arg0, void *arg1, int arg2) {
     out[13] = q[1];
     out[14] = q[2];
     out[15] = PSQUATMultiply(out, out + 12);
-    ((int *)arg0)[16] = (int)fn_802CAC28(arg2, 0);
+    ((int *)arg0)[16] = (int)RegisterTextureByName(arg2, 0);
     return arg0;
 }
 void *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_8029E888(void *self, int shouldDelete) {

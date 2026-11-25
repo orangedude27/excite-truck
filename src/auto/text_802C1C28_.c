@@ -14,7 +14,7 @@ extern char lbl_8034AFC8[];
 extern char lbl_8034AFD8[];
 extern int lbl_8055FB54;
 int fn_8012C33C(void);
-int fn_802CAC28(int, int);
+int RegisterTextureByName(int, int);
 void fn_802B52C0(void *);
 int getTextureSlotTexObj(void *, int, int, int, void *);
 int fn_802D9628(short, short, unsigned int);
@@ -190,21 +190,21 @@ void fn_802C206C(int userData) { fn_802C1F8C(userData - 4); }
 int fn_802C2074(void *path) {
     int valid = 0;
     if (path != 0 && fn_8012C33C() != 0) valid = 1;
-    if (valid != 0) return fn_802CAC28((int)path, 0);
+    if (valid != 0) return RegisterTextureByName((int)path, 0);
     return -2;
 }
 
 static int fn_802C2074_noinline(void *arg0) {
     int valid = 0;
     if (arg0 != 0 && fn_8012C33C() != 0) valid = 1;
-    if (valid != 0) return fn_802CAC28((int)arg0, 0);
+    if (valid != 0) return RegisterTextureByName((int)arg0, 0);
     return -2;
 }
 
 static int fn_802C2074_noinline2(void *arg0) {
     int valid = 0;
     if (arg0 != 0 && fn_8012C33C() != 0) valid = 1;
-    if (valid != 0) return fn_802CAC28((int)arg0, 0);
+    if (valid != 0) return RegisterTextureByName((int)arg0, 0);
     return -2;
 }
 

@@ -5,7 +5,7 @@ extern const char lbl_80340808[];
 extern const char lbl_80340834[];
 extern float lbl_805636B8;
 extern int fn_8012C33C(const char *);
-extern int fn_802CAC28(const char *, int);
+extern int RegisterTextureByName(const char *, int);
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void fn_80128668(void *);
@@ -95,7 +95,7 @@ typedef struct ArtPicture {
     struct ArtPicture *next;     /* 0x18 */
 } ArtPicture;
 /* An art set, 0x8C bytes: the art file it was loaded from, how many hold it,
- * the display list that file's textures were made into (fn_802CAC28) and the
+ * the display list that file's textures were made into (RegisterTextureByName) and the
  * pictures, in the file's order (fn_8023505C walks them by index). */
 typedef struct ArtSet {
     char name[0x80];             /* 0x00 */
@@ -300,7 +300,7 @@ void *ArtSetGet(const char *resourceName) {
         return artSet;
     }
     artSet = fn_801284F8(0x8C, lbl_8055B9E8);
-    artSet->drawHandle = fn_802CAC28(fullName, 0);
+    artSet->drawHandle = RegisterTextureByName(fullName, 0);
     if (artSet->drawHandle == -1)
         Abend_Panic(tbl + 0x14C, fullName);
     artSet->refCount = 1;
@@ -748,7 +748,7 @@ extern const char lbl_80340808[];
 extern const char lbl_80340834[];
 extern float lbl_805636B8;
 extern int fn_8012C33C(const char *);
-extern int fn_802CAC28(const char *, int);
+extern int RegisterTextureByName(const char *, int);
 #pragma scheduling invalid_target
 /* If the name is valid, append a new 0x2C-byte entry to the pool: copy up to 0x21
  * bytes of the name (null-terminating on truncation), then store the resolved
@@ -760,7 +760,7 @@ void fn_80236134(void *namePool, int userValue, const char *name) {
     char *entry;
     int resourceId;
     if (fn_8012C33C(name) != 0) {
-        resourceId = fn_802CAC28(name, 0);
+        resourceId = RegisterTextureByName(name, 0);
         entry = *(char **)((char *)namePool + 4) + (*(int *)((char *)namePool + 0xC))++ * 0x2C;
         cursor = entry;
         remaining = 0x21;
@@ -862,4 +862,4 @@ extern const char lbl_80340808[];
 extern const char lbl_80340834[];
 extern float lbl_805636B8;
 extern int fn_8012C33C(const char *);
-extern int fn_802CAC28(const char *, int);
+extern int RegisterTextureByName(const char *, int);

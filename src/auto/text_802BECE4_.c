@@ -17,7 +17,7 @@ extern void fn_802C10C8(void), DrawModelInstance(int), DrawList_loadMatrix(void 
 extern float lbl_80564DAC, lbl_80564DB0, lbl_80564DB4, lbl_80564DB8, lbl_80564DBC, lbl_80564DC0, lbl_80564DC4, lbl_80564DC8;
 extern void fn_80128668(void *);
 extern int fn_802BF6AC(void);
-extern int fn_802CAC28(void *, int);
+extern int RegisterTextureByName(void *, int);
 extern char lbl_8034AE08[];
 extern float lbl_8055FB04, lbl_80564DF0;
 extern void fn_802BEDFC(void);
@@ -575,7 +575,7 @@ void *fn_802BF780(void *self) {
         if (table != 0) {
             sunPath = strings + 0x11C; /* "env_sun.tex" */
             if (fn_8012C33C(sunPath) != 0) {
-                ((struct EnvFaces *)table)->sunTexture = fn_802CAC28(sunPath, 0);
+                ((struct EnvFaces *)table)->sunTexture = RegisterTextureByName(sunPath, 0);
             } else {
                 ((struct EnvFaces *)table)->sunTexture = -2;
             }
@@ -947,10 +947,10 @@ void *fn_802C0138(void *arg0) {
     if (fn_8012C33C(lbl_8034ACA0 + 0x154, 0, vtable, lbl_8034ACA0) == 0)
         return arg0;
     if (fn_8012C33C(resourceA) != 0)
-        *(int *)((char *)arg0 + 0x2C50) = fn_802CAC28(resourceA, 0);
+        *(int *)((char *)arg0 + 0x2C50) = RegisterTextureByName(resourceA, 0);
     *(int *)((char *)arg0 + 0x2C58) = fn_802BF6AC();
     if (fn_8012C33C(resourceB) != 0)
-        *(int *)((char *)arg0 + 0x2C54) = fn_802CAC28(resourceB, 0);
+        *(int *)((char *)arg0 + 0x2C54) = RegisterTextureByName(resourceB, 0);
 
     out = (short *)((char *)arg0 + 4);
     row = 0;

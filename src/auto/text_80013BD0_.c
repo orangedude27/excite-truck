@@ -312,7 +312,7 @@ void fn_80013EDC(void *arg0, void *name, s32 mode, char *first, char *second, f3
 #pragma pop
 extern u8 lbl_80558B80;
 extern void *ArtSetGet(void *);
-extern void *fn_802CAC28(void *, s32);
+extern void *RegisterTextureByName(void *, s32);
 extern void fn_801333E8(s32, void *, void *);
 extern void *fn_80019C68(s32);
 extern s32 fn_800167F4(void);
@@ -333,7 +333,7 @@ extern "C" void *fn_80014524(void *object, s32 index) {
     *(void **)(self + 0x38) = ArtSetGet(strBase + 0x140);
     *(void **)(self + 0x3C) = ArtSetGet(strBase + 0x14C);
     *(void **)(self + 0x40) = ArtSetGet(strBase + 0x158);
-    *(void **)(self + 0x44) = fn_802CAC28(strBase + 0x168, 0);
+    *(void **)(self + 0x44) = RegisterTextureByName(strBase + 0x168, 0);
     *(s32 *)(self + 4) = index;
     self[0x4C] = 0;
     fn_801333E8(5, &lbl_80558B80, self + 0x4C);

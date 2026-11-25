@@ -50,7 +50,7 @@ extern "C" f32 fabsf(f32);
 extern "C" char lbl_8055B884;
 extern "C" void fn_802C4F58(s32, s32, const char *, s32);
 
-extern "C" s32 fn_802CAC28(void *, s32);
+extern "C" s32 RegisterTextureByName(void *, s32);
 extern "C" char lbl_8033DC20[];
 extern f32 lbl_805634C8;
 
@@ -8229,7 +8229,7 @@ extern "C" void *fn_802270DC(void *widgetMem, void *descriptor) {
 #define Widget_ctor              fn_80218F80
 #define ColorBackground_vtable   lbl_8033DFB4
 #define Screen_toCentre          fn_80230C30
-#define LoadTexture              fn_802CAC28
+#define LoadTexture              RegisterTextureByName
 #define ReportError              fn_802E30C8
 #define NoTextureMsg             lbl_8033DC20 /* "Widget: ColorBackground can't find texture" */
 #define FadeTime_divisor         lbl_805634C8 /* 10.0f: descriptor count -> seconds */

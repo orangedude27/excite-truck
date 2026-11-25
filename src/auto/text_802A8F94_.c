@@ -173,7 +173,7 @@ extern s32 fn_8012C33C(s32);
 extern void fn_802A1120(void *, void *);
 extern void fn_802A9090();
 extern s32 fn_802C6FC0(s32, s32, s32);
-extern s32 fn_802CAC28(void *, s32);
+extern s32 RegisterTextureByName(void *, s32);
 extern void fn_802A9574(void);
 #pragma scheduling invalid_target
 #pragma dont_inline on
@@ -204,7 +204,7 @@ void fn_802A92CC(void) {
         } while (i < 4U);
         fn_802A9090(&lbl_8055F8F8, (void *)lbl_8055F908);
         lbl_8055F8F1 = 0;
-        lbl_8055CC58 = fn_802CAC28(lbl_80349D88, 0);
+        lbl_8055CC58 = RegisterTextureByName(lbl_80349D88, 0);
         fn_802A9574();
     }
 }

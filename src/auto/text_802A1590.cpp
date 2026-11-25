@@ -940,7 +940,7 @@ extern "C" char lbl_80349A98[];
 extern "C" f32 lbl_80564838;
 extern "C" void *fn_8012850C(u32, void *);
 extern "C" void *fn_8002F37C(void *, void (*)(void), s32, s32, s32);
-extern "C" void *fn_802CAC28(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32);
+extern "C" void *RegisterTextureByName(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32);
 extern "C" f64 fn_8002F208(f32, f32, f32);
 /* Build the "large dust" effect slot of a terrain-object instance: pack the
  * effect's curve tuning constants into a parameter block, allocate a 0x68
@@ -1705,7 +1705,7 @@ extern "C" void *fn_802A42C8(void *arg0, void *arg1, s32 arg2)
   *((f32 *) (object + 0x54)) = slope54;
   *((f32 *) (object - (-0x58))) = slope58;
   *((f32 *) (object + 0x5c)) = p4C;
-  *((void **) (object + 0x60)) = ((void *(*)(void *, s32)) fn_802CAC28)((void *) extra, zero);
+  *((void **) (object + 0x60)) = ((void *(*)(void *, s32)) RegisterTextureByName)((void *) extra, zero);
   f32 upper = lbl_80564734 - (*((f32 *) (object + 0x4c)));
   f32 clampUpper = lbl_80564744;
   if (clampUpper > upper)

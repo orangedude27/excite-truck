@@ -3,7 +3,7 @@
 
 extern int fn_8029EFF0(int);
 extern int fn_802CAC54(int);
-extern int fn_802CAC28(const char *, int);
+extern int RegisterTextureByName(const char *, int);
 extern int fn_802E30C8(const char *, ...);
 extern int lbl_8055CAE0;
 extern char lbl_803497D8[];
@@ -13,7 +13,7 @@ void fn_8029EF70(void) {
 #define sLineTextureHandle    lbl_8055CAE0
 #define kLineTextureName      lbl_803497D8    /* "efx_line.tex" */
 #define kLineTextureError     lbl_803497E8    /* "drawline: Couldn't get the line texture" */
-#define loadTexture           fn_802CAC28
+#define loadTexture           RegisterTextureByName
 #define isResourceHandleValid fn_8029EFF0
 #define debugPrint            fn_802E30C8
     /* Load the line-effect texture handle; log an error if the handle is invalid. */

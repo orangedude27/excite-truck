@@ -97,7 +97,7 @@ int fn_8025921C(void) { /* Achievement/menu predicate stub: always reports false
 
 extern void *fn_801284F8(int, const char *);
 extern int fn_8001EF9C(int, int, int, const void *, const void *);
-extern int fn_802CAC28(void *, int, float);
+extern int RegisterTextureByName(void *, int, float);
 extern int fn_802146BC(int *, int, int, int);
 extern void fn_802368E0(void);
 extern void fn_80216CA8(void);
@@ -168,7 +168,7 @@ extern "C" int fn_80259224(void **arg0) {
     *(float *)(((char *)frame + 0x164 - 8)) = lbl_80563AE0;
     *(unsigned char *)(((char *)frame + 0xC4 - 8)) = 0;
     *(unsigned char *)(((char *)frame + 0xF6 - 8)) = 0;
-    *(void **)(((char *)frame + 0x168 - 8)) = (void *)fn_802CAC28((char *)lbl_80344DE0 + 0x108, 0, lbl_80563AE0);
+    *(void **)(((char *)frame + 0x168 - 8)) = (void *)RegisterTextureByName((char *)lbl_80344DE0 + 0x108, 0, lbl_80563AE0);
     *(unsigned char *)(((char *)frame + 0x10A - 8)) = 0;
     *(int *)(((char *)frame + 0x10C - 8)) = 5;
 
@@ -404,7 +404,7 @@ int fn_8025978C(void **arg0) {
     FS(float, 0x258) = lbl_80563AE0;
     FS(u8, 0x1B8) = 0;
     FS(char, 0x1EA) = 0;
-    FS(int, 0x25C) = fn_802CAC28((char *)lbl_80344DE0 + 0x108, 0, lbl_80563AE0);
+    FS(int, 0x25C) = RegisterTextureByName((char *)lbl_80344DE0 + 0x108, 0, lbl_80563AE0);
     FS(int, 0x200) = 5;
     FS(s8, 0x1FE) = 0;
     FS(void *, 0x108) = (void *)&lbl_80345158;
@@ -420,7 +420,7 @@ int fn_8025978C(void **arg0) {
     FS(float, 0x1AC) = lbl_80563AE0;
     FS(u8, 0x10C) = 0;
     FS(char, 0x13E) = 0;
-    FS(int, 0x1B0) = fn_802CAC28((char *)lbl_80344DE0 + 0x108, 0, lbl_80563AE0);
+    FS(int, 0x1B0) = RegisterTextureByName((char *)lbl_80344DE0 + 0x108, 0, lbl_80563AE0);
     FS(s8, 0x152) = (*(u8 *)((char *)arg0 + 0xC4) == 0);
     FS(void *, 0xE0) = (void *)&lbl_80345038;
     FS(void **, 0xF8) = (void **)&FS(void *, 0x1B4);

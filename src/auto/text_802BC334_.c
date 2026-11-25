@@ -15,7 +15,7 @@ extern void *lbl_8055FABC;
 int fn_8012C33C(void);
 extern float lbl_80564D14;
 extern float lbl_80564D18;
-int fn_802CAC28(int, int);
+int RegisterTextureByName(int, int);
 void fn_802BD018(void *);
 int fn_802BD070(void *);
 void fn_80128668(void *);
@@ -37,7 +37,7 @@ __declspec(section ".data") extern int lbl_8034AB38;
 int fn_802BC334(int path) {
     int valid = 0;
     if (path != 0 && fn_8012C33C() != 0) valid = 1;
-    if (valid != 0) return fn_802CAC28(path, 0);
+    if (valid != 0) return RegisterTextureByName(path, 0);
     return -2;
 }
 

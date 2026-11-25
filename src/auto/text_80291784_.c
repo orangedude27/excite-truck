@@ -83,7 +83,7 @@ extern char lbl_80349158[];
 extern int lbl_8055C938;
 extern int lbl_8055C948;
 extern void *fn_802AE414(int *);
-extern int fn_802CAC28(int *, int);
+extern int RegisterTextureByName(int *, int);
 extern int fn_802D39A4(float);
 extern float fn_80129DC4(int, float, float);
 extern int lbl_8055C924;
@@ -139,7 +139,7 @@ loop:
     result2 = query_object->getFloat((char *)&lbl_8055C924, result2);
     entry = (Entry *)((char *)base + *(int *)((char *)base + 0x120) * 0x24);
     entry->x = initial; entry->y = initial; entry->z = initial;
-    entry->id = fn_802CAC28(query_object->getSetting((char *)&lbl_8055C930), 0);
+    entry->id = RegisterTextureByName(query_object->getSetting((char *)&lbl_8055C930), 0);
     entry->unk10 = 0; entry->flags = 0;
     entry->color = ((int)(result2 * scale) << 24) | 0x00FFFFFF;
     entry->value1 = query_object->getFloat((char *)&lbl_8055C938, result1);
@@ -192,7 +192,7 @@ void fn_80291A1C(void) {
     flare = (int *)&gSunFlare;
     ((float *)flare)[1] = kZero;
     ((float *)flare)[2] = kZero;
-    flare[3] = fn_802CAC28((int *)&kBurstTex, 0);
+    flare[3] = RegisterTextureByName((int *)&kBurstTex, 0);
     getTextureSlotTexObj();
     flare[4] = fn_802D39A4(kFadeStep);
     *((unsigned char *)flare + 0x14) = 0;

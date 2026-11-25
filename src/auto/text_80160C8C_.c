@@ -387,7 +387,7 @@ extern unsigned char lbl_8032F588[];
 #define FAIL_REASON_STUNT 4
 #define FAIL_REASON_CRASH 2
 extern void *fn_80145E70(void *);
-extern void *fn_802CAC28(void *, int);
+extern void *RegisterTextureByName(void *, int);
 extern void *ArtSetGet(void *);
 void* fn_80160C8C(void* arg0, s32 arg1) {
     /* Destroy a small struct by clearing its three fields and optionally freeing it. */
@@ -828,11 +828,11 @@ extern "C" void fn_801617BC(void) {
 
     lbl_8055E2E0 = fn_80145E70(lbl_8032F588 + 0x11C);
     lbl_8055E2E4 = (int)fn_80145E70(lbl_8032F588 + 0x12C);
-    lbl_8055E2E8 = (int)fn_802CAC28(lbl_8032F588 + 0x138, 0);
-    lbl_8055E2EC = (int)fn_802CAC28(lbl_8032F588 + 0x148, 0);
-    lbl_8055E2F0 = (int)fn_802CAC28(lbl_8032F588 + 0x158, 0);
-    lbl_8055E2F4 = (int)fn_802CAC28(lbl_8032F588 + 0x168, 0);
-    lbl_8055E2F8 = (int)fn_802CAC28(lbl_8032F588 + 0x178, 0);
+    lbl_8055E2E8 = (int)RegisterTextureByName(lbl_8032F588 + 0x138, 0);
+    lbl_8055E2EC = (int)RegisterTextureByName(lbl_8032F588 + 0x148, 0);
+    lbl_8055E2F0 = (int)RegisterTextureByName(lbl_8032F588 + 0x158, 0);
+    lbl_8055E2F4 = (int)RegisterTextureByName(lbl_8032F588 + 0x168, 0);
+    lbl_8055E2F8 = (int)RegisterTextureByName(lbl_8032F588 + 0x178, 0);
     lbl_8055E2FC = (int)ArtSetGet(lbl_8032F588 + 0x188);
 
     itemCountPtr = (s32 *)(lbl_8042FDEC + 4);
@@ -2637,7 +2637,7 @@ extern "C" void fn_80163F7C(void *arg0) {
         first = second > first ? second : first;
         *(f32 *)(self + 0xCC) = first * 0.5f;
     }
-    *(void **)(self + 0xD0) = fn_802CAC28(base + 0x5C0, 0);
+    *(void **)(self + 0xD0) = RegisterTextureByName(base + 0x5C0, 0);
     *(s32 *)(self + 0xDC) = fn_80207848(base + 0x5D0, 1);
     obj = *(u8 **)(self + 4);
     *(u8 *)(self + 0xD8) = (u8)((Dummy_80163F7C_VT1 *)obj)->f10((const char *)(base + 0x5DC), 0);

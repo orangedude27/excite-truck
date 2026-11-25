@@ -806,7 +806,7 @@ void *fn_80172C28(void) {
     extern void fn_8001DAE0(void *, float);
     extern int fn_80139D4C(void *);
     extern int fn_80207848(void *, int);
-    extern int fn_802CAC28(void *, int);
+    extern int RegisterTextureByName(void *, int);
     extern void fn_802E30C8(void *, ...);
     extern void *memset(void *, int, unsigned long);
     extern char lbl_80330F48[];
@@ -859,8 +859,8 @@ void *fn_80172C28(void) {
             void *name = base + 0x38;
             bytes[0x289] = (unsigned char)zero;
             lbl_8055E3A4 = fn_80139D4C(name);
-            *(int *)&lbl_8055E3A8 = fn_802CAC28(base + 0x48, 0);
-            *(int *)(bytes + 0x198) = fn_802CAC28(base + 0x58, 0);
+            *(int *)&lbl_8055E3A8 = RegisterTextureByName(base + 0x48, 0);
+            *(int *)(bytes + 0x198) = RegisterTextureByName(base + 0x58, 0);
             if (lbl_8055E3A4 != 0)
                 fn_802E30C8(base + 0x64, name);
             *(int *)(bytes + 0x2B4) = fn_80207848(base + 0x8C, 1);

@@ -186,7 +186,7 @@ extern "C" char *strstr(const char *, const char *);
 
 extern "C" int fn_80296344(void *, void *, int);
 extern "C" int fn_802963F0(void *, int);
-extern "C" int fn_802CAC28(void *, int);
+extern "C" int RegisterTextureByName(void *, int);
 __declspec(section ".sdata") extern char lbl_8055C9D4[];
 __declspec(section ".sdata") extern char lbl_8055C9DC[];
 __declspec(section ".sdata") extern char lbl_8055C9EC[];
@@ -250,7 +250,7 @@ extern "C" int fn_802964EC(void *arg0, void *arg1, void *__restrict arg2) {
         *word |= ((Node *)node)->getInt(lbl_8055CA14);
     }
     if (((Node *)node)->has(lbl_8055C9DC))
-        *(int *)((char *)arg0 + 0x18) = fn_802CAC28(((Node *)node)->getObject(lbl_8055C9DC), 0);
+        *(int *)((char *)arg0 + 0x18) = RegisterTextureByName(((Node *)node)->getObject(lbl_8055C9DC), 0);
     else
         *(int *)((char *)arg0 + 0x18) = *(int *)((char *)arg2 + 0x18);
 

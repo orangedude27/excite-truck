@@ -58,7 +58,7 @@ extern void *fn_8012850C(int, const char *);
 extern void *fn_801284F8(int, const char *);
 extern void fn_8028E61C(void *);
 extern void *fn_8002F37C(void *, void (*)(void), void *, int, int);
-extern int fn_802CAC28(const char *, int);
+extern int RegisterTextureByName(const char *, int);
 extern void fn_802AB500(void);
 extern void fn_802AB5B8(void);
 extern void Event_RegisterHandler(void *, int);
@@ -830,8 +830,8 @@ void fn_802AB21C(void) {
     }
     lbl_8055F924 = r29;
     fn_802AB5B8();
-    lbl_8055CC60 = fn_802CAC28(base->name3, 0);
-    lbl_8055CC64 = fn_802CAC28(base->name4, 0);
+    lbl_8055CC60 = RegisterTextureByName(base->name3, 0);
+    lbl_8055CC64 = RegisterTextureByName(base->name4, 0);
     Event_RegisterHandler(fn_802A9F30, 0xF);
     Event_RegisterHandler(fn_802A9F90, 0x10);
     Event_RegisterHandler(fn_802A9FB0, 0x11);

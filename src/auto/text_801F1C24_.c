@@ -187,7 +187,7 @@ void fn_801F1EA8(void) {
     #undef vtbl_Sun
 }
 #pragma pop
-extern int fn_802CAC28(void *, int);
+extern int RegisterTextureByName(void *, int);
 extern void *DrawList_getCurrentMatrix(void);
 extern int lbl_8033A628, lbl_8033A8C8, lbl_8033A660, lbl_8033AC58;
 __declspec(section ".data") extern int lbl_8033A660;
@@ -264,7 +264,7 @@ void fn_801F2020(void) {
 void *fn_801F2064(void) {
     /* Allocate an 8-byte CollisionSpace object: set its vtable and load "turn.tex". */
     void *object = fn_801284F8(8, &lbl_8033A660);
-    if (object) { *(void **)object = &lbl_8033A958; *(int *)((char *)object + 4) = fn_802CAC28(&lbl_8033AC58, 0); }
+    if (object) { *(void **)object = &lbl_8033A958; *(int *)((char *)object + 4) = RegisterTextureByName(&lbl_8033AC58, 0); }
     return object;
 }
 #pragma pop

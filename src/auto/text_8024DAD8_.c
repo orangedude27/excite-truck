@@ -806,7 +806,7 @@ void *fn_8024F17C(void *arg0, void **arg1, s32 *arg2, s32 *arg3, void *arg4, voi
     extern void fn_801345D8(void *, s32, void *, ...);
     extern s32 ArtSetGet(void *);
     extern void fn_80255918(void *, s32);
-    extern s32 fn_802CAC28(void *, s32);
+    extern s32 RegisterTextureByName(void *, s32);
     extern void Abend_Panic(void *, void *);
     extern int strcmp(const char *, const char *);
     extern int stricmp(const char *, const char *);
@@ -846,7 +846,7 @@ void *fn_8024F17C(void *arg0, void **arg1, s32 *arg2, s32 *arg3, void *arg4, voi
         M2C_FIELD(temp_r3_2, f32, 8) = lbl_80563960;
     }
     M2C_FIELD(this_obj, s32, 0x24) = ArtSetGet((void *)(base_4170 + 0x188));
-    M2C_FIELD(this_obj, s32, 0x20) = fn_802CAC28((void *)(base_4170 + 0x198), 0);
+    M2C_FIELD(this_obj, s32, 0x20) = RegisterTextureByName((void *)(base_4170 + 0x198), 0);
     M2C_FIELD(this_obj, s32, 0x2C) = 0;
     M2C_FIELD(this_obj, void *, 0) = lbl_803444D8;
     M2C_FIELD(this_obj, f32, 0x28) = 0.0f;
@@ -892,10 +892,10 @@ loop_20:
                         }
                         var_r3_2 = lbl_80344740;
                         if (var_r23 != 0) { var_r3_2 = lbl_80344750; }
-                        M2C_FIELD(temp_r24, s32, 0x20) = fn_802CAC28(var_r3_2, 0);
+                        M2C_FIELD(temp_r24, s32, 0x20) = RegisterTextureByName(var_r3_2, 0);
                         var_r3_3 = lbl_80344720;
                         if (var_r23 != 0) { var_r3_3 = lbl_80344730; }
-                        M2C_FIELD(temp_r24, s32, 0x24) = fn_802CAC28(var_r3_3, 0);
+                        M2C_FIELD(temp_r24, s32, 0x24) = RegisterTextureByName(var_r3_3, 0);
                         M2C_FIELD(temp_r24, f32, 0x28) = ((f32 (*)(void *, void *))temp_r3_5[9])(temp_r3_5, lbl_8055C0F8);
                         M2C_FIELD(temp_r24, f32, 0x2C) = ((f32 (*)(void *, void *))temp_r3_5[9])(temp_r3_5, lbl_8055C0F4);
                         M2C_FIELD(temp_r24, f32, 0x30) = ((f32 (*)(void *, void *))temp_r3_5[9])(temp_r3_5, lbl_8055C0F0);

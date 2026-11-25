@@ -34,7 +34,7 @@ void fn_8002F6AC(int, void (*)(void));
 void *fn_802B0808(void *, int);
 void fn_80128668(void *);
 int fn_8012C33C(void);
-int fn_802CAC28(int, int);
+int RegisterTextureByName(int, int);
 void **fn_802B59CC(void);
 extern char lbl_8034A078[];
 extern char lbl_8034A0B4[], lbl_8034A0C4[];
@@ -59,11 +59,11 @@ extern char fn_802B05E4(void);
 void fn_802B8AE0(void *, void *);
 void fn_802B0710(void);
 int fn_802B0628(int arg0) {
-    /* If arg0 is non-null and fn_8012C33C() is active, load via fn_802CAC28(arg0, 0);
+    /* If arg0 is non-null and fn_8012C33C() is active, load via RegisterTextureByName(arg0, 0);
        otherwise return -2. */
     int valid = 0;
     if (arg0 != 0 && fn_8012C33C() != 0) valid = 1;
-    if (valid != 0) return fn_802CAC28(arg0, 0);
+    if (valid != 0) return RegisterTextureByName(arg0, 0);
     return -2;
 }
 

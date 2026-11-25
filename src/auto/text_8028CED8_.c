@@ -111,7 +111,7 @@ void fn_8028CFB0(void) {
     }
 }
 #pragma pop
-extern int fn_802CAC28(int, int);
+extern int RegisterTextureByName(int, int);
 extern int Abend_Panic(char *, ...);
 __declspec(section ".data") extern int lbl_80348C50;
 struct Tbl8028D084 { char f0[12]; char f1[12]; char f2[12]; char f3[12]; char fmt[0x20]; };
@@ -134,7 +134,7 @@ extern "C" void fn_8028D084(void *arg0, void *arg1) {
     extern char lbl_8055C8C8[8];
     char *base = (char *)&lbl_80348C50;
     int value;
-    *(int *)arg0 = fn_802CAC28(((Obj8028D084 *)arg1)->f5(lbl_8055C8C8), 0);
+    *(int *)arg0 = RegisterTextureByName(((Obj8028D084 *)arg1)->f5(lbl_8055C8C8), 0);
     *(float *)((char *)arg0 + 4) = ((Obj8028D084 *)arg1)->f9(base + 0);
     *(float *)((char *)arg0 + 8) = ((Obj8028D084 *)arg1)->f9(base + 0xC);
     *(float *)((char *)arg0 + 0xC) = ((Obj8028D084 *)arg1)->f9(base + 0x18);

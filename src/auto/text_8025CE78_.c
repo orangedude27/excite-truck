@@ -31,7 +31,7 @@ extern void *lbl_8055F2E4;
 extern char lbl_8055C108[], lbl_8055C100[];
 extern char lbl_8055C0FC, lbl_8055C0F8, lbl_8055C0F4, lbl_8055C0F0, lbl_8055C0EC;
 extern char lbl_80344750, lbl_80344740, lbl_80344730, lbl_80344720;
-extern void *fn_802CAC28(void *, int);
+extern void *RegisterTextureByName(void *, int);
 extern void fn_80131818(void *);
 extern int strcmp(const char *, const char *);
 extern void fn_802146BC();
@@ -108,8 +108,8 @@ void fn_8025CE78(void) {
                                 if (n <= 0) *(dst - 1) = 0;
                             }
                         }
-                        *(void **)(entry + 0x20) = fn_802CAC28(j ? &lbl_80344750 : &lbl_80344740, 0);
-                        *(void **)(entry + 0x24) = fn_802CAC28(j ? &lbl_80344730 : &lbl_80344720, 0);
+                        *(void **)(entry + 0x20) = RegisterTextureByName(j ? &lbl_80344750 : &lbl_80344740, 0);
+                        *(void **)(entry + 0x24) = RegisterTextureByName(j ? &lbl_80344730 : &lbl_80344720, 0);
                         *(float *)(entry + 0x28) = ((float (*)(void *, void *))*(void **)((char *)item + 0x24))(item, &lbl_8055C0F8);
                         *(float *)(entry + 0x2C) = ((float (*)(void *, void *))*(void **)((char *)item + 0x24))(item, &lbl_8055C0F4);
                         *(float *)(entry + 0x30) = ((float (*)(void *, void *))*(void **)((char *)item + 0x24))(item, &lbl_8055C0F0);

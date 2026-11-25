@@ -4,7 +4,7 @@
 #pragma ppc_psq_save off
 extern int lbl_8055ED6C;
 extern void fn_802CAC54(void);
-extern int fn_802CAC28(const char *, int);
+extern int RegisterTextureByName(const char *, int);
 extern char lbl_8033BC40[];
 extern int fn_801E85A4(void);
 extern unsigned char fn_802C2C00(unsigned char);
@@ -403,7 +403,7 @@ void fn_802061F8(void) {
 #define gMpovCarTexture lbl_8055ED6C
 #define kMpovCarTexPath lbl_8033BC40
     /* Load the "mpov_car.tex" texture and cache its handle for the post-race cleanup in fn_80206228. */
-    gMpovCarTexture = fn_802CAC28(kMpovCarTexPath, 0);
+    gMpovCarTexture = RegisterTextureByName(kMpovCarTexPath, 0);
 #undef kMpovCarTexPath
 #undef gMpovCarTexture
 }
@@ -435,7 +435,7 @@ void fn_8020625C(void) {
 
 extern int lbl_8055ED6C;
 extern void fn_802CAC54(void);
-extern int fn_802CAC28(const char *, int);
+extern int RegisterTextureByName(const char *, int);
 extern char lbl_8033BC40[];
 extern int fn_801E85A4(void);
 extern unsigned char fn_802C2C00(unsigned char);

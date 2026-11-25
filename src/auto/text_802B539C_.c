@@ -19,7 +19,7 @@ extern "C" void Abend_Panic(const char *, ...);
 #pragma cplusplus off
 extern const char lbl_8034A510[];
 int fn_8012C33C(void);
-int fn_802CAC28(int, int);
+int RegisterTextureByName(int, int);
 extern void fn_80131818(int);
 extern void fn_802C6CF8(void);
 /* UMat ("unified material") resource lists: an array of `count` entries.
@@ -52,7 +52,7 @@ int fn_802B539C(int handle) {
     int isValid = 0;
 
     if (handle != 0 && fn_8012C33C() != 0) isValid = 1;
-    if (isValid != 0) return fn_802CAC28(handle, 0);
+    if (isValid != 0) return RegisterTextureByName(handle, 0);
     return -2;
 }
 

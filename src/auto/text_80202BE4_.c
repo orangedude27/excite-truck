@@ -701,7 +701,7 @@ void fn_80203B20(s32 arg0, s32 arg1, s32 arg2) {
 #pragma pop
 extern s32 fn_8012C33C(char *);
 extern void fn_801345D8(char *, s32, const char *, ...);
-extern s32 fn_802CAC28(const char *, s32);
+extern s32 RegisterTextureByName(const char *, s32);
 extern s32 fn_802CAE98(s32, const char *);
 extern s32 TextureSlot_setModes(s32, s32, s32);
 extern s32 fn_802CB128(s32, s32, s32, s32);
@@ -724,14 +724,14 @@ void fn_80203C50(s32 arg0) {
     if (arg0 == 1) {
         first = base + 0xC;
     }
-    lbl_8055ED00 = fn_802CAC28(first, 0);
-    lbl_8055ED04 = fn_802CAC28(base + 0x18, 0);
-    lbl_8055ED0C = fn_802CAC28(base + 0x24, 0);
+    lbl_8055ED00 = RegisterTextureByName(first, 0);
+    lbl_8055ED04 = RegisterTextureByName(base + 0x18, 0);
+    lbl_8055ED0C = RegisterTextureByName(base + 0x24, 0);
 
     for (i = 0; i < 0x5A; i++) {
         fn_801345D8(name, 0x20, base + 0x30, i);
         if (fn_8012C33C(name) != 0) {
-            resource = fn_802CAC28(name, 0);
+            resource = RegisterTextureByName(name, 0);
             count = lbl_8048897C.count;
             entries = lbl_8048897C.ptr;
             lbl_8048897C.count = count + 1;

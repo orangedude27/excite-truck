@@ -27,7 +27,7 @@ typedef struct ClothEntry {
     int edgeCount;        // 0x18
     ClothPin *pins;       // 0x1C grid vertices pinned in the world
     int pinCount;         // 0x20
-    int textureId;        // 0x24 texture table index (fn_802CAC28 / fn_802CAC54)
+    int textureId;        // 0x24 texture table index (RegisterTextureByName / fn_802CAC54)
     float scale;          // 0x28 log10 of the grid's world size
     int columns;          // 0x2C grid width in vertices
     int rows;             // 0x30 grid height in vertices
@@ -648,7 +648,7 @@ extern double fn_8002F208(float);
 extern void fn_801F5970(void *, void *);
 extern void fn_801F5508(void *);
 extern void fn_801F5664(void *, int);
-extern int fn_802CAC28(int, int);
+extern int RegisterTextureByName(int, int);
 __declspec(section ".sdata") extern float lbl_80562FD0;
 extern float __fabsf(float);
 extern double __fabs(double);
@@ -714,7 +714,7 @@ void fn_801F602C(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     var_f1_4 = (var_f1_4 > temp_f0_4) ? var_f1_4 : temp_f0_4;
     var_f0_4 = *(float *)(arg1 + 0x2C); var_f0_4 = (var_f0_4 > var_f1_4) ? var_f0_4 : var_f1_4;
     var_f26 = *(float *)(arg1 + 0x14); var_f26 = (var_f26 > var_f0_4) ? var_f26 : var_f0_4;
-    *(int *)((char *)arg0 + 0x24) = fn_802CAC28(arg2, 0);
+    *(int *)((char *)arg0 + 0x24) = RegisterTextureByName(arg2, 0);
     var_f1_5 = (float)__fabs((double)(var_f26 - var_f27));
     temp_f0_5 = (float)__fabs((double)(var_f28 - var_f29));
     var_f1_5 = (var_f1_5 > temp_f0_5) ? var_f1_5 : temp_f0_5;

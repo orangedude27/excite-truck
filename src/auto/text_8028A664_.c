@@ -53,7 +53,7 @@ static inline void XfmVec(f32 *m, f32 *src, f32 *dst) {
 
 extern s32 fn_8012850C(s32, void *, s32);
 extern s32 fn_8002F37C(void *, s32, s32, s32);
-extern s32 fn_802CAC28(void *, s32);
+extern s32 RegisterTextureByName(void *, s32);
 extern f64 fn_8002F208(f64);
 extern char lbl_80348C34[], lbl_80348C40[];
 extern f64 lbl_805643C8;
@@ -926,7 +926,7 @@ void *fn_8028BB68(void *emitter, s32 count, f32 life) {
     #define MemAllocPool    fn_8012850C  /* "new[]" heap allocation */
     #define ArrayConstruct  fn_8002F37C  /* runtime: construct `count` elements */
     #define SparkCtor       fn_8028BC18  /* per-spark constructor, does nothing */
-    #define TextureRegister fn_802CAC28
+    #define TextureRegister RegisterTextureByName
     #define Log2            fn_8002F208
     struct SparkSystem *sys = (struct SparkSystem *)emitter;
     s32 poolSize = count;
@@ -1304,7 +1304,7 @@ void *fn_8028C824(void *arg0, s32 arg1) {
     ((void **)arg0)[0] = array;
     ((s32 *)arg0)[1] = 0;
     ((s32 *)arg0)[2] = count;
-    ((s32 *)arg0)[3] = fn_802CAC28((void *)&lbl_80348C40, 0);
+    ((s32 *)arg0)[3] = RegisterTextureByName((void *)&lbl_80348C40, 0);
     ((f32 *)arg0)[4] = (f32)fn_8002F208(lbl_805643C8);
     return arg0;
 }
@@ -1316,7 +1316,7 @@ extern void fn_802CAC54(s32);
 extern void fn_80128670(s32);
 extern s32 fn_8012850C(s32, void *, s32);
 extern s32 fn_8002F37C(void *, s32, s32, s32);
-extern s32 fn_802CAC28(void *, s32);
+extern s32 RegisterTextureByName(void *, s32);
 extern f64 fn_8002F208(f64);
 extern char lbl_80348C34[];
 extern char lbl_80348C40[];

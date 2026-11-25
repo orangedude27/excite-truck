@@ -2697,12 +2697,12 @@ extern "C" void *fn_8015011C(void *arg0, void *arg1) {
         virtual s32 m50(void *, void *);
         virtual s32 m54(void *, void *);
     };
-    extern s32 fn_802CAC28(void *, s32);
+    extern s32 RegisterTextureByName(void *, s32);
     extern s32 fn_801D4888();
     extern u8 lbl_8032D358[];
     extern u8 lbl_80559F98[];
     extern u8 lbl_80559FA0[];
-    ((s32 *)arg0)[8] = fn_802CAC28(lbl_8032D358 + 0xB28, 0);
+    ((s32 *)arg0)[8] = RegisterTextureByName(lbl_8032D358 + 0xB28, 0);
     ((s32 *)arg0)[0xD0/4] = ((Entry *)arg1)->m8();
     ((Entry *)arg1)->m8();
     ((s32 *)arg0)[3] = fn_801D4888();
@@ -4548,7 +4548,7 @@ extern f32 lbl_8055E24C, lbl_80561724, lbl_80561728;
 extern void fn_801552C8(void **), fn_80155318(void *);
 extern s32 fn_8014F088(s32,s32);
 extern void *fn_802076A0(void *,s32,s32,s32);
-extern s32 fn_802CAC28(void *,s32);
+extern s32 RegisterTextureByName(void *,s32);
 extern s32 fn_801572A4(void *,s32,void *);
 extern void fn_801EA1E0(void *,s32,f32,f32);
 extern void *fn_8000DA10(void);
@@ -4612,18 +4612,18 @@ void fn_80154D30(char *p) {
         *(void **)(entry+0xa4c)=p;
         *(s32 *)(entry+0x9e4)=i;
         *(s32 *)(entry+0x9e8)=!iscar;
-        *(s32 *)(entry+0xa98)=fn_802CAC28(strings+0xd5c,0);
-        *(s32 *)(entry+0xa9c)=fn_802CAC28(strings+0xd68,0);
+        *(s32 *)(entry+0xa98)=RegisterTextureByName(strings+0xd5c,0);
+        *(s32 *)(entry+0xa9c)=RegisterTextureByName(strings+0xd68,0);
         name=fn_80012820(*(s32 *)((char *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC())+4))+8;
         found=0;
         ((s32 (*)(char *,s32,char *,...))fn_801345D8)(path,0x40,(char *)strings+0xd78);
         LoadIntOptionValue((char *)fn_8000DA10()+12,path,&found);
-        if(!found) *(s32 *)(entry+0xaa0)=fn_802CAC28(fallback,0);
+        if(!found) *(s32 *)(entry+0xaa0)=RegisterTextureByName(fallback,0);
         else {
             memset(shortname,0,8); strncpy(shortname,name,3);
             ((s32 (*)(char *,s32,char *,...))fn_801345D8)(path2,0x40,(char *)strings+0xd84,shortname,found);
-            if(fn_8012C33C(path2)) *(s32 *)(entry+0xaa0)=fn_802CAC28(path2,0);
-            else { ((void (*)(char *,...))fn_802E30C8)((char *)strings+0xd90,path2); *(s32 *)(entry+0xaa0)=fn_802CAC28(fallback,0); }
+            if(fn_8012C33C(path2)) *(s32 *)(entry+0xaa0)=RegisterTextureByName(path2,0);
+            else { ((void (*)(char *,...))fn_802E30C8)((char *)strings+0xd90,path2); *(s32 *)(entry+0xaa0)=RegisterTextureByName(fallback,0); }
         }
         *(s32 *)(entry+0x9f4)=fn_801572A4(*(void **)(entry+0x9ec),*(s32 *)(entry+0x9e4),&lbl_8055E24C);
         *(void **)(entry+0xa94)=0; *(void **)(entry+0xa90)=0;

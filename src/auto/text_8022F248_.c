@@ -23,7 +23,7 @@ typedef struct { f32 x, y, z; } Vec3_8022FF10;
 
 typedef struct OverlayQuad {
     QuadMtx mtx;      /* 0x00: transform, composed with the current one on draw */
-    s32 texIndex;     /* 0x30: texture table entry (fn_802CAC28), -1 if unknown */
+    s32 texIndex;     /* 0x30: texture table entry (RegisterTextureByName), -1 if unknown */
     u32 color;        /* 0x34: RGBA color; fn_8022FF90 starts it at white */
     s32 colorIndex;   /* 0x38: palette entry fn_80230B9C turns into a color */
     char name[0x40];  /* 0x3C: texture name, compared case-insensitively */
@@ -278,7 +278,7 @@ extern char lbl_803403DC[]; /* "gBack: Texture %s not found for background." */
 extern char lbl_8055B98C;
 extern float lbl_805635E8, lbl_805635EC, lbl_805635F0, lbl_805635F4, lbl_805635F8; /* 30, 0.18, 4.5, 0.0015, 0.035: default overlay layout */
 extern int fn_8012C33C(void *);
-extern int fn_802CAC28(void *, int);
+extern int RegisterTextureByName(void *, int);
 void fn_8022FF90(void *);
 #pragma push
 #pragma processor 750
@@ -298,7 +298,7 @@ void *fn_8022F638(char *textureName, unsigned char paramA, unsigned char paramB,
     ((void *(*)(void))fn_8022F2FC)();
     quad = fn_801284F8(0xb4, &lbl_8055B98C);
     if (fn_8012C33C(textureName) != 0) {
-        *(int *)((char *)quad + 0x30) = fn_802CAC28(textureName, 0);
+        *(int *)((char *)quad + 0x30) = RegisterTextureByName(textureName, 0);
         *(int *)((char *)quad + 0x80) = intParam;
     } else {
         *(int *)((char *)quad + 0x30) = -1;

@@ -519,7 +519,7 @@ void ModelDisplayNode_release(int *displayNode) {
     return (((int (*)(int, int))packU16Key)(5, 0x64) - -((baseId * 2) & 0xFFFE)) + (diffFlag & 0xFFFF);
 }
 #pragma scheduling on
-extern int fn_802CAC28(void *, int);
+extern int RegisterTextureByName(void *, int);
 extern void *fn_802C5A60(int, int, u16);
 #pragma push
 #pragma small_data off
@@ -530,7 +530,7 @@ extern int lbl_8034B1F0[];
 /* Resolve a texture-only element's "zonly.tex" reference into a model texture node handle and store it in the element's node slot. */
 void fn_802C5C40(int *element, int slot, int sourceItems) {
     int baseId = *element;
-    int textureHandle = fn_802CAC28(lbl_8034B1F0, 0);
+    int textureHandle = RegisterTextureByName(lbl_8034B1F0, 0);
     int *sourceTexNode = *(int **)((char *)sourceItems + slot * 4 + 0x14);
     s16 texRef = *(s16 *)((char *)sourceTexNode + 6);
     u16 nodeKey = texRef - 1;

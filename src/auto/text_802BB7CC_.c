@@ -2,7 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 int fn_8012C33C(void);
-int fn_802CAC28(int, int);
+int RegisterTextureByName(int, int);
 /* Destroys/resets a 12-byte object, zeroing its three fields, and frees it when deleting > 0. */
 void *fn_802BB7CC(void *self, int deleting) {
     if (self != 0) {
@@ -36,7 +36,7 @@ void *fn_802BB824(void *object, int shouldDelete) {
 int fn_802BB87C(int path) {
     int isReady = 0;
     if (path != 0 && fn_8012C33C() != 0) isReady = 1;
-    if (isReady != 0) return fn_802CAC28(path, 0);
+    if (isReady != 0) return RegisterTextureByName(path, 0);
     return -2;
 }
 #pragma pop

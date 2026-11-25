@@ -59,7 +59,7 @@ typedef struct EfEffect {
     int poolCount;           /* 0x98 */
     unsigned char pad9c[4];
     float invPeriod;         /* 0xA0: 1.0f / period */
-    int texHandle;           /* 0xA4: texture slot, fn_802CAC28 / fn_802CAC54 */
+    int texHandle;           /* 0xA4: texture slot, RegisterTextureByName / fn_802CAC54 */
     int sqrtCount;           /* 0xA8: sqrt of powerOf4, for effect type 1 */
     float invSqrtCount;      /* 0xAC: 1.0f / sqrtCount */
 } EfEffect;
@@ -76,7 +76,7 @@ typedef struct EfList {
 /* The two emitter fields the sorter below reads.  +0x44 is the emitter's
  * priority (1..9, read from its parameter block with default 5) and picks the
  * list it is filed in; +0xA4 is the texture it draws with, a handle into the
- * 512 0x4C-byte texture slots (fn_802CAC28 takes it, fn_802CAC54 releases it). */
+ * 512 0x4C-byte texture slots (RegisterTextureByName takes it, fn_802CAC54 releases it). */
 typedef struct EfEmitter {
     char pad_0[0x44];
     int priority;   /* at 0x44 */
@@ -352,7 +352,7 @@ extern int fn_801284F8(int, void *);
 extern int fn_8028F7AC(void *, void *, int);
 extern void *fn_8012850C(int, void *);
 extern void *fn_8002F37C(void *, void *, int, int, int);
-extern int fn_802CAC28(int, int);
+extern int RegisterTextureByName(int, int);
 extern void fn_8028FD00(void *, void *, int);
 extern void fn_8028F854(void);
 extern char lbl_80348FC4[];
@@ -1108,7 +1108,7 @@ int fn_8028F7AC(void *arg0, void *arg1, int arg2) {
     result = fn_8002F37C(buffer, (void *)fn_8028F854, 0, 0x28, count);
     *(void **)((char *)arg0 + 0x8c) = result;
     *(int *)((char *)arg0 + 0x98) = count;
-    *(void **)((char *)arg0 + 0xa4) = (void *)fn_802CAC28(arg2, 0);
+    *(void **)((char *)arg0 + 0xa4) = (void *)RegisterTextureByName(arg2, 0);
     return (int)arg0;
 }
 #pragma pop

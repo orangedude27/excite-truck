@@ -47,7 +47,7 @@ void fn_80294970(void) {
     extern float lbl_80564518, lbl_8056451C, lbl_80564520, lbl_80564524, lbl_80564528;
     extern int fn_80287B14(void);
     extern int fn_80288208(int);
-    extern int fn_802CAC28(void *, int);
+    extern int RegisterTextureByName(void *, int);
     extern void *fn_801E1F44(void);
     extern void fn_801345D8(char *, int, const char *, int);
     extern void fn_80295CC4(void *self, int a, int b, Vec80295 *input, int unused, float *pos, float size);
@@ -62,8 +62,8 @@ void fn_80294970(void) {
         obj += 0x184;
     }
 
-    lbl_8055C990 = fn_802CAC28(base, 0);
-    lbl_8055C994 = fn_802CAC28(base + 0xC, 0);
+    lbl_8055C990 = RegisterTextureByName(base, 0);
+    lbl_8055C994 = RegisterTextureByName(base + 0xC, 0);
 
     if (*(char *)((char *)fn_801E1F44() + 4) != 0 || *(int *)fn_801E1F44() == 1) {
         float f1_val = lbl_80564518;

@@ -81,7 +81,7 @@ void fn_801DE7E8(int popupId) {
     extern char lbl_804872B0[];
     extern char lbl_803394B0[], lbl_803394BC[];
     extern int fn_80145E70(const char *);
-    extern int fn_802CAC28(const char *, int);
+    extern int RegisterTextureByName(const char *, int);
     int entryOffset;
     int resource;
     switch (popupId) {
@@ -94,7 +94,7 @@ void fn_801DE7E8(int popupId) {
         entryOffset = popupId * 0x1c;
         resource = fn_80145E70(lbl_803394B0);
         *(int *)(lbl_804872B0 + entryOffset + 0xc) = resource;
-        resource = fn_802CAC28(lbl_803394BC, 0);
+        resource = RegisterTextureByName(lbl_803394BC, 0);
         *(int *)(lbl_804872B0 + entryOffset + 0x14) = resource;
         break;
     }

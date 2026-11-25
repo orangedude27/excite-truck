@@ -77,7 +77,7 @@ extern int lbl_8055D658;
 extern void fn_8012E81C(void*);
 extern int fn_80232578(void*);
 extern int ArtSetGet(void*);
-extern int fn_802CAC28(void*, int);
+extern int RegisterTextureByName(void*, int);
 extern void fn_802CAC54(int);
 extern void fn_802328D4(int);
 extern void fn_80235380(int);
@@ -193,10 +193,10 @@ void fn_8001FD7C(void) {
     lbl_8055D650 = fn_80232578(p->f2);
     lbl_8055D654 = ArtSetGet(p->f3);
     lbl_8055D658 = ArtSetGet(p->f4);
-    lbl_80558D78 = fn_802CAC28(p->f5, 0);
-    lbl_80558D7C = fn_802CAC28(p->f6, 0);
-    lbl_80558D80 = fn_802CAC28(p->f7, 0);
-    lbl_80558D84 = fn_802CAC28(&p->f7[0x10], 0);
+    lbl_80558D78 = RegisterTextureByName(p->f5, 0);
+    lbl_80558D7C = RegisterTextureByName(p->f6, 0);
+    lbl_80558D80 = RegisterTextureByName(p->f7, 0);
+    lbl_80558D84 = RegisterTextureByName(&p->f7[0x10], 0);
 }
 #pragma scheduling on
 
@@ -263,7 +263,7 @@ extern int lbl_8055D658;
 extern void fn_8012E81C(void*);
 extern int fn_80232578(void*);
 extern int ArtSetGet(void*);
-extern int fn_802CAC28(void*, int);
+extern int RegisterTextureByName(void*, int);
 extern void fn_802CAC54(int);
 extern void fn_802328D4(int);
 extern void fn_80235380(int);
@@ -658,225 +658,305 @@ extern int lbl_802ED850[3];
 extern int lbl_80558DA0;
 #pragma processor 750
 #pragma ppc_psq_save off
-void fn_800209A0(int arg0, float arg1) {
-#pragma opt_common_subs off
-    int textId;
-    int color2;
-    int color;
-    int colorTable[3];
-    float f5;
-    float t0, t1;
-    float f25, f26, f27, f28, f29;
-    float outA, outB, outC, outD;
-    float g, u, v;
-    int alpha;
-    float f25b, f26b;
-    float f24;
-    int i;
-    int svals[3];
-    void *res;
-    char ch;
-    char *base = lbl_802FE138;
-
-    f5 = fn_802C9A58() != 0 ? lbl_80560500 : lbl_805604B4;
-    t0 = (f32)lbl_8055CFF0;
-    t1 = (f32)lbl_8055CFF4;
-    f27 = lbl_805604FC * t1;
-    f25 = lbl_805604F8 * t0 + f5;
-    f28 = f27 - lbl_80560504;
-    f26 = lbl_80560504 + f25;
-    f29 = f28 - lbl_80560504;
-
-    color = (arg0 << 24) | 0xFF0000 | 0xFFFF;
-    colorTable[0] = 0xff259327;
-    colorTable[1] = 0xffb71b00;
-    colorTable[2] = 0xff003fa8;
-    color2 = colorTable[lbl_8055D66C];
-    if (lbl_8055D646 == 0) color2 = 0;
-
-    fn_80231220(lbl_80558D80, color2, f25, f27, f26 - f25, f27 - f28,
-                lbl_805604B4, lbl_805604B4, lbl_805604B8, lbl_805604B8);
-    fn_80231220(lbl_80558D84, color2, f25, f28, f26 - f25, f28 - f29,
-                lbl_805604B4, lbl_805604B4, lbl_805604B8, lbl_805604B8);
-    fn_80231220(lbl_80558D78, color, f25, f27, f26 - f25, f27 - f28,
-                lbl_805604B4, lbl_805604B4, lbl_805604B8, lbl_805604B8);
-    fn_80231220(lbl_80558D7C, color, f25, f28, f26 - f25, f28 - f29,
-                lbl_805604B4, lbl_805604B4, lbl_805604B8, lbl_805604B8);
-
-    fn_80148134(lbl_80560508, lbl_8056050C, &outA, &outB, 2);
-    fn_80148134(lbl_80560508, lbl_80560510, &outC, &outD, 2);
-    fn_80232BA4(lbl_8055D660, lbl_8055D64C, color, 9, outA, outB,
-                lbl_80560514, lbl_805604B4, lbl_805604B8);
-    fn_80232BA4(lbl_8055D664, lbl_8055D64C, color, 9, outC, outD,
-                lbl_80560518, lbl_805604B4, lbl_805604B8);
-
-    if (lbl_8055D646 == 0 && lbl_8055D647 != 0) {
-        g = lbl_805604D8;
-        if (arg1 >= lbl_805604D8) goto g1a;
-        goto g1done;
-g1a:
-        g = lbl_805604B8;
-        if (arg1 <= lbl_805604B8) goto g1b;
-        goto g1done;
-g1b:
-        u = lbl_805604DC * arg1;
-        v = lbl_805604E0 * arg1;
-        u = u * arg1;
-        v = v * arg1;
-        u = arg1 * u;
-        g = lbl_805604B4;
-        if (arg1 > lbl_805604B4) g = u + v; else g = u - v;
-g1done:
-        alpha = ((arg0 * 0xC0) / 255) << 24;
-        alpha |= 0xFF0000 | 0xFFFF;
-        f25b = lbl_805604FC * lbl_80560520 - lbl_80560524;
-        f26b = (f32)lbl_8055CFF0 * (lbl_8056051C * g) - lbl_80560528;
-        fn_80011280(alpha, lbl_8055D658, f26b, f25b, lbl_8056052C);
-        if (lbl_8055D671 == 0) {
-            fn_801312EC(&lbl_8035BAF0, &base[0x1a8]);
-            lbl_8055D671 = 1;
-        }
-        if (lbl_8035BAF0.f8 != lbl_8055E044) fn_80131318();
-        fn_8023293C(lbl_8055D64C, lbl_8035BAF0.f4, lbl_805604B8);
-        fn_80233010(lbl_8055D65C, lbl_8055D64C, -1, 0x11, 0,
-                    lbl_805604C8 + f26b, f25b - lbl_80560530,
-                    lbl_80560534, lbl_80560538, lbl_805604B4, lbl_805604B8);
+void fn_800209A0(int arg0, float arg1)
+{
+  int color2;
+  int textId;
+  int color;
+  int colorTable[3];
+  float f5;
+  float t0;
+  float t1;
+  int n = 0x40;
+  float f25;
+  float f26;
+  float f27;
+  float f28;
+  float f29;
+  float outA;
+  float outB;
+  float outC;
+  float outD;
+  float g;
+  float u;
+  float v;
+  int alpha;
+  float f25b;
+  float f26b;
+  float f24;
+  int i;
+  int svals[3];
+  void *res;
+  char ch;
+  char *base = lbl_802FE138;
+  f5 = (fn_802C9A58() != 0) ? (lbl_80560500) : (lbl_805604B4);
+  t1 = (f32) lbl_8055CFF4;
+  f27 = lbl_805604FC * t1;
+  t0 = (f32) lbl_8055CFF0;
+  f25 = (lbl_805604F8 * t0) + f5;
+  f28 = f27 - lbl_80560504;
+  f26 = lbl_80560504 + f25;
+  f29 = f28 - lbl_80560504;
+  color = (((arg0 << 16) << 8) | 0xFF0000) | 0xFFFF;
+  colorTable[0] = 0xff259327;
+  colorTable[1] = 0xffb71b00;
+  colorTable[2] = 0xff003fa8;
+  color2 = colorTable[lbl_8055D66C];
+  if (lbl_8055D646 == 0)
+  {
+    color2 = 0;
+  }
+  fn_80231220(lbl_80558D80, color2, f25, f27, f26 - f25, f27 - f28, lbl_805604B4, lbl_805604B4, lbl_805604B8, lbl_805604B8);
+  fn_80231220(lbl_80558D84, color2, f25, f28, f26 - f25, f28 - f29, lbl_805604B4, lbl_805604B4, (float) lbl_805604B8, lbl_805604B8);
+  fn_80231220(lbl_80558D78, color, f25, f27, f26 - f25, f27 - f28, lbl_805604B4, lbl_805604B4, lbl_805604B8, lbl_805604B8);
+  fn_80231220(lbl_80558D7C, color, f25, f28, f26 - f25, f28 - f29, lbl_805604B4, lbl_805604B4, lbl_805604B8, lbl_805604B8);
+  fn_80148134(lbl_80560508, lbl_8056050C, &outA, &outB, 2);
+  fn_80148134(lbl_80560508, lbl_80560510, &outC, &outD, 2);
+  fn_80232BA4(lbl_8055D660, lbl_8055D64C, color, 9, outA, outB, lbl_80560514, lbl_805604B4, lbl_805604B8);
+  fn_80232BA4(lbl_8055D664, lbl_8055D64C, color, 9, outC, outD, lbl_80560518, lbl_805604B4, lbl_805604B8);
+  if ((lbl_8055D646 == 0) && (lbl_8055D647 != 0))
+  {
+    g = lbl_805604D8;
+    if (arg1 < lbl_805604D8)
+    {
+      goto g1done;
     }
+    g = lbl_805604B8;
+    if (arg1 <= lbl_805604B8)
+    {
+      goto g1b;
+    }
+    goto g1done;
+    g1b:
+    u = lbl_805604DC * arg1;
 
-    if (lbl_8055D646 == 0 && lbl_8055D647 == 0 && fn_800167F4() == 1) {
-        g = lbl_805604D8;
-        if (arg1 >= lbl_805604D8) goto g2a;
-        goto g2done;
-g2a:
-        g = lbl_805604B8;
-        if (arg1 <= lbl_805604B8) goto g2b;
-        goto g2done;
-g2b:
-        u = lbl_805604DC * arg1;
-        v = lbl_805604E0 * arg1;
-        u = u * arg1;
-        v = v * arg1;
-        u = arg1 * u;
-        g = lbl_805604B4;
-        if (arg1 > lbl_805604B4) g = u + v; else g = u - v;
-g2done:
-        f24 = (f32)lbl_8055CFF4 * (lbl_8056051C * g) - lbl_8056053C;
-        alpha = ((arg0 * 0xC0) / 255) << 24;
-        alpha |= 0xFF0000 | 0xFFFF;
-        fn_80011280(alpha, lbl_8055D658, f24, lbl_8056050C, lbl_80560540);
+    v = lbl_805604E0 * arg1;
+    u = u * arg1;
+    v = v * arg1;
+    u = arg1 * u;
+    g = lbl_805604B4;
+    if (arg1 > lbl_805604B4)
+    {
+      g = v + u;
+    }
+    else
+    {
+      g = u - ((unsigned char) ((unsigned long) v));
+    }
+    g1done:
+    alpha = ((arg0 * 0xC0) / 255) << 24;
 
-        svals[0] = lbl_802ED850[0];
-        svals[1] = lbl_802ED850[1];
-        svals[2] = lbl_802ED850[2];
-        for (i = 0; i < 3; i++) {
-            char buf[0x40] = {0};
-            textId = (int)&lbl_80558DA0;
-            switch (svals[i]) {
-            case 0:
-                textId = fn_8001BA6C(0x22205);
-                fn_800208F0(0x22205, (unsigned char *)buf, 0x40);
-                break;
-            case 1:
-                textId = fn_8001BA6C(0x40901);
-                fn_800208F0(0x40901, (unsigned char *)buf, 0x40);
-                break;
-            case 2:
-                textId = fn_8001BA6C(0x40902);
-                fn_800208F0(0x40902, (unsigned char *)buf, 0x40);
-                break;
-            case 3:
-                textId = fn_8001BA6C(0x41206);
-                fn_800208F0(0x41206, (unsigned char *)buf, 0x40);
-                break;
-            case 4:
-                textId = fn_8001BA6C(0x20507);
-                fn_800208F0(0x20507, (unsigned char *)buf, 0x40);
-                break;
-            case 5:
-                buf[0] = 0;
-                break;
-            case 6:
-                textId = fn_80131234(&base[0x1b4]);
-                fn_80130FCC(buf, 0x40, lbl_8035BAD8.f8);
-                break;
-            case 7:
-                if (fn_800167F4() == 1) {
-                    textId = fn_80131234(&base[0x1c4]);
-                    fn_80130FCC(buf, 0x40, lbl_8035BAD8.f4);
-                } else {
-                    buf[0] = 0;
-                }
-                break;
-            case 8:
-                if (fn_800167F4() == 1) {
-                    textId = fn_80131234(&base[0x1d4]);
-                    fn_80130980(buf, 0x40, 2, lbl_8035BAD8.f0);
-                } else {
-                    buf[0] = 0;
-                }
-                break;
-            case 9:
-                res = fn_8001BB58(fn_8000DA10(), lbl_8055D668, lbl_8055D66C, 0);
-                {
-                    char *d = buf;
-                    char *s;
-                    int n = 0x40;
-                    if (res != 0 && *(int *)((char *)res + 8) >= 0) {
-                        s = __AXGetStackHead();
-                    } else {
-                        s = lbl_80558D8C;
-                    }
-                    do {
-                        ch = *s++;
-                        *d++ = ch;
-                        if (ch == 0) break;
-                        n--;
-                    } while (n > 0);
-                    if (n <= 0) d[-1] = 0;
-                }
-                textId = fn_80131234(&base[0x1e8]);
-                break;
-            case 10:
-                res = fn_8001BB58(fn_8000DA10(), lbl_8055D668, lbl_8055D66C, 0);
-                if (res != 0 && *(int *)((char *)res + 4) >= 0) {
-                    fn_80130FCC(buf, 0x40, *(int *)((char *)res + 4));
-                } else {
-                    char *d = buf;
-                    char *s = lbl_80558D8C;
-                    int n = 0x40;
-                    do {
-                        ch = *s++;
-                        *d++ = ch;
-                        if (ch == 0) break;
-                        n--;
-                    } while (n > 0);
-                    if (n <= 0) d[-1] = 0;
-                }
-                textId = fn_80131234(&base[0x1fc]);
-                break;
-            default:
-                buf[0] = 0;
-                break;
-            }
+    alpha |= 0xFF0000 | 0xFFFF;
+    f25b = (lbl_805604FC * lbl_80560520) - lbl_80560524;
+    f26b = (((f32) lbl_8055CFF0) * (g * lbl_8056051C)) - lbl_80560528;
+    fn_80011280(alpha, lbl_8055D658, f26b, f25b, lbl_8056052C);
+    if (lbl_8055D671 == 0)
+    {
+      fn_801312EC(&lbl_8035BAF0, &base[0x1a8]);
+      lbl_8055D671 = 1;
+    }
+    if (lbl_8035BAF0.f8 != lbl_8055E044)
+    {
+      fn_80131318();
+    }
+    fn_8023293C(lbl_8055D64C, lbl_8035BAF0.f4, lbl_805604B8);
+    fn_80233010(lbl_8055D65C, lbl_8055D64C, -1, 0x11, 0, lbl_805604C8 + f26b, f25b - lbl_80560530, lbl_80560534, lbl_80560538, lbl_805604B4, lbl_805604B8);
+  }
+  if (((lbl_8055D646 == 0) && ((((((lbl_8055D647 & 0xFF) & 0xFF) & 0xFF) & 0xFF) & 0xFF) == 0)) && (fn_800167F4() == 1))
+  {
+    g = lbl_805604D8;
+    if (arg1 < lbl_805604D8)
+    {
+      goto g2done;
+    }
+    g = lbl_805604B8;
+    if (arg1 > lbl_805604B8)
+    {
+      goto g2done;
+    }
+    u = lbl_805604DC * arg1;
+    v = lbl_805604E0 * arg1;
+    u = u * arg1;
+    v = v * arg1;
+    u = u * arg1;
+    g = lbl_805604B4;
+    if (arg1 > lbl_805604B4)
+    {
+      g = v + u;
+    }
+    else
+      if (t0)
+    {
+      g = u - v;
+    }
+    else
+    {
+      g = u - v;
+    }
+    g2done:
+    f24 = (((f32) lbl_8055CFF4) * ((0, lbl_8056051C * g))) - lbl_8056053C;
 
+    alpha = ((arg0 * 0xC0) / 255) << 24;
+    alpha |= 0xFF0000 | 0xFFFF;
+    fn_80011280(alpha, lbl_8055D658, f24, lbl_8056050C, lbl_80560540);
+    svals[0] = lbl_802ED850[0];
+    svals[1] = lbl_802ED850[1];
+    svals[2] = lbl_802ED850[2];
+    for (i = 0; i < 3; i++)
+    {
+      char buf[0x40] = {0};
+      textId = (int) (&lbl_80558DA0);
+      switch (svals[i])
+      {
+        case 0:
+          textId = fn_8001BA6C(0x22205);
+          fn_800208F0(0x22205, (unsigned char *) buf, 0x40);
+          break;
+
+        case 1:
+          textId = fn_8001BA6C(0x40901);
+          fn_800208F0(0x40901, (unsigned char *) buf, 0x40);
+          break;
+
+        case 2:
+          textId = fn_8001BA6C(0x40902);
+          fn_800208F0(0x40902, (unsigned char *) buf, 0x40);
+          break;
+
+        case 3:
+          textId = fn_8001BA6C(0x41206);
+          fn_800208F0(0x41206, (unsigned char *) buf, 0x40);
+          break;
+
+        case 4:
+          textId = fn_8001BA6C(0x20507);
+          fn_800208F0(0x20507, (unsigned char *) buf, 0x40);
+          break;
+
+        case 5:
+          buf[0] = 0;
+          break;
+
+        case 6:
+          textId = fn_80131234(&base[0x1b4]);
+          fn_80130FCC(buf, 0x40, lbl_8035BAD8.f8);
+          break;
+
+        case 7:
+          if (fn_800167F4() != 1)
+        {
+          if (arg1 || buf)
+          {
+            buf[0] = 0;
+          }
+          else
+          {
+            buf[0] = 0;
+          }
+        }
+        else
+        {
+          textId = fn_80131234(&base[((((((((0x1c4 & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu]);
+          fn_80130FCC(buf, 0x40, lbl_8035BAD8.f4);
+        }
+          break;
+
+        case 8:
+          if (fn_800167F4() == 1)
+        {
+          textId = fn_80131234(&base[0x1d4]);
+          fn_80130980(buf, 0x40, 2, lbl_8035BAD8.f0);
+        }
+        else
+        {
+          buf[0] = 0;
+        }
+          break;
+
+        case 9:
+          res = fn_8001BB58(fn_8000DA10(), lbl_8055D668, lbl_8055D66C, 0);
+        {
+          char *d = buf;
+          char *s;
+          if ((res != 0) && (((*((int *) (((char *) res) + 8))) + 1) >= (0 + 1)))
+          {
+            s = __AXGetStackHead();
+          }
+          else
+          {
+            int n = 0x40;
+            s = lbl_80558D8C;
+          }
+          do
+          {
+            ch = *(s++);
+            *(d++) = ch;
+            if (ch == 0)
             {
-                float f23;
-                f23 = f27 - f26 * ((f32)i - f25);
-                fn_80232BA4(textId, lbl_8055D64C, color, 0x11,
-                            f29 + f24, f23, lbl_8056054C,
-                            lbl_805604B4, lbl_805604B8);
-                if (svals[i] != 8) {
-                    fn_80232BA4((int)buf, lbl_8055D64C, color, 0x12,
-                                (f28 + f24) - f29, f23, lbl_8056054C,
-                                lbl_805604B4, lbl_805604B8);
-                } else {
-                    fn_80232BA4((int)buf, lbl_8055D650, color, 0x12,
-                                lbl_805604C4 + ((f28 + f24) - f29),
-                                arg1 + f23, lbl_80560550, lbl_805604B4, arg1);
-                }
+              break;
             }
+            n--;
+          }
+          while (n > 0);
+          if ((n - 1) <= (0 - 1))
+          {
+            d[-1] = 0;
+          }
         }
+          textId = fn_80131234(&base[0x1e8]);
+          break;
+
+        case 10:
+          res = fn_8001BB58(fn_8000DA10(), lbl_8055D668, lbl_8055D66C, 0);
+          if ((res != 0) && ((*((int *) (((char *) res) + 4))) >= 0))
+        {
+          fn_80130FCC(buf, 0x40, *((int *) (((char *) res) + 4)));
+        }
+        else
+        {
+          char *d = buf;
+          char *s = lbl_80558D8C;
+          do
+          {
+            ch = *(s++);
+            *(d++) = ch;
+            if (ch == 0)
+            {
+              break;
+            }
+            n--;
+          }
+          while (n > 0);
+          if (n <= 0)
+          {
+            d[-1] = 0;
+          }
+        }
+          textId = fn_80131234(&base[0x1fc]);
+          break;
+
+        default:
+          buf[0] = lbl_805604B4 * 0;
+          break;
+
+      }
+
+      {
+        float f23;
+        f23 = f27 - (f26 * (((f32) i) - f25));
+        fn_80232BA4(textId, lbl_8055D64C, color, 0x11, f29 + f24, f23, lbl_8056054C, lbl_805604B4, lbl_805604B8);
+        if (svals[i] != 8)
+        {
+          fn_80232BA4((int) buf, lbl_8055D64C, color, 0x12, (f28 + f24) - f29, f23, lbl_8056054C, lbl_805604B4, lbl_805604B8);
+        }
+        else
+        {
+          fn_80232BA4((int) buf, lbl_8055D650, color, 0x12, lbl_805604C4 + ((f28 + f24) - f29), arg1 + f23, lbl_80560550, lbl_805604B4, arg1);
+        }
+      }
     }
+
+  }
 }
 #pragma ppc_psq_save reset
 

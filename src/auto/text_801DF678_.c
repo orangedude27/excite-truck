@@ -61,7 +61,7 @@ extern void fn_80131818(void *);
 extern int fn_80145E70(void *);
 extern void fn_801D0DDC(void *);
 extern int fn_80207848(void *, int);
-extern int fn_802CAC28(void *, int);
+extern int RegisterTextureByName(void *, int);
 extern int stricmp(const char *, const char *);
 extern char lbl_803381C0[], lbl_803395D8[], lbl_80339744[];
 __declspec(section ".sdata") extern const char lbl_8055AE44[], lbl_8055AE4C[];
@@ -81,10 +81,10 @@ void fn_801DF6FC(void) {
         *(void **)obj = lbl_80339744;
         lbl_8055EA04 = obj;
         *(int *)((char *)obj + 0xE4) = fn_80145E70(base + 0xC);
-        *(int *)((char *)obj + 0xF0) = fn_802CAC28(base + 0x1C, 0);
-        *(int *)((char *)obj + 0xE8) = fn_802CAC28(base + 0x28, 0);
-        *(int *)((char *)obj + 0xEC) = fn_802CAC28(base + 0x34, 0);
-        *(int *)((char *)obj + 0xF4) = fn_802CAC28(base + 0x40, 0);
+        *(int *)((char *)obj + 0xF0) = RegisterTextureByName(base + 0x1C, 0);
+        *(int *)((char *)obj + 0xE8) = RegisterTextureByName(base + 0x28, 0);
+        *(int *)((char *)obj + 0xEC) = RegisterTextureByName(base + 0x34, 0);
+        *(int *)((char *)obj + 0xF4) = RegisterTextureByName(base + 0x40, 0);
         *(int *)((char *)obj + 0xF8) = fn_80207848(base + 0x50, 1);
         for (i = 0; i < 3; i++) {
             ((int *)((char *)obj + 0xFC))[i] = fn_80207848(base + 0x60, 1);

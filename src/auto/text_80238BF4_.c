@@ -356,7 +356,7 @@ void fn_8023976C(u32 state) {
 }
 
 extern void fn_802390B4(void *, s32);
-extern s32 fn_802CAC28(void *, s32);
+extern s32 RegisterTextureByName(void *, s32);
 extern void fn_802E30C8(const char *, ...);
 extern char lbl_80340B2C[];
 void fn_80239784(void *anim, s32 animName) {
@@ -365,7 +365,7 @@ void fn_80239784(void *anim, s32 animName) {
     u8 *swfData;
     /* Loads an SW2 animation into anim: initializes it, reads the SWF data with
        fn_802390B4 (logging an error with animName when the load fails), then walks
-       the texture entries, registering each named texture via fn_802CAC28 or
+       the texture entries, registering each named texture via RegisterTextureByName or
        marking it invalid (-1) when it has no name. */
     ((void (*)())fn_8023905C)();
     fn_802390B4(anim, animName);
@@ -381,7 +381,7 @@ void fn_80239784(void *anim, s32 animName) {
     while ((u32)entryIndex < *(u32 *)(*(u8 **)((u8 *)anim + 0x14) + 8)) {
         u8 *texEntry = *(u8 **)(*(u8 **)((u8 *)anim + 0x14) + 0x18) + byteOffset;
         if ((s8)texEntry[4] != 0) {
-            void *texture = (void *)fn_802CAC28(texEntry + 4, 0);
+            void *texture = (void *)RegisterTextureByName(texEntry + 4, 0);
             *(void **)(*(u8 **)(*(u8 **)((u8 *)anim + 0x14) + 0x18) + byteOffset) = texture;
         } else {
             *(s32 *)texEntry = -1;

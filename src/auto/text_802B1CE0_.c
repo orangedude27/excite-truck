@@ -54,7 +54,7 @@ extern void fn_802B1F64(void);
 extern void *fn_802B1F68(void *, int);
 
 int fn_8012C33C(void);
-int fn_802CAC28(int, int);
+int RegisterTextureByName(int, int);
 extern void fn_80128668(void *);
 /* Scalar deleting destructor helper: clears the object's three-word header
  * {+0x00,+0x04,+0x08} to zero, and frees the object when deletingFlag > 0.
@@ -77,7 +77,7 @@ int fn_802B1D38(int handle) {
     int isValid = 0;
 
     if (handle != 0 && fn_8012C33C() != 0) isValid = 1;
-    if (isValid != 0) return fn_802CAC28(handle, 0);
+    if (isValid != 0) return RegisterTextureByName(handle, 0);
     return -2;
 }
 

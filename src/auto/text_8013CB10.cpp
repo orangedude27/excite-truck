@@ -189,7 +189,7 @@ struct ZoneMaster {
     inline void initWidgets(const char *base);
 };
 extern "C" void *fn_80145E70(const char *);
-extern "C" void *fn_802CAC28(const char *, s32);
+extern "C" void *RegisterTextureByName(const char *, s32);
 inline void ZoneMaster::initWidgets(const char *base) {
     void *w0 = fn_80145E70(base + 0x0);
     w54 = w0;
@@ -200,11 +200,11 @@ inline void ZoneMaster::initWidgets(const char *base) {
     void *w2 = fn_80145E70(base + 0x1C);
     w5C = w2;
     sa.push(w2);
-    a0 = fn_802CAC28(base + 0x2C, 0);
-    a4 = fn_802CAC28(base + 0x38, 0);
-    a8 = fn_802CAC28(base + 0x48, 0);
-    ac = fn_802CAC28(base + 0x58, 0);
-    b0 = fn_802CAC28(base + 0x68, 0);
+    a0 = RegisterTextureByName(base + 0x2C, 0);
+    a4 = RegisterTextureByName(base + 0x38, 0);
+    a8 = RegisterTextureByName(base + 0x48, 0);
+    ac = RegisterTextureByName(base + 0x58, 0);
+    b0 = RegisterTextureByName(base + 0x68, 0);
 }
 static inline void LoadWidget8013D2C4(s32 *dst, const char *base, s32 off) {
     const char *s = base + off;
@@ -254,7 +254,7 @@ extern "C" s32 fn_80207848(void *, s32);
 extern "C" void *fn_801414A4(void *);
 extern "C" void fn_80141748(void *);
 extern "C" void fn_80141890(void *, void *, const char *, const char *, const char *, s32);
-extern "C" void *fn_802CAC28(const char *, s32);
+extern "C" void *RegisterTextureByName(const char *, s32);
 extern "C" void *fn_802AE340(s32);
 extern "C" s32 fn_802ADBA8(void *, const char *, void *, void *);
 extern "C" void *fn_802AE0A4(s32, const char *);
@@ -865,11 +865,11 @@ extern "C" void *fn_8013D2C4(void *arg0, void *arg1) {
     void *w2 = fn_80145E70(base + 0x1C);
     obj->w5C = w2;
     obj->sa.push(w2);
-    obj->a0 = fn_802CAC28(base + 0x2C, 0);
-    obj->a4 = fn_802CAC28(base + 0x38, 0);
-    obj->a8 = fn_802CAC28(base + 0x48, 0);
-    obj->ac = fn_802CAC28(base + 0x58, 0);
-    obj->b0 = fn_802CAC28(base + 0x68, 0);
+    obj->a0 = RegisterTextureByName(base + 0x2C, 0);
+    obj->a4 = RegisterTextureByName(base + 0x38, 0);
+    obj->a8 = RegisterTextureByName(base + 0x48, 0);
+    obj->ac = RegisterTextureByName(base + 0x58, 0);
+    obj->b0 = RegisterTextureByName(base + 0x68, 0);
     s32 n = *(s32 *)(src + 0x3E0);
     lbl_8055E1C0 = (s32)self;
     *(s32 *)(self + 0xBC) = n;
@@ -966,7 +966,7 @@ extern "C" s32 fn_80207848(void *, s32);
 extern "C" void *fn_801414A4(void *);
 extern "C" void fn_80141748(void *);
 extern "C" void fn_80141890(void *, void *, const char *, const char *, const char *, s32);
-extern "C" void *fn_802CAC28(const char *, s32);
+extern "C" void *RegisterTextureByName(const char *, s32);
 extern "C" void *fn_802AE340(s32);
 extern "C" s32 fn_802ADBA8(void *, const char *, void *, void *);
 extern "C" void *fn_802AE0A4(s32, const char *);
@@ -2783,13 +2783,13 @@ extern "C" void fn_8014145C(void *arg0) {
 
 extern "C" char lbl_8032CAA0[];
 extern "C" char lbl_8032CAB0[];
-extern "C" void *fn_802CAC28(const char *, s32);
+extern "C" void *RegisterTextureByName(const char *, s32);
 /* ZoneTextures::init -- load the zone system's two effect textures by name
- * through the texture manager (fn_802CAC28(path, type) opens a ".tex" in the
+ * through the texture manager (RegisterTextureByName(path, type) opens a ".tex" in the
  * 0x200-entry texture table) and keep the slots it hands back; returns the
  * pair. ZoneMaster owns one at +0x280, fn_80171698's object one at +0xA14. */
 extern "C" void *fn_801414A4(void *arg0) {
-    #define LoadTexture fn_802CAC28
+    #define LoadTexture RegisterTextureByName
     #define zoneLiteTexName lbl_8032CAA0
     #define zoneGlowTexName lbl_8032CAB0
     ZoneTextures *textures = (ZoneTextures *)arg0;

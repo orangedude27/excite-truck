@@ -3,7 +3,7 @@
 #include <types.h>
 extern void fn_80128668(void *);
 extern s32 fn_8012C33C(void *);
-extern s32 fn_802CAC28(void *, s32);
+extern s32 RegisterTextureByName(void *, s32);
 extern s32 fn_802CB128(s32, s32, s32, s32);
 extern void fn_802CB228();
 extern void fn_802CAC54();
@@ -15,7 +15,7 @@ extern s32 lbl_8055FB70;
 // swlmap.tex file when the disc has it, otherwise a 512x512 "rtarg" render
 // target the game draws the map into itself (fn_802C276C).
 #define ResFindFile fn_8012C33C        /* is this resource name in the archive? */
-#define TextureLoad fn_802CAC28        /* load a .tex file into a slot; the slot number */
+#define TextureLoad RegisterTextureByName        /* load a .tex file into a slot; the slot number */
 #define RenderTargetCreate fn_802CB128 /* make a "rtarg" render-target slot, width, height */
 #define RenderTargetFree fn_802CB228   /* free a render-target slot */
 #define TextureFree fn_802CAC54        /* release a loaded texture slot */

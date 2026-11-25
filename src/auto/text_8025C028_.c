@@ -245,7 +245,7 @@ extern void *fn_80214A9C(int);
 extern void *fn_80214AF0(int);
 extern void *fn_802168E4(void);
 extern void *ArtSetGet(void *);
-extern int fn_802CAC28(void *, int);
+extern int RegisterTextureByName(void *, int);
 extern void fn_802CAC54(int);
 extern int strcmp(const char *, const char *);
 extern int stricmp(const char *, const char *);
@@ -342,8 +342,8 @@ void fn_8025C204(int arg0, int arg1) {
                         if (j != 0) {
                             catStr_8025C204(entry, lbl_8055C0FC, 0x20);
                         }
-                        *(int *)(entry + 0x20) = fn_802CAC28(j != 0 ? lbl_80344750 : lbl_80344740, 0);
-                        *(int *)(entry + 0x24) = fn_802CAC28(j != 0 ? lbl_80344730 : lbl_80344720, 0);
+                        *(int *)(entry + 0x20) = RegisterTextureByName(j != 0 ? lbl_80344750 : lbl_80344740, 0);
+                        *(int *)(entry + 0x24) = RegisterTextureByName(j != 0 ? lbl_80344730 : lbl_80344720, 0);
                         *(float *)(entry + 0x28) = ((float (*)(void *, char *))(*(void ***)item)[9])(item, lbl_8055C0F8);
                         *(float *)(entry + 0x2C) = ((float (*)(void *, char *))(*(void ***)item)[9])(item, lbl_8055C0F4);
                         *(float *)(entry + 0x30) = ((float (*)(void *, char *))(*(void ***)item)[9])(item, lbl_8055C0F0);

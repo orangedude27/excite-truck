@@ -21,7 +21,7 @@ extern void fn_802C8BD0(int, unsigned short, unsigned short, unsigned short, uns
 extern void DrawList_RestoreNormalMode(void);
 extern void fn_802C8DB8(float*, int, unsigned short*, int);
 extern void fn_802C974C(float, float, float);
-extern int fn_802CAC28(void*, int);
+extern int RegisterTextureByName(void*, int);
 extern void fn_802CAC54(int);
 extern void fn_802E30C8(void*, ...);
 extern unsigned short fn_802E46F0(void);
@@ -89,7 +89,7 @@ void fn_8024BE04(void) {
     float one, zero, z;
     base = lbl_80343E90;
     fn_802E30C8(base);
-    h = fn_802CAC28(base + 0xC, 0);
+    h = RegisterTextureByName(base + 0xC, 0);
     zero = lbl_8056390C;
     one = lbl_80563908;
     z = zero - lbl_80563910;

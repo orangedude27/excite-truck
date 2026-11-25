@@ -61,7 +61,7 @@ __declspec(section ".sdata") extern char lbl_8055B9CC[];
 extern void *fn_80131810(const char *);
 extern void fn_80131818(void *);
 extern void *ArtSetGet(const char *);
-extern void *fn_802CAC28(const char *, s32);
+extern void *RegisterTextureByName(const char *, s32);
 extern s32 fn_8002B1D8(const char *, const char *, s32);
 extern f32 fn_80235EF0(s32, s32);
 extern f32 fn_80235F64(s32, s32);
@@ -729,7 +729,7 @@ void fn_80232230(void) {
                     record->resource = 0;
                     record->artIdx = 0;
                     record->field18 = temp_f31;
-                    record->handle = (s32)fn_802CAC28(entry->vtable->getString(entry, lbl_8055B9C8), 0);
+                    record->handle = (s32)RegisterTextureByName(entry->vtable->getString(entry, lbl_8055B9C8), 0);
                 }
                 record->scale = entry->vtable->getFloat(entry, lbl_8055B9CC, lbl_80563684);
                 record->flag = entry->vtable->getByte(entry, lbl_80340440 + 0xB0, 0);

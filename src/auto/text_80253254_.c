@@ -1104,7 +1104,7 @@ void fn_80255200(void *car, s32 reloadParams) {
     extern long lbl_8055C190; /* "CarUISM", the wheel buffer object's heap name */
     extern s32 lbl_8055F33C; /* number of live stream records */
     extern void fn_8025539C(void);
-    extern void *fn_802CAC28(void *, s32); /* register a named texture */
+    extern void *RegisterTextureByName(void *, s32); /* register a named texture */
     extern void *fn_801284F8(s32, void *); /* allocate, tagged with a name */
     extern void *fn_8012CAA0(s32, void *); /* stream buffer of a size and name */
     extern void fn_80255A84(void *);
@@ -1150,7 +1150,7 @@ void fn_80255200(void *car, s32 reloadParams) {
     *(u8 *)(base + 0x78) = zeroInt;
     *(unsigned int *)(base + 0xC) = 0xFF000000; /* opaque black */
     if (reloadParams) fn_8025539C();
-    *(void **)(base + 0xE8) = fn_802CAC28(strings + 0x100, 0);
+    *(void **)(base + 0xE8) = RegisterTextureByName(strings + 0x100, 0);
     record = fn_801284F8(0x28, strings + 0x110);
     if (record) *(void **)((u8 *)record + 0x20) = fn_8012CAA0(0x16E360, strings + 0x11C);
     count = lbl_8055F33C;
