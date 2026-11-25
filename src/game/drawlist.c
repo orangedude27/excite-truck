@@ -1155,7 +1155,7 @@ int setLightAmbientColor(int packedColor) {
 
 extern char lbl_804C1440[];
 extern float lbl_8055D01C;
-void fn_802C99D8(void) {
+void DrawList_applyGlobalDirection(void) {
 #define s_direction lbl_804C1440
 #define s_drawScalar lbl_8055D01C
 #define ApplyDirection fn_802D01B0
@@ -1168,16 +1168,16 @@ void fn_802C99D8(void) {
 
 #pragma dont_inline on
 /* Set the global draw scalar lbl_8055D01C to value, apply it through
- * fn_802C99D8, and return the previous value (float analog of setLightAmbientColor). */
-/* setDrawScalar: set the global draw scalar (lbl_8055D01C) to value, reapply the draw direction via fn_802C99D8, and return the previous scalar; the float analog of setLightAmbientColor. */ /* setDrawScalar: set the global draw scalar (lbl_8055D01C) to value, reapply the draw direction via fn_802C99D8, and return the previous scalar; the float analog of setLightAmbientColor. */ float fn_802C99E8(float value) {
+ * DrawList_applyGlobalDirection, and return the previous value (float analog of setLightAmbientColor). */
+/* setDrawScalar: set the global draw scalar (lbl_8055D01C) to value, reapply the draw direction via DrawList_applyGlobalDirection, and return the previous scalar; the float analog of setLightAmbientColor. */ /* setDrawScalar: set the global draw scalar (lbl_8055D01C) to value, reapply the draw direction via DrawList_applyGlobalDirection, and return the previous scalar; the float analog of setLightAmbientColor. */ float fn_802C99E8(float value) {
     float previous = lbl_8055D01C;
     lbl_8055D01C = value;
-    fn_802C99D8();
+    DrawList_applyGlobalDirection();
     return previous;
 }
 #define globalDirection lbl_804C1440 /* global 3-component direction vector */
 #pragma dont_inline on
-/* Copy the 3-component direction into the global direction vector and reapply it to the draw state with fn_802C99D8. */ void DrawList_setGlobalDirection(float *direction) {
+/* Copy the 3-component direction into the global direction vector and reapply it to the draw state with DrawList_applyGlobalDirection. */ void DrawList_setGlobalDirection(float *direction) {
     /* Store a 3-component direction in the global and reapply it to the draw list. */
     float z, y, x;
     x = direction[0];
@@ -1186,7 +1186,7 @@ void fn_802C99D8(void) {
     ((float *)globalDirection)[0] = x;
     ((float *)globalDirection)[1] = y;
     ((float *)globalDirection)[2] = z;
-    fn_802C99D8();
+    DrawList_applyGlobalDirection();
 }
 #pragma dont_inline reset
 #undef globalDirection
