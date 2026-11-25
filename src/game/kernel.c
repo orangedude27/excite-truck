@@ -160,7 +160,7 @@ int fn_802E1804(void *dst, void *src, int count, int outerBytes, int stride)
  * a linear IA8 buffer, tile it into imagePtr, flush the cache, initialize texObj
  * and return the texture's 128-byte-aligned byte size.  The chosen width and the
  * fixed height of 4 are written through outWidth/outHeight. */
-/* Build a 4-row IA8 lookup texture from `size` and return its 128-byte-aligned byte size. */ int buildIA8LookupTexture(int imagePtr, void *texObj, void *outWidth, void *outHeight, unsigned int size) {
+/* Build a 4-row IA8 lookup texture from `size` and return its 128-byte-aligned byte size. */ /* Build a 4-row IA8 lookup texture from `size` and return its 128-byte-aligned byte size. */ int buildIA8LookupTexture(int imagePtr, void *texObj, void *outWidth, void *outHeight, unsigned int size) {
     unsigned char linearBuf[0x800];
     int width;
     int alignedBytes;
