@@ -37,7 +37,7 @@ void fn_802DB2C0(void) {}
 
 /* No-op trace hook: texture.c forwards a texture slot's +0x28 handle here;
    this build discards it. */
-void fn_802DB2C4(void) {}
+void Texture_ShadowMapTraceHook(void) {}
 
 /* No-op blit hook: fn_802C40B8 calls this instead of drawing when the global
    canvas's "no draw" flag (bit 2) is set; this build does nothing. */

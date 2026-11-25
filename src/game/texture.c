@@ -757,11 +757,11 @@ void fn_802CC550(int, float, float);
     return fn_802DB2C0(slotEntry[0x28 / 4]);
 }
 
-int fn_802DB2C4(int);
+int Texture_ShadowMapTraceHook(int);
 /* Forward the shadow-map texture slot's +0x28 GPU handle to the no-op texture trace hook. */ int Texture_BindShadowMap(int textureSlot) {
-    /* Forward a texture slot's +0x28 handle to the no-op trace hook fn_802DB2C4. */
+    /* Forward a texture slot's +0x28 handle to the no-op trace hook Texture_ShadowMapTraceHook. */
     int *slotEntry = (int *)(gTextureSlotTable + textureSlot * 0x4C);
-    return fn_802DB2C4(slotEntry[0x28 / 4]);
+    return Texture_ShadowMapTraceHook(slotEntry[0x28 / 4]);
 }
 
 extern void setTextureCopyObject(int);
