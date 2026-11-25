@@ -142,13 +142,13 @@ s32 fn_8000DBC8(void*);
 extern void fn_8020A03C(s32, s32);
 extern void LoadFloatOption(int, void *, f32 *);
 #pragma dont_inline on
-void fn_80209FFC(void) {
-    f32 volume;
+/* Registered "Music" volume-change callback: reload the saved music_volume option (using the current volume as the default) and apply it through the global music volume. */ void fn_80209FFC(void) {
+    f32 newVolume;
 
     /* Load the saved "music_volume" setting (current volume as default) and apply it. */
-    volume = fn_8020A5F0();
-    LoadFloatOption(4, (void *)lbl_8033C278, &volume);
-    fn_8020A5F8(volume);
+    newVolume = fn_8020A5F0();
+    fn_801331C4(4, (void *)lbl_8033C278, &newVolume);
+    fn_8020A5F8(newVolume);
 }
 
 #pragma push
