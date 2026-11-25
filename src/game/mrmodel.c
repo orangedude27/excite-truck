@@ -96,7 +96,7 @@ struct ModelElement {
 
 #pragma push
 #pragma scheduling off
-/* Return the 0x10-byte ModelInstance record with the given id from the model manager's instance table. */ void *MRModel_GetInstance(int instanceId) {
+/* Return the 0x10-byte ModelInstance record with the given id from the model manager's instance table. */ /* Return the 0x10-byte ModelInstance record with the given id from the model manager's instance table. */ void *MRModel_GetInstance(int instanceId) {
     /* Return the 0x10-byte ModelInstance record at instanceId. */
     u32 instances = *(u32 *)((char *)gModelInstances + 8);
     return (void *)(instances + (instanceId << 4));
