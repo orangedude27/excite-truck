@@ -1618,8 +1618,8 @@ void *fn_802CC2C8(void *arg0, int arg1) {
 /* Return the SimpleHeap handle used for texture allocations: the scene context
    holds a heap container at +0x38, whose +4 field is the heap handle. */
 int getTextureHeap(void *context) {
-    /* Return the SimpleHeap handle for texture allocations: the context's
-     * +0x38 field points to a heap container whose +4 field is the handle. */
+    /* Return the SimpleHeap handle used for texture allocations: the scene
+     * context holds a heap container at +0x38 whose +4 field is the handle. */
     char *heapContainer = *(char **)((char *)context + 0x38);
     return *(int *)(heapContainer + 4);
 }
