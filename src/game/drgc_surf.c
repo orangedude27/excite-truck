@@ -1250,11 +1250,11 @@ void fn_802D63FC(void *arg0, s32 arg1) {
     p[0x0B] = (u8)sp8;
 }
 #pragma pop
-void drRelocateSurfacePtr(s32 *value, s32 delta) {
+/* Relocate a stored surface-table pointer by adding delta, leaving a zero (null) field untouched. */ void drRelocateSurfacePtr(s32 *value, s32 delta) {
     /* Add delta to *value, leaving a zero (null) sentinel unchanged. */
-    s32 cur = *value;
-    if (cur != 0) {
-        *value = cur + delta;
+    s32 ptr = *value;
+    if (ptr != 0) {
+        *value = ptr + delta;
     }
 }
 
