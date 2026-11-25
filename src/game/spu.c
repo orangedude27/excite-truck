@@ -358,7 +358,7 @@ int fn_802E540C(int request) {
 
 extern void fn_802E6248(int, float);
 #pragma dont_inline fn_802E5438
-void fn_802E5438(void) {
+/* Copy the configured Wii Remote speaker volume into all four remote-speaker channels. */ void fn_802E5438(void) {
 #define spuSetRemoteSpeakerVolume fn_802E6248
 #define getWpadSpeakerVolume ConfigGetWpadSpeakerVolume
     /* Copy the configured Wii Remote speaker volume into all four remote-speaker channels. */
