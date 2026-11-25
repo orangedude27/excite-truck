@@ -716,8 +716,7 @@ int fn_802C90E0(void) {
     return sRenderMode == 0;
 }
 
-/* Save GX state through DrawList_BeginProjection and record that draw lists now run in
- * its world-matrix-saving render mode (3). */
+/* Begin a 2D draw-list pass through fn_802C8C04 (saving the world matrix) and record render mode 3. */
 void DrawList_setupMode3(void) {
     ((void (*)(void))fn_802C8C04)();
     sRenderMode = 3;
