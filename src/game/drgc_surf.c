@@ -36,7 +36,7 @@ extern void fn_801282EC(s32);
 extern void *fn_8012850C(s32, void *);
 extern void DCInvalidateRange(void *, u32);
 extern void drInvalidateVertexFormatCache(void);
-extern void fn_802D2614(void);
+extern void gxPrepareFrame(void);
 extern void fn_802D2B0C(void);
 extern void GXClearVtxDesc(void);
 extern void GXSetVtxDesc(int, int);
@@ -1063,7 +1063,7 @@ void fn_802D6170(struct SurfDraw *surface) {
     extern volatile u8 lbl_8055FD25;
     extern u32 lbl_8055FD28;
     extern u8 lbl_8055FDFC;
-    extern void fn_802D2614(void);
+    extern void gxPrepareFrame(void);
     extern void fn_802D2B0C(void);
     u8 *cmd = (u8 *)packet;
     u8 stateFlags;
@@ -1102,7 +1102,7 @@ void fn_802D6170(struct SurfDraw *surface) {
         lbl_8055FD28 = *(u32 *)(cmd + 0x14);
     }
 
-    fn_802D2614();
+    gxPrepareFrame();
     fn_802D2B0C();
 }
 
@@ -1796,7 +1796,7 @@ extern void fn_80128670(s32);
     lbl_8055FD25 = 0;
     gRenderRequest[9] = 0;
     *(u32 *)(gRenderRequest + 4) = 0;
-    fn_802D2614();
+    gxPrepareFrame();
     fn_802D2B0C();
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);

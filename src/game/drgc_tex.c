@@ -1011,12 +1011,12 @@ float fn_802D93E0(void) {
     return lbl_80565018;
 }
 
-extern void fn_802D2614(void);
+extern void gxPrepareFrame(void);
 extern int lbl_8055FE24;
 /* Reset the GX state, then select `texObj` as the current texture object for the
  * GX texture-copy path (lbl_8055FE24); copyTextureToEFB consumes and clears it. */
 /* Flush all pending GX state, then bind `texObj` as the current texture object for the texture-copy path; copyTextureToEFB consumes and clears the binding. */ void setTextureCopyObject(int texObj) {
-    fn_802D2614();
+    gxPrepareFrame();
     lbl_8055FE24 = texObj;
 }
 
@@ -1035,7 +1035,7 @@ extern void gxMarkAllStateDirty(void);
   void *texObj;
   long long width;
   unsigned int height;
-  fn_802D2614();
+  gxPrepareFrame();
   texObj = ((char *) lbl_8055FE24) - (-0x24);
   width = GXGetTexObjWrapS(texObj) & 0xFFFF;
   height = GXGetTexObjWrapT(texObj) & 0xFFFF;

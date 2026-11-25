@@ -2612,7 +2612,7 @@ void fn_802D2218(void)
 /* Refresh the GX pipeline for the frame: rebuild the perspective projection,
  * set the viewport/scissor, set up the 2D overlay pass, and flush pending
  * render-state changes (blend mode, fog, lights, TEV colors). */
-/* Prepares the GX pipeline for a frame: rebuild projection, apply viewport, set up the 2D overlay, and flush pending render-state changes. */ void fn_802D2614(void) {
+/* Prepares the GX pipeline for a frame: rebuild projection, apply viewport, set up the 2D overlay, and flush pending render-state changes. */ void gxPrepareFrame(void) {
     fn_802D14D8();
     fn_802D1678();
     fn_802D2218();
