@@ -1061,7 +1061,7 @@ void fn_8020BC88(VoiceSnd *snd, float value) { snd->unused34 = value; }
 void fn_8020BC90(VoiceSnd *snd, int auxFlags) { snd->auxFlags = auxFlags; }
 
 #pragma scheduling invalid_target
-void SndVoice_Set3D(void) {
+/* Unimplemented SndVoice::Set3D vtable stub: panic with the method name. */ void SndVoice_Set3D(void) {
 #define kSndVoiceSet3DMsg lbl_8033C510
     /* Unimplemented SndVoice::Set3D; panic with the method name. */
     Abend_Panic(kSndVoiceSet3DMsg);
