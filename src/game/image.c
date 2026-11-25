@@ -97,8 +97,10 @@ extern void fn_80235758(void*, float, float, float, float, float, float, int);
 /* If the art-set handle is non-null, tail-call the picture-draw wrapper fn_802353F4; a null handle is ignored. */
 void fn_802C5310(void* artSet) { if (artSet != 0) fn_802353F4(); }
 
-/* If the image set is non-null, draw picture `picture` with the default tint (-1). */
-void gxDrawPicture(void* imageSet, void* picture) { if (imageSet != 0) fn_802354A0(imageSet, picture, -1); }
+/* Draw one picture (frame `picture`) from art set `artSet` with the default
+   color/tint -1; the float position/size arguments x,y,z,width,height arrive in
+   FPRs and pass through to fn_802354A0 untouched. A null art set is ignored. */
+void gxDrawPicture(void* artSet, void* picture) { if (artSet != 0) fn_802354A0(artSet, picture, -1); }
 
 /* Guarded image-draw wrapper: if artSet is non-null, draw picture `pictureIndex`
    as a textured quad with color -1 (use the texture's own tint). The caller's
