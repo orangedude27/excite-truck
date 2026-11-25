@@ -16,7 +16,7 @@ extern void DrawList_shutdown(void);
 extern void DrawList_loadMatrix(float*);
 extern void fn_802C86E8(unsigned int);
 extern void DrawList_setViewport(int, int, int, int);
-extern void fn_802C88BC(int);
+extern void HomeMenu_applySavedFade(int);
 extern void fn_802C8BD0(int, unsigned short, unsigned short, unsigned short, unsigned short, unsigned short, float, float);
 extern void DrawList_RestoreNormalMode(void);
 extern void fn_802C8DB8(float*, int, unsigned short*, int);
@@ -100,7 +100,7 @@ void fn_8024BE04(void) {
         DrawList_beginFrame();
         DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
         fn_802C86E8(0xFF7F7F7F);
-        fn_802C88BC(3);
+        HomeMenu_applySavedFade(3);
         fn_802C974C(lbl_80563914, lbl_80563918, lbl_8056391C);
         mp = m;
         DrawList_loadMatrix(mp);

@@ -50,7 +50,7 @@ extern void DrawList_loadMatrix(f32 *, f32, f32, f32);
 extern void DrawList_setViewport(s32, s32, s32, s32);
 extern void fn_802C974C(f32, f32, f32);
 extern void fn_802C86E8(s32);
-extern void fn_802C88BC(s32);
+extern void HomeMenu_applySavedFade(s32);
 extern s32 lbl_8055ED14;
 #pragma use_lmw_stmw off
 #pragma dont_inline on
@@ -690,7 +690,7 @@ void fn_80203B20(s32 arg0, s32 arg1, s32 arg2) {
         DrawList_setViewport(0, 0, 0x100, 0x100);
         fn_802C974C(lbl_805630D4, lbl_80563138, lbl_8056313C);
         fn_802C86E8(0xFF00FF00);
-        fn_802C88BC(-1);
+        HomeMenu_applySavedFade(-1);
         fn_80202F58((void *)arg1, (void *)arg0, (s32 *)stack);
         if (fn_80202BE4() == 0 && arg2 != 0)
             fn_80203A88((void *)arg1, arg0, (unk_80203A88_dest *)stack);

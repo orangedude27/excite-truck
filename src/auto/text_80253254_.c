@@ -1748,7 +1748,7 @@ void fn_80256548(struct CarUIModelRec *model) {
     extern void fn_802E30C8(void *, ...);
     extern void fn_802C86E8(int);
     extern void DrawList_setViewport(int, int, int, int);
-    extern void fn_802C88BC(int);
+    extern void HomeMenu_applySavedFade(int);
     struct {
         float pos[3];
         unsigned int pad;
@@ -1777,7 +1777,7 @@ void fn_80256548(struct CarUIModelRec *model) {
     if (!lbl_8055F347) { lbl_8055F347 = 1; fn_802E30C8(&lbl_8055C1D0, strings + 0x398 /* "GC: so no one is actually clearing the backbuffer besides me" */); }
     fn_802C86E8(0);
     DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4); /* the whole screen */
-    fn_802C88BC(-1);
+    HomeMenu_applySavedFade(-1);
 }
 
 #pragma push

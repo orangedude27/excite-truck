@@ -8894,7 +8894,7 @@ extern "C" void fn_80228994(void *arg0) {
 extern "C" f32 fn_80214D48(void);
 extern "C" void fn_80228AEC(s32, f32);
 extern "C" void DrawList_saveViewport(void *, s32, s32, s32, s32);
-extern "C" void fn_802C88BC(s32);
+extern "C" void HomeMenu_applySavedFade(s32);
 extern "C" void DrawList_restoreViewport(void *, s32);
 /* Callback wrapper: invoke fn_80228AEC on the given object (passed as a raw
  * pointer), supplying the global float setting returned by fn_80214D48(). */
@@ -8921,7 +8921,7 @@ extern "C" void fn_80228A84(void *object) {
     s32 savedState[2];
     DrawList_saveViewport(savedState, mode, *(s32 *)((u8 *)object + 0x274),
         *(s32 *)((u8 *)object + 0x278), *(s32 *)((u8 *)object + 0x27C));
-    fn_802C88BC(2);
+    HomeMenu_applySavedFade(2);
     ((VfObj *)*(void **)((u8 *)object + 0x268))->vf5();
     DrawList_restoreViewport(savedState, -1);
 }

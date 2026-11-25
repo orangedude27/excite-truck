@@ -25,7 +25,7 @@ extern f64 lbl_80563650;
 extern s32 lbl_8055CFF0, lbl_8055CFF4;
 extern f32 lbl_80563640, lbl_80563644;
 extern void DrawList_setViewport(s32, s32, s32, s32);
-extern void fn_802C88BC(s32);
+extern void HomeMenu_applySavedFade(s32);
 extern void DrawList_beginFrame(void);
 extern void DrawList_loadMatrix(s32);
 extern void fn_802C974C(f32, f32, f32);
@@ -398,7 +398,7 @@ void fn_80230AB8(u32 packedColor, u8 *outRed, u8 *outGreen, u8 *outBlue, u8 *out
 /* Configure the 2D UI/camera state for the given display list index. */
 void fn_80230AD8(s32 displayListIndex) {
     DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
-    fn_802C88BC(3);
+    HomeMenu_applySavedFade(3);
     DrawList_beginFrame();
     DrawList_loadMatrix(displayListIndex);
     fn_802C974C(lbl_80563610, lbl_80563640, lbl_80563644);

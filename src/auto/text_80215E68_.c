@@ -32,7 +32,7 @@ extern void fn_8023108C(s32);
 extern void DrawList_loadMatrix(void *);
 extern void fn_802C86E8(u32);
 extern void DrawList_setViewport(s32, s32, s32, s32);
-extern void fn_802C88BC(s32);
+extern void HomeMenu_applySavedFade(s32);
 extern void fn_802C974C(f32, f32, f32);
 extern s32 fn_802160AC(void);
 extern s32 fn_80211F54(void);
@@ -299,7 +299,7 @@ s32 fn_80216244(void) {
     if (callback != 0) callback();
     fn_802C86E8(0xFF0000FF);
     DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
-    fn_802C88BC(2);
+    HomeMenu_applySavedFade(2);
     p = lbl_804908C8;
     for (i = 0; i < 16; i++, p++) {
         if (*p != 0) {

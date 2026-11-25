@@ -895,7 +895,7 @@ void fn_801ED69C(void *vehicleRender) {
 
 extern float fn_801E8738(int);
 extern void fn_802C974C(float, float, float);
-extern void fn_802C88BC(int);
+extern void HomeMenu_applySavedFade(int);
 extern int fn_801E7E2C(void);
 extern void fn_802C8B98(void *, void *, void *, void *, void *);
 extern void fn_802C8DB8(void *, int, void *, int);
@@ -919,7 +919,7 @@ void fn_801ED718(void *arg0) {
     float big[0x3C];
     int i;
     fn_802C974C(lbl_80562E9C, lbl_80562EA0, fn_801E8738(-1));
-    fn_802C88BC(2);
+    HomeMenu_applySavedFade(2);
     if (fn_801E7E2C() != -1) {
         v[0] = lbl_80562EA4; v[1] = lbl_80562EA8; v[2] = lbl_80562E88; *(int *)&v[3] = -1;
         v[4] = lbl_80562E88; v[5] = lbl_80562EAC;

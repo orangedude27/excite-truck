@@ -1230,7 +1230,7 @@ extern int fn_80215228(void);
 extern void fn_80230C30(float *,float *,int,int);
 extern void gxDrawPictureAt(void *,int,float,float,float);
 extern void fn_802C86E8(unsigned int);
-extern void fn_802C88BC(int);
+extern void HomeMenu_applySavedFade(int);
 extern void fn_8022EDB8(void);
 extern void fn_8022ED00(void *);
 extern void *fn_8022EDC4(void);
@@ -1258,7 +1258,7 @@ extern "C" void fn_80218574(void *arg0) {
         fn_80230C30(&x,&y,0,0);
         gxDrawPictureAt(*(void **)((char*)base+8),0,x,y,lbl_80563490);
     } else if(fn_80215228() && !*(unsigned char *)((char*)base+0xde4)) {
-        fn_802C86E8(0xff000000); fn_802C88BC(3);
+        fn_802C86E8(0xff000000); HomeMenu_applySavedFade(3);
     }
     zero=lbl_80563490; one=lbl_80563494; limit=lbl_80563498;
     entry=base; current=-1;

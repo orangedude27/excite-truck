@@ -63,7 +63,7 @@ extern s32 fn_802C2C00(s32); /* save/restore the depth-test state word */
 extern s32 DrawList_loadMatrix(f32 *, f32, f32, f32, f32); /* set a transform matrix and scale */
 extern s32 fn_802C86E8(s32); /* set the clear color */
 extern s32 DrawList_setViewport(s32, s32, s32, s32); /* set a screen rectangle */
-extern s32 fn_802C88BC(s32); /* set a render mode (-1 resets) */
+extern s32 HomeMenu_applySavedFade(s32); /* set a render mode (-1 resets) */
 extern s32 fn_802C9294(s32, s32); /* select the active texture and draw flags */
 extern s32 fn_802C974C(f32, f32, f32); /* update projection / field-of-view parameters */
 extern s32 Texture_BindRenderTarget(s32); /* bind a render target */
@@ -120,7 +120,7 @@ void fn_802C276C(void) {
         DrawList_setViewport(0, 0, 0x200, 0x200);
         fn_802C974C(SWL_ONE, SWL_DEPTH + transform[10], SWL_HALF_PI);
         fn_802C86E8(0xFF00FF00);
-        fn_802C88BC(-1);
+        HomeMenu_applySavedFade(-1);
         savedState = fn_802C2C00(0);
         fn_801D9B58();
         fn_802C2C00(savedState);

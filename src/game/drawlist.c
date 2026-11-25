@@ -347,7 +347,7 @@ void *fn_802C86DC(void) {
 }
 
 extern void *lbl_8055D018;
-/* Store the packed ARGB color (default 0xFF7F7F7F gray) later applied to GX state by fn_802C88BC. */
+/* Store the packed ARGB color (default 0xFF7F7F7F gray) later applied to GX state by HomeMenu_applySavedFade. */
 void fn_802C86E8(void* color) {
     lbl_8055D018 = color;
 }
@@ -421,7 +421,7 @@ void DrawList_setViewport(int x, int y, int width, int height) {
 #pragma pop
 
 /* Apply the stored value (set by fn_802C86E8) via HomeMenu_setFade, passing flags' low bit as its byte argument. */
-void fn_802C88BC(int flags) {
+void HomeMenu_applySavedFade(int flags) {
     HomeMenu_setFade(lbl_8055D018, flags & 1);
 }
 
@@ -1245,7 +1245,7 @@ void fn_802C9A70(int drawBars) {
     lbl_8055FC74 = 1;
     if ((unsigned char)lbl_8055FC8D != 0) {
         DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
-        fn_802C88BC(2);
+        HomeMenu_applySavedFade(2);
         fn_802C974C(lbl_8055FC38, lbl_8055FC3C, lbl_80564F28);
     }
     if (((unsigned char)lbl_8055FC8C != 0 || (unsigned char)lbl_8055FC8D != 0) && drawBars != 0) {
