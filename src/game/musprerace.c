@@ -179,7 +179,7 @@ void fn_8020C2AC(void) {
     fn_8020C140();
 }
 #pragma pop
-void fn_8020C41C(void) {
+/* Pre-race music setup: initialize the track music, create the goalline SFX, and reset track-selection state. */ void fn_8020C41C(void) {
 #define InitTrackMusic fn_8021037C
 #define CreateSound fn_80207848
 #define kGoallineSfx lbl_8033C5FC
