@@ -14,7 +14,7 @@ extern void fn_802E0D44(u32);
 extern u8 lbl_8055D150, lbl_8055D158, lbl_8055D160;
 extern int fn_801345D8(void *, int, const char *, ...);
 extern char *fn_80029004(char *, int);
-extern void fn_802E0EAC(void *);
+extern void VideoObject_OpenMovie(void *);
 extern char lbl_8034CBC4[];
 __declspec(section ".sdata") extern char lbl_8055D168[];
 extern int fn_801186B8(void *);
@@ -934,7 +934,7 @@ extern void fn_80117618(s32, void *);
 extern s32 fn_802E1BB4(void *);
 extern void fn_801176FC(s32, void *);
 /* Open a Bink movie into this video object, logging open/failure status. */
-/* VideoObject movie loader: free the current Bink, resolve and open the movie file by its name at +8, and store the new handle at +4. */ void fn_802E0EAC(void *videoObj) {
+/* VideoObject movie loader: free the current Bink, resolve and open the movie file by its name at +8, and store the new handle at +4. */ void VideoObject_OpenMovie(void *videoObj) {
     s32 movieIndex;
     char name[0x20];
     char *messages = (char *)lbl_8034CB68;
@@ -1031,7 +1031,7 @@ extern void fn_801176FC(s32, void *);
 
 #pragma push
 #pragma use_lmw_stmw off
-/* Bink movie playback state: fn_802E0BA8 allocates it and fn_802E0EAC opens the
+/* Bink movie playback state: fn_802E0BA8 allocates it and VideoObject_OpenMovie opens the
  * movie whose filename is stored in name. */
 struct BinkMovieInfo {
     char pad[4];        /* 0x00 */
@@ -1043,7 +1043,7 @@ struct BinkMovieInfo {
     char videoRing[1];  /* 0x50, start of the decoded-frame ring buffer */
 };
 /* Open a Bink movie: build "video/<name>.bik" in the movie object, reset its
- * handle, set its mode byte, and pass it to fn_802E0EAC to actually open it.
+ * handle, set its mode byte, and pass it to VideoObject_OpenMovie to actually open it.
  * Returns the movie system state saved on entry. */
 s32 fn_802E11A4(const char *name, u8 mode) {
 #define VIDEO_PATH_FMT lbl_8034CBC4  /* "video/%s" */
@@ -1079,7 +1079,7 @@ s32 fn_802E11A4(const char *name, u8 mode) {
             }
         }
     }
-    fn_802E0EAC(object);
+    VideoObject_OpenMovie(object);
     return saved;
 #undef DOT_CHAR
 #undef NAME_CAPACITY
@@ -1112,7 +1112,7 @@ void fn_802E12DC(void) {
         VideoObject_FreeBink(movie);
     }
     if (movie->binkHandle == 0)
-        fn_802E0EAC(movie);
+        VideoObject_OpenMovie(movie);
     if (movie->binkHandle != 0) {
         fn_802E27B8(movie->videoRing);
         fn_801186B8((void *)movie->binkHandle);
