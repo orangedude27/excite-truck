@@ -26,7 +26,7 @@ extern int fn_801284E8(void *, int);
 extern int gWpadAllocHandles[];
 extern int wpadAllocTag;
 extern int gWpadAllocCount;
-extern unsigned char lbl_80560008;
+extern unsigned char gRjoyMotorEnabled;
 extern char ConfigGetWpadMotorMode(void);
   void fn_802E8528(int, float, float);
 /* Stub for the rjoy input-filter predicate (called with a controller channel):
@@ -115,7 +115,7 @@ void fn_802E7920(int arg0) {
     extern int fn_802D9BF0(void);
     extern int KERNEL_GetTimeMs(void);
     extern unsigned char lbl_80505978[];
-    extern unsigned char lbl_80560008;
+    extern unsigned char gRjoyMotorEnabled;
     unsigned char *p;
     int player = arg0;
     int time;
@@ -133,7 +133,7 @@ void fn_802E7920(int arg0) {
         if (time - *(int *)(p + 0xB8) > 0x1388)
             motor = 1;
     }
-    if (lbl_80560008 == 0)
+    if (gRjoyMotorEnabled == 0)
         motor = 1;
     if (motor == 0) {
         value = *(int *)(p + 0xB4) + *(unsigned short *)(p + 0xB0);
@@ -248,7 +248,7 @@ dispatch:
     *((unsigned char *)&lbl_80505978 + channel * 0x638 + 0x631) = channel - channel;
 }
 #pragma pop
-#define sRjoyMotorEnabled  lbl_80560008 /* cached WPAD rumble-enabled flag used by the motor driver */
+#define sRjoyMotorEnabled  gRjoyMotorEnabled /* cached WPAD rumble-enabled flag used by the motor driver */
 #define getWpadMotorConfig ConfigGetWpadMotorMode  /* config getter: 1 when WPAD rumble is enabled */
 void RjoyUpdateMotorEnabled(void) {
     /* Cache the WPAD rumble config setting into rjoy's motor-enabled flag. */
