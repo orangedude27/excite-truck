@@ -172,8 +172,10 @@ void fn_802DEE88(void) {
 /* Reset TEV stage 0 to the identity colour/alpha swap, then reapply the
    currently configured blend mode. */
 void fn_802DEF70(void) {
+#define gxApplyBlendMode fn_802D3144
     GXSetTevSwapMode(0, 0, 0);
-    fn_802D3144();
+    gxApplyBlendMode();
+#undef gxApplyBlendMode
 }
 #pragma scheduling on
 /* Set up the two-stage indirect-texture TEV pipeline used by render mode 2
