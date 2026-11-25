@@ -16,7 +16,7 @@ __declspec(section ".sdata") extern char lbl_8055C9C0[];
 #pragma cplusplus on
 extern float lbl_80564548, lbl_8056454C;
 extern unsigned short lbl_802FA9C0[6];
-extern "C" void *fn_802C86DC(void);
+extern "C" void *DrawList_getCurrentMatrix(void);
 extern "C" void fn_802C8BD0(int, float, float, float, float, float, float, float, float, float, float, float, float, float);
 extern "C" void DrawList_RestoreNormalMode(void);
 extern "C" void fn_802C8DB8(void *, int, void *, int, unsigned short, unsigned short, unsigned short, unsigned short);
@@ -24,7 +24,7 @@ extern "C" void fn_802C8DB8(void *, int, void *, int, unsigned short, unsigned s
 #pragma processor 750
 #pragma use_lmw_stmw off
 extern "C" void fn_802960A0(float *pos, unsigned int color, int tex, float s, double u0, double u1, double v0, double v1) {
-    float *m = (float *)fn_802C86DC();
+    float *m = (float *)DrawList_getCurrentMatrix();
     float v[3];
     float uv[8];
     float vtx[4][6];
@@ -520,23 +520,23 @@ struct KF { float dur; float a[4]; unsigned int col; int p18; float h; float v[3
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-int fn_80296D2C(void *arg0, float *arg1, float farg0) {
+int fn_80296D2C(const void *arg0, const float *arg1, float farg0) {
     struct KF *kf[2];
     struct KF **kp = kf;
     struct KF *base;
-    int count, i, flags, off;
     float dur, total, t, ease, x, y, z, w, h;
-    unsigned int packed;
+    register unsigned long packed;
+    int count, i, flags, off;
     float sp[3];
     float vec[3];
     kp[0] = 0; kp[1] = 0;
-    count = *(int *)((char *)arg0 + 0x2C);
     base = *(struct KF **)((char *)arg0 + 0x24);
+    count = *(int *)((char *)arg0 + 0x2C);
     total = lbl_8056456C;
     off = 0;
     for (i = 0; i < count; i++) {
         struct KF *b = *(struct KF **)((char *)arg0 + 0x24);
-        dur = *(float *)((char *)b + off);
+        dur = *(float *)((char *)b + (unsigned)off);
         if (farg0 < total + dur) { kp[0] = (struct KF *)((char *)b + off); break; }
         total += dur;
         off += 0x30;
@@ -563,12 +563,12 @@ int fn_80296D2C(void *arg0, float *arg1, float farg0) {
     } else {
         vec[0] = kp[0]->v[0]; vec[1] = kp[0]->v[1]; vec[2] = kp[0]->v[2];
     }
-    sp[0] = vec[0] + arg1[0];
     sp[1] = vec[1] + arg1[1];
     sp[2] = vec[2] + arg1[2];
+    sp[0] = vec[0] + arg1[0];
     if (flags & 4) {
         int a = packed >> 24;
-        int a2 = fn_802969B4(a, 0, ease) & 0xFF;
+        long a2 = fn_802969B4(a, 0, ease) & 0xFF;
         fn_802960A0(sp, (a2 << 24) | (packed & 0xFFFFFF), kp[0]->p18, h, x, y, z, w);
         fn_802960A0(sp, (packed & 0xFFFFFF) | ((a - a2) << 24), kp[1]->p18, h, x, y, z, w);
     } else {

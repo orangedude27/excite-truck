@@ -67,7 +67,7 @@ extern unsigned char lbl_8055F75C;
 extern float fn_801EC114(void);
 extern float fn_80291784(float, float, float, float);
 extern void fn_80291B9C(void *, float *, float);
-extern void *fn_802C86DC(void);
+extern void *DrawList_getCurrentMatrix(void);
 __declspec(section ".data") extern int lbl_804B3EC0;
 extern unsigned char lbl_8055C920;
 extern int fn_802C2C00(int);
@@ -360,7 +360,7 @@ void fn_80291E64(void *arg0) {
     float t, w, negd, one, zero, step, scale, k;
     float sx, sy, sz;
     ctx = (char *)arg0;
-    p = (float *)fn_802C86DC();
+    p = (float *)DrawList_getCurrentMatrix();
     t = *(float *)(ctx + 0x124);
     o[0] = p[0x24 / 4] + p[0x18 / 4] * t;
     o[1] = p[0x28 / 4] + p[0x1C / 4] * t;
@@ -548,7 +548,7 @@ void fn_8029231C(float *arg0) {
     /* Advance the sun/flare position by arg0 scaled by frame time when enabled. */
     if (lbl_8055F75C != 0) {
         dt = fn_801EC114();
-        base = (float *)fn_802C86DC();
+        base = (float *)DrawList_getCurrentMatrix();
         temp_f4 = arg0[0] * dt;
         temp_f2 = arg0[1] * dt;
         temp_f3 = base[9];

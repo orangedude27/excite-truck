@@ -33,7 +33,7 @@ void* fn_802A9680(void* arg0, s32 arg1) {
     }
     return arg0;
 }
-extern void *fn_802C86DC(void);
+extern void *DrawList_getCurrentMatrix(void);
 extern s32 beginDrawListPass(s32);
 extern void fn_802C8E00(s32, s32, float, float, float, float, float);
 extern void DrawList_endMeshPass(void);
@@ -51,9 +51,9 @@ void fn_802A96E8(void *obj, s32 count, s32 colorArg, s32 arg3, s32 arg4) {
     float e18;
     float f31v;
     float f30v;
-    w_camA24.v = (u8 *)fn_802C86DC() + 0x24;
-    camB = fn_802C86DC();
-    camC = fn_802C86DC();
+    w_camA24.v = (u8 *)DrawList_getCurrentMatrix() + 0x24;
+    camB = DrawList_getCurrentMatrix();
+    camC = DrawList_getCurrentMatrix();
     fn_802C8BD0(arg3);
     e18 = fn_801E7E18();
     f31v = lbl_80564998 - (float)fn_8002EFB4(e18, lbl_80564990);

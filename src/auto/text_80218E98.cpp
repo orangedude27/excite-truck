@@ -10080,7 +10080,7 @@ extern "C" void fn_8022A19C(void *arg0, void *arg1) {
 #undef Resource_Exists
 }
 
-extern "C" void *fn_802C86DC(void);
+extern "C" void *DrawList_getCurrentMatrix(void);
 extern "C" void MRModel_GetBoundingBoxArray(s32, f32 *);
 extern "C" void DrawList_getViewParams(f32 *, f32 *, f32 *, f32 *);
 extern "C" f64 fn_8002F234(f32);
@@ -10100,7 +10100,7 @@ extern "C" void fn_8022A210(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, 
     u32 *source; u32 second, first; s32 matrixValue;
     if (*(s32 *)((u8 *)obj + 4) == -1) return;
     *(f32 *)((u8 *)obj + 0x38) += *(f32 *)((u8 *)obj + 0x3C) * arg5;
-    source = (u32 *)fn_802C86DC();
+    source = (u32 *)DrawList_getCurrentMatrix();
     first = source[0]; second = source[1];
     axisValue = *(f32 *)((u8 *)obj + 0x38);
     *(u32 *)((u8 *)obj + 8) = first;

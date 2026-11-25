@@ -1,5 +1,5 @@
 __declspec(section ".data") extern float lbl_80558DC4;
-extern void *fn_802C86DC(void);
+extern void *DrawList_getCurrentMatrix(void);
 extern void fn_802C8BD0(int);
 extern int beginDrawListPass(int);
 extern void fn_802C8E00(int, unsigned int, float, float, float, float, float);
@@ -896,7 +896,7 @@ void fn_8029D644(void *arg0) {
 
     count = (*(int *)((char *)arg0 + 0x10) - 1) * (*(int *)((char *)arg0 + 0xC) * 2);
     {
-        char *result = (char *)((void *(*)(int, int))fn_802C86DC)(
+        char *result = (char *)((void *(*)(int, int))DrawList_getCurrentMatrix)(
             *(int *)((char *)arg0 + 0x10) - 1, *(int *)((char *)arg0 + 0x10));
         *(float *)((char *)arg0 + 0x64) = *(float *)(result + 0x24);
         *(float *)((char *)arg0 + 0x68) = *(float *)(result + 0x28);
@@ -1440,7 +1440,7 @@ void *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_8029E888(void *s
     return self;
 }
 
-extern void *fn_802C86DC(void);
+extern void *DrawList_getCurrentMatrix(void);
 extern void fn_802C8BD0(int);
 extern int beginDrawListPass(int);
 extern void DrawList_endMeshPass(void);
@@ -1465,7 +1465,7 @@ void fn_8029E8E0(float *arg0, int arg1) {
     fn_802C8BD0(*(int *)((char *)arg0 + 0x40));
     if (beginDrawListPass(4) != 0) {
         struct ReverseVec3 *view;
-        view = (struct ReverseVec3 *)((char *)fn_802C86DC() + 0x24);
+        view = (struct ReverseVec3 *)((char *)DrawList_getCurrentMatrix() + 0x24);
         center = *view;
         f30 = lbl_80564658;
         i = 0;

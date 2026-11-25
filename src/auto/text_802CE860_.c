@@ -10,7 +10,7 @@ void fn_802CE860(int index) { beginMeshPass(index * 4); }
  * vertex/index buffers and drop the mesh mode back to idle (endMeshPass). */
 void fn_802CE868(void) { endMeshPass(); }
 
-extern void *fn_802C86DC(void);
+extern void *DrawList_getCurrentMatrix(void);
 extern int fn_801E4F3C(int, int, float, float, float, float, float);
 extern float lbl_80564F70, lbl_80564F74, lbl_80564F78, lbl_80564F7C;
 extern float lbl_802FAC60[];
@@ -42,8 +42,8 @@ void fn_802CE86C(void *arg0, int arg1, float scale, double x0, double y0, double
   float *a;
   float *b;
   int i;
-  a = (float *) fn_802C86DC();
-  b = (float *) fn_802C86DC();
+  a = (float *) DrawList_getCurrentMatrix();
+  b = (float *) DrawList_getCurrentMatrix();
   *((struct SignTable *) local.signs) = *((struct SignTable *) lbl_802FAC60);
   coeff0 = lbl_80564F78;
   zero = lbl_80564F70;

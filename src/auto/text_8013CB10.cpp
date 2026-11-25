@@ -287,7 +287,7 @@ static inline u8 *NextPathNode(u8 *self, u8 *item) {
 }
 extern "C" f32 fn_801E7E24(void);
 extern "C" void fn_802981F8(void *);
-extern "C" f32 *fn_802C86DC(void);
+extern "C" f32 *DrawList_getCurrentMatrix(void);
 extern "C" s32 fn_801E866C(s32);
 extern "C" void fn_80140D1C(void *, void *, void *);
 extern "C" void qsort(void *, u32, u32, int (*)(const void *, const void *));
@@ -1171,18 +1171,18 @@ extern "C" void fn_8013E054(void *outPtr, void *objPtr, f32 angle) {
     TVec2 tanv = ((TVec2 (*)(void *, const char *))(*(void ***)objPtr)[0x3C / 4])(objPtr, lbl_80559D40);
     f32 a = center.x;
     f32 b = center.y;
-    f32 c = tanv.x;
+    register f32 c = tanv.x;
     f32 d = tanv.y;
     f32 negAngle = -angle;
     f32 nc = -c;
-    *(f32 *)(out + 0x10) = lbl_805614A4;
     *(f32 *)(out + 4) = lbl_805614A4;
+    *(f32 *)(out + 0x10) = lbl_805614A4;
     *(f32 *)(out + 0xC) = a + d * angle;
-    *(f32 *)(out + 0x0) = a + d * negAngle;
     *(f32 *)(out + 0x8) = b + nc * negAngle;
+    *(f32 *)(out + 0x0) = a + d * negAngle;
     *(f32 *)(out + 0x14) = b + nc * angle;
     fn_801E9DC4((s16 *)(out + 0x1C));
-    u8 flag = ((u8 (*)(void *, const char *))(*(void ***)objPtr)[0xC / 4])(objPtr, lbl_80559D60);
+    register u8 flag = ((u8 (*)(void *, const char *))(*(void ***)objPtr)[0xC / 4])(objPtr, lbl_80559D60);
     *(u8 *)(out + 0x1E) = flag;
     if (flag) {
         *(f32 *)(out + 0x20) = ((f32 (*)(void *, const char *))(*(void ***)objPtr)[0x24 / 4])(objPtr, lbl_80559D60);
@@ -1591,7 +1591,7 @@ extern "C" void fn_8013EB30(void *arg0) {
                 }
             }
             if (item == *(u8 **)(self + 0x28C) ||
-                PSVECSquareDistance(item, (u8 *)fn_802C86DC() + 0x24) < lbl_80561504) {
+                PSVECSquareDistance(item, (u8 *)DrawList_getCurrentMatrix() + 0x24) < lbl_80561504) {
                 s32 r7, r9;
                 f32 y;
                 if (*(u8 **)(self + 0x28C) != item) {
@@ -1652,7 +1652,7 @@ extern "C" void fn_8013ED74(void *arg0) {
             f32 spread;
             b = 0;
             a = 0;
-            pos = fn_802C86DC();
+            pos = DrawList_getCurrentMatrix();
             spread = lbl_80561498;
             i = 0;
             do {

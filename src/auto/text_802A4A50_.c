@@ -21,7 +21,7 @@ extern void fn_802CE86C(void *, s32, f32, double, double, double);
 extern f32 lbl_805648D8;
 extern f32 lbl_80564860;
 extern s32 fn_801E85B4(void);
-extern int fn_802C86DC(void);
+extern int DrawList_getCurrentMatrix(void);
 extern void MRModel_SetInstanceTransform(s32, f32 *);
 extern void fn_802C9900(f32);
 extern void fn_802C9904(void);
@@ -378,7 +378,7 @@ void fn_802A4E08(void) {
     }
     magnitude = (f32)__fabs((double)layer->modelFade);
     if (!(magnitude <= FLOAT_EPSILON) && lbl_8055F898 != -1) {
-        viewMtx = (const f32 *)fn_802C86DC();
+        viewMtx = (const f32 *)DrawList_getCurrentMatrix();
         modelMtx[9] = viewMtx[9];
         modelMtx[10] = viewMtx[10];
         modelMtx[11] = viewMtx[11];
@@ -953,7 +953,7 @@ void fn_802A5FE4(void *arg0) {
     s32 j, i;
     if (o->count >= 1) {
         saved = fn_802C9A4C(lbl_8055F880);
-        fn_802C8B98(o->unkC, fn_802C86DC());
+        fn_802C8B98(o->unkC, DrawList_getCurrentMatrix());
         scaled = (s32)(lbl_80564854 * (lbl_8056485C / (lbl_80564890 * PSVECMag(o->vec))));
         t = scaled & ~(scaled >> 31);
         if (fn_801E501C(o->count, o->vec, lbl_80564844, (u8)(t < 0xff ? t : 0xff)) != 0) {
@@ -1366,7 +1366,7 @@ void fn_802A6A7C(void *arg0) {
 extern float lbl_8055F884;
 extern float lbl_805648B4;
 extern float fn_802C9A4C(float);
-extern int fn_802C86DC(void);
+extern int DrawList_getCurrentMatrix(void);
 extern void fn_802C8B98(int, int);
 extern int fn_801E501C(int, void *, float, int);
 extern void fn_801E5174(void *, float, float, float);
@@ -1379,7 +1379,7 @@ void fn_802A6D68(void *arg0) {
     /* Update particles for arg0 and draw them if setup succeeds. */
     if (*(int *)((char *)arg0 + 4) >= 1) {
         savedScale = fn_802C9A4C(lbl_8055F884);
-        fn_802C8B98(*(int *)((char *)arg0 + 0xC), fn_802C86DC());
+        fn_802C8B98(*(int *)((char *)arg0 + 0xC), DrawList_getCurrentMatrix());
         if (fn_801E501C(*(int *)((char *)arg0 + 4), (char *)arg0 + 0x2C, lbl_805648B4, 0xFF) != 0) {
             int offset;
             int i;
@@ -1936,7 +1936,7 @@ s32 fn_802A79CC(s32 arg0) {
     s32 offset;
     s32 i;
 
-    distance = PSQUATMultiply((u8 *)fn_802C86DC() + 0x24, object + 0xC);
+    distance = PSQUATMultiply((u8 *)DrawList_getCurrentMatrix() + 0x24, object + 0xC);
     radiusScale = lbl_80564850;
     alpha = 0xFF;
     radius = *(f32 *)(object + 0x18);

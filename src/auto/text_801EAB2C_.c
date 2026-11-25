@@ -236,14 +236,14 @@ void fn_801EAF60(void) {
 
 }
 
-void *fn_802C86DC(void);
+void *DrawList_getCurrentMatrix(void);
 float PSVECDotProduct(float *, float *, float);
 float fn_801EAF64(void *obj) {
     /* Return the camera-space depth of obj's position (+0x28): dot((obj.pos - camera.pos), camera.forward). */
     float delta[3];
     void *camera;
 
-    camera = fn_802C86DC();
+    camera = DrawList_getCurrentMatrix();
     delta[0] = *(float *)((u8 *)obj + 0x28) - *(float *)((u8 *)camera + 0x24);
     delta[1] = *(float *)((u8 *)obj + 0x2C) - *(float *)((u8 *)camera + 0x28);
     delta[2] = *(float *)((u8 *)obj + 0x30) - *(float *)((u8 *)camera + 0x2C);
@@ -251,7 +251,7 @@ float fn_801EAF64(void *obj) {
         delta, (float *)((u8 *)camera + 0x18));
 }
 
-extern void *fn_802C86DC(void);
+extern void *DrawList_getCurrentMatrix(void);
 extern float PSVECDotProduct(float *, float *, float);
 extern void fn_801EABA8(void *, void *);
 extern void fn_802DAC54(void);

@@ -3,7 +3,7 @@
 extern void fn_801F2570(int);
 
 struct BillboardIndices { unsigned short a[6]; };
-extern void *fn_802C86DC(void);
+extern void *DrawList_getCurrentMatrix(void);
 extern float fn_801E7E18(void);
 extern float PSVECDotProduct(float *, float *);
 extern double fn_8002EFB0();
@@ -57,7 +57,7 @@ int fn_801F1C24(void *arg0) {
     char *camera;
     float f1, f0, f2, cameraX;
 
-    camera = (char *)fn_802C86DC();
+    camera = (char *)DrawList_getCurrentMatrix();
     f2 = lbl_80562F40;
     f0 = lbl_80562F44;
     *(volatile float *)&basis->up.x = f2;
@@ -93,7 +93,7 @@ int fn_801F1CF0(int arg0) {
     float cz, cy, cx, z, y, x;
     char *base = (char *)arg0;
 
-    camera = fn_802C86DC();
+    camera = DrawList_getCurrentMatrix();
     x = *(float *)(base + 0x24);
     y = *(float *)(base + 0x28);
     cx = *(float *)((char *)camera + 0x24);
@@ -188,7 +188,7 @@ void fn_801F1EA8(void) {
 }
 #pragma pop
 extern int fn_802CAC28(void *, int);
-extern void *fn_802C86DC(void);
+extern void *DrawList_getCurrentMatrix(void);
 extern int lbl_8033A628, lbl_8033A8C8, lbl_8033A660, lbl_8033AC58;
 __declspec(section ".data") extern int lbl_8033A660;
 __declspec(section ".data") extern int lbl_8033AC58;
@@ -929,7 +929,7 @@ void fn_801F2E88(void *arg0, void *arg1) {
     register void *pos;
     void *p = arg1;
     while (p != 0) {
-        void *camera = fn_802C86DC();
+        void *camera = DrawList_getCurrentMatrix();
         int frame;
         float v1,v,u1,u,fu,fv;
         fn_8001BA68(vec);
@@ -1079,7 +1079,7 @@ struct Sky {
     struct SkyResource *resource;
 };
 
-/* The 3x4 camera matrix of fn_802C86DC: three basis columns, then the position. */
+/* The 3x4 camera matrix of DrawList_getCurrentMatrix: three basis columns, then the position. */
 struct Camera {
     float basis[6];
     float viewAxis[3];            /* the axis the camera looks along */
@@ -1104,7 +1104,7 @@ void fn_801F3288(struct Sky *sky) {
     unsigned int i;
     sky->planeCount = 0;
     if (sky->resource != 0 && sky->mode != 0) {
-        camera = (struct Camera *)fn_802C86DC();
+        camera = (struct Camera *)DrawList_getCurrentMatrix();
         sky->matrix[9] = camera->position[0];
         walk = (struct SkyPlane *)sky->resource;   /* the resource; its planes start at +0x2C */
         sky->matrix[10] = camera->position[1];

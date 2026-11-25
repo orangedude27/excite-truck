@@ -15,7 +15,7 @@ extern char lbl_804C1480[];
 extern void fn_801293C8(void *);
 extern void fn_801293DC(void *);
 extern void __AXDSPInitCallback_801293D0(void);
-extern void *fn_802C86DC(int);
+extern void *DrawList_getCurrentMatrix(int);
 extern int fn_802C94A0(void *, void *, void *, float, float, float, float, float, float);
 extern void DrawList_getViewParams(void *, void *, void *, void *, float, float, float);
 extern void fn_802CCBC0();
@@ -385,7 +385,7 @@ void fn_802CD37C(void *arg0, void *arg1, float *arg2, int arg3, float farg0, flo
     }
     f[6] = *(int *)((char *)arg0 + 0x10);
     entries = *(void ***)((char *)arg0 + 0x14);
-    r = (float *)fn_802C86DC(f[6]);
+    r = (float *)DrawList_getCurrentMatrix(f[6]);
     {
         float *g = (float *)(lbl_804C1480 + 0x4190);
         for (k = 0; k < 12; k++) { g[k] = r[k]; f[66 + k] = r[k]; }

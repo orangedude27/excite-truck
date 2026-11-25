@@ -1,5 +1,5 @@
 #include <math.h>
-extern void *fn_802C86DC(void);
+extern void *DrawList_getCurrentMatrix(void);
 extern void fn_802C8DB8(void *, int, void *, int);
 extern void fn_802C9904(void);
 extern unsigned short lbl_80562D20, lbl_80562D22, lbl_80562D24;
@@ -394,7 +394,7 @@ void fn_801E41E0(void *arg0, int arg1, float farg0) {
     local.frame[1] = lbl_80562D22;
     local.frame[2] = lbl_80562D24;
 
-    matrix = (float *)fn_802C86DC();
+    matrix = (float *)DrawList_getCurrentMatrix();
     sidePositive = lbl_80562D28 * farg0;
     negScale = -farg0;
     depthNegative = lbl_80562D08 * negScale;

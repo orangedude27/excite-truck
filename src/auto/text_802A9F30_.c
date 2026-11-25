@@ -948,13 +948,13 @@ void fn_802AB6D4(void) {
        per-frame effect state lives in the entry at lbl_8055F928 + i*0x108. */
     extern int fn_80287B14(void);              /* number of active objects */
     extern int fn_80287B24(int);               /* object pointer by index (stride 0x160) */
-    extern int fn_802C86DC(void);              /* current draw list */
+    extern int DrawList_getCurrentMatrix(void);              /* current draw list */
     extern void fn_802AAD5C(int, int, int);    /* draw the air-stream trail (airstrm.tex) */
     extern void fn_802AAF00(int, int, int);    /* reserved draw step (empty) */
     extern void fn_802AAF04(int, int, int);    /* draw the entry-puff quads (entrypuff.tex) */
     extern int lbl_8055F928;                   /* base of per-object effect entries (stride 0x108) */
     int count = fn_80287B14();
-    int drawList = fn_802C86DC();
+    int drawList = DrawList_getCurrentMatrix();
     int i;
     for (i = 0; i < count; i++) {
         int object = fn_80287B24(i);

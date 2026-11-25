@@ -830,7 +830,7 @@ extern double fabs(double);
 extern void DrawList_copyCurrentMatrix(f32 *);
 extern void MRModel_SetInstanceTransform(s32, f32 *);
 extern void DrawList_warnFullscreenAddUnsupported(u32);
-extern f32 *fn_802C86DC(void);
+extern f32 *DrawList_getCurrentMatrix(void);
 extern void fn_802C9900(f32);
 extern void fn_802C9904(void);
 extern void fn_802B05D8(void);
@@ -885,7 +885,7 @@ extern "C" void fn_801EBF00(void) {
             intensity = 0xFF;
             if (scaled < 0xFF) intensity = scaled;
             DrawList_warnFullscreenAddUnsupported(0xFF000000 | ((intensity & 0xff) << 16) | ((intensity & 0xff) << 8) | (intensity & 0xff));
-            viewMtx = fn_802C86DC();
+            viewMtx = DrawList_getCurrentMatrix();
             l.viewPos[0] = viewMtx[9];
             l.viewPos[1] = viewMtx[10];
             l.viewPos[2] = viewMtx[11];

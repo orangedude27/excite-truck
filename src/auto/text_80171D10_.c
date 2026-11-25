@@ -418,7 +418,7 @@ void fn_801720FC(float *__restrict arg0, int arg1, float arg2) {
     DrawList_RestoreNormalMode();
 }
 #pragma scheduling on
-extern void *fn_802C86DC(void);
+extern void *DrawList_getCurrentMatrix(void);
 extern double fn_8002EFB4(float, double);
 extern float lbl_80561A44, lbl_80561A68, lbl_80561A6C;
 extern float lbl_80561A70, lbl_80561A74, lbl_80561A7C;
@@ -439,7 +439,7 @@ void fn_8017248C(int arg0) {
     float offset;
 
     state = fn_8017960C(arg0);
-    camera = fn_802C86DC();
+    camera = DrawList_getCurrentMatrix();
     value = (PSQUATMultiply((char *)state + 0x60,
                             (char *)camera + 0x24) - lbl_80561A68) /
             lbl_80561A6C;

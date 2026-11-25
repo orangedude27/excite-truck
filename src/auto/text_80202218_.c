@@ -287,7 +287,7 @@ void fn_8020268C(void) {
 void fn_80202718(int arg0) {
     extern int lbl_804888E0[], lbl_804888D0[];
     extern unsigned char lbl_8055ECD8;
-    extern void *fn_802C86DC(void);
+    extern void *DrawList_getCurrentMatrix(void);
     extern int fn_801E85B4(void);
     extern void fn_801E86F8(int);
     extern void *fn_801EA9A0(void);
@@ -311,7 +311,7 @@ void fn_80202718(int arg0) {
         fn_8020268C();
         return;
     }
-    o = (float *)fn_802C86DC();
+    o = (float *)DrawList_getCurrentMatrix();
     center = fn_802022E4((Vec *)(o + 9));
     lbl_804888D0[fn_801E85B4()] = center;
     data = (int *)(lbl_8055ECC4 + (((center + 1) % lbl_8055ECC0) * 16));

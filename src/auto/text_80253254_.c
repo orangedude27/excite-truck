@@ -688,7 +688,7 @@ void fn_80254354(void *vehicle) {
 }
 #pragma scheduling on
 void fn_802543FC(void *arg0) {
-    extern void *fn_802C86DC(void);
+    extern void *DrawList_getCurrentMatrix(void);
     extern s32 fn_802C7A34(s32, void *, s32);
     extern void fn_802C70AC(s32, void *, s32, s32);
     extern float lbl_80563A04;
@@ -705,7 +705,7 @@ void fn_802543FC(void *arg0) {
     float scale;
 
     if (*(s32 *)(base + 0x28) != -1) {
-        v = fn_802C86DC();
+        v = DrawList_getCurrentMatrix();
         a.i = *(s32 *)((u8 *)v + 0);
         b.i = *(s32 *)((u8 *)v + 4);
         c.i = *(s32 *)((u8 *)v + 8);
@@ -1785,7 +1785,7 @@ void fn_80256548(struct CarUIModelRec *model) {
 #pragma cplusplus off
 #pragma scheduling invalid_target
 void fn_802566A4(void *arg0) {
-    extern void *fn_802C86DC(void);
+    extern void *DrawList_getCurrentMatrix(void);
     extern void PSVECCrossProduct(float *, float *, float *);
     extern void PSVECNormalize(float *, float *);
     extern void DrawList_setGlobalDirection(float *);
@@ -1818,7 +1818,7 @@ void fn_802566A4(void *arg0) {
     frame.config[6] = *config++; frame.config[7] = *config++;
     frame.config[8] = *config++;
     do {
-        unsigned int *matrix = (unsigned int *)fn_802C86DC();
+        unsigned int *matrix = (unsigned int *)DrawList_getCurrentMatrix();
         unsigned int m0, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11;
         m2 = matrix[2]; m0 = matrix[0]; frame.basis.word[0] = m0;
         m6 = matrix[6]; frame.basis.word[2] = m2; m8 = matrix[8];
@@ -1907,7 +1907,7 @@ void fn_802569DC(void *arg0, int arg1, float scale) {
     struct Matrix { float m[12]; };
     struct Vertex { float x,y,z; unsigned int color; float u,v; };
     extern void fn_802C942C(int);
-    extern void *fn_802C86DC(void);
+    extern void *DrawList_getCurrentMatrix(void);
     extern void DrawList_loadMatrix(void *);
     extern float fn_801F159C(int);
     extern void fn_802ABFF8(int, float);
@@ -1928,7 +1928,7 @@ void fn_802569DC(void *arg0, int arg1, float scale) {
     int n;
     step = lbl_80563A94;
     fn_802C942C(-1);
-    original = *(struct Matrix *)fn_802C86DC();
+    original = *(struct Matrix *)DrawList_getCurrentMatrix();
     ((double *)&adjusted)[0] = ((double *)&original)[0];
     ((double *)&adjusted)[1] = ((double *)&original)[1];
     ((double *)&adjusted)[2] = ((double *)&original)[2];
@@ -2018,7 +2018,7 @@ void fn_802569DC(void *arg0, int arg1, float scale) {
  */
 void fn_80256DD8(struct CarUIModelRec *model) {
 
-extern void *fn_802C86DC(void);          /* the current 4x3 model matrix */
+extern void *DrawList_getCurrentMatrix(void);          /* the current 4x3 model matrix */
 extern void fn_80253004(s32, void *);    /* copy a camera record by index */
 extern void fn_802545C4(void *, s32, s32); /* build the view setup instead */
 extern float fn_802C9744(void);          /* current field of view */
@@ -2058,7 +2058,7 @@ extern float lbl_80563A00, lbl_80563A04, lbl_80563A14, lbl_80563AA4, lbl_8055F33
 
     struct MtxWords9 { s32 v[9]; };
     struct MtxWords3 { s32 v[3]; };
-    currentMtx = (s32 *)fn_802C86DC();
+    currentMtx = (s32 *)DrawList_getCurrentMatrix();
     *(struct MtxWords9 *)(frame + 0xB0) = *(struct MtxWords9 *)currentMtx;
     *(struct MtxWords3 *)(frame + 0xD4) = *(struct MtxWords3 *)(currentMtx + 9);
 

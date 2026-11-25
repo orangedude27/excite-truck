@@ -146,7 +146,7 @@ s32 fn_801F8988(void *, void *);
 extern "C" {
 extern s32 lbl_8055B1C8;
 s32 fn_80204014(s32, s32, s32, void *);
-void *fn_802C86DC(void);
+void *DrawList_getCurrentMatrix(void);
 void fn_802C70AC(s32, void *, s32, s32);
 f32 PSVECDotProduct(const f32 *, const f32 *);
 }
@@ -2721,7 +2721,7 @@ extern "C" void fn_801FB354(void *__restrict model, void *matrix) {
     void *cameraMatrix;
 
     if (*(u32 *)((u8 *)model + 0x190) & 1) {
-        cameraMatrix = fn_802C86DC();
+        cameraMatrix = DrawList_getCurrentMatrix();
         posX = *(f32 *)((u8 *)matrix + 0x24);
         posY = *(f32 *)((u8 *)matrix + 0x28);
         camX = *(f32 *)((u8 *)cameraMatrix + 0x24);
@@ -2936,7 +2936,7 @@ extern "C" s32 fn_801FBD0C(void *object) {
     f32 toObject[3];
     void *camera;
 
-    camera = fn_802C86DC();
+    camera = DrawList_getCurrentMatrix();
     objectX = *(f32 *)((u8 *)object + 0x24);
     objectY = *(f32 *)((u8 *)object + 0x28);
     cameraX = *(f32 *)((u8 *)camera + 0x24);
@@ -2965,7 +2965,7 @@ extern "C" s32 fn_801FBD94(void *object) {
     f32 toObject[3];
     void *camera;
 
-    camera = fn_802C86DC();
+    camera = DrawList_getCurrentMatrix();
     objectX = *(f32 *)((u8 *)object + 0x24);
     objectY = *(f32 *)((u8 *)object + 0x28);
     cameraX = *(f32 *)((u8 *)camera + 0x24);

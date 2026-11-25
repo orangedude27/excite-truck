@@ -1622,7 +1622,7 @@ void fn_80290160(void *arg0, void *arg1, void *arg2, float farg0)
   *((float *) (((char *) arg1) + 8)) = al;
   *((float *) (((char *) arg1) + 4)) = an;
 }
-extern void *fn_802C86DC(void);
+extern void *DrawList_getCurrentMatrix(void);
 extern void fn_802C8DB8(void *, int, void *, int);
 extern float PSVECDotProduct(float *, float *);
 #pragma push
@@ -1645,7 +1645,7 @@ void fn_80290224(void *arg0, void *arg1, int arg2) {
     int r, g, b, a;
 
     {
-        float *bb = (float *)fn_802C86DC();
+        float *bb = (float *)DrawList_getCurrentMatrix();
         dsub.x = bb[3] - bb[0];
         dsub.y = bb[4] - bb[1];
         dsub.z = bb[5] - bb[2];
@@ -1673,7 +1673,7 @@ void fn_80290224(void *arg0, void *arg1, int arg2) {
               + lbl_8056444C * *(float *)((char *)arg0 + 0x4c) * (t * t));
         k = t * *(float *)((char *)arg0 + 0xa0);
         fn_80290160(arg0, &pos, p, t);
-        bb = (float *)fn_802C86DC();
+        bb = (float *)DrawList_getCurrentMatrix();
         mtx = *(EfMtx3 *)bb;
         campos = *(EfVec *)(bb + 9);
         dir.x = campos.x - pos.x;
@@ -1754,7 +1754,7 @@ void fn_802908CC(void *arg0, void *arg1, int arg2) {
     int frames, fr, cols, row, col;
     volatile int count;
     {
-        float *bb = (float *)fn_802C86DC();
+        float *bb = (float *)DrawList_getCurrentMatrix();
         dsub.x = bb[3] - bb[0];
         dsub.y = bb[4] - bb[1];
         dsub.z = bb[5] - bb[2];
@@ -1786,7 +1786,7 @@ void fn_802908CC(void *arg0, void *arg1, int arg2) {
         h = half * (*(float *)((char *)arg0 + 0x54) + *(float *)((char *)arg0 + 0x50) * t + half * *(float *)((char *)arg0 + 0x4c) * (t * t));
         fr = (*(unsigned char *)(p + 0x1d) + (int)(k * ((float)frames * *(float *)((char *)arg0 + 0x80)))) % frames;
         fn_80290160(arg0, &pos, p, t);
-        bb = (float *)fn_802C86DC();
+        bb = (float *)DrawList_getCurrentMatrix();
         cam = *(EfCam *)bb;
         dir.x = cam.p[0] - pos.x;
         dir.y = cam.p[1] - pos.y;
@@ -1865,7 +1865,7 @@ void fn_80290FC4(void *arg0, void *arg1, int arg2) {
     int r, g, b, a;
     float *bb;
 
-    cam = (float *)fn_802C86DC();
+    cam = (float *)DrawList_getCurrentMatrix();
     k0 = lbl_8056444C * *(float *)((char *)arg0 + 0x48);
     one = lbl_8055F738;
     for (i = 0; i < 8; i++) {
@@ -1902,7 +1902,7 @@ void fn_80290FC4(void *arg0, void *arg1, int arg2) {
             lbl_80564428);
         fn_80290160(arg0, (float *)&pos, p, t);
         fn_8028F608((float *)&axA, (float *)&axB, (float (*)[3])cam, ang);
-        bb = (float *)fn_802C86DC();
+        bb = (float *)DrawList_getCurrentMatrix();
         cam2 = *(EfCam *)bb;
         dir.x = cam2.p.x - pos.x;
         dir.y = cam2.p.y - pos.y;

@@ -9,7 +9,7 @@ typedef struct { float rot[9]; } PartPoseRot;
 typedef struct { float pos[3]; } PartPosePos;
 extern void fn_802C70AC(int, void *, int, int);
 extern int fn_802C7A34(int, void *, int, float);
-extern float *fn_802C86DC();
+extern float *DrawList_getCurrentMatrix();
 extern float lbl_80562E98;
 extern float lbl_80562E90;
 void fn_801ECF58(void *);
@@ -812,7 +812,7 @@ void fn_801ED354(void *vehicleRender) {
 
 #pragma push
 #pragma scheduling invalid_target
-/* Rotate the source vector from the current draw matrix (fn_802C86DC) by this
+/* Rotate the source vector from the current draw matrix (DrawList_getCurrentMatrix) by this
  * object's 3x3 matrix at +0x3C, write the result and its negation into two
  * indexed vec3 slots, then dispatch a draw callback using fn_802C7A34's handle. */
 void fn_801ED46C(void *self) {
@@ -822,7 +822,7 @@ void fn_801ED46C(void *self) {
     char *slot;
     if (*(int *)((char *)self + 0x488) != -1 && *(int *)((char *)self + 0x3F8) <= 2) {
         rot = *(float **)((char *)self + 0x3C);
-        currentMatrix = fn_802C86DC();
+        currentMatrix = DrawList_getCurrentMatrix();
         if (outVec == currentMatrix) {
             float x, y, z;
             float m00, m10, m20, m01, m11, m21, m02, m12, m22;

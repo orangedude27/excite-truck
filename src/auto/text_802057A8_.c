@@ -354,7 +354,7 @@ extern char lbl_8033BC2C[];
 extern int lbl_8055CFF0, lbl_8055CFF4;
 extern unsigned int lbl_8055E044;
 extern unsigned char lbl_8055ED70, lbl_8055ED71;
-extern void *fn_802C86DC(void);
+extern void *DrawList_getCurrentMatrix(void);
 extern void fn_802C88FC();
 extern void DrawList_loadMatrix(void *);
 extern void fn_801312EC(void *, void *);
@@ -373,7 +373,7 @@ void fn_80205FCC(void) {
     Cam48 cam;
     Mtx48 buf;
     float f31;
-    Cam48 *src = (Cam48 *)fn_802C86DC();
+    Cam48 *src = (Cam48 *)DrawList_getCurrentMatrix();
     cam.a = src->a;
     cam.b = src->b;
     cam.c = src->c;

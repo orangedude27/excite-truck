@@ -132,7 +132,7 @@ void fn_802C1018(void) {
 }
 #pragma pop
 
-extern float *fn_802C86DC(float);
+extern float *DrawList_getCurrentMatrix(float);
 extern void MRModel_SetInstanceTransform(int, float *);
 extern void fn_802A4E08(void);
 extern void fn_8029231C(char *);
@@ -173,7 +173,7 @@ void fn_802C1020(void) {
         matrix[6] = lbl_80564E38;
         matrix[7] = lbl_80564E38;
         matrix[8] = lbl_80564E48;
-        drawlistBase = fn_802C86DC(lbl_80564E48);
+        drawlistBase = DrawList_getCurrentMatrix(lbl_80564E48);
         matrix[9] = drawlistBase[9];
         matrix[10] = drawlistBase[10];
         matrix[11] = drawlistBase[11];

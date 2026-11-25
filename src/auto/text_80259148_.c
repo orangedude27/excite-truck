@@ -1203,7 +1203,7 @@ extern float fn_8014C8B4(float, float, float, float, float);
 extern void fn_8025AD3C(float *, float *, float *, float);
 extern void fn_80015EB0(void *, float);
 extern void fn_80015B20(void *, void *, void *);
-extern void *fn_802C86DC(void);
+extern void *DrawList_getCurrentMatrix(void);
 extern float lbl_8055F398;
 extern float lbl_80563AEC, lbl_80563B08, lbl_80563B0C, lbl_80563B10;
 extern float lbl_80498EAC[3];
@@ -1272,7 +1272,7 @@ void fn_8025AA90(void *arg0, float farg0) {
             }
             fn_80015EB0(rot, lbl_8055F398);
             fn_80015B20((char *)arg0 + 0x84, rot, (char *)arg0 + 0x84);
-            fn_80015B20((char *)arg0 + 0x84, (char *)arg0 + 0x84, fn_802C86DC());
+            fn_80015B20((char *)arg0 + 0x84, (char *)arg0 + 0x84, DrawList_getCurrentMatrix());
         }
     }
 }
@@ -1374,7 +1374,7 @@ void fn_8025AE18(void *arg0) {
         size = t * lbl_80563B1C;
         ratio = size / fn_8025B0C4(lbl_80563B1C * lbl_8055F39C);
         size = lbl_80563B20 + size;
-        camera = (char *)fn_802C86DC();
+        camera = (char *)DrawList_getCurrentMatrix();
         fn_801429D0(ratio, size);
         fn_801C2B9C(obj + 0x78, camera + 0x24, camera + 0x18);
         fn_8001BA68(vec);

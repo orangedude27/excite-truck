@@ -3643,7 +3643,7 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     MRModel_SetInstanceTransform(*(s32 *)r29, a);
 }
 #pragma pop
-extern "C" void fn_802C86DC(void);
+extern "C" void DrawList_getCurrentMatrix(void);
 extern "C" void MRModel_GetBoundingBoxArray(void *, f32 *);
 extern "C" void MRModel_SetInstanceTransform(s32, f32 *);
 extern "C" void *fn_801E87A8(void);
@@ -3656,7 +3656,7 @@ void fn_801533E8(void *arg0, f32 *arg1) {
     f32 bounds[6], center[3], out[3];
     u32 w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11;
     f32 t8, t9, t10, t17, t16, t15, t14, t13, t12, t11, t7, t6, t5, t4, t3, t2, t1, t0;
-    fn_802C86DC();
+    DrawList_getCurrentMatrix();
     ((u32 *)values.m)[0] = ((u32 *)arg1)[0];
     w1 = ((u32 *)arg1)[1];
     w2 = ((u32 *)arg1)[2];

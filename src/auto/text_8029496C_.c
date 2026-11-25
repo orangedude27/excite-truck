@@ -13,7 +13,7 @@ extern void *fn_80287B24(int);
 extern void fn_80294CCC(const Vec80295 *, const Vec80295 *, const Vec80295 *, unsigned int, int, float, float);
 extern const unsigned short lbl_802FA9B0[];
 extern void fn_802C8DB8(void *, int, void *, int);
-extern void *fn_802C86DC(void);
+extern void *DrawList_getCurrentMatrix(void);
 extern float DrawList_squaredDistanceToCamera(void *);
 extern void fn_802C8BD0(int);
 extern void DrawList_RestoreNormalMode(void);
@@ -344,7 +344,7 @@ void fn_80294ED4(void)
   void *temp_r3_6;
   void *temp_r3_7;
   temp_f27 = lbl_80564538;
-  temp_r3 = fn_802C86DC();
+  temp_r3 = DrawList_getCurrentMatrix();
   spD4 = *((Vec80295 *) temp_r3);
   spC8 = *((Vec80295 *) (((unsigned char *) temp_r3) + 0xC));
   fn_802C8BD0(lbl_8055C990);

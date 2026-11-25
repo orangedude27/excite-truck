@@ -194,7 +194,7 @@ test:
     gStaticShadowCount = 0;
 }
 
-extern void *fn_802C86DC(void);
+extern void *DrawList_getCurrentMatrix(void);
 extern float fn_801E88F0(int);
 extern double fn_8002F234(void);
 extern float PSVECSquareDistance(void *, void *);
@@ -219,7 +219,7 @@ void fn_80297AFC(void) {
     float divisor;
     float value;
 
-    camera = fn_802C86DC();
+    camera = DrawList_getCurrentMatrix();
     cameraPosition[0] = *(int *)((char *)camera + 0x24);
     i = 0;
     cameraPosition[1] = *(int *)((char *)camera + 0x28);
@@ -244,7 +244,9 @@ void fn_80297AFC(void) {
             if (value < minimum) {
                 value = minimum;
             }
-            value = value > maximum ? maximum : value;
+            if (value > maximum) {
+                value = maximum;
+            }
             value = cur + value * (maximum - cur);
         } else {
             value = *(float *)(record + 0x38);

@@ -21,7 +21,7 @@ extern float lbl_8055FA18;
 extern s32 lbl_8055FA2C;
 extern u8 lbl_8055FA58;
 extern s32 fn_80204054(void *, s32, s32, void *, s32, s32);
-extern void *fn_802C86DC(void);
+extern void *DrawList_getCurrentMatrix(void);
 __declspec(section ".data") extern s32 lbl_804BE7D8;
 extern void **lbl_8055FA48;
 __declspec(section ".sdata") extern const char lbl_8055CE68[], lbl_8055CEB8[], lbl_8055CEC0[];
@@ -1423,7 +1423,7 @@ void fn_802B773C(void) {
         return;
     if (lbl_8055FA2C >= ((struct TblHeader *)&lbl_804BE7D8)->count)
         return;
-    if (fn_80204054(sp8, 0, 0, fn_802C86DC(), state->f1, state->f2) == 0)
+    if (fn_80204054(sp8, 0, 0, DrawList_getCurrentMatrix(), state->f1, state->f2) == 0)
         return;
 
     if (state->f3 & 1) {

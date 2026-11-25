@@ -2202,7 +2202,7 @@ struct BackfireMan {
     struct BackfireSlot slot[1]; /* +0x04: one per track */
 };
 
-extern "C" void *fn_802C86DC(void);
+extern "C" void *DrawList_getCurrentMatrix(void);
 extern "C" void fn_8029B274(void *arg0, float *arg1, unsigned char arg2, void *arg3, void *arg4, float farg0, float arg6);
 #pragma push
 #pragma processor 750
@@ -2228,8 +2228,8 @@ extern "C" void fn_8029B6E4(void *arg0) {
     float sizeFactor;
     float scale;
     float finalScale;
-    viewRight = (float *)fn_802C86DC();
-    viewUp = (float *)((char *)fn_802C86DC() + 0xC);
+    viewRight = (float *)DrawList_getCurrentMatrix();
+    viewUp = (float *)((char *)DrawList_getCurrentMatrix() + 0xC);
     sizeFactor = lbl_805645C8;
     entry = (struct NoteSlot *)arg0;
     slot = (struct NoteSlot *)arg0;

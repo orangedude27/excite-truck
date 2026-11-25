@@ -616,7 +616,7 @@ group_check:
 #pragma opt_common_subs off
 #pragma scheduling invalid_target
 void fn_80168104(void) {
-    extern void *fn_802C86DC(void);
+    extern void *DrawList_getCurrentMatrix(void);
     extern double fn_8002F234(float);
     extern unsigned int setLightAmbientColor(unsigned int);
     extern unsigned int setDrawListColor(unsigned int);
@@ -628,7 +628,7 @@ void fn_80168104(void) {
     extern float lbl_80561940;
     extern double lbl_80561948;
     struct { float x, y; } pos, d;
-    unsigned char *data = (unsigned char *)fn_802C86DC();
+    unsigned char *data = (unsigned char *)DrawList_getCurrentMatrix();
     int i, offset;
     float scale = lbl_80561940;
     float limit = lbl_8056193C;

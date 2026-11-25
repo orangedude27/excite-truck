@@ -1907,7 +1907,7 @@ void fn_802C7AE0(int arg0, void *arg1, int arg2, float farg0) {
 #pragma opt_propagation reset
 extern signed char lbl_8055FC20;
 extern int fn_802C9C58(int);
-extern void *fn_802C86DC(void);
+extern void *DrawList_getCurrentMatrix(void);
 extern float PSQUATMultiply(void *, void *);
 #pragma push
 #pragma processor 750
@@ -2024,7 +2024,7 @@ void fn_802C7D54(int arg0, const float *arg1, int arg2, float fa, float fb, floa
                         groupOut[2] = tz;
                     }
                     {
-                        float dist = PSQUATMultiply(groupOut, (char *)fn_802C86DC() + 0x24);
+                        float dist = PSQUATMultiply(groupOut, (char *)DrawList_getCurrentMatrix() + 0x24);
                         float tol = *(const float *)(posBase + offset + 12);
                         ok = (dist - tol) < fc;
                     }
