@@ -53,7 +53,7 @@ void fn_800053CC(void) {
 }
 
 /* Does nothing. */
-void fn_80005460(void) {
+/* No-op default callback slot; intentionally does nothing. */ void fn_80005460(void) {
     return;
 }
 
