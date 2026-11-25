@@ -7,7 +7,7 @@ extern char lbl_805600D0;
 extern char lbl_805600D1;
 extern float lbl_805651C4;
 extern float lbl_8055D270;
-extern int fn_802E622C(int, float);
+extern int spuSetVoiceRate(int, float);
 extern int fn_802E61E4(int, float);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -1088,7 +1088,7 @@ void fn_802EBE2C(void) {
     off = 0;
     do {
         fn_802E61E4(((volatile int *)&lbl_80560090)[i], lbl_805651C4);
-        fn_802E622C(((volatile int *)&lbl_80560090)[i], lbl_805651C4);
+        spuSetVoiceRate(((volatile int *)&lbl_80560090)[i], lbl_805651C4);
         fn_802E61BC(((volatile int *)&lbl_80560090)[i]);
         i++;
         off += 4;
@@ -1204,7 +1204,7 @@ void fn_802EC158(void) {
     handle = &lbl_80560090;
     index = 0;
     do {
-        fn_802E622C(*handle, lbl_805651C4);
+        spuSetVoiceRate(*handle, lbl_805651C4);
         fn_802E61E4(*handle, lbl_805651C4);
         index++;
         handle++;

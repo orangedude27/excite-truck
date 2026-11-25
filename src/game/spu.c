@@ -1034,7 +1034,7 @@ void fn_802E620C(void *voice, float surroundPan) {
 }
 
 /* Set a voice handle's playback rate (offset 0x10), the field SND_SetRate writes. */
-void fn_802E622C(void *voice, float rate) { *(float *)((char *)voice + 0x10) = rate; }
+void spuSetVoiceRate(void *voice, float rate) { *(float *)((char *)voice + 0x10) = rate; }
 
 /* No-op voice-parameter setter: the sound mixer passes a voice handle and the
  * float from the sound's unused +0x2C field here, but this build discards it. */
