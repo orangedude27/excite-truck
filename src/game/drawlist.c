@@ -549,7 +549,7 @@ void fn_802C8B70(void) {
 
 #pragma dont_inline on
 /* RealName: DrawList_QueueApplyAndBeginMode2 */
-void fn_802C8B98(int handle, int source) {
+/* Queue and apply the draw record at source as the current GX state, then run handle's mode-2 draw-list setup (select texture slot, set render mode 2). */ void fn_802C8B98(int handle, int source) {
     /* Queue the draw record at `source`, apply it as the current GX state, then run `handle`'s mode-2 draw-list setup. */
     fn_802C7734(source);
     ((void (*)(int))fn_802C8B70)(handle);
