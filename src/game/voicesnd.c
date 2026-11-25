@@ -70,7 +70,7 @@ extern void fn_802E6B04(void);
 extern char lbl_8033C37C[];
 extern void *lbl_8055EE08;
 extern unsigned char lbl_8033C520[];
-extern unsigned char lbl_80489BD0[];
+extern unsigned char sVoiceState[];
 extern int fn_80128668(void);
 extern char lbl_8033C458[];
 typedef struct { char *callbacks; int state; } VoiceMixerDevice;
@@ -607,7 +607,7 @@ void fn_8020B2D0(void) {
 }
 
 extern unsigned char lbl_8033C520[];
-extern unsigned char lbl_80489BD0[];
+extern unsigned char sVoiceState[];
 extern int fn_80128668(void);
 /* CodeWarrior deleting-destructor helper: when deleteFlag > 0, free a non-null object via operator delete (fn_80128668), then return the object. */ int fn_8020B2D4(int object, int deleteFlag) {
     /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
@@ -625,9 +625,9 @@ void *fn_8020B314(void) {
 }
 
 void VoiceSound_ResetState(void) {
-    /* Reset the sound-voice state block at lbl_80489BD0: clear the flag and
+    /* Reset the sound-voice state block at sVoiceState: clear the flag and
      * used count, then set its capacity to 32 voices. */
-    volatile unsigned char *voiceState = lbl_80489BD0;
+    volatile unsigned char *voiceState = sVoiceState;
     voiceState[0] = 0;
     *(volatile int *)(voiceState + 4) = 0;
     *(volatile int *)(voiceState + 8) = 0x20;
