@@ -1490,13 +1490,15 @@ static inline void SetTagProcessorLevel1V2_800D77DC(u8 *self, s32 arg1) {
 extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
     u8 *self = *(u8 **)((u8 *)arg0 + 0x10);
     if (u8 *cast = DynCast_800D77DC(self)) *(s32 *)(cast + 0xF4) = arg1;
-    for (ChildIter_800D77DC it1 = ChildBegin_800D77DC(self); ChildNotEqual_800D77DC(it1, ChildEnd_800D77DC(self)); ChildNext_800D77DC(it1)) { /* level 1 */
+    for (ChildIter_800D77DC it1 = ChildBegin_800D77DC(self); ChildNotEqual_800D77DC(it1, ChildEnd_800D77DC(self)); ChildNext_800D77DC(it1)) {
         u8 *p1 = ChildPane_800D77DC(it1);
         if (u8 *cast = DynCast_800D77DC(p1)) *(s32 *)(cast + 0xF4) = arg1;
         for (ChildIter_800D77DC it2 = ChildBegin_800D77DC(p1); ChildNotEqual_800D77DC(it2, ChildEnd_800D77DC(p1)); ChildNext_800D77DC(it2)) {
             u8 *p2 = ChildPane_800D77DC(it2);
             if (u8 *cast = DynCast_800D77DC(p2)) *(s32 *)(cast + 0xF4) = arg1;
-            for (ChildIter_800D77DC it3 = ChildBegin_800D77DC(p2); ChildNotEqual_800D77DC(it3, ChildEnd_800D77DC(p2)); ChildNext_800D77DC(it3)) {
+            ChildIter_800D77DC it3 = ChildBegin_800D77DC(p2);
+            ChildIter_800D77DC end3 = ChildEnd_800D77DC(p2);
+            for (; ChildNotEqual_800D77DC(it3, end3); ChildNext_800D77DC(it3)) {
                 fn_800D6CA0((s32)ChildPane_800D77DC(it3), arg1);
             }
         }
@@ -1678,7 +1680,7 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
     extern s32 fn_800D8768(s32*);
     extern s32 fn_800D8774(s32*);
     extern s32 fn_800D8780(s32*);
-    extern s32 fn_800D878C(s32*);
+    extern s32 GetIndTexStageNum(s32*);
     extern s32 fn_800D8798(s32*);
     extern void fn_800D8B28(void*, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32);
     extern void SetTextureNum__Q36nw4hbm3lyt8MaterialFUc(void*, u8);
@@ -1804,7 +1806,7 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
     chanB = fn_800D8768((s32*)((const u8*)res + 0x3C));
     v0 = fn_800D8774((s32*)((const u8*)res + 0x3C));
     indNum = fn_800D89E4((u8)fn_800D8780((s32*)((const u8*)res + 0x3C)), 3);
-    indTexStageNum = fn_800D89E4((u8)fn_800D878C((s32*)((const u8*)res + 0x3C)), 4);
+    indTexStageNum = fn_800D89E4((u8)GetIndTexStageNum((s32*)((const u8*)res + 0x3C)), 4);
     tevStageNum = fn_800D89E4((u8)fn_800D8798((s32*)((const u8*)res + 0x3C)), 0x10);
     fn_800D8B28(self, (u8)texNum, (u8)texCoordNum, (u8)texCoordGenNum, (u8)tevStageNum, chanA, (u8)indTexStageNum, (u8)indNum, hasA, hasB, chanB, v0);
     if (*(s32*)(self + 0x58) != 0) {
@@ -1909,7 +1911,7 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
                 j += 1;
             }
         }
-        off += (u8)fn_800D878C((s32*)((const u8*)res + 0x3C)) << 2;
+        off += (u8)GetIndTexStageNum((s32*)((const u8*)res + 0x3C)) << 2;
         if ((u8)tevStageNum != 0) {
             fn_800D9844(self);
             tevDst = (void*)fn_800D9524(self);
@@ -2020,7 +2022,7 @@ extern "C" s32 fn_800D8780(u32 *flags) {
 
 /* Returns the 3-bit indirect-texture-stage count from a nw4r lyt material flags word;
  * callers size the 4-byte indirect-texture stage array at res+0x3C with it. */
-extern "C" s32 fn_800D878C(u32 *flags) {
+extern "C" s32 GetIndTexStageNum(u32 *flags) {
     return (*flags >> 15U) & 7;
 }
 
