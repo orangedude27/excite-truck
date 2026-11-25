@@ -270,21 +270,23 @@ extern "C" s32 FileLookup(s32 path) {
     *((unsigned char *)fileEntry + 0x20) = 0;
     *handlePtr = -1;
 }
-/* Look up the file object for the handle and invoke its vtable slot-4 method (no arguments) on the underlying stream. */
+/* File API (the caller's File_size): validate the handle, take the stream object
+ * stored in its open-file-table entry and dispatch vtable slot +0x18 to return
+ * the size of the open file. */
 extern "C" void fn_802E37C4(s32 fileHandle) {
 #define kFileSourceFile kFileSourceName
     class Obj {
     public:
-        virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual void v3();
-        virtual void v4();              /* vtable slot +0x18 */
+        virtual void reserved0();
+        virtual void reserved1();
+        virtual void reserved2();
+        virtual void reserved3();
+        virtual void getSize();         /* vtable slot +0x18 */
     };
 
     s32 fileEntry = fn_802E33D8(fileHandle, kFileSourceFile, 0x125);
     s32 fileObject = *(s32 *)(fileEntry + 0x24);
-    ((Obj *)fileObject)->v4();
+    ((Obj *)fileObject)->getSize();
 #undef kFileSourceFile
 }
 
