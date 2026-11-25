@@ -1154,10 +1154,10 @@ int setLightAmbientColor(int packedColor) {
 }
 
 extern char gGlobalDrawDirection[];
-extern float lbl_8055D01C;
+extern float gGlobalDrawScalar;
 void DrawList_applyGlobalDirection(void) {
 #define s_direction gGlobalDrawDirection
-#define s_drawScalar lbl_8055D01C
+#define s_drawScalar gGlobalDrawScalar
 #define ApplyDirection gxSetDefaultLightDirection
     /* Applies the global 3-component direction vector and draw scalar to the draw state. */
     ApplyDirection(s_direction, s_drawScalar);
@@ -1167,11 +1167,11 @@ void DrawList_applyGlobalDirection(void) {
 }
 
 #pragma dont_inline on
-/* Set the global draw scalar lbl_8055D01C to value, apply it through
+/* Set the global draw scalar gGlobalDrawScalar to value, apply it through
  * DrawList_applyGlobalDirection, and return the previous value (float analog of setLightAmbientColor). */
-/* setDrawScalar: set the global draw scalar (lbl_8055D01C) to value, reapply the draw direction via DrawList_applyGlobalDirection, and return the previous scalar; the float analog of setLightAmbientColor. */ /* setDrawScalar: set the global draw scalar (lbl_8055D01C) to value, reapply the draw direction via DrawList_applyGlobalDirection, and return the previous scalar; the float analog of setLightAmbientColor. */ float fn_802C99E8(float value) {
-    float previous = lbl_8055D01C;
-    lbl_8055D01C = value;
+/* setDrawScalar: set the global draw scalar (gGlobalDrawScalar) to value, reapply the draw direction via DrawList_applyGlobalDirection, and return the previous scalar; the float analog of setLightAmbientColor. */ /* setDrawScalar: set the global draw scalar (gGlobalDrawScalar) to value, reapply the draw direction via DrawList_applyGlobalDirection, and return the previous scalar; the float analog of setLightAmbientColor. */ float fn_802C99E8(float value) {
+    float previous = gGlobalDrawScalar;
+    gGlobalDrawScalar = value;
     DrawList_applyGlobalDirection();
     return previous;
 }
