@@ -19,7 +19,7 @@ typedef struct {
 } Record;
 
 #pragma scheduling invalid_target
-void *SquealSound_create(void *soundSource) {
+/* Construct the tire-squeal sound object: store vtable and owning sound source, create the SFX handle, copy the source's 0x1ec field into it, and attach a road-sound container. Returns 0 if allocation fails. */ void *SquealSound_create(void *soundSource) {
 #define kVtable         lbl_8033C258
 #define kSfxName        lbl_8033C268    /* "squeal.sfx" */
 #define kAllocTag       lbl_8055B548    /* "tiresnd" */
