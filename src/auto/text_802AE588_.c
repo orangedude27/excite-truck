@@ -1261,8 +1261,8 @@ void fn_802AFF80(void *list, short value) {
 #pragma opt_propagation on
 int fn_802AFFA8(int arg0, int arg1) {
     float out[3];
-    float x = (float)arg0 * 2.0f;
-    float z = (float)arg1 * 2.0f;
+    float x = (float)arg0 * (+2.0f);
+    float z = (float)arg1 * (+2.0f);
     out[0] = x;
     out[2] = z;
     out[1] = fn_801DCF48(0, x, z);
@@ -1291,7 +1291,6 @@ void fn_802B0024(void *list, short value) {
 
 extern int fn_802B127C(int, int);
 extern float fn_801DCF48(int, float, float);
-extern float lbl_80564AF0;
 extern double lbl_80564B70;
 typedef union { double d; u32 u[2]; } Cvt802B;
 unsigned short fn_802B0070(int point) {
