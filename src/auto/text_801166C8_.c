@@ -3437,7 +3437,7 @@ s32 fn_8011B2AC(s32 size, u32 channels, s32 flags, s32 arg3, s32 arg4, s32 outpu
             factors[j] = lbl_80329BC8[index];
         }
         fn_8011AF94(p, size, &bits, factors, arg8);
-        if (mode) fn_8012023C(size, 1, p, arg3, arg4);
+        if (mode) oouraDct(size, 1, p, arg3, arg4);
         else fn_801200BC(size, -1, p, arg3, arg4);
         p += size;
     }
