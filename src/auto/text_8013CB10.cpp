@@ -2624,6 +2624,27 @@ extern "C" void fn_80140D1C(void *arg0, void *arg1, void *arg2) {
  * (+0x118) is set (3).  The animation manager is advanced afterwards, and the
  * row reports whether it is still running. */
 extern "C" u32 fn_80140F10(void *panel, void *item) {
+#define formatInt fn_801345D8
+#define formatScore fn_801308F4
+#define formatTimeMMSS fn_80130980
+#define loadMessage fn_801312EC
+#define refreshMessage fn_80131318
+#define rankIndexForScore fn_801609C4
+#define animStart fn_802ADFF4
+#define animPause fn_802AE02C
+#define animResume fn_802AE0B8
+#define animAdvance fn_802AE168
+#define fmtInt lbl_80559D6C
+#define emptyStr lbl_80559D80
+#define dashStr lbl_80559D84
+#define zeroF lbl_805614A4
+#define oneF lbl_805614AC
+#define bonusBaseF lbl_80561498
+#define gameTimeNow lbl_8055E3C8
+#define msgLoadedFlag lbl_8055E1C8
+#define messageMgr lbl_8042FB78
+#define timeBonusMsgId lbl_8032CA74
+#define messageTypeTag lbl_8055E044
     u8 *row = (u8 *)panel, *record = (u8 *)item;
     f32 startTime, gameTime, sinceStart, elapsed, progress;
     if (*(s32 *)(row+0xc)==0) return 0; /* no animation manager: no row */
