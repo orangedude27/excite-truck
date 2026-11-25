@@ -35,7 +35,7 @@ void fn_80127464(void);
   void fn_802E3804(s32, s32, s32);
   void fn_802E3734(s32 *);
 /* Returns true when the console's configured aspect ratio is widescreen (16:9). */
-s32 fn_802EC4BC(void) {
+s32 HomeMenu_isWidescreen(void) {
     return ConfigGetAspectRatio() == SC_ASPECT_WIDE;
 }
   
@@ -313,7 +313,7 @@ void fn_802EC884(void) {
             for (channel = 0; channel < 4; channel++) WPADControlMotor(channel, 0);
             fn_800C6774(lbl_805600E4, lbl_805600E0, 0x19000);
             fn_800C65C4();
-            fn_802EC4BC();
+            HomeMenu_isWidescreen();
             fn_800C675C();
         }
     }
@@ -365,7 +365,7 @@ extern void C_MTXOrtho(void *, float, float, float, float, float, float);
 extern void GXSetProjection(void *, int);
 extern void fn_800C6610(void);
 extern void fn_802D3360(void);
-extern s32 fn_802EC4BC(void);
+extern s32 HomeMenu_isWidescreen(void);
 extern float lbl_805651E0, lbl_805651E8, lbl_805651F0, lbl_805651F4;
 extern float lbl_805651F8, lbl_805651FC, lbl_80565200, lbl_80565204, lbl_80565208;
 #pragma dont_inline on
@@ -406,7 +406,7 @@ void fn_802ECA48(void) {
         GXSetBlendMode(0, 0, 0, 0);
         GXSetZMode(1, 3, 1);
         GXSetCurrentMtx(3);
-        if (fn_802EC4BC() != 0)
+        if (HomeMenu_isWidescreen() != 0)
             C_MTXOrtho(projection, gOrthoTop, gOrthoBottom, gOrthoLeftWide, gOrthoRightWide, gOrthoNear, gOrthoFar);
         else
             C_MTXOrtho(projection, gOrthoTop, gOrthoBottom, gOrthoLeft4x3, gOrthoRight4x3, gOrthoNear, gOrthoFar);
