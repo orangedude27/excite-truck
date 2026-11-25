@@ -58,11 +58,15 @@ extern char sRmemcardDeleteFailedMsg[];
 #pragma dont_inline on
 #pragma cplusplus on
 extern "C" void fn_802E86D4(void) {
+#define gNandSaveInterface lbl_80560024
+#define gNandSaveActive lbl_80560028
     /* Start the NAND-save manager (virtual slot 0x8) and mark it initialized;
      * fn_802E870C is the matching shutdown that clears the flag. */
     struct NandSaveManager { virtual void start(); };
-    ((NandSaveManager *)lbl_80560024)->start();
-    lbl_80560028 = 1;
+    ((NandSaveManager *)gNandSaveInterface)->start();
+    gNandSaveActive = 1;
+#undef gNandSaveActive
+#undef gNandSaveInterface
 }
 #pragma cplusplus on
 /* NandSave_Deinit: leave the NAND-save subsystem by calling the interface's shutdown virtual (slot 0xC) and clearing the active flag; paired with fn_802E86D4's startup. */ extern "C" void fn_802E870C(void) {
