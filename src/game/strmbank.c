@@ -52,8 +52,9 @@ extern "C" void destroyStrmBankManager(void) {
         strmBankManager = 0;
     }
 }
-/* Load a bank by its "<id>.bnk" filename; the bank handle comes back in r3. */
-/* Forward a bank-name load request to the global stream-bank manager's loadBank virtual method. */ extern "C" void strmLoadBank(s32 bankName) {
+/* Forward a bank-name load request to the global stream-bank manager's loadBank virtual method.
+ * The bank is named by its "<id>.bnk" filename; the loaded bank handle comes back in r3. */
+extern "C" void strmLoadBank(s32 bankName) {
     ((StrmBankManager*)strmBankManager)->loadBank(bankName);
 }
 
