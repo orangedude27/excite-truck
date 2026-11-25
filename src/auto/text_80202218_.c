@@ -292,7 +292,7 @@ void fn_80202718(int arg0) {
     extern void fn_801E86F8(int);
     extern void *fn_801EA9A0(void);
     extern void fn_801DCEF0(void);
-    extern int fn_802CE728(int);
+    extern int modPoolGetLoadedModelId(int);
     extern void fn_802C7458(int, int);
     int i, center, result, count, base, dir;
     int *data;
@@ -336,7 +336,7 @@ void fn_80202718(int arg0) {
     while ((result = fn_80202378(center, base, dir, i)) >= 0) {
         data = (int *)(lbl_8055ECC4 + result * 16);
         fn_802CE744(data[3], 0);
-        result = fn_802CE728(data[3]);
+        result = modPoolGetLoadedModelId(data[3]);
         if (result != -1) {
             fn_802C7458(result, -13);
             count = lbl_804888E0[0x20];

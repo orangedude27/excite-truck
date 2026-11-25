@@ -179,7 +179,7 @@ done:
 
 /* Returns the loaded model handle from a ready model-pool slot (state 2 at +0x38),
    or -1 when the slot is not in the loaded state. */
-int fn_802CE728(void *slot) {
+int modPoolGetLoadedModelId(void *slot) {
     if (*(int *)((char *)slot + 0x38) == 2) {
         return *(int *)((char *)slot + 0x34);
     }
