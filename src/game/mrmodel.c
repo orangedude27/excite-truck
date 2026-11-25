@@ -1246,6 +1246,8 @@ int fn_802C6DC4(int arg0, int arg1, int arg2, int arg3) {
 /* Registers a model's textures: visits every group in
  * groupList through VisitGroupIds with the per-group hook fn_802D6C48. */
 void mrModelRegisterTextures(void *groupList) {
+    /* Register a model's textures by walking every group in its group list
+     * through VisitGroupIds with the no-op per-group hook fn_802D6C48. */
     ((void (*)(void *, void *))VisitGroupIds)(groupList, fn_802D6C48);
 }
 
