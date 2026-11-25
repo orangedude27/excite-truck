@@ -439,7 +439,7 @@ int fn_802E461C(void *file) {
 }
 
 #pragma scheduling invalid_target
-int fn_802E4648(void *file) {
+/* FileDisk_write (vtable slot 0x0C): DVD files are read-only, so panic with the file's path (file+0x40, FileDisk.pathText) and return -1. */ int fn_802E4648(void *file) {
     /* FileDisk::write — DVD files are read-only, so panic with the file's path. */
     Abend_Panic(fileCdMsgWriteNotSupported, (char *)file + 0x40);
     return -1;
