@@ -880,7 +880,7 @@ done:
 extern void fn_8002F53C(void *, void *, void *, s32, s32);
 extern void *memset(void *, int, unsigned int);
 /* Set a stat label's one-based display rank, value pointer and flag for drawing. */
-void MRollStatLabel_setDisplayData(void *label, s32 rankIndex, s32 valuePtr, s32 flag) {
+/* Set a stat label's one-based display rank, value pointer and flag for drawing. */ void MRollStatLabel_setDisplayData(void *label, s32 rankIndex, s32 valuePtr, s32 flag) {
     *(s32 *)((u8 *)label + MROLL_STAT_VALUE_PTR_OFFSET) = valuePtr;
     *(s32 *)((u8 *)label + MROLL_STAT_RANK_OFFSET) = rankIndex + 1;
     *(s32 *)((u8 *)label + MROLL_STAT_FLAG_OFFSET) = flag;
