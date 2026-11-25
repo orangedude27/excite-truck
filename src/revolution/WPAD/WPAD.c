@@ -3640,7 +3640,7 @@ void fn_8005EE20(void) {
 /* WPAD-internal fast-simple-sync starter: tail-calls WUDStartFastSyncSimple so
    its result reaches callers such as the home-button sync-check alarm callback
    (which casts this to an s32-returning function). */
-/* Tail-call thunk forwarding to WUDStartFastSyncSimple to start a simple fast wireless sync. */ /* Tail-call thunk forwarding to WUDStartFastSyncSimple to start a simple fast wireless sync. */ void fn_8005EE6C(void) { WUDStartFastSyncSimple(); }
+/* Tail-call thunk forwarding to WUDStartFastSyncSimple to start a simple fast wireless sync. */ /* Tail-call thunk forwarding to WUDStartFastSyncSimple to start a simple fast wireless sync. */ /* Tail-call thunk forwarding to WUDStartFastSyncSimple to start a simple fast wireless sync. */ void fn_8005EE6C(void) { WUDStartFastSyncSimple(); }
 
 /* WPAD-internal fast-simple-sync stopper: tail-calls fn_8006AC4C, which stops
    the simple-sync loop when the WUD library is running and reports whether it
