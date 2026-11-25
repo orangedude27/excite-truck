@@ -198,10 +198,10 @@ void fn_802E4800(u16 inputWord) {
 /* Return the high nibble (bits 12-15) of the cached current-input word. */
 s32 fn_802E4A10(void) { return (lbl_8055FF5A >> 12) & 0xF; }
 
-extern u8 lbl_804FC458[];
+extern u8 gKeyboardStateTable[];
 u8 isKeyPressed(s32 keyCode) {
     /* Current pressed state of keyboard scan code keyCode (256-entry key-state table). */
-#define gKeyStateTable lbl_804FC458
+#define gKeyStateTable gKeyboardStateTable
     return gKeyStateTable[keyCode];
 #undef gKeyStateTable
 }
