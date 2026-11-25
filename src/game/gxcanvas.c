@@ -10,7 +10,7 @@ extern void fn_802C3C68(s32,s32,s32,s32,s32,s32,s32,s32);
 extern void fn_802C3D74(s32,s32,s32,s32,s32,s32,s32,s32);
 extern void fn_802C3F00(s32,s32,s32,s32,s32,s32,s32,s32);
 
-extern u8 lbl_8055CFF8;
+extern u8 gDefaultPixelFormat;
 extern u8 lbl_8055D000;
 extern void *fn_801284E8(void *, s32);
 void fn_802C2CE8(void *, s32, s32, s8);
@@ -93,9 +93,9 @@ s32 gxCanvasConvert565ToRGBA(s32 rgb565) {
 
 #define Convert565ToRGBA gxCanvasConvert565ToRGBA /* one RGB565 (format 4) pixel -> 0x00RRGGBB word */
 #define Convert555ToRGBA gxCanvasConvert1555ToRGBA /* one RGB1555 (format 3) pixel -> 0x00RRGGBB word */
-/* Build a canvas of the given size using the default pixel format held in lbl_8055CFF8 (3 in this build). */
+/* Build a canvas of the given size using the default pixel format held in gDefaultPixelFormat (3 in this build). */
 void gxCanvasCreateDefault(void *canvas, s32 width, s32 height) {
-    fn_802C2CE8(canvas, width, height, (s8)lbl_8055CFF8);
+    fn_802C2CE8(canvas, width, height, (s8)gDefaultPixelFormat);
 }
 
 void fn_802C2CE8(void *arg0, s32 arg1, s32 arg2, s8 arg3) {

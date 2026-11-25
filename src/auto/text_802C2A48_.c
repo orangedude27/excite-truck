@@ -2,7 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern unsigned int lbl_8055CFF0, lbl_8055CFF4, lbl_8055FB98, lbl_8055FB9C, lbl_8055FBA0, lbl_8055FBA4;
-extern unsigned char lbl_8055CFF8;
+extern unsigned char gDefaultPixelFormat;
 extern float lbl_80564ED8;
 extern float lbl_80564EDC;
 extern unsigned char lbl_8055FBA8;
@@ -27,7 +27,7 @@ void fn_802C2A48(int videoModeId) {
     videoMode = Vid_GetVideoModeInfo(videoModeId);
     lbl_8055CFF0 = videoMode[0];
     lbl_8055CFF4 = videoMode[1];
-    lbl_8055CFF8 = *(unsigned char *)(videoMode + 3);
+    gDefaultPixelFormat = *(unsigned char *)(videoMode + 3);
     lbl_8055FB98 = (videoMode[2] >> 3) * videoMode[0];
     lbl_8055FB9C = 0x280;
     lbl_8055FBA0 = 0x1E0;
