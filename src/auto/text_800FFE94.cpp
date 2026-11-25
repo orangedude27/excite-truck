@@ -710,7 +710,7 @@ extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_80101300(void) 
 #pragma pop
 /* No-op virtual method in the sound player subsystem. Reached through a
  * this-adjusting thunk (fn_801014CC); it has an empty body and just returns. */
-/* No-op virtual override in the nw4hbm sound library; does nothing. */ extern "C" void fn_801013B0(void) {
+/* No-op virtual override in the nw4hbm sound library; does nothing. */ /* No-op virtual override in the nw4hbm sound library; does nothing. */ extern "C" void fn_801013B0(void) {
     return;
 }
 
