@@ -24,7 +24,7 @@ extern s32 fn_802E33D8(s32, const char *, s32);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-extern void* lbl_8055FF24;
+extern void* gSDFileSystem;
 s32 ConfigGetSDCardHandle(void);
 #pragma small_data on
 __declspec(section ".sdata") extern char sNandPathPrefix[];
@@ -39,7 +39,7 @@ __declspec(section ".sdata") extern char sSdPathPrefix[];
 
 /* Returns 1 when the path begins with the SD-card prefix "sd:"
    (sSdPathPrefix), 0 otherwise; getFileSystemForPath then hands out the SD-card file
-   system handle lbl_8055FF24 for it.  Its sibling IsNandPath tests the
+   system handle gSDFileSystem for it.  Its sibling IsNandPath tests the
    "nand:" prefix (sNandPathPrefix). */
 /* Returns 1 when path begins with the SD-card prefix "sd:" (sSdPathPrefix), else 0. */ s32 IsSdPath(s32 path) {
     /* Hold the prefix address as an integer so MWCC keeps its small-data
@@ -53,14 +53,14 @@ __declspec(section ".sdata") extern char sSdPathPrefix[];
 
 #pragma dont_inline on
 /* Returns the file system handle for the given path: NAND (lbl_8055FF20) for
-   paths matching the "nand:" prefix, SD card (lbl_8055FF24) for paths matching
+   paths matching the "nand:" prefix, SD card (gSDFileSystem) for paths matching
    the "sd:" prefix, or 0 if no matching file system is available. */
 /* Return the NAND or SD-card file-system handle selected by the path prefix, or 0 when none matches. */ s32 getFileSystemForPath(s32 path) {
     if (path != 0 && IsNandPath((const char *)path) != 0 && lbl_8055FF20 != 0) {
         return lbl_8055FF20;
     }
-    if (path != 0 && IsSdPath(path) != 0 && (s32)lbl_8055FF24 != 0) {
-        return (s32)lbl_8055FF24;
+    if (path != 0 && IsSdPath(path) != 0 && (s32)gSDFileSystem != 0) {
+        return (s32)gSDFileSystem;
     }
     return 0;
 }
@@ -561,8 +561,8 @@ done:
     return handle;
 }
 #pragma cplusplus off
-/* Initialize the SD-card file system handle (lbl_8055FF24) from the mount stub ConfigGetSDCardHandle, which returns 0 in this build. */
+/* Initialize the SD-card file system handle (gSDFileSystem) from the mount stub ConfigGetSDCardHandle, which returns 0 in this build. */
 void InitSDFileSystemHandle(void) {
-    lbl_8055FF24 = (void*)ConfigGetSDCardHandle();
+    gSDFileSystem = (void*)ConfigGetSDCardHandle();
 }
 
