@@ -779,7 +779,7 @@ void fn_802C92D8(void) {
 
 /* Record render mode 2 (the state texSelectSlot/endMeshPass leave GX in), then hand
  * off to DrawList_RestoreNormalMode to restore the normal state and drop any pending overlay. */
-void fn_802C9118(void) {
+void DrawList_endOverlayPass(void) {
     sRenderMode = 2;
     DrawList_RestoreNormalMode();
 }

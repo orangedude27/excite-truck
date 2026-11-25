@@ -180,7 +180,7 @@ extern f32 lbl_80564890;
 extern double lbl_80564848;
 typedef struct { f32 *pts; s32 count; s32 pad8; s32 unkC; s32 unk10; f32 x14; f32 y18; char pad1C[0x28]; f32 vec[3]; } Obj802A5FE4;
 s32 DrawList_setupMode3(s32);
-void fn_802C9118(void);
+void DrawList_endOverlayPass(void);
 void fn_802C9124(s32, s32, f32, f32, u32, f32, f32, f32, f32);
 
 /* Return frame delta time in seconds: when the timer mode flag is set, use the millisecond timer delta capped at 0.05s, otherwise return the fixed timestep. */
@@ -310,7 +310,7 @@ void fn_802A4D08(void) {
             lbl_80564858, lbl_80564858, lbl_8056485C, lbl_8056485C,
             0, 0, lbl_8055CFF0, lbl_8055CFF4,
             (alpha << 24) | 0x00FFFFFF);
-        fn_802C9118();
+        DrawList_endOverlayPass();
     }
 }
 
@@ -374,7 +374,7 @@ void fn_802A4E08(void) {
             FLOAT_ZERO, FLOAT_ZERO, FLOAT_ONE, FLOAT_ONE,
             0, 0, RENDER_WIDTH, RENDER_HEIGHT,
             (alpha << 24) | SNOW_TINT_RGB);
-        fn_802C9118();
+        DrawList_endOverlayPass();
     }
     magnitude = (f32)__fabs((double)layer->modelFade);
     if (!(magnitude <= FLOAT_EPSILON) && lbl_8055F898 != -1) {
@@ -991,7 +991,7 @@ void fn_802A5FE4(void *arg0) {
             }
             i++;
         }
-        fn_802C9118();
+        DrawList_endOverlayPass();
     }
 }
 #pragma pop
@@ -1995,7 +1995,7 @@ s32 fn_802A79CC(s32 arg0) {
 extern f32 lbl_80564850, lbl_80564854, lbl_80564858, lbl_8056485C;
 extern s32 lbl_8055CFF0, lbl_8055CFF4;
 extern s32 DrawList_setupMode3(s32);
-extern void fn_802C9118(void);
+extern void DrawList_endOverlayPass(void);
 extern void fn_802C9124(s32, s32, f32, f32, u32, f32, f32, f32, f32);
 extern void gxDisableFog(void);
 extern void fn_802A5FE4();
