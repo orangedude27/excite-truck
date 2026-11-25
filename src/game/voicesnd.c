@@ -368,14 +368,14 @@ void VoiceSnd_cacheVoiceByPath(int self, int dirName, int fileName) {
  * sound-directory name to fn_802E59BC to queue it for playback. */
 void fn_8020AC18(void *self, int dirName) { fn_802E59BC((void *)dirName); }
 
-extern void fn_802E5A54(void);
+extern void Spu_shutdown(void);
 /* Voice-sound shutdown: clear the registered voice-entry count, then tear down
- * SPU state (fn_802E5A54). */
+ * SPU state (Spu_shutdown). */
 void VoiceSnd_shutdown(void) {
 #define s_voiceEntryCount sVoiceEntryCount
     s_voiceEntryCount = 0;
 #undef s_voiceEntryCount
-    fn_802E5A54();
+    Spu_shutdown();
 }
 
 #pragma push

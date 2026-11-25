@@ -742,7 +742,7 @@ done:
 }
 
 extern void SpuSampleReleaseRef(void *);
-void fn_802E5A54(void) {
+void Spu_shutdown(void) {
     /* Shut down SPU state: release every allocated sound slot, finalize every
      * queued sound name, and reset both counts to zero. */
     int slotIndex;
