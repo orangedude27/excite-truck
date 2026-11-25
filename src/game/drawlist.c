@@ -559,7 +559,7 @@ void fn_802C8B70(void) {
  * then run the mode-2 draw-list setup: select texture slot `texSlot` and set
  * the draw mode to 2. Like fn_802C8B98, but resets to the default instead of
  * applying a queued draw record first. */
-void fn_802C8BD0(int texSlot) {
+/* RealName: DrawList_ResetAndBeginMode2. Resets GX material/vertex state to its default (fn_802C7758), then runs mode-2 draw-list setup on texSlot (select texture slot, set render mode 2). Like fn_802C8B98, but resets to the default instead of applying a queued draw record first. */ void fn_802C8BD0(int texSlot) {
     fn_802C7758(texSlot);
     ((void (*)(int))fn_802C8B70)(texSlot);
 }
