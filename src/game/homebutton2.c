@@ -8,7 +8,7 @@
 #include "revolution/GX/GXTypes.h"
 #include "revolution/MTX/mtxtypes.h"
 
-extern char lbl_805600E8;
+extern char HomeMenu_active;
 extern u8 lbl_805600E9;
 extern s8 lbl_805600EA;
 extern u8 lbl_805600EB;
@@ -309,7 +309,7 @@ void fn_802EC884(void) {
             lbl_805600EB = isNormalBoot;
             if (isNormalBoot != 0) statusText = menuStrings + 0x198;
             fn_802E30C8(logFormat, statusText);
-            lbl_805600E8 = 1;
+            HomeMenu_active = 1;
             for (channel = 0; channel < 4; channel++) WPADControlMotor(channel, 0);
             fn_800C6774(lbl_805600E4, lbl_805600E0, 0x19000);
             fn_800C65C4();
@@ -318,7 +318,7 @@ void fn_802EC884(void) {
         }
     }
     KERNEL_GetTimeMs();
-    if ((u8)lbl_805600E8 == 0) return;
+    if ((u8)HomeMenu_active == 0) return;
     wpadInfoOut = lbl_80558898;
     for (i = 0; i < 4; i++) {
         *wpadInfoOut = RjoyGetKpadStatus(i);
@@ -342,9 +342,9 @@ void fn_802EC884(void) {
             break;
         }
         fn_800C687C();
-        *(volatile u8 *)&lbl_805600E8 = 0;
+        *(volatile u8 *)&HomeMenu_active = 0;
     }
-    if (*(volatile u8 *)&lbl_805600E8 != 0) fn_800C68B0();
+    if (*(volatile u8 *)&HomeMenu_active != 0) fn_800C68B0();
 }
 
 extern void *fn_802D2D14(void);
@@ -374,7 +374,7 @@ extern float lbl_805651F8, lbl_805651FC, lbl_80565200, lbl_80565204, lbl_8056520
  * orthographic projection whose width follows the console aspect ratio (16:9
  * or 4:3); then draw the home-button UI quad and re-initialize GX state. */
 void fn_802ECA48(void) {
-#define gHomeMenuActive lbl_805600E8
+#define gHomeMenuActive HomeMenu_active
 #define gViewportOrigin lbl_805651E0
 #define gViewportFar lbl_805651E8
 #define gOrthoTop lbl_805651F0
@@ -428,7 +428,7 @@ void fn_802ECA48(void) {
 }
 #pragma dont_inline off
 void fn_802ECBF8(void) {
-#define gHomeMenuActive lbl_805600E8
+#define gHomeMenuActive HomeMenu_active
 #define gHomeMenuRequest lbl_805600EA
     /* Request the home-button menu: raise the pending-request flag only when the
      * menu isn't already active (the per-frame process loop honours it later). */
@@ -440,10 +440,10 @@ void fn_802ECBF8(void) {
 }
 
 char fn_802ECC10(void) {
-    /* Returns lbl_805600E8 (gHomeMenuActive), the flag raised by fn_802EC884
+    /* Returns HomeMenu_active (gHomeMenuActive), the flag raised by fn_802EC884
      * while the Wii Home menu is open; callers use it to suppress gameplay and
      * input handling. */
-    return lbl_805600E8;
+    return HomeMenu_active;
 }
 
 void fn_802ECC18(u8 mode) {
@@ -473,7 +473,7 @@ void HomeMenu_drawBlackFrame(void) {
  * and service the periodic callback each frame while the Home Menu is active,
  * then paint one final frame and clear the request. A guard prevents reentry. */
 void HomeMenu_drainHandover(void) {
-#define gHomeMenuActive lbl_805600E8
+#define gHomeMenuActive HomeMenu_active
 #define gHandoverRequested lbl_805600EB
 #define gHandoverRunning lbl_805600ED
     u8 wasRequested;
