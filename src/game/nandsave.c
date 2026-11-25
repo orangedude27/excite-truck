@@ -868,8 +868,8 @@ enum {
     }
 }
 #pragma scheduling on
-/* Async NAND-completion callback: stores the operation's result in the write
-   context's async_result (+0x254) and raises its async_done flag (+0x250). */
+/* NAND completion callback for the rmemcard write machine: record @p result in
+   the context's async_result (+0x254) and raise its async_done flag (+0x250). */
 void rmemcardWriteAsyncCallback(int result, void **cb_ctx) {
     void *ctx = *cb_ctx;
     *(int *)((char *)ctx + 0x254) = result;
