@@ -881,7 +881,7 @@ void fn_8020F39C(void) {
 
 }
 
-/* Request invulnerable.sfx after a hit: raise flag72 so the per-frame update re-arms the sound and clears the flag. */ void CarSound_RequestInvulnerable(void *carSound) {
+/* Request invulnerable.sfx after a hit: raise flag72 so the per-frame update re-arms the sound and clears the flag. */ /* Request invulnerable.sfx after a hit: raise flag72 so the per-frame update re-arms the sound and clears the flag. */ void CarSound_RequestInvulnerable(void *carSound) {
     /* Request invulnerable.sfx after a hit: raise flag72 so the per-frame update re-arms the sound and clears the flag. */
     ((CarSound *)carSound)->flag72 = 1;
 }
