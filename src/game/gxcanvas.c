@@ -1355,7 +1355,7 @@ s32 stampGetWidth(Stamp *stamp) {
 }
 
 /* Return a stamp's height (rows per frame), or 0 for a null stamp. */
-s32 stampGetHeight(Stamp *stamp) {
+/* Null-safe getter for a stamp's height (rows per frame); returns 0 when no stamp is supplied. */ s32 stampGetHeight(Stamp *stamp) {
     if (stamp != NULL) {
         return stamp->height;
     }
