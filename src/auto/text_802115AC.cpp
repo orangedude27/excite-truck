@@ -2649,7 +2649,7 @@ extern "C" s32 fn_80215730(void *arg0) {
 
   void fn_802C2FC4(int);
   s32 fn_80128668(void *);
-extern "C" void fn_802C40E8(void *, s32, s32);
+extern "C" void gxCanvasAlphaBlitWhole(void *, s32, s32);
 void stampGetOffsets(int, int *, int *);
 int fn_802C4EE4(int);
 int fn_802C4EFC(int);
@@ -2673,7 +2673,7 @@ extern "C" void fn_802157A8(void *layout, s32 x, s32 y, u32 index) {
     s32 drawCallback = *(s32 *)((u8 *)layout + 4);
     u32 column = index % columns;
     if (drawCallback != 0) {
-        fn_802C40E8((void *)drawCallback, x, y - *(s32 *)((u8 *)layout + 8) * column);
+        gxCanvasAlphaBlitWhole((void *)drawCallback, x, y - *(s32 *)((u8 *)layout + 8) * column);
     }
 }
 

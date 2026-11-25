@@ -905,7 +905,7 @@ void fn_802C40B8(GxCanvas *canvas, s32 dstX, s32 dstY) {
         lbl_8055FC00, dstX, dstY);
 }
 
-void fn_802C40E8(GxCanvas *canvas, s32 dstX, s32 dstY) {
+void gxCanvasAlphaBlitWhole(GxCanvas *canvas, s32 dstX, s32 dstY) {
     /* Alpha-blit the whole source canvas (origin 0,0, full width/height) onto the current canvas at (dstX,dstY). */
     fn_802C3850((s32)canvas, 0, 0, canvas->width, canvas->height,
         sCurrentCanvas, dstX, dstY);
