@@ -205,7 +205,7 @@ extern char lbl_8055FD3C;
     return *(unsigned long *)rgba;
 }
 
-unsigned char gxArgbToRgba(unsigned int argbColor) {
+/* Reorder a packed ARGB color word (0xAARRGGBB) into GXColor RGBA byte order (0xRRGGBBAA, red byte first) by splitting its four bytes and tail-calling gxPackRGBA; callers read back the full 32-bit packed word. */ unsigned char gxArgbToRgba(unsigned int argbColor) {
     /* Convert a packed ARGB color word to GX's RGBA byte order: split out its four
        bytes and repack them (rotated by one byte) through gxPackRGBA. */
     return ((unsigned char (*)(unsigned char, unsigned char, unsigned char, unsigned char))gxPackRGBA)(
