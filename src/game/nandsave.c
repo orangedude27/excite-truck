@@ -329,7 +329,7 @@ void rmemcardCorruptReset(void) {
     }
 }
 
-int fn_802E8C6C(int request) {
+/* Kernel reset callback registered by fn_802E8CA8: on a reset notification (request == KERNEL_RESET_NOTIFY), block until the async NAND-save machine goes idle, pumping it once per pass. "reset hander" is the operation-name string logged if the wait times out; always returns 0. */ int fn_802E8C6C(int request) {
 #define KERNEL_RESET_NOTIFY 1
 #define rmemcard_wait_async rmemcardWaitAsync
 #define rmemcard_pump_async rmemcardPumpAsync
