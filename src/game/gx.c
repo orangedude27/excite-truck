@@ -3439,7 +3439,7 @@ extern void GXDisableBreakPt(void);
 extern void GXLoadTexObj(void *, int);
 extern volatile int lbl_8055FDD0;
 extern char lbl_8034C204[];
-/* Set the render-request flag that routes texcoord0 through GX_TEXMTX0. */ void gxSetTexCoordMtxFlag(void) {
+/* Set the render-request +0xC flag so texcoord0 is transformed by GX_TEXMTX0. */ /* Set the render-request flag that routes texcoord0 through GX_TEXMTX0. */ void gxSetTexCoordMtxFlag(void) {
     /* Enable texture-matrix 0 for texcoord 0 in the shared render request block
        (request +0xC selects GX_TEXMTX0 instead of GX_IDENTITY in buildDefaultTevPipeline). */
 #define texCoordMtxFlag gRenderRequest[12]
