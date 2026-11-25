@@ -380,33 +380,34 @@ void __GXInitRevisionBits(void) {
     volatile unsigned int *w = (volatile unsigned int *)0xCC008000;
     unsigned int i;
     unsigned int code;
+    unsigned int reg = 0;
 
     for (i = 0; i < 2; i++) {
+        code = 0x80 | n++;
         p[7] |= 0x40000000;
         p[15] |= 0x80000000;
         *b = 8;
-        code = 0x80 | n++;
         *b = (unsigned char)code;
 
+        code = 0x80 | n++;
         *w = p[15];
         p[8] |= 0x40000000;
         p[16] |= 0x80000000;
         *b = 8;
-        code = 0x80 | n++;
         *b = (unsigned char)code;
 
+        code = 0x80 | n++;
         *w = p[16];
         p[9] |= 0x40000000;
         p[17] |= 0x80000000;
         *b = 8;
-        code = 0x80 | n++;
         *b = (unsigned char)code;
 
+        code = 0x80 | n++;
         *w = p[17];
         p[10] |= 0x40000000;
         p[18] |= 0x80000000;
         *b = 8;
-        code = 0x80 | n++;
         *b = (unsigned char)code;
         *w = p[18];
         p += 4;
@@ -414,12 +415,13 @@ void __GXInitRevisionBits(void) {
 
     *b = 0x10;
     *w = 0x1000;
-    *w = 0x3F;
+    *w = (reg & ~0xFFu) | 0x3F;
     *b = 0x10;
     *w = 0x1012;
-    *w = 1;
+    *w = (reg & ~0xFFu) | 1;
     *b = 0x61;
-    *w = 0x5800000F;
+    reg = (reg & ~0xFu) | 0xF;
+    *w = (reg & ~0xFF000000u) | (0x58 << 24);
 }
 
 void GXSetMisc(s32, u32);
@@ -3637,25 +3639,25 @@ unsigned int GXSetDispCopyYScale(f32 vscale) {
 
 #pragma opt_common_subs off
 void GXSetCopyClear(unsigned char *color, unsigned int depth) {
-    unsigned int reg = 0;
+    unsigned int first = 0;
+    unsigned int second = 0;
+    unsigned int third = 0;
     unsigned int *data;
-    reg = __rlwimi(reg, color[0], 0, 24, 31);
+    first = __rlwimi(first, color[0], 0, 24, 31);
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    reg = __rlwimi(reg, color[3], 8, 16, 23);
-    reg = __rlwimi(reg, 0x4F, 24, 0, 7);
-    *(volatile unsigned int *)0xCC008000 = reg;
-    reg = 0;
-    reg = __rlwimi(reg, color[2], 0, 24, 31);
+    first = __rlwimi(first, color[3], 8, 16, 23);
+    first = __rlwimi(first, 0x4F, 24, 0, 7);
+    *(volatile unsigned int *)0xCC008000 = first;
+    second = __rlwimi(second, color[2], 0, 24, 31);
+    second = __rlwimi(second, color[1], 8, 16, 23);
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    reg = __rlwimi(reg, color[1], 8, 16, 23);
-    reg = __rlwimi(reg, 0x50, 24, 0, 7);
+    second = __rlwimi(second, 0x50, 24, 0, 7);
     data = __GXData;
-    *(volatile unsigned int *)0xCC008000 = reg;
-    reg = 0;
-    reg = __rlwimi(reg, depth, 0, 8, 31);
+    *(volatile unsigned int *)0xCC008000 = second;
+    third = __rlwimi(third, depth, 0, 8, 31);
+    third = __rlwimi(third, 0x51, 24, 0, 7);
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    reg = __rlwimi(reg, 0x51, 24, 0, 7);
-    *(volatile unsigned int *)0xCC008000 = reg;
+    *(volatile unsigned int *)0xCC008000 = third;
     *(unsigned short *)((char *)data + 2) = 0;
 }
 void GXSetCopyFilter(int arg0, unsigned char *arg1, int arg2, unsigned char *arg3) {
@@ -5284,8 +5286,8 @@ void GXSetTevOp(int stage, int mode)
   unsigned int *color;
   unsigned int *alpha;
   unsigned int value;
-  unsigned int inputValue;
   unsigned int oldValue;
+  unsigned int inputValue;
   unsigned int __repair_inputValue_1;
   if (stage == 0)
   {
@@ -6059,19 +6061,22 @@ void GXBeginDisplayList(void *list, u32 size) {
 #pragma dont_inline reset
 extern void GXSetCPUFifo(void *);
 extern char lbl_8037C108[];
+typedef struct GXDispListFifo {
+    unsigned int base;           /* 0x000 */
+    unsigned char pad0[0x67C];
+    unsigned char save[0x600];   /* 0x680 */
+} GXDispListFifo;
+
 #pragma optimize_for_size off
 u32 GXEndDisplayList(void) {
-    union { unsigned int u; void *p; } fc;
-    void *fifo;
+    void *fifo = lbl_8037C108;
     u8 wrap;
     void *data;
     void *data2;
     int interruptState;
     unsigned int saved;
-    fc.u = (unsigned int)lbl_8037C108;
-    fifo = fc.p;
-    GXGetCPUFifo((u8 *)fifo + 0);
-    wrap = GXGetFifoWrap((u8 *)fifo + 0);
+    GXGetCPUFifo(&lbl_8037C108[0]);
+    wrap = GXGetFifoWrap(&lbl_8037C108[0]);
     GXSetCPUFifo((u8 *)fifo + 0x680);
     data = __GXData;
     if (*((u8 *)data + 0x5F9) != 0) {
