@@ -624,7 +624,7 @@ void *fn_8020B314(void) {
 #undef sVoiceMixerName
 }
 
-void fn_8020B320(void) {
+void VoiceSound_ResetState(void) {
     /* Reset the sound-voice state block at lbl_80489BD0: clear the flag and
      * used count, then set its capacity to 32 voices. */
     volatile unsigned char *voiceState = lbl_80489BD0;
