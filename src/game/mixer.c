@@ -38,7 +38,7 @@ struct MixerVolumeHandle {
 
 extern float lbl_80563230;
 extern float lbl_80563234;
-extern void fn_80208A50(float *);
+extern void UpdateMasterVolume(float *);
 
 extern void *lbl_8055EDA8;
 /* Sound quality (config key "quality"): 0..2, kept in the void* slot gSoundQuality. */
@@ -90,7 +90,7 @@ float fn_80208A18(float baseVolume) {
 /* Recompute the effective master volume: start from the configured effects volume,
    scale it by every active mixer volume handle, and store the result. The pointer
    argument is vestigial — callers pass a handle's volume but the body ignores it. */
-void fn_80208A50(float *unusedVolume) {
+void UpdateMasterVolume(float *unusedVolume) {
     effectiveMasterVolume = applyVolumeHandles(baseEffectsVolume);
 }
 #undef baseEffectsVolume
@@ -354,7 +354,7 @@ extern "C" void fn_80208E90(void *devicePtr, int mode) {
 #pragma cplusplus reset
 
 #pragma cplusplus reset
-/* Return the effective master volume (relative to the configured effects volume), recomputed by fn_80208A50 from the active mixer volume handles. */
+/* Return the effective master volume (relative to the configured effects volume), recomputed by UpdateMasterVolume from the active mixer volume handles. */
 float fn_80209028(void) {
     return lbl_8055B4D4;
 }
@@ -369,7 +369,7 @@ void SetEffectsVolume(float volume) {
     clamped = clamped > MIN_EFFECTS_VOLUME ? clamped : MIN_EFFECTS_VOLUME;
     gEffectsVolume = clamped;
     fn_8013323C(4, CONFIG_KEY_EFFECTS_VOLUME, (float)(double)clamped);
-    ((void (*)(void))fn_80208A50)();
+    ((void (*)(void))UpdateMasterVolume)();
 }
 #undef CONFIG_KEY_EFFECTS_VOLUME
 #undef MIN_EFFECTS_VOLUME
@@ -436,7 +436,7 @@ void *fn_802090D4(int name) {
                 break;
             MIXER_VOLUME_HANDLE_COUNT = MIXER_VOLUME_HANDLE_COUNT - 1;
         }
-        ((void (*)(void))fn_80208A50)();
+        ((void (*)(void))UpdateMasterVolume)();
         *handle = 0;
     }
 }
@@ -454,7 +454,7 @@ void fn_80209190(float *handleVolume, float volume) {
         float clampedVolume = MAX_VOLUME < volume ? MAX_VOLUME : volume;
         clampedVolume = clampedVolume > MIN_VOLUME ? clampedVolume : MIN_VOLUME;
         *handleVolume = clampedVolume;
-        fn_80208A50(handleVolume);
+        UpdateMasterVolume(handleVolume);
     }
 #undef MIN_VOLUME
 #undef MAX_VOLUME
@@ -464,7 +464,7 @@ void fn_80209190(float *handleVolume, float volume) {
 extern float lbl_80563230;
 extern float lbl_80563234;
 extern float fn_80208A18(float);
-extern void fn_80208A50(float *);
+extern void UpdateMasterVolume(float *);
 extern int fn_80128668(void);
 #pragma push
 #pragma inline_depth(0)
