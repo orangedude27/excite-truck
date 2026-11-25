@@ -946,7 +946,7 @@ void *MRollStatLabel_init(void *statLabel) {
 }
 
 /* If a pending result flag is set, copy its value to outResult and return 1; otherwise return 0. */
-s32 fn_802411A4(s32 *outResult) {
+s32 MRoll_getPendingResult(s32 *outResult) {
     if (lbl_8055F1FC != 0) {
         *outResult = lbl_8055F200;
         return 1;
