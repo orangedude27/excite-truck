@@ -3504,13 +3504,13 @@ void fn_802D3E88(void) {
 extern int lbl_804C5710_int;
 /* Reset the GX framebuffer copy/fade state: set the fade mode (arg0), zero the
    frame counter, and clear both pending-copy flags in the state block. */
-void gxResetFrameCopyState(unsigned char fadeMode) {
-    unsigned char *state;
-    state = lbl_804C5710;
+/* Reset the framebuffer copy/fade state: set the fade mode, zero the frame counter, and clear both pending-copy flags. */ void gxResetFrameCopyState(unsigned char fadeMode) {
+    unsigned char *copyState;
+    copyState = lbl_804C5710;
     lbl_8055FD50 = fadeMode;
     lbl_8055FD4C = 0;
-    state[1] = 0;
-    state[0] = 0;
+    copyState[1] = 0;
+    copyState[0] = 0;
 }
 
 /* Returns 1 while the frame counter is non-negative (sign bit clear), 0 once
