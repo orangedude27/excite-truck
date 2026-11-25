@@ -21,9 +21,10 @@ extern signed char sStreamActive;
 extern const char lbl_8034D7D8[];
 extern int fn_802E30C8(const char *, ...);
 #pragma dont_inline on
-/* Round a byte count up to a whole number of 2048-byte sectors (ceil(size/2048)). */
-int bytesToSectors(int size) {
-    return (size + 0x7ff) / 2048;
+/* Convert a byte count to the number of 2048-byte sectors needed to hold it,
+   rounding up to the next whole sector. */
+int bytesToSectors(int byteCount) {
+    return (byteCount + 0x7ff) / 2048;
 }
 
 #pragma push
