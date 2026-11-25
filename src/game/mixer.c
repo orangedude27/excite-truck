@@ -591,11 +591,8 @@ void SoundTimer_Expire(void *timer) {
 }
 
 void SoundTimer_Stop(void *timer) {
-    /* Set the timed object's state field (+8) to 2 (the stopped/paused state,
-     * distinct from 1 = running and 3 = expired used by the neighbouring helpers). */
-#define state ((int *)((char *)timer + 8))
-    *state = 2;
-#undef state
+    /* Pause a sound timer by setting its state word (+8) to 2. */
+    *((int *)((char *)timer + 8)) = 2;
 }
 
 void fn_80209398(void *timer) {
