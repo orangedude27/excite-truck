@@ -956,6 +956,7 @@ void fn_802C9648(float scale) {
 /* Restores the backed-up view/projection parameters by reapplying the saved
  * triple in lbl_804C144C[0..2] through fn_802C974C. */
 void DrawList_reapplyProjection(void) {
+    /* Reapply the backed-up near/far/FOV triple to refresh the derived view/projection values. */
     fn_802C974C(lbl_804C144C[0], lbl_804C144C[1], lbl_804C144C[2]);
 }
 
