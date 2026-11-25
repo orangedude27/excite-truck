@@ -52,7 +52,7 @@ extern void OSTicksToCalendarTime(u64, struct OSTimeCalendar *);
 #pragma dont_inline on
 /* Round up to the next power of two: 1 << bit_length(value), i.e. 1 for 0 and
  * the smallest power of two strictly greater than value otherwise. Used by
- * fn_802E1960 to size textures to a power-of-two width. */
+ * lookupTextureWidth to size textures to a power-of-two width. */
 unsigned int roundUpPow2(unsigned int value) {
     return 1U << (32 - __cntlzw(value));
 }
@@ -146,7 +146,7 @@ int fn_802E18D4(int width, int height, int texFmt, int wrapST, void *texObj, int
 /* Round size up to the next multiple of 128 (128-byte texture/cache-line alignment). */
 int fn_802E1954(int size) { return (size + 0x7F) & 0xFFFFFF80; }
 
-unsigned int fn_802E1960(unsigned int size) {
+unsigned int lookupTextureWidth(unsigned int size) {
     /* Return a power-of-two texture width: size/8 rounded up to a multiple of 4,
      * then raised to the next power of two by roundUpPow2 when needed. */
     unsigned int width = ((size >> 3) + 3) & ~3;
@@ -165,7 +165,7 @@ int fn_802E1980(int imagePtr, void *texObj, void *outWidth, void *outHeight, uns
     int width;
     int alignedBytes;
 
-    width = fn_802E1960(size);
+    width = lookupTextureWidth(size);
     *(int *)outWidth = width;
     *(int *)outHeight = 4;
     alignedBytes = fn_802E1954(width << 3);
@@ -184,13 +184,13 @@ void buildLookupTextures(void *obj, int imageBase) {
 }
 
 extern int fn_802E1954(int);
-extern unsigned int fn_802E1960(unsigned int);
+extern unsigned int lookupTextureWidth(unsigned int);
 #pragma optimization_level 2
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 /* Computes aligned layout sizes/offsets for a texture/image block descriptor.
  * Selects width/height factors from descriptor flags, rounds dimensions via
- * fn_802E1954/fn_802E1960, and outputs combined byte spans and factor flags. */
+ * fn_802E1954/lookupTextureWidth, and outputs combined byte spans and factor flags. */
 /* Compute 128-byte-aligned width, height and byte-span layout values for a texture/image descriptor, returning them through the output pointers. */ void fn_802E1A9C(void *desc, int *outCombinedWidth, int *outCombinedPlusHeight, int *outAlignedWidthA, int *outCombinedPlusDoubleHeight, int *outTotalAlignedBytes, int *outWidthFactorMask, int *outHeightFactor, int unused) {
     int alignedWidthA, alignedWidthB, alignedHeight, alignedDimC;
     int baseWidth, baseHeight;
@@ -204,8 +204,8 @@ extern unsigned int fn_802E1960(unsigned int);
     alignedWidthA = fn_802E1954(widthFactorA * baseWidth);
     alignedWidthB = fn_802E1954(widthFactorB * baseWidth);
     alignedHeight = fn_802E1954(heightFactor * baseHeight);
-    alignedDimC = fn_802E1954(fn_802E1960(*(int *)((char *)desc + 0xC)) << 3);
-    totalAlignedBytes = fn_802E1954(fn_802E1960(*(int *)((char *)desc + 4)) << 3);
+    alignedDimC = fn_802E1954(lookupTextureWidth(*(int *)((char *)desc + 0xC)) << 3);
+    totalAlignedBytes = fn_802E1954(lookupTextureWidth(*(int *)((char *)desc + 4)) << 3);
     totalAlignedBytes += alignedDimC;
     *outTotalAlignedBytes = totalAlignedBytes;
     combinedWidth = alignedWidthA + alignedWidthB;
