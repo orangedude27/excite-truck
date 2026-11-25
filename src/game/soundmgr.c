@@ -769,14 +769,14 @@ extern "C" void fn_80208998(void) {
 
 #pragma push
 #pragma cplusplus on
-extern "C" void Sound_releaseVoice(void* mgr, void* voice) {
+/* Releases the sound voice in arg1 via virtual slot 1; the sound-manager pointer in arg0 is unused. */ extern "C" void Sound_releaseVoice(void* soundMgr, void* sound) {
     /* Release a sound voice during cleanup: invoke virtual slot 1 (+0xC) on the
        voice object in arg1; the sound-manager pointer in arg0 is unused. */
     struct Obj {
         virtual void v0();
         virtual void v1();
     };
-    ((Obj*)voice)->v1();
+    ((Obj*)sound)->v1();
 }
 #pragma cplusplus reset
 #pragma pop
