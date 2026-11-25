@@ -1146,11 +1146,11 @@ void gxMarkAllStateDirty(void) {
 }
 #pragma pop
 
-extern void *lbl_8055FD1C;
+extern void *gxRenderStateFlags;
 /* Set the cached GX render-state flags bitmask (depth test, colour/alpha
    updates, etc.); the dirty-state code compares it with lbl_8055FD74. */
 void fn_802CFF5C(void* flags) {
-    lbl_8055FD1C = flags;
+    gxRenderStateFlags = flags;
 }
 
 /* Bump-allocates size bytes (rounded up to 32) from the GX dynamic-data display-list buffer, wrapping to its start when full. */
@@ -1928,27 +1928,27 @@ void fn_802D0EEC(void) {
     if ((unsigned char)sSkipRenderStateSync != 0)
         return;
 
-    diff = (unsigned int)lbl_8055FD20 | ((unsigned int)lbl_8055FD1C ^ lbl_8055FD74);
+    diff = (unsigned int)lbl_8055FD20 | ((unsigned int)gxRenderStateFlags ^ lbl_8055FD74);
     lbl_8055FD20 = 0;
     if (diff != 0) {
         if (diff & 6) {
-            if ((unsigned int)lbl_8055FD1C & 6) {
-                int zsrc = ((unsigned int)lbl_8055FD1C >> 1) & 1;
-                GXSetZMode(1, ((unsigned int)lbl_8055FD1C & 4) ? 3 : 7, zsrc);
+            if ((unsigned int)gxRenderStateFlags & 6) {
+                int zsrc = ((unsigned int)gxRenderStateFlags >> 1) & 1;
+                GXSetZMode(1, ((unsigned int)gxRenderStateFlags & 4) ? 3 : 7, zsrc);
             } else {
                 GXSetZMode(0, 7, 0);
             }
         }
         if (diff & 1)
-            GXSetColorUpdate((unsigned char)((unsigned int)lbl_8055FD1C & 1));
+            GXSetColorUpdate((unsigned char)((unsigned int)gxRenderStateFlags & 1));
         if (diff & 0x10)
-            GXSetAlphaUpdate((unsigned char)(((unsigned int)lbl_8055FD1C >> 4) & 1));
+            GXSetAlphaUpdate((unsigned char)(((unsigned int)gxRenderStateFlags >> 4) & 1));
         if (diff & 0x20) {
             tevWord = (int)lbl_8055FD28;
             ((void (*)(int, void *))GXSetTevColor)(2, &tevWord);
         }
         if (diff & 0x40) {
-            if ((unsigned int)lbl_8055FD1C & 0x40) {
+            if ((unsigned int)gxRenderStateFlags & 0x40) {
                 GXSetDstAlpha(0, 0);
                 GXSetAlphaCompare(7, 0, 1, 0, 0);
             } else {
@@ -1970,7 +1970,7 @@ void fn_802D0EEC(void) {
         }
         if (diff & 0x100)
             s->raw[0xB0] = 1;
-        lbl_8055FD74 = (unsigned int)lbl_8055FD1C;
+        lbl_8055FD74 = (unsigned int)gxRenderStateFlags;
     }
 
     if (gAlphaCompareRef != gAlphaCompareAppliedRef) {
@@ -2640,7 +2640,7 @@ extern void (*lbl_8055FD80)(void);
     int alphaSel;
 
     detailTexFlag = (unsigned char)gRenderRequest[9];
-    passThroughFlag = ((unsigned long)lbl_8055FD1C >> 6) & 1;
+    passThroughFlag = ((unsigned long)gxRenderStateFlags >> 6) & 1;
     tevStage = 0;
     secondTexFlag = (unsigned char)gRenderRequest[8];
     texGen = 0;
@@ -2664,7 +2664,7 @@ extern void (*lbl_8055FD80)(void);
         GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, TRUE, GX_TEVPREV);
         GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_TEXC, GX_CC_RASC, GX_CC_ZERO);
         alphaCount = 0;
-        if (((unsigned long)lbl_8055FD1C & 0x100) != 0) {
+        if (((unsigned long)gxRenderStateFlags & 0x100) != 0) {
             alphaSrc[0] = GX_CA_TEXA;
             alphaCount = 1;
         }
@@ -2947,11 +2947,11 @@ int GX_GetXFB(int *outWidth, int *outHeight) {
 void gxSetAlphaUpdateEnable(int enable) {
     unsigned long value;
 
-    value = (unsigned long)lbl_8055FD1C & 0xFFFFFFEF;
+    value = (unsigned long)gxRenderStateFlags & 0xFFFFFFEF;
     if (enable != 0) {
-        value = (unsigned long)lbl_8055FD1C | 0x10;
+        value = (unsigned long)gxRenderStateFlags | 0x10;
     }
-    lbl_8055FD1C = (void *)value;
+    gxRenderStateFlags = (void *)value;
 }
 
 /* Enable destination alpha and cache the value for later GXSetDstAlpha calls. */
@@ -3089,7 +3089,7 @@ int fn_802D31D8(void)
   GXSetDstAlpha(0, 0);
   new_var = c;
   gxResetAlphaCompare();
-  lbl_8055FD1C = (void *) (((unsigned long) lbl_8055FD1C) & 0xFFFFFFF7);
+  gxRenderStateFlags = (void *) (((unsigned long) gxRenderStateFlags) & 0xFFFFFFF7);
   GXSetNumTevStages(1);
   GXSetNumTexGens(0);
   c = 7;
