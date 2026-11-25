@@ -1336,7 +1336,8 @@ void* fn_802C9C50(void) {
     return 0;
 }
 
-/* Blend the alpha mask drawn since fn_802C9C8C back over the screen with the saved tint, then restore normal GX state. */
+/* Finish an alpha-only overlay pass: blend the saved-tint alpha mask back over
+   the screen, reset GX to its default state and resume normal rendering. */
 void fn_802C9CE0(void) {
     fn_802D362C(sOverlayTint);
     gxResetDefaultState();
