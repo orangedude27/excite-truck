@@ -234,7 +234,7 @@ extern "C" void fn_801E7C28(void *sceneData) {
     extern void fn_801FFB70(void);
     extern void fn_801EFF70(void);
     extern void fn_80203DC8(void);
-    extern void fn_802C7A00(void);
+    extern void mrModelClearNameOverrides(void);
     extern void fn_801FC900(void);
     extern void fn_802877D0(void);
     extern void fn_8000D7F4(void *);
@@ -305,7 +305,7 @@ extern "C" void fn_801E7C28(void *sceneData) {
     fn_801FFB70();
     fn_801EFF70();
     fn_80203DC8();
-    fn_802C7A00();
+    mrModelClearNameOverrides();
     fn_801FC900();
     fn_802877D0();
     if ((unsigned char)sceneOwnedElsewhere == 0) {

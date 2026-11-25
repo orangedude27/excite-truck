@@ -1283,7 +1283,7 @@ void fn_8025567C(void) {
     #define freeStunParts      fn_802ABC2C
     #define releaseAlarmObject fn_801EFF70
     #define releaseCachedRes   fn_80203DC8
-    #define resetCarModelFlag  fn_802C7A00
+    #define resetCarModelFlag  mrModelClearNameOverrides
     extern u8 sCurrentUiView;
     /* Tear down the active UI view (if any), then free all cached UI and resource state. */
     if (sCurrentUiView != 0) {
