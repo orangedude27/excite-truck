@@ -10717,7 +10717,7 @@ extern "C" s32 fn_800B5070(s32 path, s32 *outValue) {
 #pragma pop
 extern "C" s32 fn_800B51FC(fn_800B51FC_arg_t *arg0, s32 arg1)
 {
-  s8 *p = arg0 - -7;
+  s8 *p = arg0 + 7;
   s8 b;
   u32 digits = 7;
   u32 divisor = 10;
@@ -10730,7 +10730,7 @@ extern "C" s32 fn_800B51FC(fn_800B51FC_arg_t *arg0, s32 arg1)
       arg1 -= rem;
       rem /= place;
       b = *p;
-      b += (s8) rem;
+      b += ((s8) rem) & 0xFFFFFFFF;
       *p = b;
     }
     divisor *= 10;
@@ -10740,9 +10740,6 @@ extern "C" s32 fn_800B51FC(fn_800B51FC_arg_t *arg0, s32 arg1)
   }
 
   return 0;
-  if (1)
-  {
-  }
 }
 
 extern "C" s32 fn_800A8EA0(void *, u32, void **);
