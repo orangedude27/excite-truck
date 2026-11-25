@@ -554,8 +554,10 @@ void SoundCreateNullSource(void) {
 #undef sNullSoundVTable
 }
 
-/* CodeWarrior deleting-destructor helper: when deleteFlag > 0, free a non-null object via operator delete (fn_80128668), then return the object. */ int fn_802092C8(int object, int deleteFlag) {
-    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
+/* CodeWarrior deleting-destructor (D0) thunk: when the delete flag is positive,
+ * free a non-null object through operator delete (fn_80128668), then return the
+ * object pointer. */
+int fn_802092C8(int object, int deleteFlag) {
     if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
