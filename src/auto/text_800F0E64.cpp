@@ -618,7 +618,7 @@ struct SeqChannelObj_800F0E64 {
         sc[j] = v;
     }
 };
-extern "C" void UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *self) {
+/* Recompute this SeqTrack's effective playback parameters (volume, pitch, tune, decay, attack, hold, LPF and send levels) from the track and its player, then copy them to every attached channel while interrupts are disabled. */ extern "C" void UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *self) {
     /* Recompute this track's effective playback parameters and copy them to every attached channel. */
     struct SeqChannelObj {
         u8 pad00[0x20];
