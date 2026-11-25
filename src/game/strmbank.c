@@ -68,7 +68,7 @@ extern "C" void unloadStrmBank(s32 bankId) {
 
 #pragma cplusplus reset
 /* Forward an unload request with the bank handle, bank id and flags. */
-extern "C" void unloadStrmBankEx(s32 bankHandle, s32 bankId, s32 flags) {
+/* Forward a stream-bank unload with an explicit bank handle, bank id and flag bits to the manager. */ extern "C" void unloadStrmBankEx(s32 bankHandle, s32 bankId, s32 flags) {
     s32 handle = bankHandle;
     s32 id = bankId;
     s32 flagBits = flags;
