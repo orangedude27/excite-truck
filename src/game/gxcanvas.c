@@ -14,7 +14,7 @@ extern u8 lbl_8055CFF8;
 extern u8 lbl_8055D000;
 extern void *fn_801284E8(void *, s32);
 void fn_802C2CE8(void *, s32, s32, s8);
-void fn_802C3014(void *);
+void gxCanvasResetClipRect(void *);
 
 void fn_802C5024(s32, s32, s32, s32);
 
@@ -106,7 +106,7 @@ void fn_802C2CE8(void *arg0, s32 arg1, s32 arg2, s8 arg3) {
     *(s32 *)((u8 *)arg0 + 8) = arg1;
     *(s32 *)((u8 *)arg0 + 0xC) = arg2;
     *(s32 *)((u8 *)arg0 + 0x10) = arg1 * ((arg3 == 5) ? 4 : 2);
-    fn_802C3014(arg0);
+    gxCanvasResetClipRect(arg0);
 }
 
 /* Free a GxCanvas: release its pixel buffer, then zero the whole canvas block. */ void fn_802C2D94(void *canvas) {
@@ -200,7 +200,7 @@ void fn_802C2FC4(void) {
 }
 #pragma pop
 /* Resets a canvas's clip rectangle to the whole surface: {0, 0, width, height}. */
-void fn_802C3014(void *arg0) {
+void gxCanvasResetClipRect(void *arg0) {
     GxCanvas *canvas = arg0;
     canvas->minX = 0;
     canvas->minY = 0;

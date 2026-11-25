@@ -4110,7 +4110,7 @@ extern "C" void gxCanvasSetClipRect(s32, s32, s32, s32, s32);
 extern "C" void fn_80228DC4(s32, s32, s32, s32, s32, s32);
 extern "C" void fn_8022B390(s32, s32, s32, s32*, s32*);
 extern "C" void fn_802C47B8(s32, s32, s32, s32, s32, s32);
-extern "C" void fn_802C3014(s32);
+extern "C" void gxCanvasResetClipRect(s32);
 extern "C" s32 lbl_8055FBF8;
 // Renders entity onto canvas: sets the canvas clip rect from the entity's position and vtable size,
 // runs its per-frame hook and optional marker, then draws its textured quad when flag 0x19 is set.
@@ -4137,7 +4137,7 @@ extern "C" void fn_8021EC1C(void* entity, s32 canvas) {
         drawX = outX + *(s32*)((u8*)entity+4);
         ((void(*)(s32,s32,s32,s32,s32))fn_802C47B8)(drawX,drawY+2,drawX,drawY+0xC,lbl_8055FBF8);
     }
-    fn_802C3014(canvas);
+    gxCanvasResetClipRect(canvas);
 }
 
 #pragma push
