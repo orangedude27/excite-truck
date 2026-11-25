@@ -1170,7 +1170,6 @@ void fn_802D62FC(void *__restrict surface, s32 *outOffset, s32 *outSize) {
 #undef vertexFormatCache
 }
 #pragma push
-#pragma push
 #pragma use_lmw_stmw off
 void fn_802D63FC(void *arg0, s32 arg1) {
     extern void fn_802D62FC(void *, s32 *, s32 *);
