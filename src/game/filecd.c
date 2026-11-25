@@ -29,7 +29,7 @@ public:
     virtual int getLength(void);                  // 0x18 FileDisk_getLength
     virtual int tell(void);                       // 0x1C fn_802E4680
     virtual int seek(int pos);                    // 0x20 FileDisk_seek
-    virtual void seekRelative(int delta);         // 0x24 fn_802E4688
+    virtual void seekRelative(int delta);         // 0x24 FileDisk_seekRelative
     virtual void flush(void);                     // 0x28 fn_802E46A0
     virtual void *getOwner(void);                 // 0x2C fn_802E4438
     virtual void release(int freeSlot);           // 0x30 fn_802E41C4
@@ -454,7 +454,7 @@ int fn_802E4680(void *file) {
 
 #pragma cplusplus on
 /* FileDisk::seekRelative - seek to the file's cursor (+0x88) plus delta via virtual seek (slot +0x20). */
-extern "C" void fn_802E4688(void *file, int delta) {
+extern "C" void FileDisk_seekRelative(void *file, int delta) {
     int offset = *(int *)((char *)file + 0x88);
     ((Dummy_802E4688 *)file)->m6(offset + delta);
 }
