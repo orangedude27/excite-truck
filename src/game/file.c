@@ -562,7 +562,7 @@ done:
 }
 #pragma cplusplus off
 /* Initialize the SD-card file system handle (gSDFileSystem) from the mount stub ConfigGetSDCardHandle, which returns 0 in this build. */
-void InitSDFileSystemHandle(void) {
+/* Initialize the SD-card file-system handle from the mount stub (which returns 0 in this build). */ void InitSDFileSystemHandle(void) {
     gSDFileSystem = (void*)ConfigGetSDCardHandle();
 }
 
