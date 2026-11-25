@@ -12,6 +12,7 @@ void PSVECScale(const Vec* in, Vec* out, f32 scale);
 void PSVECNormalize(const Vec* in, Vec* out);
 f32 PSVECMag(const Vec* v);
 /* Dot product of two 3D vectors, computed with paired-single instructions. */
+/* Dot product of two 3D vectors, computed with paired-single instructions. */
 f32 PSVECDotProduct(const Vec* a, const Vec* b);
 void PSVECCrossProduct(const Vec* a, const Vec* b, Vec* prod);
 f32 PSVECSquareDistance(const Vec* a, const Vec* b);
