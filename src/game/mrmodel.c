@@ -18,7 +18,7 @@ extern void fn_802D6C4C(float);
 #pragma pop
 void VisitGroupIds(void *, void *);
 extern int lbl_8055D008;
-void* fn_802C5390(int);
+void* MRModel_GetInstance(int);
 int fn_802C94A0(void*, unsigned char*, float*, float);
 void fn_802C57B4(int, int, int, unsigned char, float);
 
@@ -54,7 +54,7 @@ extern int fn_802C9638(void *, unsigned char *, float);
 /* The model manager's tables, as the dispatch code below walks them.
  *
  * gModelInstances is the {count, capacity, base} of the model instances and
- * fn_802C5390(id) returns base + id * 0x10, one ModelInstance.  Its groups are
+ * MRModel_GetInstance(id) returns base + id * 0x10, one ModelInstance.  Its groups are
  * the GroupEntry records listed by the {count, items} header at +0x04; the
  * instance's own 4x3 world matrix and view tolerance follow that header at
  * +0x1C and +0x20 (fn_802C70AC transforms a caller's matrix into them).  Each
@@ -96,7 +96,7 @@ struct ModelElement {
 
 #pragma push
 #pragma scheduling off
-void *fn_802C5390(int instanceId) {
+void *MRModel_GetInstance(int instanceId) {
     /* Return the 0x10-byte ModelInstance record at instanceId. */
     u32 instances = *(u32 *)((char *)gModelInstances + 8);
     return (void *)(instances + (instanceId << 4));
@@ -319,7 +319,7 @@ void fn_802C57B4(int instanceId, int transformId, int entryId, unsigned char sta
     int i;
     struct GroupEntry *entry;
 
-    instance = (struct ModelInstance *)fn_802C5390(instanceId);
+    instance = (struct ModelInstance *)MRModel_GetInstance(instanceId);
     groups = instance->groups;
     if ((u8)lbl_8055FC20 == 0) {
         fn_802C543C();
@@ -1079,7 +1079,7 @@ void *fn_802C6C34(int instanceId) { return (void *)MRModel_GetInstanceGroupList(
 
 #pragma scheduling invalid_target
 void fn_802C6C38(int modelId) {
-    u8 *instance = (u8 *)fn_802C5390(modelId);
+    u8 *instance = (u8 *)MRModel_GetInstance(modelId);
     s32 groupOff, elementOff, groupIndex;
     u8 *group;
     s32 elementIndex;
@@ -1291,7 +1291,7 @@ void DrawModelInstance(int instanceId) {
     void *instanceHeader;
 
     if (instanceId != -1) {
-        instanceHeader = *(void **)((char *)fn_802C5390(instanceId) + 4);
+        instanceHeader = *(void **)((char *)MRModel_GetInstance(instanceId) + 4);
         if (fn_802C94A0((char *)instanceHeader + 0x20, &status, &depth, *(float *)((char *)instanceHeader + 0x1C))) {
             fn_802C57B4(instanceId, 0, -1, status, depth);
         }
@@ -1319,7 +1319,7 @@ void fn_802C70AC(int arg0, void *arg1, int arg2, int arg3) {
         return;
     previousMask = lbl_8055D008;
     lbl_8055D008 = arg3;
-    manager = fn_802C5390(arg0);
+    manager = MRModel_GetInstance(arg0);
     groupHeader = *(void **)((char *)manager + 4);
     rot = (const float *)((char *)groupHeader + 0x20);
     out = local.vector;
@@ -1483,7 +1483,7 @@ void fn_802C744C(int instanceId, void *transform) {
     if (instanceId != -1) {
         savedGroupMask = lbl_8055D008;
         lbl_8055D008 = groupMask;
-        groupHeader = *(void **)((char *)fn_802C5390(instanceId) + 4);
+        groupHeader = *(void **)((char *)MRModel_GetInstance(instanceId) + 4);
         if (fn_802C94A0((char *)groupHeader + 0x20, &visibilityStatus, &distance, *(float *)((char *)groupHeader + 0x1C))) {
             fn_802C57B4(instanceId, 0, -1, visibilityStatus, distance);
         }
@@ -1508,7 +1508,7 @@ void fn_802C74D8(int arg0, void *arg1, int arg2) {
     float *input;
     int a2 = arg2;
     void *a1 = arg1;
-    void *inst = fn_802C5390(arg0);
+    void *inst = MRModel_GetInstance(arg0);
     rot = (float *)((char *)*(void **)((char *)inst + 4) + 0x20);
     entry = *(void **)((char *)inst + 4);
     out = local.vector;
@@ -1591,7 +1591,7 @@ void fn_802C7758(void) {
 
 /* Copies six float fields (offsets 0x2C-0x40) from a model entry to output parameters. */
 /* Read the six bounding-box floats at +0x2C..+0x40 of the model instance's data into the six output pointers. */ void fn_802C7760(void *modelId, f32 *bound0, f32 *bound1, f32 *bound2, f32 *bound3, f32 *bound4, f32 *bound5) {
-    void *entry = fn_802C5390((int)modelId);
+    void *entry = MRModel_GetInstance((int)modelId);
     *bound0 = *(f32 *)((u8 *)*(void **)((u8 *)entry + 4) + 0x2C);
     *bound1 = *(f32 *)((u8 *)*(void **)((u8 *)entry + 4) + 0x30);
     *bound2 = *(f32 *)((u8 *)*(void **)((u8 *)entry + 4) + 0x34);
@@ -1609,7 +1609,7 @@ void fn_802C77F0(void *model, f32 *out) {
 /* Return the model instance's view tolerance (+0x1C of its group list) - the
  * threshold passed to the visibility/culling test in fn_802C94A0. */
 float getModelInstanceTolerance(int instanceId) {
-    struct ModelInstance *instance = (struct ModelInstance *)fn_802C5390(instanceId);
+    struct ModelInstance *instance = (struct ModelInstance *)MRModel_GetInstance(instanceId);
     return *(float *)((char *)instance->groups + 0x1C);
 }
 
@@ -1839,7 +1839,7 @@ void fn_802C7AE0(int arg0, void *arg1, int arg2, float farg0) {
     float *rot;
     float *input;
 
-    manager = fn_802C5390(arg0);
+    manager = MRModel_GetInstance(arg0);
     local.status = 1;
     rot = (float *)((char *)*(void **)((char *)manager + 4) + 0x20);
     input = (float *)arg1;
@@ -1948,7 +1948,7 @@ void fn_802C7D54(int arg0, const float *arg1, int arg2, float fa, float fb, floa
     savedCull = fn_802C9C58(arg2);
     savedMask = lbl_8055D008;
     lbl_8055D008 = 8;
-    instance2 = fn_802C5390(arg0);
+    instance2 = MRModel_GetInstance(arg0);
     instance = (struct ModelInstance *)instance2;
     rot = (const float *)((char *)*(void **)((char *)instance2 + 4) + 0x20);
     out = local.vec1;
