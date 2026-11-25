@@ -763,8 +763,8 @@ copied_name:
     fn_802D7780(texture, obj);
     return texture;
 }
-/* Frees the drgc texture-cache pool (sDrTexRecordPool, 0x1C2 slots of 0xF4 bytes
- * each) back to the heap, then clears the global pointer. */
+/* Free the drgc texture-cache pool (an array of 0x1C2 DrTexRecord slots of
+ * 0xF4 bytes) back to the heap and clear the global pointer. */
 void drTexCacheShutdown(void) {
     fn_80128670(sDrTexRecordPool);
     sDrTexRecordPool = 0;
