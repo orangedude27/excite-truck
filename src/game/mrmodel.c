@@ -1061,7 +1061,7 @@ int fn_802C6B44(int modelPath) {
 
 #pragma dont_inline on
 /* Release a model resource, with MRModel_ReleaseCallback called when its reference count reaches zero. */
-int MRModel_ReleaseResource(int resource) {
+/* Release a model resource via the refcounted resource manager, invoking MRModel_ReleaseCallback when the count reaches zero. */ int MRModel_ReleaseResource(int resource) {
     return fn_8012C4E4((void *)resource, (void *)MRModel_ReleaseCallback, resource);
 }
 #pragma dont_inline reset
