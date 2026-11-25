@@ -14,7 +14,7 @@ extern int fn_802E61E4(int, float);
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_805600C8;
-extern void *lbl_80560080;
+extern void *gMusicDashSongCount;
 extern int fn_802EBD40(void);
 extern long lbl_80507600[];
 extern char lbl_8034E9C8[];
@@ -321,7 +321,7 @@ void fn_802E9EB8(void) {
         }
         if (changed != 0) {
             int count = lbl_8056007C;
-            *(int *)&lbl_80560080 = count;
+            *(int *)&gMusicDashSongCount = count;
             if (count > 0) {
                 int i = 0;
                 char *src = lbl_80508818;
@@ -336,7 +336,7 @@ void fn_802E9EB8(void) {
             ((long (*)(char *, long))fn_802E30C8)((char *)&lbl_8034E260 + 0x1CC, 0);
             {
                 int i;
-                for (i = 0; i < *(int *)&lbl_80560080; i++) {
+                for (i = 0; i < *(int *)&gMusicDashSongCount; i++) {
                     ((long (*)(char *, long, char *))fn_802E30C8)((char *)&lbl_8034E260 + 0x1DC, i, lbl_8052E658 + i * 0x610 + 0x408);
                 }
             }
@@ -1147,9 +1147,9 @@ void fn_802EC038(void) {
     lbl_805600A8 = 0;
 }
 
-/* Get the number of music tracks found by the last music dash (lbl_80560080). */
+/* Get the number of music tracks found by the last music dash (gMusicDashSongCount). */
 void* getTrackMusicSongCount(void) {
-    return lbl_80560080;
+    return gMusicDashSongCount;
 }
 
 /* Returns the music-file path stored at +0x408 of scanned music entry
