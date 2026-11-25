@@ -157,7 +157,7 @@ void fn_8020F5DC(void) {
  
 #pragma dont_inline on
 #pragma scheduling invalid_target
-void *fn_8020F5F0(long trackIndex) {
+void *getTrackMusicBuffer(long trackIndex) {
     /* Return the 0x1900-byte track-music buffer for trackIndex within the trackMusicBuffer table (lbl_80489CA0). */
     long byteOffset = (trackIndex << 6) * 100;
     return (void *)((char *)&lbl_80489CA0 + byteOffset);
@@ -172,7 +172,7 @@ extern void *memset(void *, int, unsigned long);
 /* Zero a context's 0x1900-byte track-music buffer and set the state word of each of its 64 slots (stride 0x64 = 25 longs) to slotState (0 idle, 1 active). */ long fn_8020F608(long slotState, long contextIndex) {
     long *slotPtr;
     long slotIndex;
-    slotPtr = (long *)fn_8020F5F0(contextIndex);
+    slotPtr = (long *)getTrackMusicBuffer(contextIndex);
     memset(slotPtr, 0, 0x1900);
     for (slotIndex = 0; slotIndex < 64; slotIndex++) {
         *slotPtr = slotState;
@@ -275,7 +275,7 @@ void fn_8020F730(void) {
     long nextIndex5;
     long nextIndex6;
 
-    groupSlots = (char *)fn_8020F5F0(fn_8000DA10());
+    groupSlots = (char *)getTrackMusicBuffer(fn_8000DA10());
     slotIndex = 0;
     for (groupIndex = 0; groupIndex < 8; groupIndex++) {
         if ((signed char)groupSlots[4] == 0) {
@@ -322,7 +322,7 @@ void *findTrackMusicEntry(key)
 char *key;
 {
     char *entry;
-    char *entries = (char *)fn_8020F5F0(fn_8000DA10());
+    char *entries = (char *)getTrackMusicBuffer(fn_8000DA10());
     long index = 0;
     entry = entries;
     for (;;) {
@@ -802,7 +802,7 @@ void trackMusicSetSlotStates(int slotState) {
 #pragma opt_strength_reduction off
 long fn_80210570(void) {
     long val = 3;
-    char *ptr = (char *)fn_8020F5F0(fn_8000DA10());
+    char *ptr = (char *)getTrackMusicBuffer(fn_8000DA10());
     long i;
     long ctr;
     long k;
