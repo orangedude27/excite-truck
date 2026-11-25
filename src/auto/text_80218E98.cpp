@@ -1006,19 +1006,19 @@ extern "C" void fn_80219510(void *widget, s32 offsetX, s32 offsetY) {
 }
 
 #pragma scheduling on
-extern "C" void fn_8021952C(void* arg0, s32 arg1, s32 arg2) {
+/* Applies the enabled text-scroll offsets to the widget's target position: adds the scroll origin (widget +0x244/+0x248, set by fn_80219510) plus the current offsets (addX/addY) to the target object's (widget +0x2C) position at +0x454/+0x458. */ extern "C" void fn_8021952C(void* widget, s32 addX, s32 addY) {
 char *__repair_addr;
 
-    void* p = *(void**)((u8*)arg0 + 0x2C);
-    if (*(u8*)((u8*)arg0 + 0x24C) != 0) {
-        s32 dx = *(s32*)((u8*)arg0 + 0x244) + arg1;
-        s32 old1 = *(s32*)((u8*)p + 0x454);
-        s32 dy = *(s32*)((u8*)arg0 + 0x248) + arg2;
-        s32 old2 = *(s32*)((u8*)p + 0x458);
-__repair_addr = (char *)((u8*)p + 0x454);
+    void* target = *(void**)((u8*)widget + 0x2C);
+    if (*(u8*)((u8*)widget + 0x24C) != 0) {
+        s32 deltaX = *(s32*)((u8*)widget + 0x244) + addX;
+        s32 posX = *(s32*)((u8*)target + 0x454);
+        s32 deltaY = *(s32*)((u8*)widget + 0x248) + addY;
+        s32 posY = *(s32*)((u8*)target + 0x458);
+__repair_addr = (char *)((u8*)target + 0x454);
 
-        *(s32*)(__repair_addr) = (dx) + (old1);
-        *(s32*)((u8*)p + 0x458) = old2 + dy;
+        *(s32*)(__repair_addr) = (deltaX) + (posX);
+        *(s32*)((u8*)target + 0x458) = posY + deltaY;
     }
 }
 extern "C" void *fn_80219568(void *obj, s32 x, s32 y, s32 arg3, s32 arg4, s32 width, s32 height, s32 arg7) {
