@@ -1162,7 +1162,7 @@ void fn_802C99D8(void) {
 #pragma dont_inline on
 /* Set the global draw scalar lbl_8055D01C to value, apply it through
  * fn_802C99D8, and return the previous value (float analog of setLightAmbientColor). */
-/* setDrawScalar: set the global draw scalar (lbl_8055D01C) to value, reapply the draw direction via fn_802C99D8, and return the previous scalar; the float analog of setLightAmbientColor. */ float fn_802C99E8(float value) {
+/* setDrawScalar: set the global draw scalar (lbl_8055D01C) to value, reapply the draw direction via fn_802C99D8, and return the previous scalar; the float analog of setLightAmbientColor. */ /* setDrawScalar: set the global draw scalar (lbl_8055D01C) to value, reapply the draw direction via fn_802C99D8, and return the previous scalar; the float analog of setLightAmbientColor. */ float fn_802C99E8(float value) {
     float previous = lbl_8055D01C;
     lbl_8055D01C = value;
     fn_802C99D8();
