@@ -26772,9 +26772,8 @@ extern "C" void fn_800A535C(u32 arg0)
 
 }
 
-/* Return whether media is present in this volume's drive: bit 2
- * (VF_VOL_MEDIA_PRESENT) of the VFiPFVolume.flags word at +0x1F8C, which the
- * media-change callbacks set and the sector reads test before proceeding. */
+/* Return whether media is present in this volume's drive: the
+ * VF_VOL_MEDIA_PRESENT bit (bit 2) of VFiPFVolume.flags. */
 extern "C" s32 VFiPFVOL_IsMediaPresent(void *volume) {
     return ((u16)VF_VOLUME(volume)->flags >> 2U) & 1;
 }
