@@ -3454,10 +3454,9 @@ void fn_802D3D80(void) {
 }
 
 extern void GXLoadTexMtxImm(void *, unsigned int, unsigned char);
+/* Load a 2x4 texture matrix into the indexed GX texture-matrix slot (GX_TEXMTX0 + 3*index). */
 void gxLoadTexMtx(int texMtxIndex, void *mtx) {
-    /* Load a 2x4 texture matrix into GX texture-matrix slot texMtxIndex
-       (matrix id 30 + 3*index). */
-    GXLoadTexMtxImm(mtx, texMtxIndex * 3 + 30, 1);
+    GXLoadTexMtxImm(mtx, texMtxIndex * 3 + GX_TEXMTX0, GX_MTX_2x4);
 }
 
 #pragma opt_propagation on
