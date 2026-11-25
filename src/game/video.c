@@ -241,7 +241,8 @@ void GXSetupIndirectTevPipeline(void) {
     GXSetNumTevStages(1);
 }
 
-/* Reset TEV stage 0 to use swap table 0 for both the rasterized and texture colors. */
+/* Reset TEV stage 0's raster and texture colour swap selectors to identity (swap table 0);
+ * the single-stage counterpart of GXResetTevSwapModes0To4. */
 void GXResetTevSwapMode0(void) {
     GXSetTevSwapMode(GX_TEVSTAGE0, GX_TEV_SWAP0, GX_TEV_SWAP0);
 }
