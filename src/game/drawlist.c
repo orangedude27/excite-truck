@@ -930,22 +930,22 @@ extern double sin(double);
 extern double cos(double);
 extern void fn_802D0368(float, float, float, float);
 #pragma scheduling invalid_target
-void fn_802C9648(float scale) {
+/* Scale the current near/far clip planes by a factor, back up the originals in the view backup triple, then reapply the projection. */ void fn_802C9648(float scale) {
     /* Scale the current view X/Y parameters by a factor, saving the originals in
        the view backup slot, then reapply the projection with the scaled values. */
-    float f0;
-    float f2;
-    float f3;
-    float f4;
-    f3 = lbl_8055FC38;
-    f4 = lbl_8055FC3C;
-    f0 = f3 * scale;
-    f2 = f4 * scale;
-    lbl_804C144C[0] = f3;
-    lbl_804C144C[1] = f4;
-    lbl_8055FC38 = f0;
-    lbl_8055FC3C = f2;
-    fn_802C974C(f0, f2, lbl_804C144C[2]);
+    float scaledNear;
+    float scaledFar;
+    float oldNear;
+    float oldFar;
+    oldNear = lbl_8055FC38;
+    oldFar = lbl_8055FC3C;
+    scaledNear = oldNear * scale;
+    scaledFar = oldFar * scale;
+    lbl_804C144C[0] = oldNear;
+    lbl_804C144C[1] = oldFar;
+    lbl_8055FC38 = scaledNear;
+    lbl_8055FC3C = scaledFar;
+    fn_802C974C(scaledNear, scaledFar, lbl_804C144C[2]);
 }
 #pragma scheduling on
 /* Restores the backed-up view/projection parameters by reapplying the saved
