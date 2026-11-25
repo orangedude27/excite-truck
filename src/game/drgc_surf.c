@@ -1467,7 +1467,7 @@ void mrModelNoopGroupHook(void) {
 }
 
 /* No-op per-group hook passed to VisitGroupIds by the model texture-registration helper
- * (fn_802C6FA8) while it walks a model's group list: the traversal itself is
+ * (mrModelRegisterTextures) while it walks a model's group list: the traversal itself is
  * all the caller needs, so this does nothing. */
 void fn_802D6C48(void) {
 }

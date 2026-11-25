@@ -361,7 +361,7 @@ void fn_801EB6A4(void) {
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" s32 fn_802C6DC4(const char *, s32, s32, s32);
-extern "C" void fn_802C6FA8(s32);
+extern "C" void mrModelRegisterTextures(s32);
 extern "C" char lbl_80339FD4[];
 extern "C" s32 lbl_8055AFC0;
 extern "C" void fn_801EB6A8(s32 arg0) {
@@ -420,7 +420,7 @@ state4:
         child = (s32 *)node[2];
         if (child != 0) {
             child[1] = fn_802C6DC4((const char *)&lbl_8055AFC0, child[2], 0, 0);
-            fn_802C6FA8(child[2]);
+            mrModelRegisterTextures(child[2]);
             if (child[0] == 1) {
                 FirstDispatch *first = (FirstDispatch *)fn_801EB110(child);
                 first->dispatch(child);

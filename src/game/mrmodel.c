@@ -1245,7 +1245,7 @@ int fn_802C6DC4(int arg0, int arg1, int arg2, int arg3) {
 #pragma pop
 /* Registers a model's textures: visits every group in
  * groupList through VisitGroupIds with the per-group hook fn_802D6C48. */
-void fn_802C6FA8(void *groupList) {
+void mrModelRegisterTextures(void *groupList) {
     ((void (*)(void *, void *))VisitGroupIds)(groupList, fn_802D6C48);
 }
 

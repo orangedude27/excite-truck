@@ -225,7 +225,7 @@ void fn_802CE7D4(int arg0, int arg1, void *arg2);
     if (*slot != 0) {
         *(int *)(slot + 0x30) = modelData;
         mrModelFixupResource(modelData, slot + 8);
-        fn_802C6FA8(*(int *)(slot + 0x30));
+        mrModelRegisterTextures(*(int *)(slot + 0x30));
         *(int *)(slot + 0x34) = mrModelCreateInstance(slot + 8, *(int *)(slot + 0x30), 0, 0);
         *(int *)(slot + 0x38) = 2;
     } else {
