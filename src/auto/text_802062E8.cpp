@@ -61,7 +61,7 @@ extern char lbl_8033BDC0;
 __declspec(section ".rodata") extern char lbl_8033BDC0;
 extern int lbl_8055ED80;
 extern "C" void fn_80208620(int, void *);
-extern "C" void fn_8020899C(int, int);
+extern "C" void Sound_releaseVoice(int, int);
 extern "C" int fn_80128668(void *);
 extern "C" void fn_802073A4(void*, int, int);
 extern int lbl_8055ED8C;
@@ -313,7 +313,7 @@ extern "C" void *fn_802066C8(void *object, u32 shouldFree) {
         *(void **)object = (void *)&lbl_8033BDC0;
         if (handle != 0) {
             fn_80208620(lbl_8055ED80, object);
-            fn_8020899C(lbl_8055ED80, *(int *)((char *)object + 0xC));
+            Sound_releaseVoice(lbl_8055ED80, *(int *)((char *)object + 0xC));
             *(int *)((char *)object + 0xC) = 0;
         }
         if ((int)shouldFree > 0)
@@ -630,7 +630,7 @@ extern float lbl_80563200;
 extern char lbl_8033BDC0;
 __declspec(section ".rodata") extern char lbl_8033BDC0;
 extern "C" void fn_80208620(int, void *);
-extern "C" void fn_8020899C(int, int);
+extern "C" void Sound_releaseVoice(int, int);
 extern "C" int fn_80128668(void *);
 /* Returns an object to the Sound3D pool and destroys the pool when its use count reaches zero. */
 extern "C" void fn_80206C70(void *object) {
