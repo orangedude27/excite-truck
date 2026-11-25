@@ -296,7 +296,7 @@ void fn_802E9EB8(void) {
     extern char lbl_805600C9;
     extern float lbl_805651BC, lbl_805651C0, lbl_805651C8, lbl_805651CC, lbl_805651D0;
     extern void spuSetVoiceSurroundPan(int, float);
-    extern void fn_802E61BC(int);
+    extern void spuChannelStartLoop(int);
     extern char lbl_805600D2;
     extern char lbl_805584A0;
     extern char lbl_80508818[];
@@ -306,8 +306,8 @@ void fn_802E9EB8(void) {
 
     if ((unsigned char)lbl_805600D2 != 0) {
         ((long (*)(char *, long))fn_802E30C8)((char *)&lbl_8034E260 + 0x1A0, 0);
-        fn_802E61BC((&lbl_80560090)[0]);
-        fn_802E61BC((&lbl_80560090)[1]);
+        spuChannelStartLoop((&lbl_80560090)[0]);
+        spuChannelStartLoop((&lbl_80560090)[1]);
         lbl_805600D2 = 0;
     }
 
@@ -1049,7 +1049,7 @@ void fn_802EBE2C(void) {
     extern int fn_802E5DD8();
     extern int fn_802E6058();
     extern void spuSetVoicePan(int, float);
-    extern void fn_802E61BC(int);
+    extern void spuChannelStartLoop(int);
     extern void OSInitMutex(void *);
     extern void InitSDFileSystemHandle(void);
     extern int OSCreateThread();
@@ -1089,7 +1089,7 @@ void fn_802EBE2C(void) {
     do {
         spuSetVoiceVolume(((volatile int *)&lbl_80560090)[i], lbl_805651C4);
         spuSetVoiceRate(((volatile int *)&lbl_80560090)[i], lbl_805651C4);
-        fn_802E61BC(((volatile int *)&lbl_80560090)[i]);
+        spuChannelStartLoop(((volatile int *)&lbl_80560090)[i]);
         i++;
         off += 4;
     } while (i < 2);

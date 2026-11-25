@@ -992,7 +992,7 @@ void fn_802E61A8(void *channel) {
     ((struct SpuChannel *)channel)->wantPlay = 1;
 }
 
-void fn_802E61BC(void *channel) {
+void spuChannelStartLoop(void *channel) {
     /* SND_StartLoop: if the channel was idle, set its loop flag (+0x25) and flag it to keep playing. */
     if (((struct SpuChannel *)channel)->wantPlay == 0) {
         ((struct SpuChannel *)channel)->adpcm = 1;
