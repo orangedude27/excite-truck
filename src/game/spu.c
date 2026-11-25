@@ -354,10 +354,10 @@ int SpuResetCallback(int request) {
 #undef KERNEL_RESET_NOTIFY
 }
 
-extern void fn_802E6248(int, float);
+extern void SpuSpeaker_SetVolume(int, float);
 #pragma dont_inline fn_802E5438
 /* Copy the configured Wii Remote speaker volume into all four remote-speaker channels. */ void fn_802E5438(void) {
-#define spuSetRemoteSpeakerVolume fn_802E6248
+#define spuSetRemoteSpeakerVolume SpuSpeaker_SetVolume
 #define getWpadSpeakerVolume ConfigGetWpadSpeakerVolume
     /* Copy the configured Wii Remote speaker volume into all four remote-speaker channels. */
     int channel;
@@ -1051,7 +1051,7 @@ void fn_802E623C(void) {}
 }
 
 /* Set the volume of one Wii Remote speaker channel (spuSetRemoteSpeakerVolume). */
-void fn_802E6248(int channel, float volume) {
+void SpuSpeaker_SetVolume(int channel, float volume) {
     lbl_804FC680[channel] = volume;
 }
 
