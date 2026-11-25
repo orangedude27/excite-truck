@@ -732,7 +732,7 @@ void fn_802E09EC(void) {
 #pragma push
 #pragma scheduling invalid_target
 /* Reset the TEV swap selectors to swap 0 for the first two stages. */
-void fn_802E0B68(void) {
+/* Resets the TEV swap selectors of stages 0 and 1 back to swap 0 (identity ras/tex swap). Called after a two-stage TEV pipeline setup to undo its swap-mode changes. */ void fn_802E0B68(void) {
     GXSetTevSwapMode(GX_TEVSTAGE0, GX_TEV_SWAP0, GX_TEV_SWAP0);
     GXSetTevSwapMode(GX_TEVSTAGE1, GX_TEV_SWAP0, GX_TEV_SWAP0);
 }
