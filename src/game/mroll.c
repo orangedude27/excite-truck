@@ -880,7 +880,7 @@ extern void fn_8002F53C(void *, void *, void *, s32, s32);
 extern void *memset(void *, int, unsigned int);
 /* Set an MRoll stat label's one-based display rank (+0x1C), value pointer (+0x24)
  * and flag block (+0x20), used later when the label is drawn. */
-void fn_80241010(void *label, s32 rankIndex, s32 valuePtr, s32 flag) {
+void MRollStatLabel_setDisplayData(void *label, s32 rankIndex, s32 valuePtr, s32 flag) {
     *(s32 *)((u8 *)label + MROLL_STAT_VALUE_PTR_OFFSET) = valuePtr;
     *(s32 *)((u8 *)label + 0x1C) = rankIndex + 1;
     *(s32 *)((u8 *)label + MROLL_STAT_FLAG_OFFSET) = flag;
