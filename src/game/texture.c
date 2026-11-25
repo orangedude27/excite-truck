@@ -548,21 +548,21 @@ void fn_802CAC54(int arg0)
     ((void (*)(int)) fn_802D8FB4)(entry[0x28 / 4]);
   }
 }
-void fn_802CAD28(int slotIndex) {
-    int *slot;
+/* Release one reference to a texture slot (the matching counterpart to fn_802CAC54's non-cached release path); on the final reference, clear the slot's resource handle at +0x2C and free its GPU texture object at +0x28 via fn_802D8FB4. */ void fn_802CAD28(int slotIndex) {
+    int *textureSlot;
     int refCount;
 #define gTextureSlots gTextureSlotTable
     /* Release a texture slot reference; on the last one, drop its resource handle and GPU texture object. */
     if (slotIndex == -1)
         return;
-    slot = (int *)(gTextureSlots + slotIndex * 0x4C);
-    refCount = --slot[0];
+    textureSlot = (int *)(gTextureSlots + slotIndex * 0x4C);
+    refCount = --textureSlot[0];
     if (refCount != 0)
         return;
-    if (slot[0x2C / 4] == 0)
+    if (textureSlot[0x2C / 4] == 0)
         return;
-    slot[0x2C / 4] = 0;
-    ((void (*)(int))fn_802D8FB4)(slot[0x28 / 4]);
+    textureSlot[0x2C / 4] = 0;
+    ((void (*)(int))fn_802D8FB4)(textureSlot[0x28 / 4]);
 #undef gTextureSlots
 }
 
