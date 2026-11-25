@@ -905,12 +905,10 @@ void fn_802C40B8(GxCanvas *canvas, s32 dstX, s32 dstY) {
         lbl_8055FC00, dstX, dstY);
 }
 
-void fn_802C40E8(void *canvas, s32 dstX, s32 dstY) {
-    /* Copy the whole canvas (origin 0,0; width/height from +8/+0xC) to (dstX,dstY)
-       on the global canvas lbl_8055FC00 via the mode-aware copy dispatcher. */
-    fn_802C3850((s32)canvas, 0, 0,
-        *(s32 *)((u8 *)canvas + 8), *(s32 *)((u8 *)canvas + 0xC),
-        lbl_8055FC00, dstX, dstY);
+void fn_802C40E8(GxCanvas *canvas, s32 dstX, s32 dstY) {
+    /* Alpha-blit the whole source canvas (origin 0,0, full width/height) onto the current canvas at (dstX,dstY). */
+    fn_802C3850((s32)canvas, 0, 0, canvas->width, canvas->height,
+        sCurrentCanvas, dstX, dstY);
 }
 
 #pragma scheduling invalid_target
