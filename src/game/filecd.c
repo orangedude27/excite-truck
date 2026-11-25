@@ -345,10 +345,10 @@ int fn_802E4400(void *file) {
 
 #pragma push
 #pragma cplusplus on
-extern "C" int FileCd_close(int unused, void *arg0) {
-    /* FileCd::close: release the given DVD file node, freeing its pool slot. */
-    if (arg0 == 0) return;
-    ((FileDisk *)arg0)->release(1);
+extern "C" int FileCd_close(int self, void *file) {
+    /* FileCd::close: release the given DVD file node, freeing its pool slot; the FileCd `this` pointer is unused. */
+    if (file == 0) return;
+    ((FileDisk *)file)->release(1);
 }
 #pragma cplusplus reset
 #pragma pop
