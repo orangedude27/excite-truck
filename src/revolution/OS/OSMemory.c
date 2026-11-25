@@ -474,13 +474,8 @@ static asm void RealMode(register void* config) {
     // clang-format off
     nofralloc
 
-    /* Enter real mode to run the BAT-configuration stub: resume at its aligned
-     * pointer with the address-translation bits cleared in the saved machine
-     * state, then return from the exception into that stub. */
-    /* Jump to the BAT-config stub with translation off: SRR0 = aligned stub
-     * address, SRR1 = MSR with IR/DR cleared (rlwinm 28..25), then rfi. */
-    /* Jump to the BAT-config stub with translation off: SRR0 = aligned stub
-     * address, SRR1 = MSR with IR/DR cleared (rlwinm 28..25), then rfi. */
+    /* Enter real mode to run the BAT-config stub: SRR0 = the aligned stub
+     * address, SRR1 = MSR with IR/DR (address translation) cleared, then rfi. */
     clrlwi config, config, 2
     mtspr 0x1a, config
     /* Clear IR/DR in the saved machine state so rfi enters the stub in real mode. */
