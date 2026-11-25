@@ -169,7 +169,8 @@ void fn_802DEE88(void) {
 }
 
 #pragma scheduling invalid_target
-/* Reset TEV stage 0 to an identity swap, then apply the configured blend mode. */
+/* Reset TEV stage 0 to the identity colour/alpha swap, then reapply the
+   currently configured blend mode. */
 void fn_802DEF70(void) {
     GXSetTevSwapMode(0, 0, 0);
     fn_802D3144();
