@@ -198,12 +198,12 @@ u8 fn_802E4A1C(s32 keyCode) {
 #undef gKeyStateTable
 }
 
-void fn_802E4A2C(void) {
+/* When a saved-state pointer is valid, zero a 64-word scratch snapshot on the stack; otherwise do nothing. */ void fn_802E4A2C(void) {
     /* When a saved state exists, zero a 64-word stack scratch area (the clearing
        itself is the only effect of this routine). */
 #define gSavedStatePtr lbl_8055D1C0
     if ((s32)gSavedStatePtr >= 0) {
-        u32 scratch[64] = {0};
+        u32 zeroedState[64] = {0};
     }
 #undef gSavedStatePtr
 }
