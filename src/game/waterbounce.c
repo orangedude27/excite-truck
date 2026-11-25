@@ -849,7 +849,7 @@ void fn_8020F284(void *carSound, float inputValue) {
     }
 }
 #pragma scheduling off
-void CarSound_ResetBoostTurboTap(void *carSound) {
+/* CarSound vtable slot: re-arm the boost-turbo-tap sound at +0x2C by setting its +0x49 flag and clearing +0x4A/+0x4B, if present. */ void CarSound_ResetBoostTurboTap(void *carSound) {
     /* Reset the state flags (+0x49 set, +0x4A/+0x4B clear) of the boostTurboTap
      * sound stored at +0x2C of the car's sound set. */
     void *sound;
