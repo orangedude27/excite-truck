@@ -1,6 +1,6 @@
 #include "types.h"
 
-extern "C" void fn_80208D70(void);
+extern "C" void GetSelectedMixerDevice(void);
 extern "C" void *GetMixerDevice(void);
 extern "C" void fn_80208D80(int);
 extern "C" int fn_801284F8(int, void *);
@@ -105,12 +105,12 @@ extern "C" int fn_802062E8(void) {
 
     /* Initialize the sound system and SoundManager; returns 1 on success, 0 on failure. */
     fn_80208B8C(lbl_8055ED84 == 0);
-    fn_80208D70();
+    GetSelectedMixerDevice();
     mixerName = ((Service *)GetMixerDevice())->f1();
     fn_802E30C8(lbl_8033BC50, mixerName); /* "using sound mixer %s" */
     soundManager = (void *)fn_801284F8(0x118, lbl_8033BC68); /* "SoundManager" */
     if (soundManager != 0) {
-        fn_80208D70();
+        GetSelectedMixerDevice();
         soundManager = fn_80207990(soundManager, GetMixerDevice());
     }
     lbl_8055ED80 = (int)soundManager;
@@ -179,7 +179,7 @@ extern "C" void fn_8020646C(long slot, long value) {
 extern "C" void fn_80206480(void) {
 }
 
-extern "C" void fn_80208D70(void);
+extern "C" void GetSelectedMixerDevice(void);
 extern "C" void *GetMixerDevice(void);
 extern "C" int fn_80206430(void);
 /* Dispatch an event notification to the current mixer through its callback interface. */
@@ -190,7 +190,7 @@ extern "C" void fn_80206484(int event) {
         virtual void f8();
         virtual void notify(int);
     };
-    fn_80208D70();
+    GetSelectedMixerDevice();
     ((MixerCallback *)GetMixerDevice())->notify(event);
 }
 
@@ -212,7 +212,7 @@ extern "C" void fn_802064D0(int arg0) {
         virtual void call(int);
     };
     /* RealName: Mixer_NotifyCurrentDevice? Dispatch event arg0 to the current mixer's vtable slot 13. */
-    fn_80208D70();
+    GetSelectedMixerDevice();
     ((Callback *)GetMixerDevice())->call(arg0);
 }
 
@@ -222,10 +222,10 @@ extern "C" void fn_80206514(void) {
 }
 
 extern "C" void fn_80206518(void) {
-    extern void fn_80208D70(void);
+    extern void GetSelectedMixerDevice(void);
     extern void *GetMixerDevice(void);
     /* Select the current mixer, then invoke its f12 virtual callback. */
-    fn_80208D70();
+    GetSelectedMixerDevice();
     ((Obj80206518 *)GetMixerDevice())->f12();
 }
 
@@ -253,7 +253,7 @@ extern "C" void fn_8020655C(int soundData, int soundIndex) {
 extern void* fn_80207C74(int, unsigned int);
 extern int lbl_802F9DA0[10];
 extern void* GetMixerDevice(void);
-extern void fn_80208D70(void);
+extern void GetSelectedMixerDevice(void);
 extern char lbl_8033BD30[];
 /* Returns the name for the given sound class index, or "<invalid>" if out of range. */
 extern "C" void *fn_80206570(int soundClass) {

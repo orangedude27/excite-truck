@@ -92,7 +92,7 @@ extern s32 lbl_8055BB90;
 extern s32 lbl_8055BAB8;
 extern s32 lbl_8055BABC;
 extern s32 lbl_8055BAC0;
-extern s32 fn_80208D70(void);
+extern s32 GetSelectedMixerDevice(void);
 extern void fn_8022D228(void *, s32, s32);
 extern void fn_8022D350(void *, void *, s32);
 extern void fn_8022D2BC(void *, s32);
@@ -155,7 +155,7 @@ void fn_8023CC84(char *arg0) {
     }
     p7c = base + 0x7C;
     p90 = base + 0x90;
-    fr.result = fn_80208D70();
+    fr.result = GetSelectedMixerDevice();
     fr.obj.a5c = (s32)lbl_803415E8;
     fr.obj.a70[3] = fr.result;
     fr.obj.a70[1] = (s32)&lbl_8055F16C;
