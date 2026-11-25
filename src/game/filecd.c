@@ -26,7 +26,7 @@ public:
     virtual int write(const void *src, int len);  // 0x0C fn_802E4648: "write not supported"
     virtual int readAsync(void *dst, int len);    // 0x10 FileDisk_readAsync
     virtual int isReadDone(void);                 // 0x14 FileDisk_isReadDone
-    virtual int getLength(void);                  // 0x18 fn_802E4400
+    virtual int getLength(void);                  // 0x18 FileDisk_getLength
     virtual int tell(void);                       // 0x1C fn_802E4680
     virtual int seek(int pos);                    // 0x20 FileDisk_seek
     virtual void seekRelative(int delta);         // 0x24 fn_802E4688
@@ -339,7 +339,7 @@ int FileDisk_seek(void *disk, int position) {
 }
 
 /* Return the cached file length stored at offset 0x84 of the DVD file node (FileDisk::length). */
-int fn_802E4400(void *file) {
+int FileDisk_getLength(void *file) {
     return *(int *)((char *)file + 0x84);
 }
 
