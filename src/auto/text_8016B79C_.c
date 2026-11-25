@@ -682,7 +682,9 @@ extern "C" void fn_8016C328(void *arg0) {
         virtual void *get(s32);
     };
     struct Entry { u8 b; s32 w; f32 a; f32 c; };
-    const char *base = lbl_803306D0;
+    /* lbl_803306D0 is the Crush-mode results layout table: its +0x458..+0x4dc slots
+     hold the localized string ids and text-style handles for the two panels. */
+  const char *base = lbl_803306D0;
     char buf[0x28];
     Cfg *cfg;
     void *obj;
