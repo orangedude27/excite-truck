@@ -70,7 +70,7 @@ void *fn_802E4CA4(int size) {
     return fn_802E4C1C(size);
 }
 
-void fn_802E4CA8(unsigned char *dst, const signed char *src, int maxLen) {
+/* Bounded string copy: copy bytes from src into dst until a NUL is copied, but if maxLen bytes are copied first, overwrite the last byte with a NUL so the result is always terminated within maxLen bytes. */ void fn_802E4CA8(unsigned char *dst, const signed char *src, int maxLen) {
     /* Bounded string copy: copy bytes from src to dst until NUL, or NUL-terminate at maxLen on truncation. */
     unsigned char c;
     goto copy;
