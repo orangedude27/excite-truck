@@ -4115,9 +4115,9 @@ static inline float HudEase(float t) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-/* Draws the zone HUD's two timed info panels: the "master" box and the
- * "player data" box slide in and out on a fixed timeline relative to the
- * round's start. Skipped entirely while a challenge sub-task is active. */
+/* Draws the zone HUD's two timed info panels (score and player-data) as they slide in
+ * and out on a fixed timeline relative to the round clock. Skipped while a challenge
+ * sub-task is active. */
 extern "C" s32 fn_801436E0(void *arg0, s32 arg1) {
     void *style;
     u8 *master=(u8 *)arg0;
