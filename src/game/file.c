@@ -362,7 +362,7 @@ extern "C" void fn_802E3990(s32 fileHandle) {
     ((Obj *)fileObject)->v3();
 }
 #pragma cplusplus off
-/* Reads exactly `count` bytes from file `fileId` into `buffer`; returns nonzero on success. */
+/* Read exactly count bytes from file handle fileId into buffer; return 1 only if the full request was satisfied. */
 s32 fn_802E39D0(s32 fileId, s32 buffer, s32 count) {
     s32 bytesRead = count;
     fn_802E3898(fileId, (const char *)buffer, &bytesRead);
