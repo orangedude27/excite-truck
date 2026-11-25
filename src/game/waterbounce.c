@@ -759,13 +759,13 @@ extern "C" void fn_80206750(s32, s32, s32);
 
 /* Reset the state flags (+0x49 set, +0x4A/+0x4B clear) of the child
  * node stored at +0x50 of the object. */
-void CarSound_ResetOverheatStart(void *object) {
-    void *node;
-    node = *(void **)((char *)object + 0x50);
-    if (node != 0) {
-        *(signed char *)((char *)node + 0x49) = 1;
-        *(signed char *)((char *)node + 0x4B) = 0;
-        *(signed char *)((char *)node + 0x4A) = 0;
+/* CarSound vtable slot +0x14: re-arm the overheat_start.sfx held at +0x50 of the car's sound set if present, setting its +0x49 flag and clearing +0x4A/+0x4B. */ void CarSound_ResetOverheatStart(void *carSound) {
+    void *sound;
+    sound = *(void **)((char *)carSound + 0x50);
+    if (sound != 0) {
+        *(signed char *)((char *)sound + 0x49) = 1;
+        *(signed char *)((char *)sound + 0x4B) = 0;
+        *(signed char *)((char *)sound + 0x4A) = 0;
     }
 }
 
