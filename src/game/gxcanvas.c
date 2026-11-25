@@ -1355,7 +1355,7 @@ s32 stampGetWidth(s32 *width) {
 }
 
 /* Return a stamp's height (rows per frame), or 0 for a null stamp. */
-s32 fn_802C4EFC(Stamp *stamp) {
+s32 stampGetHeight(Stamp *stamp) {
     if (stamp != NULL) {
         return stamp->height;
     }

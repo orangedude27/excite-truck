@@ -15,7 +15,7 @@ extern s32 fn_802C4C80(s32);
 extern s32 gxCanvasStringWidth(const char *);
 extern s32 stampGetOffsets(s32, s32 *, s32 *);
 extern s32 fn_802C501C(void);
-extern s32 fn_802C4EFC(s32);
+extern s32 stampGetHeight(s32);
 extern void fn_801E4BEC(s32, s32, s32, s32, s32, const char *, ...);
 /* "%s" in .sdata, the only format the counted-string drawer fn_801E4DBC needs.
  * Declared scalar so its address folds into a single sda21 load. */
@@ -87,7 +87,7 @@ s32 fn_801E4B48(s32 *fontObject) {
     if (fontObject != 0) {
         advance = 0;
         stampGetOffsets(*fontObject, &scratch, &advance);
-        baseline = fn_802C4EFC(*fontObject) - advance;
+        baseline = stampGetHeight(*fontObject) - advance;
     } else {
         baseline = 0;
     }

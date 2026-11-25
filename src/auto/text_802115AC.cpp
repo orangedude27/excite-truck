@@ -2620,7 +2620,7 @@ extern "C" void fn_80215618(void *self, s32 arg1, s32 arg2, s32 value) {
 
 extern "C" void stampGetOffsets(s32, s32 *, s32 *);
 extern "C" s32 stampGetWidth(s32);
-extern "C" s32 fn_802C4EFC(s32);
+extern "C" s32 stampGetHeight(s32);
 #pragma use_lmw_stmw off
 extern "C" void fn_8021568C(void *arg0, s32 x, s32 y,
                             s32 *outLeft, s32 *outTop, s32 *outRight, s32 *outBottom,
@@ -2635,7 +2635,7 @@ extern "C" void fn_8021568C(void *arg0, s32 x, s32 y,
     *outLeft = x - originX;
     *outTop = y - originY;
     *outRight = *outLeft + stampGetWidth(*(s32 *)((u8 *)arg0 + 4));
-    *outBottom = *outTop + fn_802C4EFC(*(s32 *)((u8 *)arg0 + 4));
+    *outBottom = *outTop + stampGetHeight(*(s32 *)((u8 *)arg0 + 4));
 }
 #pragma use_lmw_stmw reset
 typedef struct CanvasHandleObj {
@@ -2652,7 +2652,7 @@ extern "C" s32 fn_80215730(void *arg0) {
 extern "C" void gxCanvasAlphaBlitWhole(void *, s32, s32);
 void stampGetOffsets(int, int *, int *);
 int stampGetWidth(int);
-int fn_802C4EFC(int);
+int stampGetHeight(int);
 extern "C" char lbl_8033D504[];
 extern "C" s32 fn_802C2FC4(s32);
 extern "C" /* Deleting destructor: installs lbl_8033D504 vtable, releases the owned handle at +4 via fn_802C2FC4, and optionally frees the object. */

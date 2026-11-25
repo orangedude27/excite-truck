@@ -83,7 +83,7 @@ extern int fn_80232B70(int);
 extern void fn_8022A8E4(int);
 extern double lbl_80563590;
 extern float lbl_80563598;
-extern int fn_802C4EFC(int);
+extern int stampGetHeight(int);
 extern int gxGetImageHeight(int);
 #define I2F(x) ((float)((double)((x) ^ 0x80000000) - lbl_80563590))
 extern int stampGetWidth(int);
@@ -405,7 +405,7 @@ void fn_8022ACFC(int unused, char *str, float *outMinX, float *outMinY, float *o
         float t;
         stampGetOffsets(h, &a, &b);
         n = stampGetWidth(*(int *)(p + 0x64));
-        hh = fn_802C4EFC(*(int *)(p + 0x64));
+        hh = stampGetHeight(*(int *)(p + 0x64));
         minX = x0 - (float)a;
         if (x0 < minX) minX = x0;
         t = (float)n + (x0 - (float)a);
@@ -709,7 +709,7 @@ int fn_8022B620(int styleIndex, const char *text) {
     max = 0;
     value = style->picture;
     if (value != 0) {
-        max = fn_802C4EFC(value);
+        max = stampGetHeight(value);
     } else if ((value = style->picture2) != 0) {
         max = ((int (*)(int))gxGetImageHeight)(value);
     }
