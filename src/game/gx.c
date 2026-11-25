@@ -3428,7 +3428,7 @@ void fn_802D3BB4(float *arg0, float *arg1, float *arg2, float *arg3, unsigned in
 #pragma pop
 
 void gxDisableFog(void) {
-    /* Disable the GX state block (active flag at +0x0) and mark it for update (+0x1C). */
+    /* Turn fog off by clearing its active flag and mark the state dirty for the next upload. */
     gGxFogState[0] = 0;
     gGxFogState[0x1C] = 1;
 }
