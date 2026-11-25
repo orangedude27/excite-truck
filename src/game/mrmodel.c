@@ -1575,9 +1575,9 @@ void fn_802C74D8(int arg0, void *arg1, int arg2) {
  * tail call, so the transform pointer simply stays in r3. */
 void fn_802C7730(const float *transform) { fn_802DABA4(transform); }
 
-/* Queue the caller's 12-float model transform as a draw record, then apply it
+/* Queue the caller's 12-float model transform as a draw record, then select it
  * as the current GX state: fn_802D0514 returns the new record's handle and
- * fn_802D0610 selects that record. */
+ * fn_802D0610 applies that record. */
 void MRModelSetTransform(void *transform) {
     fn_802D0610(fn_802D0514(transform));
 }
