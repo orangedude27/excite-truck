@@ -593,9 +593,9 @@ int VoiceSnd_hasSound(void *voiceSnd) {
 }
 
 /* Clear slot slotIndex in the active voice mixer's work-buffer slot array (voiceSound is passed but unused). */
-void VoiceMixer_clearSlot(void *mixer, int voiceSound, int slotIndex) {
-    int *slots = *(int **)((unsigned char *)mixer + 4);
-    slots[slotIndex] = 0;
+/* Clears the mixer work-buffer slot at slotIndex; voiceSnd is passed but unused. */ void VoiceMixer_clearSlot(void *voiceMixer, int voiceSnd, int slotIndex) {
+    int *workBufferSlots = *(int **)((unsigned char *)voiceMixer + 4);
+    workBufferSlots[slotIndex] = 0;
 }
 
 /* "Voice Mixer" device (callback table gVoiceMixerVtable, installed by the device
