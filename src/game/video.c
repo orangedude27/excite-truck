@@ -247,9 +247,9 @@ void GXResetTevSwapMode0(void) {
     GXSetTevSwapMode(GX_TEVSTAGE0, GX_TEV_SWAP0, GX_TEV_SWAP0);
 }
 
-void *fn_802D3138(void);
+void *gxGetSceneTexObj(void);
 /* Configures GX TEV/texture state for a 2-stage textured blend setup. */
-/* Configure the 2-stage TEV pipeline for render mode 2's non-indirect branch: stage 0 uses the rasterized color, stage 1 samples the texture from fn_802D3138() loaded into GX_TEXMAP7. */ void fn_802DF300(void) {
+/* Configure the 2-stage TEV pipeline for render mode 2's non-indirect branch: stage 0 uses the rasterized color, stage 1 samples the texture from gxGetSceneTexObj() loaded into GX_TEXMAP7. */ void fn_802DF300(void) {
     register u32 texCoordId = 0;
     register u32 texGenType = 1;
     GXSetTexCoordGen2(texCoordId, texGenType, 0, 0x2D, 0, 0x7D);
@@ -267,7 +267,7 @@ void *fn_802D3138(void);
     GXSetTevAlphaIn(1, 7, 7, 7, 0);
     GXSetTevAlphaOp(1, 0, 0, 0, 1, 0);
     GXSetNumTevStages(2);
-    GXLoadTexObj(fn_802D3138(), 7);
+    GXLoadTexObj(gxGetSceneTexObj(), 7);
 }
 
 #pragma push

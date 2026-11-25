@@ -3123,7 +3123,7 @@ void *fn_802D3134(void) {
 }
 
 extern void *lbl_8055FD58;
-void* fn_802D3138(void) {
+void* gxGetSceneTexObj(void) {
     /* Return the GXTexObj at +0x24 of the global GX state block in lbl_8055FD58;
        the caller loads it as the indirect texture (GXLoadTexObj, map 7). */
     struct { char pad[0x24]; char texObj; } *state;
