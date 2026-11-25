@@ -882,8 +882,8 @@ void fn_8020F39C(void) {
 }
 
 void CarSound_RequestInvulnerable(void *carSound) {
-    /* Raise the +0x72 flag (CarSound.flag72): request the invulnerable sfx after a hit. */
-    *(signed char *)((char *)carSound + 0x72) = 1;
+    /* Request invulnerable.sfx after a hit: raise flag72 so the per-frame update re-arms the sound and clears the flag. */
+    ((CarSound *)carSound)->flag72 = 1;
 }
 extern float lbl_80563368;
 extern float lbl_80563370;
