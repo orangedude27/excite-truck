@@ -340,7 +340,7 @@ void DrawList_loadMatrix(unsigned int *arg0) {
 }
 #pragma scheduling on
 /* Return the buffer holding the current camera/view matrix (a 3x4 float matrix). */
-void *DrawList_getCurrentMatrix(void) {
+/* Return a pointer to the current draw-list/view matrix buffer (12-word 3x4 at lbl_804C1410). */ void *DrawList_getCurrentMatrix(void) {
 #define sCurrentMatrix lbl_804C1410
     return sCurrentMatrix;
 #undef sCurrentMatrix
