@@ -179,7 +179,7 @@ extern f32 lbl_80564884;
 extern f32 lbl_80564890;
 extern double lbl_80564848;
 typedef struct { f32 *pts; s32 count; s32 pad8; s32 unkC; s32 unk10; f32 x14; f32 y18; char pad1C[0x28]; f32 vec[3]; } Obj802A5FE4;
-s32 fn_802C90F0(s32);
+s32 DrawList_setupMode3(s32);
 void fn_802C9118(void);
 void fn_802C9124(s32, s32, f32, f32, u32, f32, f32, f32, f32);
 
@@ -305,7 +305,7 @@ void fn_802A4D08(void) {
         if (nonnegativeAlpha < 0xFF)
             alpha = nonnegativeAlpha;
 
-        fn_802C90F0(lbl_8055F89C);
+        DrawList_setupMode3(lbl_8055F89C);
         ((void (*)(f32, f32, f32, f32, s32, s32, s32, s32, s32))fn_802C9124)(
             lbl_80564858, lbl_80564858, lbl_8056485C, lbl_8056485C,
             0, 0, lbl_8055CFF0, lbl_8055CFF4,
@@ -369,7 +369,7 @@ void fn_802A4E08(void) {
         clampedAlpha = scaledAlpha & ((-scaledAlpha & ~scaledAlpha) >> 31);
         if (clampedAlpha < 0xFF)
             alpha = clampedAlpha;
-        fn_802C90F0(lbl_8055F89C); /* start a 2D batch on the snowquad.tex texture */
+        DrawList_setupMode3(lbl_8055F89C); /* start a 2D batch on the snowquad.tex texture */
         ((DrawTexturedQuad *)fn_802C9124)(
             FLOAT_ZERO, FLOAT_ZERO, FLOAT_ONE, FLOAT_ONE,
             0, 0, RENDER_WIDTH, RENDER_HEIGHT,
@@ -969,7 +969,7 @@ void fn_802A5FE4(void *arg0) {
         }
         DrawList_RestoreNormalMode();
         fn_802C9A4C(saved);
-        fn_802C90F0(o->unk10);
+        DrawList_setupMode3(o->unk10);
         one = lbl_8056485C;
         c888 = lbl_80564888;
         c884 = lbl_80564884;
@@ -1994,7 +1994,7 @@ s32 fn_802A79CC(s32 arg0) {
 #pragma scheduling on
 extern f32 lbl_80564850, lbl_80564854, lbl_80564858, lbl_8056485C;
 extern s32 lbl_8055CFF0, lbl_8055CFF4;
-extern s32 fn_802C90F0(s32);
+extern s32 DrawList_setupMode3(s32);
 extern void fn_802C9118(void);
 extern void fn_802C9124(s32, s32, f32, f32, u32, f32, f32, f32, f32);
 extern void fn_802D3D50(void);
