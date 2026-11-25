@@ -927,7 +927,7 @@ void *object;
 
 extern s32 FileLookup(void *);
 extern void fn_802E3804(void *, u32);
-extern void fn_802E3734(s32 *);
+extern void closeFileHandle(s32 *);
 extern s32 fn_8011770C(void *, u32);
 extern void fn_80117618(s32, void *);
 extern s32 fn_802E1BB4(void *);
@@ -943,7 +943,7 @@ void fn_802E0EAC(void *arg0) {
     movieIndex = FileLookup(video + 8);
     if (movieIndex != -1) {
         ((void (*)(s32, void *, s32))fn_802E3804)(movieIndex, name, 0x20);
-        fn_802E3734(&movieIndex);
+        closeFileHandle(&movieIndex);
     }
     binkHandle = fn_8011770C(video + 8, 0x100400);
     *(s32 *)(video + 4) = binkHandle;

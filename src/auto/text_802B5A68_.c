@@ -60,7 +60,7 @@ extern float lbl_80564C58;
 extern float lbl_80564C60;
 extern s32 FileOpenSecondary(void *);
 extern void fn_802E3AD0(s32, const char *, ...);
-extern void fn_802E3734(void *);
+extern void closeFileHandle(void *);
 extern float fn_801DCF48(float *, float, float);
 extern char lbl_8034A8B0[];
 extern float lbl_80564C98;
@@ -448,7 +448,7 @@ void fn_802B5F98(void) {
     fn_802E3AD0(handle, lbl_8055CE60);
     fn_802B5F24(handle);
     fn_802E3AD0(handle, lbl_8055CE60);
-    fn_802E3734(&handle);
+    closeFileHandle(&handle);
 }
 #pragma pop
 /* Re-selects the material set the "tedash.val" debug viewer is on, then toggles
@@ -1220,31 +1220,31 @@ s32 fn_802B7300(s16 x, s16 y, s32 arg2, s32 arg3, f32 farg0) {
     extern float lbl_80564C88;
     extern s32 fn_801E41D8(void *, void *, s32, f32);
     f32 points[6];
-    f32 x1;
-    f32 y1;
     f32 height;
+    f32 y1;
+    register u32 alpha;
     f32 scale;
     s16 scaleValue;
-    u32 color;
-    u32 alpha;
+    int color;
+    register f32 x1;
 
-    points[4] = lbl_80564C74;
-    x1 = lbl_80564C88 + (f32)x * lbl_80564C58;
     points[3] = x1;
+    x1 = lbl_80564C88 + (f32)x * lbl_80564C58;
+    points[4] = lbl_80564C74;
     y1 = lbl_80564C88 + (f32)y * lbl_80564C58;
     points[5] = y1;
     height = lbl_80564C78 + fn_801DCF48(0, x1, y1);
 
     *(u32 *)&points[0] = *(u32 *)&points[3];
     points[4] = height;
-    *(u32 *)&points[2] = *(u32 *)&points[5];
     *(u32 *)&points[1] = *(u32 *)&points[4];
+    *(u32 *)&points[2] = *(u32 *)&points[5];
     points[4] = height + farg0;
 
     scaleValue = (s16)fn_802B6E30();
     scale = lbl_80564C88 * (f32)scaleValue;
 
-    color = (u32)arg2;
+    color = arg2;
     alpha = (u32)arg3;
     if (arg2 == 0) {
         alpha = 0xFF000000u;

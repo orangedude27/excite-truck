@@ -2472,7 +2472,7 @@ char *fn_80029004(char *, int);
 char *strcpy(char *, const char *);
 char *strchr(const char *, int);
 s32 FileOpenSecondary(const char *);
-void fn_802E3734(s32 *);
+void closeFileHandle(s32 *);
 __declspec(section ".sdata") extern char lbl_80559E70[5];
 extern char lbl_8032D28C[];
 }
@@ -2493,7 +2493,7 @@ extern "C" void fn_80148534(void *arg0) {
         fn_8014589C(*(void **)((u8 *)arg0 + 0x34), value);
         fn_8014595C(*(void **)((u8 *)arg0 + 0x3C), (const char *)value);
         fn_802E3AD0(value, lbl_80559E14);
-        fn_802E3734(&value);
+        closeFileHandle(&value);
     }
 }
 #pragma scheduling on

@@ -39,7 +39,7 @@ enum SoundDashCommand {
 extern char lbl_8033C530[];
 extern int FileOpenSecondary(const char *);
 extern void fn_802E3AD0(int, const char *, ...);
-extern void fn_802E3734(int *);
+extern void closeFileHandle(int *);
 #pragma push
 #pragma pool_strings off
 #pragma readonly_strings on
@@ -59,7 +59,7 @@ extern void fn_802E3734(int *);
             fn_802E3AD0(outFile, "\t%s\t\t%1.2f\r\n\0\0\0", sndEntry->name, sndEntry->volume);
         }
         fn_802E3AD0(outFile, "end\r\n\r\nend\r\n\0\0\0");
-        fn_802E3734(&outFile);
+        closeFileHandle(&outFile);
     } else {
         fn_802E30C8("can't write to sounds.txt\0\0");
     }

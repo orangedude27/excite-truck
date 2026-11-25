@@ -9,7 +9,7 @@
       char name[0x80];
   } StreamEntry;
   extern void fn_802E3990(void);
-extern int fn_802E3734(int *);
+extern int closeFileHandle(int *);
 extern int findStreamEntryBySector(int);
 extern int FileLookup(void *);
 extern void fn_802E3A14(int);
@@ -107,7 +107,7 @@ done:
     lbl_8055FFDC += blocks;
     *(int *)(entry + 4) = lbl_8055FFDC;
     *(int *)(entry + 8) = size;
-    fn_802E3734(&fileIndex);
+    closeFileHandle(&fileIndex);
     return index;
 fail:
     return -1;
@@ -145,6 +145,6 @@ void fn_802E746C(int index, int *outStartSector, int *outSize) {
  * the handle in r3 (the branch keeps the argument register intact). */
 void fn_802E7544(void) { fn_802E3990(); }
 
-/* Close the file/stream handle by value; fn_802E3734 takes the handle by address and invalidates it. */
-void closeStreamHandle(int handle) { fn_802E3734(&handle); }
+/* Close the file/stream handle by value; closeFileHandle takes the handle by address and invalidates it. */
+void closeStreamHandle(int handle) { closeFileHandle(&handle); }
 

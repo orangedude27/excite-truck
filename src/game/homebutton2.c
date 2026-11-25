@@ -33,7 +33,7 @@ void fn_80127464(void);
   void fn_801282EC(s32);
   s32 fn_8012850C(s32, void *);
   void fn_802E3804(s32, s32, s32);
-  void fn_802E3734(s32 *);
+  void closeFileHandle(s32 *);
 /* Return true when the console's configured aspect ratio is 16:9 (widescreen). */
 s32 HomeMenu_isWidescreen(void) {
     return ConfigGetAspectRatio() == SC_ASPECT_WIDE;
@@ -56,7 +56,7 @@ s32 fn_802EC4E8(s32 arg0) {
     fn_801282EC(0x20);
     temp_r31 = fn_8012850C(temp_r30, base + 0x28);
     fn_802E3804(sp8, temp_r31, temp_r30);
-    fn_802E3734(&sp8);
+    closeFileHandle(&sp8);
     return temp_r31;
 }
 #pragma dont_inline reset
@@ -80,7 +80,7 @@ extern s32 fn_802E37C4(s32);
 extern void fn_801282EC(s32);
 extern s32 fn_8012850C(s32, void *);
 extern void fn_802E3804(s32, s32, s32);
-extern void fn_802E3734(s32 *);
+extern void closeFileHandle(s32 *);
 #pragma scheduling invalid_target
 #pragma dont_inline on
 /* Returns the per-language homeBtn_*.arc filename from the homebutton2 string table for the language index at lbl_80558860+0x1C, resetting out-of-range values to 0 (Japanese). */

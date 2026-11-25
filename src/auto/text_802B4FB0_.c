@@ -3,7 +3,7 @@
 
 extern int FileLookupSecondary(void);
 extern int fn_802E39D0(int, void *, int);
-extern void fn_802E3734(int *);
+extern void closeFileHandle(int *);
 extern void fn_80128658(void *);
 extern int fn_802B4FD0(void *, int *, int *);
 extern void *fn_802B51E4(int, int);
@@ -54,7 +54,7 @@ int fn_802B4FD0(void *arg0, int *width, int *height) {
             *width = *(unsigned short *)(header + 0xC);
             *height = *(unsigned short *)(header + 0xE);
         }
-        fn_802E3734(&handle);
+        closeFileHandle(&handle);
     }
     return result;
 }
@@ -106,7 +106,7 @@ int fn_802B50E8(int unused, int output, int count) {
                 }
             }
         }
-        fn_802E3734(&fileHandle);
+        closeFileHandle(&fileHandle);
     }
     return result;
 }
@@ -173,7 +173,7 @@ int fn_802B52C0(int filePath, const void *image) {
         File_writeExact(fileHandle, header, 0x12);
         File_writeExact(fileHandle, *(void * const *)((const char *)image + 8),
                     *(const int *)((const char *)image + 4) * (*(const int *)image * 4));
-        fn_802E3734(&fileHandle);
+        closeFileHandle(&fileHandle);
         result = 1;
     } else {
         ((void (*)(char *, ...))fn_802E30C8)(lbl_8034A4EC, filePath);

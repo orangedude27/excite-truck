@@ -1571,7 +1571,7 @@ void fn_802D0914(int, short, short);
 void fn_802D09E4(void);
 int KERNEL_GetTimeMs(void);
 void fn_802E30C8(const char *, ...);
-void fn_802E3734(int *);
+void closeFileHandle(int *);
 int FileOpenSecondary(unsigned char *);
 /* Configure the tiled offscreen-render grid: set its column count, row count and mode flag. */
 void fn_802D08B4(int columns, int rows, unsigned char mode) {
@@ -1715,7 +1715,7 @@ void fn_802D09E8(void)
     {
       lbl_8055FD90 = 0;
       lbl_8055D0B8 = -1;
-      fn_802E3734(&lbl_8055D10C);
+      closeFileHandle(&lbl_8055D10C);
       lbl_8055D10C = -1;
       val = KERNEL_GetTimeMs();
       cvt.w[0] = 0x43300000;

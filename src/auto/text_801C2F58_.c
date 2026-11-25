@@ -3528,14 +3528,14 @@ enum {
 #define console_message      lbl_80437FC0 /* console line the result is reported on */
 #define file_create          File_Open  /* name -> write handle, -1 on failure */
 #define file_printf          fn_802E3AD0  /* handle, printf-style format, ... */
-#define file_close           fn_802E3734  /* &handle */
+#define file_close           closeFileHandle  /* &handle */
 #define timeline_write_entry fn_801C9920  /* entry, handle: one entry as text */
 extern char lbl_80336B00[];
 extern s32 lbl_8055E814;
 extern s32 File_Open(const char *);
 extern s32 fn_801C9920(s32, s32);
 extern const char *fn_80007F90(u32);
-extern void fn_802E3734(s32 *);
+extern void closeFileHandle(s32 *);
 extern void fn_802E3AD0(s32, const char *, ...);
 #pragma scheduling invalid_target
 #pragma cplusplus on
@@ -3879,14 +3879,14 @@ extern double fabs(double);
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_801C6E40(void) {
-#pragma opt_common_subs off
-    register char *base = (char *)&lbl_80437D88;
+    extern double __fabs(double);
     register void *obj;
     register f32 *mat;
-    f32 quat[4];
-    s32 swz[9];
-    f32 rot[9];
+    register char *base = (char *)&lbl_80437D88;
     f32 vec[3];
+    f32 rot[9];
+    s32 swz[9];
+    f32 quat[4];
     f32 trace;
     f32 root;
     s32 i, j, k;
@@ -3913,7 +3913,7 @@ void fn_801C6E40(void) {
     ((s32 *)obj)[14] = ((s32 *)mat)[8];
     ((f32 *)obj)[22] = ((f32 *)obj)[0] + lbl_8055E830;
     ((u8 *)obj)[0x5C] = 1;
-    if (lbl_8055E830 > 0.01f) {
+    if (lbl_8055E830 > lbl_805629D0) {
         swz[0] = ((s32 *)mat)[0];
         swz[1] = ((s32 *)mat)[1];
         swz[2] = ((s32 *)mat)[2];
@@ -3926,58 +3926,60 @@ void fn_801C6E40(void) {
         fn_801C7254(swz);
         fn_80015B20((s32)rot, (void *)(base + 0x498), (s32)swz);
         fn_80144CD0(vec, (f32 *)(base + 0x498 + 0x24), mat);
-        trace = rot[0] + rot[4] + rot[8];
-        if (trace > 0.0f) {
-            root = (f32) fn_8002F234(1.0f + trace);
-            quat[3] = 0.5f * root;
-            root = 0.5f / root;
+        trace = rot[0] + rot[4];
+        trace = trace + rot[8];
+        if (trace > lbl_80562970) {
+            root = (f32) fn_8002F234(lbl_8056296C + trace);
+            quat[3] = lbl_80562974 * root;
+            root = lbl_80562974 / root;
             quat[0] = root * (rot[5] - rot[7]);
             quat[1] = root * (rot[6] - rot[2]);
             quat[2] = root * (rot[1] - rot[3]);
         } else {
-            f32 *pa, *pb, *pc;
+            f32 (*m)[3] = (f32 (*)[3])rot;
+            f32 *pi, *pj, *pk;
             i = 0;
-            if (rot[4] > rot[0]) i = 1;
-            if (rot[8] > rot[i * 3 + i]) i = 2;
+            if (m[1][1] > m[0][0]) i = 1;
+            if (m[2][2] > m[i][i]) i = 2;
             j = (i + 1) % 3;
             k = (j + 1) % 3;
-            pa = &rot[i * 3 + i];
-            pb = &rot[j * 3 + k];
-            pc = &rot[k * 3 + j];
-            root = (f32) fn_8002F234(1.0f + *pa - (*pb + *pc));
-            quat[i] = 0.5f * root;
-            root = 0.5f / root;
-            quat[3] = root * (*pb - *pc);
-            quat[j] = root * (*pa + rot[j * 3 + i]);
-            quat[k] = root * (*pa + rot[i * 3 + k]);
+            pi = m[i];
+            pj = m[j];
+            pk = m[k];
+            root = (f32) fn_8002F234(lbl_8056296C + (pi[i] - (pj[j] + pk[k])));
+            quat[i] = lbl_80562974 * root;
+            root = lbl_80562974 / root;
+            quat[3] = root * (pj[k] - pk[j]);
+            quat[j] = root * (pi[j] + pj[i]);
+            quat[k] = root * (pi[k] + pk[i]);
         }
         angle = (f32) fn_8002EFA8(quat[3]);
         sv = sin(angle);
-        if ((f32) fabs(sv) > lbl_80558DC4[0]) {
+        if ((f32) __fabs((double)sv) > lbl_80558DC4[0]) {
             scale = (lbl_805629BC * angle) / sv;
             ((f32 *)obj)[18] = quat[0] * scale;
             ((f32 *)obj)[19] = quat[1] * scale;
             ((f32 *)obj)[20] = quat[2] * scale;
         } else {
-            ((f32 *)obj)[18] = 0.0f;
-            ((f32 *)obj)[19] = 0.0f;
-            ((f32 *)obj)[20] = 0.0f;
+            ((f32 *)obj)[18] = lbl_80562970;
+            ((f32 *)obj)[19] = lbl_80562970;
+            ((f32 *)obj)[20] = lbl_80562970;
         }
-        inv = 1.0f / lbl_8055E830;
+        inv = lbl_8056296C / lbl_8055E830;
         ((f32 *)obj)[18] *= inv;
         ((f32 *)obj)[19] *= inv;
         ((f32 *)obj)[20] *= inv;
-        inv = 1.0f / lbl_8055E830;
+        inv = lbl_8056296C / lbl_8055E830;
         ((f32 *)obj)[15] = vec[0] * inv;
         ((f32 *)obj)[16] = vec[1] * inv;
         ((f32 *)obj)[17] = vec[2] * inv;
     } else {
-        ((f32 *)obj)[18] = 0.0f;
-        ((f32 *)obj)[19] = 0.0f;
-        ((f32 *)obj)[20] = 0.0f;
-        ((f32 *)obj)[15] = 0.0f;
-        ((f32 *)obj)[16] = 0.0f;
-        ((f32 *)obj)[17] = 0.0f;
+        ((f32 *)obj)[18] = lbl_80562970;
+        ((f32 *)obj)[19] = lbl_80562970;
+        ((f32 *)obj)[20] = lbl_80562970;
+        ((f32 *)obj)[15] = lbl_80562970;
+        ((f32 *)obj)[16] = lbl_80562970;
+        ((f32 *)obj)[17] = lbl_80562970;
     }
     sprintf(base + 0x238, lbl_80336EA8, ((f32 *)obj)[0]);
     qsort((void *)(s32)lbl_8055E7F8, (size_t)lbl_8055E7F0, 0x30C, (int (*)(const void *, const void *))fn_801C3B7C);

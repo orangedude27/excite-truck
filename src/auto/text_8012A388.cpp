@@ -64,7 +64,7 @@ extern "C" void fn_801284F0(void *, void *);
 extern "C" s32 FileLookup(void);
 extern "C" void fn_802E3A14(s32, s32);
 extern "C" s32 fn_802E3804(s32, void *, s32);
-extern "C" void fn_802E3734(s32 *);
+extern "C" void closeFileHandle(s32 *);
 extern "C" s8 lbl_8055DFF8;
 extern "C" u8 lbl_805599B8;
 extern "C" const char lbl_8032AE9C[];
@@ -343,7 +343,7 @@ extern "C" s32 fn_8012A6C8(s32, s32, s32);
 extern "C" s32 fn_8012AB34(s32, s32, s32, s32);
 extern "C" s32 FileLookup(void);
 extern "C" s32 fn_802E37C4(void);
-extern "C" void fn_802E3734(s32 *);
+extern "C" void closeFileHandle(s32 *);
 extern "C" s32 fn_802E4CA8(void *, s32, s32);
 extern "C" s32 fn_802E7354(void *);
 extern "C" s32 fn_802E746C(s32, s32 *, s32 *);
@@ -486,7 +486,7 @@ extern "C" s32 fn_8012ABB0(const char *name, void *headerBuffer) {
     /* The engine file API, as this open-check-and-maybe-close sequence uses it. */
     #define File_open       FileLookup  /* open `name`: file handle, or -1 */
     #define File_size       fn_802E37C4  /* size of the file the handle has open */
-    #define File_close      fn_802E3734  /* close it; the handle goes back to -1 */
+    #define File_close      closeFileHandle  /* close it; the handle goes back to -1 */
     #define Rst0_readHeader fn_8012AB34  /* read the RST0 header and validate it */
     s32 handle = ((s32 (*)(const char *))File_open)(name);
     if (handle != -1 && Rst0_readHeader(handle, (s32)headerBuffer, (s32)name, ((s32 (*)(s32))File_size)(handle)) == 0) {
@@ -746,7 +746,7 @@ done2:
             }
             node = 0;
         }
-        fn_802E3734(&handle);
+        closeFileHandle(&handle);
     }
     return node;
 }
@@ -1004,7 +1004,7 @@ static inline s32 LoadEntryDataBody(struct ResManager *manager, s32 entryIndex) 
                     fn_802E30C8(strings + 0x3E4, entry); /* "res: crc failure on extraction: %s" */
                     fn_8012A7FC();
                 }
-                fn_802E3734(&handle);
+                closeFileHandle(&handle);
             }
             flags = entry->flags;
             if (!(flags & RES_ENTRY_LOADED)) {
@@ -1428,7 +1428,7 @@ suffix_done_2:
                             fn_8012C4D8(data);
                         } else fn_802E30C8(lbl_8032AEF4, filename);
                     } else {
-                        fn_802E30C8(lbl_8032AED4, filename); fn_802E3734(&inner); goto read_rest;
+                        fn_802E30C8(lbl_8032AED4, filename); closeFileHandle(&inner); goto read_rest;
                     }
                 } else fn_802E30C8(lbl_8032AEB4, filename);
 read_rest:

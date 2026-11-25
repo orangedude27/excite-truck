@@ -239,7 +239,7 @@ extern "C" s32 FileLookup(s32 path) {
     return -1;
 }
 #pragma cplusplus on
-/* Close a file handle: validate it to get its file-table entry, ask the file object for its owner and destroy it through the owner's virtual destroy, then clear the entry's object and in-use fields and set the handle to -1. */ extern "C" void fn_802E3734(s32 *handlePtr) {
+/* Close a file handle: validate it to get its file-table entry, ask the file object for its owner and destroy it through the owner's virtual destroy, then clear the entry's object and in-use fields and set the handle to -1. */ extern "C" void closeFileHandle(s32 *handlePtr) {
     /* Close a file handle: look up its entry, destroy the associated object, clear state, and invalidate the handle. */
     class ObjectOwner {
     public:

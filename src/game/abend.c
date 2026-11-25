@@ -32,10 +32,10 @@ int Abend_InitLog(void) {
 }
 #pragma scheduling on
 
-extern void fn_802E3734(int *);
+extern void closeFileHandle(int *);
 /* Abend_CloseLog: close the abnormal-end log file if it is still open, then reset its handle to -1; called from KERNEL_Shutdown. */ void fn_802E3090(void) {
     /* Close the abnormal-end log file if it is open, then invalidate its handle. */
-    #define CloseLogFile fn_802E3734 /* closes a file handle and invalidates it */
+    #define CloseLogFile closeFileHandle /* closes a file handle and invalidates it */
     if (sLogFileHandle != -1) {
         CloseLogFile(&sLogFileHandle);
         sLogFileHandle = -1;
