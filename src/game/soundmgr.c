@@ -3,7 +3,7 @@
 // assert string "soundmgr.cpp", "SoundManager::*". Static-init thunk fn_80208A10
 // (+ .ctors slot 0x802ED37C) remains in auto/text_80208A10_.c pending promotion.
 extern void *fn_8012850C(signed long, const char *);
-extern void fn_80207C50(void *, void *, signed long);
+extern void SoundMgr_setSlotData(void *, void *, signed long);
 extern void fn_80127CF4(void *, const char *, signed long);
 extern void *memset(void *, int, unsigned long);
 extern char lbl_8033BEE8[];
@@ -188,7 +188,7 @@ extern "C" void *fn_80207990(void *arg0, void *arg1) {
     values[2] = *source++;
     i = 0;
     do {
-        fn_80207C50(object, values, i);
+        SoundMgr_setSlotData(object, values, i);
         i += 1;
     } while (i < 4);
     memset(object->tail94, 0, 0x84);
@@ -261,7 +261,7 @@ extern char lbl_8033BEE8[];
 #pragma cplusplus reset
 #pragma pop
 /* No-op member of soundmgr.cpp.  It sits between the SoundManager destructor
- * (fn_80207B60) and the small accessors of a sound object (fn_80207C50 seeds an
+ * (fn_80207B60) and the small accessors of a sound object (SoundMgr_setSlotData seeds an
  * emitter slot, fn_80207C74 sets the +0x8C flag), next to two other empty stubs,
  * fn_80207C4C and fn_80207C7C: the shipped build compiled their bodies away, so
  * each is just a return.  Nothing in the recovered code calls this one. */
@@ -279,7 +279,7 @@ void fn_80207C4C(void) {
 #pragma scheduling invalid_target
 #pragma push
 #pragma opt_propagation off
-void fn_80207C50(void* object, void* src, signed long slotIndex) {
+void SoundMgr_setSlotData(void* object, void* src, signed long slotIndex) {
     /* Seed one 0xC-byte slot of a sound-manager object (slots start at +0x5C)
      * with the three-word value at src; init calls this for all four slots. */
     signed long w2, w1, w0;
