@@ -48,7 +48,7 @@ extern unsigned char lbl_804C9778[];
 extern double lbl_80564FB0;
 extern double fn_8002EF30(double);
 extern unsigned long lbl_8055D0B8;
-extern int lbl_8055D0BC;
+extern int gTileGridWidth;
 extern int lbl_8055D0C0;
 extern float lbl_80564F94, lbl_80564F9C, lbl_80564FC8, lbl_80564FD0;
 extern float lbl_80564FB8, lbl_80564FBC;
@@ -1505,7 +1505,7 @@ void fn_802D0610(int arg0) {
 #pragma opt_common_subs off
 void fn_802D07E4(char* arg0, int arg1) {
     extern unsigned long lbl_8055D0B8;
-    extern int lbl_8055D0BC;
+    extern int gTileGridWidth;
     extern int lbl_8055D0C0;
     extern signed char lbl_8055FD90;
     extern unsigned char lbl_804C9830[];
@@ -1518,7 +1518,7 @@ void fn_802D07E4(char* arg0, int arg1) {
     register unsigned char *dst;
     if ((int)lbl_8055D0B8 >= 0) {
         fn_802E30C8(lbl_8034C0EC);
-        lbl_8055D0B8 = lbl_8055D0BC * lbl_8055D0C0;
+        lbl_8055D0B8 = gTileGridWidth * lbl_8055D0C0;
         return;
     }
     lbl_8055FD90 = 1;
@@ -1544,7 +1544,7 @@ done:
     if (arg1 != 0) {
         register const char *fmt = lbl_8034C108;
         register int *base = gXfbBlock;
-        register int v = lbl_8055D0BC;
+        register int v = gTileGridWidth;
         fn_802E30C8(fmt, v * base[2], lbl_8055D0C0 * base[3], base, v);
         lbl_8055D0B8 = 0;
     }
@@ -1553,7 +1553,7 @@ done:
 extern unsigned char lbl_8055FD78;
 extern int GXSetCullMode(int);
 extern void GXLoadTexMtxImm(void *, unsigned int, unsigned char);
-extern int lbl_8055D0BC;
+extern int gTileGridWidth;
 extern int lbl_8055D0C0;
 extern signed char lbl_8055FD90;
 extern unsigned char lbl_8055FD18;
@@ -1572,7 +1572,7 @@ void closeFileHandle(int *);
 int FileOpenSecondary(unsigned char *);
 /* Configure the tiled offscreen-render grid: set its column count, row count and mode flag. */
 void gxSetTileGrid(int columns, int rows, unsigned char mode) {
-#define tileGridWidth lbl_8055D0BC
+#define tileGridWidth gTileGridWidth
 #define tileGridHeight lbl_8055D0C0
 #define tileModeFlag lbl_8055FD18
     tileModeFlag = mode;
@@ -1697,18 +1697,18 @@ void fn_802D09E8(void)
       fn_802E30C8(base + 0x43C, lbl_804C9830);
       if (lbl_8055FD18 == 0)
       {
-        ((void (*)(int, int, int)) fn_802D0914)(lbl_8055D10C, gXfbBlock[2] * lbl_8055D0BC, gXfbBlock[3] * lbl_8055D0C0);
+        ((void (*)(int, int, int)) fn_802D0914)(lbl_8055D10C, gXfbBlock[2] * gTileGridWidth, gXfbBlock[3] * lbl_8055D0C0);
       }
     }
-    if (((long) lbl_8055D0B8) < ((long) (lbl_8055D0BC * lbl_8055D0C0)))
+    if (((long) lbl_8055D0B8) < ((long) (gTileGridWidth * lbl_8055D0C0)))
     {
-      rem = ((long) lbl_8055D0B8) % lbl_8055D0BC;
-      div = ((long) lbl_8055D0B8) / lbl_8055D0BC;
+      rem = ((long) lbl_8055D0B8) % gTileGridWidth;
+      div = ((long) lbl_8055D0B8) / gTileGridWidth;
       fn_802E30C8(base + 0x458, (char *) (lbl_8055D0B8 + 1));
-      ((void (*)(int, int, int, int, int, int)) fn_802D0910)(lbl_8055D10C, gXfbBlock[2] * rem, gXfbBlock[3] * div, gXfbBlock[2] * lbl_8055D0BC, gXfbBlock[3] * lbl_8055D0C0, gXfbBlock[2]);
+      ((void (*)(int, int, int, int, int, int)) fn_802D0910)(lbl_8055D10C, gXfbBlock[2] * rem, gXfbBlock[3] * div, gXfbBlock[2] * gTileGridWidth, gXfbBlock[3] * lbl_8055D0C0, gXfbBlock[2]);
       lbl_8055D0B8++;
     }
-    if (((long) lbl_8055D0B8) >= ((long) (lbl_8055D0BC * lbl_8055D0C0)))
+    if (((long) lbl_8055D0B8) >= ((long) (gTileGridWidth * lbl_8055D0C0)))
     {
       lbl_8055FD90 = 0;
       lbl_8055D0B8 = -1;
@@ -2095,7 +2095,7 @@ extern double atan(double);
  * the near/far planes at +0x04/+0x08.  When drawing to the framebuffer rather
  * than to the current texture object (lbl_8055FE24) and a viewport tile is
  * selected, the matrix is squeezed and shifted to that tile of the
- * lbl_8055D0BC by lbl_8055D0C0 grid before GXSetProjection(GX_PERSPECTIVE). */
+ * gTileGridWidth by lbl_8055D0C0 grid before GXSetProjection(GX_PERSPECTIVE). */
 void gxRebuildProjection(void) {
     float mtx[4][4];
     float pixelAspect;
@@ -2125,9 +2125,9 @@ void gxRebuildProjection(void) {
     fovDegrees = (lbl_80564FCC * halfFovRad) / lbl_80564FD0; /* 2 * rad / (pi/180): full FOV in degrees */
     aspectArg = aspect;
     C_MTXPerspective(mtx, fovDegrees, aspectArg, *(float *)(params + 4), *(float *)(params + 8));
-    if ((lbl_8055FE24 == 0) && ((int)lbl_8055D0B8 >= 0) && ((int)lbl_8055D0B8 < lbl_8055D0BC * lbl_8055D0C0)) {
+    if ((lbl_8055FE24 == 0) && ((int)lbl_8055D0B8 >= 0) && ((int)lbl_8055D0B8 < gTileGridWidth * lbl_8055D0C0)) {
         int gridHeight = lbl_8055D0C0;
-        int gridWidth = lbl_8055D0BC;
+        int gridWidth = gTileGridWidth;
         int tileIndex = (int)lbl_8055D0B8;
         float tileScaleX = lbl_80564F8C / (float)gridWidth;
         float tileScaleY = lbl_80564F8C / (float)gridHeight;
@@ -3532,7 +3532,7 @@ extern unsigned char gGxFogState[];
 extern unsigned long gxPackRGBA();
 extern int fn_802CFF64(int);
 extern unsigned char lbl_8055FD78;
-extern int lbl_8055D0BC;
+extern int gTileGridWidth;
 extern int lbl_8055D0C0;
 extern unsigned char lbl_8055FD18;
 extern int GXSetCullMode(int);
