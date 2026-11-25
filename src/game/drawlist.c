@@ -726,16 +726,18 @@ void fn_802C90F0(void) {
 #pragma scheduling invalid_target
 /* For a valid texture index (not -1/-2) raise the draw guard and record whether mode is 1 in the FOV flag; for an invalid index clear both. Then select the texture through selectTexture. */
 void fn_802C9294(int textureIndex, int mode) {
-#define DRAW_GUARD lbl_8055FC74
-#define FOV_FLAG   lbl_8055FC75
-    int isModeOne;
+#define gViewMode    lbl_8055FC74
+#define gForceRecalc lbl_8055FC75
+    /* Select a texture and set the view flags: a valid slot marks the view active
+     * and forces a recalculation when mode is 1; an invalid slot clears both. */
+    int forceRecalc;
     if (textureIndex != -1 && textureIndex != -2) {
-        isModeOne = mode == 1;
-        FOV_FLAG = isModeOne;
-        DRAW_GUARD = 1;
+        forceRecalc = mode == 1;
+        gForceRecalc = forceRecalc;
+        gViewMode = 1;
     } else {
-        DRAW_GUARD = 0;
-        FOV_FLAG = 0;
+        gViewMode = 0;
+        gForceRecalc = 0;
     }
     selectTexture(textureIndex);
 }
