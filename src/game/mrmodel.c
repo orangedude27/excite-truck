@@ -136,7 +136,7 @@ void fn_802C53C4(void *a, void *b, int x, int y, unsigned char z) {
     *(void **)(entry + 16) = *(void **)((char *)b + 8);
     *(void **)((char *)b + 8) = entry;
 }
-void mrModelResetDisplayEntries(void) {
+/* Empty the display-entry pool by resetting its used-count (gDisplayEntryPool[0]) to zero. */ void mrModelResetDisplayEntries(void) {
     /* Reset the used-count at +0 of the display entry pool gDisplayEntryPool, emptying it. */
     gDisplayEntryPool[0] = 0;
 }
