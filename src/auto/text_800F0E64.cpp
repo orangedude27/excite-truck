@@ -5087,7 +5087,7 @@ extern "C" void* fn_800F8CA4(s32 player, s32 priority, s32 requestedPriority, s3
 #define LIST_INSERT Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode
 #define LIST_ERASE Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator
 #define POOL_ALLOC AllocImpl__Q44nw4r3snd6detail8PoolImplFv
-#define NEW_STRM_SOUND fn_800F07EC            /* StrmSound::StrmSound() */
+#define NEW_STRM_SOUND fn_800F07EC            /* SeqSound::SeqSound() */
 #define CHECK_PLAYABLE CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3snd6detail19ExternalSoundPlayer
 #define EXTERNAL_INSERT_SOUND InsertSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46nw4hbm3snd6detail10BasicSound
 #define FRAME_HEAP_CLEAR fn_800EC1A4          /* FrameHeap::Clear() */
