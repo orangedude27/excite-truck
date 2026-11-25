@@ -598,15 +598,15 @@ void texSelectSlot(register int slotIndex) {
     }
 }
 /* Bind the texture of slot textureSlot (no texture for -1) to unitIndex via fn_802DBDE8. */
-void fn_802CADD0(int textureSlot, int unitIndex) {
-    int slotOffset;
-    char *slots;
+/* Bind the texture held in slot textureSlot to GPU texture unit unitIndex; a slot of -1 binds no texture (handle 0). Each slot record is 0x4C bytes with its GPU handle at +0x28. */ void fn_802CADD0(int textureSlot, int unitIndex) {
+    int recordOffset;
+    char *slotTable;
     if (textureSlot == -1) {
         fn_802DBDE8(unitIndex, 0);
     } else {
-        slotOffset = textureSlot * 0x4C;
-        slots = (char *)gTextureSlotTable;
-        fn_802DBDE8(unitIndex, *(int *)(slots + slotOffset + 0x28));
+        recordOffset = textureSlot * 0x4C;
+        slotTable = (char *)gTextureSlotTable;
+        fn_802DBDE8(unitIndex, *(int *)(slotTable + recordOffset + 0x28));
     }
 }
 
