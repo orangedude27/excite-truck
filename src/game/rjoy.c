@@ -249,7 +249,7 @@ dispatch:
 }
 #pragma pop
 void RjoyUpdateMotorEnabled(void) {
-    /* Cache the WPAD rumble config setting into rjoy's motor-enabled flag. */
+    /* Cache the WPAD rumble-motor setting from config into rjoy's motor-enabled flag. */
     gRjoyMotorEnabled = ConfigGetWpadMotorMode();
 }
 
