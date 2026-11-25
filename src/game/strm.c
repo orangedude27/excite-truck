@@ -44,7 +44,7 @@ int findStreamEntryBySector(int sector) {
 }
 #pragma pop
 
-void fn_802E7318(void) {
+/* Begin a streaming session: reset the next-sector cursor and entry count, and mark streaming active. */ void fn_802E7318(void) {
     /* Begin streaming: reset the sector cursor and entry count, and set the active flag. */
     sStreamNextSector = 0;
     sStreamEntryCount = 0;
