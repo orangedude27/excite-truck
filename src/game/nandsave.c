@@ -654,8 +654,8 @@ void fn_802E9118(void *saveState) {
     *(int*)saveState=1;
 }
 
-/* True when the rmemcard async NAND write state word is exactly IDLE (0),
-   meaning no write was started; DONE (1) reports false. */
+/* True when the rmemcard async NAND write state word is exactly IDLE (0);
+   DONE (1) reports false. */
 int rmemcardWriteIsIdle(int *writeState) { return *writeState == 0; }
 
 #pragma push
