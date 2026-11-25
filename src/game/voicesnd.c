@@ -275,9 +275,9 @@ void fn_8020AA0C(void *self) {
     snd->mute = 0;
 }
 
-/* Return a voice sound's effective state: a playing sound (1) whose mute flag
- * is set is reported as muted (2); otherwise its raw state is returned. */
-/* VoiceSnd vtable +0x24 getState: report a playing sound (1) whose mute flag is set as muted (2); otherwise return its raw state. */ int VoiceSnd_getState(void *snd) {
+/* VoiceSnd vtable +0x24 getState: a playing sound (1) whose mute flag is set
+ * is reported as muted (2); otherwise its raw state is returned. */
+int VoiceSnd_getState(void *snd) {
     volatile int *state = (volatile int *)((char *)snd + 4);
     if (*state == 1 && *((unsigned char *)snd + 0x3E) != 0) return 2;
     return *state;
