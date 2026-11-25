@@ -928,7 +928,7 @@ int fn_802CB128(int width, int height, int unused, int flagsMask) {
 }
 
 /* Return the larger of a texture slot's width and height (its longest side). */
-unsigned short fn_802CB3FC(int slotIndex) {
+unsigned short getTextureSlotLongestSide(int slotIndex) {
     int *slot = (int *)(textureSlots + slotIndex * texSlotSize);
     unsigned short *dims = (unsigned short *)slot[0x2C / 4];
     if ((int)dims[1] > (int)dims[0])
@@ -1826,7 +1826,7 @@ double number;
 float convertedFloat;
 float value;
 int ret;
-ret = fn_802CB3FC(i);
+ret = getTextureSlotLongestSide(i);
 converted.words[0] = 0x43300000;
 converted.words[1] = (ret * 2) ^ 0x80000000;
 number = converted.value;
