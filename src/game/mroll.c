@@ -40,12 +40,12 @@ void fn_8023FE20(void) {
 }
 
 s32 MRoll_getActivePlayerCount(void) {
-    /* Count the active (id >= 0) player slots in g_MRollPlayerSlots (gMRollPlayerSlots). */
-    register s32 *cursor = (s32 *)gMRollPlayerSlots;
-    s32 activeCount = 0;
-    if (*cursor++ >= 0) activeCount = 1;
-    if (cursor[3] < 0) return activeCount;
-    return activeCount + 1;
+    /* Return how many player slots hold an active (id >= 0) driver. */
+    register s32 *slotIds = (s32 *)gMRollPlayerSlots;
+    s32 count = 0;
+    if (*slotIds++ >= 0) count = 1;
+    if (slotIds[3] < 0) return count;
+    return count + 1;
 }
 
 extern char lbl_803422C0[]; /* "mroll.cpp: get_player_info got bad index %d (there are only %d p..." */
