@@ -25,7 +25,7 @@ extern void Abend_Panic(const char *, ...);
 extern unsigned char gRenderRequest[12];
 extern void GXLoadTexObj(void *, int);
 extern void fn_80128670(void *);
-extern void *lbl_8055FE28;
+extern void *sDrTexRecordPool;
 extern void *lbl_8055FE18;
 extern void fn_802D7564(void);
 extern void fn_802E30C8(const char *, ...);
@@ -64,7 +64,7 @@ extern void GXInitTlutObj(void *, void *, int, unsigned short);
     index = 0;
     byteOffset = 0;
     do {
-        texEntry = (unsigned char *)lbl_8055FE28 + byteOffset;
+        texEntry = (unsigned char *)sDrTexRecordPool + byteOffset;
         if (texEntry[0x20] != 0) {
             wrapT = GXGetTexObjWrapT(texEntry + 0x24) & 0xFFFF;
             fn_802E30C8(lbl_8034C47C, index, texEntry,
@@ -80,12 +80,12 @@ extern void GXInitTlutObj(void *, void *, int, unsigned short);
 #pragma dont_inline on
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-/* Allocate a free drgc texture-cache slot from the lbl_8055FE28 pool (0x1C2 entries of 0xF4 bytes): clear and mark the first unused slot in use, or dump the table and panic with the requester's name if none are free. */
+/* Allocate a free drgc texture-cache slot from the sDrTexRecordPool pool (0x1C2 entries of 0xF4 bytes): clear and mark the first unused slot in use, or dump the table and panic with the requester's name if none are free. */
 void *fn_802D7600(void *requesterName) {
     unsigned char *texEntry;
     int index;
 
-    texEntry = (unsigned char *)lbl_8055FE28;
+    texEntry = (unsigned char *)sDrTexRecordPool;
     for (index = 0; index < 0x1C2; index++) {
         if (texEntry[0x20] == 0) {
             memset(texEntry, 0, 0xF4);
@@ -132,12 +132,12 @@ typedef struct DrTlutObj {
     unsigned short entries;/* at 0x08: CLUT entry count */
 } DrTlutObj;
 
-/* One slot of the drgc texture table (lbl_8055FE28, 0xF4 bytes per slot;
+/* One slot of the drgc texture table (sDrTexRecordPool, 0xF4 bytes per slot;
  * fn_802D7600 hands out a free one and drTexRecordFree frees it): the runtime
  * texture record the drCreateTexture (fn_802D8E9C) format creators build.
  * Only the fields this TU touches are named; the two GX object pairs are 0x40
  * and 0xC bytes apart, matching GXInitTexObj()/GXInitTlutObj(). */
-#define DRTEX_SLOT_COUNT 0x1C2 /* number of DrTexRecord slots in lbl_8055FE28 */
+#define DRTEX_SLOT_COUNT 0x1C2 /* number of DrTexRecord slots in sDrTexRecordPool */
 #define DRTEX_SLOT_STRIDE 0xF4 /* byte stride between consecutive slots */
 
 typedef struct DrTexRecord {
@@ -763,11 +763,11 @@ copied_name:
     fn_802D7780(texture, obj);
     return texture;
 }
-/* Frees the drgc texture-cache pool (lbl_8055FE28, 0x1C2 slots of 0xF4 bytes
+/* Frees the drgc texture-cache pool (sDrTexRecordPool, 0x1C2 slots of 0xF4 bytes
  * each) back to the heap, then clears the global pointer. */
 void drTexCacheShutdown(void) {
-    fn_80128670(lbl_8055FE28);
-    lbl_8055FE28 = 0;
+    fn_80128670(sDrTexRecordPool);
+    sDrTexRecordPool = 0;
 }
 
 extern void fn_802D81C4(void *, int);
@@ -887,7 +887,7 @@ extern void fn_802CFEEC(void);
 
 /* Return 1 if any texture slot in the drgc pool has no owner (inUse == 0), else 0. */
 int fn_802D9068(void) {
-    DrTexRecord *slot = (DrTexRecord *)lbl_8055FE28;
+    DrTexRecord *slot = (DrTexRecord *)sDrTexRecordPool;
     int slotIndex = 0;
     while (slotIndex < DRTEX_SLOT_COUNT) {
         if (slot->inUse == 0) return 1;
@@ -1048,7 +1048,7 @@ extern void gxMarkAllStateDirty(void);
   lbl_8055FE24 = zero;
   gxMarkAllStateDirty();
 }
-extern void *lbl_8055FE28;
+extern void *sDrTexRecordPool;
 extern char lbl_8034C5B8[];
 extern void *fn_8012850C(void *, void *);
 /* Returns the currently bound primary texture object, or NULL when none is bound. */
@@ -1250,12 +1250,12 @@ void fn_802D8D1C(void) {
     lbl_8055FE20 = 0;
     lbl_8055FE1C = 0;
     lbl_8055FE18 = 0;
-    lbl_8055FE28 = fn_8012850C((void *)(DRTEX_SLOT_COUNT * DRTEX_SLOT_STRIDE), &lbl_8034C5B8);
+    sDrTexRecordPool = fn_8012850C((void *)(DRTEX_SLOT_COUNT * DRTEX_SLOT_STRIDE), &lbl_8034C5B8);
 
     entryIndex = 0;
     byteOffset = 0;
     do {
-        memset((char *)lbl_8055FE28 + byteOffset, 0, DRTEX_SLOT_STRIDE);
+        memset((char *)sDrTexRecordPool + byteOffset, 0, DRTEX_SLOT_STRIDE);
         entryIndex++;
         byteOffset += DRTEX_SLOT_STRIDE;
     } while (entryIndex < DRTEX_SLOT_COUNT);
