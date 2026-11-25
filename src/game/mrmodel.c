@@ -695,9 +695,9 @@ void fn_802C5F48(void) {
 }
 
 #pragma scheduling on
-/* Pool element init callback: clear the 16-bit active flag at +0x04 of an entry. */
+/* Initialize a fresh ModelDisplayNode from the pool: zero its reference count. */
 void ModelDisplayNode_PoolInit(void *entry) {
-    *(s16 *)((char *)entry + 4) = 0;
+    ((struct ModelDisplayNode *)entry)->refs = 0;
 }
 
 /* Pool init callback: zero the ref-count (first word) of each 0x10-byte
