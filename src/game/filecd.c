@@ -329,10 +329,10 @@ extern "C" int fn_802E4280(void *owner, char *path) {
 }
 #pragma cplusplus reset
 #pragma pop
-/* Seek a FileDisk node: set its read cursor when the requested position is within [0, length]; report success. */
-int FileDisk_seek(void *node, int position) {
-    if (position >= 0 && position <= *(int *)((char *)node + 0x84)) {
-        *(int *)((char *)node + 0x88) = position;
+/* FileDisk::seek (vtable slot 0x20): set the node's cursor (offset 0x88) to position if 0 <= position <= length (offset 0x84); return 1 on success, 0 if out of range. */
+int FileDisk_seek(void *disk, int position) {
+    if (position >= 0 && position <= *(int *)((char *)disk + 0x84)) {
+        *(int *)((char *)disk + 0x88) = position;
         return 1;
     }
     return 0;
