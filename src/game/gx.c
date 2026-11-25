@@ -3447,9 +3447,8 @@ void gxSetTexCoordMtxFlag(void) {
 #undef texCoordMtxFlag
 }
 
-/* Clear the texcoord0 texture-matrix flag in the render request block (+0xC). */ /* Clear the render-request texcoord0 texture-matrix flag (+0xC) so the default TEV pipeline uses GX_IDENTITY. */ void gxClearTexCoordMtxFlag(void) {
-    /* Disable texture-matrix 0 for texcoord 0 in the shared render request block
-       (request +0xC selects GX_IDENTITY instead of GX_TEXMTX0 in buildDefaultTevPipeline). */
+void gxClearTexCoordMtxFlag(void) {
+    /* Clear the render-request texcoord0 matrix flag (+0xC): default TEV uses GX_IDENTITY. */
     gRenderRequest[12] = 0;
 }
 
