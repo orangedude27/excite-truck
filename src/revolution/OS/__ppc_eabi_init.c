@@ -52,6 +52,8 @@ _loop:
     // clang-format on
 }
 
+/* Run the C runtime's user initialization: call __init_cpp so global C++
+ * static constructors run before the program's main entry point. */
 asm void __init_user(void) {
     // clang-format off
     fralloc
