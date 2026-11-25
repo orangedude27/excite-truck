@@ -566,7 +566,7 @@ extern int KERNEL_GetTimeMs(void);
 /* RealName: SoundTimer_Start — begins/restarts a sound timer: record the current
  * millisecond count (kernel clock KERNEL_GetTimeMs) as its start time (+4) and set
  * the state to running (1) at +8. This layout is shared by the nearby timer helpers. */
-void fn_80209310(void *timer) {
+/* SoundTimer_Start: begin/restart a sound timer by stamping its start time at +4 with the kernel millisecond clock (KERNEL_GetTimeMs) and setting its state to running (1) at +8. */ void fn_80209310(void *timer) {
 #define startTime ((int *)((char *)timer + 4))
 #define state ((int *)((char *)timer + 8))
     *startTime = KERNEL_GetTimeMs();
