@@ -277,7 +277,7 @@ extern const char lbl_8034D104[];
 /* FileCd::openWritable (vtable slot 0x14): the disc file layer has nothing to
  * write to, so it only reports the attempt and fails.  The message's %s is
  * never filled in -- the path is not passed down. */
-int fn_802E4250(void) {
+/* FileCd::openWritable (vtable slot 0x14): the disc file layer cannot write, so it only logs the attempt and fails. The message's %s is left unfilled because the path is not passed down. */ int fn_802E4250(void) {
     fn_802E30C8(fileCdMsgOpenWritableNotSupported);
     return 0;
 }
