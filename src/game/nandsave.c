@@ -129,7 +129,9 @@ void rmemcardYield(void) {
 
 #define nandSaveRefCount lbl_8056002C
 #define nandSaveInit fn_802E86D4
-/* Enters the NAND-save subsystem: lazily initializes it on first use (refcount 0), then increments the use count. */
+/* Enter the NAND-save subsystem: on first use (refcount 0) start it lazily, then
+ * increment the user count. Paired with fn_802E8874 (leave), which decrements and
+ * shuts the subsystem down when the count reaches zero. */
 void fn_802E883C(void) {
     if (nandSaveRefCount == 0) {
         nandSaveInit();
