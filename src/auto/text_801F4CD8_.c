@@ -1626,7 +1626,7 @@ void fn_801F7400(void *out, void *base, void *obj) {
 }
 #pragma pop
 extern void *fn_802C9C24(void *);
-extern void fn_802CD320(void *, int);
+extern void MlistAddDrawEntry(void *, int);
 extern char lbl_8033AF20[];
 extern char lbl_8033AF08[];
 #pragma push
@@ -1655,7 +1655,7 @@ void fn_801F75A4(void *arg0, void *arg1, void *arg2, int arg3) {
             if (allocated != 0) {
                 *allocated = lbl_8033AF20;
                 lbl_8055EC1C = allocated;
-                fn_802CD320(arg2, (int)copy4);
+                MlistAddDrawEntry(arg2, (int)copy4);
             }
         }
     } else {
@@ -1666,7 +1666,7 @@ void fn_801F75A4(void *arg0, void *arg1, void *arg2, int arg3) {
             if (allocated != 0) {
                 *allocated = lbl_8033AF08;
                 lbl_8055EC20 = allocated;
-                fn_802CD320(arg2, (int)copy4);
+                MlistAddDrawEntry(arg2, (int)copy4);
             }
         }
     }

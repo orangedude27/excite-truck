@@ -133,7 +133,7 @@ void fn_801FF3AC(void*, float);
     void fn_8002F53C(void*, void*, void*, int, int);
     void fn_801FF1C4(void*, int, int);
     void fn_801FF6A4(void*);
-    void fn_802CD320(int, void*);
+    void MlistAddDrawEntry(int, void*);
     void fn_801FF2B8(void*, int, int);
     void fn_801FF0D4(void*);
     void fn_801FEF80(void*);
@@ -1411,7 +1411,7 @@ extern "C" void fn_801FEEC0(void *slot, int context, int start, int unused) {
             fn_801FF6A4((char *)obj + 0x1008);
         }
         *(void **)((char *)slot + 4) = obj;
-        fn_802CD320(context, obj);
+        MlistAddDrawEntry(context, obj);
     }
     fn_801FF2B8(*(void **)((char *)slot + 4), start, end);
 }
@@ -1841,7 +1841,7 @@ extern "C" void fn_801FF014(void *arg0, int arg1, int start, int arg3) {
             fn_801FF354((char *)manager + 0xE08);
         }
         *(void **)((char *)arg0 + 4) = manager;
-        fn_802CD320(arg1, manager);
+        MlistAddDrawEntry(arg1, manager);
     }
     fn_801FF1C4(*(void **)((char *)arg0 + 4), start, end);
 }

@@ -313,7 +313,7 @@ extern "C" void fn_802CD254(void *list) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_802CD320(void *list, int object) {
+void MlistAddDrawEntry(void *list, int object) {
     /* Append a draw-entry object to the material list's handle array at +0x90, bumping the count at +0x88. */
     int *countPtr = (int *)((char *)list + 0x88);
     int **itemsPtr = (int **)((char *)list + 0x90);

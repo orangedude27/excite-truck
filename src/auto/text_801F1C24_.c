@@ -1516,7 +1516,7 @@ void fn_801F3D34(void *arg0, int arg1, void *arg2) {
             *(int *)((char *)temp_r31 + 8) = 0;
         }
         *(void **)((char *)arg0 + 4) = temp_r31;
-        fn_802CD320(arg1, temp_r31);
+        MlistAddDrawEntry(arg1, temp_r31);
     }
     temp_r31 = *(void **)((char *)arg0 + 4);
     temp_f31 = *(float *)((char *)arg2 + 0x30);
@@ -1667,7 +1667,7 @@ void fn_801F405C(void *arg0, void *arg1, void *arg2, int arg3) {
             *(int *)((char *)allocated + 0x544) = 0;
         }
         owner->pool = (struct Pool *)allocated;
-        fn_802CD320((int)arg1, allocated);
+        MlistAddDrawEntry((int)arg1, allocated);
     }
     pool = owner->pool;
     count = pool->count;
@@ -1767,7 +1767,7 @@ void fn_801F4330(void) {
 }
 
 extern int DrawModelInstance(int);
-extern int fn_802CD320(int, void *);
+extern int MlistAddDrawEntry(int, void *);
 extern unsigned char lbl_8033AAB8[];
 extern unsigned char lbl_8033AA48[];
 extern unsigned char lbl_8055B140[];
@@ -1834,7 +1834,7 @@ extern "C" void fn_801F4378(void *arg0, int arg1, void *arg2, int arg3) {
             *(void **)newobj = (void *)&lbl_8033AA60;
             *(int *)((char *)newobj + 0x104) = 0;
             *(void **)((char *)arg0 + 4) = newobj;
-            fn_802CD320(arg1, newobj);
+            MlistAddDrawEntry(arg1, newobj);
         }
     }
     obj = *(void **)((char *)arg0 + 4);
@@ -1884,7 +1884,7 @@ check:
 
 #pragma scheduling invalid_target
 __declspec(section ".sdata") extern unsigned char lbl_8055B140[];
-/* Allocate and initialize a small 0xC-byte object (vtable lbl_8033AA48, fields +4 and +8) and register it via fn_802CD320 for the given target. */
+/* Allocate and initialize a small 0xC-byte object (vtable lbl_8033AA48, fields +4 and +8) and register it via MlistAddDrawEntry for the given target. */
 void fn_801F44DC(void *unused, int target, int baseValue, int param) {
 #define mlftoTag      lbl_8055B140
 #define mlftoVTable   lbl_8033AA48
@@ -1895,7 +1895,7 @@ void fn_801F44DC(void *unused, int target, int baseValue, int param) {
         *(int *)((char *)object + 4) = adjustedValue;
         *(int *)((char *)object + 8) = param;
     }
-    fn_802CD320(target, object);
+    MlistAddDrawEntry(target, object);
 #undef mlftoVTable
 #undef mlftoTag
 }
