@@ -4172,8 +4172,8 @@ extern "C" s32 fn_801436E0(void *arg0, s32 playerIndex) {
                 f32 number=*(f32 *)(*(u8 **)(hud+0xb8)+player*0x12c+0x108);
                 char text[0x14];
                 fn_80130978(text,0x14,number);
-                Fn801436E0TextStyle local;
-                Fn801436E0TextStyle *src=(Fn801436E0TextStyle *)style;
+                HudTextStyle local;
+                HudTextStyle *src=(HudTextStyle *)style;
                 local.a=src->a;
                 { int cword; int bword; bword=*(volatile int *)((char *)src+4); cword=*(volatile int *)((char *)src+8); *(int *)&local.b=bword; local.c=cword; }
                 local.d=src->d;local.size=src->size;
