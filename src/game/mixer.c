@@ -575,7 +575,7 @@ extern int KERNEL_GetTimeMs(void);
 #undef startTime
 }
 
-void fn_80209348(void *timer) {
+/* Start/restart a sound timer (same layout as fn_80209310 and the checker fn_802093A4): stamp the start time at +4 with KERNEL_GetTimeMs and set the state to running (1) at +8. */ void fn_80209348(void *timer) {
 #define startTime ((int *)((char *)timer + 4))
 #define state ((int *)((char *)timer + 8))
     /* Initialize a timed object: record the current time as its start and set its state to 1 (running). */
