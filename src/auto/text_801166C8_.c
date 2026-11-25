@@ -5546,7 +5546,11 @@ void fn_801200BC(s32 length, s32 direction, f32 *data, s32 table, s32 work) {
 
 void fn_801254E4(s32, f32 *, s32, f32 *);
 /* Ooura's ddct: in-place DCT of n floats in a (forward when isgn >= 0,
-   inverse when isgn < 0), using scratch indices in ip and twiddles in w. */
+   inverse when isgn < 0).  ip holds the twiddle/cosine table sizes and a
+   bit-reversal map; w holds the twiddle and cosine tables.  fn_80120834 and
+   fn_80120B6C build those tables, fn_80120CA4/fn_80120E14 are the forward/
+   inverse complex-FFT stages, and fn_801250CC/fn_801252D8/fn_801254E4 are the
+   real-FFT folds; the surrounding two-point passes apply the DCT symmetry. */
 void fn_8012023C(s32 n, s32 isgn, f32 *a, s32 ip, s32 w) {
     s32 nw;
     s32 nc;
