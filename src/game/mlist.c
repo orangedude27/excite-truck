@@ -313,11 +313,11 @@ extern "C" void fn_802CD254(void *list) {
 
 #pragma push
 #pragma scheduling invalid_target
-void MlistAddDrawEntry(void *list, int object) {
+/* Append a draw-entry object to the material list's handle array at +0x90 and bump its count at +0x88. */ void MlistAddDrawEntry(void *materialList, int drawEntry) {
     /* Append a draw-entry object to the material list's handle array at +0x90, bumping the count at +0x88. */
-    int *countPtr = (int *)((char *)list + 0x88);
-    int **itemsPtr = (int **)((char *)list + 0x90);
-    (*itemsPtr)[(*countPtr)++] = object;
+    int *count = (int *)((char *)materialList + 0x88);
+    int **entries = (int **)((char *)materialList + 0x90);
+    (*entries)[(*count)++] = drawEntry;
 }
 #pragma pop
 /* MlistSetEntryFlag: set bit 0x40 in a material-list entry's u16 flags at +0x12; a nonzero clearFlag clears it instead. Entries are 32 bytes in the table at +0x24. */ void fn_802CD33C(void *list, int entryIndex, int clearFlag) {
