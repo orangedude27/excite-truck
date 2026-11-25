@@ -141,7 +141,7 @@ void fn_8020F444(void) {
  
 #pragma dont_inline on
 void fn_8020F5C8(void) {
-    /* Mark all three track-music load slots as loaded (the inverse of fn_8020F5DC). */
+    /* Mark all three track-music load slots as loaded (the inverse of TrackMusic_markSongsUnloaded). */
     lbl_8055EEF6 = 1;
     lbl_8055EEF5 = 1;
     lbl_8055EEF4 = 1;
@@ -149,7 +149,7 @@ void fn_8020F5C8(void) {
 #pragma dont_inline reset
  
 /* Mark all three track-music load slots as unloaded (the inverse of fn_8020F5C8). */
-void fn_8020F5DC(void) {
+void TrackMusic_markSongsUnloaded(void) {
     lbl_8055EEF6 = 0;
     lbl_8055EEF5 = 0;
     lbl_8055EEF4 = 0;
@@ -730,7 +730,7 @@ extern "C" void fn_802103BC(void) {
     }
     lbl_8055EED4 = 0;
     gTrackMusicCurrentSong = -1;
-    fn_8020F5DC();
+    TrackMusic_markSongsUnloaded();
     if (lbl_8055EED0 != 0) {
         ((Obj *)lbl_8055EED0)->f(1);
     }
