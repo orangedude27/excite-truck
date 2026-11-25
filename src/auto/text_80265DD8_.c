@@ -1534,7 +1534,7 @@ void fn_80268358(void *arg0) {
             frame.v60[0] = entryPtr[0];
             frame.v60[1] = entryPtr[1];
             frame.v60[2] = entryPtr[2];
-            fn_80268358_vecmat(frame.v54, frame.v60, matPtr);
+            VECMAT_80268358(frame.v54, frame.v60, matPtr);
             frame.v54[0] += matPtr[9];
             frame.v54[1] += matPtr[10];
             frame.v54[2] += matPtr[11];
