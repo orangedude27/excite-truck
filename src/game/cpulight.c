@@ -463,7 +463,7 @@ void fn_802DBECC(void) {
 
 #pragma dont_inline on
 /* Reset the CPU-light GX vertex-array/pipeline state, then set the current lighting mode byte (lbl_8055FEBA). */
-void fn_802DBF00(signed char lightMode) {
+/* Reset the CPU-light GX state, then set the current lighting mode byte. */ void fn_802DBF00(signed char lightMode) {
     cpulightResetGxCache();
     lbl_8055FEBA = lightMode;
 }
