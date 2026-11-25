@@ -6431,6 +6431,14 @@ extern "C" f32 fn_80112960(void *writer, const u16 *str) {
     SetCursor__Q36nw4hbm2ut10CharWriterFff((s32)writer,
         GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658((s32)&copy), endY);
     fn_801033F0(&copy, 0);
+#undef utf16Strlen
+#undef printAndMeasure
+#undef getCursorY
+#undef getCursorX
+#undef setCursor
+#undef destroyWriterCopy
+#undef nw4hbmPanic
+#undef assertSourceFile
     return width;
 }
 #pragma pop
