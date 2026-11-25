@@ -1683,10 +1683,9 @@ extern "C" void fn_800A68DC(s32 object) {
 extern "C" s32 fn_800A68F0(void *arg0, u32 arg1, s32 *arg2) {
     s32 sp18[4];
     s32 sp8[4];
-    s16 i;
-    int j;
     s32 *a;
     s32 *b;
+    s16 i;
     u8 *p;
     *arg2 = 0;
     p = (u8 *)arg0;
@@ -1695,21 +1694,27 @@ extern "C" s32 fn_800A68F0(void *arg0, u32 arg1, s32 *arg2) {
     b = sp8;
     for (i = 0; i < 4; i++) {
         *a = 0;
-        *a = ((u32)p[0x1C9] << 24) + ((u32)p[0x1C8] << 16) + p[0x1C6] + ((u32)p[0x1C7] << 8);
-        *b = ((u32)p[0x1CD] << 24) + ((u32)p[0x1CC] << 16) + p[0x1CA] + ((u32)p[0x1CB] << 8);
+        *a = (p[0x1C8] << 16) + p[0x1C6] + ((p[0x1C9] << 24) + (p[0x1C7] << 8));
+        *b = (p[0x1CC] << 16) + p[0x1CA] + ((p[0x1CD] << 24) + (p[0x1CB] << 8));
         if (*a != 0 && *b != 0) {
             if (i == 0) *arg2 = 1;
-        } else if (i == 0) return 2;
-        p += 0x10; a++; b++;
+        } else if (i == 0) {
+            return 2;
+        }
+        b++;
+        a++;
+        p += 0x10;
     }
     a = sp8;
     b = sp18;
-    i = 0;
-    j = 4;
-    do {
-        if ((u32)(*b + *a) > arg1 && i == 0) { *arg2 = 0; return 2; }
-        i++; a++; b++; j--;
-    } while (j != 0);
+    for (i = 0; i < 4; i++) {
+        if ((u32)(*b + *a) > arg1) {
+            if (i == 0) *arg2 = 0;
+            return 2;
+        }
+        a++;
+        b++;
+    }
     return 0;
 }
 
@@ -9527,38 +9532,35 @@ adv_both:
 extern "C" s32 VFiPFPATH_cmpNameImpl(u8 *arg0, u8 *arg1, s32 *arg2) {
     s32 var_r31;
     s32 var_r30, var_r29;
-    s32 *var_r28 = arg2;
-    u8 *var_r27 = arg1;
-    u8 *var_r26 = arg0;
-    s32 one = 1;
-    u8 *table = (u8 *)lbl_803D2140;
     s32 temp_r23;
+    u8 *table = (u8 *)lbl_803D2140;
+    s32 one = 1;
     u16 spA, sp8;
     s32 temp_r3, temp_r3_2, temp_r3_3, temp_r3_4;
     u16 var_r3, var_r3_2, var_r3_7, var_r3_8, var_r3_9;
-    u32 var_r3_3, var_r3_4, var_r3_5, var_r3_6;
-    while ((s8)*var_r27 != 0) {
-        temp_r23 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r27);
-        var_r31 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r26);
-        var_r30 = (u16)((temp_r23 == 1) ? fn_800A485C((s8)*var_r27) : (u16)fn_800A4C04(var_r27));
-        var_r29 = (u16)((var_r31 == 1) ? fn_800A485C((s8)*var_r26) : (u16)fn_800A4C04(var_r26));
+    s32 var_r3_3, var_r3_4, var_r3_5, var_r3_6;
+    while ((s8)*arg1 != 0) {
+        temp_r23 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(arg1);
+        var_r31 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(arg0);
+        var_r30 = (u16)((temp_r23 == 1) ? fn_800A485C((s8)*arg1) : (u16)fn_800A4C04(arg1));
+        var_r29 = (u16)((var_r31 == 1) ? fn_800A485C((s8)*arg0) : (u16)fn_800A4C04(arg0));
         if (temp_r23 == 2) {
-            M2C_FIELD(table, s32 (**)(u8 *, u16 *), 0x48)(var_r27, &spA);
+            M2C_FIELD(table, s32 (**)(u8 *, u16 *), 0x48)(arg1, &spA);
             if (spA >= 0xFF41U && spA <= 0xFF5AU) { var_r3_3 = 1U; spA -= 0x20; } else var_r3_3 = 0U;
             if (var_r3_3 == 1U) { M2C_FIELD(table, s32 (**)(u16 *, u16 *), 0x4C)(&spA, &spA); var_r3_4 = 1U; } else var_r3_4 = 0U;
             if (var_r3_4 == 1U) var_r30 = spA;
         }
         if (var_r31 == 2) {
-            M2C_FIELD(table, s32 (**)(u8 *, u16 *), 0x48)(var_r26, &sp8);
+            M2C_FIELD(table, s32 (**)(u8 *, u16 *), 0x48)(arg0, &sp8);
             if (sp8 >= 0xFF41U && sp8 <= 0xFF5AU) { var_r3_5 = 1U; sp8 -= 0x20; } else var_r3_5 = 0U;
             if (var_r3_5 == 1U) { M2C_FIELD(table, s32 (**)(u16 *, u16 *), 0x4C)(&sp8, &sp8); var_r3_6 = 1U; } else var_r3_6 = 0U;
             if (var_r3_6 == 1U) var_r29 = sp8;
         }
-        var_r27 = &var_r27[temp_r23];
+        arg1 = &arg1[temp_r23];
         switch (var_r30) {
         case 0x3F:
             if (var_r29 == 0) return 1;
-            var_r26 = &var_r26[var_r31];
+            arg0 = &arg0[var_r31];
             continue;
         case 0x2A:
             break;
@@ -9566,37 +9568,37 @@ extern "C" s32 VFiPFPATH_cmpNameImpl(u8 *arg0, u8 *arg1, s32 *arg2) {
             goto loop_57;
         }
 loop_33:
-        temp_r3_2 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r27);
-        var_r30 = (u16)((temp_r3_2 != 1) ? (u16)fn_800A4C04(var_r27) : fn_800A485C((s8)*var_r27));
-        var_r27 = &var_r27[temp_r3_2];
+        temp_r3_2 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(arg1);
+        var_r30 = (u16)((temp_r3_2 == 1) ? fn_800A485C((s8)*arg1) : (u16)fn_800A4C04(arg1));
+        arg1 = &arg1[temp_r3_2];
         if ((u16)var_r30 == 0x3FU) {
             if (var_r29 == 0) return 1;
-            var_r26 = &var_r26[var_r31];
-            temp_r3_3 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r26);
+            arg0 = &arg0[var_r31];
+            temp_r3_3 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(arg0);
             var_r31 = temp_r3_3;
-            var_r29 = (u16)((temp_r3_3 == 1) ? fn_800A485C((s8)*var_r26) : (u16)fn_800A4C04(var_r26));
+            var_r29 = (u16)((temp_r3_3 == 1) ? fn_800A485C((s8)*arg0) : (u16)fn_800A4C04(arg0));
         }
-        if (var_r30 == 0x3F || var_r30 == 0x2A) goto loop_33;
+        if ((u16)var_r30 == 0x3FU || (u16)var_r30 == 0x2AU) goto loop_33;
         if (var_r30 == 0) return 0;
 loop_57:
-        if (var_r29 == 0 && ((s8)*var_r26 == 0 || (s8)*var_r27 == 0)) *var_r28 = one;
+        if (var_r29 == 0 && ((s8)*arg0 == 0 || (s8)*arg1 == 0)) *arg2 = one;
         if (var_r29 != var_r30) return 1;
-        var_r26 = &var_r26[var_r31];
-        if ((u16)var_r30 == 0x2AU) goto loop_33;
-        if ((u16)var_r30 == 0x3FU) continue;
+        arg0 = &arg0[var_r31];
+        if (var_r30 == 0x2A) goto loop_33;
+        if (var_r30 == 0x3F) continue;
         if (var_r29 == 0) continue;
-        var_r26 = &var_r26[var_r31];
+        arg0 = &arg0[var_r31];
         if (var_r29 == var_r30) {
-            temp_r3 = VFiPFPATH_cmpNameImpl(var_r26, var_r27, var_r28);
+            temp_r3 = VFiPFPATH_cmpNameImpl(arg0, arg1, arg2);
             if (temp_r3 == 0) return 0;
-            if (*var_r28 != 0) return temp_r3;
+            if (*arg2 != 0) return temp_r3;
         }
-        temp_r3_4 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r26);
+        temp_r3_4 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(arg0);
         var_r31 = temp_r3_4;
-        var_r29 = (u16)((temp_r3_4 == 1) ? fn_800A485C((s8)*var_r26) : (u16)fn_800A4C04(var_r26));
+        var_r29 = (u16)((temp_r3_4 == 1) ? fn_800A485C((s8)*arg0) : (u16)fn_800A4C04(arg0));
         goto loop_57;
     }
-    return (s8)*var_r26 != 0;
+    return (s8)*arg0 != 0;
 }
 #pragma opt_propagation reset
 extern "C" s32 fn_800B6928(s8);
@@ -17798,9 +17800,12 @@ extern "C" void fn_800C2C18(s32 *a, s32 *b, s32 *o1, s32 *o2) {
 extern u32 lbl_8031D730[];
 extern "C" void fn_800C2DBC(s32 *arg0, s32 *arg1, s32 *arg2) {
     s32 *t = (s32 *)lbl_8031D730;
-#define STEP(i) { s32 a = arg0[i]; s32 c0 = t[2 * (i)]; s32 c1 = t[2 * (i) + 1]; c0 = (s32)(((s64)a * c0) >> 20); arg1[i] = c0; c1 = (s32)(((s64)a * c1) >> 20); arg2[-(i)] = c1; }
-    STEP(0) STEP(1) STEP(2) STEP(3) STEP(4) STEP(5) STEP(6) STEP(7) STEP(8)
-#undef STEP
+#define STEP0(i) { s32 a = arg0[i]; arg2[-(i)] = fn_800BD710_scale(a, t, 2*(i)+1); arg1[i] = fn_800BD710_scale(a, t, 2*(i)); }
+#define STEP1(i) { s32 a = arg0[i]; s32 c0 = t[2 * (i)]; s32 c1 = t[2 * (i) + 1]; c0 = (s32)(((s64)a * c0) >> 20); arg1[i] = c0; c1 = (s32)(((s64)a * c1) >> 20); arg2[-(i)] = c1; }
+    STEP0(0) STEP0(1) STEP0(2) STEP0(3) STEP0(4)
+    STEP1(5) STEP1(6) STEP1(7) STEP1(8)
+#undef STEP0
+#undef STEP1
 }
 
 extern "C" s32 lbl_8031D778[];
@@ -26413,20 +26418,21 @@ extern "C" char *fn_800A4AAC(char *dst, char *src) {
 }
 
 extern "C" s32 fn_800A4AD0(u8 *left, u8 *right) {
-    /* strcmp: return the difference of the first differing bytes of two NUL-terminated strings. */
+    /* strcmp: compare two NUL-terminated strings, returning the difference of
+     * the first differing bytes (0 when the strings are equal). */
     u8 leftByte;
     u8 rightByte;
-    goto test;
-again:
+    goto compare;
+advance:
     left++;
     right++;
-test:
+compare:
     leftByte = *left;
-    if (leftByte == 0) goto done;
+    if (leftByte == 0) goto finish;
     rightByte = *right;
-    if (rightByte == 0) goto done;
-    if (leftByte == rightByte) goto again;
-done:
+    if (rightByte == 0) goto finish;
+    if (leftByte == rightByte) goto advance;
+finish:
     return leftByte - *right;
 }
 
