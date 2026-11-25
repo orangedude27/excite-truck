@@ -69,7 +69,7 @@ extern void fn_802D3ECC(u16);
 extern s32 fn_802BE07C(s32, s32, s32, s32, s32, s32, s32, s32);
 extern s32 fn_802C8BD0(s32);
 extern void DrawList_RestoreNormalMode(void);
-extern void fn_802D3050(s32);
+extern void gxSetAlphaUpdateEnable(s32);
 extern void fn_802D306C(s32);
 typedef struct { u8 pad[0x24]; f32 x; f32 y; f32 z; } unk_80203A88_dest;
 void fn_802039CC(s32 arg0, struct lbl_80488B88_t* arg1);
@@ -652,7 +652,7 @@ void fn_80203A88(const void* arg0, s32 arg1, unk_80203A88_dest* arg2) {
     f32 var_f3;
 
     if (fn_80202BE4() == 0) {
-        fn_802D3050(1);
+        gxSetAlphaUpdateEnable(1);
         fn_802D306C(0x5A);
         var_f2 = ((f32*)arg0)[1];
         var_f0 = lbl_80563130;

@@ -844,7 +844,7 @@ void fn_8001B478(int arg0, float farg0) {
             result = 1;
         }
     }
-    DrawList_endMeshPass();
+    fn_802C8E48();
     fn_8013530C(sp20, -1);
 }
 #pragma pop
@@ -871,7 +871,7 @@ extern "C" int fn_8001B754(float arg0) {
 
 void fn_8001B7B8(int enable) {
     /* Tail-call thunk: forwards the alpha-update enable flag to the render-state setter. */
-    fn_802D3050(enable);
+    gxSetAlphaUpdateEnable(enable);
 }
 extern char lbl_802FD618[];
 extern char lbl_802FD6CC[];

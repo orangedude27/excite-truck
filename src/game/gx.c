@@ -2944,7 +2944,7 @@ int GX_GetXFB(int *outWidth, int *outHeight) {
 }
 
 /* Enable or disable alpha updates by toggling bit 4 (0x10) of the global render-state word. */
-void fn_802D3050(int enable) {
+void gxSetAlphaUpdateEnable(int enable) {
     unsigned long value;
 
     value = (unsigned long)lbl_8055FD1C & 0xFFFFFFEF;
