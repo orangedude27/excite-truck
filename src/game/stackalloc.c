@@ -566,7 +566,7 @@ void *StackAlloc_deletingDestructor(void *self, int deleteFlag) {
 #pragma scheduling invalid_target
 /* Reset the global BoneHandleAlloc stack allocator: empty the arena, clear the
    current record, mark it active and clear the busy flag. */
-void StackAlloc_reset(void) {
+/* Reset the global BoneHandleAlloc stack allocator: empty its arena, clear the current record, set status to active and clear the initialized flag. */ void StackAlloc_reset(void) {
     volatile struct StackAlloc *alloc = (volatile struct StackAlloc *)lbl_8055FE5C;
     alloc->used = 0;
     alloc->current = (void *)-1;
