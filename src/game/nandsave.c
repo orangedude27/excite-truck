@@ -316,8 +316,9 @@ int rmemcardRecover(void) {
 
 extern int fn_8012C4D8(int);
 extern int fn_802E88D8(void);
+/* After a corrupt NAND read, poll request 4 until it completes and reset the
+ * console to the home menu; bail out if request 0 completes first. */
 void rmemcardCorruptReset(void) {
-    /* After a corrupt NAND read: poll request 4 until it completes, then run fn_802E8918 (home-menu mode 1); return early if request 0 completes first. */
     for (;;) {
         if (((int (*)(int))fn_802E888C)(4) != 0) {
             ((void (*)(void))fn_802E8918)();
