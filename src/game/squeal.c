@@ -19,7 +19,7 @@ typedef struct {
 } Record;
 
 #pragma scheduling invalid_target
-void *fn_80209D4C(void *soundSource) {
+void *SquealSound_create(void *soundSource) {
 #define kVtable         lbl_8033C258
 #define kSfxName        lbl_8033C268    /* "squeal.sfx" */
 #define kAllocTag       lbl_8055B548    /* "tiresnd" */

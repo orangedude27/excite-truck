@@ -543,7 +543,7 @@ extern void fn_80016A48(void *, int);
 extern void *fn_80016544(int);
 extern void fn_801D108C(int);
 extern int fn_80209448(void *, int);
-extern int fn_80209D4C(void *);
+extern int SquealSound_create(void *);
 extern int fn_8020DE74(void *);
 extern void fn_8018C5A0(void *, void *);
 extern void fn_8018A654(void *, void *);
@@ -722,7 +722,7 @@ void fn_80182074(void *arg0, void *arg1) {
     fn_8018A654(a, b);
     isPcar = *(int *)(b) == 0x50434152;
     *(int *)(a + 0x257C) = fn_80209448(a, *(int *)(b));
-    if (isPcar) *(int *)(a + 0x2580) = fn_80209D4C(a); else *(int *)(a + 0x2580) = 0;
+    if (isPcar) *(int *)(a + 0x2580) = SquealSound_create(a); else *(int *)(a + 0x2580) = 0;
     *(int *)(a + 0x2584) = fn_8020DE74(a);
     fn_801D108C(*(int *)(a + 0x1EC));
     fn_80131818(cfg);
