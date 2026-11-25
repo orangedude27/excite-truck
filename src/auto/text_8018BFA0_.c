@@ -251,7 +251,7 @@ static inline void matVecMixW_8018(const Vec_8018 *v, const float *m, Vec_8018 *
 #pragma processor 750
 extern float fn_80144514(float, float, float, float, float, float);
 #pragma scheduling 603
-void fn_8018BFA0(void *outMatrix, float *a, int *bMatrix, int arg3, float arg4, float arg5) {
+void composeTransform34(void *outMatrix, float *a, int *bMatrix, int arg3, float arg4, float arg5) {
     /* Compose two 3x4 transforms: multiply the 3x3 rotations and rebuild the
      * translation from both offsets, staging results when the output aliases an input. */
     float *out = (float *)outMatrix;
@@ -691,7 +691,7 @@ void fn_8018CB3C(char *arg0) {
             fn_8014452C((int *)&rotation2, rotated2[1], rotated2[0], rotated2[2]);
             ((Transform8018 *)(var_r20 + 0x48))->rot = ((Transform8018 *)(var_r20 + 0x18))->rot;
             ((Transform8018 *)(var_r20 + 0x48))->pos = ((Transform8018 *)(var_r20 + 0x18))->pos;
-            ((void (*)(void *, float *, int *))fn_8018BFA0)(var_r20 + 0x18, (float *)(arg0 + 0x70), (int *)&rotation2);
+            ((void (*)(void *, float *, int *))composeTransform34)(var_r20 + 0x18, (float *)(arg0 + 0x70), (int *)&rotation2);
             if ((int)M2C_FIELD(var_r20, unsigned char *, 0x78) == 0) {
                 M2C_FIELD(var_r20, unsigned char *, 0x78) = 1U;
                 ((Transform8018 *)(var_r20 + 0x48))->rot = ((Transform8018 *)(var_r20 + 0x18))->rot;
@@ -744,12 +744,12 @@ void fn_8018CB3C(char *arg0) {
                 transform.rot.m[0] = temp_f2_10;
                 transform.rot.m[1] = temp_f1_7;
                 transform.rot.m[2] *= -1.0f;
-                ((void (*)(void *, float *, int *))fn_8018BFA0)(var_r20 + 0x18, transform.rot.m, (int *)&rotation4);
+                ((void (*)(void *, float *, int *))composeTransform34)(var_r20 + 0x18, transform.rot.m, (int *)&rotation4);
                 M2C_FIELD(var_r20, float *, 0x18) = (float)(M2C_FIELD(var_r20, float *, 0x18) * -1.0f);
                 M2C_FIELD(var_r20, float *, 0x1C) = (float)(M2C_FIELD(var_r20, float *, 0x1C) * -1.0f);
                 M2C_FIELD(var_r20, float *, 0x20) = (float)(M2C_FIELD(var_r20, float *, 0x20) * -1.0f);
             } else {
-                ((void (*)(void *, float *, int *))fn_8018BFA0)(var_r20 + 0x18, (float *)(arg0 + 0x70), (int *)&rotation4);
+                ((void (*)(void *, float *, int *))composeTransform34)(var_r20 + 0x18, (float *)(arg0 + 0x70), (int *)&rotation4);
             }
             if ((int)M2C_FIELD(var_r20, unsigned char *, 0x78) == 0) {
                 M2C_FIELD(var_r20, unsigned char *, 0x78) = 1U;
