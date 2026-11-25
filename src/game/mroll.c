@@ -31,12 +31,11 @@ extern void Abend_Panic(char *, ...);
 typedef struct Fn241820VT { int pad[3]; int (*isActive)(void *); } Fn241820VT;
 typedef struct Fn241820Obj { char pad[0xc]; Fn241820VT *vt; } Fn241820Obj;
 typedef int (*Fn241820IsActive)(void *);
-/* Clear the player-info table (gMRollPlayerSlots): set the id word of each of its
- * two 0x10-byte slots to -1, marking both slots empty. */
+/* Mark both MRoll player-info slots empty by writing -1 to each slot's id word. */
 void MRoll_clearPlayerSlots(void) {
-    register int *slots = (int *)gMRollPlayerSlots;
-    *slots++ = -1;
-    slots[3] = -1;
+    register s32 *slotIds = (s32 *)gMRollPlayerSlots;
+    *slotIds++ = -1;
+    slotIds[3] = -1;
 }
 
 s32 MRoll_getActivePlayerCount(void) {
