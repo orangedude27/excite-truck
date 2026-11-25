@@ -486,7 +486,7 @@ u32 fn_801B0F48(u32 a, u32 b) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void Deity_submitItemRequest(s32 arg0, s32 arg1) {
+/* Build and submit a request for the deity (AI-truck) item at itemIndex with the given value: gather its state (from the resource or the slot), reject it if a raycast finds a conflicting node, otherwise fill in and dispatch the request. */ extern "C" void Deity_submitItemRequest(s32 itemIndex, s32 value) {
     struct Item {
         virtual void d0();
         virtual void d1();
@@ -509,7 +509,7 @@ extern "C" void Deity_submitItemRequest(s32 arg0, s32 arg1) {
     State state;
     u32 scratch[3];
     Request request;
-    Item *item = (Item *)((u8 *)lbl_8055E684 + (arg0 << 7));
+    Item *item = (Item *)((u8 *)lbl_8055E684 + (itemIndex << 7));
     void *result = item->getMetadata();
     bool isResource = *(u32 *)((u8 *)result + 0x10) == 0x50434152;
 
@@ -517,8 +517,8 @@ extern "C" void Deity_submitItemRequest(s32 arg0, s32 arg1) {
     state.weight = lbl_805625BC;
     state.limit = 0x2710;
     if (isResource != 0) {
-        fn_801B30D0(arg0);
-        fn_801B30E0(arg0);
+        fn_801B30D0(itemIndex);
+        fn_801B30E0(itemIndex);
         fn_801B0BB0(scratch, item->getState());
         state.head = (void *)scratch[0];
         state.weight = *(f32 *)&scratch[1];
@@ -530,7 +530,7 @@ extern "C" void Deity_submitItemRequest(s32 arg0, s32 arg1) {
     }
     bool failed = false;
     if (isResource == 0) {
-        if (fn_801B0E40(arg0, &arg1) != 0) {
+        if (fn_801B0E40(itemIndex, &value) != 0) {
             s32 found = 0;
             void *thresholdObject = (void *)((s32 (*)(s32))fn_801B0F18)(0);
             s32 threshold = *(s32 *)((u8 *)thresholdObject + 0x10);
@@ -543,7 +543,7 @@ extern "C" void Deity_submitItemRequest(s32 arg0, s32 arg1) {
             }
             state.head = node;
             if (found != 0) {
-                fn_802E30C8(lbl_80335A94, arg0, lbl_8055E3C4);
+                fn_802E30C8(lbl_80335A94, itemIndex, lbl_8055E3C4);
                 failed = 1;
             }
         } else {
