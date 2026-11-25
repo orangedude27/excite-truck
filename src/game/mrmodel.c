@@ -965,7 +965,7 @@ void fn_802C61BC(void *arg0, int arg1) {
     }
 }
 
-void mrRelocateEntryPtr(s32 *value, s32 delta) {
+/* Add the load-base delta to a stored non-null pointer (a model entry's pointer field); a zero/null sentinel is left unchanged. */ void mrRelocateEntryPtr(s32 *value, s32 delta) {
     /* Add delta to *value, leaving a zero (null) sentinel unchanged. */
     s32 cur = *value;
     if (cur != 0) {
