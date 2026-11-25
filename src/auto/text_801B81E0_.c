@@ -768,10 +768,10 @@ void fn_801B8A68(void *owner, int slotIndex) {
 }
 
 /* Callback adapter: ignores the context pointer and forwards (item index, payload)
- * to fn_801B0F70, which builds and submits a request for that item. */
+ * to Deity_submitItemRequest, which builds and submits a request for that item. */
 void fn_801B8A70(void *ctx, int itemIndex, int payload) {
-    extern void fn_801B0F70(int, int);
-    fn_801B0F70(itemIndex, payload);
+    extern void Deity_submitItemRequest(int, int);
+    Deity_submitItemRequest(itemIndex, payload);
 }
 
 /* Callback adapter: ignores the context pointer and forwards the summary-buffer

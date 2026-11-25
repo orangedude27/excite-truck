@@ -4214,11 +4214,11 @@ s32 fn_80154714(void) {
     return 1;
 }
 
-extern void fn_801B0F70(s32, s32);
+extern void Deity_submitItemRequest(s32, s32);
 extern void fn_80168104(void);
-/* Callback adapter: drop the leading context argument and forward the item index and value to fn_801B0F70. */
+/* Callback adapter: drop the leading context argument and forward the item index and value to Deity_submitItemRequest. */
 void fn_8015471C(s32 context, s32 itemIndex, s32 value) {
-    fn_801B0F70(itemIndex, value);
+    Deity_submitItemRequest(itemIndex, value);
 }
 
 /* Runs the coin-record update pass when the bet/race manager (allocated as

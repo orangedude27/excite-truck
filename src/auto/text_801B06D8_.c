@@ -486,7 +486,7 @@ u32 fn_801B0F48(u32 a, u32 b) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void fn_801B0F70(s32 arg0, s32 arg1) {
+extern "C" void Deity_submitItemRequest(s32 arg0, s32 arg1) {
     struct Item {
         virtual void d0();
         virtual void d1();
