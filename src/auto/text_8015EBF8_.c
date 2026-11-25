@@ -1069,8 +1069,8 @@ void fn_8016025C(void *out, void *context, float x, float y, float unusedA, floa
     *(f32 *)((u8 *)out + 4) = y;
 }
 
-/* Integer absolute value: (value ^ sign) - sign, with sign = value >> 31 (all ones if negative). */
-/* Return the integer absolute value without branching. */ int absInt(int value) {
+/* Return the integer absolute value without branching: (value ^ sign) - sign, sign = value >> 31. */
+int absInt(int value) {
     int sign;
     sign = value >> 31;
     return (sign ^ value) - sign;
