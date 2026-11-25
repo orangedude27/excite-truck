@@ -278,7 +278,7 @@ int fn_802DB69C(void **texObjs, int mode) {
 /* SetCpuLightBlendMode: set additive alpha blending for one CPU-lit billboard
  * batch; the first light of a chain replaces the framebuffer (dst=ZERO) while
  * later ones add to it (dst=ONE). Skipped in the second lighting mode. */
-/* Set additive alpha blending for a CPU-lit billboard batch; the first light of a chain replaces the framebuffer, later ones add to it. Skipped in the second lighting mode. */ void fn_802DB9DC(int replaceFramebuffer) {
+void fn_802DB9DC(int replaceFramebuffer) {
     if (lbl_8055FEBA != 0)
         return;
     if (replaceFramebuffer != 0) {
