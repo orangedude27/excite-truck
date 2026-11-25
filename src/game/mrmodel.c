@@ -152,8 +152,7 @@ int fn_802C544C(void **leftEntryPtr, void **__restrict rightEntryPtr) {
     if (leftDetail != rightDetail) return leftDetail - rightDetail;
     return stricmp(getTextureSlotName(*(char **)leftEntry), getTextureSlotName(*(char **)rightEntry));
 }
-/* Return the 8-byte {items, count} record for a 1-based detail level in the
- * level table at gModelDetailLevelTable (levels 1..9). */
+/* Return the 8-byte {items, count} display record for 1-based detail level (1..9) in gModelDetailLevelTable. */
 void *MRModel_GetDetailLevelRecord(int level) { return (void *)(gModelDetailLevelTable + (level - 1) * 8); }
 
 /* Return bits 8-15 (the second byte) of the given value as an unsigned byte. */
