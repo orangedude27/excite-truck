@@ -827,13 +827,13 @@ void fn_8020F284(void *carSound, float inputValue) {
 
 /* Reset the state flags (+0x49 set, +0x4A/+0x4B clear) of the child
  * node stored at +0x24 of the object. */
-void CarSound_ResetNiceLand(void *object) {
-    void *node;
-    node = *(void **)((char *)object + 0x24);
-    if (node != 0) {
-        *(signed char *)((char *)node + 0x49) = 1;
-        *(signed char *)((char *)node + 0x4B) = 0;
-        *(signed char *)((char *)node + 0x4A) = 0;
+/* CarSound vtable slot +0x20: re-arm the niceland.sfx handle stored at +0x24 by setting its +0x49 flag and clearing +0x4A/+0x4B. */ void CarSound_ResetNiceLand(void *carSound) {
+    void *niceLand;
+    niceLand = *(void **)((char *)carSound + 0x24);
+    if (niceLand != 0) {
+        *(signed char *)((char *)niceLand + 0x49) = 1;
+        *(signed char *)((char *)niceLand + 0x4B) = 0;
+        *(signed char *)((char *)niceLand + 0x4A) = 0;
     }
 }
 
