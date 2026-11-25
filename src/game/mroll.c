@@ -434,8 +434,9 @@ extern char lbl_80342618[];
     return object;
 }
 
+/* CodeWarrior deleting-destructor (D0) thunk: free a non-null object through
+ * operator delete when the delete flag is positive, then return the object. */
 s32 fn_802407F0(s32 object, s32 deleteFlag) {
-    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
     if (object != 0 && deleteFlag > 0) fn_80128668();
     return object;
 }
