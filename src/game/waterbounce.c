@@ -837,7 +837,7 @@ void CarSound_ResetNiceLand(void *object) {
     }
 }
 
-void CarSound_ResetBadland(void *carSound) {
+/* CarSound vtable slot: re-arm the badland.sfx sound at +0x20 by setting its +0x49 flag and clearing +0x4A/+0x4B, if that sound exists. */ void CarSound_ResetBadland(void *carSound) {
     /* Reset the state flags (+0x49 set, +0x4A/+0x4B clear) of the badland
      * sound stored at +0x20 of the car's sound set. */
     void *sound;
