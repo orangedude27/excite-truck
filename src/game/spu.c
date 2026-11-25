@@ -1011,7 +1011,7 @@ void fn_802E61D8(void *channel) {
 /* SND_SetVolume: set a voice channel's volume (+0x08); the voice mixer in
  * src/game/voicesnd.c rewrites it every frame with the speaker's volume scaled
  * by the voice's own level and distance falloff. */
-void spuSetVoiceVolume(void *voice, float volume) {
+/* Set a voice channel's volume field (SND_SetVolume, SpuChannel.volume at +0x08). */ void spuSetVoiceVolume(void *voice, float volume) {
     ((struct SpuChannel *)voice)->volume = volume;
 }
 
