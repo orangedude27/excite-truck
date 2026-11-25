@@ -231,7 +231,7 @@ int GetMixerDevice(int index) {
 }
 
 /* Set the index of the currently selected mixer device. */
-void SetSelectedMixerDevice(int index) { MIXER_SELECTED_DEVICE = index; }
+/* Select the active mixer backend by its index in the device registry (0 = null mixer); this field doubles as the saved "mixer" config option. */ void SetSelectedMixerDevice(int deviceIndex) { MIXER_SELECTED_DEVICE = deviceIndex; }
 
 /* Return the index of the currently selected mixer device. */
 /* Return the index of the currently selected mixer device. */ int GetSelectedMixerDevice(void) { return MIXER_SELECTED_DEVICE; }
