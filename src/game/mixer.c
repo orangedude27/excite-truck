@@ -445,15 +445,16 @@ void *fn_802090D4(int name) {
 
 #pragma push
 #pragma inline_depth(0)
-void fn_80209190(float *volume, float newVolume) {
+void fn_80209190(float *handleVolume, float volume) {
 #define MAX_VOLUME lbl_80563230  /* 1.0f */
 #define MIN_VOLUME lbl_80563234  /* 0.0f */
-    /* Clamp a mixer volume to [0,1], store it in the handle, and recompute the master volume. */
-    if (volume != 0) {
-        float clamped = MAX_VOLUME < newVolume ? MAX_VOLUME : newVolume;
-        clamped = clamped > MIN_VOLUME ? clamped : MIN_VOLUME;
-        *volume = clamped;
-        fn_80208A50(volume);
+    /* Clamp a mixer volume handle's level to [0,1], store it, and recompute
+     * the effective master volume. */
+    if (handleVolume != 0) {
+        float clampedVolume = MAX_VOLUME < volume ? MAX_VOLUME : volume;
+        clampedVolume = clampedVolume > MIN_VOLUME ? clampedVolume : MIN_VOLUME;
+        *handleVolume = clampedVolume;
+        fn_80208A50(handleVolume);
     }
 #undef MIN_VOLUME
 #undef MAX_VOLUME
