@@ -25,7 +25,7 @@ extern float lbl_8055FCD4;
 extern signed char lbl_8055FCDC;
 extern float lbl_8055FCE0;
 extern float lbl_80564F60;
-extern int fn_802CAFF0(int);
+extern int TextureSlot_getWrapMode(int);
 extern int stricmp(const char *, const char *);
 #pragma cplusplus on
 struct Dummy {
@@ -95,8 +95,8 @@ int fn_802CCD0C(void * const arg0, void * const arg1) {
     if (x != y) {
         return x - y;
     }
-    x = fn_802CAFF0(*(int *)((char *)arg0 + 0x10));
-    y = fn_802CAFF0(*(int *)((char *)arg1 + 0x10));
+    x = TextureSlot_getWrapMode(*(int *)((char *)arg0 + 0x10));
+    y = TextureSlot_getWrapMode(*(int *)((char *)arg1 + 0x10));
     if (x != y) {
         return x - y;
     }

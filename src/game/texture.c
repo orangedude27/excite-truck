@@ -810,7 +810,7 @@ char fn_802CAFC8(int textureSlot) {
 }
 
 /* Return a texture slot's mode byte (+9 of its resource), or 0x32 for no texture. */
-char fn_802CAFF0(int textureSlot) {
+char TextureSlot_getWrapMode(int textureSlot) {
     int slotOffset;
     char *slots;
     if (textureSlot == -1)

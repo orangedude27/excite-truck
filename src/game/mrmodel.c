@@ -543,7 +543,7 @@ extern int fn_8012C33C(char *);
 extern void fn_801345D8(char *, int, const char *, ...);
 extern int fn_802CAC44(char *, int);
 extern int fn_802CAF8C(void);
-extern int fn_802CAFF0(void);
+extern int TextureSlot_getWrapMode(void);
 extern int fn_802CAFC8(int);
 __declspec(section ".sdata") extern const char lbl_8055D010[];
 /* Resolve an item's resource name (with an optional numbered suffix), register its texture, and store the resulting handle in the item's per-slot handle array. */ void fn_802C5CC4(void *item, int slot, int subKeyKind, int suffix) {
@@ -575,7 +575,7 @@ __declspec(section ".sdata") extern const char lbl_8055D010[];
     if (subKeyKind != 0) {
         subKey = buildTextureSubKey(baseId, fn_802CAF8C());
     } else {
-        secondKey = fn_802CAFF0();
+        secondKey = TextureSlot_getWrapMode();
         subKey = packU16Key(fn_802CAFC8(textureIndex), secondKey);
     }
     *(int *)((char *)item + slot * 4 + 0x14) = (int)fn_802C5A60(textureIndex, baseId, subKey);
