@@ -579,7 +579,7 @@ extern "C" u32 *fn_80216708(void);
 extern "C" s32 fn_80218F34(void *, s32, s32, s32, s32, s32);
 extern "C" void fn_8022B91C(s32, s32, s32, s32, s32);
 extern "C" s32 gxGetImageFrameCount(s32);
-extern "C" s32 fn_802C5310(s32, s32, f32, f32, f32);
+extern "C" s32 gxDrawPictureAt(s32, s32, f32, f32, f32);
 extern "C" void fn_80230C30(f32 *, f32 *, s32, s32);
 extern "C" void fn_802353F4(s32, s32, f32, f32, f32);
 extern "C" f32 fn_80235EF0(s32, s32);
@@ -1784,7 +1784,7 @@ extern "C" void fn_8021AD10(void *arg0) {
     screenX = *(s32 *)((u8 *)arg0 + 4) - lbl_8055FB9C / 2;
     screenY = lbl_8055FBA0 / 2 - *(s32 *)((u8 *)arg0 + 8);
 
-    fn_802C5310(*(s32 *)((u8 *)arg0 + 0x250), value,
+    gxDrawPictureAt(*(s32 *)((u8 *)arg0 + 0x250), value,
         (f32)screenX, (f32)screenY, lbl_805634A8);
 }
 #pragma scheduling on
@@ -2460,7 +2460,7 @@ extern "C" void fn_8021BF90(void *widget) {
 }
 
 extern "C" s32 fn_8021165C(s32, s32);
-extern "C" s32 fn_802C5310(s32, s32, f32, f32, f32);
+extern "C" s32 gxDrawPictureAt(s32, s32, f32, f32, f32);
 #pragma push
 #pragma processor 750
 /* Updates this widget and draws its two value indicators when their bounds differ (checks virtual slots 6/5 on the widget at +0x2A4). */
@@ -2496,11 +2496,11 @@ extern "C" void fn_8021BFEC(void *arg0) {
         posY = scale;
         fn_80230C30(&posX, &posY, *(s32 *)((u8 *)arg0 + 0x2B0), *(s32 *)((u8 *)arg0 + 0x2B8));
         if (((Vf *)*(void **)((u8 *)arg0 + 0x2A4))->first() != 0) {
-            fn_802C5310(handleA, isActive, posX, posY, scale);
+            gxDrawPictureAt(handleA, isActive, posX, posY, scale);
         }
         fn_80230C30(&posX, &posY, *(s32 *)((u8 *)arg0 + 0x2B4), *(s32 *)((u8 *)arg0 + 0x2B8));
         if (((Vf *)*(void **)((u8 *)arg0 + 0x2A4))->second() != 0) {
-            fn_802C5310(handleB, isActive, posX, posY, scale);
+            gxDrawPictureAt(handleB, isActive, posX, posY, scale);
         }
     }
 }
@@ -2691,10 +2691,10 @@ extern "C" void fn_8021C4D4(void *widget) {
         posY = lbl_805634A8;
         fn_80230C30(&posX, &posY, *(s32 *)(self + 0x2B0), *(s32 *)(self + 0x2B8));
         if (((Fn8021C4D4VTable *)*(void **)(self + 0x2A4))->At20() != 0)
-            fn_802C5310(handleA, markerActive, posX, posY, lbl_805634A8);
+            gxDrawPictureAt(handleA, markerActive, posX, posY, lbl_805634A8);
         fn_80230C30(&posX, &posY, *(s32 *)(self + 0x2B4), *(s32 *)(self + 0x2B8));
         if (((Fn8021C4D4VTable *)*(void **)(self + 0x2A4))->At1C() != 0)
-            fn_802C5310(handleB, markerActive, posX, posY, lbl_805634A8);
+            gxDrawPictureAt(handleB, markerActive, posX, posY, lbl_805634A8);
     }
 }
 
@@ -2976,7 +2976,7 @@ extern "C" void fn_8021CBBC(void *widget) {
     drawX = (f32)screenX;
     screenY = lbl_8055FBA0 / 2 - *(s32 *)((u8 *)widget + 8);
     drawY = (f32)screenY;
-    fn_802C5310(*(s32 *)((u8 *)widget + 0x24C), 0,
+    gxDrawPictureAt(*(s32 *)((u8 *)widget + 0x24C), 0,
                 drawX, drawY - 8.0f, 0.0f);
     scrollRate = (*(V24x **)((u8 *)widget + 0x248))->get();
     screenX = ((VfObj *)widget)->vf28();
@@ -2985,7 +2985,7 @@ extern "C" void fn_8021CBBC(void *widget) {
     fn_80230C30(&drawX, &drawY,
                 screenX + *(s32 *)((u8 *)widget + 4),
                 3 + *(s32 *)((u8 *)widget + 8));
-    fn_802C5310(*(s32 *)((u8 *)widget + 0x250), 0, drawX, drawY, 0.0f);
+    gxDrawPictureAt(*(s32 *)((u8 *)widget + 0x250), 0, drawX, drawY, 0.0f);
 }
 
 #pragma push

@@ -903,7 +903,7 @@ extern float fn_80235EF0(int arg0, int arg1);
 extern float fn_80235F64(int arg0, int arg1);
 extern int gxGetImageFrameCount();
 extern int fn_80235FD8();
-extern void fn_802C5310();
+extern void gxDrawPictureAt();
 extern void fn_802354A0();
 extern void fn_80232928();
 extern void fn_80232930();
@@ -1002,7 +1002,7 @@ void fn_8022BD40(int arg0, int i19arg, int arg2_, unsigned char i20_, float farg
     }
     if (*(int *)((char *)base + 0x68) != 0) {
         ((void (*)(float *, float *, float, float))fn_8022BB60)(&sp28, &sp24, f0v, f28v);
-        fn_802C5310(*(int *)((char *)base + 0x68), arg2copy % gxGetImageFrameCount(*(int *)((char *)base + 0x68)), sp28, sp24, lbl_8056358C);
+        gxDrawPictureAt(*(int *)((char *)base + 0x68), arg2copy % gxGetImageFrameCount(*(int *)((char *)base + 0x68)), sp28, sp24, lbl_8056358C);
     } else if (*(int *)((char *)base + 0x6C) != 0) {
         ((void (*)(float *, float *, float, float))fn_8022BB60)(&sp20, &sp1C, f0v, f28v);
         fl = *(int *)((char *)base + 0x38);

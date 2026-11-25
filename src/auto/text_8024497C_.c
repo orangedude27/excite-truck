@@ -195,7 +195,7 @@ extern int fn_8013C9C8(void);
 extern int stricmp(const char *, const char *);
 extern char *strcpy(char *, const char *);
 extern void fn_80232BA4(const char *, int, int, int, float, float, float, float, float);
-extern void fn_802C5310(int, int, float, float, float);
+extern void gxDrawPictureAt(int, int, float, float, float);
 extern void fn_802337A0(int, int, int, const char *, ...);
 extern char lbl_80342F98[];
 extern char lbl_8055BE28, lbl_8055BE2C, lbl_8055BE34, lbl_8055BE3C, lbl_8055BE44;
@@ -309,7 +309,7 @@ void fn_80244D6C(void *arg0) {
         fn_80232BA4((char *)entry[1], unl_font(win), unl_name_color, unl_style_row, xpos, y1, name_scale, unl_angle, unl_unit);
         icon = unl_icon_locked;
         if (entry[2] <= rating || *((u8 *)entry + 0xc)) icon = unl_icon_open;
-        fn_802C5310(unl_icon_img(win), icon, xicon, y3, unl_angle);
+        gxDrawPictureAt(unl_icon_img(win), icon, xicon, y3, unl_angle);
         fn_802337A0(unl_font(win), unl_color_auto, unl_style_rating, &unl_fmt_rating, xrating, y2, unl_angle, desc_scale, unl_unit, entry[2]);
         fn_80232BA4(desc, unl_font(win), unl_color_auto, unl_style_row, mid, y2, desc_scale, unl_angle, unl_unit);
         }

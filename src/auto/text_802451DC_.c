@@ -101,7 +101,7 @@ extern int fn_802E46F0(void);
 extern int KERNEL_WaitMilliseconds(int);
 extern int KERNEL_GetTimeMs(void);
 extern double sin(double);
-extern void fn_802C5310(int, int, float, float, float);
+extern void gxDrawPictureAt(int, int, float, float, float);
 extern void fn_802337A0(int, int, int, void *, void *, float, float, float, float, float, ...);
 extern float lbl_80558DC4[];
 extern char lbl_8055BE60, lbl_8055BE64;
@@ -321,7 +321,7 @@ int fn_80245360(int *a, struct Menu *b)
     }
     if (a[2] != 0)
     {
-      fn_802C5310(a[2], 0, temp_f29 + (temp_f30 + (temp_f28 * fn_8023293C(a[4], &lbl_8055BE50, lbl_80563834))), temp_f23 + temp_f31, lbl_80563830);
+      gxDrawPictureAt(a[2], 0, temp_f29 + (temp_f30 + (temp_f28 * fn_8023293C(a[4], &lbl_8055BE50, lbl_80563834))), temp_f23 + temp_f31, lbl_80563830);
       fn_802337A0(a[4], -1, 9, &lbl_8055BE58, &lbl_8055BE50, temp_f30, temp_f31, lbl_80563830, lbl_80563844, lbl_80563834);
     }
     else

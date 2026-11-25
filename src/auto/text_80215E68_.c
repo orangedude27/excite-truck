@@ -198,7 +198,7 @@ extern s32 fn_8021832C();
 extern void fn_80230B5C(void *);
 extern void DrawList_loadMatrix(void *);
 extern void fn_802C974C(f32, f32, f32);
-extern void fn_802C5310(s32, s32, f32, f32, f32);
+extern void gxDrawPictureAt(s32, s32, f32, f32, f32);
 extern u32 lbl_8055EF80;
 extern u32 lbl_8055EF84;
 extern f32 lbl_80563458;
@@ -241,11 +241,11 @@ s32 fn_802160AC(void)
   b = lbl_80563478 - b;
   if (temp_r31 != 0)
   {
-    do { fn_802C5310(temp_r31, 0, a, b, lbl_80563458); } while (0);
+    do { gxDrawPictureAt(temp_r31, 0, a, b, lbl_80563458); } while (0);
   }
   else
   {
-    fn_802C5310(lbl_8055EF7C, 0, *new_var, b, lbl_80563458);
+    gxDrawPictureAt(lbl_8055EF7C, 0, *new_var, b, lbl_80563458);
   }
   done:
   ;
