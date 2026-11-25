@@ -1844,10 +1844,10 @@ extern unsigned char gAlphaCompareRef;
 /* Configure alpha compare and Z mode for a transparent (mode 0) or opaque (mode 1) drawing pass. */
 /* Set alpha compare and Z-write state for transparent (mode 0) or opaque (mode 1) passes. */ /* Configure alpha compare and Z-write state for a transparent (mode 0) or opaque (mode 1) drawing pass: the reference byte is the cached alpha-ref used by GXSetAlphaCompare. */ void fn_802D0E48(int mode) {
     if (mode == 0) {
-        GXSetAlphaCompare(3, alphaCompareRef, 1, 0, 0);
+        GXSetAlphaCompare(3, gAlphaCompareRef, 1, 0, 0);
         GXSetZMode(1, 3, 0);
     } else if (mode == 1) {
-        GXSetAlphaCompare(4, alphaCompareRef, 1, 0, 0);
+        GXSetAlphaCompare(4, gAlphaCompareRef, 1, 0, 0);
         GXSetZMode(1, 3, 1);
     }
 }
