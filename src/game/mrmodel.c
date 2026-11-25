@@ -1608,7 +1608,7 @@ void fn_802C77F0(void *model, f32 *out) {
 
 /* Return the model instance's view tolerance (+0x1C of its group list) - the
  * threshold passed to the visibility/culling test in fn_802C94A0. */
-float fn_802C7808(int instanceId) {
+float getModelInstanceTolerance(int instanceId) {
     return *(float *)((char *)(*(void **)((char *)fn_802C5390(instanceId) + 4)) + 0x1C);
 }
 
