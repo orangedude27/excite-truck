@@ -3515,7 +3515,7 @@ extern int lbl_804C5710_int;
 
 /* Returns 1 while the frame counter is non-negative (sign bit clear), 0 once
    it has been invalidated to -1 (sign bit set). */
-int fn_802D3EBC(void) {
+int isTileCaptureActive(void) {
     return (tileCaptureIndex >> 0x1FU) ^ 1;
 }
 

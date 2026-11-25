@@ -305,7 +305,7 @@ void fn_80176A34(int);
 void fn_8026C014(int);
 void fn_80177AE4(int, int);
 void fn_801777B4(void);
-int fn_802D3EBC(void);
+int isTileCaptureActive(void);
 void fn_80265D84(void);
 void fn_80265D88(void);
 void fn_801B2364(void);
@@ -362,7 +362,7 @@ void fn_80177F40(void) {
     lbl_8055E45F = lbl_8055E45E;
     fn_80177AE4(0, lbl_8055E45C);
     saved = lbl_8055E3BD;
-    active = fn_802D3EBC();
+    active = isTileCaptureActive();
     if (active != 0) lbl_8055E3BD = 1;
     flag = lbl_8055E3BD;
     *(int *)(base + 0x2E0) = 0;

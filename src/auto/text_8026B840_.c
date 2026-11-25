@@ -246,7 +246,7 @@ BOOL fn_8026BFF0(s32 mode) {
 }
 #pragma pop
 
-extern s32 fn_802D3EBC(void);
+extern s32 isTileCaptureActive(void);
 extern s32 __AXGetStackHead_80137CFC(s32);
 extern s32 fn_801298E8(f32 *, s32);
 extern u8 *__AXFXGetLfoSinTable_801297F4(void);
@@ -539,7 +539,7 @@ void fn_8026C014(s32 arg0, void *arg1) {
 
 
 (void)arg1;
-    if (fn_802D3EBC() == 0) {
+    if (isTileCaptureActive() == 0) {
         if (arg0 != 0) {
             var_r3 = __AXGetStackHead_80137CFC(0);
         } else {

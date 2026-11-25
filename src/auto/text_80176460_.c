@@ -743,7 +743,7 @@ void fn_80176A6C(void) {
 
 void *fn_80176A70(void) {
     /* Wait/pump loop during physics init: snapshots generation and start time, then
-       runs fn_80176610 until state==2/cancelled/generation changed/fn_802D3EBC!=0.
+       runs fn_80176610 until state==2/cancelled/generation changed/isTileCaptureActive!=0.
        After >10000ms logs progress via base+0x190/0x1C8; on 16-bit wrap via +0x204.
        Updates smoothed elapsed in lbl_8055E3D0, stores fn_801773E4() at +0xDB0 of
        fn_80179824()'s result, notifies fn_801C6AD0, and returns it. */
@@ -767,7 +767,7 @@ void *fn_80176A70(void) {
 loop:
     fn_80176610();
     if ((s32)fn_80176A1C() == 2 || (u8)lbl_8055E3BD != 0 ||
-        generationSnap != lbl_8055E3C4 || fn_802D3EBC() != 0) {
+        generationSnap != lbl_8055E3C4 || isTileCaptureActive() != 0) {
         goto done;
     }
     KERNEL_WaitMilliseconds(0);
