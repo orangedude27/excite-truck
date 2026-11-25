@@ -117,7 +117,7 @@ int fn_80138C28(MotionPair *motion, float *out_time, float *out_distance) {
 }
 #pragma scheduling on
 float fn_80138DF4(void *arg0) {
-    register MotionPair *m = (MotionPair *)arg0;
+    const void *carg = arg0;
     float spC;
     float sp8;
     float temp_f1;
@@ -128,14 +128,14 @@ float fn_80138DF4(void *arg0) {
     float var_f31;
     float var_f4;
     int state;
-    if (fn_80138BFC(m->target.position - m->self.position) == 0) {
-        float b = m->self.acceleration;
-        float a = m->target.acceleration;
+    if (fn_80138BFC(*(const float *)((const char *)carg + 0xC) - *(const float *)carg) == 0) {
+        float b = *(const float *)((const char *)carg + 8);
+        float a = *(const float *)((const char *)carg + 0x14);
         if (fn_80138BFC(a - b) == 0) {
-            if (fn_80138C28(m, &spC, &sp8) != 0) {
-                float pos14 = m->target.acceleration;
+            if (fn_80138C28(arg0, &spC, &sp8) != 0) {
+                float pos14 = *(const float *)((const char *)carg + 0x14);
                 var_f4 = spC;
-                temp_f1 = (m->target.velocity + (var_f4 * pos14)) - m->self.velocity;
+                temp_f1 = (*(const float *)((const char *)carg + 0x10) + (var_f4 * pos14)) - *(const float *)((const char *)carg + 4);
                 var_f4 = (var_f4 > lbl_805613D0) ? var_f4 : lbl_805613D0;
                 var_f31 = temp_f1 / var_f4;
                 lbl_8055E100 = -5;
@@ -144,16 +144,16 @@ float fn_80138DF4(void *arg0) {
                 lbl_8055E100 = -4;
             }
         } else {
-            temp_f2 = m->target.position - m->self.position;
-            temp_f1_2 = m->target.velocity - m->self.velocity;
+            temp_f2 = *(const float *)((const char *)carg + 0xC) - *(const float *)carg;
+            temp_f1_2 = *(const float *)((const char *)carg + 0x10) - *(const float *)((const char *)carg + 4);
             temp_f3 = temp_f1_2 * temp_f1_2;
             var_f31 = temp_f3 / (lbl_805613C8 * temp_f2);
             if (fn_80138BE4(temp_f1_2, temp_f2) != 0) {
                 var_f31 = -var_f31;
             }
-            temp_f3_2 = m->target.position;
-            temp_f2 = temp_f3_2 - m->self.position;
-            temp_f1_2 = m->target.velocity - m->self.velocity;
+            temp_f3_2 = *(const float *)((const char *)carg + 0xC);
+            temp_f2 = temp_f3_2 - *(const float *)carg;
+            temp_f1_2 = *(const float *)((const char *)carg + 0x10) - *(const float *)((const char *)carg + 4);
             {
                 int result = fn_80138BE4(temp_f1_2, temp_f2);
                 state = -2;
@@ -195,7 +195,9 @@ void fn_80138F38(const void *arg0)
   register float product;
   if ((*((const float *) (((const char *) arg0) + 0x10))) > 0.0f)
   {
-    if (0.0f > (*((const float *) (((const char *) arg0) + 0x14))))
+    float temp;
+    temp = *((const float *) (((const char *) arg0) + 0x14));
+    if (temp < 0.0f)
     {
       if (fn_80138C28((MotionPair *) arg0, &sp8, 0))
       {
