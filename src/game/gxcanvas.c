@@ -27,7 +27,7 @@ extern void fn_8012C4D8(void);
 
 /* One drawing canvas, the object every gxCanvas* routine in this file works
    on.  The one being drawn on is the pointer kept in lbl_8055FC00
-   (fn_802C3034 swaps it); fn_802C2CE8 builds one from scratch. */
+   (gxCanvasSwitch swaps it); fn_802C2CE8 builds one from scratch. */
 typedef struct GxCanvas {
     /* 0x00 pixel format: 5 keeps 4-byte pixels (rowBytes = width * 4),
      * 6 is no format this build draws, every other value 2-byte RGB565
@@ -210,7 +210,7 @@ void fn_802C2FC4(void) {
 }
 
 #define sCurrentCanvas lbl_8055FC00 /* the canvas the gxCanvas* routines draw on */
-s32 fn_802C3034(s32 newCanvas) {
+s32 gxCanvasSwitch(s32 newCanvas) {
     s32 oldCanvas;
 
     // Make newCanvas the current drawing canvas and return the one it replaced.

@@ -587,7 +587,7 @@ extern "C" f32 fn_80235F64(s32, s32);
 extern "C" void gxDrawPicture(s32, s32, f32, f32, f32, f32, f32);
 extern "C" s32 gxGetImageWidth(s32);
 extern "C" s32 gxGetImageHeight(s32);
-extern "C" s32 fn_802C3034(s32);
+extern "C" s32 gxCanvasSwitch(s32);
 extern f32 lbl_805634A8;
 extern f32 lbl_805634E8;
 extern int lbl_8033F6E0[];
@@ -1034,7 +1034,7 @@ extern "C" void *fn_80219568(void *obj, s32 x, s32 y, s32 arg3, s32 arg4, s32 wi
 
 /* Draw this menu text widget (its draw method, vtable slot 0x24 of the widget
  * vtables lbl_8033F768 and lbl_8033FA28): first make arg1 the canvas drawing
- * happens on -- fn_802C3034 swaps it into gxcanvas' current-canvas global
+ * happens on -- gxCanvasSwitch swaps it into gxcanvas' current-canvas global
  * lbl_8055FC00 -- then hand the text drawer fn_8022B91C the widget's +0x250
  * field (an argument the drawer no longer uses), its own offsets +0x244 and
  * +0x248, the string vf32() (vtable 0x88) answers with, and the draw style
@@ -1042,7 +1042,7 @@ extern "C" void *fn_80219568(void *obj, s32 x, s32 y, s32 arg3, s32 arg4, s32 wi
  * stands on and bit 1 the UI mode, which pick the drawer's colour and offset
  * pair. */
 extern "C" void fn_802195DC(void *widget, s32 canvas) {
-    fn_802C3034(canvas);
+    gxCanvasSwitch(canvas);
     VfObj *obj = (VfObj *)widget;
     s32 style = obj->vf31();
     s32 text = obj->vf32();
@@ -1752,7 +1752,7 @@ extern "C" void *fn_8021AC24(void *widget, s32 x, s32 y, s32 imageId, s32 unused
 
 extern "C" void fn_8021ACC0(void *widget, s32 value) {
     /* Stores a value and queries the widget's image/resource handle count. */
-    fn_802C3034(value);
+    gxCanvasSwitch(value);
     gxGetImageFrameCount(*(s32 *)((u8 *)widget + 0x250));
     if (gxGetImageFrameCount(*(s32 *)((u8 *)widget + 0x250)) > 0)
         gxGetImageFrameCount(*(s32 *)((u8 *)widget + 0x250));
@@ -2033,7 +2033,7 @@ extern "C" s32 fn_8021B3A0(void *widget) {
 extern "C" s32 gxCanvasFillRect(s32, s32, s32, s32, s32);
 /* Set the canvas state, then draw the object's stored rectangle. */
 extern "C" void fn_8021B3BC(void *object, s32 canvasState) {
-    fn_802C3034(canvasState);
+    gxCanvasSwitch(canvasState);
     gxCanvasFillRect(*(s32 *)((u8 *)object + 0x244), *(s32 *)((u8 *)object + 0x248), *(s32 *)((u8 *)object + 0x24C), *(s32 *)((u8 *)object + 0x250), *(s32 *)((u8 *)object + 0x254));
 }
 
@@ -2322,7 +2322,7 @@ extern "C" void fn_8021BC20(void *widget, void *unused) {
 #pragma scheduling on
 #pragma pop
 extern "C" void fn_8021BD48(void *widget, s32 textStyle) {
-#define SetTextStyle fn_802C3034
+#define SetTextStyle gxCanvasSwitch
 #define DrawFormattedText fn_801E4BEC
     /* Draws this widget's label/text using its font, position, and string id/data field. */
     SetTextStyle(textStyle);
@@ -2954,7 +2954,7 @@ extern "C" void fn_8021CB4C(void *arg0, s32 arg1) {
     register s32 start;
     First *first;
 
-    fn_802C3034(arg1);
+    gxCanvasSwitch(arg1);
     first = *(First **)((u8 *)arg0 + 0x248);
     first->call();
     result = ((Second *)arg0)->get();
@@ -3292,7 +3292,7 @@ extern "C" void fn_8021D568(void *arg0, s32 arg1) {
        (+0x2BC) matches the expected id (+0x2C0), draw the object's horizontal
        span via gxCanvasFillRect using vf28() as width and global lbl_8055FBC0
        (sbss, purpose unclear). Finally forward to fn_802195DC. */
-    fn_802C3034(arg1);
+    gxCanvasSwitch(arg1);
     s32 *selectionIdPtr = *(s32 **)((u8 *)arg0 + 0x2BC);
     if (selectionIdPtr != 0 && *(s32 *)((u8 *)arg0 + 0x2C0) == *selectionIdPtr) {
         s32 left = *(s32 *)((u8 *)arg0 + 4);
@@ -3783,7 +3783,7 @@ extern "C" void fn_8021E3BC(void *arg0, s32 arg1) {
     if (entries != 0)
         base = *(s32 *)((u8 *)entries + 8);
     ((void (*)(void *, s32))fn_802192A0)(arg0, arg1);
-    fn_802C3034(arg1);
+    gxCanvasSwitch(arg1);
 
     /* Draw visible list items: highlight the selected row and draw each item's label/text with selection/scratch flags. */
     color = lbl_8055FBDC;
@@ -4042,7 +4042,7 @@ extern "C" void fn_8021E8DC(void *widget, s32 drawContext) {
             rightBound * 2 - 3 - *(s32 *)((u8 *)widget + 0x10));
     }
 
-    fn_802C3034(drawContext);
+    gxCanvasSwitch(drawContext);
     ((void (*)(void *, s32))fn_802192A0)(widget, drawContext);
     x = *(s32 *)((u8 *)widget + 4);
     y = *(s32 *)((u8 *)widget + 8);
@@ -4117,7 +4117,7 @@ extern "C" s32 lbl_8055FBF8;
 extern "C" void fn_8021EC1C(void* entity, s32 canvas) {
     s32 outX, outY;
     s32 posY, posX, posX_2, posY_2, posX_3, posY_3, drawX, drawY;
-    fn_802C3034(canvas);
+    gxCanvasSwitch(canvas);
     posX = *(s32*)((u8*)entity+4);
     posY = *(s32*)((u8*)entity+8);
     gxCanvasSetClipRect(canvas, posX, posY, posX + ((Vf78*)entity)->get(), *(s32*)((u8*)entity+0x10));
@@ -4649,7 +4649,7 @@ extern "C" void fn_8021FC40(void *arg0, s32 arg1) {
     s32 var_r28;
     f32 stepf;
 
-    fn_802C3034(arg1);
+    gxCanvasSwitch(arg1);
     ((void (*)(void *, s32))fn_802192A0)(arg0, arg1);
 
     stepf = (f32)(((VfObj *)arg0)->vf28() - 11);
@@ -5099,7 +5099,7 @@ extern "C" void fn_80220B5C(void *widget, s32 canvas) {
     s32 x;
     s32 fillWidth;
     s32 width;
-    fn_802C3034(canvas);
+    gxCanvasSwitch(canvas);
     s32 trackSpan = ((VfObj *)widget)->vf28() - 11;
     valuePtr = *(s32 **)((u8 *)widget + 0x244);
     selectionPtr = *(s32 **)((u8 *)widget + 0x25C);
@@ -5160,7 +5160,7 @@ extern "C" void fn_802C40B8(s32, s32, s32);
 /* Sets the active text/canvas style, then blits this widget's stored picture
  * rectangle (at +0x244) onto the canvas at the widget's (x,y) position. */
 extern "C" void fn_80220E08(void *widget, s32 canvasState) {
-#define SetTextStyle fn_802C3034
+#define SetTextStyle gxCanvasSwitch
 #define DrawPicture  fn_802C40B8
     SetTextStyle(canvasState);
     DrawPicture(*(s32 *)((u8 *)widget + 0x244), *(s32 *)((u8 *)widget + 4), *(s32 *)((u8 *)widget + 8));
@@ -5377,7 +5377,7 @@ extern "C" void fn_80221544(void *arg0, s32 arg1) {
     Object *self = (Object *)arg0;
     Child *child;
     s32 childBase;
-    fn_802C3034(arg1);
+    gxCanvasSwitch(arg1);
     if (self->flag == 0) {
         fn_80228E80(arg1, self->texture, self->x, self->y,
                     self->end - self->y, 0);
@@ -5621,7 +5621,7 @@ extern "C" void fn_80221F9C(void *arg0, s32 arg1) {
     s32 temp_r18;
     s32 var_r18;
     s32 *items;
-    fn_802C3034(arg1);
+    gxCanvasSwitch(arg1);
     temp_r18 = *(s32 *)((u8 *)arg0 + 4);
     temp_r20 = *(s32 *)((u8 *)arg0 + 8);
     var_r18 = ((VfObj *)arg0)->vf28();
@@ -9024,7 +9024,7 @@ extern "C" void fn_80228DC4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s3
     s32 midX;
     u32 halfRounded;
 
-    fn_802C3034(arg0);
+    gxCanvasSwitch(arg0);
     fn_80218E98((void *)arg0, &savedRect);
     gxGetImageWidth(arg1);
     imageHeight = gxGetImageHeight(arg1);
@@ -9048,7 +9048,7 @@ extern "C" void fn_80228E80(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s3
     s32 midY;
     u32 halfRounded;
 
-    fn_802C3034(arg0);
+    gxCanvasSwitch(arg0);
     fn_80218E98((void *)arg0, &savedRect);
     imageWidth = gxGetImageWidth(arg1);
     imageHeight = gxGetImageHeight(arg1);

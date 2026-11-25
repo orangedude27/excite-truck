@@ -205,7 +205,7 @@ void fn_802DAE64(int xStart, int yStart, char *str)
 #pragma pop
 
 extern void *GX_GetXFB(int *, int *);
-extern void fn_802C3034(void *, int, int, int);
+extern void gxCanvasSwitch(void *, int, int, int);
 extern void GX_ShowXFB(void);
 extern char *strcpy(char *, const char *);
 void fn_802DB03C(char *arg0) {
@@ -256,7 +256,7 @@ void fn_802DB03C(char *arg0) {
     local.config.size = local.outputA * 2;
     local.config.width2 = local.outputA;
     local.config.height2 = local.outputB;
-    fn_802C3034(&local.config, 0x80, local.outputA, local.outputB);
+    gxCanvasSwitch(&local.config, 0x80, local.outputA, local.outputB);
 
     strcpy(local.text, arg0);
     p = local.text;
@@ -309,7 +309,7 @@ void fn_802DB168(void) {
     canvas.size = fbWidth * 2;
     canvas.width2 = fbWidth;
     canvas.height2 = fbHeight;
-    ((void (*)(void *))fn_802C3034)(&canvas);
+    ((void (*)(void *))gxCanvasSwitch)(&canvas);
     fn_802DAE64(-0x1C2, 0x17C, lbl_8055D140);
     GX_ShowXFB();
     fn_802CED50(0x1C2, 0x17C, 0x78, 0x1E);

@@ -122,7 +122,7 @@ s32 fn_80215F5C(s32 value, s32 count) {
     return value;
 }
 
-extern s32 fn_802C3034(s32);
+extern s32 gxCanvasSwitch(s32);
 extern s32 gxCanvasFillRect(s32, s32, s32, s32, s32);
 extern s32 lbl_8055FBDC;
 extern s32 fn_802E4A10(void);
@@ -188,7 +188,7 @@ void fn_8021605C(void *rect, s32 canvasState) {
     s32 top;
     s32 left;
 
-    fn_802C3034(canvasState);
+    gxCanvasSwitch(canvasState);
     top = *(s32 *)((u8 *)rect + 8);
     left = *(s32 *)((u8 *)rect + 4);
     gxCanvasFillRect(left, top, left + *(s32 *)((u8 *)rect + 0xC), top + *(s32 *)((u8 *)rect + 0x10), lbl_8055FBDC);
