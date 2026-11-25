@@ -984,7 +984,7 @@ void *fn_802E6058(void *sample) {
 
 /* SND_Start: start this SPU voice from the beginning by clearing its ADPCM flag
  * (+0x25) and marking it as wanting to play (+0x23). */
-void fn_802E61A8(void *channel) {
+void spuChannelStart(void *channel) {
     ((struct SpuChannel *)channel)->adpcm = 0;
     ((struct SpuChannel *)channel)->wantPlay = 1;
 }

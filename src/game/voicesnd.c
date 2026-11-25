@@ -6,7 +6,7 @@ extern void *fn_802E6058(int);
 extern void fn_802E6ABC(int);
 extern void fn_80207938(void);
 extern void spuChannelStartLoop(void *);
-extern void fn_802E61A8(void *);
+extern void spuChannelStart(void *);
 extern const char lbl_8033C3D8[], lbl_8033C3E4[], lbl_8033C4A0[], lbl_8033C4C8[];
 extern char lbl_8033C3F4[];
 __declspec(section ".sdata") extern const char lbl_8055B5B8[], lbl_8055B5C0[];
@@ -722,7 +722,7 @@ typedef struct VoiceSnd {
 #define SND_SetSurroundPan(v, x) spuSetVoiceSurroundPan((v), (x))
 #define SND_SetRate(v, x) spuSetVoiceRate((v), (x))
 #define SND_SetAuxFlags(v, x) spuSetVoiceAuxFlags((v), (x))
-#define SND_Start(v) fn_802E61A8(v)      // play once, from the start
+#define SND_Start(v) spuChannelStart(v)      // play once, from the start
 #define SND_StartLoop(v) spuChannelStartLoop(v)  // start looping unless already playing
 #define SND_Name(res) fn_802E6ABC((int)(res))
 #define SND_ReportGrabFailed() fn_80207938()  // "sound: %08d: grab failed (%s)"
@@ -946,7 +946,7 @@ extern void *fn_802E6058(int);
 extern void fn_802E6ABC(int);
 extern void fn_80207938(void);
 extern void spuChannelStartLoop(void *);
-extern void fn_802E61A8(void *);
+extern void spuChannelStart(void *);
 #pragma push
 #pragma processor 750
 /* Unmute a voice sound (vtable slot +0x2C of lbl_8033C3F4): clear the mute flag
