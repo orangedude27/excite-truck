@@ -1514,6 +1514,7 @@ extern "C" s32 fn_8019CCCC(void* arg0, Vec* arg1, void* arg2, f32 farg0) {
     bool b = fn_8019AA34(arg0, arg1, arg2, &neg, 0, 0, farg0, radius) != 0;
     return (a | b) != 0;
 }
+#pragma pop
 
 #pragma scheduling on
 extern void fn_8019CCCC(void*, f32, s32);
