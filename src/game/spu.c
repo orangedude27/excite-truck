@@ -9,7 +9,7 @@ extern float lbl_8056512C;
 extern float lbl_80565130;
 extern float lbl_80565134;
 extern void fn_802E5264(int, int);
-extern float lbl_804FC680[];
+extern float gRemoteSpeakerVolumes[];
 extern int lbl_8055D1EC;
 extern int lbl_8055D1F0;
 extern void fn_802E7770(void);
@@ -486,7 +486,7 @@ void Spu_Init(void) {
     /* the alarm that pumps stream data to the Wii remote speakers */
     OSSetPeriodicAlarm(lbl_804FC690, now, (unsigned int)(((*(unsigned int *)0x800000F8 >> 2) / 125000 * 0x65B9AB) / 8000), (void *)fn_802E52EC);
     one = lbl_80565128;
-    vec = (float *)lbl_804FC680;
+    vec = (float *)gRemoteSpeakerVolumes;
     vec[0] = one;
     vec[1] = one;
     vec[2] = one;
@@ -1052,7 +1052,7 @@ void fn_802E623C(void) {}
 
 /* Set the volume of one Wii Remote speaker channel (spuSetRemoteSpeakerVolume). */
 void SpuSpeaker_SetVolume(int channel, float volume) {
-    lbl_804FC680[channel] = volume;
+    gRemoteSpeakerVolumes[channel] = volume;
 }
 
 /* Set the sound output mode (0 = mono, 2 = surround). */
@@ -1300,12 +1300,12 @@ void fn_802E6264(void) {
                         else fn_80033C8C(*(void **)(v + 4), 0);
                         memset(&sp60[0], 0, 0x20);
                         if (r16 & 1) {
-                            short t = ((unsigned short (*)(float))fn_802E5168)(lbl_804FC680[0] * VF(8));
+                            short t = ((unsigned short (*)(float))fn_802E5168)(gRemoteSpeakerVolumes[0] * VF(8));
                             sp60[0] = t;
                             sp60[2] = t;
                         }
                         if (r16 & 2) {
-                            short t = ((unsigned short (*)(float))fn_802E5168)(lbl_804FC680[1] * VF(8));
+                            short t = ((unsigned short (*)(float))fn_802E5168)(gRemoteSpeakerVolumes[1] * VF(8));
                             sp60[4] = t;
                             sp60[6] = t;
                         }
