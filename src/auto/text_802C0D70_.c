@@ -57,7 +57,7 @@ void fn_802C0E68(int resourceId) {
     extern int fn_801E2CCC(char *, void **);
     extern void PSVECNormalize(float *, float *);
     extern void fn_802C0D70(float *);
-    extern void fn_802C9A1C(float *);
+    extern void DrawList_setGlobalDirection(float *);
     void *sp8;
     float vector[3];
 
@@ -86,7 +86,7 @@ void fn_802C0E68(int resourceId) {
         vector[2] = lbl_804C0800[2] * lbl_80564E44;
         PSVECNormalize(vector, vector);
         fn_802C0D70(vector);
-        fn_802C9A1C(vector);
+        DrawList_setGlobalDirection(vector);
     }
 }
 #pragma scheduling on
@@ -150,7 +150,7 @@ extern float lbl_80564E44;
 extern int fn_801E2CCC(char *, void **);
 extern void PSVECNormalize(float *, float *);
 extern void fn_802C0D70(float *);
-extern void fn_802C9A1C(float *);
+extern void DrawList_setGlobalDirection(float *);
 extern void fn_802C0F4C(void);
 extern void fn_802C6B44(void);
 extern float lbl_80564E48;

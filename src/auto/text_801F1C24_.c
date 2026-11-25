@@ -1179,7 +1179,7 @@ void fn_801F3514(void *arg0) {
     extern int *fn_801E1F44(void);
     extern int setLightAmbientColor();
     extern int fn_802923C4();
-    extern int fn_802C9A1C();
+    extern int DrawList_setGlobalDirection();
     extern void fn_802E30C8(const char *, ...);
     extern double fn_8002F234(float);
     extern double atan(double);
@@ -1223,7 +1223,7 @@ void fn_801F3514(void *arg0) {
     }
     t = lbl_80562F44 + -v[1];
     fn_802E30C8(lbl_8033ABF0, lbl_80562F64 + (lbl_80562F8C * -v[0]) / t, lbl_80562F64 + (lbl_80562F8C * -v[2]) / t);
-    fn_802C9A1C(v);
+    DrawList_setGlobalDirection(v);
 }
 #pragma pop
 /* Advance the sun/flare position by the velocity vector stored at +4 of the object (tail-call into fn_8029231C). */

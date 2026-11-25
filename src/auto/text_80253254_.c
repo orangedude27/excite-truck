@@ -87,7 +87,7 @@ void fn_80253254(void) {}
 #pragma scheduling on
 void fn_80253258(void) {
     extern void PSVECNormalize(float *, float *);
-    extern void fn_802C9A1C(float *);
+    extern void DrawList_setGlobalDirection(float *);
     float v[6];
     float scale;
     v[0] = 0.0f;
@@ -98,7 +98,7 @@ void fn_80253258(void) {
     v[4] = v[1] * scale;
     v[5] = v[2] * scale;
     PSVECNormalize(&v[3], &v[3]);
-    fn_802C9A1C(&v[3]);
+    DrawList_setGlobalDirection(&v[3]);
 }
 void fn_802532BC(void *arg0) {
     #pragma scheduling invalid_target
@@ -1788,7 +1788,7 @@ void fn_802566A4(void *arg0) {
     extern void *fn_802C86DC(void);
     extern void PSVECCrossProduct(float *, float *, float *);
     extern void PSVECNormalize(float *, float *);
-    extern void fn_802C9A1C(float *);
+    extern void DrawList_setGlobalDirection(float *);
     extern int fn_802C9C8C(int);
     extern void fn_802C9CE0(void);
     extern unsigned int lbl_802FA5B8[9];
@@ -1889,7 +1889,7 @@ void fn_802566A4(void *arg0) {
                           input[2] * frame.basis.value[8];
             }
         }
-        fn_802C9A1C(out);
+        DrawList_setGlobalDirection(out);
         if (fn_802C9C8C(0x14000000) != 0) {
             unsigned char *flag = *(unsigned char **)((char *)ctx + 8);
             if (*flag != 0) {
