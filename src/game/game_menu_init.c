@@ -206,9 +206,8 @@ void fn_800049C0(void) DECOMP_DONT_INLINE {
     }
 }
 #pragma scheduling on
-/* Handle one init-table entry: when it is the special "winky" id (lbl_8055890C),
- * run the language-dependent init fn_80130390. */
-/* Handle one init-table entry: when it matches the special winky id, run the per-language init. */ void fn_80004AB8(u32 initId) DECOMP_DONT_INLINE {
+/* Handle one init-table entry: when it matches the special winky id, run the per-language init. */
+void fn_80004AB8(u32 initId) DECOMP_DONT_INLINE {
     if (initId == lbl_8055890C) {
         fn_80130390();
     }
