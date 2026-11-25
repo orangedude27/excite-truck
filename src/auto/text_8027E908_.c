@@ -508,7 +508,6 @@ extern "C" void fn_8027EEE4(int arg0) {
 #pragma scheduling reset
 #pragma pop
 
-#pragma dont_inline off
 extern "C" void fn_8027F09C(int arg0) {
 #pragma use_lmw_stmw off
     extern int fn_801345D8(char *, int, const char *, const char *, int);
