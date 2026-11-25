@@ -437,9 +437,9 @@ extern void PSQUATMultiply(void *, unsigned int, void *);
 extern void MRModelSetTransform(unsigned int);
 extern void DrawList_setupMode2(void);
 #pragma scheduling invalid_target
-void DrawList_distanceToCamera(unsigned int quat) {
-    /* Tail-call PSQUATMultiply: write quat (a raw bit pointer) multiplied by the cached quaternion at lbl_804C1410 into lbl_804C1410+0x24. */
-    PSQUATMultiply((void *)&lbl_804C1410[9], quat, lbl_804C1410);
+/* Return the distance from the camera position (the view-matrix translation at lbl_804C1410+0x24) to the packed point passed in `point`. */
+void DrawList_distanceToCamera(unsigned int point) {
+    PSQUATMultiply((void *)&lbl_804C1410[9], point, lbl_804C1410);
 }
 
 extern void PSVECSquareDistance(void *, unsigned int, void *);
