@@ -1097,58 +1097,58 @@ extern f32 lbl_80560368, lbl_80560384, lbl_805603CC, lbl_805603D0;
 extern char lbl_80558BC4;
 #pragma dont_inline on
 #pragma use_lmw_stmw off
-void fn_800154B8(void)
+/* Draw the race standings list: show a two-row window of places around the player's current place, then highlight the player's own row at the split. */ void fn_800154B8(void)
 {
-  s32 current;
-  s32 *base;
-  register s32 first;
-  register s32 left;
-  register s32 right;
-  register s32 start;
-  register s32 i;
-  register s32 limit;
-  register f32 y;
-  register f32 step;
-  current = fn_801EA994();
-  base = *((s32 **) (((char *) lbl_8055D350) + 0x30));
-  left = 2;
-  right = 2;
-  first = base[1];
-  if (first <= 2)
+  s32 racerCount;
+  s32 *standings;
+  register s32 playerPlace;
+  register s32 rowsBefore;
+  register s32 rowsAfter;
+  register s32 firstPlace;
+  register s32 place;
+  register s32 splitPlace;
+  register f32 screenY;
+  register f32 rowStep;
+  racerCount = fn_801EA994();
+  standings = *((s32 **) (((char *) lbl_8055D350) + 0x30));
+  rowsBefore = 2;
+  rowsAfter = 2;
+  playerPlace = standings[1];
+  if (playerPlace <= 2)
   {
-    left = first - 1;
-    right = 2 - left;
-    right = (right & 0xFFFFFFFFu) + 2;
+    rowsBefore = playerPlace - 1;
+    rowsAfter = 2 - rowsBefore;
+    rowsAfter = (rowsAfter & 0xFFFFFFFFu) + 2;
   }
   else
-    if (first > (current - 2))
+    if (playerPlace > (racerCount - 2))
   {
-    left = first - (current - 2);
-    left = left + (((((((((2 & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) & 0xFFFFu);
-    right = current - first;
+    rowsBefore = playerPlace - (racerCount - 2);
+    rowsBefore = rowsBefore + (((((((((2 & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) & 0xFFFFu);
+    rowsAfter = racerCount - playerPlace;
   }
-  y = lbl_805603CC;
-  start = first - (left & (~(left >> 31)));
-  right = (right & (~(right >> 31))) & 0xFFFFFFFFu;
-  i = 1;
-  if (start >= 1)
+  screenY = lbl_805603CC;
+  firstPlace = playerPlace - (rowsBefore & (~(rowsBefore >> 31)));
+  rowsAfter = (rowsAfter & (~(rowsAfter >> 31))) & 0xFFFFFFFFu;
+  place = 1;
+  if (firstPlace >= 1)
   {
-    i = start;
+    place = firstPlace;
   }
-  step = lbl_80560384;
-  for (; i < (limit = *((s32 *) ((*((u8 **) (((u8 *) lbl_8055D350) + 0x30))) + 4))); ++i)
+  rowStep = lbl_80560384;
+  for (; place < (splitPlace = *((s32 *) ((*((u8 **) (((u8 *) lbl_8055D350) + 0x30))) + 4))); ++place)
   {
-    fn_8000FF88(-1, 9, &lbl_80558BC4, i, fn_801EA9B0(i - 1) + 0x48, lbl_80560368, lbl_805603D0, y);
-    y -= step;
+    fn_8000FF88(-1, 9, &lbl_80558BC4, place, fn_801EA9B0(place - 1) + 0x48, lbl_80560368, lbl_805603D0, screenY);
+    screenY -= rowStep;
   }
 
-  fn_8000FF88(-0x100, 9, &lbl_80558BC4, limit, (*((s32 *) (((u8 *) lbl_8055D350) + 0x28))) + 0x48, lbl_80560368, lbl_805603D0, y);
-  step = lbl_80560384;
-  y -= step;
-  for (i = (*((s32 *) ((*((u8 **) (((u8 *) lbl_8055D350) + 0x30))) + 4))) + 1; (i <= ((*((s32 *) ((*((u8 **) (((u8 *) lbl_8055D350) + 0x30))) + 4))) + right)) && (i <= fn_801EA994()); ++i)
+  fn_8000FF88(-0x100, 9, &lbl_80558BC4, splitPlace, (*((s32 *) (((u8 *) lbl_8055D350) + 0x28))) + 0x48, lbl_80560368, lbl_805603D0, screenY);
+  rowStep = lbl_80560384;
+  screenY -= rowStep;
+  for (place = (*((s32 *) ((*((u8 **) (((u8 *) lbl_8055D350) + 0x30))) + 4))) + 1; (place <= ((*((s32 *) ((*((u8 **) (((u8 *) lbl_8055D350) + 0x30))) + 4))) + rowsAfter)) && (place <= fn_801EA994()); ++place)
   {
-    fn_8000FF88(-1, 9, &lbl_80558BC4, i, fn_801EA9B0(i - 1) + 0x48, lbl_80560368, lbl_805603D0, y);
-    y -= step;
+    fn_8000FF88(-1, 9, &lbl_80558BC4, place, fn_801EA9B0(place - 1) + 0x48, lbl_80560368, lbl_805603D0, screenY);
+    screenY -= rowStep;
   }
 
 }
