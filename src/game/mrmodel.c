@@ -700,7 +700,8 @@ void ModelDisplayNode_PoolInit(void *entry) {
     *(s16 *)((char *)entry + 4) = 0;
 }
 
-/* Pool element init callback: clear the first 32-bit word of an entry. */
+/* Pool init callback: zero the ref-count (first word) of each 0x10-byte
+ * MRModel display entry when the sublist is constructed. */
 void MRModel_InitDisplayEntryRefCount(s32 *entry) {
     *entry = 0;
 }
