@@ -345,14 +345,12 @@ extern int lbl_8055FFA8;             /* channels whose voices used a speaker lat
 #pragma pop
 int SpuResetCallback(int request) {
 #define KERNEL_RESET_NOTIFY 1
-#define spuResetTeardown TRKReadBuffer_ui32
-    /* Reset callback registered under "Spu" in Spu_Init: when the reset is
-     * actually on, tear down the TRK/AX debugger state; never cancels a reset. */
+    /* Reset callback registered as "Spu" in Spu_Init: on a confirmed reset,
+     * run the TRK/AX debugger and audio teardown; never cancels a reset. */
     if (request == KERNEL_RESET_NOTIFY) {
-        spuResetTeardown();
+        TRKReadBuffer_ui32();
     }
     return 0;
-#undef spuResetTeardown
 #undef KERNEL_RESET_NOTIFY
 }
 
