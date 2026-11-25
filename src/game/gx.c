@@ -1129,9 +1129,9 @@ extern unsigned long lbl_8055FDAC;
 extern void fn_802D0C98(void);
 extern void fn_802D0BD8(void);
 #pragma peephole off
-/* Reset the per-frame GX state: clear the draw-sync frame counter, perform the
-   display copy / frame swap and viewport setup, then clear the dynamic-data ring
-   index and the FIFO threshold-exceeded flag. */
+/* Reset per-frame GX state at the end of a home-menu frame: clear the draw-sync
+ * frame counter, run the display-copy/frame-swap and viewport setup, then clear
+ * the dynamic-data ring index and the FIFO threshold-exceeded flag. */
 void HomeMenu_endFrame(void) {
 #define sFrameCounter  lbl_8055FD44
 #define sDynDataIndex  lbl_8055FDAC
