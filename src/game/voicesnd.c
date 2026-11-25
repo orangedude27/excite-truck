@@ -277,7 +277,7 @@ void fn_8020AA0C(void *self) {
 
 /* Return a voice sound's effective state: a playing sound (1) whose mute flag
  * is set is reported as muted (2); otherwise its raw state is returned. */
-int fn_8020AA98(void *arg0) {
+int VoiceSnd_getState(void *arg0) {
     volatile int *state = (volatile int *)((char *)arg0 + 4);
     if (*state == 1 && *((unsigned char *)arg0 + 0x3E) != 0) return 2;
     return *state;
@@ -677,7 +677,7 @@ extern "C" void fn_8020B348(void *self) {
 //     +0x18 VoiceSnd_playOnce  play once
 //     +0x1C VoiceSnd_playLooping  play, looping
 //     +0x20 fn_8020AA0C  release the voices
-//     +0x24 fn_8020AA98  state
+//     +0x24 VoiceSnd_getState  state
 //     +0x28 fn_8020B908  mute
 //     +0x2C VoiceSnd_unmute  unmute
 // fn_8020AC2C pushes the mix values below into the voices every frame.
