@@ -73,7 +73,7 @@ extern void GXSetViewportJitter(unsigned short, float, float, float, float, floa
 extern void GXSetViewport(unsigned short, float, float, float, float, float, float);
 extern void GXSetScissor(unsigned int, unsigned int, unsigned int, unsigned int);
 extern void fn_802D14D8(void);
-extern unsigned char lbl_8055FD91;
+extern unsigned char gAlphaCompareAppliedRef;
 extern unsigned char sGxResetRegisterPending;
 extern char sGxResetCallbackName;
   extern int gxBlankOnShutdown(int);
@@ -603,7 +603,7 @@ void fn_802CF5D0(void) {
 #pragma pop
 
 #define alphaCompareRef gAlphaCompareRef        /* cached alpha-reference byte (GXSetAlphaCompare ref0) */
-#define alphaCompareAppliedRef lbl_8055FD91 /* last alpha reference programmed into the GX registers */
+#define alphaCompareAppliedRef gAlphaCompareAppliedRef /* last alpha reference programmed into the GX registers */
 
 #pragma scheduling invalid_target
 #pragma dont_inline on
@@ -1976,9 +1976,9 @@ void fn_802D0EEC(void) {
         lbl_8055FD74 = (unsigned int)lbl_8055FD1C;
     }
 
-    if (gAlphaCompareRef != lbl_8055FD91) {
+    if (gAlphaCompareRef != gAlphaCompareAppliedRef) {
         GXSetAlphaCompare(4, gAlphaCompareRef, 1, 0, 0);
-        lbl_8055FD91 = gAlphaCompareRef;
+        gAlphaCompareAppliedRef = gAlphaCompareRef;
     }
 
     if (lbl_8055FD86 != lbl_8055FD88) {
@@ -3568,7 +3568,7 @@ extern unsigned char lbl_804C5710[4];
 extern int lbl_8055FD4C;
 extern unsigned char lbl_8055FD50;
 extern unsigned char gRenderRequest[12];
-extern unsigned char lbl_8055FD91;
+extern unsigned char gAlphaCompareAppliedRef;
 extern unsigned char sGxResetRegisterPending;
 extern char sGxResetCallbackName;
       extern void KERNEL_AddResetCallback(void (*)(void), void *);
