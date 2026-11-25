@@ -270,7 +270,7 @@ void *fn_802D3138(void);
 #pragma scheduling invalid_target
 /* Reset TEV swap modes for stages 0-1 to the identity (swap 0) selectors;
  * the two-stage counterpart of GXResetTevSwapModes0To4. */
-void fn_802DF46C(void) {
+/* Reset TEV swap modes for stages 0-1 to the identity (swap 0) selectors; the two-stage counterpart of GXResetTevSwapModes0To4. */ void fn_802DF46C(void) {
     GXSetTevSwapMode(GX_TEVSTAGE0, GX_TEV_SWAP0, GX_TEV_SWAP0);
     GXSetTevSwapMode(GX_TEVSTAGE1, GX_TEV_SWAP0, GX_TEV_SWAP0);
 }
