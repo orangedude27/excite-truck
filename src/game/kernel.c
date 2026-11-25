@@ -635,7 +635,10 @@ struct StartupCalendar {
  * area with 0x53FFEEDD and fn_802E2A1C, registered under the name "check_stack",
  * reports "STACK OVERRUN!" once that marker is gone.  Returning 1 is main()'s cue to
  * run the matching shutdown (KERNEL_Shutdown) and panic. */
-/* Brings up the OS and all engine subsystems in order, logs the console's start date/time, then arms the stack-guard check and returns 1 so main() runs the matching shutdown. */ int KERNEL_Init(void) {
+int KERNEL_Init(void) {
+    /* Bring up the OS and all engine subsystems in order, log the console's
+     * start date/time, arm the stack guard, and return 1 so main() runs the
+     * matching shutdown. */
     struct StartupCalendar startTime;
     char * const base = lbl_8034CCE0;
     OSInit();
