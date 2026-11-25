@@ -21,7 +21,7 @@ extern void spuSetVoiceVolume(float);
 extern float fn_80209028(void), fn_802091CC(void);
 extern int fn_802090CC(void), KERNEL_GetTimeMs(void);
 extern void fn_802E625C(int);
-extern void fn_802E61EC(void *, float), fn_802E620C(void *, float), fn_802E6234(void *, float), fn_802E6238(void *, float), fn_802E623C(void *, float), spuSetVoiceRate(void *, float), spuSetVoiceAuxFlags(void *, int);
+extern void spuSetVoicePan(void *, float), fn_802E620C(void *, float), fn_802E6234(void *, float), fn_802E6238(void *, float), fn_802E623C(void *, float), spuSetVoiceRate(void *, float), spuSetVoiceAuxFlags(void *, int);
 __declspec(section ".data") extern float lbl_80558DC4;
 extern float lbl_8055B590, lbl_8055B594, lbl_805632B8;
 extern int lbl_8055EDF8;
@@ -422,15 +422,15 @@ extern "C" void fn_8020AC2C(void *arg0) {
                     if (high < x) x = high;
                     x = x > low ? x : low;
                     ((void (*)(void *, float))spuSetVoiceVolume)(handle, volume * x);
-                    fn_802E61EC((*(void **)((char *)(p) + (8))), lbl_805632B8);
+                    spuSetVoicePan((*(void **)((char *)(p) + (8))), lbl_805632B8);
                     x = high + (*(float *)((char *)(p) + (0x20)));
                     if (high < x) x = high;
                     x = x > low ? x : low;
                     ((void (*)(void *, float))spuSetVoiceVolume)((*(void **)((char *)(p) + (0xc))), volume * x);
-                    fn_802E61EC((*(void **)((char *)(p) + (0xc))), lbl_805632B4);
+                    spuSetVoicePan((*(void **)((char *)(p) + (0xc))), lbl_805632B4);
                 } else {
                     ((void (*)(void *, float))spuSetVoiceVolume)(handle, volume);
-                    fn_802E61EC((*(void **)((char *)(p) + (8))), (*(float *)((char *)(p) + (0x20))));
+                    spuSetVoicePan((*(void **)((char *)(p) + (8))), (*(float *)((char *)(p) + (0x20))));
                 }
                 for (j = 0; j < 2; j++) {
                     void *voice;
@@ -718,7 +718,7 @@ typedef struct VoiceSnd {
 #define SND_GrabVoice(res) fn_802E6058((int)(res))
 #define SND_ReleaseVoice(v) ((void (*)(void *))fn_802E6138)((v))
 #define SND_SetVolume(v, x) ((void (*)(void *, float))spuSetVoiceVolume)((v), (x))
-#define SND_SetPan(v, x) fn_802E61EC((v), (x))
+#define SND_SetPan(v, x) spuSetVoicePan((v), (x))
 #define SND_SetSurroundPan(v, x) fn_802E620C((v), (x))
 #define SND_SetRate(v, x) spuSetVoiceRate((v), (x))
 #define SND_SetAuxFlags(v, x) spuSetVoiceAuxFlags((v), (x))

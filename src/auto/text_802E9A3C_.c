@@ -1048,7 +1048,7 @@ void fn_802EBE2C(void) {
     extern void *fn_8012850C(int, void *);
     extern int fn_802E5DD8();
     extern int fn_802E6058();
-    extern void fn_802E61EC(int, float);
+    extern void spuSetVoicePan(int, float);
     extern void fn_802E61BC(int);
     extern void OSInitMutex(void *);
     extern void InitSDFileSystemHandle(void);
@@ -1080,7 +1080,7 @@ void fn_802EBE2C(void) {
         ((volatile int *)&lbl_80560088)[i] = fn_802E5DD8(&lbl_8055D2E8, 0x7FF8, 0, fn_802EB7D4, i);
         ((volatile int *)&lbl_80560090)[i] = fn_802E6058();
         if (i == 0) f = lbl_805651CC; else f = lbl_805651C0;
-        fn_802E61EC(((volatile int *)&lbl_80560090)[i], f);
+        spuSetVoicePan(((volatile int *)&lbl_80560090)[i], f);
         i++;
         off += 4;
     } while (i < 2);

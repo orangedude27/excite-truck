@@ -1015,7 +1015,7 @@ void fn_802E61D8(void *channel) {
     ((struct SpuChannel *)voice)->volume = volume;
 }
 
-void fn_802E61EC(void *voice, float pan) {
+void spuSetVoicePan(void *voice, float pan) {
     /* Set a voice's pan, forcing it to center (0.0) when the sound output mode is mono. */
     if (SoundOutputMode != 0) {
         *(float *)((char *)voice + 0xC) = pan;
