@@ -494,7 +494,7 @@ extern "C" void fn_801B0F70(s32 arg0, s32 arg1) {
         virtual void d3();
         virtual void d4();
         virtual void *getState();
-        virtual void *getPayload(void *);
+        virtual void *getMetadata();
     };
     struct State {
         void *head;
@@ -505,16 +505,13 @@ extern "C" void fn_801B0F70(s32 arg0, s32 arg1) {
         u8 data[0x40];
         s16 marker;
     };
-    s32 failed;
-    s32 isResource;
-    void *result;
-    s32 itemAddr;
+
     State state;
     u32 scratch[3];
     Request request;
-    itemAddr = (s32)lbl_8055E684 + (arg0 << 7);
-    result = ((Item *)itemAddr)->getPayload((void *)arg1);
-    isResource = *(u32 *)((u8 *)result + 0x10) == 0x50434152;
+    Item *item = (Item *)((u8 *)lbl_8055E684 + (arg0 << 7));
+    void *result = item->getMetadata();
+    bool isResource = *(u32 *)((u8 *)result + 0x10) == 0x50434152;
 
     state.head = 0;
     state.weight = lbl_805625BC;
@@ -522,16 +519,16 @@ extern "C" void fn_801B0F70(s32 arg0, s32 arg1) {
     if (isResource != 0) {
         fn_801B30D0(arg0);
         fn_801B30E0(arg0);
-        fn_801B0BB0(scratch, ((Item *)itemAddr)->getState());
+        fn_801B0BB0(scratch, item->getState());
         state.head = (void *)scratch[0];
         state.weight = *(f32 *)&scratch[1];
         state.limit = scratch[2];
     } else {
-        state.head = *(void **)((u8 *)itemAddr + 0x4C);
-        state.weight = *(f32 *)((u8 *)itemAddr + 0x50);
-        state.limit = *(s32 *)((u8 *)itemAddr + 0x54);
+        state.head = *(void **)((u8 *)item + 0x4C);
+        state.weight = *(f32 *)((u8 *)item + 0x50);
+        state.limit = *(s32 *)((u8 *)item + 0x54);
     }
-    failed = 0;
+    bool failed = false;
     if (isResource == 0) {
         if (fn_801B0E40(arg0, &arg1) != 0) {
             s32 found = 0;
@@ -559,7 +556,7 @@ extern "C" void fn_801B0F70(s32 arg0, s32 arg1) {
     }
     request.marker = -1;
     fn_801B07B4(&request, &state);
-    fn_801B08FC((Item *)itemAddr, &request);
+    fn_801B08FC(item, &request);
 }
 #pragma cplusplus reset
 #pragma pop
