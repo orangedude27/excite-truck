@@ -88,21 +88,22 @@ s32 *GetSecondaryFileSystem(void) {
 
 #pragma cplusplus on
 extern "C" void FileFind_GetSubsystem(void) {
-    /* Resolve the default file-system object via GetDefaultFileSystem(0) and call its
-       vtable method at offset 0x24 (slot 7), with no arguments. */
+    /* Return the file-find subsystem handle of the default file system: resolve it
+     * through GetDefaultFileSystem(0), then dispatch vtable slot 7 (offset 0x24),
+     * whose result is passed straight back in r3. */
     class FileSystem {
     public:
-        virtual void a0();
-        virtual void a1();
-        virtual void a2();
-        virtual void a3();
-        virtual void a4();
-        virtual void a5();
-        virtual void a6();
-        virtual void a7();
+        virtual void reserved0();
+        virtual void reserved1();
+        virtual void reserved2();
+        virtual void reserved3();
+        virtual void reserved4();
+        virtual void reserved5();
+        virtual void reserved6();
+        virtual void getSubsystem();
     };
     FileSystem *fileSystem = (FileSystem *)((s32 (*)(s32))GetDefaultFileSystem)(0);
-    fileSystem->a7();
+    fileSystem->getSubsystem();
 }
 #pragma cplusplus off
 /* No-op flush for the read-only FileCd vtable (slot 0x24); always reports success. */
