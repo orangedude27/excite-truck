@@ -453,11 +453,11 @@ int DrawModelInstance(int);
 void submitModelBatch(void);
 #pragma push
 #pragma scheduling on
-void fn_80202AD4(const float *arg0) {
+/* Sets the stored requested position from the given XYZ vector and marks it pending for the next modpool slot refresh. */ void fn_80202AD4(const float *position) {
     float c, b, a;
-    a = arg0[0];
-    b = arg0[1];
-    c = arg0[2];
+    a = position[0];
+    b = position[1];
+    c = position[2];
     ((float *)lbl_80488964)[0] = a;
     ((float *)lbl_80488964)[1] = b;
     ((float *)lbl_80488964)[2] = c;
