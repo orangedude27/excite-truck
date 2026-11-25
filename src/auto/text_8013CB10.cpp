@@ -2657,57 +2657,57 @@ extern "C" u32 fn_80140F10(void *panel, void *item) {
     s32 partC=*(s32 *)(record+0x18);
     s32 parts=partA+partB;
     parts+=partC;
-    fn_801345D8(row+0x30,0x14,&lbl_80559D6C,parts); /* "%d" */
+    formatInt(row+0x30,0x14,&fmtInt,parts); /* "%d" */
     if(timeBonus!=0) {
         /* animate the bonus counting up over the second after the row started */
         startTime=*(f32 *)(row+4);
-        if(*(f32 *)(row+4)>lbl_805614A4) { /* 0.0f: not started yet */
-            gameTime=lbl_8055E3C8;
-            progress=lbl_805614AC; /* 1.0f: the animation's length */
+        if(*(f32 *)(row+4)>zeroF) { /* 0.0f: not started yet */
+            gameTime=gameTimeNow;
+            progress=oneF; /* 1.0f: the animation's length */
             sinceStart=gameTime-startTime;
-            elapsed=sinceStart-lbl_805614A4;
+            elapsed=sinceStart-zeroF;
             elapsed=elapsed/progress;
             progress=(progress<elapsed) ? progress : elapsed;
-            progress=(progress>lbl_805614A4) ? progress : lbl_805614A4;
-            counted=(s32)(lbl_805614A4+progress*((lbl_80561498+(f32)timeBonus)-lbl_805614A4));
+            progress=(progress>zeroF) ? progress : zeroF;
+            counted=(s32)(zeroF+progress*((bonusBaseF+(f32)timeBonus)-zeroF));
             remaining=timeBonus-counted;
         }
     }
-    fn_801345D8(row+0x44,0x14,&lbl_80559D6C,counted);
+    formatInt(row+0x44,0x14,&fmtInt,counted);
     if(row[0x10]) {
         /* no time bonus for this row: blank its value and its label */
-        {char c; char *src=lbl_80559D80; long len=0x14; char *dst=(char*)row+0xb2;
+        {char c; char *src=emptyStr; long len=0x14; char *dst=(char*)row+0xb2;
        goto copy0;
 check0: if (--len>0) goto copy0; dst[-1]=0; goto done0;
 copy0: c=*src++; *dst++=c; if ((signed char)c==0) goto done0; goto check0;
 done0:;}
-        {char c; char *src=lbl_80559D80; long len=0x14; char *dst=(char*)row+0x58;
+        {char c; char *src=emptyStr; long len=0x14; char *dst=(char*)row+0x58;
        goto copy1;
 check1: if (--len>0) goto copy1; dst[-1]=0; goto done1;
 copy1: c=*src++; *dst++=c; if ((signed char)c==0) goto done1; goto check1;
 done1:;}
     } else {
-        if(!lbl_8055E1C8){fn_801312EC(lbl_8042FB78,lbl_8032CA74);lbl_8055E1C8=1;}
-        fn_80130980(row+0xb2,0x14,2,(f32)remaining); /* the bonus as mm:ss */
-        if(*(u32 *)(lbl_8042FB78+8)!=lbl_8055E044)fn_80131318(lbl_8042FB78);
-        {char c; char *src=*(char **)(lbl_8042FB78+4); long len=0x14; char *dst=(char*)row+0x58;
+        if(!msgLoadedFlag){loadMessage(messageMgr,timeBonusMsgId);msgLoadedFlag=1;}
+        formatTimeMMSS(row+0xb2,0x14,2,(f32)remaining); /* the bonus as mm:ss */
+        if(*(u32 *)(messageMgr+8)!=messageTypeTag)refreshMessage(messageMgr);
+        {char c; char *src=*(char **)(messageMgr+4); long len=0x14; char *dst=(char*)row+0x58;
        goto copy2;
 check2: if (--len>0) goto copy2; dst[-1]=0; goto done2;
 copy2: c=*src++; *dst++=c; if ((signed char)c==0) goto done2; goto check2;
 done2:;}
     }
-    fn_801345D8(row+0x6c,0x14,&lbl_80559D6C,mode);
-    fn_801308F4(row+0x80,0x14,totalScore);
-    fn_801308F4(row+0x9e,0x14,totalScore-timeBonus);
-    if(fn_801609C4(totalScore)!=-1) {
-        /* the rank name of the band fn_801609C4 just returned the index of */
+    formatInt(row+0x6c,0x14,&fmtInt,mode);
+    formatScore(row+0x80,0x14,totalScore);
+    formatScore(row+0x9e,0x14,totalScore-timeBonus);
+    if(rankIndexForScore(totalScore)!=-1) {
+        /* the rank name of the band rankIndexForScore just returned the index of */
         {char c; char *src=(char *)__AXGetStackHead(); long len=10; char *dst=(char*)row+0x94;
        goto copy3;
 check3: if (--len>0) goto copy3; dst[-1]=0; goto done3;
 copy3: c=*src++; *dst++=c; if ((signed char)c==0) goto done3; goto check3;
 done3:;}
     } else {
-        {char c; char *src=&lbl_80559D84; long len=10; char *dst=(char*)row+0x94; /* "-" */
+        {char c; char *src=&dashStr; long len=10; char *dst=(char*)row+0x94; /* "-" */
        goto copy4;
 check4: if (--len>0) goto copy4; dst[-1]=0; goto done4;
 copy4: c=*src++; *dst++=c; if ((signed char)c==0) goto done4; goto check4;
