@@ -1806,7 +1806,7 @@ void fn_802C7A44(void) {
 #undef s_modelBatchActive
 }
 
-void fn_802C7A94(int groupId) {
+/* Restore the default GX material state, then release the model display entries for the given sort group; for the extra group 9 also empty the display-entry pool. */ void fn_802C7A94(int groupId) {
     /* Reset a model sort group: clear shared state, release the group's entries, and for the special group 9 clear its active model flag. */
     fn_802C7758();
     fn_802C5720(groupId);
