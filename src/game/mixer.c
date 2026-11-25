@@ -376,7 +376,7 @@ void SetEffectsVolume(float volume) {
 #undef gEffectsVolume
 #pragma cplusplus reset
 /* Set the sound-quality setting (config "quality"): accept values 0..2, reset to low otherwise. */
-void SetSoundQuality(int quality) {
+/* Set the sound-quality setting (config "quality"): values 0..2 are accepted, anything else resets it to low. */ void SetSoundQuality(int quality) {
     if (quality >= SOUND_QUALITY_LOW && quality <= SOUND_QUALITY_HIGH) {
         gSoundQuality = (void *)quality;
         return;
