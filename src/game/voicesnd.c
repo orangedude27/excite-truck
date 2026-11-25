@@ -72,7 +72,7 @@ extern void *lbl_8055EE08;
 extern unsigned char lbl_8033C520[];
 extern unsigned char sVoiceState[];
 extern int fn_80128668(void);
-extern char lbl_8033C458[];
+extern char gVoiceMixerVtable[];
 typedef struct { char *callbacks; int state; } VoiceMixerDevice;
 #pragma scheduling invalid_target
 #pragma dont_inline on
@@ -151,7 +151,7 @@ extern "C" void VoiceSoundPool_Free(void *voiceSound) {
 #pragma scheduling invalid_target
 void fn_8020A860(VoiceMixerDevice *mixer) {
     /* Voice-mixer device constructor: install the callback table and clear the state word. */
-    mixer->callbacks = lbl_8033C458;
+    mixer->callbacks = gVoiceMixerVtable;
     mixer->state = 0;
 }
 
@@ -598,7 +598,7 @@ void fn_8020B2BC(void *mixer, int voiceSound, int slotIndex) {
     slots[slotIndex] = 0;
 }
 
-/* "Voice Mixer" device (callback table lbl_8033C458, installed by the device
+/* "Voice Mixer" device (callback table gVoiceMixerVtable, installed by the device
  * constructor fn_8020A860), slot +0x3C: a mixer-device method this backend
  * does not implement.  The null backend's device table leaves the same slot
  * empty too (fn_80206480), so neither sound device in this build answers it. */
@@ -637,7 +637,7 @@ extern void fn_802E5824(void); /* SPU voice layer, slot +0x40 of the device: emp
 extern void fn_802E5828(void); /* SPU voice layer, slot +0x44 of the device: empty here */
 
 /* "Voice Mixer" device method, slot +0x40 of the voice backend's device vtable
- * (lbl_8033C458, installed by the constructor fn_8020A860): forwards the call to
+ * (gVoiceMixerVtable, installed by the constructor fn_8020A860): forwards the call to
  * the SPU voice layer's routine at 0x802E5824, dropping the device pointer.
  * That routine is empty in this build, and the "Null Mixer" device answers the
  * same slot with an empty function of its own (fn_80207C48), so neither sound
@@ -647,7 +647,7 @@ void fn_8020B340(void) {
 }
 
 /* "Voice Mixer" device method, slot +0x44 of the voice backend's device vtable
- * (lbl_8033C458): the next device method, likewise only forwarding to the SPU
+ * (gVoiceMixerVtable): the next device method, likewise only forwarding to the SPU
  * voice layer's routine at 0x802E5828 and dropping the device pointer.  That
  * routine is empty in this build too, and the "Null Mixer" device answers the
  * slot with an empty function of its own (fn_80207C4C). */

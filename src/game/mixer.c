@@ -309,7 +309,7 @@ extern "C" void fn_80208E90(void *devicePtr, int mode) {
     /* Sound-mixer backend interface.  CodeWarrior reserves the first two vtable
        slots for the deleting and complete destructors, so the first method
        declared here lands at +0x8; the two backends in the game implement this
-       table ("Null Mixer" lbl_8033C058, "Voice Mixer" lbl_8033C458). */
+       table ("Null Mixer" lbl_8033C058, "Voice Mixer" gVoiceMixerVtable). */
     struct MixerDevice {
         virtual void close(int deleteObject);  /* 0x8 deleting destructor */
         virtual const char *name();            /* 0xC backend name */
