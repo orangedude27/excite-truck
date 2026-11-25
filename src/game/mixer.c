@@ -586,10 +586,8 @@ extern int KERNEL_GetTimeMs(void);
 }
 
 void SoundTimer_Expire(void *timer) {
-    /* Mark a timed object as expired by setting its state field (+8) to 3. */
-#define state ((int *)((char *)timer + 8))
-    *state = 3;
-#undef state
+    /* Expire a sound timer: mark its state word at +8 as expired (3). */
+    *(int *)((char *)timer + 8) = 3;
 }
 
 void SoundTimer_Stop(void *timer) {
