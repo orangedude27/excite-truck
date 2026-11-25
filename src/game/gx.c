@@ -3495,10 +3495,11 @@ extern int lbl_8055FD4C;
 extern unsigned char lbl_8055FD50;
 extern unsigned char gRenderRequest[12];
 extern float lbl_80564F90;
+/* Clear the indirect-texture / bump-pass request flag (render request +0x0D) so
+   buildDefaultTevPipeline leaves that stage disabled; pairs with fn_802D3DF8. */
 void gxClearIndTexMtxFlag(void) {
-    /* Disable the alpha-blend / indirect (bump) stage of the shared render request block. */
-    unsigned char *alphaBlendFlag = &gRenderRequest[0xD];
-    *alphaBlendFlag = 0;
+    unsigned char *indTexMtxFlag = &gRenderRequest[0xD];
+    *indTexMtxFlag = 0;
 }
 
 extern int lbl_804C5710_int;
