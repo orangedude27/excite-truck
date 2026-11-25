@@ -799,14 +799,14 @@ extern int lbl_8055D070;
 }
 
 /* Return a texture slot's filter byte (+8 of its resource), or 5 for no texture. */
-char getTextureSlotFilter(int textureSlot) {
+/* Return the filter byte at +8 of the texture descriptor attached to a slot; the -1 no-texture sentinel yields the default 5. */ char getTextureSlotFilter(int textureSlot) {
     int slotOffset;
-    char *slots;
+    char *slotTable;
     if (textureSlot == -1)
         return 5;
     slotOffset = textureSlot * 0x4C;
-    slots = (char *)gTextureSlotTable;
-    return *(char *)(*(int *)(slots + slotOffset + 0x2C) + 8);
+    slotTable = (char *)gTextureSlotTable;
+    return *(char *)(*(int *)(slotTable + slotOffset + 0x2C) + 8);
 }
 
 /* Return a texture slot's mode byte (+9 of its resource), or 0x32 for no texture. */
