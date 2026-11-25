@@ -1483,7 +1483,7 @@ void drSetSurfAngleTableEntry(int index, float value) {
     gSurfAngleTable[index] = value;
 }
 
-void drInvalidateVertexFormatCache(void) {
+/* Reset the cached vertex-format descriptor and mode byte so the next draw reconfigures the format. */ void drInvalidateVertexFormatCache(void) {
     /* Invalidate the renderer's cached vertex-format descriptor and mode byte. */
 #define sCachedFormat lbl_8055FDE8
 #define sCachedMode   lbl_8055FDEC
