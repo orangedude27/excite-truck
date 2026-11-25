@@ -4118,9 +4118,9 @@ static inline float HudEase(float t) {
 /* Draws the zone HUD's two timed info panels (score and player-data) as they slide in
  * and out on a fixed timeline relative to the round clock. Skipped while a challenge
  * sub-task is active. */
-extern "C" s32 fn_801436E0(void *arg0, s32 playerIndex) {
+extern "C" s32 fn_801436E0(void *hudObj, s32 playerIndex) {
     void *style;
-    u8 *hud=(u8 *)arg0;
+    u8 *hud=(u8 *)hudObj;
     char *base=(char *)lbl_8032C530;
     f32 tTotal,tFadeOut1,elapsed,tFadeIn1,tFadeOut2,tFadeIn2,tFadeStart;
     elapsed=*(f32 *)((u8 *)fn_801E7E3C()+0x10);
