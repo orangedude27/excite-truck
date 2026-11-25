@@ -623,7 +623,7 @@ found:
 extern float fn_80209028(void);
 /* Find a named sub-object entry on this object, apply its timed value, and update
  * playback/control flags based on whether the entry requests a restart. */
-void fn_80258E64(void *arg0, const char *arg1) {
+/* Find the named entry in root's table at +0xD9C (count +0xDA0, stride 0x2C); apply its timed value to the referenced object and set its playback/control flags, requesting a restart when the entry's flag at +0x24 is set. */ void fn_80258E64(void *root, const char *name) {
     int index = 0;
     int offset = 0;
     void *obj;
@@ -631,7 +631,7 @@ void fn_80258E64(void *arg0, const char *arg1) {
 
     goto check;
 loop:
-    switch ((unsigned int)__cntlzw(stricmp((const char *)(*(unsigned int *)((char *)arg0 + 0xD9C) + offset), arg1)) >> 5) {
+    switch ((unsigned int)__cntlzw(stricmp((const char *)(*(unsigned int *)((char *)root + 0xD9C) + offset), name)) >> 5) {
     case 0:
         offset += 0x2C;
         index++;
@@ -640,13 +640,13 @@ loop:
         goto found;
     }
 check:
-    if (index < *(int *)((char *)arg0 + 0xDA0))
+    if (index < *(int *)((char *)root + 0xDA0))
         goto loop;
     index = -1;
 found:
     if (index < 0)
         return;
-    index = (int)(*(unsigned int *)((char *)arg0 + 0xD9C) + index * 0x2C);
+    index = (int)(*(unsigned int *)((char *)root + 0xD9C) + index * 0x2C);
     if (*(void **)(index + 0x20) == 0)
         return;
     value = *(float *)(index + 0x28) * fn_80209028();
