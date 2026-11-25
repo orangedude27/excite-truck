@@ -541,7 +541,7 @@ void DrawList_copyCurrentMatrix(unsigned int *dst) {
 }
 
 extern void texSelectSlot(void);
-/* Mode-2 draw-list setup: select the texture slot passed through in r3 (texSelectSlot), then set the render mode to 2. */
+/* Mode-2 draw-list setup: bind the incoming texture slot (r3) through texSelectSlot, then record render mode 2. */
 void DrawList_setupMode2(void) {
     texSelectSlot();
     sRenderMode = 2;
