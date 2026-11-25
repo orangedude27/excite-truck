@@ -1050,8 +1050,8 @@ void fn_802E623C(void) {}
     *(int*)((char*)voice + 0x18) = flags;
 }
 
-/* Set the volume of one Wii Remote speaker channel (spuSetRemoteSpeakerVolume). */
-/* Set the volume of one Wii Remote speaker channel. */ void SpuSpeaker_SetVolume(int channel, float volume) {
+/* Set the volume of one Wii Remote speaker channel. */
+void SpuSpeaker_SetVolume(int channel, float volume) {
     gRemoteSpeakerVolumes[channel] = volume;
 }
 
