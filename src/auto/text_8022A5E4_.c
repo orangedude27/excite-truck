@@ -804,7 +804,7 @@ int fn_8022B620(int styleIndex, const char *text) {
 #pragma pop
 /* Draws a UI style's picture/text at (x, y): renders the picture or animation, then draws the bitmap-font text lines with alignment and offsets unless a vector font is active. */
 void fn_8022B91C(void *unused, int x, int y, char *text, unsigned int flagsArg) {
-    extern int fn_802C4F14(int);
+    extern int stampGetFrameCount(int);
     extern int fn_802C4C90(int, int, int, int, int);
     extern int fn_802C51AC(void);
     extern int Abend_Panic(const char *, ...);
@@ -820,7 +820,7 @@ void fn_8022B91C(void *unused, int x, int y, char *text, unsigned int flagsArg) 
     mode = flagsArg & 1;
     if (*(int *)((char *)ctx + 0x64) != 0) {
         fn_802C4C90(*(int *)((char *)ctx + 0x64), x, y,
-                    flagsArg % fn_802C4F14(*(int *)((char *)ctx + 0x64)), 0);
+                    flagsArg % stampGetFrameCount(*(int *)((char *)ctx + 0x64)), 0);
     } else if ((state = *(int *)((char *)ctx + 0x68)) != 0) {
         ((int (*)(int))fn_802C51AC)(state);
     }

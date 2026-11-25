@@ -131,7 +131,7 @@ extern "C" char lbl_8055B808[8];
 extern "C" __declspec(section ".sdata") const char lbl_8055B724[], lbl_8055B728[], lbl_8055B720[], lbl_8055B730[];
 extern "C" __declspec(section ".sdata") const char lbl_8055B738[], lbl_8055B73C[], lbl_8055B744[], lbl_8055B748[];
 #pragma small_data off
-extern "C" s32 fn_802C4F14(s32);
+extern "C" s32 stampGetFrameCount(s32);
 extern "C" s32 fn_802C4C90(s32, s32, s32, s32, s32);
 extern "C" s32 fn_8021481C(void *);
 extern "C" char lbl_8033D388[];
@@ -2610,11 +2610,11 @@ extern "C" void* __dt__14CollisionSpaceFv_802155B4(void* arg0, s32 arg1) {
 extern "C" s32 fn_80029004(const char *, s32);
 extern "C" s32 fn_801345D8(void *, s32, const char *, s32, s32, const char *);
 extern "C" unsigned long strlen(const char *);
-extern "C" s32 fn_802C4F14(s32);
+extern "C" s32 stampGetFrameCount(s32);
 extern "C" s32 fn_802C4C90(s32, s32, s32, s32, s32);
-/* Wraps a modulo by the count from fn_802C4F14(self+4) and forwards (arg1,arg2,rem,0) to fn_802C4C90. */
+/* Wraps a modulo by the count from stampGetFrameCount(self+4) and forwards (arg1,arg2,rem,0) to fn_802C4C90. */
 extern "C" void fn_80215618(void *self, s32 arg1, s32 arg2, s32 value) {
-    s32 rem = value % fn_802C4F14(*(s32 *)((char *)self + 4));
+    s32 rem = value % stampGetFrameCount(*(s32 *)((char *)self + 4));
     fn_802C4C90(*(s32 *)((char *)self + 4), arg1, arg2, rem, 0);
 }
 
@@ -2644,7 +2644,7 @@ typedef struct CanvasHandleObj {
 } CanvasHandleObj;
 extern "C" s32 fn_80215730(void *arg0) {
     /* Return the tile/cell count of the canvas handle held in this object's owned handle (+4). */
-    return fn_802C4F14(((CanvasHandleObj *)arg0)->canvas);
+    return stampGetFrameCount(((CanvasHandleObj *)arg0)->canvas);
 }
 
   void fn_802C2FC4(int);
