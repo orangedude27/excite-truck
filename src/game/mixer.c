@@ -557,7 +557,7 @@ void SoundCreateNullSource(void) {
 /* CodeWarrior deleting-destructor (D0) thunk: when the delete flag is positive,
  * free a non-null object through operator delete (fn_80128668), then return the
  * object pointer. */
-int fn_802092C8(int object, int deleteFlag) {
+/* CodeWarrior deleting-destructor (D0) thunk: free a non-null object through operator delete when the delete flag is positive, then return the object pointer. */ int fn_802092C8(int object, int deleteFlag) {
     if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
