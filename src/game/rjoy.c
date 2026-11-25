@@ -770,7 +770,7 @@ void *RjoyGetKpadStatus(int controllerIndex) {
 #define gWiimoteStateTable lbl_80505978
 /* Return whether the given controller's ready flag (state record + 0x124) equals 1,
  * used by the countdown UI as a start/readiness gate. */
-int RjoyIsReady(int controllerIndex) {
+/* Return whether the controller's ready flag (state record +0x124) equals 1, used by the countdown UI as a start/readiness gate. */ int RjoyIsReady(int controllerIndex) {
     return *(unsigned int *)(gWiimoteStateTable + controllerIndex * 0x638 + 0x124) == 1;
 }
 #undef gWiimoteStateTable
