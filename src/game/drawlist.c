@@ -930,22 +930,28 @@ extern double sin(double);
 extern double cos(double);
 extern void fn_802D0368(float, float, float, float);
 #pragma scheduling invalid_target
-/* Scale the current near/far clip planes by a factor, back up the originals in the view backup triple, then reapply the projection. */ void fn_802C9648(float scale) {
-    /* Scale the current view X/Y parameters by a factor, saving the originals in
-       the view backup slot, then reapply the projection with the scaled values. */
-    float scaledNear;
-    float scaledFar;
+void fn_802C9648(float scale) {
+#define gViewBackup lbl_804C144C
+#define gNearClip   lbl_8055FC38
+#define gFarClip    lbl_8055FC3C
+    /* Scale the current near/far clip planes by a factor, back up the originals
+       in the view backup triple, then reapply the projection. */
+    float newNear;
+    float newFar;
     float oldNear;
     float oldFar;
-    oldNear = lbl_8055FC38;
-    oldFar = lbl_8055FC3C;
-    scaledNear = oldNear * scale;
-    scaledFar = oldFar * scale;
-    lbl_804C144C[0] = oldNear;
-    lbl_804C144C[1] = oldFar;
-    lbl_8055FC38 = scaledNear;
-    lbl_8055FC3C = scaledFar;
-    fn_802C974C(scaledNear, scaledFar, lbl_804C144C[2]);
+    oldNear = gNearClip;
+    oldFar = gFarClip;
+    newNear = oldNear * scale;
+    newFar = oldFar * scale;
+    gViewBackup[0] = oldNear;
+    gViewBackup[1] = oldFar;
+    gNearClip = newNear;
+    gFarClip = newFar;
+    fn_802C974C(newNear, newFar, gViewBackup[2]);
+#undef gFarClip
+#undef gNearClip
+#undef gViewBackup
 }
 #pragma scheduling on
 /* Restores the backed-up view/projection parameters by reapplying the saved
