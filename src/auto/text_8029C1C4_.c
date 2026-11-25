@@ -1375,7 +1375,6 @@ void fn_8029E49C(int unused, void *arg1, int arg2) {
     }
 }
 
-#pragma opt_propagation off
 void *fn_8029E754(void *arg0, void *arg1, int arg2) {
     float *out;
     float *in;
