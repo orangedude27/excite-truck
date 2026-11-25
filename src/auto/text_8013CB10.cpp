@@ -4118,9 +4118,9 @@ static inline float HudEase(float t) {
 /* Draws the zone HUD's two timed info panels (score and player-data) as they slide in
  * and out on a fixed timeline relative to the round clock. Skipped while a challenge
  * sub-task is active. */
-extern "C" s32 fn_801436E0(void *arg0, s32 arg1) {
+extern "C" s32 fn_801436E0(void *arg0, s32 playerIndex) {
     void *style;
-    u8 *master=(u8 *)arg0;
+    u8 *hud=(u8 *)arg0;
     char *base=(char *)lbl_8032C530;
     f32 tTotal,tFadeOut1,elapsed,tFadeIn1,tFadeOut2,tFadeIn2,tFadeStart;
     elapsed=*(f32 *)((u8 *)fn_801E7E3C()+0x10);
@@ -4130,8 +4130,8 @@ extern "C" s32 fn_801436E0(void *arg0, s32 arg1) {
     tFadeOut2=tFadeIn1-lbl_805615AC;
     tFadeIn2=tFadeOut2-lbl_805614C0;
     tFadeStart=tFadeIn2-lbl_80561550;
-    void *bgHandle=(void *)((TObjC *)*(void **)(master+0x54))->vC((s32)(base+0x7a8));
-    void *fgHandle=(void *)((TObjC *)*(void **)(master+0x54))->vC((s32)(base+0x7b8));
+    void *bgHandle=(void *)((TObjC *)*(void **)(hud+0x54))->vC((s32)(base+0x7a8));
+    void *fgHandle=(void *)((TObjC *)*(void **)(hud+0x54))->vC((s32)(base+0x7b8));
     if(elapsed<tFadeStart)fn_8000FBE4();
     if(fn_80161C38()==0) {
         if(elapsed<tTotal) {
@@ -4139,9 +4139,9 @@ extern "C" s32 fn_801436E0(void *arg0, s32 arg1) {
             fade=lbl_805614AC<fade ? lbl_805614AC : fade;
             fade=fade>lbl_805614A4 ? fade : lbl_805614A4;
             fade=lbl_805614A4+fade*lbl_805614AC;
-            style=(void *)((TObjC *)*(void **)(master+0x54))->vC((s32)(base+0x7c8));
-            void *detailHandle=(void *)((TObjC *)*(void **)(master+0x54))->vC((s32)(base+0x7d4));
-            fn_8001DF08(fn_801E866C(arg1),0);
+            style=(void *)((TObjC *)*(void **)(hud+0x54))->vC((s32)(base+0x7c8));
+            void *detailHandle=(void *)((TObjC *)*(void **)(hud+0x54))->vC((s32)(base+0x7d4));
+            fn_8001DF08(fn_801E866C(playerIndex),0);
             if(bgHandle && fgHandle && style && detailHandle) {
                 fn_801479A8(bgHandle,fgHandle,(const char *)fn_80131234(base+0x7e0),HudEase(fade));
                 fn_80160A74();
@@ -4158,17 +4158,17 @@ extern "C" s32 fn_801436E0(void *arg0, s32 arg1) {
             }
         }
         if(elapsed<tFadeOut2) {
-            fn_8014784C(*(void **)(master+0x54),base+0x47c,base+0x48c,0);
+            fn_8014784C(*(void **)(hud+0x54),base+0x47c,base+0x48c,0);
             f32 fade=(elapsed-tFadeIn2)/(tFadeStart-tFadeIn2);
             fade=lbl_805614AC<fade ? lbl_805614AC : fade;
             fade=fade>lbl_805614A4 ? fade : lbl_805614A4;
             fade=lbl_805614A4+fade*lbl_805614AC;
-            style=(void *)((TObjC *)*(void **)(master+0x54))->vC((s32)(base+0x7fc));
-            void *detailHandle=(void *)((TObjC *)*(void **)(master+0x54))->vC((s32)(base+0x470));
+            style=(void *)((TObjC *)*(void **)(hud+0x54))->vC((s32)(base+0x7fc));
+            void *detailHandle=(void *)((TObjC *)*(void **)(hud+0x54))->vC((s32)(base+0x470));
             if(bgHandle && fgHandle && style && detailHandle) {
                 fn_801479A8(bgHandle,fgHandle,(const char *)fn_80131234(base+0x808),HudEase(fade));
                 int player=fn_801E866C(0);
-                f32 number=*(f32 *)(*(u8 **)(master+0xb8)+player*0x12c+0x108);
+                f32 number=*(f32 *)(*(u8 **)(hud+0xb8)+player*0x12c+0x108);
                 char text[0x14];
                 fn_80130978(text,0x14,number);
                 Fn801436E0TextStyle local;
