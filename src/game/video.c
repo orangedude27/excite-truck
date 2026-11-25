@@ -19,7 +19,7 @@ extern char lbl_8034CBC4[];
 __declspec(section ".sdata") extern char lbl_8055D168[];
 extern int fn_801186B8(void *);
 extern void fn_80118C44(void *);
-extern void fn_802E27A0(void *);
+extern void videoRingFlushSlot(void *);
 extern void fn_802E27B8(void *);
 extern u8 fn_802ECC10(void);
 extern char lbl_8034CBE0[], lbl_8034CBF8[];
@@ -1126,7 +1126,7 @@ void fn_802E12DC(void) {
                 fn_80118C44((void *)movie->binkHandle);
             movie->frameTimerMs += 0x20;
         }
-        fn_802E27A0(movie->videoRing);
+        videoRingFlushSlot(movie->videoRing);
     }
 }
 extern void GXSetZMode(GXBool, GXCompare, GXBool);
