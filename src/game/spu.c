@@ -343,7 +343,7 @@ extern int lbl_8055FFA8;             /* channels whose voices used a speaker lat
     if (sent) AXRmtAdvancePtr(0x28);
 }
 #pragma pop
-int fn_802E540C(int request) {
+int SpuResetCallback(int request) {
 #define KERNEL_RESET_NOTIFY 1
 #define spuResetTeardown TRKReadBuffer_ui32
     /* Reset callback registered under "Spu" in Spu_Init: when the reset is
@@ -493,7 +493,7 @@ void Spu_Init(void) {
     vec[1] = one;
     vec[2] = one;
     vec[3] = one;
-    KERNEL_AddResetCallback((void *)fn_802E540C, &lbl_8055D1E0);
+    KERNEL_AddResetCallback((void *)SpuResetCallback, &lbl_8055D1E0);
     gSpuRunning = 1;
     ((void (*)(void))fn_802E5438)();
 }
