@@ -541,6 +541,7 @@ extern s32 fn_802328D4(s32, s32);
 
 enum {
     MROLL_STAT_FONT_OFFSET      = 0x18,
+    MROLL_STAT_RANK_OFFSET      = 0x1C,
     MROLL_STAT_FLAG_OFFSET      = 0x20,
     MROLL_STAT_VALUE_PTR_OFFSET = 0x24
 };
