@@ -204,7 +204,7 @@ extern float fn_801E7E24(void);
 extern double fn_8002EFB4(double, double);
 extern double cos(double);
 extern void fn_802C9648(float);
-extern void gxEnableTexMtx0(void);
+extern void gxSetTexCoordMtxFlag(void);
 extern float fn_802BF02C(float, int);
 extern void fn_802C9900(float);
 extern void gxLoadTexMtx(void *, int);
@@ -234,7 +234,7 @@ void fn_802BF160(void) {
     scratch[11] = *src++; scratch[12] = *src++; scratch[13] = *src++;
     scratch[14] = *src++; scratch[15] = *src++; scratch[16] = *src;
     fn_802C9648(lbl_80564D98);
-    gxEnableTexMtx0();
+    gxSetTexCoordMtxFlag();
 
     f31 = lbl_80564D80;
     f30 = lbl_80564DA8;
