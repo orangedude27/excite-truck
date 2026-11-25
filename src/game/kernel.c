@@ -801,12 +801,12 @@ void fn_802E2D74(int milliseconds) {
     }
 }
 #pragma scheduling on
-void KERNEL_AddResetCallback(int callback, int name) {
+/* Append a reset callback and the name it logs under to the parallel registration tables. */ void KERNEL_AddResetCallback(int callback, int logName) {
     /* Append a reset callback and its log name to the parallel registration tables. */
     int index = sResetCallbackCount;
     sResetCallbackCount = index + 1;
     sResetCallbacks[index] = callback;
-    sResetCallbackNames[index] = name;
+    sResetCallbackNames[index] = logName;
 }
 /* Reset / power-down.
  * A subsystem that has to wind down before the console leaves the game
