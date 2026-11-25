@@ -1502,6 +1502,7 @@ extern double __ieee754_acos(double);
 
 /* MSL acos() wrapper: tail-call the fdlibm arccosine kernel on x. */
 double fn_8002EFA8(double x) {
+    /* MSL libm alias: arcosine, forwarded to the core __ieee754_acos implementation. */
     return __ieee754_acos(x);
 }
 
