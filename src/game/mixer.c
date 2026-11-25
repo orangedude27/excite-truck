@@ -90,7 +90,7 @@ float fn_80208A18(float baseVolume) {
 /* Recompute the effective master volume: start from the configured effects volume,
    scale it by every active mixer volume handle, and store the result. The pointer
    argument is vestigial — callers pass a handle's volume but the body ignores it. */
-void UpdateMasterVolume(float *unusedVolume) {
+/* Recompute the effective master volume from the base effects volume and all active mixer volume handles; the pointer argument is unused. */ void UpdateMasterVolume(float *unusedVolume) {
     effectiveMasterVolume = applyVolumeHandles(baseEffectsVolume);
 }
 #undef baseEffectsVolume
