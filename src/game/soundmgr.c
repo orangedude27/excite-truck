@@ -63,7 +63,7 @@ typedef struct SoundMgr {
 /* The nine sound classes the manager keeps a list of, plus their count; the
  * names are the ones in its assert table (lbl_802F9DA0).  fn_802085F0 calls
  * ENGINE, TIRESQUEAL, CRASH, ENGINE_START and WIND the positional ones, and
- * fn_80207964 singles out UI. */
+ * SoundMgr_isUiClass singles out UI. */
 enum SndClass {
     SNDCLASS_UI = 0,
     SNDCLASS_COUNTDOWN = 1,
@@ -91,7 +91,7 @@ void fn_80207960(void) {
 
 /* Return nonzero only for the UI sound class; fn_80208858 uses this to flag
    UI voices separately from the positional sound classes. */
-signed long fn_80207964(signed long sndClass) {
+signed long SoundMgr_isUiClass(signed long sndClass) {
     switch (sndClass) {
     case SNDCLASS_UI:
         return 1;
@@ -910,7 +910,7 @@ extern "C" void fn_80208858(void *soundMgr, signed long soundName, signed long s
         virtual signed long createSound(signed long, signed long, signed long);
     };
     signed long positional = fn_802085F0(soundMgr, sndClass);
-    signed long uiFlag = fn_80207964(sndClass);
+    signed long uiFlag = SoundMgr_isUiClass(sndClass);
     struct SoundDevState *state = (*(struct SoundDevice **)((char *)soundMgr + 0x90))->resetState();
     unsigned char active = state->active;
     signed long voice;
