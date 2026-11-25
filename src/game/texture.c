@@ -104,8 +104,8 @@ extern void fn_801282F4(void);
     gTextureSlotTable = 0;
 }
 #pragma scheduling on
-/* Return the texture id (field +0x28) of the given 0x4C-byte texture slot. */
-/* Return the texture-object pointer stored at +0x28 of the given 0x4C-byte texture slot record. */ int getTextureSlotTexObj(int slotIndex) {
+/* Return the texture-object pointer stored at +0x28 of the given 0x4C-byte texture slot record. */
+int getTextureSlotTexObj(int slotIndex) {
     int slotOffset = slotIndex * 0x4C;
     int *textureSlots = (int *)gTextureSlotTable;
     return *(int *)((char *)textureSlots + slotOffset + 0x28);
