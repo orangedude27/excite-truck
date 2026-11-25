@@ -84,7 +84,7 @@ extern double fn_8002EFB0(f32, f32);
 extern void *fn_802C9A40(void);
 extern void PSVECCrossProduct(f32 *, f32 *, f32 *);
 extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
-extern void fn_802C8E48(void);
+extern void DrawList_endMeshPass(void);
 extern double cos(double);
 extern double sin(double);
 extern f32 lbl_805630D8, lbl_805630F0, lbl_805630F4, lbl_805630F8, lbl_805630FC;
@@ -357,14 +357,14 @@ void fn_80202F58(const void *arg0, const void *arg1, void *arg2) {
         temp_f3_10 = temp_f3_9 + (work[1].f * temp_f30_3);
         work[1].f = temp_f3_10;
         fn_802C8E00(-1, 1, temp_f1_8, lbl_805630CC, temp_f3_10, lbl_80563110, lbl_80563110);
-        fn_802C8E48();
+        DrawList_endMeshPass();
     }
     DrawList_RestoreNormalMode();
 }
 #pragma pop
 extern s32 beginDrawListPass(s32, ...);
 extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
-extern void fn_802C8E48(void);
+extern void DrawList_endMeshPass(void);
 extern double fn_801DCF48(s32, f32, f32);
 extern f32 PSVECMag(const void *);
 extern double cos(double);
@@ -517,7 +517,7 @@ void fn_80203380(void *argp) {
             }
         }
     }
-    fn_802C8E48();
+    DrawList_endMeshPass();
     DrawList_RestoreNormalMode();
 }
 
@@ -606,7 +606,7 @@ void fn_802036E4(s32 arg0, u8* arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1) {
                 }
             }
         }
-        fn_802C8E48();
+        DrawList_endMeshPass();
     }
 }
 #pragma opt_strength_reduction reset

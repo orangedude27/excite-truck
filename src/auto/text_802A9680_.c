@@ -36,7 +36,7 @@ void* fn_802A9680(void* arg0, s32 arg1) {
 extern void *fn_802C86DC(void);
 extern s32 beginDrawListPass(s32);
 extern void fn_802C8E00(s32, s32, float, float, float, float, float);
-extern void fn_802C8E48(void);
+extern void DrawList_endMeshPass(void);
 extern float fn_801E7E18(void);
 extern double fn_8002EFB4(double, double);
 extern const double lbl_80564990;
@@ -123,7 +123,7 @@ void fn_802A96E8(void *obj, s32 count, s32 colorArg, s32 arg3, s32 arg4) {
             }
             walker += 3;
         }
-        fn_802C8E48();
+        DrawList_endMeshPass();
     }
     DrawList_RestoreNormalMode();
     if (arg4 != 0) {
@@ -195,7 +195,7 @@ void fn_802A96E8(void *obj, s32 count, s32 colorArg, s32 arg3, s32 arg4) {
             }
             walker2 += 3;
         }
-        fn_802C8E48();
+        DrawList_endMeshPass();
         DrawList_RestoreNormalMode();
     }
 }

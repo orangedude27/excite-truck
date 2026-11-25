@@ -86,7 +86,7 @@ extern float PSVECMag(void *);
 extern int fn_801B8570(int);
 extern void fn_802C8BD0(int);
 extern int beginDrawListPass(int);
-extern void fn_802C8E48(void);
+extern void DrawList_endMeshPass(void);
 extern void DrawList_RestoreNormalMode(void);
 extern void fn_801390B0(void *, float *, float *, int, float, float);
 extern double __fabs(double);
@@ -206,7 +206,7 @@ void fn_80139318(void *arg0, int arg1, int arg2, float farg0) {
                     fn_801390B0(arg0, (float *)&v[2], (float *)&v[4], n == arg2, f22, f21);
                 }
             }
-            fn_802C8E48();
+            DrawList_endMeshPass();
         }
         DrawList_RestoreNormalMode();
     }

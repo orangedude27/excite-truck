@@ -9,7 +9,7 @@ extern f32 lbl_80562C78;
 extern f32 lbl_80562C7C;
 extern s32 beginDrawListPass(s32);
 extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
-extern void fn_802C8E48(void);
+extern void DrawList_endMeshPass(void);
 
 extern void *lbl_8055EA10;
 extern void *fn_8017960C();
@@ -699,7 +699,7 @@ void fn_801E1384(s32 arg0, s32 arg1) {
                 fn_802C8E00(left, 1, xval, yval, zval, uval, vval);
             }
         }
-        fn_802C8E48();
+        DrawList_endMeshPass();
     }
 }
 /* Return the address of boost-area record `index` from a list whose data pointer is at *listData (records are 0x1C bytes). */

@@ -14,7 +14,7 @@ extern int beginDrawListPass(int);
 extern void fn_802C8BD0(int);
 extern void DrawList_RestoreNormalMode(void);
 extern void fn_802C8E00(int, int, float, float, float, float, float);
-extern void fn_802C8E48(void);
+extern void DrawList_endMeshPass(void);
 
 typedef struct {
     float x, y, z;
@@ -139,7 +139,7 @@ void fn_801E370C(float *arg0, int arg1, int arg2) {
         out[1] += arg0[1] * lbl_80562D04;
         out[2] += arg0[2] * lbl_80562D04;
         fn_802C8E00(arg1, 1, out[0], out[1], out[2], lbl_80562CF4, lbl_80562CF4);
-        fn_802C8E48();
+        DrawList_endMeshPass();
     }
     DrawList_RestoreNormalMode();
 }

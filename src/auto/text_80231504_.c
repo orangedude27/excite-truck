@@ -172,7 +172,7 @@ extern void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 extern s32 beginDrawListPass(s32);
 extern void DrawList_RestoreNormalMode(void);
 extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
-extern void fn_802C8E48(void);
+extern void DrawList_endMeshPass(void);
 static inline void transform_vec_values(const f32 *matrix, const f32 *src, f32 *dst, f32 x, f32 y, f32 z) {
     if (src == dst) {
         f32 xy3 = y * matrix[3];
@@ -471,7 +471,7 @@ loop_body:
         fn_802C8E00(color, 0, f27, f26, *(f32 *)(record + 0x0C), lbl_80563684, lbl_8056368C);
         fn_802C8E00(color, 1, f25, f28, *(f32 *)(record + 0x0C), lbl_8056368C, lbl_80563684);
         fn_802C8E00(color, 1, f27, f28, *(f32 *)(record + 0x0C), lbl_80563684, lbl_80563684);
-        fn_802C8E48();
+        DrawList_endMeshPass();
         DrawList_RestoreNormalMode();
     }
     offset += 0x1C;
@@ -1958,7 +1958,7 @@ textOffset += 0x58;
 i++;
 record_test:
 if (i < *(s32 *)((u8 *)&lbl_8055F058 + 4)) goto record_body;
-fn_802C8E48();
+DrawList_endMeshPass();
 }
 DrawList_RestoreNormalMode();
 if (mode == 2) fn_80231ADC();

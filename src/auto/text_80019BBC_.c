@@ -772,7 +772,7 @@ extern int fn_80135D60(void *, int);
 extern void fn_8013530C(void *, int);
 extern void beginDrawListPass(int);
 extern void fn_802C8E00(int, int, float, float, float, float, float);
-extern void fn_802C8E48(void);
+extern void DrawList_endMeshPass(void);
 extern double fn_8002F234(double);
 extern float lbl_80560418, lbl_80560420, lbl_80560424, lbl_80560440;
 #pragma processor 750
@@ -844,7 +844,7 @@ void fn_8001B478(int arg0, float farg0) {
             result = 1;
         }
     }
-    fn_802C8E48();
+    DrawList_endMeshPass();
     fn_8013530C(sp20, -1);
 }
 #pragma pop

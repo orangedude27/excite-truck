@@ -19,7 +19,7 @@ extern f32 lbl_80564364, lbl_805643BC, lbl_805643C0, lbl_805643C4;
 extern f32 fn_80144514(f32, f32, f32, f32, f32, f32);
 extern s32 beginDrawListPass(s32);
 extern void fn_802C8E00();
-extern void fn_802C8E48(void);
+extern void DrawList_endMeshPass(void);
 #define FLD(p, off) (*(f32 *)((u8 *)(p) + (off)))
 
 struct V3 { f32 x, y, z; };
@@ -1247,7 +1247,7 @@ void fn_8028C11C(void *arg0, s32 *arg1, s32 *arg2) {
     k0 = lbl_805643C0;
     k1 = lbl_805643C4;
     if (*(s32 *)((u8 *)arg0 + 4) <= 0) {
-        fn_802C8E48();
+        DrawList_endMeshPass();
         return;
     }
     for (i = 0, off = 0; i < *(s32 *)((u8 *)arg0 + 4); i++, off += 0x1C) {
@@ -1288,7 +1288,7 @@ void fn_8028C11C(void *arg0, s32 *arg1, s32 *arg2) {
         fn_802C8E00(color, 1, s.o[6], s.o[7], s.o[8], lbl_8056434C, lbl_8056434C);
         fn_802C8E00(color, 1, s.o[9], s.o[10], s.o[11], lbl_8056432C, lbl_8056434C);
     }
-    fn_802C8E48();
+    DrawList_endMeshPass();
 }
 #pragma pop
 
@@ -1416,7 +1416,7 @@ void fn_8028CA70(s32 arg0) {
     extern void DrawList_RestoreNormalMode(void);
     extern s32 beginDrawListPass(s32);
     extern void fn_802C8E00();
-    extern void fn_802C8E48(void);
+    extern void DrawList_endMeshPass(void);
     extern void *fn_802C9A40(void);
     extern f32 fn_802C9A4C(f32);
     extern f64 sin(f32);
@@ -1524,7 +1524,7 @@ void fn_8028CA70(s32 arg0) {
             var_r29 += 1;
         check:
             if (var_r29 < *(s32 *)(arg0 + 4)) goto body;
-            fn_802C8E48();
+            DrawList_endMeshPass();
         }
         DrawList_RestoreNormalMode();
         fn_802C9A4C(saved);

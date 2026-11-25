@@ -536,7 +536,7 @@ void fn_802AAD5C(int arg0, int arg1, int arg2) {
     extern void fn_801E866C(int);
     extern void beginDrawListPass(int);
     extern void fn_802C8E00(unsigned int, int, float, float, float, float, float);
-    extern void fn_802C8E48(void);
+    extern void DrawList_endMeshPass(void);
     extern void DrawList_RestoreNormalMode(void);
     extern int lbl_8055CC60, lbl_8055CC70, lbl_8055CC74, lbl_8055CC78;
     extern const double lbl_80564A40;
@@ -580,7 +580,7 @@ void fn_802AAD5C(int arg0, int arg1, int arg2) {
             temp_f4 = (i % 2) ? lbl_805649F0 : lbl_805649FC;
             fn_802C8E00(color, 1, sp8, spC, sp10, temp_f4, temp_f31 - temp_f2);
         }
-        fn_802C8E48();
+        DrawList_endMeshPass();
     }
     DrawList_RestoreNormalMode();
 }
@@ -602,7 +602,7 @@ void fn_802AAF04(int arg0, int arg1, int arg2) {
     extern void fn_802C8BD0(int);
     extern void beginDrawListPass(int);
     extern void fn_802C8E00(unsigned int, int, float, float, float, float, float);
-    extern void fn_802C8E48(void);
+    extern void DrawList_endMeshPass(void);
     extern void DrawList_RestoreNormalMode(void);
     extern int lbl_8055CC64;
     extern float lbl_805649F0, lbl_805649F4, lbl_805649F8, lbl_805649FC;
@@ -717,7 +717,7 @@ void fn_802AAF04(int arg0, int arg1, int arg2) {
             if (var_r27 < 5) {
                 goto loop_3;
             }
-            fn_802C8E48();
+            DrawList_endMeshPass();
             var_r28 += 1;
         } while (var_r28 < 2);
         DrawList_RestoreNormalMode();

@@ -1631,7 +1631,7 @@ extern "C" s32 fn_80147070(s32 object, s32 deleteFlag) {
 extern "C" void fn_802C8BD0(s32);
 extern "C" s32 beginDrawListPass(s32);
 extern "C" void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
-extern "C" void fn_802C8E48(void);
+extern "C" void DrawList_endMeshPass(void);
 extern "C" void DrawList_RestoreNormalMode(void);
 #pragma dont_inline on
 #pragma push
@@ -1651,7 +1651,7 @@ extern "C" void fn_801470B0(s32 arg0, s32 arg1, s32 arg2, f32 x, f32 y, f32 widt
         fn_802C8E00(arg0, 1, ((f32 (*)(s32, f32))fn_801451DC)(arg2, x), temp, lbl_805615D4, u0, v1);
         temp = fn_801452B4(y + height);
         fn_802C8E00(arg0, 1, ((f32 (*)(s32, f32))fn_801451DC)(arg2, x + width), temp, lbl_805615D4, u1, v1);
-        fn_802C8E48();
+        DrawList_endMeshPass();
     }
     DrawList_RestoreNormalMode();
 }
@@ -1786,7 +1786,7 @@ void fn_801476D8(void *arg0, s32 arg1, s32 arg2) {
     extern s32 beginDrawListPass(s32);
     extern void fn_802C8BD0(s32);
     extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
-    extern void fn_802C8E48(void);
+    extern void DrawList_endMeshPass(void);
     extern void DrawList_RestoreNormalMode(void);
     extern f32 fn_801452A0(s32, f32);
     f32 angle;
@@ -1841,7 +1841,7 @@ void fn_801476D8(void *arg0, s32 arg1, s32 arg2) {
             fn_802C8E00(arg1, 1, tx, angle, lbl_805615D4,
                         *(f32 *)((u8 *)arg0 + 0x20),
                         *(f32 *)((u8 *)arg0 + 0x24));
-            fn_802C8E48();
+            DrawList_endMeshPass();
         }
         DrawList_RestoreNormalMode();
     }

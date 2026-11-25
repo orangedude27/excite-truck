@@ -1069,7 +1069,7 @@ void fn_801F6880(void *arg0) {
     extern void fn_802C8BD0(void *);
     extern int beginDrawListPass(int);
     extern void fn_802C8E00(int, int, void *, float, float, float, float, float);
-    extern void fn_802C8E48(void);
+    extern void DrawList_endMeshPass(void);
     extern void DrawList_RestoreNormalMode(void);
     float scale = *(float *)((char *)arg0 + 0x28);
     float temp_f31;
@@ -1095,7 +1095,7 @@ void fn_801F6880(void *arg0) {
                 fn_802C8E00(*(int *)((char *)temp_r3_3 + 8), var_r30 > 0, temp_r5_3, *(float *)temp_r5_3, *(float *)((char *)temp_r5_3 + 4), *(float *)((char *)temp_r5_3 + 8), *(float *)temp_r3_3, *(float *)((char *)temp_r3_3 + 4));
             }
         }
-        fn_802C8E48();
+        DrawList_endMeshPass();
     }
     DrawList_RestoreNormalMode();
     fn_802C9A4C(temp_f31);

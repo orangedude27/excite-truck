@@ -18,7 +18,7 @@ extern void fn_801E866C(int);
 #pragma inline no fn_80205964
 extern void fn_802C8CBC(int);
 extern void beginDrawListPass(int);
-extern void fn_802C8E48(void);
+extern void DrawList_endMeshPass(void);
 extern void DrawList_RestoreNormalMode(void);
 extern void fn_802057A8(int, int, float, float, float, float);
 #pragma dont_inline fn_802057A8
@@ -96,7 +96,7 @@ void fn_80205850(void) {
     fn_802057A8(-1, 0, lbl_805631B8, lbl_805631C0, lbl_805631A8, lbl_805631A8);
     fn_802057A8(-1, 1, lbl_80563194, lbl_805631B8, lbl_805631A8, lbl_805631A8);
     fn_802057A8(-1, 1, lbl_805631B8, lbl_805631B8, lbl_805631A8, lbl_805631A8);
-    fn_802C8E48();
+    DrawList_endMeshPass();
     DrawList_RestoreNormalMode();
 }
 
@@ -254,7 +254,7 @@ void fn_802059C0(void)
       }
       fn_802057A8(col, 1, f18, f20, lbl_805631A8, lbl_805631A8);
       fn_802057A8(col2, 1, lbl_805631A8, f20, lbl_805631A8, lbl_805631A8);
-      fn_802C8E48();
+      DrawList_endMeshPass();
       DrawList_RestoreNormalMode();
     }
     if (lbl_8055ED6C != (-2))
@@ -266,7 +266,7 @@ void fn_802059C0(void)
       temp_f14 = temp_f14 - temp_f15;
       fn_802057A8(-1, 1, temp_f16, temp_f14, lbl_805631A8, lbl_805631A8);
       fn_802057A8(-1, 1, lbl_805631A8, temp_f14, lbl_805631A8, lbl_805631B8);
-      fn_802C8E48();
+      DrawList_endMeshPass();
       DrawList_RestoreNormalMode();
     }
   }
@@ -341,7 +341,7 @@ void fn_80205D5C(void)
     ((void (*)(int, int, float, float, float, float, float)) fn_802C8E00)(0xFF404040, i > 0, f31, d[1], f30, f30, f30);
   }
 
-  fn_802C8E48();
+  DrawList_endMeshPass();
   DrawList_RestoreNormalMode();
 }
 #pragma pop

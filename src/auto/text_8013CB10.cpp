@@ -2127,7 +2127,7 @@ extern "C" s32 fn_8013FD20(const void *arg0, s32 index) {
 extern "C" void fn_802C8BD0(s32);
 extern "C" s32 beginDrawListPass(s32);
 extern "C" void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
-extern "C" void fn_802C8E48(void);
+extern "C" void DrawList_endMeshPass(void);
 extern "C" void DrawList_RestoreNormalMode(void);
 extern "C" f32 fn_8013EFB0(f32);
 extern "C" f32 fn_8013EFBC(f32);
@@ -2175,7 +2175,7 @@ extern "C" void fn_8013FDB0(void *arg0, void *arg1, void *arg2) {
         DRAW(-1, 1, x + w, y - h, lbl_805614AC, lbl_805614AC);
         DRAW(-1, 1, x + w - lbl_8056157C, y, lbl_80561580, lbl_80561578);
         DRAW(-1, 1, x + w - lbl_8056157C, y - h, lbl_80561580, lbl_805614AC);
-        fn_802C8E48();
+        DrawList_endMeshPass();
         DrawList_RestoreNormalMode();
         return;
     }

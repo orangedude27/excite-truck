@@ -3,7 +3,7 @@ extern void *fn_802C86DC(void);
 extern void fn_802C8BD0(int);
 extern int beginDrawListPass(int);
 extern void fn_802C8E00(int, unsigned int, float, float, float, float, float);
-extern void fn_802C8E48(void);
+extern void DrawList_endMeshPass(void);
 extern void DrawList_RestoreNormalMode(void);
 extern void fn_8029DB78(void *, void *, int, int);
 typedef struct GridRecord_8029D644 {
@@ -940,7 +940,7 @@ void fn_8029D644(void *arg0) {
                 }
             }
         }
-        fn_802C8E48();
+        DrawList_endMeshPass();
     }
     DrawList_RestoreNormalMode();
 }
@@ -1378,30 +1378,33 @@ void fn_8029E49C(int unused, void *arg1, int arg2) {
 void *fn_8029E754(void *arg0, void *arg1, int arg2) {
     float *out;
     float *in;
-    float x, y, z, w, xx, yy, zz;
+    float u[3];
+    float v[3];
+    float q[3];
+    float x, y, z;
     float a, b, c, d, e, f;
     float qx, qy, qz;
-    float q[3];
     float half;
     float scale;
     out = (float *)arg0;
     in = (float *)arg1;
-    half = lbl_80564628;
-    scale = lbl_8056465C;
-
-    w = in[3];
     x = in[0];
-    xx = in[4];
-    a = x + w;
     y = in[1];
     z = in[2];
-    b = y + half;
-    zz = in[5];
-    c = z + xx;
-    yy = in[6];
-    d = b + half;
-    e = a + zz;
-    f = c + yy;
+    half = lbl_80564628;
+    scale = lbl_8056465C;
+    u[0] = in[3];
+    u[1] = lbl_80564628;
+    u[2] = in[4];
+    v[0] = in[5];
+    v[1] = lbl_80564628;
+    v[2] = in[6];
+    a = x + u[0];
+    b = y + u[1];
+    c = z + u[2];
+    d = b + v[1];
+    e = a + v[0];
+    f = c + v[2];
     qx = scale * (d - y);
     qy = scale * (e - x);
     qz = scale * (f - z);
@@ -1411,9 +1414,9 @@ void *fn_8029E754(void *arg0, void *arg1, int arg2) {
     out[3] = a;
     out[4] = b;
     out[5] = c;
-    out[6] = x + zz;
-    out[7] = b;
-    out[8] = z + yy;
+    out[6] = x + v[0];
+    out[7] = y + v[1];
+    out[8] = z + v[2];
     out[9] = e;
     out[10] = d;
     out[11] = f;
@@ -1440,7 +1443,7 @@ void *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_8029E888(void *s
 extern void *fn_802C86DC(void);
 extern void fn_802C8BD0(int);
 extern int beginDrawListPass(int);
-extern void fn_802C8E48(void);
+extern void DrawList_endMeshPass(void);
 extern void DrawList_RestoreNormalMode(void);
 extern void fn_802C8E00(int, unsigned int, float, float, float, float, float);
 extern float lbl_80564658, lbl_8056465C;
@@ -1497,7 +1500,7 @@ void fn_8029E8E0(float *arg0, int arg1) {
             i++;
             arg0 += 3;
         } while ((unsigned int)i < 4);
-        fn_802C8E48();
+        DrawList_endMeshPass();
     }
     DrawList_RestoreNormalMode();
 }
