@@ -2,7 +2,7 @@
 // Symbol guide (the project cannot rename game symbols yet): initShotHooks
 // (fn_802E46AC), initShot (fn_802E46B0), invalidateSavedState (fn_802E46E4),
 // checkScreenshotHotkey (fn_802E46F0), anyInputPending (fn_802E47B8),
-// clearKeyHistory (fn_802E47E8), recordInput (fn_802E4800), matchKeySequence
+// (fn_802E47E8), recordInput (fn_802E4800), matchKeySequence
 // (MatchKeySequence), inputNibble (fn_802E4A10), keyPressed (fn_802E4A1C),
 // pollInput (fn_802E4A2C), restoreSavedState (fn_802E4A60).
 // Recovered TU window 0x802E46AC..0x802E4C0C (see docs/attribution_analysis.md).
