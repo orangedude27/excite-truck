@@ -767,7 +767,7 @@ void stopTrackMusic(void) {
     return getTrackMusicSongCount() > 0;
 }
 
-/* Nonzero when no track-music song is selected (current song index == -1). */ /* Returns nonzero when no track-music song is selected, i.e. the current song index is -1. */ long hasNoSelectedTrackMusicSong(void) {
+/* Nonzero when no track-music song is selected (current song index == -1). */ /* Nonzero when no track-music song is selected (current song index == -1). */ /* Returns nonzero when no track-music song is selected, i.e. the current song index is -1. */ long hasNoSelectedTrackMusicSong(void) {
     /* Return nonzero when no track-music entry is selected (the current track index is -1). */
     return (gTrackMusicCurrentSong + 1) == 0;
 }
