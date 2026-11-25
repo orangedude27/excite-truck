@@ -405,7 +405,7 @@ extern void fn_802C9A70(int);
 extern int fn_801E8838(void);
 extern int fn_800217AC(void);
 extern void fn_802C942C(int);
-extern void fn_802C855C(void);
+extern void DrawList_shutdown(void);
 extern void fn_802D08C4(int);
 extern void fn_802C2B48(void);
 void fn_8000B2AC(void) {
@@ -419,7 +419,7 @@ void fn_8000B2AC(void) {
     if (fn_801E8838() != 0 && fn_800217AC() != 0) {
         fn_802C942C(fn_801E8838() << 24);
     }
-    fn_802C855C();
+    DrawList_shutdown();
     fn_801E85A4();
     fn_802D08C4(0);
     fn_802C2B48();

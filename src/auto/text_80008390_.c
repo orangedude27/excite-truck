@@ -104,7 +104,7 @@ extern s32 fn_802787F4(void);
 extern void fn_800073D8(s32);
 extern void fn_80007318(s32);
 extern void fn_802C942C(s32);
-extern void fn_802C855C(void);
+extern void DrawList_shutdown(void);
 extern void fn_80211F64(void);
 extern void fn_80129AFC(void);
 extern void fn_802C2B48(void);
@@ -582,7 +582,7 @@ void fn_80008F98(void) {
                 fn_80010188((int)0xFF4080FF, 10, p27 + 0x1CC, lbl_805601B8, var_f25, var_f24, sp8);
             }
         }
-        fn_802C855C();
+        DrawList_shutdown();
         fn_80211F64();
         fn_80129AFC();
         fn_802C2B48();
@@ -960,7 +960,7 @@ skip16:
         if (fn_801E8838() != 0) {
             fn_802C942C(fn_801E8838() << 24);
         }
-        fn_802C855C();
+        DrawList_shutdown();
         fn_80211F64();
         fn_80129AFC();
         fn_802C2B48();

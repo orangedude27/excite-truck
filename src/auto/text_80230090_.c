@@ -405,7 +405,7 @@ void fn_80230AD8(s32 displayListIndex) {
 }
 
 void fn_80230B38(void* alarm) {
-#define ShutdownRenderMode fn_802C855C
+#define ShutdownRenderMode DrawList_shutdown
 #define FlushFrame         fn_802C2B48
     /* Finalize callback: shut down the current render mode, then flush the
        pending frame. The alarm argument is unused. */

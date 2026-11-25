@@ -120,7 +120,7 @@ extern float fn_8023293C(int, char *, float);
 extern void fn_80028E00(char *, char *);
 extern void fn_802335F0(char *, int, float, float);
 extern void fn_802C9A70(int);
-extern void fn_802C855C(void);
+extern void DrawList_shutdown(void);
 extern void fn_802C2B48(void);
 extern char *strcpy(char *, const char *);
 
@@ -329,7 +329,7 @@ int fn_80245360(int *a, struct Menu *b)
       fn_802337A0(a[4], -1, 12, lbl_80343080, &lbl_8055BE5C, temp_f30, temp_f31, lbl_80563830, lbl_80563844, lbl_80563834);
     }
     fn_802C9A70(1);
-    fn_802C855C();
+    DrawList_shutdown();
     fn_802C2B48();
     fn_80129AFC();
     if (fn_802E47B8())
@@ -463,7 +463,7 @@ void fn_8024590C(int *a, int *b) {
         fn_802335F0(tail, a[4], lbl_8056388C, lbl_80563890);
     }
     fn_802C9A70(1);
-    fn_802C855C();
+    DrawList_shutdown();
     fn_802C2B48();
 }
 

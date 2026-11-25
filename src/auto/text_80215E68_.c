@@ -38,7 +38,7 @@ extern s32 fn_802160AC(void);
 extern s32 fn_80211F54(void);
 extern s32 fn_80019BA8(void);
 extern s32 fn_80230DA0(void);
-extern s32 fn_802C855C(void);
+extern s32 DrawList_shutdown(void);
 extern s32 fn_802C2B48(void);
 extern s32 fn_80211F64(void);
 extern s32 fn_802164D8(void);
@@ -390,7 +390,7 @@ void fn_802166B8(void) {
     if (lbl_8055F024 != 0) {
         fn_80230DA0();
     }
-    fn_802C855C();
+    DrawList_shutdown();
     fn_802C2B48();
 }
 

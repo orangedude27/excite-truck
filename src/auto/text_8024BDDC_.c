@@ -12,7 +12,7 @@ typedef union { int i; float f; } VtxWord;
 extern void fn_80129AFC(void);
 extern void fn_802C2B48(void);
 extern void DrawList_beginFrame(void);
-extern void fn_802C855C(void);
+extern void DrawList_shutdown(void);
 extern void DrawList_loadMatrix(float*);
 extern void fn_802C86E8(unsigned int);
 extern void DrawList_setViewport(int, int, int, int);
@@ -125,7 +125,7 @@ void fn_8024BE04(void) {
         fn_802C8BD0(h, tbl[4], tbl[3], tbl[2], tbl[1], tbl[0], v[2].z, v[0].z);
         fn_802C8DB8((float*)v, 4, idx, 6);
         DrawList_RestoreNormalMode();
-        fn_802C855C();
+        DrawList_shutdown();
         fn_802C2B48();
         if ((i & 0x3f) == 0) fn_802E30C8(base + 0x18, i);
         fn_80129AFC();

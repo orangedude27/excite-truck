@@ -265,7 +265,7 @@ void DrawList_UnregisterCallbackAndShutdown(void) {
     fn_802C6080();
 }
 
-/* Prepare draw lists for a render frame: enter normal GX render mode, reset the 0x40 texture draw slots (fn_802CC60C) and register the GX draw-sync callback (HomeMenu_beginFrame); paired with the fn_802C855C teardown. */
+/* Prepare draw lists for a render frame: enter normal GX render mode, reset the 0x40 texture draw slots (fn_802CC60C) and register the GX draw-sync callback (HomeMenu_beginFrame); paired with the DrawList_shutdown teardown. */
 /* Begins a draw-list frame: set the normal GX render mode, reset the texture draw slots, and register the GX draw-sync callback. */ void DrawList_beginFrame(void) {
     sRenderMode = RENDER_MODE_NORMAL;
     fn_802CC60C();
@@ -273,7 +273,7 @@ void DrawList_UnregisterCallbackAndShutdown(void) {
 }
 
 /* Shuts down the draw-list module: flush the UI, release the texture list, and mark rendering stopped. */
-void fn_802C855C(void) {
+void DrawList_shutdown(void) {
 #define RENDER_MODE_SHUTDOWN 0
     HomeMenu_drawUIAndFlush();
     fn_802CC770();
