@@ -1,5 +1,5 @@
 // strmbank — the global stream-bank manager and its null implementation.
-// Symbol guide: null-manager installer (fn_802E7578), shutdownStrmBank (destroyStrmBankManager),
+// Symbol guide: null-manager installer (initStrmBank), shutdownStrmBank (destroyStrmBankManager),
 // loadStrmBank (fn_802E75E4), bank-unload helpers (unloadStrmBank, unloadStrmBankEx),
 // setStrmBankLevel (fn_802E7684), null-manager creation (createNullStrmBank) and the
 // null manager's vtable methods (fn_802E76F0..fn_802E7764).
@@ -29,7 +29,7 @@ struct StrmBankObject { virtual ~StrmBankObject(); };
 #pragma cplusplus reset
 
 /* Install the freshly created "null" stream-bank manager as the global manager. */
-void fn_802E7578(void) {
+void initStrmBank(void) {
     strmBankManager = (void *)createNullStrmBank();
 }
 
@@ -83,7 +83,7 @@ extern "C" void fn_802E7684(s32 level) {
 #pragma cplusplus reset
 /* Build the "null" stream-bank manager the game falls back on: allocate a
    4-byte object and point it at vtblNullStrmBank, the do-nothing manager's
-   vtable.  fn_802E7578 installs the returned pointer globally; the console
+   vtable.  initStrmBank installs the returned pointer globally; the console
    type queried first is unused. */
 s32 createNullStrmBank(void) {
     void **manager;

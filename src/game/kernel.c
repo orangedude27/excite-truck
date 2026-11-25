@@ -600,7 +600,7 @@ extern void fn_802E8CA8(void);
 extern void fn_80127538(void);
 extern void fn_80129790(void);
 extern void Spu_Init(void);
-extern void fn_802E7578(void);
+extern void initStrmBank(void);
 extern void fn_802EBE2C(void);
 extern void fn_802CF600(void);
 extern void fn_802EC614(void);
@@ -654,7 +654,7 @@ struct StartupCalendar {
     fn_80127538();
     fn_80129790();
     Spu_Init();
-    fn_802E7578();
+    initStrmBank();
     fn_802EBE2C();
     fn_802CF600();
     fn_802EC614();
