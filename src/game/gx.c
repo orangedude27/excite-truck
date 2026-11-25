@@ -3447,7 +3447,7 @@ void gxSetTexCoordMtxFlag(void) {
 #undef texCoordMtxFlag
 }
 
-void gxClearTexCoordMtxFlag(void) {
+/* Clear the texcoord0 texture-matrix flag in the render request block (+0xC). */ void gxClearTexCoordMtxFlag(void) {
     /* Clear the render-request texcoord0 matrix flag (+0xC): default TEV uses GX_IDENTITY. */
     gRenderRequest[12] = 0;
 }
