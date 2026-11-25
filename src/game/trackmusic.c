@@ -199,7 +199,7 @@ long fn_8020F6F8(void) {
 }
  
 #pragma dont_inline on
-long getNextTrackMusicIndex(void) {
+/* Return the track index at the current cursor in the shuffled play order, then advance the cursor cyclically. */ long getNextTrackMusicIndex(void) {
     /* Returns the next track index from the shuffled play order and advances the cursor cyclically. */
     long cursor = lbl_8055EEC4;
     long *order = lbl_804902C4.m_entries;
