@@ -320,7 +320,7 @@ void fn_802CD320(void *list, int object) {
     (*itemsPtr)[(*countPtr)++] = object;
 }
 #pragma pop
-void fn_802CD33C(void *list, int entryIndex, int clearFlag) {
+/* MlistSetEntryFlag: set bit 0x40 in a material-list entry's u16 flags at +0x12; a nonzero clearFlag clears it instead. Entries are 32 bytes in the table at +0x24. */ void fn_802CD33C(void *list, int entryIndex, int clearFlag) {
     /* RealName: MlistSetEntryFlag. Sets bit 0x40 in the u16 flags at +0x12 of
      * material-list entry entryIndex (32-byte entries in the table at +0x24);
      * a nonzero clearFlag clears the bit instead. */
