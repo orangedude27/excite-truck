@@ -750,7 +750,6 @@ loop_3:
     }
 }
 
-#define gxCanvasGetPixelAddr32 fn_802C3060 /* 4-byte-pixel counterpart of gxCanvasGetPixelAddr */
 #define CANVAS_COPY_FORMAT_MSG lbl_8034B0E4 /* "Can't copy from %d to %d" */
 
 #pragma push
