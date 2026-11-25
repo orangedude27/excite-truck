@@ -1609,7 +1609,8 @@ void fn_802C77F0(void *model, f32 *out) {
 /* Return the model instance's view tolerance (+0x1C of its group list) - the
  * threshold passed to the visibility/culling test in fn_802C94A0. */
 float getModelInstanceTolerance(int instanceId) {
-    return *(float *)((char *)(*(void **)((char *)fn_802C5390(instanceId) + 4)) + 0x1C);
+    struct ModelInstance *instance = (struct ModelInstance *)fn_802C5390(instanceId);
+    return *(float *)((char *)instance->groups + 0x1C);
 }
 
 /* Parse a NUL-terminated hexadecimal string (0-9 and uppercase A-F) into an
