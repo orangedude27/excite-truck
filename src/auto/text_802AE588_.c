@@ -1262,7 +1262,7 @@ void fn_802AFF80(void *list, short value) {
 /* Sample the terrain height at grid cell (gridX, gridZ), scaled by lbl_80564AF0
  * into world space, append the (x, height, z) point to the point buffer
  * lbl_8055F974, and return the point's u16 index. */
-int fn_802AFFA8(int gridX, int gridZ) {
+/* Sample the terrain height at grid cell (arg0, arg1) scaled into world space, append the (x, height, z) point to the point buffer lbl_8055F974, and return its u16 index. */ int fn_802AFFA8(int gridX, int gridZ) {
     float point[3];
     float x = (float)gridX * lbl_80564AF0;
     float z = (float)gridZ * lbl_80564AF0;
