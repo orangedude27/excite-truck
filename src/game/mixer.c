@@ -225,7 +225,8 @@ void fn_80208B8C(int initBackends) {
 int fn_80208D3C(void) { return MIXER_DEVICE_COUNT; }
 
 int GetMixerDevice(int index) {
-    /* Return the mixer device handle registered at the given slot. */
+    /* Return the sound-device handle registered at the given slot of the mixer
+     * device registry; its vtable getName sits at +0xC. */
     return MIXER_DEVICES[index];
 }
 
