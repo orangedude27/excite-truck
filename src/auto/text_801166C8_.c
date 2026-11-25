@@ -66,7 +66,7 @@ extern s32 fn_8011A7CC(DVDFileInfo *);
 extern s32 OSDisableInterrupts(void);
 void fn_80127440(void*);
 extern void fn_80127398(s32);
-extern void fn_802E300C(s32);
+extern void KERNEL_PlatExitProcess(s32);
 extern void* lbl_8041D728[];
 extern u8 lbl_802F6A40[];
 extern u8 lbl_8041D508[];
@@ -8126,59 +8126,14 @@ void fn_8012440C(void *arg0, void *arg1) {
 }
 
 void fn_80124AD8(void *arg0, void *arg1) {
-    f32 temp_f0;
-    f32 temp_f0_2;
-    f32 temp_f0_3;
-    f32 temp_f10;
-    f32 temp_f10_2;
-    f32 temp_f11;
-    f32 temp_f11_2;
-    f32 temp_f11_3;
-    f32 temp_f12;
-    f32 temp_f12_2;
-    f32 temp_f12_3;
-    f32 temp_f13;
-    f32 temp_f1;
-    f32 temp_f1_2;
-    f32 temp_f1_3;
-    f32 temp_f22;
-    f32 temp_f22_2;
-    f32 temp_f22_3;
-    f32 temp_f23;
-    f32 temp_f23_2;
-    f32 temp_f24;
-    f32 temp_f24_2;
-    f32 temp_f25;
-    f32 temp_f25_2;
-    f32 temp_f26;
-    f32 temp_f28;
-    f32 temp_f29;
-    f32 temp_f2;
-    f32 temp_f2_2;
-    f32 temp_f2_3;
-    f32 temp_f30;
-    f32 temp_f31;
-    f32 temp_f3;
-    f32 temp_f3_2;
-    f32 temp_f3_3;
-    f32 temp_f4;
-    f32 temp_f4_2;
-    f32 temp_f4_3;
-    f32 temp_f5;
-    f32 temp_f5_2;
-    f32 temp_f5_3;
-    f32 temp_f6;
-    f32 temp_f6_2;
-    f32 temp_f6_3;
-    f32 temp_f6_4;
-    f32 temp_f7;
-    f32 temp_f7_2;
-    f32 temp_f7_3;
-    f32 temp_f7_4;
-    f32 temp_f8;
-    f32 temp_f8_2;
-    f32 temp_f9;
-    f32 temp_f9_2;
+    f32 temp_f0, temp_f0_2, temp_f0_3, temp_f10, temp_f10_2;
+    f32 temp_f11, temp_f11_2, temp_f11_3, temp_f12, temp_f12_2, temp_f12_3, temp_f13;
+    f32 temp_f1, temp_f1_2, temp_f1_3, temp_f22, temp_f22_2, temp_f22_3;
+    f32 temp_f23, temp_f23_2, temp_f24, temp_f24_2, temp_f25, temp_f25_2;
+    f32 temp_f26, temp_f27, temp_f28, temp_f29, temp_f2, temp_f2_2, temp_f2_3;
+    f32 temp_f30, temp_f31, temp_f3, temp_f3_2, temp_f3_3, temp_f4, temp_f4_2, temp_f4_3;
+    f32 temp_f5, temp_f5_2, temp_f5_3, temp_f6, temp_f6_2, temp_f6_3, temp_f6_4;
+    f32 temp_f7, temp_f7_2, temp_f7_3, temp_f7_4, temp_f8, temp_f8_2, temp_f9, temp_f9_2;
 
     temp_f1 = ((f32 *)arg0)[2];
     temp_f0 = ((f32 *)arg0)[10];
@@ -8208,7 +8163,8 @@ void fn_80124AD8(void *arg0, void *arg1) {
     temp_f9 = ((f32 *)arg0)[5];
     temp_f6_2 = ((f32 *)arg0)[13];
     temp_f2_3 = ((f32 *)arg1)[1];
-    temp_f28 = temp_f28 - temp_f29;
+    temp_f27 = temp_f28 - temp_f29;
+    temp_f28 = temp_f28 + temp_f29;
     temp_f5_2 = temp_f10 - temp_f5;
     temp_f22_2 = temp_f12 + temp_f11;
     temp_f7 = temp_f25 + temp_f26;
@@ -8232,10 +8188,10 @@ void fn_80124AD8(void *arg0, void *arg1) {
     ((f32 *)arg0)[1] = (f32) (temp_f24_2 + temp_f25_2);
     temp_f7_3 = temp_f5_2 - temp_f10_2;
     ((f32 *)arg0)[4] = (f32) (temp_f3_3 - temp_f22_3);
-    temp_f11_3 = temp_f2_3 * temp_f28;
+    temp_f11_3 = temp_f2_3 * temp_f27;
     ((f32 *)arg0)[6] = (f32) (temp_f3_3 + temp_f22_3);
     temp_f8_2 = temp_f6_3 + temp_f9_2;
-    temp_f12_3 = temp_f2_3 * (temp_f28 + 2.0f * temp_f29);
+    temp_f12_3 = temp_f2_3 * temp_f28;
     ((f32 *)arg0)[5] = (f32) (temp_f7_2 + temp_f0_3);
     ((f32 *)arg0)[7] = (f32) (temp_f7_2 - temp_f0_3);
     ((f32 *)arg0)[8] = (f32) (temp_f7_3 + temp_f11_3);
@@ -9623,7 +9579,7 @@ void fn_80127468(OSAlarm *alarm, OSContext *ctx) {
  * log "PlatExitProcess(%d)" with the same value. */
 void fn_8012748C(s32 exitCode) {
     fn_80127398(exitCode);
-    fn_802E300C(exitCode);
+    KERNEL_PlatExitProcess(exitCode);
 }
 extern f64 lbl_80561198;
 extern f64 lbl_805611A8;
