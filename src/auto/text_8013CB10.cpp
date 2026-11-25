@@ -2716,7 +2716,7 @@ done4:;}
     if(*(s32 *)(row+0x10c))row[8]=0;
     switch(*(s32 *)row) {
     case 0: /* first frame: start the animation and show the row's widgets */
-        fn_802ADFF4(*(s32 *)(row+0xc),*(s32 *)(row+0x108));
+        animStart(*(s32 *)(row+0xc),*(s32 *)(row+0x108));
         if(strlen((char *)row+0xee)) {
             u8 *widget=*(u8 **)(row+0x2c);
                 if(widget && !widget[0x19]){widget[0x49]=1;widget[0x4b]=0;widget[0x4a]=0;}
@@ -2734,20 +2734,20 @@ done4:;}
         *(s32 *)row=1;
         break;
     case 1:
-        if(*(s32 *)(row+0x110) && *(f32 *)(row+4)<lbl_805614A4) *(f32 *)(row+4)=lbl_8055E3C8;
+        if(*(s32 *)(row+0x110) && *(f32 *)(row+4)<zeroF) *(f32 *)(row+4)=gameTimeNow;
         if(*(s32 *)(row+0x110)==2 && !row[0x20]) {
             u8 *widget=*(u8 **)(row+0x1c);
             row[0x20]=1;
             if(widget){widget[0x49]=1;widget[0x4b]=0;widget[0x4a]=0;}
         }
         if(*(s32 *)(row+0x114)) {
-            fn_802AE02C(*(s32 *)(row+0xc),*(s32 *)(row+0x108));
+            animPause(*(s32 *)(row+0xc),*(s32 *)(row+0x108));
             *(s32 *)row=2;
         }
         break;
     case 2:
         if(row[9]) {
-            fn_802AE0B8(*(s32 *)(row+0xc),*(s32 *)(row+0x108));
+            animResume(*(s32 *)(row+0xc),*(s32 *)(row+0x108));
             u8 *widget=*(u8 **)(row+0x24);
             if(widget){widget[0x49]=1;widget[0x4b]=0;widget[0x4a]=0;}
             *(s32 *)row=3;
@@ -2755,15 +2755,36 @@ done4:;}
         break;
     case 3:
         if(*(s32 *)(row+0x118)) {
-            fn_802AE02C(*(s32 *)(row+0xc),*(s32 *)(row+0x108));
+            animPause(*(s32 *)(row+0xc),*(s32 *)(row+0x108));
             *(s32 *)row=4;
         }
         break;
     case 4:
         break;
     }
-    fn_802AE168(*(s32 *)(row+0xc));
+    animAdvance(*(s32 *)(row+0xc));
     return *(s32 *)row!=4;
+#undef formatInt
+#undef formatScore
+#undef formatTimeMMSS
+#undef loadMessage
+#undef refreshMessage
+#undef rankIndexForScore
+#undef animStart
+#undef animPause
+#undef animResume
+#undef animAdvance
+#undef fmtInt
+#undef emptyStr
+#undef dashStr
+#undef zeroF
+#undef oneF
+#undef bonusBaseF
+#undef gameTimeNow
+#undef msgLoadedFlag
+#undef messageMgr
+#undef timeBonusMsgId
+#undef messageTypeTag
 }
 #pragma pop
 
