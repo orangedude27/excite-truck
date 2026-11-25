@@ -136,7 +136,7 @@ void fn_802C53C4(void *a, void *b, int x, int y, unsigned char z) {
     *(void **)(entry + 16) = *(void **)((char *)b + 8);
     *(void **)((char *)b + 8) = entry;
 }
-void fn_802C543C(void) {
+void mrModelResetDisplayEntries(void) {
     /* Reset the used-count at +0 of the display entry pool lbl_804C1338, emptying it. */
     lbl_804C1338[0] = 0;
 }
@@ -301,7 +301,7 @@ void fn_802C57B0(void) { }
 void fn_802C57B4(int instanceId, int transformId, int entryId, unsigned char status, float distance) {
     extern int lbl_8055D008;
     extern s8 lbl_8055FC20;
-    extern void fn_802C543C(void);
+    extern void mrModelResetDisplayEntries(void);
     extern void fn_802C5720(int);
     extern void fn_802C57B0(void);
     extern void fn_802CC550(int, void *, float, float);
@@ -321,7 +321,7 @@ void fn_802C57B4(int instanceId, int transformId, int entryId, unsigned char sta
     instance = (struct ModelInstance *)MRModel_GetInstance(instanceId);
     groups = instance->groups;
     if ((u8)lbl_8055FC20 == 0) {
-        fn_802C543C();
+        mrModelResetDisplayEntries();
     }
     nodeSlotOffset = instance->nodeSlot << 2;
     for (i = 0, groupOffset = 0; i < groups->count; groupOffset += 0x10, i++) {
@@ -1782,14 +1782,14 @@ extern void fn_802DA550(void);
 void fn_802C7A40(void) { fn_802DA550(); }
 
 extern s8 lbl_8055FC20;
-extern void fn_802C543C(void);
+extern void mrModelResetDisplayEntries(void);
 /* Begin a model-draw batch: mark submits as batched and empty the display
- * entry pool (fn_802C543C) — paired with submitModelBatch, which submits and clears. */
+ * entry pool (mrModelResetDisplayEntries) — paired with submitModelBatch, which submits and clears. */
 void fn_802C7A44(void) {
 #define s_modelBatchActive lbl_8055FC20
     s_modelBatchActive = 1;
 #undef s_modelBatchActive
-    fn_802C543C();
+    mrModelResetDisplayEntries();
 }
 
 /* End a model draw batch: refresh all nine sort groups (level 0 means all) and clear the batch-active flag set by fn_802C7A44. */ /* End a model draw batch: refresh all nine sort groups (level 0 means all) and clear the batch-active flag set by fn_802C7A44. */ void submitModelBatch(void) {
@@ -1810,14 +1810,14 @@ void fn_802C7A94(int groupId) {
     fn_802C7758();
     fn_802C5720(groupId);
     if (groupId == 9) {
-        fn_802C543C();
+        mrModelResetDisplayEntries();
     }
 }
 
 #pragma dont_inline on
 /* End a run of model draws: reset sort group 9, the extra group that is not
  * part of submitModelBatch's nine, which also empties the display entry pool
- * (fn_802C543C).  Callers pair it with fn_802C7A44, which starts a batch. */
+ * (mrModelResetDisplayEntries).  Callers pair it with fn_802C7A44, which starts a batch. */
 void fn_802C7AD4(void) {
     fn_802C7A94(9);
 }
@@ -1981,7 +1981,7 @@ void fn_802C7D54(int arg0, const float *arg1, int arg2, float fa, float fb, floa
     if (fn_802C94A0(out, &local.status, &local.scalar, rot[-1]) != 0) {
         r20 = fn_802D0514((void *)arg1);
         if ((unsigned char)lbl_8055FC20 == 0) {
-            fn_802C543C();
+            mrModelResetDisplayEntries();
         }
         groups = instance->groups;
         nodeSlotOffset = instance->nodeSlot << 2;
