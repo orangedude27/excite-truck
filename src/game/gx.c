@@ -588,7 +588,7 @@ void fn_802CF10C(void) {
 
 #pragma dont_inline reset
 
-void fn_802CF5A8(void) {
+void gxRegisterResetCallback(void) {
 #define sGxResetRegistered lbl_8055D0FF
 #define sGxResetName lbl_8055D100
 #define GxResetCallback fn_802CEC04
@@ -694,7 +694,7 @@ void fn_802CF600(void) {
     HomeMenu_endFrame();
     fn_802E30C8(base + 0x2FC);
     fn_80127468();
-    fn_802CF5A8();
+    gxRegisterResetCallback();
     fn_802DACD4();
     fn_802D9C18();
     fn_800591AC((int)fn_802CF10C);
