@@ -58,7 +58,7 @@ extern void fn_80128668(void *);
 #pragma scheduling invalid_target
 #pragma push
 #pragma cplusplus on
-/* Squeal-object destructor: restore its vtable, release the owned SFX and road-sound objects, and free the object itself when requested. */ extern "C" void *fn_80209DE4(void *self, int shouldDelete) {
+/* Squeal-object destructor: restore its vtable, release the owned SFX and road-sound objects, and free the object itself when requested. */ extern "C" void *SquealSound_destroy(void *self, int shouldDelete) {
 #define kVtable    lbl_8033C258
 #define freeObject fn_80128668
     /* Destroy the squeal object, releasing its owned child objects and optionally freeing it. */
