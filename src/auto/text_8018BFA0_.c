@@ -1993,4 +1993,43 @@ extern float lbl_80561F70;
 int fn_80161A38(int, int, int);
 int fn_801DFF1C(int);
 float PSQUATMultiply(void *, void *);
-
+#pragma dont_inline on
+void fn_8018BFA0(void *outMatrix, float *a, int *bMatrix, int arg3, float arg4, float arg5) {
+    /* Compose two 3x4 transforms: multiply the 3x3 rotations and rebuild the
+     * translation from both offsets, staging results when the output aliases an input. */
+    float *out = (float *)outMatrix;
+    float *b = (float *)bMatrix;
+    float m00, m01, m02, m10, m11, m12, m20, m21, m22;
+    float transformed[3];
+    if (out == b || out == a) {
+        m00 = fn_80144514(a[0], b[0], a[3], b[1], a[6], b[2]);
+        m01 = fn_80144514(a[0], b[3], a[3], b[4], a[6], b[5]);
+        m02 = fn_80144514(a[0], b[6], a[3], b[7], a[6], b[8]);
+        m10 = fn_80144514(a[1], b[0], a[4], b[1], a[7], b[2]);
+        m11 = fn_80144514(a[1], b[3], a[4], b[4], a[7], b[5]);
+        m12 = fn_80144514(a[1], b[6], a[4], b[7], a[7], b[8]);
+        m20 = fn_80144514(a[2], b[0], a[5], b[1], a[8], b[2]);
+        m21 = fn_80144514(a[2], b[3], a[5], b[4], a[8], b[5]);
+        m22 = fn_80144514(a[2], b[6], a[5], b[7], a[8], b[8]);
+        out[0] = m00; out[3] = m01; out[6] = m02; out[1] = m10; out[4] = m11; out[7] = m12; out[2] = m20; out[5] = m21; out[8] = m22;
+    } else {
+        out[0] = fn_80144514(a[0], b[0], a[3], b[1], a[6], b[2]);
+        out[3] = fn_80144514(a[0], b[3], a[3], b[4], a[6], b[5]);
+        out[6] = fn_80144514(a[0], b[6], a[3], b[7], a[6], b[8]);
+        out[1] = fn_80144514(a[1], b[0], a[4], b[1], a[7], b[2]);
+        out[4] = fn_80144514(a[1], b[3], a[4], b[4], a[7], b[5]);
+        out[7] = fn_80144514(a[1], b[6], a[4], b[7], a[7], b[8]);
+        out[2] = fn_80144514(a[2], b[0], a[5], b[1], a[8], b[2]);
+        out[5] = fn_80144514(a[2], b[3], a[5], b[4], a[8], b[5]);
+        out[8] = fn_80144514(a[2], b[6], a[5], b[7], a[8], b[8]);
+    }
+    matVecDotS_8018((Vec_8018 *)transformed, a, b + 9);
+    out[9] = a[9] + transformed[0];
+    out[10] = a[10] + transformed[1];
+    out[11] = a[11] + transformed[2];
+    matVecDotS_8018((Vec_8018 *)transformed, out, b + 9);
+    out[9] -= transformed[0];
+    out[10] -= transformed[1];
+    out[11] -= transformed[2];
+}
+#pragma dont_inline reset
