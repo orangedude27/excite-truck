@@ -761,7 +761,7 @@ void stopTrackMusic(void) {
 }
 
 /* True (1) when a track-music song is selected (current song id gTrackMusicCurrentSong != -1). */
-long fn_802104B8(void) {
+long hasSelectedTrackMusicSong(void) {
     return (unsigned long)((-1 - gTrackMusicCurrentSong) | (gTrackMusicCurrentSong + 1)) >> 31;
 }
 
