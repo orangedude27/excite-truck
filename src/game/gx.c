@@ -3723,6 +3723,3 @@ extern char sGxResetCallbackName;
 #undef gRenderMode
 #undef sViewport
 }
-#pragma dont_inline on
-void fn_802D3A50(void *effect) { ((unsigned char *)effect)[0xC] = 0; }
-#pragma dont_inline reset
