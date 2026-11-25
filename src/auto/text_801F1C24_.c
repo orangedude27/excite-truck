@@ -2156,13 +2156,13 @@ void fn_801F4B18(void *collection, int arg1) {
 #pragma pop
 
 extern int fn_801F1CF0(int);
-extern int fn_802CDAFC(int, int);
+extern int MlistClearObjectFlag(int, int);
 extern int fn_802CDB20(int, int);
 void fn_801F4C34(void *entryPtr, int drawContext) {
     /* Clear an object's per-object draw flag when it is no longer facing the camera. */
     int *entry = (int *)entryPtr;
     if (fn_802CDB20(drawContext, entry[2]) != 0 && fn_801F1CF0(entry[1]) == 0) {
-        fn_802CDAFC(drawContext, entry[2]);
+        MlistClearObjectFlag(drawContext, entry[2]);
     }
 }
 

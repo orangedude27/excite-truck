@@ -527,7 +527,7 @@ extern int fn_802D0514(int);
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_802CDAFC(void *object, int objectIndex) {
+void MlistClearObjectFlag(void *object, int objectIndex) {
     /* Clear this object's per-object flag byte in the shared draw context, the
      * same byte fn_802CDB20 tests. */
     int offset18 = *(int *)((char *)object + 0x18);
@@ -540,7 +540,7 @@ void fn_802CDAFC(void *object, int objectIndex) {
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 /* RealName: MlistIsObjectFlagged. Test whether the per-object flag byte for
- * `objectIndex` in the shared draw context is set (fn_802CDAFC clears that same
+ * `objectIndex` in the shared draw context is set (MlistClearObjectFlag clears that same
  * byte); object fields +0x10 and +0x18 are bases into the flag array. */
 int fn_802CDB20(void *object, int objectIndex) {
     int offset18;
