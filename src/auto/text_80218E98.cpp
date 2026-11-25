@@ -1651,14 +1651,18 @@ extern "C" s32 fn_8021A9A4(void *arg0) {
     unsigned int flag = *(unsigned char *)fn_80216708();
     s32 first, second;
     s32 *p;
+    s32 *temp;
+    s32 temp2;
     first = 0;
     if (flag != 0)
         first = 2;
     second = 0;
-    p = *(s32 **)(base + 0x254);
+    temp = *(s32 **)(base + 0x254);
+    p = temp;
     if (p != 0 && *p == *(s32 *)(base + 0x258))
         second = 1;
-    return (s32)(((unsigned int)((-second) | second)) >> 31) | first;
+    temp2 = (s32)(((unsigned int)((-second) | second)) >> 31);
+    return temp2 | first;
 }
 #pragma dont_inline off
 extern "C" void fn_8021AA18(void *widget) {
