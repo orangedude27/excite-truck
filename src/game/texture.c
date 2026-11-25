@@ -1345,7 +1345,7 @@ void texUnlinkNode(register void **link, void *node, void *scan) {
 
 extern int fn_802D9068(void);
 extern void startTextureRequestRead(void *, void *);
-extern void fn_802CBFA0(void *, unsigned int);
+extern void TexClearRequestRefs(void *, unsigned int);
 extern void fn_802CC03C(int **, int *, int);
 extern int fn_802CC10C(void *, int, int, int);
 extern int fn_802CC404(void *);
@@ -1413,7 +1413,7 @@ scan_done:
                     startTextureRequestRead(base, request);
                 allocated = 1;
             } else {
-                fn_802CBFA0(base, (unsigned int)request);
+                TexClearRequestRefs(base, (unsigned int)request);
                 *(int *)(request + 0x10) = zero;
             }
         } else if (freeTex != 0 &&
@@ -1430,7 +1430,7 @@ scan_done:
     }
 }
 
-void fn_802CBFA0(void *mgr, unsigned int request) {
+void TexClearRequestRefs(void *mgr, unsigned int request) {
     /* Detach the given load request from every loaded texture in the manager's
        +0xC list: clear each node's owner field that points at it. */
     typedef struct TexNode {
