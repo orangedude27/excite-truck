@@ -435,7 +435,7 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ..
 extern "C" const char lbl_8031EA80[];
 extern "C" const char lbl_8031EA90[];
 extern "C" char lbl_804077C0[];
-extern "C" s32 fn_800A53B4(void *);
+extern "C" s32 VFiPFVOL_IsMediaPresent(void *);
 extern "C" const char lbl_8031F2C8[];
 extern "C" const char lbl_8031F2E4[];
 extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597F8[]; }
@@ -4396,41 +4396,62 @@ finish:
 }
 
 extern "C" s32 fn_800B5700(s32, void *, s32, u16, u32, u32 *, u32);
-extern "C" s32 fn_800AB0C0(u8 *p_ent, u32 arg1) {
-    u8 buf[32];
-    u32 count;
-    s32 handle = *(s32 *)(p_ent + 0x22C);
-    s32 result;
-    u16 tmp;
-    u32 tmp32;
-    if (*(u32 *)(p_ent + 0x234) == 1) return 14;
-    if (arg1 == 1) p_ent[0x21C] |= 0x20;
-    fn_800B3A70(buf, p_ent + 0x20E, p_ent[0x21C]);
-    if (buf[0] == 0xE5) buf[0] = 5;
-    buf[11] = p_ent[0x21C];
-    buf[12] = p_ent[0x21B];
-    buf[13] = p_ent[0x21D];
-    tmp = *(u16 *)(p_ent + 542); *(u16 *)(buf + 14) = (u16)((tmp << 8) | ((u32)tmp >> 8));
-    tmp = *(u16 *)(p_ent + 544); *(u16 *)(buf + 16) = (u16)((tmp << 8) | ((u32)tmp >> 8));
-    tmp = *(u16 *)(p_ent + 546); *(u16 *)(buf + 18) = (u16)((tmp << 8) | ((u32)tmp >> 8));
-    tmp = *(u16 *)(p_ent + 548); *(u16 *)(buf + 22) = (u16)((tmp << 8) | ((u32)tmp >> 8));
-    tmp = *(u16 *)(p_ent + 550); *(u16 *)(buf + 24) = (u16)((tmp << 8) | ((u32)tmp >> 8));
-    tmp = *(u32 *)(p_ent + 0x234) >> 16;
-    *(u16 *)(buf + 20) = (u16)((tmp << 8) | ((u32)tmp >> 8));
-    tmp = *(u32 *)(p_ent + 0x234);
-    *(u16 *)(buf + 26) = (u16)((tmp << 8) | ((u32)tmp >> 8));
-    tmp32 = *(u32 *)(p_ent + 0x228);
-    {
-        u32 low = __rlwinm(tmp32, 8, 8, 15);
-        low = __rlwimi(low, tmp32, 24, 0, 7);
-        u32 high = __rlwinm(tmp32, 24, 16, 23);
-        high = __rlwimi(high, tmp32, 8, 24, 31);
-        *(u32 *)(buf + 28) = low | high;
-    }
-    result = fn_800B5700(handle, buf, *(s32 *)(p_ent + 0x238), *(u16 *)(p_ent + 0x23C), 32, &count, 0);
-    if (result != 0) return result;
-    if (count != 32) return 17;
-    return 0;
+extern "C" s32 fn_800AB0C0(u8 *p_ent, u32 arg1)
+{
+  u8 buf[32];
+  u32 count;
+  s32 handle = *((s32 *) (p_ent + 0x22C));
+  s32 result;
+  unsigned char tmp;
+  u32 tmp32;
+  if ((*((u32 *) (p_ent + 0x234))) == 1)
+  {
+    return 14;
+  }
+  if (arg1 == 1)
+  {
+    p_ent[0x21C] |= 0x20;
+  }
+  fn_800B3A70(buf, p_ent + 0x20E, p_ent[0x21C]);
+  if (buf[0] == 0xE5)
+  {
+    buf[0] = 5;
+  }
+  buf[11] = p_ent[0x21C];
+  buf[12] = p_ent[0x21B];
+  buf[13] = p_ent[0x21D];
+  tmp = *((u16 *) (p_ent + 542));
+  *((u16 *) (buf + 14)) = (u16) ((tmp << 8) | (((u32) tmp) >> 8));
+  tmp = *((u16 *) (p_ent + 544));
+  *((u16 *) (buf + 16)) = (u16) ((tmp << 8) | (((u32) tmp) >> 8));
+  tmp = *((u16 *) (p_ent + 546));
+  *((u16 *) (buf + 18)) = (u16) ((tmp << 8) | (((u32) tmp) >> 8));
+  tmp = *((u16 *) (p_ent + 548));
+  *((u16 *) (buf + 22)) = (u16) ((tmp << 8) | (((u32) tmp) >> 8));
+  tmp = *((u16 *) (p_ent + 550));
+  *((u16 *) (buf + 24)) = (u16) ((tmp << 8) | (((u32) tmp) >> 8));
+  tmp = (*((u32 *) (p_ent + 0x234))) >> 16;
+  *((u16 *) (buf + 20)) = (u16) ((tmp << 8) | (((u32) tmp) >> 8));
+  tmp = *((u32 *) (p_ent + 0x234));
+  *((u16 *) (buf + 26)) = (u16) ((tmp << 8) | (((u32) tmp) >> 8));
+  tmp32 = *((u32 *) (p_ent + 0x228));
+  {
+    u32 low = __rlwinm(tmp32, 8, 8, 15);
+    low = __rlwimi(low, tmp32, 24, 0, 7);
+    u32 high = __rlwinm(tmp32, 24, 16, 23);
+    high = __rlwimi(high, tmp32, 8, 24, 31);
+    *((u32 *) (buf + 28)) = low | high;
+  }
+  result = fn_800B5700(handle, buf, *((s32 *) (p_ent + 0x238)), *((u16 *) (p_ent + 0x23C)), 32, &count, 0);
+  if (result != 0)
+  {
+    return result;
+  }
+  if (count != 32)
+  {
+    return 17;
+  }
+  return 0;
 }
 
 extern "C" s32 VFiPFENT_findEmptyTailSFN(void *, void *, u32 *);
@@ -10746,7 +10767,7 @@ extern "C" s32 fn_800A8EA0(void *, u32, void **);
 extern "C" s32 fn_800B5260(void *volume, void *dst, u32 sector, u32 offset, s32 size) {
     /* Reads `size` bytes from the cached page for `sector` of `volume` at byte `offset` into `dst` (returns 9 if inaccessible, 10 if out of range). */
     void *page;
-    if (!(M2C_FIELD(volume, u16 *, 0x1F8C) & 1) || fn_800A53B4(volume) == 0) {
+    if (!(M2C_FIELD(volume, u16 *, 0x1F8C) & 1) || VFiPFVOL_IsMediaPresent(volume) == 0) {
         return 9;
     }
     if (sector >= M2C_FIELD(volume, u32 *, 8) ||
@@ -10871,7 +10892,7 @@ struct VFiPFVolume {
 /* Read a volume's data area into a buffer through its sector cache.
  *
  * The drive has to hold a device with media in it (VF_VOL_IN_USE and
- * fn_800A53B4's VF_VOL_MEDIA_PRESENT) and the range has to stay on the volume,
+ * VFiPFVOL_IsMediaPresent's VF_VOL_MEDIA_PRESENT) and the range has to stay on the volume,
  * else 9 or 10 is returned.  A part-sector request - an offset inside the
  * sector, or less than a whole sector to read - is served from one page of the
  * data cache; a request that starts on a sector boundary and is a whole number
@@ -10892,7 +10913,7 @@ extern "C" s32 fn_800B5324(void *vol, u8 *dest, u32 sector, u32 offset, u32 leng
     VFiPFVolume *volume = VF_VOLUME(vol);
 
     *readOut = 0;
-    if (!(volume->flags & VF_VOL_IN_USE) || !fn_800A53B4(vol)) return 9;
+    if (!(volume->flags & VF_VOL_IN_USE) || !VFiPFVOL_IsMediaPresent(vol)) return 9;
     if ((sector >= volume->totalSectors || offset >= volume->bytesPerSector || offset + length > volume->bytesPerSector) && offset != 0) return 10;
     if (offset != 0 || length < volume->bytesPerSector) {
         result = ((s32 (*)(void *,u32,void **,s32))fn_800A8EE0)(vol,sector,(void **)&page,claimPage);
@@ -10949,10 +10970,10 @@ extern "C" s32 fn_800B5324(void *vol, u8 *dest, u32 sector, u32 offset, u32 leng
     u16 sectorSize;
     s32 result;
 
-    /* fn_800A53B4 reports VF_VOL_MEDIA_PRESENT; a write also needs an attached
+    /* VFiPFVOL_IsMediaPresent reports VF_VOL_MEDIA_PRESENT; a write also needs an attached
      * device (VF_VOL_IN_USE) that is not VF_VOL_WRITE_PROTECTED. */
     if (!(((VFiPFVolume *)volume)->flags & VF_VOL_IN_USE) ||
-        fn_800A53B4(volume) == 0 ||
+        VFiPFVOL_IsMediaPresent(volume) == 0 ||
         (((VFiPFVolume *)volume)->flags & VF_VOL_WRITE_PROTECTED)) {
         return 9;
     }
@@ -10976,7 +10997,7 @@ extern "C" s32 fn_800B5324(void *vol, u8 *dest, u32 sector, u32 offset, u32 leng
 /* Write a volume's data area from a buffer through its sector cache.
  *
  * The drive must hold a writable device with media in it (VF_VOL_IN_USE and
- * fn_800A53B4's VF_VOL_MEDIA_PRESENT, and not VF_VOL_WRITE_PROTECTED) and the
+ * VFiPFVOL_IsMediaPresent's VF_VOL_MEDIA_PRESENT, and not VF_VOL_WRITE_PROTECTED) and the
  * range must stay on the volume, else 9 or 10 is returned.  A part-sector
  * request - an offset inside the sector, or less than a whole sector - is
  * written into one page of the data cache; a request that starts on a sector
@@ -10996,7 +11017,7 @@ extern "C" s32 fn_800B5700(s32 vol, void *src, s32 sector, u16 offset, u32 lengt
     VFiPFVolume *volume = VF_VOLUME((void *)vol);
 
     *writeOut = 0;
-    if (!(volume->flags & VF_VOL_IN_USE) || !fn_800A53B4((void *)vol) || (M2C_FIELD(vol, u16 *, 0x1F8C) & 2)) return 9;
+    if (!(volume->flags & VF_VOL_IN_USE) || !VFiPFVOL_IsMediaPresent((void *)vol) || (M2C_FIELD(vol, u16 *, 0x1F8C) & 2)) return 9;
     if (((u32)sector >= volume->totalSectors || offset >= volume->bytesPerSector || offset + length > volume->bytesPerSector) && offset != 0) return 10;
     if (offset != 0 || length < volume->bytesPerSector) {
         result = ((s32 (*)(void *, s32, s32, s32))fn_800A8F28)((void *)vol, sector, (s32)&page, claimPage);
@@ -11235,7 +11256,7 @@ extern "C" s32 fn_800B5CB4(u32 arg0, void *arg1)
  */
 extern "C" s32 fn_800B5E14(void *vol) {
     s32 result;
-    if (fn_800A53B4(vol) != 0) {
+    if (VFiPFVOL_IsMediaPresent(vol) != 0) {
         if (fn_800A53DC(vol) != 0 && (VF_VOLUME(vol)->flags & VF_VOL_MOUNTED) == 0) {
             VFiPFFILE_FinalizeAllFiles((u8 *)vol);
             VFiPFDIR_FinalizeAllDirs((u8 *)vol);
@@ -11304,7 +11325,7 @@ block_25:
 }
 
 #pragma pop
-extern "C" s32 fn_800A53B4(void *);
+extern "C" s32 VFiPFVOL_IsMediaPresent(void *);
 extern "C" s32 fn_800A53C0(void *);
 extern "C" s32 fn_800A53DC(void *);
 extern "C" void fn_800A53E8(void *);
@@ -11317,7 +11338,7 @@ extern "C" s32 fn_800B6004(void *arg0)
 {
   s32 result;
   u16 flags;
-  if (fn_800A53B4(arg0) != 0)
+  if (VFiPFVOL_IsMediaPresent(arg0) != 0)
   {
     if ((fn_800A53DC(arg0) != 0) && (((*((u16 *) (((u8 *) arg0) + 0x1F8C))) & 8) == 0))
     {
@@ -11656,7 +11677,7 @@ extern "C" s32 fn_800B6628(VFiPFDriver *driver, const char *name, s32 index) {
     driver->letter = slot_index + VF_FIRST_LETTER;
     attached = *(s32 *)(base + 0x30);
     *(s32 *)(base + 0x30) = attached + 1;
-    if (fn_800A53B4(slot) != 0) {
+    if (VFiPFVOL_IsMediaPresent(slot) != 0) {
         driver->flags |= 0x10;
         if (!(slot->flags & VF_VOL_MOUNTED)) {
             mount_result = fn_800B5988(slot);
@@ -11796,7 +11817,7 @@ extern "C" s32 fn_800B6A8C(s8 arg0, s32 arg1) {
         return VF_ERR_NO_DEVICE;
     }
     fn_800B77C0(vol + 0x1F90);
-    if (fn_800A53B4(vol) != 0) {
+    if (VFiPFVOL_IsMediaPresent(vol) != 0) {
         if ((fn_800A53DC(vol) != 0) && !(VF_VOLUME(vol)->flags & VF_VOL_MOUNTED)) {
             VFiPFFILE_FinalizeAllFiles(vol);
             VFiPFDIR_FinalizeAllDirs(vol);
@@ -26754,7 +26775,7 @@ extern "C" void fn_800A535C(u32 arg0)
 /* Return whether media is present in this volume's drive: bit 2
  * (VF_VOL_MEDIA_PRESENT) of the VFiPFVolume.flags word at +0x1F8C, which the
  * media-change callbacks set and the sector reads test before proceeding. */
-extern "C" s32 fn_800A53B4(void *volume) {
+extern "C" s32 VFiPFVOL_IsMediaPresent(void *volume) {
     return (((u16)*(u16 *)((u8 *)volume + 0x1F8C)) >> 2) & 1;
 }
 
