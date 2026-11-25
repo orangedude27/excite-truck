@@ -279,11 +279,11 @@ void fn_80207C4C(void) {
 #pragma scheduling invalid_target
 #pragma push
 #pragma opt_propagation off
-void SoundMgr_setSlotData(void* object, void* src, signed long slotIndex) {
+/* Seed one 12-byte slot (at +0x5C + slot*12) of a sound object with the three words at src; the SoundManager constructor calls this for all four slots. */ void SoundMgr_setSlotData(void* object, void* src, signed long slot) {
     /* Seed one 0xC-byte slot of a sound-manager object (slots start at +0x5C)
      * with the three-word value at src; init calls this for all four slots. */
     signed long w2, w1, w0;
-    signed long slotOffset = slotIndex * 0xC;
+    signed long slotOffset = slot * 0xC;
     volatile signed long *srcWords = (volatile signed long *)src;
     w0 = srcWords[0];
     w1 = srcWords[1];
