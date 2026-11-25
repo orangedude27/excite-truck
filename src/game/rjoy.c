@@ -643,7 +643,7 @@ unsigned char fn_802E8364(void *out, int controllerIndex) {
 
 /* Return byte 0 (the connected flag) of the given controller's record in the
  * Wiimote/controller state table (0x638 bytes per controller). */
-/* Return the connected flag (byte 0) for a controller from the Wiimote state table. */ /* Return the connected flag (byte 0) for a controller from the Wiimote state table. */ unsigned char RjoyIsPadConnected(int controller) {
+/* Return the connected flag (byte 0) for a controller from the Wiimote state table. */ /* Return the connected flag (byte 0) for a controller from the Wiimote state table. */ /* Return the connected flag (byte 0) for a controller from the Wiimote state table. */ unsigned char RjoyIsPadConnected(int controller) {
 #define gWiimoteStateTable lbl_80505978
     extern unsigned char gWiimoteStateTable[];
     return gWiimoteStateTable[controller * 0x638];
