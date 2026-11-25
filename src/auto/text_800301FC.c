@@ -1222,7 +1222,7 @@ void CircleBufferWriteBytes(void) {
 }
 
 /* No-op MetroTRK stub: a reserved entry point invoked by the TRKReadBuffer_ui32 diagnostic sequence. */
-void fn_80031C68(void) {
+/* No-op callback in the MetroTRK debug-transport glue; intentionally does nothing. */ void fn_80031C68(void) {
 }
 
 extern void *lbl_8055D740;
