@@ -1,5 +1,5 @@
 // strmbank — the global stream-bank manager and its null implementation.
-// Symbol guide: initStrmBank (fn_802E7578), shutdownStrmBank (destroyStrmBankManager),
+// Symbol guide: null-manager installer (fn_802E7578), shutdownStrmBank (destroyStrmBankManager),
 // loadStrmBank (fn_802E75E4), bank-unload helpers (unloadStrmBank, unloadStrmBankEx),
 // setStrmBankLevel (fn_802E7684), null-manager creation (createNullStrmBank) and the
 // null manager's vtable methods (fn_802E76F0..fn_802E7764).
