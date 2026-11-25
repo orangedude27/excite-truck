@@ -5553,7 +5553,7 @@ void fn_801254E4(s32, f32 *, s32, f32 *);
    fn_80120B6C build those tables, fn_80120CA4/fn_80120E14 are the forward/
    inverse complex-FFT stages, and fn_801250CC/fn_801252D8/fn_801254E4 are the
    real-FFT folds; the surrounding two-point passes apply the DCT symmetry. */
-void fn_8012023C(s32 n, s32 isgn, f32 *a, s32 ip, s32 w) {
+void oouraDct(s32 n, s32 isgn, f32 *a, s32 ip, s32 w) {
     s32 twiddleLen;
     s32 cosLen;
     s32 i;
