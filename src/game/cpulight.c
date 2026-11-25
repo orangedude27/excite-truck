@@ -43,7 +43,7 @@ extern int lbl_8055FEA0, lbl_8055FEA4;
 extern void *gCpuLightTextures[];
 #pragma pop
 extern void *fn_802D94DC(void);
-extern void *lbl_8055FEA8;
+extern void *gCpuLightCachedPositionArray;
 extern void *lbl_8055FEAC;
 extern void GXLoadTexMtxImm(float *, unsigned int, unsigned char);
 extern void GXLoadTexObj(void *, int);
@@ -346,8 +346,8 @@ void fn_802DBA1C(unsigned char secondMode) {
 
 /* Bind the CPU-light position vertex array: when the cached buffer changes, reset the vertex descriptor, set GX attribute 9 to three floats, point GX at the buffer and flush it from the data cache. */
 void fn_802DBBE4(int positionArray, int vertexCount) {
-    if ((void *)lbl_8055FEA8 != (void *)positionArray) {
-        lbl_8055FEA8 = (void *)positionArray;
+    if ((void *)gCpuLightCachedPositionArray != (void *)positionArray) {
+        gCpuLightCachedPositionArray = (void *)positionArray;
         lbl_8055FEAC = (void *)vertexCount;
         GXClearVtxDesc();
         GXSetVtxDesc(9, 3);
@@ -361,8 +361,8 @@ extern void fn_802DBC70(int,int);
 /* Sets up GX position vertex array (vtx attr 9, 3 floats, index mode) for the given
  * vertex buffer and flushes it from data cache when the cached buffer changes. */
 /* Configure GX to draw the indexed position array for the mode-1 CPU-light pass, but only when the cached array pointer changes; then flush its vertex data from the data cache. */ /* Configure GX to draw the indexed position array for the mode-1 CPU-light pass, but only when the cached array pointer changes; then flush its vertex data from the data cache. */ /* Configure GX to draw the indexed position array for the mode-1 CPU-light pass, but only when the cached array pointer changes; then flush its vertex data from the data cache. */ void fn_802DBC70(int positionArray, int vertexCount) {
-    if ((void *)lbl_8055FEA8 != (void *)positionArray) {
-        lbl_8055FEA8 = (void *)positionArray;
+    if ((void *)gCpuLightCachedPositionArray != (void *)positionArray) {
+        gCpuLightCachedPositionArray = (void *)positionArray;
         lbl_8055FEAC = (void *)vertexCount;
         GXClearVtxDesc();
         GXSetVtxDesc(9, 3);
@@ -376,8 +376,8 @@ extern void fn_802DBCFC(int,int);
 /* Sets up the GX position vertex array (GX_VA_POS, XYZ floats, GX_INDEX16) when the
  * cached buffer changes, then flushes the new buffer from the data cache. */
 void fn_802DBCFC(int positionArray, int vertexCount) {
-    if ((void *)lbl_8055FEA8 != (void *)positionArray) {
-        lbl_8055FEA8 = (void *)positionArray;
+    if ((void *)gCpuLightCachedPositionArray != (void *)positionArray) {
+        gCpuLightCachedPositionArray = (void *)positionArray;
         lbl_8055FEAC = (void *)vertexCount;
         GXClearVtxDesc();
         GXSetVtxDesc(GX_VA_POS, GX_INDEX16);
@@ -393,7 +393,7 @@ void fn_802DBCFC(int positionArray, int vertexCount) {
 /* Reset the CPU-light GX vertex-array cache and texture state, then bind the currently active texture as the default. */ void cpulightResetGxCache(void) {
     void *boundTexture;
     void **textureSlots;
-    lbl_8055FEA8 = 0;
+    gCpuLightCachedPositionArray = 0;
     lbl_8055FEAC = 0;
     gCpuLightTexDirty = 1;
     lbl_8055FEA0 = -1;
@@ -404,7 +404,7 @@ void fn_802DBCFC(int positionArray, int vertexCount) {
 }
 #pragma pop
 /* Cached GX position vertex array: the buffer pointer and the vertex count. */
-#define sCachedPositionArray lbl_8055FEA8
+#define sCachedPositionArray gCpuLightCachedPositionArray
 #define sCachedVertexCount   lbl_8055FEAC
 void CpuLight_InvalidatePositionArray(void) {
     // Invalidate the cached GX position vertex array so the next setup call reconfigures it.
@@ -484,7 +484,7 @@ extern u8 lbl_8055FEB8;
 extern int lbl_8055FD30, lbl_8055FEA4;
 extern signed char gCpuLightTexDirty;
 extern int lbl_8055FEA0;
-extern void *lbl_8055FEA8, *lbl_8055FEAC;
+extern void *gCpuLightCachedPositionArray, *lbl_8055FEAC;
 extern void *fn_802D94DC(void);
 extern void fn_802DBA1C(unsigned char);
 extern void fn_802DB9DC(int);
