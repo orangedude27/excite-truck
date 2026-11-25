@@ -1273,7 +1273,7 @@ void fn_802C9A70(int drawBars) {
 #pragma dont_inline reset
 /* Returns the address of a resource entry's name string: arg0->+8 is a node,
    node->+4 points at the name holder whose first word plus 4 is the string. */
-int ResourceEntry_GetName(void *entry) {
+/* Return the name string of a resource-list entry: follow entry->node (+8), then node->nameHolder (+4), and return the string pointer at nameHolder+4. */ int ResourceEntry_GetName(void *entry) {
     void *node = *(void **)((char *)entry + 8);
     void *nameHolder = *(void **)((char *)node + 4);
     return *(int *)nameHolder + 4;
