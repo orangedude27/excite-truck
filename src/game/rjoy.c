@@ -237,7 +237,7 @@ dispatch:
 
 #pragma push
 #pragma scheduling invalid_target
-void rjoyWpadCommandDone(int channel) {
+/* Completion callback for the WPAD command queued by fn_800604E8: clear the controller's pending-command flag at state record +0x631 once the command finishes. */ void rjoyWpadCommandDone(int channel) {
     extern unsigned char lbl_80505978[];
 
     /* Clear the per-channel flag at +0x631 of this rjoy player record. */
