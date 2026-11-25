@@ -1823,11 +1823,34 @@ static inline float HudEase(float t) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-/* Draws the timed results panels on the Crush-mode results overlay: the
+/* RealName: drawCrushHudInfoPanels
+ *
+ * Draws the timed results panels on the Crush-mode results overlay: the
    "ring challenge master" and "player data" info boxes fade in and out on a
    fixed timeline relative to the round's start.  Skipped entirely while a
    challenge sub-task is still active. */
 extern "C" int fn_8016E328(void *master, int playerIndex) {
+#define getRoundClock fn_801E7E3C
+#define showCountdown fn_8000FBE4
+#define challengeSubtaskActive fn_80161C38
+#define notifyScoreGrade fn_8001DF08
+#define formatScore fn_801308F4
+#define formatSeconds fn_80130978
+#define lookupMessage fn_80131234
+#define measureTextWidth fn_80147204
+#define setupUiElement fn_8014784C
+#define drawPanelText fn_801479A8
+#define getPlayerNumber fn_801E866C
+#define getScore fn_80160998
+#define resultsLabels lbl_803306D0
+#define fadeMax lbl_80561984
+#define fadeMin lbl_80561980
+#define textWidthScale lbl_80561988
+#define timelineEnd lbl_805619A8
+#define fadeOut1Dur lbl_805619AC
+#define fadeIn1Dur lbl_805619B0
+#define fadeOut2Dur lbl_805619B4
+#define dataLabel lbl_8055A248
  struct Rect { int a; float b; int c,d; float e; int f,g,h; };
  struct Manager { virtual void *unused(); virtual void *get(const char *); };
  struct Frame { Rect rect2; char text2[24]; Rect rect1; char text1[20]; } frame;
