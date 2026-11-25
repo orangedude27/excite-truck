@@ -273,7 +273,7 @@ extern "C" s32 FileLookup(s32 path) {
 /* File API (the caller's File_size): validate the handle, take the stream object
  * stored in its open-file-table entry and dispatch vtable slot +0x18 to return
  * the size of the open file. */
-extern "C" void fn_802E37C4(s32 fileHandle) {
+/* File API (the caller's File_size): validate the handle, take the stream object in its open-file-table entry and dispatch vtable slot +0x18 to return the open file's size. */ extern "C" void fn_802E37C4(s32 fileHandle) {
 #define kFileSourceFile kFileSourceName
     class Obj {
     public:
