@@ -152,7 +152,7 @@ extern char lbl_8034EC58[];
 extern const char lbl_802FAFD4[];
 DECL_SECTION(".sdata") extern const char lbl_80558910[];
 extern u8 lbl_8055F63C;
-extern const char lbl_802FB0A8[];
+extern const char kDirectToTrackMenuName[];
 extern const char kEventMenuNameFormat[];
 extern u32 lbl_8034EC40[];
 extern u32 lbl_8055D320;
@@ -243,8 +243,8 @@ void ReleaseInitTableResources(void) DECOMP_DONT_INLINE {
 }
 
 void fn_800052F8(void) DECOMP_DONT_INLINE {
-    /* Start the "Direct To Track" menu flow by looking up its name (lbl_802FB0A8) in the menu table. */
-    fn_80005158(lbl_802FB0A8);
+    /* Start the "Direct To Track" menu flow by looking up its name (kDirectToTrackMenuName) in the menu table. */
+    fn_80005158(kDirectToTrackMenuName);
 }
 
 extern void fn_800199B8(void);
