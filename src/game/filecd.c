@@ -435,8 +435,8 @@ int FileDisk_readAsync(void *file, void *dst, int len) {
     return 1;
 }
 #pragma scheduling on
+/* FileDisk::isReadDone — true when the DVD command block is idle (status 0). */
 int fn_802E461C(void *file) {
-    /* FileDisk::isReadDone — true when the DVD command block is idle (status 0). */
     return DVDGetCommandBlockStatus((char *)file + 4) == 0;
 }
 
