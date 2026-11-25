@@ -1371,7 +1371,7 @@ int fn_802E6AD0(int resetRequest) {
 }
 
 #pragma scheduling invalid_target
-void fn_802E6B04(void) {
+/* Call the SPU idle hook, then register the SPU reset callback under the "DTK" tag in the kernel reset list. */ void fn_802E6B04(void) {
 #define registerResetCallback KERNEL_AddResetCallback
 #define spuResetCallback      fn_802E6AD0
 #define spuCallbackTag        lbl_8055D1F0
