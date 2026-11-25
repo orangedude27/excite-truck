@@ -4148,7 +4148,7 @@ void GKI_shutdown(void) {
 
 /* GKI OS-abstraction no-op stub, invoked once with argument 0 during Bluetooth
  * stack startup; this single-threaded build has no work to do here. */
-void fn_8006EACC(s32 unused) {
+/* No-op callback in the Wii runtime glue; the incoming value is unused and nothing is done. */ void fn_8006EACC(s32 unused) {
 }
 
 /* GkiSchedLock: no-op scheduler-lock stub.  This build pins all Bluetooth work
