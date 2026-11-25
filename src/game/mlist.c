@@ -3,7 +3,7 @@
 // Static-init thunk fn_802CE308 (+ .ctors slot 0x802ED5B0) remains in
 // auto/text_802CE308_.c pending a promotion pass.
 extern void *lbl_8055FCD8;
-extern int fn_802CAFC8(int);
+extern int getTextureSlotFilter(int);
 extern char lbl_8034BBE0[];
 extern float lbl_80564F58;
 extern float lbl_80564F5C;
@@ -90,8 +90,8 @@ extern float PSVECDotProduct(float *, float *);
 #pragma processor 750
 #pragma scheduling invalid_target
 int fn_802CCD0C(void * const arg0, void * const arg1) {
-    int x = fn_802CAFC8(*(int *)((char *)arg0 + 0x10));
-    int y = fn_802CAFC8(*(int *)((char *)arg1 + 0x10));
+    int x = getTextureSlotFilter(*(int *)((char *)arg0 + 0x10));
+    int y = getTextureSlotFilter(*(int *)((char *)arg1 + 0x10));
     if (x != y) {
         return x - y;
     }
@@ -255,7 +255,7 @@ loop_21_test:
         goto loop_41_test;
 loop_41_body:
         record = *(unsigned char **)((char *)arg0 + 0x34) + recordOffset;
-        type = fn_802CAFC8(*(int *)(record + 0x10));
+        type = getTextureSlotFilter(*(int *)(record + 0x10));
         category = 0;
         if (type == 1) category = 0;
         else if ((unsigned int)(type - 2) <= 1U) category = 1;

@@ -799,7 +799,7 @@ extern int lbl_8055D070;
 }
 
 /* Return a texture slot's filter byte (+8 of its resource), or 5 for no texture. */
-char fn_802CAFC8(int textureSlot) {
+char getTextureSlotFilter(int textureSlot) {
     int slotOffset;
     char *slots;
     if (textureSlot == -1)
