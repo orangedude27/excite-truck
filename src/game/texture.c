@@ -496,7 +496,7 @@ copy2_done:
 #pragma dont_inline reset
 #pragma scheduling on
 #pragma use_lmw_stmw reset
-void RegisterTextureByName(int name, int sceneId) {
+/* Register a texture slot from its name and scene id (type 0), with no backing resource and fixed category 0xE; returns the slot index. */ void RegisterTextureByName(int name, int sceneId) {
     /* Register a named texture with a scene id and fixed type 0xE, with no backing resource. */
     fn_802CA898(name, sceneId, 0, 0xE);
 }
