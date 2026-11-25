@@ -659,7 +659,7 @@ void fn_8020B344(void) {
 #pragma cplusplus on
 /* If obj is non-null, invoke its virtual deleting destructor (vtable slot 0)
  * with flag 1, i.e. destroy the object and free its storage. */
-extern "C" void fn_8020B348(void *self) {
+extern "C" void VoiceSnd_delete(void *self) {
     class Obj {
     public:
         virtual void destroy(int);
