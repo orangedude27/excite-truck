@@ -964,11 +964,11 @@ void fn_802CE278(int *value, int delta) {
     }
 }
 
-void fn_802CE2C0(int *value, int delta) {
+/* Relocate an embedded mlist pointer while its data is byte-swapped/converted: add delta, but leave a zero (null) field untouched. */ void fn_802CE2C0(int *value, int delta) {
     /* Add delta to *value, leaving a zero (null) sentinel unchanged. */
-    int cur = *value;
-    if (cur != 0) {
-        *value = cur + delta;
+    int ptr = *value;
+    if (ptr != 0) {
+        *value = ptr + delta;
     }
 }
 
