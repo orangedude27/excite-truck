@@ -237,7 +237,7 @@ dispatch:
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_802E7C14(int channel) {
+void rjoyWpadCommandDone(int channel) {
     extern unsigned char lbl_80505978[];
 
     /* Clear the per-channel flag at +0x631 of this rjoy player record. */
@@ -419,7 +419,7 @@ extern int fn_802ECC10(void);
 extern void fn_802EC884(void);
 extern void fn_802ECBF8(void);
 extern void KERNEL_Reset(int);
-extern void fn_802E7C14(int);
+extern void rjoyWpadCommandDone(int);
 extern void *memset(void *, int, unsigned int);
 #pragma push
 #pragma use_lmw_stmw off
@@ -497,7 +497,7 @@ void fn_802E7FD0(void) {
         if (active == 0 && now - *(int *)(record + 0x634) > 0x2710) {
             *(int *)(record + 0x634) = now;
             record[0x631] = 1;
-            result = fn_800604E8(channel, (int)(record + 0x618), fn_802E7C14);
+            result = fn_800604E8(channel, (int)(record + 0x618), rjoyWpadCommandDone);
             if (result != 0) {
                 record[0x631] = 0;
                 if (result == -1)
