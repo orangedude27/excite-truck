@@ -210,7 +210,7 @@ void fn_802C2FC4(void) {
 }
 
 #define sCurrentCanvas lbl_8055FC00 /* the canvas the gxCanvas* routines draw on */
-s32 gxCanvasSwitch(s32 newCanvas) {
+/* Make a canvas the current drawing target and return the canvas it replaced. */ s32 gxCanvasSwitch(s32 newCanvas) {
     s32 oldCanvas;
 
     // Make newCanvas the current drawing canvas and return the one it replaced.
