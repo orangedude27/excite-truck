@@ -860,7 +860,7 @@ void CarSound_ResetNiceLand(void *carSound) {
         *(signed char *)((char *)sound + 0x4A) = 0;
     }
 }
-void CarSound_ResetWaterSink(void *carSound) {
+/* CarSound vtable slot: re-arm the watersink.sfx sound at +0x44 by setting its +0x49 flag and clearing +0x4A/+0x4B, if that sound exists. */ void CarSound_ResetWaterSink(void *carSound) {
     /* Reset the state flags (+0x49 set, +0x4A/+0x4B clear) of the waterSink
      * sound stored at +0x44 of the car's sound set. */
     void *sound;
