@@ -646,8 +646,6 @@ s32 fn_80190368(s32 value) {
  #pragma cplusplus on
 extern "C" void fn_80190388(void *arg0)
 {
-char *__repair_addr;
-
     /* The car object this Hybrid drives (only slot 0x10 is used here). */
     class Car {
     public:
