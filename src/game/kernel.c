@@ -503,7 +503,7 @@ void fn_802E27A0(void *ring) {
 }
 
 #pragma dont_inline reset
-/* Advances the Bink video ring's current slot index (+0x114), wrapping at the slot count (+0x100), and clears the buffer flag of the new current slot (flag array at +0x1D0, one int per slot). Called each frame by fn_802E12DC. */ void fn_802E27B8(void *ring) {
+/* Advances the Bink video ring's current slot index (+0x114), wrapping at the slot count (+0x100), and clears the buffer flag of the new current slot (flag array at +0x1D0, one int per slot). Called each frame by fn_802E12DC. */ /* Advances the Bink video ring's current slot index (+0x114), wrapping at the slot count (+0x100), and clears the buffer flag of the new current slot (flag array at +0x1D0, one int per slot). Called each frame by fn_802E12DC. */ void fn_802E27B8(void *ring) {
 #define currentIndex ((int *)((char *)ring + 0x114))
 #define slotCount ((int *)((char *)ring + 0x100))
     /* Advance the video ring's current slot (wrapping at the slot count) and clear that slot's flag. */
