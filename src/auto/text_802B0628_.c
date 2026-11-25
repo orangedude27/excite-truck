@@ -503,11 +503,10 @@ void fn_802B11BC(void *arg0) {
 }
 #pragma dont_inline reset
 #pragma optimize_for_size off
-int fn_802B127C(void *arg0, Vec3_802B *src) {
+int fn_802B127C(const void *arg0, const Vec3_802B *src) {
     volatile int *self = (volatile int *)arg0;
     int next;
     int i;
-    int increment;
     float z, y, x;
     float *base, *dst;
     if (self == 0) return 0;
@@ -518,8 +517,7 @@ int fn_802B127C(void *arg0, Vec3_802B *src) {
         y = src->y;
         z = src->z;
         base = (float *)self[0x318 / 4];
-        increment = i + 1;
-        self[0x31C / 4] = increment;
+        self[0x31C / 4] = i + 1;
         dst = (float *)((char *)base + i * 12);
         dst[0] = x;
         dst[1] = y;
