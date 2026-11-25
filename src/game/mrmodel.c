@@ -806,7 +806,7 @@ void fn_802C6080(void) {
     *(void **)(base + 0x64 + 8) = 0;
     *(int *)(base + 0x64 + 4) = 0;
 }
-extern void fn_802C6A84(s32 *value, s32 delta);
+extern void mrRelocatePointer(s32 *value, s32 delta);
 extern void fn_802C6A9C(s32 *value, s32 delta);
 extern void fn_802C6AFC(s32 *value, s32 delta);
 extern void fn_802D6B80(unsigned char *arg0, s32 arg1, s32 arg2);
@@ -877,7 +877,7 @@ void fn_802C61BC(void *arg0, int arg1) {
     s20 = p[0x41]; p[0x41] = p[0x42]; p[0x42] = s20;
     s21 = p[0x44]; p[0x44] = p[0x47]; p[0x47] = s21;
     p[0x45] = p[0x46];
-    fn_802C6A84((s32 *)(p + 4), (s32)arg0);
+    mrRelocatePointer((s32 *)(p + 4), (s32)arg0);
     base = *(unsigned char **)(p + 4);
     for (i = 0; i < *(int *)p; i++) {
         unsigned char *e = base + i * 0x10;
@@ -958,7 +958,7 @@ void fn_802C61BC(void *arg0, int arg1) {
         }
     }
 }
-void fn_802C6A84(s32 *value, s32 delta) {
+void mrRelocatePointer(s32 *value, s32 delta) {
     /* Add delta to *value, leaving a zero (null) sentinel unchanged. */
     s32 cur = *value;
     if (cur != 0) {
