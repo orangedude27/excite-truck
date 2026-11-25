@@ -183,8 +183,7 @@ extern void *memset(void *, int, unsigned long);
 #pragma dont_inline reset
 
 void TrackMusic_onIdentityEvent(long contextIndex, long event) {
-    /* Broadcast callback: when the clear-context event (0) is signalled, zero and
-       reinitialise the track-music data block for this context index. */
+    /* Identity-clear callback: on event 0, clear and reinitialise the track-music state buffer for contextIndex. */
     if (event != 0) {
         return;
     }
