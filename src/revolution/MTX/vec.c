@@ -161,6 +161,7 @@ asm void PSVECCrossProduct(register const Vec* a, register const Vec* b,
     // clang-format on
 }
 
+/* Squared Euclidean distance between 3D vectors a and b, via paired-single loads and FMA. */
 f32 PSVECSquareDistance(register const Vec* a, register const Vec* b) {
     register f32 ayz, byz;
     register f32 axy, bxy;
