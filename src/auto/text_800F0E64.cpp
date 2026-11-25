@@ -5740,7 +5740,7 @@ extern "C" const char lbl_80325F38[];
 extern "C" const char lbl_80325F50[];
 extern "C" const char lbl_80325F94[];
 extern "C" void *fn_800F975C(s32 player, s32 priority, s32 requestedPriority, s32 ambientInfo, s32 externalPlayer, s32 soundId, void *manager) {
-    /* detail::SoundInstanceManager::Alloc for wave sounds (SoundInstanceManager.h).
+    /* allocWaveSound — detail::SoundInstanceManager::Alloc for wave sounds (SoundInstanceManager.h).
      * Takes a free WaveSound out of the instance pool; when the pool is full it
      * takes the sound with the lowest priority away from that list (stopping it
      * first) if the new sound outranks it, and gives up instead.  The new sound
