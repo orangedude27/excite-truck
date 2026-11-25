@@ -394,9 +394,8 @@ extern void fn_802E30C8(const char *, ...);
 extern const char lbl_8033C024[];
 #define MIXER_SET_SOUND_MODE_NOOP_MSG lbl_8033C024 /* "mixer: MixerSetSoundMode is a NOOP" */
 #pragma scheduling invalid_target
-/* Null-mixer backend's MixerSetSoundMode: a no-op that only logs that the
- * requested sound mode is being ignored. */
-/* Null mixer's sound-mode setter: does nothing but log that the requested sound mode is ignored. */ void NullMixerSetSoundMode(void) {
+/* Null mixer's sound-mode setter: does nothing but log that the requested sound mode is ignored. */
+void NullMixerSetSoundMode(void) {
     fn_802E30C8(MIXER_SET_SOUND_MODE_NOOP_MSG);
 }
 #undef MIXER_SET_SOUND_MODE_NOOP_MSG
