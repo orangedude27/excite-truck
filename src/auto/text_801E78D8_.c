@@ -648,7 +648,7 @@ extern "C" void fn_801E8410(void) {
     extern void DrawList_loadMatrix(void *);
     extern void fn_802C2C64(long);
     extern void fn_80203EC0(void);
-    extern void fn_802C7A44(void);
+    extern void beginModelBatch(void);
     extern void submitModelBatch(void);
     extern void fn_802C7AD4(void);
     extern void fn_801FA618(void);
@@ -698,7 +698,7 @@ extern "C" void fn_801E8410(void) {
         fn_801EA404(base, 0);
     }
     fn_80203EC0();
-    fn_802C7A44();
+    beginModelBatch();
     ((void (*)(void))fn_801E8148)();
     submitModelBatch();
     fn_802C7AD4();

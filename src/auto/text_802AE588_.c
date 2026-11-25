@@ -209,7 +209,7 @@ float fn_802AE6E0(const void *pointA, const void *pointB) {
     return (float)((double (*)(double))Sqrt)(dx2 + dz2);
 #undef Sqrt
 }
-extern void fn_802C7A44(void);
+extern void beginModelBatch(void);
 extern float lbl_80564B3C;
 extern void fn_802C9648(float);
 extern void fn_80287A34(int);
@@ -222,7 +222,7 @@ extern void fn_801FA738(void);
 void fn_802AE728(void) {
     /* Apply post-race/reset UI/view state: enable drawlist, scale camera by 1.1
        (lbl_80564B3C), toggle HUD/input modes, and run finalizers. */
-    fn_802C7A44();
+    beginModelBatch();
     fn_802C9648(lbl_80564B3C);
     fn_80287A34(0);
     DrawList_reapplyProjection();

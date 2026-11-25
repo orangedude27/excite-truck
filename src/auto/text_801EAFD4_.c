@@ -756,7 +756,7 @@ extern void fn_80287A34(s32);
 extern void fn_8029790C(s32);
 extern void fn_802B01A8(void);
 extern void fn_802C7730(void *);
-extern void fn_802C7A44(void);
+extern void beginModelBatch(void);
 extern void submitModelBatch(void);
 extern void fn_802C7A94(s32);
 extern void fn_802C7AD4(void);
@@ -773,7 +773,7 @@ void fn_801EBDCC(void) {
     s32 var_r3;
 
     if (lbl_8055EBA0 != 0) {
-        fn_802C7A44();
+        beginModelBatch();
         fn_80202718();
         fn_801F1C24(&stack[0]);
         fn_802C7730(&stack[0]);

@@ -62,7 +62,7 @@ extern int fn_802C9638(void *, unsigned char *, float);
  * keeps one display-node pointer per instance from +0x14.  fn_802C53C4 links a
  * display entry into a node's list and fn_802C5720 sorts those entries and
  * submits them; lbl_8055FC20 says whether the caller is batching the submits
- * (fn_802C7A44 sets it, submitModelBatch clears it), and lbl_8055D008 is the mask of
+ * (beginModelBatch sets it, submitModelBatch clears it), and lbl_8055D008 is the mask of
  * group bits the caller wants drawn (fn_802C70AC and fn_802C7458 set it per
  * call). */
 struct GroupList;
@@ -1783,14 +1783,14 @@ extern s8 lbl_8055FC20;
 extern void mrModelResetDisplayEntries(void);
 /* Begin a model-draw batch: mark submits as batched and empty the display
  * entry pool (mrModelResetDisplayEntries) — paired with submitModelBatch, which submits and clears. */
-void fn_802C7A44(void) {
+void beginModelBatch(void) {
 #define s_modelBatchActive lbl_8055FC20
     s_modelBatchActive = 1;
 #undef s_modelBatchActive
     mrModelResetDisplayEntries();
 }
 
-/* End a model draw batch: refresh all nine sort groups (level 0 means all) and clear the batch-active flag set by fn_802C7A44. */ /* End a model draw batch: refresh all nine sort groups (level 0 means all) and clear the batch-active flag set by fn_802C7A44. */ void submitModelBatch(void) {
+/* End a model draw batch: refresh all nine sort groups (level 0 means all) and clear the batch-active flag set by beginModelBatch. */ /* End a model draw batch: refresh all nine sort groups (level 0 means all) and clear the batch-active flag set by beginModelBatch. */ void submitModelBatch(void) {
 #define s_modelBatchActive lbl_8055FC20
     /* Submit all nine model sort groups and clear the batch flag. */
     int groupId = 0;
@@ -1815,7 +1815,7 @@ void fn_802C7A94(int groupId) {
 #pragma dont_inline on
 /* End a run of model draws: reset sort group 9, the extra group that is not
  * part of submitModelBatch's nine, which also empties the display entry pool
- * (mrModelResetDisplayEntries).  Callers pair it with fn_802C7A44, which starts a batch. */
+ * (mrModelResetDisplayEntries).  Callers pair it with beginModelBatch, which starts a batch. */
 void fn_802C7AD4(void) {
     fn_802C7A94(9);
 }

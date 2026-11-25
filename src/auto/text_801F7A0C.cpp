@@ -119,7 +119,7 @@ void *fn_801284F8(u32, void *);
 void *fn_801A4A8C(void *, s32, s32, s32, s32, void *);
 void *fn_801E87A8(void);
 s32 fn_802C9C58(s32);
-void fn_802C7A44(void);
+void beginModelBatch(void);
 void submitModelBatch(void);
 void fn_802C7AD4(void);
 }
@@ -2231,7 +2231,7 @@ extern "C" void fn_801FA550(void) {
 #define GetRenderState      fn_801E87A8  /* the game's render-state block */
 #define RENDER_FLAG_MIRROR  2            /* its +0x10 bit 1: the view is mirrored, so front and back culling swap */
 #define ModelSetCullMode    fn_802C9C58  /* GXSetCullMode for the next draws; returns the mode it replaced */
-#define ModelBeginBatch     fn_802C7A44  /* start a batched submit run */
+#define ModelBeginBatch     beginModelBatch  /* start a batched submit run */
 #define ModelFlushBatch     submitModelBatch  /* submit the 9 sort groups and end the run */
 #define ModelFinishBatch    fn_802C7AD4  /* ModelFlushGroup(9): the last group, then reset */
 #define ModelDraw           fn_802C70AC  /* draw a model instance at a world matrix */
@@ -2295,7 +2295,7 @@ extern "C" void fn_801FA738(void) {
     s32 mode = 2;
     if (flags & 2) mode = 1;
     s32 old = fn_802C9C58(mode);
-    fn_802C7A44();
+    beginModelBatch();
     void *node = lbl_8055EC4C;
     while (node != 0) {
         if (*((u8 *)node + 0x41) != 0 && *((u8 *)node + 0x40) != 0 && fn_801F7A0C() != 0) {
@@ -2379,7 +2379,7 @@ void *fn_801284F8(u32, void *);
 void *fn_801A4A8C(void *, s32, s32, s32, s32, void *);
 void *fn_801E87A8(void);
 s32 fn_802C9C58(s32);
-void fn_802C7A44(void);
+void beginModelBatch(void);
 void submitModelBatch(void);
 void fn_802C7AD4(void);
 extern "C" void fn_801FA978(void) {
