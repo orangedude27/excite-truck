@@ -347,7 +347,7 @@ extern "C" void File_read(s32 fileHandle, s32 buffer, s32 byteCount) {
     ((FileStream *)stream)->read(buffer, byteCount);
 }
 #pragma cplusplus on
-extern "C" void fn_802E3990(s32 fileHandle) {
+/* Look up the open-file entry for fileHandle and call the stream object's vtable method at +0x14 (slot 3), e.g. closing/flushing the stream. */ extern "C" void fn_802E3990(s32 fileHandle) {
     /* Look up the stream object for the file handle and invoke its no-argument
        vtable method at slot +0x14 (file.cpp:0x16c). */
     class Obj {
