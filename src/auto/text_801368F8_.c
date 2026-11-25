@@ -146,11 +146,11 @@ s32 fn_80136A18(s32 self, s32 deleteFlag) {
     return self;
 }
 
-#pragma scheduling reset
+#pragma opt_lifetimes off
 void fn_80136AA8(void *g) {
     int i, j;
-    register int k = 0;
-    register int zero = 0;
+    int k = 0;
+    int zero = 0;
     for (i = 0; i < I(g, 0); i++) {
         short si = i;
         B(I(g, 0x10) + i * I(g, 0xC), 0x15) = 1;
@@ -171,7 +171,6 @@ void fn_80136AA8(void *g) {
         }
     }
 }
-
 /* Update an entry and clear its smoothed vector fields to zero. */
 void fn_80136CB8(void *table, s32 index) {
     s32 entryBase;
@@ -536,7 +535,7 @@ null_arg:
     return left == 0 ? 1 : -1;
 }
 
-s32 fn_8002F768(void *, s32, s32);
+s32 array_virtualDispatchThunk(void *, s32, s32);
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target

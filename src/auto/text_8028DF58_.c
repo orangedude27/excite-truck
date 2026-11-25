@@ -16,7 +16,7 @@ extern void fn_802C8BD0(int);
 extern void DrawList_RestoreNormalMode(void);
 extern int fn_8028FA1C(int);
 extern char lbl_80348FD0[];
-extern int fn_8002F768(void *, int, int);
+extern int array_virtualDispatchThunk(void *, int, int);
 // split_file divides it into the game's real files (file_status shows its range).
 typedef struct { float v[7]; unsigned char c[3]; float f0; float f1; } EfEntry;
 typedef struct { float x, y, z; } EfVec;

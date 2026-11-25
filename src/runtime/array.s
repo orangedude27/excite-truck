@@ -748,7 +748,7 @@
 .endfn fn_8002F72C
 
 # .text:0x3C | 0x8002F768 | size: 0x28
-.fn fn_8002F768, global
+.fn array_virtualDispatchThunk, global
 /* 8002F768 0002B3C8  80 0C 00 00 */	lwz r0, 0x0(r12)
 /* 8002F76C 0002B3CC  81 6C 00 04 */	lwz r11, 0x4(r12)
 /* 8002F770 0002B3D0  81 8C 00 08 */	lwz r12, 0x8(r12)
@@ -760,4 +760,4 @@
 .L_8002F788:
 /* 8002F788 0002B3E8  7D 89 03 A6 */	mtctr r12
 /* 8002F78C 0002B3EC  4E 80 04 20 */	bctr
-.endfn fn_8002F768
+.endfn array_virtualDispatchThunk
