@@ -3515,7 +3515,7 @@ extern int lbl_804C5710_int;
 
 /* Nonzero while tileCaptureIndex is >= 0 (a tile-capture grid sweep is in
    progress), 0 when it has been reset to -1. */
-int isTileCaptureActive(void) {
+/* Nonzero while tileCaptureIndex is >= 0 (a tile-capture grid sweep is in progress). */ int isTileCaptureActive(void) {
     return (tileCaptureIndex >> 0x1FU) ^ 1;
 }
 
