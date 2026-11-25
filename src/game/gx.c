@@ -945,7 +945,7 @@ void fn_802CFBA8(void) {
     extern void fn_802DA4C4(void);
     extern void fn_802D0C98(void);
     extern void fn_802DAE18(void);
-    extern void fn_802D8DA0(void);
+    extern void drTexCacheShutdown(void);
     extern char lbl_8034C038[];
     fn_80127D58(fn_802D9A50);          /* remove the draw-sync alarm */
     fn_802D9C4C();                     /* AIRegisterDMACallback(0) */
@@ -970,7 +970,7 @@ void fn_802CFBA8(void) {
     GX_WORK_MEMORY = 0;
     fn_80128670(GX_XFB_BLOCK[0]);      /* the frame buffers */
     GX_XFB_BLOCK[0] = 0;
-    fn_802D8DA0();                     /* free the drgc texture-cache pool */
+    drTexCacheShutdown();                     /* free the drgc texture-cache pool */
     if (GX_RECORD_TABLE != 0) {
         fn_80128670((char *)GX_RECORD_TABLE - 0x10);  /* free from the header */
     }

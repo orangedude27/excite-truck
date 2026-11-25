@@ -765,7 +765,7 @@ copied_name:
 }
 /* Frees the drgc texture-cache pool (lbl_8055FE28, 0x1C2 slots of 0xF4 bytes
  * each) back to the heap, then clears the global pointer. */
-void fn_802D8DA0(void) {
+void drTexCacheShutdown(void) {
     fn_80128670(lbl_8055FE28);
     lbl_8055FE28 = 0;
 }
