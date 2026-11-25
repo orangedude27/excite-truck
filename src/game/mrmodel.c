@@ -423,7 +423,7 @@ done:
 }
 #pragma pop
 /* Combine two byte values into a 16-bit key: high in the upper byte, low in the lower. */
-u16 packU16Key(int high, int low) {
+/* Combine two bytes into a 16-bit key, with the high byte first. */ u16 packU16Key(int high, int low) {
     return (u16)((high << 8) | low);
 }
 
