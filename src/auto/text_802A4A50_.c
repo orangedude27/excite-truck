@@ -165,7 +165,7 @@ extern f32 lbl_80564854;
 extern s32 lbl_8055CFF0, lbl_8055CFF4;
 void fn_802A5A90(void);
 void fn_802A6D68(void *);
-void fn_802D3D50(void);
+void gxDisableFog(void);
 void fn_802A5FE4(void *);
 void *fn_801E7E34(void);
 extern float fn_802C9A4C(float);
@@ -286,7 +286,7 @@ void fn_802A4D08(void) {
 
     fn_802A5A90();
     if (state[0x18] != 0)
-        fn_802D3D50();
+        gxDisableFog();
 
     selectedFlag = lbl_8055F88C;
     if (selectedFlag != 0) {
@@ -1989,7 +1989,7 @@ s32 fn_802A79CC(s32 arg0) {
         fn_802C9A4C(rate);
     }
 
-    fn_802D3D50();
+    gxDisableFog();
 }
 #pragma scheduling on
 extern f32 lbl_80564850, lbl_80564854, lbl_80564858, lbl_8056485C;
@@ -1997,7 +1997,7 @@ extern s32 lbl_8055CFF0, lbl_8055CFF4;
 extern s32 DrawList_setupMode3(s32);
 extern void fn_802C9118(void);
 extern void fn_802C9124(s32, s32, f32, f32, u32, f32, f32, f32, f32);
-extern void fn_802D3D50(void);
+extern void gxDisableFog(void);
 extern void fn_802A5FE4();
 extern void *fn_801E7E34(void);
 #pragma cplusplus on

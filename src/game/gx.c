@@ -3427,7 +3427,7 @@ void fn_802D3BB4(float *arg0, float *arg1, float *arg2, float *arg3, unsigned in
 }
 #pragma pop
 
-void fn_802D3D50(void) {
+void gxDisableFog(void) {
     /* Disable the GX state block (active flag at +0x0) and mark it for update (+0x1C). */
     gGxFogState[0] = 0;
     gGxFogState[0x1C] = 1;
