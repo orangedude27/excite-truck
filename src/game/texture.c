@@ -751,10 +751,10 @@ int fn_802CAF8C(int slot) {
     return *(unsigned short *)(*(slotEntry + 11) + 0xC) != expected;
 }
 void fn_802CC550(int, float, float);
-int Texture_BindRenderTarget(int textureSlot) {
+/* Bind a texture slot as a render target: forward the slot's +0x28 GPU handle to the (no-op) texture trace hook. */ int Texture_BindRenderTarget(int textureSlot) {
     /* Forward a texture slot's +0x28 handle to the no-op trace hook fn_802DB2C0. */
-    int *entry = (int *)(gTextureSlotTable + textureSlot * 0x4C);
-    return fn_802DB2C0(entry[0x28 / 4]);
+    int *slotEntry = (int *)(gTextureSlotTable + textureSlot * 0x4C);
+    return fn_802DB2C0(slotEntry[0x28 / 4]);
 }
 
 int fn_802DB2C4(int);
