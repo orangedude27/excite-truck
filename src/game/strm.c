@@ -17,7 +17,7 @@ extern void File_read(int, void *, int);
 extern unsigned char sStreamEntries[];
 extern int sStreamEntryCount;
 extern int lbl_8055FFDC;
-extern signed char lbl_8055FFE0;
+extern signed char sStreamActive;
 extern const char lbl_8034D7D8[];
 extern int fn_802E30C8(const char *, ...);
 #pragma dont_inline on
@@ -48,13 +48,13 @@ void fn_802E7318(void) {
     /* Begin streaming: reset the sector cursor and entry count, and set the active flag. */
     lbl_8055FFDC = 0;
     sStreamEntryCount = 0;
-    lbl_8055FFE0 = 1;
+    sStreamActive = 1;
 }
 
 #pragma scheduling invalid_target
 void StreamEnd(void) {
     /* Stop stream loading, clear the active flag, and log the entries used out of 0x100 plus the sectors used. */
-    lbl_8055FFE0 = 0;
+    sStreamActive = 0;
     fn_802E30C8(lbl_8034D7D8, sStreamEntryCount, 0x100, lbl_8055FFDC);
 }
 #pragma scheduling on
