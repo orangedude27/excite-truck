@@ -414,7 +414,7 @@ int fn_80292BA8(float *arg0, float *arg1, float *__restrict arg2, float *arg3) {
 extern void *fn_802C6B44(void);
 extern void fn_802C6C20(void *);
 extern int fn_802C7888(void *, int);
-extern char *fn_802C9C24(int);
+extern char *ResourceEntry_GetName(int);
 extern void *memset(void *, int, unsigned int);
 #pragma scheduling invalid_target
 /* Enumerate the resource list and submit one 0x2C-byte record per entry: the
@@ -450,7 +450,7 @@ copied_secondary:
     entryOffset = 0;
     goto check_list;
 copy_first:
-    entryName = fn_802C9C24(*(int *)((char *)resourceList + 4) + entryOffset);
+    entryName = ResourceEntry_GetName(*(int *)((char *)resourceList + 4) + entryOffset);
     nameDst = record;
     count2 = 0x10;
     goto copy_entry;

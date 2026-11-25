@@ -1625,7 +1625,7 @@ void fn_801F7400(void *out, void *base, void *obj) {
         dstF[25] = lbl_80562FB8;
 }
 #pragma pop
-extern void *fn_802C9C24(void *);
+extern void *ResourceEntry_GetName(void *);
 extern void MlistAddDrawEntry(void *, int);
 extern char lbl_8033AF20[];
 extern char lbl_8033AF08[];
@@ -1643,7 +1643,7 @@ void fn_801F75A4(void *arg0, void *arg1, void *arg2, int arg3) {
     if (temp_r30 == 0) {
         Abend_Panic(data + 0x80, arg1);
     }
-    temp_r29 = fn_802C9C24(*(void **)((char *)*(void **)((char *)arg0 + 8) + 4));
+    temp_r29 = ResourceEntry_GetName(*(void **)((char *)*(void **)((char *)arg0 + 8) + 4));
     fn_801F7400(sp8, arg1, temp_r30);
 
     if ((fn_801F4ECC(temp_r30) & 1) == 0) {

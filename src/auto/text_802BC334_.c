@@ -19,7 +19,7 @@ int fn_802CAC28(int, int);
 void fn_802BD018(void *);
 int fn_802BD070(void *);
 void fn_80128668(void *);
-extern int fn_802C9C24(int);
+extern int ResourceEntry_GetName(int);
 extern void Abend_Panic(const char *, ...);
 extern int fn_802B110C(void *, int);
 /* The tree list loaded from "treelist.trl" (its "TLST" block, held in
@@ -114,7 +114,7 @@ void *fn_802BC4D4(void *node) {
 #pragma scheduling on
 int fn_802BC4E0(void *__restrict node) {
     /* Resolve a texture handle for node+4; warn if missing, then invoke callback fn_802BC334 with it. */
-    int texture = fn_802C9C24(*(int *)((char *)node + 4));
+    int texture = ResourceEntry_GetName(*(int *)((char *)node + 4));
     if (fn_8012C33C() == 0)
         Abend_Panic((const char *)&lbl_8034AB38, texture);
     return fn_802B110C(&fn_802BC334, texture);

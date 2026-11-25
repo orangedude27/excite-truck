@@ -644,7 +644,7 @@ extern void fn_802B2C34(void (*)(void *), void *);
 extern char lbl_8055CDE0[8], lbl_8055CDE8[4], lbl_8055CDEC[4];
 extern void fn_802C6B44(void *);
 extern int fn_802B110C(void *, int);
-extern int fn_802C9C24(void *);
+extern int ResourceEntry_GetName(void *);
 extern void Abend_Panic(const char *, ...);
 #pragma push
 #pragma processor 750
@@ -673,7 +673,7 @@ extern "C" void *fn_802B2958(void *arg0, void *arg1) {
             *(void **)p = item;
             if (item != 0) {
                 child = *(void **)((char *)item + 4);
-                key = fn_802C9C24(child);
+                key = ResourceEntry_GetName(child);
                 value = *(int *)((char *)child + 12);
                 valid = 0;
                 if (value != 0) {

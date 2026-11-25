@@ -108,7 +108,7 @@ extern int lbl_8055B0C0;
 extern void *fn_802C6B44(void);
 extern int fn_802C6C20(void *);
 extern int fn_802C7888(void *, int);
-extern int fn_802C9C24(int);
+extern int ResourceEntry_GetName(int);
 extern int memset(void *, int, unsigned int);
 extern char *strncpy(char *, const char *, unsigned int);
 #pragma push
@@ -136,7 +136,7 @@ extern "C" void fn_801F004C(int unused, int recordId, void *provider) {
     index = 0;
     entryOffset = 0;
     while (index < *(int *)list) {
-        int entryName = fn_802C9C24(*(int *)((char *)list + 4) + entryOffset);
+        int entryName = ResourceEntry_GetName(*(int *)((char *)list + 4) + entryOffset);
         if (((ProviderVTable *)provider)->acceptsEntry(entryName)) {
             void *entryObject = ((ProviderVTable *)provider)->getEntryObject(entryName);
             memset(record, 0, 0x2c);
