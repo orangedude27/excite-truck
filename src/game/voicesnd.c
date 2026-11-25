@@ -21,7 +21,7 @@ extern void spuSetVoiceVolume(float);
 extern float fn_80209028(void), fn_802091CC(void);
 extern int fn_802090CC(void), KERNEL_GetTimeMs(void);
 extern void fn_802E625C(int);
-extern void fn_802E61EC(void *, float), fn_802E620C(void *, float), fn_802E6234(void *, float), fn_802E6238(void *, float), fn_802E623C(void *, float), spuSetVoiceRate(void *, float), fn_802E6240(void *, int);
+extern void fn_802E61EC(void *, float), fn_802E620C(void *, float), fn_802E6234(void *, float), fn_802E6238(void *, float), fn_802E623C(void *, float), spuSetVoiceRate(void *, float), spuSetVoiceAuxFlags(void *, int);
 __declspec(section ".data") extern float lbl_80558DC4;
 extern float lbl_8055B590, lbl_8055B594, lbl_805632B8;
 extern int lbl_8055EDF8;
@@ -442,7 +442,7 @@ extern "C" void fn_8020AC2C(void *arg0) {
                         fn_802E6238(voice, (*(float *)((char *)(p) + (0x30))));
                         fn_802E623C(voice, (*(float *)((char *)(p) + (0x34))));
                         spuSetVoiceRate(voice, (*(float *)((char *)(p) + (0x24))));
-                        fn_802E6240(voice, (*(int *)((char *)(p) + (0x38))));
+                        spuSetVoiceAuxFlags(voice, (*(int *)((char *)(p) + (0x38))));
                     }
                 }
             }
@@ -721,7 +721,7 @@ typedef struct VoiceSnd {
 #define SND_SetPan(v, x) fn_802E61EC((v), (x))
 #define SND_SetSurroundPan(v, x) fn_802E620C((v), (x))
 #define SND_SetRate(v, x) spuSetVoiceRate((v), (x))
-#define SND_SetAuxFlags(v, x) fn_802E6240((v), (x))
+#define SND_SetAuxFlags(v, x) spuSetVoiceAuxFlags((v), (x))
 #define SND_Start(v) fn_802E61A8(v)      // play once, from the start
 #define SND_StartLoop(v) fn_802E61BC(v)  // start looping unless already playing
 #define SND_Name(res) fn_802E6ABC((int)(res))
