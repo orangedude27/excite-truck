@@ -135,7 +135,7 @@ extern char lbl_804C97D7;
 extern char lbl_804C97D8;
 #pragma small_data on
 extern void GXSetTevColor(int, ...);
-extern unsigned long fn_802CE9FC(int, int, int, int);
+extern unsigned long gxPackRGBA(int, int, int, int);
 typedef struct { float x, y, z; } Vec_802D1C04;
 // 3x3 matrix times vector (MTXMultVecSR shape); src/dst may alias.
 static inline void mulVecSR_802D1C04(const float *m, const float *src, float *dst) {
@@ -195,7 +195,7 @@ static inline void xformInverse_802D1C04(Xform_802D1C04 *dst, const Xform_802D1C
 
 extern char lbl_8055FD3C;
 #pragma dont_inline on
-unsigned long fn_802CE9FC(int r, int g, int b, int a) {
+unsigned long gxPackRGBA(int r, int g, int b, int a) {
     /* Pack four byte color components into a 32-bit GXColor word (r in the high byte). */
     unsigned char bytes[4];
     bytes[0] = (unsigned char)r;
@@ -207,8 +207,8 @@ unsigned long fn_802CE9FC(int r, int g, int b, int a) {
 
 unsigned char fn_802CEA1C(unsigned int argbColor) {
     /* Convert a packed ARGB color word to GX's RGBA byte order: split out its four
-       bytes and repack them (rotated by one byte) through fn_802CE9FC. */
-    return ((unsigned char (*)(unsigned char, unsigned char, unsigned char, unsigned char))fn_802CE9FC)(
+       bytes and repack them (rotated by one byte) through gxPackRGBA. */
+    return ((unsigned char (*)(unsigned char, unsigned char, unsigned char, unsigned char))gxPackRGBA)(
         (unsigned char)(argbColor >> 16),
         (unsigned char)(argbColor >> 8),
         (unsigned char)argbColor,
@@ -777,7 +777,7 @@ void fn_802CF850(void) {
     extern void GXSetTevColorOp(int, int, int, int, int, int);
     extern void GXSetZCompLoc(int);
     extern void GXSetCopyClear(unsigned char *, int);
-    extern unsigned long fn_802CE9FC();
+    extern unsigned long gxPackRGBA();
     extern void fn_802D0188(unsigned char, unsigned char, unsigned char);
     extern void fn_802D0160(unsigned char, unsigned char, unsigned char);
     extern void fn_802D007C(float);
@@ -824,7 +824,7 @@ void fn_802CF850(void) {
     GXSetScissor(0, 0, *(unsigned short *)((unsigned char *)gCurrentRenderMode + 4), *(unsigned short *)((unsigned char *)gCurrentRenderMode + 6));
     GXSetPixelFmt(1, 0);
     GXSetDispCopyGamma(0);
-    clearWord = ((unsigned int (*)(unsigned int, unsigned int, unsigned int, unsigned int))fn_802CE9FC)(0, 0, 0, 0);
+    clearWord = ((unsigned int (*)(unsigned int, unsigned int, unsigned int, unsigned int))gxPackRGBA)(0, 0, 0, 0);
     spB = (unsigned char)clearWord;
     sp8 = (signed char)(clearWord >> 24);
     sp9 = (unsigned char)(clearWord >> 16);
@@ -1190,7 +1190,7 @@ void fn_802CFFAC(int arg0, int arg1, int arg2)
   volatile unsigned char sp9;
   unsigned long packed;
   volatile unsigned long long b3;
-  packed = fn_802CE9FC(arg0, arg1, arg2, 0);
+  packed = gxPackRGBA(arg0, arg1, arg2, 0);
   spB = (unsigned char) packed;
   sp9 = (unsigned char) (packed >> 16);
   b3 = (unsigned char) (packed >> 8);
@@ -2018,12 +2018,12 @@ void fn_802D0EEC(void) {
     light = &s->light;
     if (light->enabled != 0) {
         light->enabled = 0;
-        packed = fn_802CE9FC(0xFF, 0xFF, 0xFF, 0xFF);
+        packed = gxPackRGBA(0xFF, 0xFF, 0xFF, 0xFF);
         whiteColor[3] = packed;
         whiteColor[0] = packed >> 24;
         whiteColor[1] = packed >> 16;
         whiteColor[2] = packed >> 8;
-        packed = fn_802CE9FC(0, 0, 0, 0xFF);
+        packed = gxPackRGBA(0, 0, 0, 0xFF);
         lightPos[0] = light->p0 * lbl_80564FC4;
         lightPos[1] = light->p1 * lbl_80564FC4;
         lightPos[2] = light->p2 * lbl_80564FC4;
@@ -2044,7 +2044,7 @@ void fn_802D0EEC(void) {
         GXLoadLightObjImm(light->obj, 1);
         matColor0 = *(int *)whiteColor;
         GXSetChanMatColor_Internal(0, &matColor0);
-        packed = fn_802CE9FC(0, 0, 0, light->c8);
+        packed = gxPackRGBA(0, 0, 0, light->c8);
         matColor2[3] = packed;
         matColor2[0] = packed >> 24;
         matColor2[1] = packed >> 16;
@@ -3099,7 +3099,7 @@ int fn_802D31D8(void)
   GXSetTevAlphaOp(0, 0, 0, 0, 0, 0);
   GXSetTevColorOp(0, 0, 0, 0, 1, 0);
   GXSetTevColorIn(0, 0xF, 0xF, 0xF, 0xF);
-  c = fn_802CE9FC(0, 0, 0, 4);
+  c = gxPackRGBA(0, 0, 0, 4);
   col[3] = c;
   col[0] = c >> ((0, 24));
   col[1] = new_var >> 16;
@@ -3529,7 +3529,7 @@ void fn_802D3ECC(unsigned short blendMode) {
 extern unsigned long lbl_8055FD94;
 extern unsigned long lbl_8055FDA0;
 extern unsigned char lbl_804C97B0[];
-extern unsigned long fn_802CE9FC();
+extern unsigned long gxPackRGBA();
 extern int fn_802CFF64(int);
 extern unsigned char lbl_8055FD78;
 extern int lbl_8055D0BC;
