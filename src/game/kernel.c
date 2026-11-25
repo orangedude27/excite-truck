@@ -144,7 +144,7 @@ int fn_802E18D4(int width, int height, int texFmt, int wrapST, void *texObj, int
 }
 #pragma scheduling on
 /* Round size up to the next multiple of 128 (128-byte texture/cache-line alignment). */
-int fn_802E1954(int size) { return (size + 0x7F) & 0xFFFFFF80; }
+/* Round a byte count up to the next 128-byte boundary (cache-line/texture alignment). */ int fn_802E1954(int size) { return (size + 0x7F) & 0xFFFFFF80; }
 
 /* Compute the power-of-two width (pixels) of an IA8 lookup texture from its size: size/8 rounded up to a multiple of 4, then up to a power of two. */ unsigned int lookupTextureWidth(unsigned int size) {
     /* Return a power-of-two texture width: size/8 rounded up to a multiple of 4,
