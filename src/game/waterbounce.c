@@ -757,9 +757,9 @@ extern "C" void fn_80206750(s32, s32, s32);
 #pragma scheduling off
 #pragma cplusplus reset
 
-/* Reset the state flags (+0x49 set, +0x4A/+0x4B clear) of the child
- * node stored at +0x50 of the object. */
-/* CarSound vtable slot +0x14: re-arm the overheat_start.sfx held at +0x50 of the car's sound set if present, setting its +0x49 flag and clearing +0x4A/+0x4B. */ void CarSound_ResetOverheatStart(void *carSound) {
+/* CarSound vtable slot +0x14: re-arm the overheat_start.sfx held at +0x50 of
+ * the car's sound set if present, setting its +0x49 flag and clearing +0x4A/+0x4B. */
+void CarSound_ResetOverheatStart(void *carSound) {
     void *sound;
     sound = *(void **)((char *)carSound + 0x50);
     if (sound != 0) {
