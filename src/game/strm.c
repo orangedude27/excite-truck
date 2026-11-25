@@ -52,7 +52,7 @@ void fn_802E7318(void) {
 }
 
 #pragma scheduling invalid_target
-void fn_802E7330(void) {
+void StreamEnd(void) {
     /* Stop stream loading, clear the active flag, and log the entries used out of 0x100 plus the sectors used. */
     lbl_8055FFE0 = 0;
     fn_802E30C8(lbl_8034D7D8, sStreamEntryCount, 0x100, lbl_8055FFDC);
