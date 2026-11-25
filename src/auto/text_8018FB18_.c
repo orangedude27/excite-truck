@@ -877,9 +877,10 @@ s32 fn_80190368(s32 value) {
             DBPrintf_801797A8(*(const char **)((char *)arg0 + 0x28), lbl_80332EC4);
         }
     }
-}
-#pragma use_lmw_stmw reset
-#pragma pop
+ }
+ #pragma cplusplus off
+ #pragma use_lmw_stmw reset
+ #pragma pop
 s32 fn_80190B60(void *obj) {
     /* Return bit 4 of the packed flags byte at +7 of the child object referenced by obj+8, normalized to 0/1. */
     s32 bit = (*(u8 *)((char *)*(void **)((char *)obj + 8) + 7) >> 4) & 1;
