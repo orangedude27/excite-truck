@@ -1368,20 +1368,21 @@ extern void fn_801E9E78(void *, void *, void *, void *);
 extern void fn_8026E850(void *, void *, void *, void *);
 extern void PSVECNormalize(void *, void *);
 extern void PSVECCrossProduct(void *, void *, void *);
-static inline void fn_80268358_vecmat(float *out, float *v, float *m) {
-    if (out == v) {
-        float t0 = m[3] * v[1] + m[0] * v[0] + m[6] * v[2];
-        float t1 = m[4] * v[1] + m[1] * v[0] + m[7] * v[2];
-        float t2 = m[5] * v[1] + m[2] * v[0] + m[8] * v[2];
-        out[0] = t0;
-        out[1] = t1;
-        out[2] = t2;
-    } else {
-        out[0] = m[3] * v[1] + m[0] * v[0] + m[6] * v[2];
-        out[1] = m[4] * v[1] + m[1] * v[0] + m[7] * v[2];
-        out[2] = m[5] * v[1] + m[2] * v[0] + m[8] * v[2];
-    }
-}
+#define VECMAT_80268358(out, v, m)                                          \
+    do {                                                                    \
+        if ((out) == (v)) {                                                 \
+            float t0 = (m)[3] * (v)[1] + (m)[0] * (v)[0] + (m)[6] * (v)[2]; \
+            float t1 = (m)[4] * (v)[1] + (m)[1] * (v)[0] + (m)[7] * (v)[2]; \
+            float t2 = (m)[5] * (v)[1] + (m)[2] * (v)[0] + (m)[8] * (v)[2]; \
+            (out)[0] = t0;                                                  \
+            (out)[1] = t1;                                                  \
+            (out)[2] = t2;                                                  \
+        } else {                                                            \
+            (out)[0] = (m)[3] * (v)[1] + (m)[0] * (v)[0] + (m)[6] * (v)[2]; \
+            (out)[1] = (m)[4] * (v)[1] + (m)[1] * (v)[0] + (m)[7] * (v)[2]; \
+            (out)[2] = (m)[5] * (v)[1] + (m)[2] * (v)[0] + (m)[8] * (v)[2]; \
+        }                                                                   \
+    } while (0)
 void fn_802682B0(void *object) {
     /* Update object transforms/output: if flag at +0x138 is set, fill the 3x4
        float matrix at lbl_80499050 as identity rows {1,0,0,0} repeated; then
