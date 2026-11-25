@@ -234,7 +234,7 @@ int GetMixerDevice(int index) {
 void SetSelectedMixerDevice(int index) { MIXER_SELECTED_DEVICE = index; }
 
 /* Return the index of the currently selected mixer device. */
-int GetSelectedMixerDevice(void) { return MIXER_SELECTED_DEVICE; }
+/* Return the index of the currently selected mixer device. */ int GetSelectedMixerDevice(void) { return MIXER_SELECTED_DEVICE; }
 
 extern const char lbl_8033BF28[];
 extern char lbl_8055B4E8;
