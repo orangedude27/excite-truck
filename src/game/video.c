@@ -746,7 +746,7 @@ void *fn_802E0BA4(void) {
 /* Allocate the BinkMovie object (0x228 bytes, tagged with the "BinkMovie" name
  * block at lbl_8034CB68) and seed its first word with its initial state; the
  * returned pointer is picked up by the caller that opens the movie. */
-void fn_802E0BA8(void) {
+/* BinkMovie_Create: allocate a BinkMovie playback object (0x228 bytes, tagged with the "BinkMovie" name at lbl_8034CB68) and seed its state word at +0 to 0x10011001; the caller picks up the pointer through the videoFreeHook thunk. */ void fn_802E0BA8(void) {
     u32 *movie = ((u32 *(*)(s32, void *))fn_801284F8)(0x228, lbl_8034CB68);
     *movie = 0x10011001;
 }
