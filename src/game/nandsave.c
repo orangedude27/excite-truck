@@ -132,7 +132,7 @@ void rmemcardYield(void) {
 /* Enter the NAND-save subsystem: on first use (refcount 0) start it lazily, then
  * increment the user count. Paired with nandSaveLeave (leave), which decrements and
  * shuts the subsystem down when the count reaches zero. */
-void fn_802E883C(void) {
+void nandSaveEnter(void) {
     if (nandSaveRefCount == 0) {
         nandSaveInit();
     }
@@ -156,7 +156,7 @@ void nandSaveLeave(void) {
 /* Enter the NAND-save subsystem, dispatch the 0x38-byte request-table entry at requestIndex, then leave the subsystem and return the result. */
 int fn_802E888C(int requestIndex) {
     int result;
-    ((void (*)(void))fn_802E883C)();
+    ((void (*)(void))nandSaveEnter)();
     result = fn_802E8744(lbl_8034DB28 + requestIndex * 0x38);
     ((void (*)(void))nandSaveLeave)();
     return result;
