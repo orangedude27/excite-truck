@@ -340,7 +340,6 @@ struct ZoneState28 { s32 word[7]; };
 typedef struct ZoneState28 S28_80142118;
 
 struct TVec2 { f32 x; f32 y; };
-struct Fn801436E0TextStyle { u32 a, b, c, d; f32 size; u32 f, g, h; };
 struct HudTextStyle { u32 a, b, c, d; f32 size; u32 f, g, h; };
 extern "C" void *fn_801E7E3C(void);
 extern "C" void fn_8000FBE4(void);
