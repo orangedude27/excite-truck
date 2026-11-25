@@ -506,9 +506,9 @@ void RegisterTextureWithResource(int textureName, int resourceHandle) {
     fn_802CA898(textureName, 0, resourceHandle, 0xE);
 }
 
-void registerTexture(int name, int type) {
+/* Register a named texture slot with no scene id and no backing resource, stamping category into the new entry; returns the slot index (the void declaration hides it). */ void registerTexture(int name, int category) {
     /* Register a named texture with no scene id and no backing resource, using type as its category. */
-    fn_802CA898(name, 0, 0, type);
+    fn_802CA898(name, 0, 0, category);
 }
 
 extern void fn_8012C4D8(void *);
