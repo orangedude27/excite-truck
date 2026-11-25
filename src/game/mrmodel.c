@@ -22,7 +22,7 @@ void* MRModel_GetInstance(int);
 int fn_802C94A0(void*, unsigned char*, float*, float);
 void fn_802C57B4(int, int, int, unsigned char, float);
 
-extern int lbl_8055D00C;
+extern int gModelMode;
 extern void fn_802DB2B4(void);
 extern int lbl_804C1338[];
 extern unsigned char gModelDetailLevelTable[];
@@ -691,7 +691,7 @@ void fn_802C5F48(void) {
     e7c->buf = fn_8012850C(0x1600, jumpTable + 0x90);
     e7c->count = zero;
     *(int *)(base + 0x88) = -1;
-    lbl_8055D00C = 1;
+    gModelMode = 1;
 }
 
 #pragma scheduling on
@@ -2073,7 +2073,7 @@ void fn_802C7D54(int arg0, const float *arg1, int arg2, float fa, float fb, floa
     fn_802C9C58(savedCull);
 }
 #pragma pop
-/* Sets lbl_8055D00C, the model manager's mode selector: 1 normally, 2 when
+/* Sets gModelMode, the model manager's mode selector: 1 normally, 2 when
  * the caller requests the alternate mode (non-zero flag). */
 void fn_802C8218(s32 useAltMode) {
     s32 mode;
@@ -2082,7 +2082,7 @@ void fn_802C8218(s32 useAltMode) {
     if (useAltMode != 0) {
         mode = 2;
     }
-    lbl_8055D00C = mode;
+    gModelMode = mode;
 }
 
 /* mrmodel: forward to the model-manager hook (fn_802DB2B4), a no-op in this build. */
