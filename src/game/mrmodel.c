@@ -2075,7 +2075,7 @@ void fn_802C7D54(int arg0, const float *arg1, int arg2, float fa, float fb, floa
 #pragma pop
 /* Sets gModelMode, the model manager's mode selector: 1 normally, 2 when
  * the caller requests the alternate mode (non-zero flag). */
-void MRModel_SetMode(s32 useAltMode) {
+/* Set the model manager's mode selector gModelMode to 1 normally, or 2 when the alternate-mode flag is non-zero. */ void MRModel_SetMode(s32 useAltMode) {
     s32 mode;
 
     mode = 1;
