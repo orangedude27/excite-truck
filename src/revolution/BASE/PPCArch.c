@@ -147,20 +147,7 @@ u32 PPCMffpscr(void) {
  * zero-extend the 32-bit value into a 64-bit word, then load and store it
  * through f31 with mtfsf. */
 void PPCMtfpscr(register u32 val) {
-    // clang-format off
-    register struct {
-        f32 tmp;
-        f32 data;
-    } fpscr;
-
-    asm {
-        li r4, 0
-        stw val, fpscr.data
-        stw r4, fpscr.tmp
-        lfd f31, fpscr.tmp
-        mtfs f31
-    }
-    // clang-format on
+    PPC_MTFSF(val);
 }
 
 asm u32 PPCMfhid2(void) {
