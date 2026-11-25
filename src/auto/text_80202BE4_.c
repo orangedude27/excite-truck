@@ -19,7 +19,7 @@ void fn_80203E88(void);
 void fn_80203EC4(void);
 extern void fn_802CAC54(s32);
 extern void fn_802CB228(void);
-extern void fn_802CB288(s32);
+extern void Texture_BindShadowMap(s32);
 extern void getTextureSlotTexObj(s32);
 extern void fn_802D050C(s32);
 extern void fn_802D30DC(s32);
@@ -824,11 +824,11 @@ void fn_80203EC0(void) {
 }
 
 /* When scene state (lbl_8055ED14) equals 2 -- fn_80202BE4 is false for that value
- * -- resolve the shadow/SWL map's texture-slot record via fn_802CB288.
+ * -- resolve the shadow/SWL map's texture-slot record via Texture_BindShadowMap.
  * lbl_8055ECFC is that map's texture-slot index. */
 void fn_80203EC4(void) {
     if (fn_80202BE4() == 0) {
-        fn_802CB288(lbl_8055ECFC);
+        Texture_BindShadowMap(lbl_8055ECFC);
     }
 }
 
