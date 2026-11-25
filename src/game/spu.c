@@ -273,8 +273,8 @@ struct SpkStream {
 #pragma scheduling on
 /* Completion callback for the WPAD_SPEAKER_ON command: if the remote accepted
  * it, send WPAD_SPEAKER_PLAY; the reply SpuSpeaker_MarkStreamReady marks the stream ready. */
-void SpuSpeaker_SpeakerOnCallback(int chan, int result) {
-    if (result == 0) fn_80060CC0(chan, WPAD_SPEAKER_PLAY, (void (*)())SpuSpeaker_MarkStreamReady);
+/* On a successful WPAD_SPEAKER_ON reply, request WPAD_SPEAKER_PLAY with SpuSpeaker_MarkStreamReady as its completion callback. */ void SpuSpeaker_SpeakerOnCallback(int channel, int result) {
+    if (result == 0) fn_80060CC0(channel, WPAD_SPEAKER_PLAY, (void (*)())SpuSpeaker_MarkStreamReady);
 }
 
 /* WPAD connect callback for the Wii remote speaker, reached through
