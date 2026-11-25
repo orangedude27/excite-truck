@@ -303,7 +303,7 @@ extern void fn_802D9C4C(void);
 
 /* Signal completion of the GX operation: set the flag that HomeMenu_drawUIAndFlush
    busy-waits on (cleared to 0 by gxHandleDrawSyncToken case 1). */
-void fn_802CEC44(void) {
+void gxDrawDoneCallback(void) {
 #define sGxSyncDone lbl_8055FD3C
     sGxSyncDone = 1;
 #undef sGxSyncDone
@@ -630,7 +630,7 @@ void fn_802CF600(void) {
     extern unsigned short lbl_8055FD0A;
     extern void *lbl_8055FD68, *gGxDirtyStateMask;
     extern unsigned long lbl_8055FDAC;
-    extern void fn_802CF830(void), fn_802CF10C(void), fn_802D9A50(void), fn_802CEC44(void);
+    extern void fn_802CF830(void), fn_802CF10C(void), fn_802D9A50(void), gxDrawDoneCallback(void);
     extern void fn_80127468(void), fn_8005954C(void), fn_801282EC(int), fn_801282F4(void);
     extern void fn_802D8D1C(void), drVertexFormatCacheInit(void), fn_802CF850(void), fn_802D0BD8(void);
     extern void HomeMenu_endFrame(void), fn_802DACD4(void), fn_802D9C18(void), fn_802DA2F4(void);
@@ -701,7 +701,7 @@ void fn_802CF600(void) {
     GXInitTexObj(&lbl_804C9940 + 1, buffer, 0x280, 0x1C0, 1, 0, 0, 0);
 #pragma small_data on
     GXGetLightDir(gxAdvanceDrawSyncToken);
-    GXLoadLightObjIndx(fn_802CEC44);
+    GXLoadLightObjIndx(gxDrawDoneCallback);
     fn_802D37E4();
     fn_802DD4FC();
     lbl_8055FD40 = negative;
