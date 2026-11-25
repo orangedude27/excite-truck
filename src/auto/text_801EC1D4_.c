@@ -1048,7 +1048,7 @@ void fn_801EDD7C(void *renderState, long data) {
 #pragma scheduling on
 
 extern float lbl_80562E88, lbl_80562E90, lbl_80562E9C, lbl_80562EC8;
-float fn_802C88E8(void*);
+float DrawList_squaredDistanceToCamera(void*);
 long fn_801E89A4(long);
 short fn_801EAC3C(void*, long);
 long fn_801E9E78(void*, void*, float*, long*, float);
@@ -1069,7 +1069,7 @@ void fn_801EDF18(void* arg0) {
     int i;
     temp_f31 = fn_801E88F0(-1);
     temp_f31 *= temp_f31;
-    factor = fn_802C88E8((void*)((long)arg0 + 0x28));
+    factor = DrawList_squaredDistanceToCamera((void*)((long)arg0 + 0x28));
     temp_f31 = factor * temp_f31;
     index = *(long*)((char*)arg0 + 0x480) - 1;
     while (index >= 0 && temp_f31 < (*(float*)((char*)arg0 + index * 8 + 0x404) * *(float*)((char*)arg0 + index * 8 + 0x404))) index--;

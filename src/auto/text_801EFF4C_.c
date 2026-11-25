@@ -75,7 +75,7 @@ int fn_801F0E88(int, int);
 int fn_801284F8(int, void *);
 int fn_801F0DC0(int, int, int, int);
 float fn_801E88F0(int);
-float fn_802C88E8(int);
+float DrawList_squaredDistanceToCamera(int);
 extern int lbl_8055B0B8;
 void fn_801F0000(int wheel) {
 #define KEEP_ALLOCATED -1
@@ -899,7 +899,7 @@ int fn_801F1494(int arg0, void *arg1, short arg2) {
     char *table = (char *)(base + 0xEC);
     float speed = ((float (*)(int, int))fn_801E88F0)(-1, base);
     float squared = speed * speed;
-    float value = ((float (*)(void *))fn_802C88E8)((char *)arg0 + 0x3C);
+    float value = ((float (*)(void *))DrawList_squaredDistanceToCamera)((char *)arg0 + 0x3C);
     char *cursor;
     int index;
     int vx, vy, vz;
@@ -937,7 +937,7 @@ float fn_801F159C(void **objHandle) {
 #pragma processor 750
 int fn_801F15A8(void **tablePtr, int point) {
     /* Find the index of the first 0x18-byte entry in (*tablePtr) whose value at
-     * +0x38 exceeds squared distance from point (fn_802C88E8) scaled by
+     * +0x38 exceeds squared distance from point (DrawList_squaredDistanceToCamera) scaled by
      * fn_801E88F0(-1)^2; returns count-1 if none match. */
     float scale;
     float threshold;
@@ -948,7 +948,7 @@ int fn_801F15A8(void **tablePtr, int point) {
 
     scale = fn_801E88F0(-1);
     scale = scale * scale;
-    threshold = fn_802C88E8(point);
+    threshold = DrawList_squaredDistanceToCamera(point);
     threshold = threshold * scale;
 
     tableBase = (unsigned long)*tablePtr;

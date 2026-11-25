@@ -3379,7 +3379,7 @@ extern "C" void fn_801FC720(BatchedGob *node) {
 }
 
 extern "C" f32 fn_801E88F0(s32);
-extern "C" f32 fn_802C88E8(void *);
+extern "C" f32 DrawList_squaredDistanceToCamera(void *);
 extern "C" f64 fn_8002F234(void);
 extern "C" void fn_802C7AE0(s32, void *, s32);
 extern f32 lbl_80558DC4;
@@ -3388,7 +3388,7 @@ extern f32 lbl_80563020;
 #pragma processor 750
 __declspec(section ".data") extern f32 lbl_80558DC4;
 extern "C" f32 fn_801E88F0(s32);
-extern "C" f32 fn_802C88E8(void *);
+extern "C" f32 DrawList_squaredDistanceToCamera(void *);
 extern "C" f64 fn_8002F234(void);
 extern "C" void fn_802C7AE0(s32, void *, s32);
 #pragma push
@@ -3408,7 +3408,7 @@ extern "C" void fn_801FC774(void *arg0)
   f32 t;
   f32 blend;
   new_var2 = ((u8 *) arg0) + 0x48;
-  new_var3 = fn_802C88E8(((u8 *) arg0) + 0x28);
+  new_var3 = DrawList_squaredDistanceToCamera(((u8 *) arg0) + 0x28);
   if ((new_var3 * speed2) > ((*((f32 *) (((u8 *) arg0) + 0x4C))) * (*((f32 *) (((u8 *) arg0) + 0x4C)))))
   {
     time = (f32) fn_8002F234();

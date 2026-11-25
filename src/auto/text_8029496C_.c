@@ -14,7 +14,7 @@ extern void fn_80294CCC(const Vec80295 *, const Vec80295 *, const Vec80295 *, un
 extern const unsigned short lbl_802FA9B0[];
 extern void fn_802C8DB8(void *, int, void *, int);
 extern void *fn_802C86DC(void);
-extern float fn_802C88E8(void *);
+extern float DrawList_squaredDistanceToCamera(void *);
 extern void fn_802C8BD0(int);
 extern void DrawList_RestoreNormalMode(void);
 extern char lbl_804B42F0[];
@@ -138,50 +138,104 @@ void fn_80294CC8(void) { fn_80294ED4(); }
 
 #pragma push
 #pragma processor 750
-void fn_80294CCC(const Vec80295 *arg0, const Vec80295 *arg1, const Vec80295 *arg2, unsigned int arg3, int arg4, float farg0, float farg1) {
-    unsigned short sp8[6];
-    float sp18[4][6];
-    float t30, t4, t3, t11, t10, t9, t27, t28, t4_2;
-    float t7, t5, t6, t13, t12, t11_2, t29, f0, t8, t2;
-    float t7_2, t5_2, t3_2, t0_2;
-    float u0, u1, v0, v1;
-    float s00, s01, s02, s10, s11, s12, s20, s21, s22, s30, s31, s32;
-
-    t30 = -farg0;
-    t4 = arg1->x; t3 = arg1->y; t11 = arg1->z;
-    t10 = arg0->x; t9 = arg0->y; t4_2 = arg0->z;
+void fn_80294CCC(const Vec80295 *arg0, const Vec80295 *arg1, const Vec80295 *arg2, unsigned int arg3, int arg4, float farg0, float farg1)
+{
+  unsigned short sp8[6];
+  float sp18[4][6];
+  float t30;
+  float t4;
+  float t3;
+  float t11;
+  float t10;
+  float t7;
+  float t27;
+  float t28;
+  float t4_2;
+  float t5;
+  float t6;
+  float t13;
+  float t12;
+  float t11_2;
+  float t29;
+  float f0;
+  float t2;
+  float t7_2;
+  float s31;
+  float t5_2;
+  float t0_2;
+  float t8;
+  float u0;
+  float t9;
+  float __repair_u0_1;
+  float u1;
+  float v0;
+  float v1;
+  float s00;
+  float s01;
+  float s02;
+  float s10;
+  float s11;
+  float s12;
+  float s20;
+  float s21;
+  float s22;
+  float t3_2;
+  float s30;
+  float s32;
+  t30 = -farg0;
+  t4 = arg1->x;
+  if (1)
+  {
+    t3 = arg1->y; t11 = arg1->z;
+    t10 = (*arg0).x; t9 = arg0->y; t4_2 = arg0->z;
     t27 = t10 + (t4 * t30); t28 = t9 + (t3 * t30); t3_2 = t4_2 + (t11 * t30);
     t7 = arg2->x; t5 = arg2->y; t6 = arg2->z;
     t13 = t10 + (t4 * farg0); t12 = t9 + (t3 * farg0); t11_2 = t4_2 + (t11 * farg0);
-    t29 = t7 * farg1; f0 = -farg1; t8 = t5 * farg1; t2 = t6 * farg1;
-    t7_2 = t7 * f0; t5_2 = t5 * f0; t0_2 = t6 * f0;
-
-    s00 = t27 + t29; s01 = t28 + t8; s02 = t3_2 + t2;
-    s10 = t13 + t29; s11 = t12 + t8; s12 = t11_2 + t2;
-    s20 = t27 + t7_2; s21 = t28 + t5_2; s22 = t3_2 + t0_2;
-    s30 = t13 + t7_2; s31 = t12 + t5_2; s32 = t11_2 + t0_2;
-
-    sp8[0] = lbl_802FA9B0[0]; sp8[1] = lbl_802FA9B0[1]; sp8[2] = lbl_802FA9B0[2];
-    sp8[3] = lbl_802FA9B0[3]; sp8[4] = lbl_802FA9B0[4]; sp8[5] = lbl_802FA9B0[5];
-
-    sp18[0][0] = s00; sp18[0][1] = s01; sp18[0][2] = s02;
-    sp18[1][0] = s10; sp18[1][1] = s11; sp18[1][2] = s12;
-    sp18[2][0] = s20; sp18[2][1] = s21; sp18[2][2] = s22;
-    sp18[3][0] = s30; sp18[3][1] = s31; sp18[3][2] = s32;
-    *(unsigned int *)&sp18[3][3] = arg3; *(unsigned int *)&sp18[2][3] = arg3;
-    *(unsigned int *)&sp18[1][3] = arg3; *(unsigned int *)&sp18[0][3] = arg3;
-
-    if (arg4 >= 0) {
-        u0 = (float)(arg4 % 2) * lbl_8056452C;
-        u1 = lbl_8056452C + u0;
-        v0 = (float)(arg4 / 2);
-        v1 = lbl_80564518 + v0;
-    } else {
-        u0 = lbl_8056451C; u1 = lbl_80564518; v0 = lbl_8056451C; v1 = lbl_80564518;
-    }
-    sp18[2][4] = u0; sp18[0][4] = u0; sp18[3][4] = u1; sp18[1][4] = u1;
-    sp18[1][5] = v0; sp18[0][5] = v0; sp18[3][5] = v1; sp18[2][5] = v1;
-    fn_802C8DB8(sp18, 4, sp8, 6);
+  }
+  t29 = t7 * farg1; f0 = -farg1; t8 = t5 * farg1; t2 = t6 * farg1;
+  t7_2 = t7 * f0; t5_2 = t5 * f0; t0_2 = t6 * f0;
+  s00 = t27 + t29; s01 = t8 + t28; s02 = t2 + t3_2;
+  s10 = t13 + t29; s11 = t12 + t8; s12 = t11_2 + t2;
+  s20 = t27 + t7_2; s21 = t5_2 + t28; s22 = t3_2 + t0_2;
+  s30 = t13 + t7_2; s31 = t12 + t5_2; s32 = t0_2 + t11_2;
+  sp8[0] = lbl_802FA9B0[0]; sp8[1] = lbl_802FA9B0[1]; sp8[2] = lbl_802FA9B0[2];
+  sp8[3] = lbl_802FA9B0[3]; sp8[4] = lbl_802FA9B0[4]; sp8[5] = lbl_802FA9B0[5];
+  sp18[0][0] = s00; sp18[0][1] = s01; sp18[0][2] = s02;
+  sp18[1][0] = s10; sp18[1][1] = s11; sp18[1][2] = s12;
+  sp18[2][0] = s20; sp18[2][1] = s21; sp18[2][2] = s22;
+  sp18[3][0] = s30; sp18[3][1] = s31; sp18[3][2] = s32;
+  *((unsigned int *) (&sp18[3][3])) = arg3;
+  *((unsigned int *) (&sp18[2][3])) = arg3;
+  *((unsigned int *) (&sp18[1][3])) = arg3 & 0xFFFF;
+  *((unsigned int *) (&sp18[0][3])) = arg3;
+  if (((arg4 - 1) + 1) >= ((0 - 1) + 1))
+  {
+    u0 = ((float) (arg4 % 2)) * lbl_8056452C;
+    u1 = lbl_8056452C + u0;
+    v0 = (float) (arg4 / 2);
+    v1 = lbl_80564518 + v0;
+    sp18[2][4] = u0;
+    sp18[0][4] = u0;
+    sp18[3][4] = u1;
+    sp18[1][4] = u1;
+    sp18[1][5] = v0;
+    sp18[0][5] = v0;
+    sp18[3][5] = v1;
+    sp18[2][5] = v1;
+  }
+  else
+  {
+    __repair_u0_1 = lbl_8056451C; u1 = lbl_80564518; v0 = lbl_8056451C; v1 = lbl_80564518;
+    sp18[2][4] = __repair_u0_1;
+    sp18[0][4] = __repair_u0_1;
+    sp18[3][4] = u1;
+    sp18[1][4] = u1;
+    sp18[1][5] = v0;
+    sp18[0][5] = v0;
+    sp18[3][5] = v1;
+    sp18[2][5] = v1;
+  }
+  fn_802C8DB8(sp18, 4, sp8, 6);
 }
 #pragma pop
 
@@ -316,7 +370,7 @@ void fn_80294ED4(void)
   {
     temp_r16 = fn_80287B24(spF0);
     temp_f26 = fn_801E88F0(-1);
-    if ((!((fn_802C88E8(((unsigned char *) temp_r16) + 0x24) * temp_f26) > temp_f27)) && (!((*((int *) (((char *) temp_r16) + 0x68))) & 8)))
+    if ((!((DrawList_squaredDistanceToCamera(((unsigned char *) temp_r16) + 0x24) * temp_f26) > temp_f27)) && (!((*((int *) (((char *) temp_r16) + 0x68))) & 8)))
     {
       var_r15 = 0;
       if (((int) (*((int *) (((char *) var_r18) + 0x180)))) > 0)
@@ -505,7 +559,7 @@ void fn_80294ED4(void)
   {
     temp_r16_2 = fn_80287B24(var_r15_2);
     temp_f30_2 = fn_801E88F0(-1);
-    if ((!((fn_802C88E8(((unsigned char *) temp_r16_2) + 0x24) * temp_f30_2) > temp_f27)) && (!((*((int *) (((char *) temp_r16_2) + 0x68))) & 8)))
+    if ((!((DrawList_squaredDistanceToCamera(((unsigned char *) temp_r16_2) + 0x24) * temp_f30_2) > temp_f27)) && (!((*((int *) (((char *) temp_r16_2) + 0x68))) & 8)))
     {
       var_r17_2 = 0;
       if (((int) (*((int *) (((char *) var_r14) + 0x180)))) > 0)

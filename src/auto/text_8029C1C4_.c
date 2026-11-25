@@ -61,7 +61,7 @@ extern void fn_8029C450(void *, int);
 extern float lbl_8056469C;
 extern double lbl_80564680;
 extern float fn_801E88F0(int);
-extern float fn_802C88E8(void *);
+extern float DrawList_squaredDistanceToCamera(void *);
 extern int fn_802C9640(void *);
 
 void fn_8029C1C4(void) {
@@ -818,7 +818,7 @@ void *fn_8029D464(void *self, int deleteSelf) {
 }
 
 extern float fn_801E88F0(int);
-extern float fn_802C88E8(void *);
+extern float DrawList_squaredDistanceToCamera(void *);
 extern int fn_802C9640(void *);
 extern float lbl_80564648;
 extern unsigned char lbl_80349780[];
@@ -834,7 +834,7 @@ int fn_8029D4CC(void *arg0) {
     register int result;
     temp_f31 = fn_801E88F0(-1);
     temp_f31 = temp_f31 * temp_f31;
-    temp_f2 = fn_802C88E8((char *)object + 0x54);
+    temp_f2 = DrawList_squaredDistanceToCamera((char *)object + 0x54);
     temp_f2 = temp_f2 * temp_f31;
     temp_f0 = lbl_80564648;
     temp_f1 = *(float *)((char *)object + 0x60);
@@ -1545,7 +1545,7 @@ int fn_8029EAE8(void *object) {
     register float maxDistanceSq = 22500.0f;
     int inView = 0;
 
-    if (fn_802C88E8((char *)object + 0x30) < maxDistanceSq) {
+    if (DrawList_squaredDistanceToCamera((char *)object + 0x30) < maxDistanceSq) {
         void *position = (char *)object + 0x18;
         float tolerance = *(float *)((char *)object + 0x3C);
         position = (char *)position + 0x18;
