@@ -711,9 +711,7 @@ void fn_8021037C(void) {
  * fn_8020F5C8). Called at the end of pre-race setup (fn_8000AB48); the pointer it
  * is passed is ignored by the callee. */
 void fn_802103B8(void) {
-#define TrackMusic_MarkAllLoaded fn_8020F5C8
-    TrackMusic_MarkAllLoaded();
-#undef TrackMusic_MarkAllLoaded
+    fn_8020F5C8();
 }
 
 #pragma push
