@@ -311,7 +311,7 @@ extern float QueryGroundHeightAtXZ(void *, float, float);
 extern int fn_80178CA4(void);
 extern int fn_801796C4(void);
 extern int hasSelectedTrackMusicSong(void);
-extern int fn_802104FC(void);
+extern int hasNoSelectedTrackMusicSong(void);
 extern void fn_8020C910(float);
 extern int fn_802BF4F0(void);
 extern float fn_802BF590(float, float);
@@ -362,7 +362,7 @@ extern "C" float QueryGroundHeightAtXZ(void *, float, float);
 extern "C" int fn_80178CA4(void);
 extern "C" int fn_801796C4(void);
 extern "C" int hasSelectedTrackMusicSong(void);
-extern "C" int fn_802104FC(void);
+extern "C" int hasNoSelectedTrackMusicSong(void);
 extern "C" void fn_8020C910(float);
 extern "C" int fn_802BF4F0(void);
 extern "C" float fn_802BF590(float, float);
@@ -575,7 +575,7 @@ __repair_addr = (char *)((char *)truck + 0x25A0);
             if ((fn_801796C4() == 0) && (r28flag != 0) && ((*(float *)((char *)truck + 0x64) - f30) > lbl_805633A4) && (f31 > lbl_805633A8) && (nvy > lbl_805633AC)) {
                 if (hasSelectedTrackMusicSong() == 0)
                     want = 1;
-                else if (fn_802104FC() != 0)
+                else if (hasNoSelectedTrackMusicSong() != 0)
                     want = 1;
             }
             if (want != 0) {

@@ -769,7 +769,7 @@ void stopTrackMusic(void) {
     return getTrackMusicSongCount() > 0;
 }
 
-long fn_802104FC(void) {
+long hasNoSelectedTrackMusicSong(void) {
     /* Return nonzero when no track-music entry is selected (the current track index is -1). */
     return (gTrackMusicCurrentSong + 1) == 0;
 }
