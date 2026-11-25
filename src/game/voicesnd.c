@@ -68,7 +68,7 @@ extern void fn_802E6B04(void);
   extern void *gVoiceMixer;
 #define gVoiceMixerInstance gVoiceMixer
 extern char lbl_8033C37C[];
-extern void *lbl_8055EE08;
+extern void *sVoiceEntryCount;
 extern unsigned char gVoiceMixerName[];
 extern unsigned char sVoiceState[];
 extern int fn_80128668(void);
@@ -81,7 +81,7 @@ typedef struct { char *callbacks; int state; } VoiceMixerDevice;
 /* Find a 0x24-byte voice entry by case-insensitive name in the table at lbl_804892D0; return its pointer, or a default label if not found. */ void *fn_8020A6AC(void *name) {
     char *entry = lbl_804892D0;
     int index = 0;
-    while (index < (int)lbl_8055EE08) {
+    while (index < (int)sVoiceEntryCount) {
         if (stricmp((const char *)name, entry) == 0)
             return entry;
         entry += 0x24;
@@ -100,9 +100,9 @@ typedef struct { char *callbacks; int state; } VoiceMixerDevice;
     ((int (*)(void *, int))fn_80208E90)(mixer, 0);
 }
 #pragma scheduling on
-/* Return s_voiceEntryCount (lbl_8055EE08), the number of registered 0x24-byte voice-sound entries. */
+/* Return s_voiceEntryCount (sVoiceEntryCount), the number of registered 0x24-byte voice-sound entries. */
 void* fn_8020A76C(void) {
-    return lbl_8055EE08;
+    return sVoiceEntryCount;
 }
 
 /* Return a pointer to the 0x24-byte voice-sound entry at `index` in the shared entry table (lbl_804892D0). */
@@ -322,10 +322,10 @@ extern int strcmp(const char *, const char *);
         while ((entry = (Entry *)list->getAt(entryIndex)) != 0) {
             const char *entryName = entry->getName();
             if (strcmp(entryName, lbl_8055B5A0) == 0) {
-                int recordIndex = (int)lbl_8055EE08;
+                int recordIndex = (int)sVoiceEntryCount;
                 char *record = records + recordIndex * 0x24;
                 const char *source;
-                lbl_8055EE08 = (void *)(recordIndex + 1);
+                sVoiceEntryCount = (void *)(recordIndex + 1);
                 source = entry->getString(lbl_8055B5A8, recordIndex);
                 {
                     int remaining = 0x20;
@@ -372,7 +372,7 @@ extern void fn_802E5A54(void);
 /* Voice-sound shutdown: clear the registered voice-entry count, then tear down
  * SPU state (fn_802E5A54). */
 void VoiceSnd_shutdown(void) {
-#define s_voiceEntryCount lbl_8055EE08
+#define s_voiceEntryCount sVoiceEntryCount
     s_voiceEntryCount = 0;
 #undef s_voiceEntryCount
     fn_802E5A54();
