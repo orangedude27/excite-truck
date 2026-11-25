@@ -29,7 +29,7 @@ struct StrmBankObject { virtual ~StrmBankObject(); };
 #pragma cplusplus reset
 
 /* Install the freshly created "null" stream-bank manager as the global manager. */
-void initStrmBank(void) {
+/* Install the freshly created "null" stream-bank manager as the global manager. */ void initStrmBank(void) {
     strmBankManager = (void *)createNullStrmBank();
 }
 
