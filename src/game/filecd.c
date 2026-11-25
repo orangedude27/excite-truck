@@ -454,7 +454,7 @@ int fn_802E4680(void *file) {
 
 #pragma cplusplus on
 /* FileDisk::seekRelative - seek to the file's cursor (+0x88) plus delta via virtual seek (slot +0x20). */
-/* FileDisk::seekRelative — seek via the virtual seek() (slot +0x20) to the file cursor (+0x88) plus delta. */ extern "C" void FileDisk_seekRelative(void *file, int delta) {
+/* FileDisk::seekRelative — seek via the virtual seek() (slot +0x20) to the file cursor (+0x88) plus delta. */ /* FileDisk::seekRelative — seek via the virtual seek() (slot +0x20) to the file cursor (+0x88) plus delta. */ extern "C" void FileDisk_seekRelative(void *file, int delta) {
     int offset = *(int *)((char *)file + 0x88);
     ((Dummy_802E4688 *)file)->m6(offset + delta);
 }
