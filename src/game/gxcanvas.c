@@ -224,8 +224,8 @@ s32 gxCanvasGetPixelAddr(void *canvas, s32 x, s32 y) {
 }
 
 /* Return the address of the 4-byte pixel at (x, y): pixels + y * rowBytes + x * 4. */
-s32 gxCanvasGetPixelAddr32(void *arg0, s32 x, s32 y) {
-    GxCanvas *canvas = arg0;
+s32 gxCanvasGetPixelAddr32(void *canvasPtr, s32 x, s32 y) {
+    GxCanvas *canvas = canvasPtr;
     return canvas->rowBytes * y + ((s32)canvas->pixels + x * 4);
 }
 
