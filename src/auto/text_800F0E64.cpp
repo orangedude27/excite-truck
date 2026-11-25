@@ -5743,7 +5743,7 @@ extern "C" void *fn_800F975C(s32 player, s32 priority, s32 requestedPriority, s3
     /* detail::SoundInstanceManager::Alloc for wave sounds (SoundInstanceManager.h).
      * Takes a free WaveSound out of the instance pool; when the pool is full it
      * takes the sound with the lowest priority away from that list (stopping it
-     * first) if the new sound outranks it, and gives up otherwise.  The new sound
+     * first) if the new sound outranks it, and gives up instead.  The new sound
      * is then built up: the player's first free frame heap, a copy of the ambient
      * arg with its update callback, its priority (+0x74) and ambient priority
      * offset (+0x40), and links into the manager's priority list (+0x4, node
