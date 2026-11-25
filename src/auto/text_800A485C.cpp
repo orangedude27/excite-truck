@@ -10715,27 +10715,27 @@ extern "C" s32 fn_800B5070(s32 path, s32 *outValue) {
     #undef PATH_END_INDEX
 }
 #pragma pop
-extern "C" s32 fn_800B51FC(fn_800B51FC_arg_t *arg0, s32 arg1)
+/* Encode a number into the 8.3 short name: add the number's decimal digits (most significant first) into short-name bytes 7 down to 1, stopping after 6 digits or when the number runs out. */ extern "C" s32 fn_800B51FC(fn_800B51FC_arg_t *shortName, s32 number)
 {
-  s8 *p = arg0 + 7;
-  s8 b;
-  u32 digits = 7;
+  s8 *digitPtr = shortName + 7;
+  s8 byteValue;
+  u32 digitsLeft = 7;
   u32 divisor = 10;
   u32 place = 1;
-  while ((digits > 1) && (arg1 != 0))
+  while ((digitsLeft > 1) && (number != 0))
   {
-    u32 rem = ((u32) arg1) % divisor;
-    if (rem != 0)
+    u32 digit = ((u32) number) % divisor;
+    if (digit != 0)
     {
-      arg1 -= rem;
-      rem /= place;
-      b = *p;
-      b += ((s8) rem) & 0xFFFFFFFF;
-      *p = b;
+      number -= digit;
+      digit /= place;
+      byteValue = *digitPtr;
+      byteValue += ((s8) digit) & 0xFFFFFFFF;
+      *digitPtr = byteValue;
     }
     divisor *= 10;
-    digits--;
-    p--;
+    digitsLeft--;
+    digitPtr--;
     place *= 10;
   }
 
