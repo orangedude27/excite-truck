@@ -94,7 +94,7 @@ s32 gxCanvasConvert565ToRGBA(s32 rgb565) {
 #define Convert565ToRGBA gxCanvasConvert565ToRGBA /* one RGB565 (format 4) pixel -> 0x00RRGGBB word */
 #define Convert555ToRGBA gxCanvasConvert1555ToRGBA /* one RGB1555 (format 3) pixel -> 0x00RRGGBB word */
 /* Build a canvas of the given size using the default pixel format held in lbl_8055CFF8 (3 in this build). */
-void fn_802C2CDC(void *canvas, s32 width, s32 height) {
+void gxCanvasCreateDefault(void *canvas, s32 width, s32 height) {
     fn_802C2CE8(canvas, width, height, (s8)lbl_8055CFF8);
 }
 

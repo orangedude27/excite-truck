@@ -130,7 +130,7 @@ extern int fn_8012C33C(char *);
 extern int gxGetImageArt(char *);
 extern void *fn_8022EE9C(int);
 extern void fn_8022EE98(int, void *);
-extern void fn_802C2CDC(void *, int, int);
+extern void gxCanvasCreateDefault(void *, int, int);
 extern int stricmp(char *, char *);
 extern char *strstr(char *, char *);
 __declspec(section ".sdata") extern char lbl_8055B868[];
@@ -156,7 +156,7 @@ void *fn_80216D40(void *arg0, char *arg1, int arg2, int arg3, int arg4, int arg5
     *(int *)(obj + 0x450) = 0;
     *(int *)(obj + 0x468) = 0;
     *(int *)(obj + 0x464) = 0;
-    fn_802C2CDC(obj + 0xC, 4, 4);
+    gxCanvasCreateDefault(obj + 0xC, 4, 4);
     *(char *)(obj + 0xDE4) = 0;
     *(int *)(obj + 0) = 0;
     *(int *)(obj + 4) = 0;
