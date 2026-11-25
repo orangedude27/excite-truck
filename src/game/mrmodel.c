@@ -1784,9 +1784,8 @@ extern void mrModelResetDisplayEntries(void);
 /* Begin a model-draw batch: mark submits as batched and empty the display
  * entry pool (mrModelResetDisplayEntries) — paired with submitModelBatch, which submits and clears. */
 void beginModelBatch(void) {
-#define s_modelBatchActive gModelBatchActive
-    s_modelBatchActive = 1;
-#undef s_modelBatchActive
+    /* Begin a model draw batch: mark submits as batched and empty the display-entry pool. */
+    gModelBatchActive = 1;
     mrModelResetDisplayEntries();
 }
 
