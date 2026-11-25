@@ -736,8 +736,9 @@ extern float lbl_80564F40; /* 1.0f: floor for the scale fn_802CC550 weighs a slo
 extern float lbl_80564F44; /* 1e-5f: weight a slot is raised to when it is just used */
 extern float lbl_8055FCC4; /* texel scale, set by fn_802CC518 */
       extern unsigned short lbl_8055FCA8; /* expected value (0x100) compared against a texture's referenced-object field at +0xC */
+/* Return nonzero when the referenced texture object's +0xC u16 differs from
+ * the expected value; slot -1 has no object and yields 0. */
 int fn_802CAF8C(int slot) {
-    /* Return nonzero when the u16 at +0xC of the object referenced by texture slot `slot` differs from the expected value; slot -1 yields 0. */
     int *slotEntry;
     unsigned short expected;
     if (slot == -1)
