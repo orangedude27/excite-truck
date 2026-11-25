@@ -554,7 +554,7 @@ void KERNEL_ReportStackUsage(void) {
     }
 }
 
-void fn_802E2A1C(void) {
+/* Abort with "STACK OVERRUN!" if the configured stack-guard magic word (0x53FFEEDD) has been overwritten. */ void fn_802E2A1C(void) {
 #define StackGuardInfo sStackGuardInfo
 #define STACK_GUARD_MAGIC 0x53ffeedd
 #define LogError Abend_Panic
