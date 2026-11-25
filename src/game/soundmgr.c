@@ -91,7 +91,7 @@ void fn_80207960(void) {
 
 /* Return nonzero only for the UI sound class; fn_80208858 uses this to flag
    UI voices separately from the positional sound classes. */
-signed long SoundMgr_isUiClass(signed long sndClass) {
+/* Return 1 for the UI sound class, 0 for every other class; callers use this as the sound's UI flag. */ signed long SoundMgr_isUiClass(signed long sndClass) {
     switch (sndClass) {
     case SNDCLASS_UI:
         return 1;
