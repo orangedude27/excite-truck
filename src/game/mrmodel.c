@@ -818,7 +818,7 @@ static inline void mr_swap4(unsigned char *q) {
     t = (p)[(o)+1]; (p)[(o)+1] = (p)[(o)+2]; (p)[(o)+2] = t; \
 } while (0)
 extern char lbl_8034B2BC[];
-extern void fn_802C6AB4(s32 *, s32);
+extern void mrRelocateTablePtr(s32 *, s32);
 extern void fn_802C6ACC(s32 *, s32);
 extern void fn_802C6AE4(s32 *, s32);
 extern void fn_802C6B14(s32 *, s32);
@@ -885,7 +885,7 @@ void fn_802C61BC(void *arg0, int arg1) {
         fn_802D6B80(*(unsigned char **)(e + 0xC), (s32)arg0, arg1);
         fn_802C6AFC((s32 *)(e + 8), (s32)arg0);
     }
-    fn_802C6AB4((s32 *)(p + 0x14), (s32)arg0);
+    mrRelocateTablePtr((s32 *)(p + 0x14), (s32)arg0);
     for (j = 0; j < *(int *)(p + 0x10); j++) {
         unsigned char *r = (unsigned char *)(*(u32 *)(p + 0x14) + j * 4);
         unsigned char *q;
@@ -973,7 +973,7 @@ void mrRelocateEntryPtr(s32 *value, s32 delta) {
     }
 }
 
-void fn_802C6AB4(s32 *value, s32 delta) {
+void mrRelocateTablePtr(s32 *value, s32 delta) {
     /* Add delta to *value, leaving a zero (null) sentinel unchanged. */
     s32 cur = *value;
     if (cur != 0) {
