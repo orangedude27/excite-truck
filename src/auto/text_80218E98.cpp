@@ -584,7 +584,7 @@ extern "C" void fn_80230C30(f32 *, f32 *, s32, s32);
 extern "C" void fn_802353F4(s32, s32, f32, f32, f32);
 extern "C" f32 fn_80235EF0(s32, s32);
 extern "C" f32 fn_80235F64(s32, s32);
-extern "C" void fn_802C5320(s32, s32, f32, f32, f32, f32, f32);
+extern "C" void gxDrawPicture(s32, s32, f32, f32, f32, f32, f32);
 extern "C" s32 gxGetImageWidth(s32);
 extern "C" s32 gxGetImageHeight(s32);
 extern "C" s32 fn_802C3034(s32);
@@ -2308,7 +2308,7 @@ extern "C" void fn_8021BC20(void *widget, void *unused) {
             fn_80230C30(&iconX, &iconY, boxWidth - 0x1C,
                 cellX + *(s32 *)((u8 *)widget + 0x260));
             if (*(s32 *)((u8 *)widget + 0x258) != 0) {
-                fn_802C5320(*(s32 *)((u8 *)widget + 0x258),
+                gxDrawPicture(*(s32 *)((u8 *)widget + 0x258),
                     tag % gxGetImageFrameCount(*(s32 *)((u8 *)widget + 0x258)),
                     iconX, iconY, lbl_805634A8, lbl_805634FC, lbl_805634FC);
             }
@@ -3248,7 +3248,7 @@ enum IndicatorSide { INDICATOR_LEFT = 0, INDICATOR_RIGHT = 1, INDICATOR_UP = 2, 
  * while this widget is the option the screen currently selects.
  *
  * fn_80230C30 turns a screen position into the screen-centred one the art is
- * drawn in, fn_802C5320(art, frame, x, y, z, width, height) draws the art and
+ * drawn in, gxDrawPicture(art, frame, x, y, z, width, height) draws the art and
  * gxGetImageHeight / gxGetImageWidth are its height and width. */
 extern "C" void fn_8021D378(void *object, s32 device) {
     OptionWidget *widget = (OptionWidget *)object;
@@ -3277,11 +3277,11 @@ checked:
     y = zero;
     fn_80230C30(&x, &y, widget->leftX, widget->arrowY);
     leftHeight = scale * (f32)gxGetImageHeight(leftArt);
-    fn_802C5320(leftArt, frame, x, y - ((f32)gxGetImageHeight(leftArt) - leftHeight), zero,
+    gxDrawPicture(leftArt, frame, x, y - ((f32)gxGetImageHeight(leftArt) - leftHeight), zero,
                 (f32)gxGetImageWidth(leftArt), leftHeight);
     fn_80230C30(&x, &y, widget->rightX, widget->arrowY);
     rightHeight = scale * (f32)gxGetImageHeight(rightArt);
-    fn_802C5320(rightArt, frame, x, y - ((f32)gxGetImageHeight(rightArt) - rightHeight), zero,
+    gxDrawPicture(rightArt, frame, x, y - ((f32)gxGetImageHeight(rightArt) - rightHeight), zero,
                 (f32)gxGetImageWidth(rightArt), rightHeight);
 }
 #pragma pop
@@ -4148,7 +4148,7 @@ extern "C" void fn_8021EC1C(void* entity, s32 canvas) {
  * one-pixel-wide 0xFFFFFF00 bar at the x the text reaches when cut at the caret
  * index.  Nothing is drawn at the box' own coordinates: +0x04/+0x08 count from
  * the middle of the screen with y upwards, so every position goes through the
- * same centring before fn_802C5320/fn_8022BAD0/fn_80230924 see it.  No code
+ * same centring before gxDrawPicture/fn_8022BAD0/fn_80230924 see it.  No code
  * calls this; it is reached through the object' vtable. */
 extern "C" void fn_8021EDA4(void *self) {
     /* The text box being drawn; only the fields used here are named. */
@@ -4174,7 +4174,7 @@ extern "C" void fn_8021EDA4(void *self) {
         y = (f32)(lbl_8055FBA0 / 2 - box->y);
         height = (f32)gxGetImageHeight(box->sliderArt);
         f32 width = (f32)((Vf78 *)self)->get();
-        fn_802C5320(box->sliderArt, 0, x, y, lbl_805634A8, width, height);
+        gxDrawPicture(box->sliderArt, 0, x, y, lbl_805634A8, width, height);
     }
     s32 zero = 0;
     ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, s32, f32))fn_8022BAD0)(
@@ -4691,7 +4691,7 @@ extern "C" void fn_8021FD68(void *arg0, s32 arg1) {
         f32 z = (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
         f32 fRange = (f32)range;
         active = 1;
-        fn_802C5320(*(s32 *)((u8 *)arg0 + 0x25C), active, x, y, lbl_805634A8, fRange, z);
+        gxDrawPicture(*(s32 *)((u8 *)arg0 + 0x25C), active, x, y, lbl_805634A8, fRange, z);
         ((s32 (*)(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32, f32))fn_802C5334)(*(s32 *)((u8 *)arg0 + 0x260), active, x, y, lbl_805634A8, (f32)progress, z, lbl_805634A8, lbl_805634A8, (f32)progress / fRange, lbl_805634A4);
     }
 }
@@ -5150,9 +5150,9 @@ extern "C" void fn_80220C54(void *arg0)
   y = (f32)(lbl_8055FBA0 / 2 - (*(s32 *) (((u8 *) self) + 8)));
   trackHeight = (f32)gxGetImageHeight(*(s32 *) (((u8 *) self) + 0x248));
   f32 width = (f32)((Vf78 *) self)->get();
-  fn_802C5320(*(s32 *) (((u8 *) self) + 0x248), highlighted, x, y, lbl_805634A8, width, trackHeight);
+  gxDrawPicture(*(s32 *) (((u8 *) self) + 0x248), highlighted, x, y, lbl_805634A8, width, trackHeight);
   f32 fillHeight = (f32)gxGetImageHeight(*(s32 *) (((u8 *) self) + 0x24C));
-  fn_802C5320(*(s32 *) (((u8 *) self) + 0x24C), highlighted, lbl_805634E0 + x, y - lbl_805634E0, lbl_805634A8, (f32)fillWidth, fillHeight);
+  gxDrawPicture(*(s32 *) (((u8 *) self) + 0x24C), highlighted, lbl_805634E0 + x, y - lbl_805634E0, lbl_805634A8, (f32)fillWidth, fillHeight);
 }
 #pragma pop
 
@@ -5492,7 +5492,7 @@ extern "C" void fn_80221970(void *arg0)
   f32 sp8;
   spC = (f32) (self->x - (lbl_8055FB9C / 2));
   sp8 = (f32) ((lbl_8055FBA0 / 2) - self->y);
-  fn_802C5320(((Object *) arg0)->texture, 0, spC, sp8, lbl_805634A8, (f32) ((Vf78 *) arg0)->get(), (f32) (((Object *) arg0)->end - ((Object *) arg0)->y));
+  gxDrawPicture(((Object *) arg0)->texture, 0, spC, sp8, lbl_805634A8, (f32) ((Vf78 *) arg0)->get(), (f32) (((Object *) arg0)->end - ((Object *) arg0)->y));
   child = self->child;
   base = child->base;
   if (child->length < base)
@@ -5513,7 +5513,7 @@ extern "C" void fn_80221970(void *arg0)
         {
           diff = gxGetImageWidth(self->texture) - gxGetImageWidth(self->overlay);
           fn_80230C30(&spC, &sp8, left + (diff / 2), y0);
-          fn_802C5320(self->overlay, 0, spC, sp8, lbl_805634A8, (f32) gxGetImageWidth(self->overlay), (f32) (y1 - y0));
+          gxDrawPicture(self->overlay, 0, spC, sp8, lbl_805634A8, (f32) gxGetImageWidth(self->overlay), (f32) (y1 - y0));
         }
         else
         {
@@ -5543,7 +5543,7 @@ extern "C" void fn_80221970(void *arg0)
         {
           diff = gxGetImageHeight(self->texture) - gxGetImageHeight(self->overlay);
           fn_80230C30(&spC, &sp8, left, top + (diff / 2));
-          fn_802C5320(self->overlay, 0, spC, sp8, lbl_805634A8, (f32) (right - left), (f32) gxGetImageHeight(self->overlay));
+          gxDrawPicture(self->overlay, 0, spC, sp8, lbl_805634A8, (f32) (right - left), (f32) gxGetImageHeight(self->overlay));
         }
         else
         {
@@ -6010,7 +6010,7 @@ extern "C" void fn_80222A3C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) 
         sp8 = value;
         fn_80230C30(&spC, &sp8, arg1, arg2);
         if ((u32)(arg4 + 0x10000) != 0xFFFFU) {
-            fn_802C5320(*(s32 *)((u8 *)arg0 + 4),
+            gxDrawPicture(*(s32 *)((u8 *)arg0 + 4),
                         arg4 % gxGetImageFrameCount(*(s32 *)((u8 *)arg0 + 4)),
                         spC, sp8, value,
                         *(f32 *)((u8 *)arg0 + 8),
@@ -6758,7 +6758,7 @@ extern "C" void fn_80223C20(void *widget) {
     if (*(f32 *)((u8 *)*(void **)((u8 *)widget + 0x260) + 0x30) > zero && *(s32 *)((u8 *)widget + 0x250) != 0) {
         fn_8022EEF8(localContext, (s32)*(void **)((u8 *)widget + 0x260), fn_8022EDC4());
         fn_8022ED00(localContext);
-        fn_802C5320(*(s32 *)((u8 *)widget + 0x250), 0,
+        gxDrawPicture(*(s32 *)((u8 *)widget + 0x250), 0,
             *(f32 *)((u8 *)widget + 0x244), *(f32 *)((u8 *)widget + 0x248), zero,
             *(f32 *)((u8 *)widget + 0x254), *(f32 *)((u8 *)widget + 0x258));
         fn_8022EDB8();
@@ -7004,11 +7004,11 @@ extern "C" void *fn_802242A4(void *self, s32 deleteFlag) {
 
 /* Draw this UI image's owned resource (the handle at +0x254), if present,
  * using the cached position/size floats at +0x244..+0x250 and z=0
- * (lbl_805634A8) through the image draw wrapper fn_802C5320. */
+ * (lbl_805634A8) through the image draw wrapper gxDrawPicture. */
 extern "C" void fn_80224328(void *self) {
     s32 resource = *(s32 *)((u8 *)self + 0x254);
     if (resource)
-        fn_802C5320(resource, 0, *(f32 *)((u8 *)self + 0x244), *(f32 *)((u8 *)self + 0x248), lbl_805634A8, *(f32 *)((u8 *)self + 0x24C), *(f32 *)((u8 *)self + 0x250));
+        gxDrawPicture(resource, 0, *(f32 *)((u8 *)self + 0x244), *(f32 *)((u8 *)self + 0x248), lbl_805634A8, *(f32 *)((u8 *)self + 0x24C), *(f32 *)((u8 *)self + 0x250));
 }
 
 #pragma scheduling invalid_target
@@ -7221,7 +7221,7 @@ extern "C" void fn_802248FC(void *arg0) {
     s32 got = ((Vf78x *)arg0)->get();
     f32 gotFloat = (f32)got;
     f32 remFloat = (f32)rem;
-    fn_802C5320(*(s32 *)(self + 0x280), delta, *(f32 *)(self + 0x270),
+    gxDrawPicture(*(s32 *)(self + 0x280), delta, *(f32 *)(self + 0x270),
         *(f32 *)(self + 0x274), lbl_805634A8, gotFloat, remFloat);
     fn_8022EDB8();
 }
@@ -8085,7 +8085,7 @@ extern "C" void fn_80226B6C(void *arg0) {
         fn_8022ED00(scratch + 0x30);
         f32 a = *(f32 *)(p + 0x258);
         f32 b = *(f32 *)(p + 0x254);
-        fn_802C5320(*(s32 *)(p + 0x244), 0, -a * lbl_805634C4,
+        gxDrawPicture(*(s32 *)(p + 0x244), 0, -a * lbl_805634C4,
                     b * lbl_805634C4, lbl_805634A8, a, b);
         fn_8022EDB8();
     }

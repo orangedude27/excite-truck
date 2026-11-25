@@ -111,7 +111,7 @@ extern void fn_802C88BC(int);
 extern void fn_80230B5C(void *);
 extern void DrawList_loadMatrix(void *);
 extern void fn_802C974C(float, float, float);
-extern void fn_802C5320(int, float, float, float, float, float, int);
+extern void gxDrawPicture(int, float, float, float, float, float, int);
 extern void fn_802C92D0(void);
 extern void fn_802C92DC(int, int, int, int, int);
 extern void fn_802C92D8(void);
@@ -212,7 +212,7 @@ int fn_80245360(int *a, struct Menu *b)
     x1 = temp_f17 + (fh * temp_f28);
     if (a[1] != 0)
     {
-      fn_802C5320(a[1], x0, x1, lbl_80563830, w, h, 0);
+      gxDrawPicture(a[1], x0, x1, lbl_80563830, w, h, 0);
     }
     else
     {
@@ -405,7 +405,7 @@ void fn_8024590C(int *a, int *b) {
     x0 = lbl_80563840 * (float)lbl_8055FB9C * lbl_80563844 - lbl_80563834;
     x1 = lbl_80563834 + (float)lbl_8055FBA0 * lbl_80563844;
     if (a[1] != 0) {
-        fn_802C5320(a[1], x0, x1, lbl_80563830, w, h, 0);
+        gxDrawPicture(a[1], x0, x1, lbl_80563830, w, h, 0);
     } else {
         fn_802C92D0();
         fn_802C92DC(0, 0, (int)w, (int)h, 0xFF000000);
