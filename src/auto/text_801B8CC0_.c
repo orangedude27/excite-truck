@@ -291,7 +291,7 @@ extern "C" int fn_801E320C(int, int);
 extern "C" void *fn_801E3004(int, int, int);
 extern "C" void fn_801E3488(void *, void *);
 extern "C" void fn_801E323C(void *);
-extern "C" int fn_802C7A10(int);
+extern "C" int MRModel_GetResourceName(int);
 extern "C" void fn_802E30C8(const char *, ...);
 extern "C" char lbl_803369A0[];
 #pragma cplusplus on
@@ -321,7 +321,7 @@ extern "C" void fn_801B8CC0(float *arg0, int arg1, int *arg2, float *arg3, float
             fn_801E323C(p);
         }
     } else {
-        result = fn_802C7A10(arg1);
+        result = MRModel_GetResourceName(arg1);
         fn_802E30C8(lbl_803369A0, (int)arg2, result);
     }
 }
@@ -435,17 +435,17 @@ extern "C" void fn_801B8E28(int playerIndex) {
     }
     fn_8018A08C(car); /* stamp it with the shared value of lbl_8055E3C8 */
 }
-#pragma cplusplus reset
+#pragma push
+#pragma scheduling on
 extern "C" void fn_801B916C(void *arg0) {
     void **table;
     void *obj;
     int id;
     char *p;
+    int *s;
     int i;
     int sentinel;
     float frequency;
-    typedef struct { int slotId; char pad[0x14]; } DelaySlot;
-    typedef struct { char pad[0x8C]; DelaySlot slot[3]; } Rec;
     if (((int *)__AXFXGetLfoSinTable_801769CC())[1] & 0x400) {
         p = (char *)arg0 + 4;
         table = lbl_80436D28;
@@ -462,14 +462,13 @@ extern "C" void fn_801B916C(void *arg0) {
             obj = 0;
         have_object:
             if (obj != 0) {
-                Rec *rec;
                 id = *(int *)((char *)obj + 0x1EC);
                 if (*(int *)(p + 0x74) == id)
                     *(int *)(p + 0x74) = sentinel;
-                rec = (Rec *)p;
-                if (rec->slot[0].slotId == id) rec->slot[0].slotId = sentinel;
-                if (rec->slot[1].slotId == id) rec->slot[1].slotId = sentinel;
-                if (rec->slot[2].slotId == id) rec->slot[2].slotId = sentinel;
+                s = (int *)(p + 0x8C);
+                if (*(s + 0) == id) *(s + 0) = sentinel;
+                if (*(s + 6) == id) *(s + 6) = sentinel;
+                if (*(s + 12) == id) *(s + 12) = sentinel;
                 *(int *)(p + 0x74) = id;
                 *(float *)(p + 0x78) = frequency;
                 {
@@ -488,7 +487,7 @@ extern "C" void fn_801B916C(void *arg0) {
         }
     }
 }
-
+#pragma pop
 /* A trailer car's destructor (its vtable lbl_803369D0, slot +0xC): the car is
    taken out of the trailer table at its own index (+0x2700) and the number of
    cars drops by one; the car object it is built on is destroyed without being
@@ -525,7 +524,7 @@ extern "C" void fn_80182074(void *, int);
 extern "C" void fn_801B8CC0(float *, int, int *, float *, float, float);
 extern "C" void fn_802C77F0(int, float *);
 #pragma dont_inline on
-void fn_801B92F0(void *arg0, int arg1) {
+extern "C" void fn_801B92F0(void *arg0, int arg1) {
     struct Work {
         float sp8[3]; float sp14[3]; float sp20[3]; float sp2c[3];
         float sp38[3]; float sp44[3]; float sp50[3]; float sp5c[3];
@@ -533,9 +532,9 @@ void fn_801B92F0(void *arg0, int arg1) {
     };
     union { double align; struct Work work; } frame;
     unsigned int bits = ((unsigned int *)__AXFXGetLfoSinTable_801769CC())[1];
+    unsigned int word2, word0, word1;
     unsigned int *copySrc;
-    unsigned int word2, word1, word0;
-    float result, top, zero, param1, out0, out1, out2;
+    float zero, subVal, result, top, param1, out0, out1, out2, sum;
 
     *((unsigned char *)arg0 + 0x275d) = (bits >> 12) & 1;
     fn_80182074(arg0, arg1);
@@ -545,17 +544,18 @@ void fn_801B92F0(void *arg0, int arg1) {
     ((unsigned int *)frame.work.sp50)[0] = ((unsigned int *)frame.work.sp44)[0];
     ((unsigned int *)frame.work.sp50)[1] = ((unsigned int *)frame.work.sp44)[1];
     ((unsigned int *)frame.work.sp50)[2] = ((unsigned int *)frame.work.sp44)[2];
-    fn_801B8CC0(frame.work.sp5c, *(int *)((unsigned char *)arg0 + 0x59c),
-        &lbl_8055A918, frame.work.sp50, lbl_80562750, lbl_80562750);
+    ((void (*)(float *, int, int *, float *))fn_801B8CC0)(frame.work.sp5c,
+        *(int *)((unsigned char *)arg0 + 0x59c), &lbl_8055A918, frame.work.sp50);
     *(float *)((unsigned char *)arg0 + 0x273c) = frame.work.sp5c[0];
     *(float *)((unsigned char *)arg0 + 0x2740) = frame.work.sp5c[1];
     *(float *)((unsigned char *)arg0 + 0x2744) = frame.work.sp5c[2];
 
     fn_802C77F0(*(int *)((unsigned char *)arg0 + 0x59c), frame.work.sp90);
     if (*((unsigned char *)arg0 + 0x275d)) {
-        top = frame.work.sp90[5];
-        result = top - lbl_8056276C;
         zero = lbl_80562750;
+        top = frame.work.sp90[5];
+        subVal = lbl_8056276C;
+        result = top - subVal;
         frame.work.sp38[0] = zero;
         frame.work.sp38[1] = zero;
         frame.work.sp38[2] = result;
@@ -567,21 +567,24 @@ void fn_801B92F0(void *arg0, int arg1) {
     fn_802C77F0(*(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x2754) + 0x59c),
         frame.work.sp78);
     if (*((unsigned char *)arg0 + 0x275d)) {
-        top = frame.work.sp78[4];
-        param1 = lbl_80562750;
-        result = top - lbl_80562770;
-        frame.work.sp2c[0] = param1;
-        frame.work.sp2c[1] = param1;
-        frame.work.sp2c[2] = result;
         copySrc = (unsigned int *)frame.work.sp2c;
-    } else {
+        zero = lbl_80562750;
         top = frame.work.sp78[4];
+        subVal = lbl_80562770;
+        result = top - subVal;
+        frame.work.sp2c[0] = zero;
+        frame.work.sp2c[1] = zero;
+        frame.work.sp2c[2] = result;
+    } else {
+        copySrc = (unsigned int *)frame.work.sp20;
+        top = frame.work.sp78[4];
+        subVal = lbl_8056276C;
+        result = top - subVal;
+        zero = lbl_80562750;
         param1 = lbl_80562774;
-        result = top - lbl_8056276C;
-        frame.work.sp20[0] = lbl_80562750;
+        frame.work.sp20[0] = zero;
         frame.work.sp20[1] = param1;
         frame.work.sp20[2] = result;
-        copySrc = (unsigned int *)frame.work.sp20;
     }
     word0 = copySrc[0];
     word1 = copySrc[1];
@@ -592,16 +595,17 @@ void fn_801B92F0(void *arg0, int arg1) {
     ((unsigned int *)frame.work.sp8)[1] = word1;
     ((unsigned int *)frame.work.sp68)[2] = word2;
     ((unsigned int *)frame.work.sp8)[2] = word2;
-    fn_801B8CC0(frame.work.sp14,
+    ((void (*)(float *, int, int *, float *))fn_801B8CC0)(frame.work.sp14,
         *(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x2754) + 0x59c),
-        &lbl_8055A918, frame.work.sp8, param1, result);
+        &lbl_8055A918, frame.work.sp8);
     out0 = frame.work.sp14[0];
     out1 = frame.work.sp14[1];
+    sum = out1 + lbl_80562778;
     out2 = frame.work.sp14[2];
     *(float *)((unsigned char *)arg0 + 0x2748) = out0;
     *(float *)((unsigned char *)arg0 + 0x274c) = out1;
     *(float *)((unsigned char *)arg0 + 0x2750) = out2;
-    *(float *)((unsigned char *)arg0 + 0x274c) = out1 + lbl_80562778;
+    *(float *)((unsigned char *)arg0 + 0x274c) = sum;
 }
 #pragma dont_inline reset
 extern "C" void fn_801B949C(struct TrlrCar *car) {

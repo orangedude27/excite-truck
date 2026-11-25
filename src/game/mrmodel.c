@@ -707,7 +707,7 @@ void fn_802C6074(s32 *entry) {
 }
 
 extern void fn_80128670(void *);
-extern void fn_802C7A10(void *);
+extern void MRModel_GetResourceName(void *);
 extern const char lbl_8034B258[];
 extern const char lbl_8034B294[];
 extern int (*fn_802E30C8_varargs)(const char *, ...);
@@ -765,7 +765,7 @@ void fn_802C6080(void) {
     for (i = 0, offset = 0; i < *(int *)(base + 0x64); i++, offset += 0x10) {
         if (*(int *)((char *)e->buf + offset) > 0) {
             ((void (*)(const char *, ...))fn_802E30C8)(lbl_8034B258, i);
-            ((void (*)(const char *, ...))fn_802E30C8)(lbl_8034B294, ((int (*)(int))fn_802C7A10)(i));
+            ((void (*)(const char *, ...))fn_802E30C8)(lbl_8034B294, ((int (*)(int))MRModel_GetResourceName)(i));
         }
     }
 
@@ -1753,7 +1753,7 @@ void fn_802C7A00(void) {
 
 /* Diagnostic helper: returns the resource name of the model at the given index
    (carried in the pointer-typed argument) for use in debug printf calls. */
-void fn_802C7A10(void* modelIndex) {
+void MRModel_GetResourceName(void* modelIndex) {
     fn_8012C58C(fn_802C53A8(modelIndex));
 }
 
