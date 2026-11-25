@@ -919,8 +919,8 @@ extern void OSShutdownSystem(void);
 #pragma pop
 
 #pragma scheduling invalid_target
-/* Abort with a "PlatExitProcess(%d)" panic message carrying the exit code. */ void KERNEL_PlatExitProcess(int exitCode) {
-    /* Log "PlatExitProcess(%d)" with the given exit code. */
+/* Abort with a "PlatExitProcess(%d)" panic message carrying the exit code. */
+void KERNEL_PlatExitProcess(int exitCode) {
 #define KERNEL_LOG_PLAT_EXIT lbl_8034CEE4
     Abend_Panic(KERNEL_LOG_PLAT_EXIT, exitCode);
 #undef KERNEL_LOG_PLAT_EXIT
