@@ -69,8 +69,8 @@ extern "C" void fn_802A81F0(void) {
     };
     int off;
     int *tbl;
-    char *cfg = lbl_80349D08;
     char *entry;
+    char *cfg = lbl_80349D08;
     int i;
     Mgr *mgr;
     int index;
@@ -220,7 +220,7 @@ void fn_802A86A4(void) {
     half = lbl_80564950;
     i = 0; offset = 0;
     while (i < lbl_804BD6C4[1]) {
-        entry = *(u8 **)(lbl_804BD6C4[0] + offset);
+        entry = *(u8 **)((u32)lbl_804BD6C4[0] + offset);
         memset(&sp, 0, 0);
         x = *(f32 *)(entry + 0x60);
         y = *(f32 *)(entry + 0x64);
@@ -363,7 +363,7 @@ void fn_802A8A4C(s32 arg0, s32 arg1) {
 extern f32 PSVECDotProduct(const void *, const void *);
 extern void PSVECNormalize(const void *, void *);
 extern void PSVECCrossProduct(const void *, const void *, void *);
-extern void fn_802C744C(s32 arg0, void *arg1);
+extern void MRModel_SetInstanceTransform(s32 arg0, void *arg1);
 extern f32 lbl_80558DC4;
 extern f32 lbl_80564928;
 extern f32 lbl_8056494C;
@@ -414,7 +414,7 @@ void fn_802A8DE8(void) {
             crossIn[1] = fx;
             crossIn[2] = fy;
             PSVECCrossProduct(crossIn, &vecData[0], crossOut);
-            fn_802C744C(*(s32 *)(*(u32 *)((u8 *)entry + 0x28) + ((j % *(s32 *)((u8 *)entry + 0x2C)) * 4)), crossOut);
+            MRModel_SetInstanceTransform(*(s32 *)(*(u32 *)((u8 *)entry + 0x28) + ((j % *(s32 *)((u8 *)entry + 0x2C)) * 4)), crossOut);
             vec += 0x28;
             j++;
         }

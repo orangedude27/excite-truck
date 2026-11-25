@@ -13,7 +13,7 @@ extern void fn_801683F4(void *, s32);
 extern f32 fn_80141C9C(f32);
 extern s32 fn_80144C90(f32);
 extern void fn_80142B60(void *);
-extern void fn_802C744C(s32, f32 *);
+extern void MRModel_SetInstanceTransform(s32, f32 *);
 extern s32 fn_8014ADD0(void *);
 extern s32 fn_8014ADD8(void *);
 extern void fn_8014AE1C(void *, void *);
@@ -3400,7 +3400,7 @@ void fn_80151C98(void *arg0, s32 arg1) {
         matrix[6] = s;
         matrix[7] = lbl_80561648;
         matrix[8] = c;
-        fn_802C744C(lbl_80559ECC, matrix);
+        MRModel_SetInstanceTransform(lbl_80559ECC, matrix);
         setLightAmbientColor(state);
         setDrawListColor(context);
         return;
@@ -3419,7 +3419,7 @@ void fn_80151C98(void *arg0, s32 arg1) {
 extern double cos(double), sin(double), fn_8002EFB4(double,double);
 extern f32 fn_80144514(f32,f32,f32,f32,f32,f32);
 extern s32 KERNEL_GetTimeMs(void);
-extern void fn_802C744C(s32,f32*), fn_802C74D8(s32,f32*,s32);
+extern void MRModel_SetInstanceTransform(s32,f32*), fn_802C74D8(s32,f32*,s32);
 extern s32 lbl_80559EDC, lbl_8055E254;
 extern f32 lbl_80561638,lbl_8056163C,lbl_8056164C,lbl_805616FC,lbl_80561700;
 extern f64 lbl_805616A0,lbl_80561708;
@@ -3507,7 +3507,7 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     if (arg1 != 0) {
         fn_802C74D8(*r29, r30, lbl_80559EDC);
     } else {
-        fn_802C744C(*(s32 *)r29, r30);
+        MRModel_SetInstanceTransform(*(s32 *)r29, r30);
     }
 
     MatrixMul80151E60(a, scale, a);
@@ -3515,7 +3515,7 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     if (arg1 != 0) {
         fn_802C74D8(*(s32 *)r29, a, lbl_80559EDC);
     } else {
-        fn_802C744C(*(s32 *)r29, a);
+        MRModel_SetInstanceTransform(*(s32 *)r29, a);
     }
 
     c = (f32)cos(val_f31);
@@ -3576,13 +3576,13 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     if (arg1 != 0) {
         fn_802C74D8(*(s32 *)r29, b, lbl_80559EDC);
     } else {
-        fn_802C744C(*(s32 *)r29, b);
+        MRModel_SetInstanceTransform(*(s32 *)r29, b);
     }
 
     if (arg1 != 0) {
         fn_802C74D8(*(s32 *)r29, a, lbl_80559EDC);
     } else {
-        fn_802C744C(*(s32 *)r29, a);
+        MRModel_SetInstanceTransform(*(s32 *)r29, a);
     }
 
     r30 = rotation;
@@ -3633,19 +3633,19 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     if (arg1 != 0) {
         fn_802C74D8(*(s32 *)r29, b, lbl_80559EDC);
     } else {
-        fn_802C744C(*(s32 *)r29, b);
+        MRModel_SetInstanceTransform(*(s32 *)r29, b);
     }
 
     if (arg1 != 0) {
         fn_802C74D8(*(s32 *)r29, a, lbl_80559EDC);
         return;
     }
-    fn_802C744C(*(s32 *)r29, a);
+    MRModel_SetInstanceTransform(*(s32 *)r29, a);
 }
 #pragma pop
 extern "C" void fn_802C86DC(void);
 extern "C" void MRModel_GetBoundingBoxArray(void *, f32 *);
-extern "C" void fn_802C744C(s32, f32 *);
+extern "C" void MRModel_SetInstanceTransform(s32, f32 *);
 extern "C" void *fn_801E87A8(void);
 #pragma cplusplus off
 extern s32 lbl_80559ED4, lbl_80559ED8;
@@ -3739,8 +3739,8 @@ void fn_801533E8(void *arg0, f32 *arg1) {
         values.m[0] = -values.m[0]; values.m[1] = -values.m[1]; values.m[2] = -values.m[2];
         mat.m[0] = -mat.m[0]; mat.m[1] = -mat.m[1]; mat.m[2] = -mat.m[2];
     }
-    fn_802C744C(lbl_80559ED8, mat.m);
-    fn_802C744C(lbl_80559ED4, values.m);
+    MRModel_SetInstanceTransform(lbl_80559ED8, mat.m);
+    MRModel_SetInstanceTransform(lbl_80559ED4, values.m);
 }
 #pragma dont_inline on
 

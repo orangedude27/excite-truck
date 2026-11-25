@@ -265,7 +265,7 @@ void fn_801E3FC8(void *__restrict position, float radius) {
     /* Place the cached sphere model (lbl_8055EA64) at `position`, scaling it by
      * `radius` over the cached half-height lbl_8055EA68. Builds a 4x3 affine
      * transform (uniform scale on the diagonal, translation in the last column)
-     * and applies it to the model instance with fn_802C744C. */
+     * and applies it to the model instance with MRModel_SetInstanceTransform. */
     f32 transform[12];
     float posZ;
     float posY;
@@ -294,7 +294,7 @@ void fn_801E3FC8(void *__restrict position, float radius) {
     transform[9] = posX;
     transform[10] = posY;
     transform[11] = posZ;
-    fn_802C744C(sphereModel, transform);
+    MRModel_SetInstanceTransform(sphereModel, transform);
 }
 #pragma push
 #pragma processor 750
@@ -340,7 +340,7 @@ int fn_801E4040(void *arg0, void *arg1, int arg2, int arg3, float farg0) {
 }
 #pragma pop
 extern float lbl_8055EA68, lbl_80562CF4;
-extern int fn_802C744C(int, float *);
+extern int MRModel_SetInstanceTransform(int, float *);
 extern int fn_801E4040(void *, void *, int, int, float);
 #pragma dont_inline fn_801E41D8
 void fn_801E41D8(void *arg0, void *arg1, int arg2, float farg0);

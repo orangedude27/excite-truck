@@ -90,7 +90,7 @@ extern float lbl_80562EE4;
 extern float lbl_80562EF0, lbl_80562EF4, lbl_80562EF8, lbl_80562EFC, lbl_80562F00;
 extern void fn_80015A20(void *, Vec801EF *);
 extern void fn_80015B20(void *, void *, void *);
-extern void fn_802C744C(void *, void *);
+extern void MRModel_SetInstanceTransform(void *, void *);
 extern void fn_801E3440(Vec801EF *, void *, Matrix801EF *);
 extern void fn_801E353C(void *, float);
 extern void fn_801E34E4(void *, Matrix801EF *);
@@ -120,7 +120,7 @@ void fn_801EF53C(void *p0, Matrix801EF *arg1, void *p2) {
         fn_80015A20(&d, &zv);
         fn_80015B20(&m, &d, &m);
     }
-    fn_802C744C(arg0[0], &m);
+    MRModel_SetInstanceTransform(arg0[0], &m);
     a.x = m.pos.y + m.y.x * lbl_80562EFC;
     a.y = m.pos.z + m.y.y * lbl_80562EFC;
     a.z = m.pos.x + m.y.z * lbl_80562EFC;

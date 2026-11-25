@@ -634,7 +634,7 @@ extern void fn_802936C4(void*);
 extern float lbl_80558DC4;
 extern int setDrawListColor(int);
 extern int setLightAmbientColor(int);
-extern int fn_802C744C(void*, void*);
+extern int MRModel_SetInstanceTransform(void*, void*);
 extern int fn_80128668(void*);
 extern void fn_80293530(void*);
 extern void fn_80293374(void*, void*);
@@ -691,7 +691,7 @@ void fn_80293178(void *arg0, int unused) {
     for (; index < *(int *)((char *)arg0 + 0x2FAC); entryPtr += 0x4C, index++) {
         setDrawListColor(*(int *)((char *)arg0 + (*(unsigned char *)(entryPtr + 0x4A) << 3) + 0x2FB0));
         setLightAmbientColor(*(int *)((char *)arg0 + (*(unsigned char *)(entryPtr + 0x4A) << 3) + 0x2FB4));
-        fn_802C744C(*(void **)((char *)arg0 + (*(unsigned char *)(entryPtr + 0x48) << 2) + 8), entryPtr);
+        MRModel_SetInstanceTransform(*(void **)((char *)arg0 + (*(unsigned char *)(entryPtr + 0x48) << 2) + 8), entryPtr);
     }
     setLightAmbientColor(savedState9994);
     setDrawListColor(savedState9950);
@@ -1102,13 +1102,13 @@ void fn_80293AF4(ChunkSys *effect) {
 }
 
 void fn_80293B44(void *arg0) {
-    /* For each active terrain-effect record, dispatch it with fn_802C744C
+    /* For each active terrain-effect record, dispatch it with MRModel_SetInstanceTransform
      * using the per-record slot byte to select the base object pointer. */
     u8 *record = (u8 *)arg0 + 0x2C;
     s32 i = 0;
     goto check;
 body:
-    fn_802C744C(*(void **)((u8 *)arg0 + (*(u8 *)(record + 0x48) * 4) + 8), record);
+    MRModel_SetInstanceTransform(*(void **)((u8 *)arg0 + (*(u8 *)(record + 0x48) * 4) + 8), record);
     record += 0x4C;
     i++;
 check:
@@ -1475,13 +1475,13 @@ void fn_80294348(void* effect) {
 
 #pragma scheduling invalid_target
 void fn_80294398(void *arg0) {
-    /* For each active record, dispatch it with fn_802C744C using the per-record slot byte
+    /* For each active record, dispatch it with MRModel_SetInstanceTransform using the per-record slot byte
      * to select the base object pointer from the container. */
     u8 *record = (u8 *)arg0 + 0x2C;
     s32 index = 0;
     goto check;
 body:
-    fn_802C744C(*(void **)((u8 *)arg0 + (*(u8 *)(record + 0x40) * 4) + 8), record);
+    MRModel_SetInstanceTransform(*(void **)((u8 *)arg0 + (*(u8 *)(record + 0x40) * 4) + 8), record);
     record += 0x44;
     index++;
 check:

@@ -133,7 +133,7 @@ void fn_802C1018(void) {
 #pragma pop
 
 extern float *fn_802C86DC(float);
-extern void fn_802C744C(int, float *);
+extern void MRModel_SetInstanceTransform(int, float *);
 extern void fn_802A4E08(void);
 extern void fn_8029231C(char *);
 extern int fn_8012C33C(char (*)[4]);
@@ -177,7 +177,7 @@ void fn_802C1020(void) {
         matrix[9] = drawlistBase[9];
         matrix[10] = drawlistBase[10];
         matrix[11] = drawlistBase[11];
-        fn_802C744C(*(int *)lbl_8055FB14, matrixPtr);
+        MRModel_SetInstanceTransform(*(int *)lbl_8055FB14, matrixPtr);
     }
     fn_802A4E08();
     fn_8029231C((char *)lbl_804C0800);

@@ -622,7 +622,7 @@ void fn_80168104(void) {
     extern unsigned int setDrawListColor(unsigned int);
     extern void fn_802C9900(float);
     extern void fn_802C9904(void);
-    extern void fn_802C744C(void *, void *);
+    extern void MRModel_SetInstanceTransform(void *, void *);
     extern unsigned char lbl_8042FF60[];
     extern float lbl_8056193C;
     extern float lbl_80561940;
@@ -653,7 +653,7 @@ void fn_80168104(void) {
                         *(float *)(out + 0x24) = *(float *)(record + 4);
                         *(float *)(out + 0x28) = *(float *)(record + 8);
                         *(float *)(out + 0x2C) = *(float *)(record + 0xC);
-                        fn_802C744C(*(void **)(*(unsigned int *)record + 0x10), out);
+                        MRModel_SetInstanceTransform(*(void **)(*(unsigned int *)record + 0x10), out);
                     }
                     setLightAmbientColor(a);
                     setDrawListColor(b);

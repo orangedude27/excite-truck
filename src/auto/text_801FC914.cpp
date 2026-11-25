@@ -163,7 +163,7 @@ extern "C" void fn_801FEC74(void*);
 extern "C" void Abend_Panic(const char*, ...);
 extern "C" const char lbl_8033B618[];
 extern "C" float fn_802C99E8(float);
-extern "C" void fn_802C744C(void*, void*);
+extern "C" void MRModel_SetInstanceTransform(void*, void*);
   #pragma scheduling invalid_target
 /* Allocate and construct an 8-byte HermiteDroneTMH object with its vtable and a zeroed field at +4. */
 extern "C" void fn_801FC9CC(void) {
@@ -255,7 +255,7 @@ extern "C" void fn_801FCAC0(void* object) {
     /* For an active path drone (state pointer at +4), submit the model handle at
      * +8 for drawing with the embedded transform matrix at +0xC. */
     if (*(void**)((char*)object + 4) != 0) {
-        fn_802C744C(*(void**)((char*)object + 8), (char*)object + 0xC);
+        MRModel_SetInstanceTransform(*(void**)((char*)object + 8), (char*)object + 0xC);
     }
 }
 
@@ -432,7 +432,7 @@ extern "C" void fn_801FCFC8(void *obj) {
     /* If the object is active, save its float field, apply its transform, then restore it. */
     if (*(int *)((char *)obj + 4) != 0) {
         float savedValue = fn_802C99E8(*(float *)((char *)obj + 0x6C));
-        fn_802C744C(*(void **)((char *)obj + 8), (char *)obj + 0xC);
+        MRModel_SetInstanceTransform(*(void **)((char *)obj + 8), (char *)obj + 0xC);
         fn_802C99E8(savedValue);
     }
 }

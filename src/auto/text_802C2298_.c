@@ -107,7 +107,7 @@ void fn_802C2410(void) {
 extern double sin(float);
 extern void fn_80015A20(void *, float *);
 extern void fn_80015B20(void *, void *, void *);
-extern void fn_802C744C(int, float *, float, float, float, float, float);
+extern void MRModel_SetInstanceTransform(int, float *, float, float, float, float, float);
 extern float lbl_8055E3C8;
 extern float lbl_80564E98;
 extern float lbl_80564E9C;
@@ -227,7 +227,7 @@ loop:
     scratch.matrix[9] = result2;
     scratch.matrix[10] = result1;
     scratch.matrix[11] = result3;
-    fn_802C744C(keyArg, (float *)scratch.matrix,
+    MRModel_SetInstanceTransform(keyArg, (float *)scratch.matrix,
                 result1, result2, lift, sum10, sum9);
     offset += 0x14;
     index++;

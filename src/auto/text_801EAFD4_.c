@@ -828,7 +828,7 @@ extern double cos(double);
 extern double sin(double);
 extern double fabs(double);
 extern void DrawList_copyCurrentMatrix(f32 *);
-extern void fn_802C744C(s32, f32 *);
+extern void MRModel_SetInstanceTransform(s32, f32 *);
 extern void DrawList_warnFullscreenAddUnsupported(u32);
 extern f32 *fn_802C86DC(void);
 extern void fn_802C9900(f32);
@@ -873,7 +873,7 @@ extern "C" void fn_801EBF00(void) {
             l.modelMtx[6] = lbl_80562E74;
             l.modelMtx[7] = lbl_80562E74;
             l.modelMtx[8] = lbl_80562E68;
-            fn_802C744C(lbl_8055AFB8, l.modelMtx);
+            MRModel_SetInstanceTransform(lbl_8055AFB8, l.modelMtx);
         }
         ((EBF00Widget *)lbl_804885E8[6])->setVisible(0);
         entry = fn_801E7E34() + fn_801E85B4() * 0xE0;
@@ -903,7 +903,7 @@ extern "C" void fn_801EBF00(void) {
             l.rotMtx[8] = cosine;
             tmp = lbl_80562E7C * *(f32 *)(entry + 0xD8);
             fn_802C9900(lbl_80562E68 < tmp ? lbl_80562E68 : tmp);
-            fn_802C744C(lbl_8055AFBC, l.rotMtx);
+            MRModel_SetInstanceTransform(lbl_8055AFBC, l.rotMtx);
             fn_802C9904();
         }
     } else {

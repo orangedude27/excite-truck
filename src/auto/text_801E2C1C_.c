@@ -12,7 +12,7 @@ extern f32 lbl_80562CE8;
 extern f32 lbl_80562CEC;
 extern void fn_801E35D4(void *dst, void *src);
 extern void fn_801E3284(void *out, void *in, s32 arg2);
-extern void fn_802C744C(s32 arg0, void *out);
+extern void MRModel_SetInstanceTransform(s32 arg0, void *out);
 extern int sscanf(const char *, const char *, ...);
 extern int stricmp(const char *, const char *);
 extern char *strcpy(char *, const char *);
@@ -413,7 +413,7 @@ void fn_801E34E4(const s32 *modelTransform, s32 baseTransform) {
 
     if (*modelTransform != -1) {
         fn_801E3284(&worldTransform[0], (s32 *)modelTransform, baseTransform);
-        fn_802C744C(*modelTransform, &worldTransform[0]);
+        MRModel_SetInstanceTransform(*modelTransform, &worldTransform[0]);
     }
 }
 #pragma pop

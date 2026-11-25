@@ -29,7 +29,7 @@ extern void fn_801EAB80(void*, s32);
 extern u8 lbl_80339E3C[];
 
 extern int fn_80128668();
-extern void fn_802C744C();
+extern void MRModel_SetInstanceTransform();
 extern int fn_80176948(int, int, int);
 extern float lbl_80562E60;
 extern float lbl_80562E64;
@@ -74,7 +74,7 @@ extern "C" void fn_801EAB90(void *obj, int value) {
     int offset = *(int *)((char *)obj + 0x34);
     ((Dummy_801EAB90 *)obj)->m6(value + offset);
 }
-extern "C" void fn_801EABA8(void *arg0, void *arg1) {
+void fn_801EABA8(void *arg0, void *arg1) {
     s32 l, k, j, i, h, g, f, e, d, c, b, a;
     s16 m;
 
@@ -150,7 +150,7 @@ void* __dt__Q28PSSystem7SeqHeapFv_801EACF8(void* this_, s32 flag) {
 
 /* Draw the model handle stored at +0x3C of the object using the transform matrix embedded at +4. */
 void fn_801EAD5C(void* obj) {
-    fn_802C744C(*(s32*)((u8*)obj + 0x3C), (u8*)obj + 4);
+    MRModel_SetInstanceTransform(*(s32*)((u8*)obj + 0x3C), (u8*)obj + 4);
 }
 
 #pragma dont_inline on

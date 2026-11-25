@@ -1998,152 +1998,180 @@ extern u8 lbl_8055A260;
 extern f32 lbl_805619C4;
 #pragma optimize_for_size on
 #pragma scheduling invalid_target
-void fn_8016EA9C(void *arg0) {
-    union Word { s32 i; void *p; } stack[94];
-    char *base = lbl_803306D0;
-    volatile s32 *vp = (volatile s32 *)&stack[45].i;
-    u32 ctr;
-    u8 *s0, *s1, *s2;
-    s32 n0, n1, n2;
-    s32 ch;
+void fn_8016EA9C(void *arg0)
+{
+  union Word
+  {
+    s32 i;
+    void *p;
+  } stack[94];
+  char *base = lbl_803306D0;
+  volatile s32 *vp = (volatile s32 *) (&stack[45].i);
+  u32 ctr;
+  u8 *s0;
+  u8 *s1;
+  u8 *s2;
+  s32 n0;
+  s32 n1;
+  s32 n2;
+  s32 ch;
+  for (ctr = 0; ctr < 0x18; ctr++)
+  {
+    vp[1] = 0;
+    vp += 2;
+    vp[0] = 0;
+  }
 
-    for (ctr = 0; ctr < 0x18; ctr++) {
-        vp[1] = 0;
-        vp += 2;
-        vp[0] = 0;
+  stack[44].i = (s32) (((u8 *) arg0) + 0xF8);
+  stack[48].i = (s32) (((u8 *) arg0) + 0xF8);
+  stack[30].i = 1;
+  stack[42].i = 3;
+  stack[43].p = lbl_803306D0 + 0x518;
+  stack[46].i = 3;
+  stack[47].p = lbl_803306D0 + 0x518;
+  stack[39].i = 3;
+  stack[40].p = lbl_803306D0 + 0x524;
+  stack[41].i = (s32) (((u8 *) arg0) + 0xFC);
+  stack[49].i = 3;
+  stack[50].p = base + 0x524;
+  stack[51].i = (s32) (((u8 *) arg0) + 0xFC);
+  stack[36].i = 3;
+  stack[37].p = &lbl_8055A250;
+  stack[38].i = (s32) (((u8 *) arg0) + 0x100);
+  stack[52].i = 3;
+  stack[53].p = &lbl_8055A250;
+  stack[54].i = (s32) (((u8 *) arg0) + 0x100);
+  stack[33].i = 3;
+  stack[34].p = base + 0x530;
+  stack[35].i = (s32) (((u8 *) arg0) + 0x104);
+  stack[55].i = 3;
+  stack[56].p = base + 0x530;
+  stack[57].i = (s32) (((u8 *) arg0) + 0x104);
+  stack[31].p = base + 0x53C;
+  stack[32].i = (s32) (((u8 *) arg0) + 0x30);
+  stack[58].i = 1;
+  stack[59].p = base + 0x53C;
+  stack[60].i = (s32) (((u8 *) arg0) + (0x30 & 0xFFFFFFFFFFFFFFFF));
+  stack[27].i = 1;
+  stack[28].p = base + 0x524;
+  stack[29].i = (s32) (((u8 *) arg0) + 0x44);
+  stack[61].i = 1;
+  stack[62].p = base + 0x524;
+  stack[63].i = (s32) (((u8 *) arg0) + 0x44);
+  stack[24].i = 1;
+  stack[25].p = base + 0x548;
+  stack[26].i = (s32) (((u8 *) arg0) + 0x58);
+  stack[64].i = 1;
+  stack[65].p = base + 0x548;
+  stack[66].i = (s32) (((u8 *) arg0) + 0x58);
+  stack[21].i = 1;
+  stack[22].p = base + 0x530;
+  stack[23].i = (s32) (((u8 *) arg0) + 0x6C);
+  stack[67].i = 1;
+  stack[68].p = base + 0x530;
+  stack[69].i = (s32) (((u8 *) arg0) + 0x6C);
+  stack[18].i = 1;
+  stack[19].p = &lbl_8055A250;
+  stack[20].i = (s32) (((u8 *) arg0) + 0x80);
+  stack[70].i = 1;
+  stack[71].p = &lbl_8055A250;
+  stack[72].i = (s32) (((u8 *) arg0) + 0x80);
+  stack[15].i = 1;
+  stack[16].p = base + 0x560;
+  stack[74].p = base + 0x560;
+  stack[73].i = 1;
+  stack[12].i = 1;
+  stack[13].p = base + 0x518;
+  stack[14].i = (s32) (((u8 *) arg0) + 0x9E);
+  stack[76].i = 1;
+  stack[77].p = base + 0x518;
+  stack[78].i = (s32) (((u8 *) arg0) + 0x9E);
+  stack[9].i = 1;
+  stack[10].p = base + 0x57C;
+  stack[11].i = (s32) (((u8 *) arg0) + 0xB2);
+  stack[79].i = 1;
+  stack[80].p = base + 0x57C;
+  stack[81].i = (s32) (((u8 *) arg0) + 0xB2);
+  stack[6].i = 1;
+  stack[7].p = base + 0x594;
+  stack[8].i = (s32) (((u8 *) arg0) + 0xC6);
+  stack[82].i = 1;
+  stack[83].p = base + 0x594;
+  stack[84].i = (s32) (((u8 *) arg0) + 0xC6);
+  stack[3].i = 1;
+  stack[4].p = base + 0x5AC;
+  stack[5].i = (s32) (((u8 *) arg0) + 0xDA);
+  stack[85].i = 1;
+  stack[86].p = base + 0x5AC;
+  stack[87].i = (s32) (((u8 *) arg0) + 0xDA);
+  stack[0].i = 2;
+  stack[1].p = base + 0x5C0;
+  stack[2].i = (s32) (((u8 *) arg0) + 0xF0);
+  stack[88].i = 2;
+  stack[89].p = base + 0x5C0;
+  stack[90].i = (s32) (((u8 *) arg0) + 0xF0);
+  stack[91].i = lbl_802FAA40[0];
+  stack[92].i = lbl_802FAA40[1];
+  stack[93].i = lbl_802FAA40[2];
+  s0 = ((u8 *) arg0) + 0x8A;
+  stack[17].p = s0;
+  stack[75].p = s0;
+  s1 = (u8 *) (&lbl_8055A258);
+  n0 = 0x14;
+  ch = *(s1++);
+  *(s0++) = ch;
+  while (((s8) ch) != 0)
+  {
+    if ((--n0) <= 0)
+    {
+      *((s8 *) (s0 - 1)) = 0;
+      break;
     }
-    stack[44].i = (s32)((u8 *)arg0 + 0xF8);
-    stack[48].i = (s32)((u8 *)arg0 + 0xF8);
-    stack[30].i = 1;
-    stack[42].i = 3;
-    stack[43].p = base + 0x518;
-    stack[46].i = 3;
-    stack[47].p = base + 0x518;
-    stack[39].i = 3;
-    stack[40].p = base + 0x524;
-    stack[41].i = (s32)((u8 *)arg0 + 0xFC);
-    stack[49].i = 3;
-    stack[50].p = base + 0x524;
-    stack[51].i = (s32)((u8 *)arg0 + 0xFC);
-    stack[36].i = 3;
-    stack[37].p = &lbl_8055A250;
-    stack[38].i = (s32)((u8 *)arg0 + 0x100);
-    stack[52].i = 3;
-    stack[53].p = &lbl_8055A250;
-    stack[54].i = (s32)((u8 *)arg0 + 0x100);
-    stack[33].i = 3;
-    stack[34].p = base + 0x530;
-    stack[35].i = (s32)((u8 *)arg0 + 0x104);
-    stack[55].i = 3;
-    stack[56].p = base + 0x530;
-    stack[57].i = (s32)((u8 *)arg0 + 0x104);
-    stack[31].p = base + 0x53C;
-    stack[32].i = (s32)((u8 *)arg0 + 0x30);
-    stack[58].i = 1;
-    stack[59].p = base + 0x53C;
-    stack[60].i = (s32)((u8 *)arg0 + 0x30);
-    stack[27].i = 1;
-    stack[28].p = base + 0x524;
-    stack[29].i = (s32)((u8 *)arg0 + 0x44);
-    stack[61].i = 1;
-    stack[62].p = base + 0x524;
-    stack[63].i = (s32)((u8 *)arg0 + 0x44);
-    stack[24].i = 1;
-    stack[25].p = base + 0x548;
-    stack[26].i = (s32)((u8 *)arg0 + 0x58);
-    stack[64].i = 1;
-    stack[65].p = base + 0x548;
-    stack[66].i = (s32)((u8 *)arg0 + 0x58);
-    stack[21].i = 1;
-    stack[22].p = base + 0x530;
-    stack[23].i = (s32)((u8 *)arg0 + 0x6C);
-    stack[67].i = 1;
-    stack[68].p = base + 0x530;
-    stack[69].i = (s32)((u8 *)arg0 + 0x6C);
-    stack[18].i = 1;
-    stack[19].p = &lbl_8055A250;
-    stack[20].i = (s32)((u8 *)arg0 + 0x80);
-    stack[70].i = 1;
-    stack[71].p = &lbl_8055A250;
-    stack[72].i = (s32)((u8 *)arg0 + 0x80);
-    stack[15].i = 1;
-    stack[16].p = base + 0x560;
-    stack[74].p = base + 0x560;
-    stack[73].i = 1;
-    stack[12].i = 1;
-    stack[13].p = base + 0x518;
-    stack[14].i = (s32)((u8 *)arg0 + 0x9E);
-    stack[76].i = 1;
-    stack[77].p = base + 0x518;
-    stack[78].i = (s32)((u8 *)arg0 + 0x9E);
-    stack[9].i = 1;
-    stack[10].p = base + 0x57C;
-    stack[11].i = (s32)((u8 *)arg0 + 0xB2);
-    stack[79].i = 1;
-    stack[80].p = base + 0x57C;
-    stack[81].i = (s32)((u8 *)arg0 + 0xB2);
-    stack[6].i = 1;
-    stack[7].p = base + 0x594;
-    stack[8].i = (s32)((u8 *)arg0 + 0xC6);
-    stack[82].i = 1;
-    stack[83].p = base + 0x594;
-    stack[84].i = (s32)((u8 *)arg0 + 0xC6);
-    stack[3].i = 1;
-    stack[4].p = base + 0x5AC;
-    stack[5].i = (s32)((u8 *)arg0 + 0xDA);
-    stack[85].i = 1;
-    stack[86].p = base + 0x5AC;
-    stack[87].i = (s32)((u8 *)arg0 + 0xDA);
-    stack[0].i = 2;
-    stack[1].p = base + 0x5C0;
-    stack[2].i = (s32)((u8 *)arg0 + 0xF0);
-    stack[88].i = 2;
-    stack[89].p = base + 0x5C0;
-    stack[90].i = (s32)((u8 *)arg0 + 0xF0);
-    stack[91].i = lbl_802FAA40[0];
-    stack[92].i = lbl_802FAA40[1];
-    stack[93].i = lbl_802FAA40[2];
-    s0 = (u8 *)arg0 + 0x8A;
-    stack[17].p = s0;
-    stack[75].p = s0;
-    s1 = (u8 *)&lbl_8055A258;
-    n0 = 0x14;
-    ch = *s1++;
-    *s0++ = ch;
-    while ((s8)ch != 0) {
-        if (--n0 <= 0) { *(s8 *)(s0 - 1) = 0; break; }
-        ch = *s1++;
-        *s0++ = ch;
+    ch = *(s1++);
+    *(s0++) = ch;
+  }
+
+  s2 = ((u8 *) arg0) + 0x44;
+  s1 = (u8 *) (&lbl_8055A25C);
+  n1 = 0x14;
+  ch = *(s1++);
+  *(s2++) = ch;
+  while (((s8) ch) != 0)
+  {
+    if ((--n1) <= 0)
+    {
+      *((s8 *) (s2 - 1)) = 0;
+      break;
     }
-    s2 = (u8 *)arg0 + 0x44;
-    s1 = (u8 *)&lbl_8055A25C;
-    n1 = 0x14;
-    ch = *s1++;
-    *s2++ = ch;
-    while ((s8)ch != 0) {
-        if (--n1 <= 0) { *(s8 *)(s2 - 1) = 0; break; }
-        ch = *s1++;
-        *s2++ = ch;
+    ch = *(s1++);
+    *(s2++) = ch;
+  }
+
+  s2 = ((u8 *) arg0) + ((((((((0x6C & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu);
+  s1 = (u8 *) (&lbl_8055A260);
+  n2 = 0x14;
+  ch = *(s1++);
+  *(s2++) = ch;
+  while (((s8) ch) != 0)
+  {
+    if ((--n2) <= 0)
+    {
+      *((s8 *) (s2 - 1)) = 0;
+      break;
     }
-    s2 = (u8 *)arg0 + 0x6C;
-    s1 = (u8 *)&lbl_8055A260;
-    n2 = 0x14;
-    ch = *s1++;
-    *s2++ = ch;
-    while ((s8)ch != 0) {
-        if (--n2 <= 0) { *(s8 *)(s2 - 1) = 0; break; }
-        ch = *s1++;
-        *s2++ = ch;
-    }
-    fn_80130980((u8 *)arg0 + 0x9E, 0x14, 2, lbl_805619C4);
-    *(s32 *)((u8 *)arg0 + 0xF0) = fn_80204CF0() + 1;
-    *(s32 *)((u8 *)arg0 + 0xF4) = fn_802ADF34(*(void **)((u8 *)arg0 + 0xC), base + 0x5D4, &stack[46].i);
-    *(s32 *)((u8 *)arg0 + 0x14) = fn_80207848(base + 0x5E8, 1);
-    *(s32 *)((u8 *)arg0 + 0x18) = fn_80207848(base + 0x5FC, 1);
-    *(s32 *)((u8 *)arg0 + 0x1C) = fn_80207848(base + 0x618, 1);
-    *(s32 *)((u8 *)arg0 + 0x24) = fn_80207848(base + 0x62C, 1);
-    *(s32 *)((u8 *)arg0 + 0x28) = fn_80207848(base + 0x24C, 1);
-    *(s32 *)((u8 *)arg0 + 0x2C) = fn_80207848(base + 0x640, 1);
+    ch = *(s1++);
+    *(s2++) = ch;
+  }
+
+  fn_80130980(((u8 *) arg0) + 0x9E, 0x14, 2, lbl_805619C4);
+  *((s32 *) (((u8 *) arg0) + (((((((((0xF0 & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF) & 0xFFFFFFFFFFFFFFFF))) = fn_80204CF0() + 1;
+  *((s32 *) (((u8 *) arg0) + 0xF4)) = fn_802ADF34(*((void **) (((u8 *) arg0) + 0xC)), base + 0x5D4, &stack[46].i);
+  *((s32 *) (((u8 *) arg0) + 0x14)) = fn_80207848(base + 0x5E8, 1);
+  *((s32 *) (((u8 *) arg0) + 0x18)) = fn_80207848(base + 0x5FC, 1);
+  *((s32 *) (((u8 *) arg0) + 0x1C)) = fn_80207848(base + 0x618, 1);
+  *((s32 *) (((u8 *) arg0) + 0x24)) = fn_80207848(base + 0x62C, 1);
+  *((s32 *) (((u8 *) arg0) + 0x28)) = fn_80207848(base + 0x24C, 1);
+  *((s32 *) (((u8 *) arg0) + 0x2C)) = fn_80207848(base + 0x640, 1);
 }
 #pragma scheduling on
 #pragma optimize_for_size reset
@@ -2515,7 +2543,7 @@ extern "C" void fn_8016FE1C(void *obj) {
 }
 
 extern f32 lbl_80561980, lbl_80561984, lbl_805619A4, lbl_80561A0C, lbl_805619D0, lbl_8055E3C8;
-extern "C" void fn_802C744C(s32, void *);
+extern "C" void MRModel_SetInstanceTransform(s32, void *);
 extern "C" void fn_802C9900(void);
 extern "C" void fn_802C9904(void);
 #pragma push
@@ -2528,7 +2556,7 @@ extern "C" void fn_8016FE2C(void *arg0, s32 arg1) {
     extern float lbl_805619D0;
     extern float lbl_80561A0C;
     extern float lbl_8055E3C8;
-    extern void fn_802C744C(s32, void *);
+    extern void MRModel_SetInstanceTransform(s32, void *);
     extern void fn_802C9900(void);
     extern void fn_802C9904(void);
     f32 v3;
@@ -2566,7 +2594,7 @@ outer_body:
 first_body:
         item = *(u8 **)*(void **)entry + suboff;
         if (*(s32 *)(item + 0xC) == 1) {
-            fn_802C744C(*(s32 *)item, item + 0x14);
+            MRModel_SetInstanceTransform(*(s32 *)item, item + 0x14);
         }
         suboff += 0x44;
         j += 1;
@@ -2595,7 +2623,7 @@ first_check:
 second_body:
             item = *(u8 **)*(void **)entry + suboff;
             if (*(s32 *)(item + 0xC) == 1) {
-                fn_802C744C(*(s32 *)item, item + 0x14);
+                MRModel_SetInstanceTransform(*(s32 *)item, item + 0x14);
             }
             suboff += 0x44;
             j += 1;

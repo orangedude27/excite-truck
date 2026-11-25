@@ -2032,7 +2032,7 @@ extern void fn_802C7730(void *);
 extern void fn_802ABE58(void *, float *, s32 *, float); /* level -> scale + colour */
 extern void fn_80253CA4(void *, void *, float *, void *); /* the four wheels */
 extern void fn_802569DC(void *, s32, float);
-extern void fn_802C744C(s32, void *);    /* set a model's transform */
+extern void MRModel_SetInstanceTransform(s32, void *);    /* set a model's transform */
 extern void fn_802C70AC(s32, void *, s32, s32); /* set a model's transform */
 extern void fn_802AEB3C(void *);
 extern void fn_802B016C(void);
@@ -2114,7 +2114,7 @@ extern float lbl_80563A00, lbl_80563A04, lbl_80563A14, lbl_80563AA4, lbl_8055F33
             *(float *)(frame + 0x74) = model->modelMtx[3][0];
             *(float *)(frame + 0x78) = model->modelMtx[3][1];
             *(float *)(frame + 0x7c) = model->modelMtx[3][2];
-            fn_802C744C(model->modelIndex, mtx);
+            MRModel_SetInstanceTransform(model->modelIndex, mtx);
         } else {
             fn_802C70AC(model->modelIndex, mtx, 0, 1);
         }

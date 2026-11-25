@@ -242,7 +242,7 @@ extern s32 fn_801E866C(s32);
 extern void *fn_801EA9A0(void);
 extern f32 fn_801E7E24(void);
 extern void *fn_801E7E3C(void *);
-extern void fn_802C744C(s32, void *);
+extern void MRModel_SetInstanceTransform(s32, void *);
 #pragma push
 #pragma use_lmw_stmw off
 void fn_802A9428(void) {
@@ -281,7 +281,7 @@ void fn_802A9428(void) {
     if (selected >= 0) {
         s32 *slot = (s32 *)(base + 0x48) + selected * 2;
         if (slot[1] != -1)
-            fn_802C744C(slot[1], base + 0x68);
+            MRModel_SetInstanceTransform(slot[1], base + 0x68);
     }
 }
 #pragma pop

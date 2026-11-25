@@ -1343,7 +1343,7 @@ extern void fn_802D7554(int);
 extern void getTextureSlotTexObj(int);
 extern void fn_802D9230(void);
 extern void DrawList_saveProjection(void *, float, float, float);
-extern void fn_802C744C(int, void *);
+extern void MRModel_SetInstanceTransform(int, void *);
 extern void DrawList_restoreProjection(void *, int);
 #pragma push
 #pragma processor 750
@@ -1396,7 +1396,7 @@ void fn_8025AE18(void *arg0) {
     getTextureSlotTexObj(*(int *)(obj + 0xA8));
     fn_802D9230();
     DrawList_saveProjection(state, lbl_80563B20, lbl_80563B30, lbl_8055F39C);
-    fn_802C744C(*(int *)(obj + 0x50), obj + 0x54);
+    MRModel_SetInstanceTransform(*(int *)(obj + 0x50), obj + 0x54);
     fn_802D7554(0);
     DrawList_setGlobalDirection(oldcolor);
     fn_802C99E8(old);

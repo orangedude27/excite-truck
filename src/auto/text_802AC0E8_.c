@@ -661,7 +661,7 @@ extern int fn_802C2C00(int);
 extern void fn_8012F57C(float *, void *, void *, float);
 extern void fn_802C9900(void);
 extern void fn_802C9904(void);
-extern void fn_802C744C(int, float *);
+extern void MRModel_SetInstanceTransform(int, float *);
 extern void fn_802C70AC(int, float *, int, int);
 extern int fn_8023389C(int, unsigned int, int, float *, char *, int, ...);
 #pragma push
@@ -790,7 +790,7 @@ void fn_802AD4C4(void *arg0, int arg1, float t) {
                         int r;
                         if (*(int **)(c + 0x24) != 0) r = **(int **)(c + 0x24); else r = *(int *)(c + 0x20);
                         if (r < 0) {
-                            fn_802C744C(*(int *)(c + 0xC), m);
+                            MRModel_SetInstanceTransform(*(int *)(c + 0xC), m);
                         } else {
                             fn_802C70AC(*(int *)(c + 0xC), m, -1, 1 << r);
                         }

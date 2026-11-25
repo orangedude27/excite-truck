@@ -1465,7 +1465,7 @@ void fn_801F3CAC(void *unused, void *list) {
     extern void fn_80144DC8(void *);
     extern void fn_80015EB0(void *, float);
     extern void fn_80015B20(void *, void *, void *);
-    extern void fn_802C744C(int, void *);
+    extern void MRModel_SetInstanceTransform(int, void *);
     struct Buffers {
         char sp8[0x24];
         float sp2c[3];
@@ -1482,7 +1482,7 @@ void fn_801F3CAC(void *unused, void *list) {
         fn_80015EB0(buffers.sp8, scale);
         fn_80015B20(buffers.sp8, buffers.sp8, (char *)node + 0x34);
         fn_80144DAC(buffers.sp2c, (float *)((char *)node + 0x20));
-        fn_802C744C(*(int *)((char *)node + 4), buffers.sp8);
+        MRModel_SetInstanceTransform(*(int *)((char *)node + 4), buffers.sp8);
         node = *(void **)((char *)node + 0xC);
     }
 }
