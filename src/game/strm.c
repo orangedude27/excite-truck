@@ -22,7 +22,7 @@ extern const char lbl_8034D7D8[];
 extern int fn_802E30C8(const char *, ...);
 #pragma dont_inline on
 /* Round a byte count up to a whole number of 2048-byte sectors (ceil(size/2048)). */
-int fn_802E72B8(int size) {
+int bytesToSectors(int size) {
     return (size + 0x7ff) / 2048;
 }
 
@@ -60,7 +60,7 @@ int findStreamEntryBySector(int sector) {
 #pragma scheduling on
 extern int stricmp(const char *, const char *);
 extern int fn_802E37C4(void);
-extern int fn_802E72B8(int);
+extern int bytesToSectors(int);
 #pragma scheduling invalid_target
 int fn_802E7354(const char *name) {
     int fileIndex;
@@ -102,7 +102,7 @@ copy_start:
         goto dec;
 done:
     size = fn_802E37C4();
-    blocks = fn_802E72B8(size);
+    blocks = bytesToSectors(size);
     *(int *)entry = sStreamNextSector;
     sStreamNextSector += blocks;
     *(int *)(entry + 4) = sStreamNextSector;
