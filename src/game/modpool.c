@@ -38,17 +38,17 @@ __declspec(section ".sdata") extern char lbl_8055D0A8[]; /* "modpool" - allocati
     return manager;
 }
 
-void modPoolInitSlot(void *slot) {
+/* Reset one 0x40-byte model-pool slot: clear its in-use flag and state, drop its handles and request, and reset its timestamp. */ void modPoolInitSlot(void *modelSlot) {
     /* Initialise one 0x40-byte model-pool slot to its empty state: clear the
      * manager pointer, in-use flag and state, and reset the load/model handles
      * and timestamp to their "none" values. */
-    *(int *)((char *)slot + 4) = 0;
-    *(unsigned char *)slot = 0;
-    *(int *)((char *)slot + 0x38) = 0;
-    *(int *)((char *)slot + 0x34) = -1;
-    *(int *)((char *)slot + 0x30) = 0;
-    *(int *)((char *)slot + 0x2C) = -1;
-    *(int *)((char *)slot + 0x3C) = -1;
+    *(int *)((char *)modelSlot + 4) = 0;
+    *(unsigned char *)modelSlot = 0;
+    *(int *)((char *)modelSlot + 0x38) = 0;
+    *(int *)((char *)modelSlot + 0x34) = -1;
+    *(int *)((char *)modelSlot + 0x30) = 0;
+    *(int *)((char *)modelSlot + 0x2C) = -1;
+    *(int *)((char *)modelSlot + 0x3C) = -1;
 }
 
 /* Destroy a model-pool manager: free its slot-storage block, delete the load pool, then free the manager itself. */ void modPoolDestroy(void *manager) {
