@@ -273,7 +273,7 @@ void DrawList_UnregisterCallbackAndShutdown(void) {
 }
 
 /* Tear down the draw-list module: reset GX, release the texture list, and mark rendering shut down. */
-/* Shuts down the draw-list module: flush the UI, release the texture list, and mark rendering stopped. */ void fn_802C855C(void) {
+/* Shuts down the draw-list module: flush the UI, release the texture list, and mark rendering stopped. */ /* Shuts down the draw-list module: flush the UI, release the texture list, and mark rendering stopped. */ void fn_802C855C(void) {
 #define RENDER_MODE_SHUTDOWN 0
     HomeMenu_drawUIAndFlush();
     fn_802CC770();
