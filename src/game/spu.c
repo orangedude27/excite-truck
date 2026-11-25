@@ -660,7 +660,7 @@ extern int Spu_CacheVoiceObject(void);
 /* fn_8012C41C callback: for every loaded entry of a resource directory whose
  * data is tagged 'SFX0', allocate a voice object for it (Spu_CacheVoiceObject keeps the
  * resource's name in r3 for fn_802E5AE8); returning 0 stops the walk. */
-int fn_802E58A0(void *entry, int dataTag) {
+int Spu_CacheSfx0Voices(void *entry, int dataTag) {
     /* Resource-directory walk callback: for the 'SFX0' sample type, allocate a
      * voice object via Spu_CacheVoiceObject; for any other type keep the walk going (1). */
     if (dataTag == TAG_SFX0) return Spu_CacheVoiceObject();
@@ -721,7 +721,7 @@ void Spu_CacheVoiceByPath(int dirName, int fileName) {
  * sound-name queue (lbl_804FC558, count lbl_8055FF78), hand the name to the
  * resource system, then walk the directory's loaded entries and allocate a
  * voice object for each one tagged 'SFX0', stopping at the first failure. */
-/* Queue an SFX0 sound directory for playback: copy its name (up to 0x20 bytes, NUL-terminated) into the next slot of the sound-name queue lbl_804FC558 (count lbl_8055FF78), request the directory from the resource loader fn_8012BEF0, then walk its loaded entries and allocate a voice object for each one tagged 'SFX0' via fn_802E58A0, stopping at the first failure. */ void fn_802E59BC(unsigned char *sfxDirName) {
+/* Queue an SFX0 sound directory for playback: copy its name (up to 0x20 bytes, NUL-terminated) into the next slot of the sound-name queue lbl_804FC558 (count lbl_8055FF78), request the directory from the resource loader fn_8012BEF0, then walk its loaded entries and allocate a voice object for each one tagged 'SFX0' via Spu_CacheSfx0Voices, stopping at the first failure. */ void fn_802E59BC(unsigned char *sfxDirName) {
     const unsigned char *srcName = sfxDirName;
     int charsLeft;
     unsigned char *dstSlot;
@@ -741,7 +741,7 @@ copy:
         goto slot_check;
 done:
     fn_8012BEF0(sfxDirName);
-    fn_8012C41C((void (*)())fn_802E58A0, 0, sfxDirName);
+    fn_8012C41C((void (*)())Spu_CacheSfx0Voices, 0, sfxDirName);
 }
 
 extern void SpuSampleReleaseRef(void *);
