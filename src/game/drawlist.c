@@ -1156,14 +1156,8 @@ int setLightAmbientColor(int packedColor) {
 extern char gGlobalDrawDirection[];
 extern float gGlobalDrawScalar;
 void DrawList_applyGlobalDirection(void) {
-#define s_direction gGlobalDrawDirection
-#define s_drawScalar gGlobalDrawScalar
-#define ApplyDirection gxSetDefaultLightDirection
-    /* Applies the global 3-component direction vector and draw scalar to the draw state. */
-    ApplyDirection(s_direction, s_drawScalar);
-#undef s_direction
-#undef s_drawScalar
-#undef ApplyDirection
+    /* Reapply the global draw direction and scalar to the fallback (default) light. */
+    gxSetDefaultLightDirection(gGlobalDrawDirection, gGlobalDrawScalar);
 }
 
 #pragma dont_inline on
