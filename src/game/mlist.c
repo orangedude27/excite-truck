@@ -941,7 +941,7 @@ void mlistRelocatePointer(int *value, int delta) {
 }
 
 void mlistRelocatePointer1C(int *value, int delta) {
-    /* Add delta to *value, leaving a zero (null) sentinel unchanged. */
+    /* Relocate the non-null pointer field at model-list header offset 0x1C by adding delta; a zero/null field is left unchanged. */
     int cur = *value;
     if (cur != 0) {
         *value = cur + delta;
