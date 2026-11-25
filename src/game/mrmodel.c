@@ -540,7 +540,7 @@ void fn_802C5C40(int *element, int slot, int sourceItems) {
 #pragma pop
 extern int fn_8012C33C(char *);
 extern void fn_801345D8(char *, int, const char *, ...);
-extern int fn_802CAC44(char *, int);
+extern int registerTexture(char *, int);
 extern int fn_802CAF8C(void);
 extern int TextureSlot_getWrapMode(void);
 extern int getTextureSlotFilter(int);
@@ -570,7 +570,7 @@ __declspec(section ".sdata") extern const char lbl_8055D010[];
         }
     }
     baseId = *(int *)item;
-    textureIndex = fn_802CAC44(resName, baseId);
+    textureIndex = registerTexture(resName, baseId);
     if (subKeyKind != 0) {
         subKey = buildTextureSubKey(baseId, fn_802CAF8C());
     } else {

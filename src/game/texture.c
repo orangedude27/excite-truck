@@ -506,7 +506,7 @@ void RegisterTextureWithResource(int name, int resource) {
     fn_802CA898(name, 0, resource, 0xE);
 }
 
-void fn_802CAC44(int name, int type) {
+void registerTexture(int name, int type) {
     /* Register a named texture with no scene id and no backing resource, using type as its category. */
     fn_802CA898(name, 0, 0, type);
 }
