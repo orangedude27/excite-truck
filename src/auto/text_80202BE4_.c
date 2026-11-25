@@ -20,7 +20,7 @@ void fn_80203EC4(void);
 extern void fn_802CAC54(s32);
 extern void fn_802CB228(void);
 extern void fn_802CB288(s32);
-extern void fn_802CA294(s32);
+extern void getTextureSlotTexObj(s32);
 extern void fn_802D050C(s32);
 extern void fn_802D30DC(s32);
 extern void fn_802D9230(void);
@@ -199,17 +199,17 @@ void fn_80202D50(f32 *arg0) {
                 u = (u < t) ? u : t;
                 u = (u > lbl_805630CC) ? u : lbl_805630CC;
                 t = lbl_805630CC + u * lbl_805630D4;
-                ha = ((s32 (*)(s32))fn_802CA294)(a->w0);
-                hb = ((s32 (*)(s32))fn_802CA294)(b->w0);
-                fn_802CA294(lbl_8055ED0C);
+                ha = ((s32 (*)(s32))getTextureSlotTexObj)(a->w0);
+                hb = ((s32 (*)(s32))getTextureSlotTexObj)(b->w0);
+                getTextureSlotTexObj(lbl_8055ED0C);
                 fn_802D94E4(t, hb, ha);
-                r = ((s32 (*)(s32))fn_802CA294)(lbl_8055ED0C);
+                r = ((s32 (*)(s32))getTextureSlotTexObj)(lbl_8055ED0C);
                 break;
             }
         }
     }
     if (r == 0) {
-        r = ((s32 (*)(s32))fn_802CA294)(lbl_8048897C.ptr[lbl_8048897C.count - 1].w0);
+        r = ((s32 (*)(s32))getTextureSlotTexObj)(lbl_8048897C.ptr[lbl_8048897C.count - 1].w0);
     }
     fn_802D30DC(r);
 }
@@ -798,7 +798,7 @@ void fn_80203E88(void) {
      * for this view, bind its environment texture into GX, then restore the
      * normal draw mode. Arguments the callers pass are intentionally ignored. */
     #define DrawShadowMap   fn_80203B20   /* renders the shadow/SWL-map overlay; uses the caller's live registers */
-    #define GetTexSlotField fn_802CA294   /* reads field +0x28 of the texture-slot record at the given index */
+    #define GetTexSlotField getTextureSlotTexObj   /* reads field +0x28 of the texture-slot record at the given index */
     #define LoadEnvTexture  fn_802D9230   /* loads the environment texture object into GX */
     #define SetDrawMode     fn_802D050C   /* stores the current draw mode (0 = normal) */
     #define ShadowMapSlot   lbl_8055ECFC  /* texture-slot index of the shadow/SWL map */

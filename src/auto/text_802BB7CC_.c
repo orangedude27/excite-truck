@@ -199,7 +199,7 @@ void fn_802BBBC8(void) {
     #define sSoftWaterMapPresent lbl_8055FA90
     #define sFormatPath fn_801345D8
     #define sPanic Abend_Panic
-    #define sGetTextureIndex fn_802CA294
+    #define sGetTextureIndex getTextureSlotTexObj
     #define sLoadTexture fn_802BB87C
     #define sIsSoftWaterMapPresent fn_802B05E4
     /* Loads the six material-map layers (matmap/matmap2 times b/g/r), saving each

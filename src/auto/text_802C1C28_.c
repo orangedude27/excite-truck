@@ -16,7 +16,7 @@ extern int lbl_8055FB54;
 int fn_8012C33C(void);
 int fn_802CAC28(int, int);
 void fn_802B52C0(void *);
-int fn_802CA294(void *, int, int, int, void *);
+int getTextureSlotTexObj(void *, int, int, int, void *);
 int fn_802D9628(short, short, unsigned int);
 /* No-op constructor for each 0x48-byte TreeHitRecord in the hit ring
  * (lbl_804C0E10): fn_8002F53C calls it once per element while fn_802C1BB4
@@ -58,7 +58,8 @@ void fn_802C1C34(void *arg0, void *obj, int slot) {
     }
     if (((float *)data)[10] < lbl_80564E70) return;
     recent = &lbl_804C1050[slot * 2];
-    if (index != *(int *)&lbl_804C1050[slot * 2] || lbl_8055FB38 - recent[1] > lbl_80564E78) {
+    if (index != *(int *)recent || lbl_80564E78 < lbl_8055FB38 - recent[1]) {
+        float one = lbl_80564E54, zero = lbl_80564E50, bias = lbl_80564E80;
         if (*((unsigned char *)info + 0x28)) {
             entry = fn_802C120C();
             entry[1] = (int)data;
@@ -67,9 +68,9 @@ void fn_802C1C34(void *arg0, void *obj, int slot) {
             *(Block9 *)(entry+2) = *(Block9 *)data;
             *(Vec3 *)(entry+11) = *(Vec3 *)(data+9);
             ((float *)entry)[17] = lbl_8055FB38;
-            ((float *)entry)[14] = lbl_80564E54;
-            ((float *)entry)[15] = lbl_80564E50;
-            ((float *)entry)[16] = lbl_80564E50;
+            ((float *)entry)[14] = one;
+            ((float *)entry)[15] = zero;
+            ((float *)entry)[16] = zero;
         }
         if (info[15] > 0) {
             float one = lbl_80564E54, zero = lbl_80564E50, bias = lbl_80564E80;
@@ -95,7 +96,7 @@ void fn_802C1C34(void *arg0, void *obj, int slot) {
         }
     }
     *(int *)recent = index;
-    lbl_804C1050[slot*2+1] = lbl_8055FB38;
+    recent[1] = lbl_8055FB38;
 }
 #pragma pop
 void fn_802C1F80(int allocation) {
@@ -299,7 +300,7 @@ void fn_802C21DC(int worldX, int worldY, unsigned int value) {
         height = height - 1 - texYCoord;
         pixelIndex = height * width + texXCoord;
         pixels[pixelIndex] = packedColor;
-        texObject = ((int (*)(int))fn_802CA294)((int)roadOpacityTexHandle);
+        texObject = ((int (*)(int))getTextureSlotTexObj)((int)roadOpacityTexHandle);
         ((void (*)(void *, int, int, unsigned int))fn_802D9628)((void *)texObject, texX, texY, packedColor);
     }
 #undef roadOpacityTexture

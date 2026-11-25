@@ -193,7 +193,7 @@ void fn_80291A1C(void) {
     ((float *)flare)[1] = kZero;
     ((float *)flare)[2] = kZero;
     flare[3] = fn_802CAC28((int *)&kBurstTex, 0);
-    fn_802CA294();
+    getTextureSlotTexObj();
     flare[4] = fn_802D39A4(kFadeStep);
     *((unsigned char *)flare + 0x14) = 0;
     flare[6] = -1;

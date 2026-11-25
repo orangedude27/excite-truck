@@ -105,7 +105,7 @@ extern void fn_801282F4(void);
 }
 #pragma scheduling on
 /* Return the texture id (field +0x28) of the given 0x4C-byte texture slot. */
-int fn_802CA294(int textureSlot) {
+int getTextureSlotTexObj(int textureSlot) {
     int offset = textureSlot * 0x4C;
     int *slots = (int *)gTextureSlotTable;
     return *(int *)((char *)slots + offset + 0x28);

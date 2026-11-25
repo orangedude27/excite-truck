@@ -1122,7 +1122,7 @@ void CpuLight_BeginIndirectPass(int arg0, int indTexSlot, int texSlot1, float li
         }
         powResult = (float)fn_8002EFBC(lbl_80565070, (float)scaleExp);
         scale = base * lbl_80565078 / powResult;
-        fn_802D3DF8(fn_802CA294(indTexSlot), scaleExp, scale, scale);
+        fn_802D3DF8(getTextureSlotTexObj(indTexSlot), scaleExp, scale, scale);
         GXSetNumIndStages(1);
         GXSetTevIndirect(GX_TEVSTAGE0, GX_INDTEXSTAGE0, GX_ITF_8, GX_ITB_ST, GX_ITM_0, GX_ITW_OFF,
                          GX_ITW_OFF, FALSE, FALSE, GX_ITBA_OFF);

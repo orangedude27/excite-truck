@@ -1340,7 +1340,7 @@ extern float fn_802C99E8(float);
 extern void *fn_802C9A40(void);
 extern void DrawList_setGlobalDirection(void *);
 extern void fn_802D7554(int);
-extern void fn_802CA294(int);
+extern void getTextureSlotTexObj(int);
 extern void fn_802D9230(void);
 extern void DrawList_saveProjection(void *, float, float, float);
 extern void fn_802C744C(int, void *);
@@ -1393,7 +1393,7 @@ void fn_8025AE18(void *arg0) {
     *(struct RenderWords3 *)oldcolor = *(struct RenderWords3 *)fn_802C9A40();
     DrawList_setGlobalDirection(color);
     fn_802D7554(1);
-    fn_802CA294(*(int *)(obj + 0xA8));
+    getTextureSlotTexObj(*(int *)(obj + 0xA8));
     fn_802D9230();
     DrawList_saveProjection(state, lbl_80563B20, lbl_80563B30, lbl_8055F39C);
     fn_802C744C(*(int *)(obj + 0x50), obj + 0x54);
