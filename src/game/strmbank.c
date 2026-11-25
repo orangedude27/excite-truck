@@ -95,8 +95,8 @@ s32 createNullStrmBank(void) {
     }
 }
 #pragma scheduling on
-/* Deleting destructor: free the object when deleteFlag > 0, then return it. */
-s32 fn_802E76F0(s32 object, s32 deleteFlag) {
+/* Null stream-bank manager's CodeWarrior deleting destructor: when deleting (deleteFlag > 0), free the non-null object with operator delete (fn_80128668) and return the original pointer. */ s32 fn_802E76F0(s32 object, s32 deleteFlag) {
+    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
     if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
