@@ -6259,29 +6259,47 @@ void GXLoadTexMtxImm(const f32 *mtx, u32 id, s32 type) {
 
 void __GXSetViewport(void) {
     unsigned int *data = __GXData;
-    f32 a, b, c, d, e, f;
+    f32 halfWidth, negHalfHeight, depthRange, xCenter, yCenter, farPlusOffset;
     f32 nearZ, farZ;
     volatile u8 *fifo8 = (volatile u8 *)0xCC008000;
     volatile u32 *fifo32 = (volatile u32 *)0xCC008000;
     volatile f32 *fifoF = (volatile f32 *)0xCC008000;
+#define vpOx   (*(f32 *)((u8 *)data + 0x544))
+#define vpOy   (*(f32 *)((u8 *)data + 0x548))
+#define vpSx   (*(f32 *)((u8 *)data + 0x54C))
+#define vpSy   (*(f32 *)((u8 *)data + 0x550))
+#define vpNear (*(f32 *)((u8 *)data + 0x554))
+#define vpFar  (*(f32 *)((u8 *)data + 0x558))
+#define offsetZ (*(f32 *)((u8 *)data + 0x55C))
+#define scaleZ (*(f32 *)((u8 *)data + 0x560))
 
-    a = *(f32 *)((u8 *)data + 0x54C) / 2.0f;
-    b = -*(f32 *)((u8 *)data + 0x550) / 2.0f;
-    d = *(f32 *)((u8 *)data + 0x544) + (*(f32 *)((u8 *)data + 0x54C) / 2.0f) + 342.0f;
-    e = *(f32 *)((u8 *)data + 0x548) + (*(f32 *)((u8 *)data + 0x550) / 2.0f) + 342.0f;
-    nearZ = *(f32 *)((u8 *)data + 0x554) * *(f32 *)((u8 *)data + 0x560);
-    farZ = *(f32 *)((u8 *)data + 0x558) * *(f32 *)((u8 *)data + 0x560);
-    c = farZ - nearZ;
-    f = farZ + *(f32 *)((u8 *)data + 0x55C);
+    /* Flush the cached viewport rectangle and depth range into the GX XF
+     * viewport registers through the graphics FIFO. */
+    halfWidth = vpSx / 2.0f;
+    negHalfHeight = -vpSy / 2.0f;
+    xCenter = vpOx + (vpSx / 2.0f) + 342.0f;
+    yCenter = vpOy + (vpSy / 2.0f) + 342.0f;
+    nearZ = vpNear * scaleZ;
+    farZ = vpFar * scaleZ;
+    depthRange = farZ - nearZ;
+    farPlusOffset = farZ + offsetZ;
 
     *fifo8 = 0x10;
     *fifo32 = 0x5101A;
-    *fifoF = a;
-    *fifoF = b;
-    *fifoF = c;
-    *fifoF = d;
-    *fifoF = e;
-    *fifoF = f;
+    *fifoF = halfWidth;
+    *fifoF = negHalfHeight;
+    *fifoF = depthRange;
+    *fifoF = xCenter;
+    *fifoF = yCenter;
+    *fifoF = farPlusOffset;
+#undef scaleZ
+#undef offsetZ
+#undef vpFar
+#undef vpNear
+#undef vpSy
+#undef vpSx
+#undef vpOy
+#undef vpOx
 }
 
 #define GX_JITTER_HALF_PIXEL lbl_80560BCC // 0.5f: vertical offset for even interlaced fields
