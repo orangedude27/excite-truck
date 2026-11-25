@@ -7,9 +7,8 @@ extern unsigned int lbl_8055F968;
 extern float lbl_8055F96C;
 extern float lbl_80564BB4;
 #pragma scheduling reset
-static inline void setC8055F96C(float v) { lbl_8055F96C = v; }
 void fn_802B05F4(void) {
     fn_8000D838(&lbl_8055F960);
     lbl_8055F968 = 0xFFFF0000;
-    setC8055F96C(lbl_80564BB4);
+    lbl_8055F96C = lbl_80564BB4;
 }
