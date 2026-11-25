@@ -498,7 +498,7 @@ void fn_802E1DA4(void *arg0, unsigned int arg1, unsigned int arg2, float f0, flo
     *(volatile float *)0xCC008000 = lbl_8056511C;
 }
 void videoRingFlushSlot(void *ring) {
-    /* Flush the current video-ring slot's payload before the GPU reads it: slot index at +0x114, slots at +0x11C (stride 0x30), byte count at +0x17C. */
+    /* Write back the current video-ring slot's decoded payload so the GPU can read it: slot index at +0x114, slots at +0x11C (stride 0x30), byte count at +0x17C. */
     DCStoreRange(*(void **)((char *)ring + *(int *)((char *)ring + 0x114) * 0x30 + 0x11C),
                  *(int *)((char *)ring + 0x17C));
 }
