@@ -1853,15 +1853,15 @@ extern unsigned char lbl_8055FD24;
 }
 
 #pragma dont_inline gxRemapBlendFactor
-int gxRemapBlendFactor(int blendFactor) {
-    /* Remap unsupported destination-color blend codes (8/9) to the equivalent source-color codes (2/3); other factors pass through. */
-    switch (blendFactor) {
+int gxRemapBlendFactor(int factor) {
+    /* Map an engine packed blend-mode factor to a GX blend factor: DSTCLR/INVDSTCLR (8/9) are not valid GX factors, so use SRCCLR/INVSRCCLR (2/3); other factors pass through. */
+    switch (factor) {
     case 8:
-        return 2;
+        return GX_BL_SRCCLR;
     case 9:
-        return 3;
+        return GX_BL_INVSRCCLR;
     default:
-        return blendFactor;
+        return factor;
     }
 }
 
