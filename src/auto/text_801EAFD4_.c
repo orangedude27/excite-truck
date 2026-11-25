@@ -763,7 +763,7 @@ extern void fn_802C7AD4(void);
 extern void fn_802C9648(f32);
 extern void DrawList_reapplyProjection(void);
 extern void fn_802CD37C(s32, s32, s32, s32, f32, f32);
-extern void fn_802CDAA8(void);
+extern void MlistClearCurrentContext(void);
 extern void fn_802CDB5C(s32);
 extern f32 lbl_80562E70;
 void fn_801EBDCC(void) {
@@ -807,7 +807,7 @@ void fn_801EBDCC(void) {
             fn_802CDB5C(4);
         }
         fn_802C7AD4();
-        fn_802CDAA8();
+        MlistClearCurrentContext();
     } else {
         fn_802B01A8();
     }
