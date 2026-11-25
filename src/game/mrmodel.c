@@ -594,11 +594,11 @@ __declspec(section ".sdata") extern const char lbl_8055D010[];
     }
 }
 
-void MRModel_ReleaseCallback(void *unused, void *groupList) {
-    /* Resource callback: visit every group in groupList through VisitGroupIds,
-       passing the no-op per-group hook fn_802D6C44. arg0 is unused. */
-    void *callback = fn_802D6C44;
-    ((void (*)(void *, void *))VisitGroupIds)(groupList, callback);
+void MRModel_ReleaseCallback(void *ownerPtr, void *groupList) {
+    /* Release callback for a model resource: when its reference count reaches zero,
+       walk the resource's group list with the no-op hook fn_802D6C44. ownerPtr is unused. */
+    void *groupHook = fn_802D6C44;
+    ((void (*)(void *, void *))VisitGroupIds)(groupList, groupHook);
 }
 
 #pragma pop
