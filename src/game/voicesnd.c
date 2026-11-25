@@ -587,7 +587,7 @@ extern char lbl_8033C3F4[];
 
 #pragma pop
 
-int fn_8020B2A8(void *voiceSnd) {
+int VoiceSnd_hasSound(void *voiceSnd) {
     // Nonzero if this voice sound has a main sound resource loaded (+0x10).
     return *(int *)((char *)voiceSnd + 0x10) != 0;
 }
@@ -672,7 +672,7 @@ void fn_8020B344(void) {
 // One sound of the sound player: 0x54 bytes allocated as "Voicesnd" by
 // fn_8020AF18, with the vtable lbl_8033C3F4.
 //     +0x08 fn_8020B1C8  destroy
-//     +0x10 fn_8020B2A8  has a sound loaded
+//     +0x10 VoiceSnd_hasSound  has a sound loaded
 //     +0x14 fn_8020B874  load another sound by name
 //     +0x18 VoiceSnd_playOnce  play once
 //     +0x1C VoiceSnd_playLooping  play, looping
