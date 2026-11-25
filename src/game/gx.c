@@ -79,7 +79,7 @@ extern char lbl_8055D100;
   extern int fn_802CEC04(int);
   extern void KERNEL_AddResetCallback(void (*)(void), void *);
   extern void drInvalidateVertexFormatCache();
-  extern void fn_802DA52C(void);
+  extern void StackAlloc_reset(void);
   extern void GXSetDrawSync(void);
   extern void GXGetVtxDesc(void);
   extern void GXGetCPUFifo(void *);
@@ -1002,7 +1002,7 @@ void HomeMenu_beginFrame(void *alarm) {
     sGxPendingBytes = 0;
     sRenderRequest[0] = 1;
     lbl_8055FD8C = -1;
-    fn_802DA52C();
+    StackAlloc_reset();
     GXSetDrawSync();
     GXGetVtxDesc();
     GXGetCPUFifo(fifoBuffer);
