@@ -200,7 +200,7 @@ void fn_802C2FC4(void) {
 }
 #pragma pop
 /* Resets a canvas's clip rectangle to the whole surface: {0, 0, width, height}. */
-void gxCanvasResetClipRect(void *arg0) {
+/* Resets a canvas's clip rectangle to cover the whole surface: min corner (0, 0), max corner (width, height). */ void gxCanvasResetClipRect(void *arg0) {
     GxCanvas *canvas = arg0;
     canvas->minX = 0;
     canvas->minY = 0;
