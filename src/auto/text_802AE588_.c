@@ -46,7 +46,7 @@ extern void *lbl_8055CD78;
 extern void fn_80128668(void*);
 extern char lbl_8055F981;
 extern int lbl_8055F97C;
-extern float lbl_80564AF0;
+extern const float lbl_80564AF0;
 extern float lbl_80564B6C;
 extern float lbl_80564B84;
 extern float lbl_80564BB0;
