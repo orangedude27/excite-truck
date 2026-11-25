@@ -771,9 +771,9 @@ void fn_8020F1F8(void *object) {
 
 /* Reset the state flags (+0x49 set, +0x4A/+0x4B clear) of the water-bounce
  * sound stored at +0x28 of the car's sound set. */
-void CarSound_ResetWaterBounce(void *sounds) {
+/* CarSound vtable slot: re-arm the water-bounce sound at +0x28 by setting its +0x49 flag and clearing +0x4A/+0x4B, if that sound exists. */ void CarSound_ResetWaterBounce(void *carSound) {
     void *sound;
-    sound = *(void **)((char *)sounds + 0x28);
+    sound = *(void **)((char *)carSound + 0x28);
     if (sound != 0) {
         *(signed char *)((char *)sound + 0x49) = 1;
         *(signed char *)((char *)sound + 0x4B) = 0;
