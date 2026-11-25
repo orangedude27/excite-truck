@@ -771,7 +771,7 @@ void fn_8020F1F8(void *object) {
 
 /* Reset the state flags (+0x49 set, +0x4A/+0x4B clear) of the water-bounce
  * sound stored at +0x28 of the car's sound set. */
-void fn_8020F21C(void *sounds) {
+void CarSound_ResetWaterBounce(void *sounds) {
     void *sound;
     sound = *(void **)((char *)sounds + 0x28);
     if (sound != 0) {
@@ -872,7 +872,7 @@ void fn_8020F378(void *carSound) {
     }
 }
 /* CarSound vtable slot 0x34 (vtable lbl_8033C8C4): does nothing.  Its siblings in
- * that table -- fn_8020F1F8, fn_8020F21C, fn_8020F30C, fn_8020F330, fn_8020F354
+ * that table -- fn_8020F1F8, CarSound_ResetWaterBounce, fn_8020F30C, fn_8020F330, fn_8020F354
  * and fn_8020F378 -- each re-arm one of the car's sounds by raising the sound's
  * +0x49 update flag and clearing its +0x4A/+0x4B stop/play requests; the sound
  * behind this slot is driven entirely by the per-frame update fn_8020E598 and
