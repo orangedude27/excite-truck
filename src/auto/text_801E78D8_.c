@@ -609,12 +609,12 @@ second_check:
 }
 #pragma scheduling invalid_target
 extern "C" void fn_801E837C(void) {
-    /* Applies per-entry DB4 values from the global table to entries 0..0x4A via fn_802D6C54. */
-    extern void fn_802D6C54(long, void *, float);
+    /* Applies per-entry DB4 values from the global table to entries 0..0x4A via drSetSurfAngleTableEntry. */
+    extern void drSetSurfAngleTableEntry(long, void *, float);
     long byteOffset = 0;
     long index = 0;
     do {
-        fn_802D6C54(index, (char *)lbl_8055EB04 + byteOffset,
+        drSetSurfAngleTableEntry(index, (char *)lbl_8055EB04 + byteOffset,
                     *(float *)((char *)lbl_8055EB04 + byteOffset + 0xDB4));
         index++;
         byteOffset += 4;

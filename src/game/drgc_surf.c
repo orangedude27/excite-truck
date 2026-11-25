@@ -1479,7 +1479,7 @@ void fn_802D6C4C(f32 extrudeScale) {
 
 extern float gSurfAngleTable[];
 /* Sets element @p index of the surf value table at gSurfAngleTable to @p value. */
-void fn_802D6C54(int index, float value) {
+void drSetSurfAngleTableEntry(int index, float value) {
     gSurfAngleTable[index] = value;
 }
 
