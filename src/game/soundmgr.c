@@ -793,7 +793,7 @@ extern "C" void fn_802089B0(void* self) {
     }
     ((Obj*)self)->destroy(1);
 }
-extern "C" signed long fn_802089D0(signed long object, signed long deleteFlag) {
+/* CodeWarrior deleting-destructor helper: when deleteFlag > 0, free a non-null object via operator delete (fn_80128668), then return the object. */ extern "C" signed long fn_802089D0(signed long object, signed long deleteFlag) {
     if ((object != 0) && (deleteFlag > 0)) {
         fn_80128668();
     }
