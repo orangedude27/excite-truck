@@ -1128,6 +1128,7 @@ void fn_80275D0C(void *arg0, void *arg1) {
     *(float *)((char *)arg0 + 0xBC) = ((float *)&work.local_14)[6] * lbl_80564024;
 }
 #pragma pop
+#pragma pop
 void fn_80275FC0(void *camera) {
     /* Camera mode 21: make the view transform and angle an outside system stored
      * for this camera (0x1A4/0x1D4) the ones in use (0x058/0x0BC), for fn_80276044
