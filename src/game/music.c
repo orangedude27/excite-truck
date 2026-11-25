@@ -4,19 +4,19 @@
 // auto/text_8020A6A4_.c pending a promotion pass.
 #pragma use_lmw_stmw off
 
-extern char lbl_8055EDDC;
+extern char musicPlayFlag;
 extern const char lbl_8033C308[];
 extern void fn_802E30C8(const char*, ...);
 #pragma dont_inline on
 void fn_8020A634(void) {
     /* Clear the global music-play flag (set by fn_8020A600 with "music: play!"), stopping playback. */
-    lbl_8055EDDC = 0;
+    musicPlayFlag = 0;
 }
 #pragma dont_inline off
 
 /* Return the global music-play enabled flag (set by fn_8020A600, cleared by fn_8020A634). */
 char fn_8020A640(void) {
-    return lbl_8055EDDC;
+    return musicPlayFlag;
 }
 
 extern void *lbl_8055EDE0;
@@ -35,9 +35,9 @@ void fn_8020A5F8(f32 volume) {
 
 #pragma scheduling invalid_target
 /* Music-playback enable: log "music: play!" and set the music-enabled flag. */
-/* Music_Play: log "music: play!" and set the global music-play flag (lbl_8055EDDC) to 1; paired with fn_8020A634 (stop) and fn_8020A640 (status). */ void fn_8020A600(void) {
+/* Music_Play: log "music: play!" and set the global music-play flag (musicPlayFlag) to 1; paired with fn_8020A634 (stop) and fn_8020A640 (status). */ void fn_8020A600(void) {
     fn_802E30C8(lbl_8033C308);
-    lbl_8055EDDC = 1;
+    musicPlayFlag = 1;
 }
 #pragma scheduling on
 
@@ -211,7 +211,7 @@ void fn_8020A100(void) {
                     obj[0x6D] = 1;
                     *(f32 *)(obj + 0x68) = one;
                 }
-                if (i == (s32)lbl_8055EDE0 && (u8)lbl_8055EDDC != 0) {
+                if (i == (s32)lbl_8055EDE0 && (u8)musicPlayFlag != 0) {
                     obj[0x4A] = 0;
                     obj[0x4B] = 1;
                     obj[0x49] = 1;
@@ -236,7 +236,7 @@ void fn_8020A368(void) {
 #define MUSIC_SLOTS      lbl_804892C0  /* two channels: {sound, buffer} */
 #define MUS_BUF_TAG      lbl_8055B578  /* "mus_buf" */
 #define DEFAULT_VOLUME   lbl_80563290  /* 0.7f */
-#define PLAY_FLAG        lbl_8055EDDC
+#define PLAY_FLAG        musicPlayFlag
 #define MUSIC_VOLUME     lbl_8055EDD8
 #define VOLUME_KEY       lbl_8033C278  /* "music_volume" */
 #define MUSIC_CB_NAME    lbl_8055B580  /* "Music" */
