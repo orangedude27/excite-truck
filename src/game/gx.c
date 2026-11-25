@@ -76,7 +76,7 @@ extern void fn_802D14D8(void);
 extern unsigned char lbl_8055FD91;
 extern unsigned char lbl_8055D0FF;
 extern char lbl_8055D100;
-  extern int fn_802CEC04(int);
+  extern int gxBlankOnShutdown(int);
   extern void KERNEL_AddResetCallback(void (*)(void), void *);
   extern void drInvalidateVertexFormatCache();
   extern void StackAlloc_reset(void);
@@ -290,7 +290,7 @@ extern void fn_802D9C4C(void);
 /* GX draw-sync callback (RealName: GX_BlankOnShutdown): when reason is 1,
    unregister the audio DMA and draw-sync callbacks, blank the screen and wait
    for the retrace, then return 0. */
-/* GX_BlankOnShutdown draw-sync callback: on reason 1, unregister the audio DMA and draw-sync callbacks, blank the screen and wait for retrace. */ int fn_802CEC04(int reason) {
+/* GX_BlankOnShutdown draw-sync callback: on reason 1, unregister the audio DMA and draw-sync callbacks, blank the screen and wait for retrace. */ int gxBlankOnShutdown(int reason) {
     if (reason == 1) {
         fn_802D9C4C();
         GXSetDrawSyncCallback();
@@ -591,7 +591,7 @@ void fn_802CF10C(void) {
 void gxRegisterResetCallback(void) {
 #define sGxResetRegistered lbl_8055D0FF
 #define sGxResetName lbl_8055D100
-#define GxResetCallback fn_802CEC04
+#define GxResetCallback gxBlankOnShutdown
 #define RegisterResetCallback KERNEL_AddResetCallback
     /* Register the GX reset callback with its "GX" log name, once on first init. */
     if (sGxResetRegistered == 0) return;
