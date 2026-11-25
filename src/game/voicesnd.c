@@ -372,9 +372,8 @@ extern void Spu_shutdown(void);
 /* Voice-sound shutdown: clear the registered voice-entry count, then tear down
  * SPU state (Spu_shutdown). */
 void VoiceSnd_shutdown(void) {
-#define s_voiceEntryCount sVoiceEntryCount
-    s_voiceEntryCount = 0;
-#undef s_voiceEntryCount
+    /* Clear the registered voice-entry count, then shut down all SPU state. */
+    sVoiceEntryCount = 0;
     Spu_shutdown();
 }
 
