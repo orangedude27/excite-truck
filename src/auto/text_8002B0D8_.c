@@ -133,7 +133,8 @@ int stricmp(unsigned char *str1, unsigned char *str2) {
 }
 
 /* strcmp/strncmp thunk: tail-call the locale-aware n-byte string comparator fn_800248A4. */
-/* Tail-call thunk delegating to fn_800248A4, a bounded locale-aware case-insensitive string comparison (strnicmp equivalent). */ /* Tail-call thunk delegating to fn_800248A4, a bounded locale-aware case-insensitive string comparison (strnicmp equivalent). */ void fn_8002B1D8(void) {
+void fn_8002B1D8(void) {
+    /* Tail-call thunk delegating to fn_800248A4, a bounded locale-aware case-insensitive string comparison (strnicmp equivalent). */
     fn_800248A4();
 }
 
