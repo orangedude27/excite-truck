@@ -360,7 +360,7 @@ void fn_800169F8(const char *source, int entryIndex) {
 /* Tail-call wrapper for external callers: branches to fn_8001766C, which
  * (re)initializes the DriverInfo record for the driver index left in r3 --
  * the argument passes straight through the branch. */
-void fn_80016A44(void) {
+/* Tail-call thunk forwarding to fn_8001766C. */ void fn_80016A44(void) {
     fn_8001766C();
 }
 
