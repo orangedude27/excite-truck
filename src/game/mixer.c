@@ -482,8 +482,8 @@ float fn_802091CC(void) {
 }
 #pragma pop
 
+/* CodeWarrior deleting-destructor helper: free a non-null object via operator delete when deleting, then return the object. */
 int fn_802091D4(int object, int deleteFlag) {
-    /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
     if (object != 0 && deleteFlag > 0) {
         fn_80128668();
     }
