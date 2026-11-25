@@ -810,7 +810,7 @@ extern int lbl_8055D070;
 }
 
 /* Return a texture slot's mode byte (+9 of its resource), or 0x32 for no texture. */
-char TextureSlot_getWrapMode(int textureSlot) {
+/* Return a texture slot's wrap-mode byte (offset +9 of its resource descriptor), or 0x32 for the -1 no-texture sentinel. */ char TextureSlot_getWrapMode(int textureSlot) {
     int slotOffset;
     char *slots;
     if (textureSlot == -1)
