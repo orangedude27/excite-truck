@@ -63,7 +63,7 @@ extern f32 lbl_80565008;
 extern long fn_802CFF64(long);
 extern u8 lbl_804D6C44[];
 extern f32 lbl_804C56F0[];
-extern f32 lbl_804CA308[];
+extern f32 gSurfAngleTable[];
 extern f32 lbl_80564FF0;
 extern f64 lbl_80564FF8;
 extern f64 lbl_80565000;
@@ -409,7 +409,7 @@ void fn_802D479C(void *arg0) {
     u8 *vertex;
 
     if (base != 0) {
-        f32 *table = lbl_804CA308;
+        f32 *table = gSurfAngleTable;
         out = base;
         vertex = src;
         for (i = 0; i < count; i++) {
@@ -483,8 +483,8 @@ void fn_802D4988(void *arg0) {
                 f32 t0, t1, y, z, x, a, b;
                 h0 = vertex->half0;
                 h1 = vertex->half1;
-                t0 = lbl_804CA308[vertex->index0];
-                t1 = lbl_804CA308[vertex->index1];
+                t0 = gSurfAngleTable[vertex->index0];
+                t1 = gSurfAngleTable[vertex->index1];
                 y = src->y;
                 z = src->z;
                 x = src->x;
@@ -538,8 +538,8 @@ void fn_802D4C44(void *arg0) {
             d0[0] = factor * (f32)*(s16 *)(src + 0x10);
             d0[1] = factor * (f32)*(s16 *)(src + 0x12);
             d0[2] = factor * (f32)*(s16 *)(src + 0x14);
-            t0p = &lbl_804CA308[src[0x1C]];
-            t1p = &lbl_804CA308[src[0x1D]];
+            t0p = &gSurfAngleTable[src[0x1C]];
+            t1p = &gSurfAngleTable[src[0x1D]];
             r[0] += d0[0] * *t0p;
             r[1] += d0[1] * *t0p;
             r[2] += d0[2] * *t0p;
@@ -566,7 +566,7 @@ void fn_802D4ECC(void *arg0) {
 #pragma opt_common_subs off
     extern s32 fn_802CFF64(s32);
     extern f32 lbl_804DB068[];
-    extern f32 lbl_804CA308[];
+    extern f32 gSurfAngleTable[];
     extern f32 lbl_80564FF0;
     register void *object = arg0;
     register u8 *src = *(u8 **)((u8 *)object + 0x20);
@@ -592,8 +592,8 @@ void fn_802D4ECC(void *arg0) {
             f32 halfB = (f32)*(s16 *)(src + 0x12);
             u8 tableA = src[0x14];
             u8 tableB = src[0x15];
-            f32 resultY = y2 + factor * (unsigned)halfA * lbl_804CA308[tableA]
-                          + factor * halfB * lbl_804CA308[tableB];
+            f32 resultY = y2 + factor * (unsigned)halfA * gSurfAngleTable[tableA]
+                          + factor * halfB * gSurfAngleTable[tableB];
             spc = y2;
             sp8 = x;
             sp10 = z;
@@ -653,10 +653,10 @@ void fn_802D50B4(void *arg0) {
                     y = *(f32 *)(src + 0x4) + lbl_804C56F0[1] * scale;
                     x = *(f32 *)(src + 0x0) + lbl_804C56F0[0] * scale;
                     first = factor * (f32)half0;
-                    y += first * lbl_804CA308[index0];
+                    y += first * gSurfAngleTable[index0];
                     z = *(f32 *)(src + 0x8) + lbl_804C56F0[2] * scale;
                     second = factor * (f32)half1;
-                    y += second * lbl_804CA308[index1];
+                    y += second * gSurfAngleTable[index1];
                     out[0] = x;
                     src += 0x18;
                     out[1] = y;
@@ -1477,10 +1477,10 @@ void fn_802D6C4C(f32 extrudeScale) {
     lbl_8055FDE0 = extrudeScale;
 }
 
-extern float lbl_804CA308[];
-/* Sets element @p index of the surf value table at lbl_804CA308 to @p value. */
+extern float gSurfAngleTable[];
+/* Sets element @p index of the surf value table at gSurfAngleTable to @p value. */
 void fn_802D6C54(int index, float value) {
-    lbl_804CA308[index] = value;
+    gSurfAngleTable[index] = value;
 }
 
 void drInvalidateVertexFormatCache(void) {
@@ -1498,13 +1498,13 @@ void drInvalidateVertexFormatCache(void) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_802D6C78(void) {
-    extern f32 lbl_804CA308[];
+    extern f32 gSurfAngleTable[];
     extern f32 lbl_804DB068[];
     extern f32 lbl_804C56F0[];
     extern void LCLoadData(void*, const void*, unsigned long);
     extern void LCStoreData(void*, const void*, unsigned long);
     extern void LCQueueWait(unsigned long);
-    unsigned char *g = (unsigned char *)lbl_804CA308;
+    unsigned char *g = (unsigned char *)gSurfAngleTable;
     {
         unsigned char *base = g + 0x930;
         unsigned char *e = base;
