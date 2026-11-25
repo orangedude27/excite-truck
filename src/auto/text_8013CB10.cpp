@@ -2604,7 +2604,9 @@ extern "C" void fn_80140D1C(void *arg0, void *arg1, void *arg2) {
 
 #pragma push
 #pragma use_lmw_stmw off
-/* One update of a row of the results overlay (the panel at owner+0x134) for the
+/* RealName: updateResultsOverlayRow
+ *
+ * One update of a row of the results overlay (the panel at owner+0x134) for the
  * item record it shows.  It refreshes the row's text fields - the record's
  * three bonus parts (+0x10, +0x14, +0x18) summed at +0x30, the time bonus at
  * +0xb2 as a mm:ss time and its label at +0x58 (both blank when the row's
@@ -4118,7 +4120,7 @@ static inline float HudEase(float t) {
 /* Draws the zone HUD's two timed info panels (score and player-data) as they slide in
  * and out on a fixed timeline relative to the round clock. Skipped while a challenge
  * sub-task is active. */
-extern "C" s32 fn_801436E0(void *hudObj, s32 playerIndex) {
+extern "C" s32 drawZoneHudInfoPanels(void *hudObj, s32 playerIndex) {
     void *style;
     u8 *hud=(u8 *)hudObj;
     /* lbl_8032C530 is the zone HUD layout table: its slots at +0x470..+0x808 hold
