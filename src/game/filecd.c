@@ -187,8 +187,10 @@ extern const char lbl_8034D0C0[];
 /* FileCd::create (vtable slot 0x0C): the disc file layer cannot create files,
  * so it only reports the attempt and fails.  The message's %s is never filled in. */
 int fn_802E4070(void) {
-    fn_802E30C8(fileCdMsgCreateNotSupported);
+#define logAbnormalEnd fn_802E30C8
+    logAbnormalEnd(fileCdMsgCreateNotSupported);
     return 0;
+#undef logAbnormalEnd
 }
 
 #pragma push
