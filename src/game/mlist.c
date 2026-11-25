@@ -2,7 +2,7 @@
 // Recovered TU window 0x802CCBC0..0x802CE308+thunk (see docs/attribution_analysis.md).
 // Static-init thunk fn_802CE308 (+ .ctors slot 0x802ED5B0) remains in
 // auto/text_802CE308_.c pending a promotion pass.
-extern void *lbl_8055FCD8;
+extern void *gCurrentMlistContext;
 extern int getTextureSlotFilter(int);
 extern char lbl_8034BBE0[];
 extern float lbl_80564F58;
@@ -349,7 +349,7 @@ void fn_802CD37C(void *arg0, void *arg1, float *arg2, int arg3, float farg0, flo
     int *out;
     int idx;
     fn_801293C8(lbl_8034BBE0);
-    lbl_8055FCD8 = arg0;
+    gCurrentMlistContext = arg0;
     f[78] = lbl_80564F58; f[79] = lbl_80564F5C; f[80] = lbl_80564F5C; f[81] = lbl_80564F5C;
     f[82] = lbl_80564F58; f[83] = lbl_80564F5C; f[84] = lbl_80564F5C; f[85] = lbl_80564F5C;
     f[86] = lbl_80564F58; f[87] = lbl_80564F5C; f[88] = lbl_80564F5C; f[89] = lbl_80564F5C;
@@ -505,7 +505,7 @@ void fn_802CD37C(void *arg0, void *arg1, float *arg2, int arg3, float farg0, flo
 #pragma pop
 void MlistClearCurrentContext(void) {
     /* Clear the current mlist context pointer once the scene's draw list has been submitted. */
-    #define s_currentMlist lbl_8055FCD8
+    #define s_currentMlist gCurrentMlistContext
     s_currentMlist = 0;
     #undef s_currentMlist
 }
@@ -635,7 +635,7 @@ void fn_802CDB5C(int arg0) {
 
     fn_801293C8(&lbl_8034BBEC);
     fn_801293E8(&lbl_804C1480);
-    context = (char *)lbl_8055FCD8;
+    context = (char *)gCurrentMlistContext;
     config = context + arg0 * 0x10;
     a = *(int *)(context + 0x28);
     b = *(int *)(context + 0x2C);
