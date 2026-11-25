@@ -1346,7 +1346,7 @@ void fn_802C4C90(Stamp *stamp, s32 x, s32 y, s32 frame, StampPalette *override) 
     }
 }
 #pragma pop
-s32 fn_802C4EE4(s32 *width) {
+s32 stampGetWidth(s32 *width) {
     /* Null-safe getter for a canvas object's first 32-bit field (its width). */
     if (width != NULL) {
         return *width;

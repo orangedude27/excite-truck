@@ -86,7 +86,7 @@ extern float lbl_80563598;
 extern int fn_802C4EFC(int);
 extern int gxGetImageHeight(int);
 #define I2F(x) ((float)((double)((x) ^ 0x80000000) - lbl_80563590))
-extern int fn_802C4EE4(int);
+extern int stampGetWidth(int);
 extern int gxGetImageWidth();
 extern unsigned long strlen(const char *);
 extern void stampGetOffsets(int, int *, int *);
@@ -404,7 +404,7 @@ void fn_8022ACFC(int unused, char *str, float *outMinX, float *outMinY, float *o
         int a, b, hh;
         float t;
         stampGetOffsets(h, &a, &b);
-        n = fn_802C4EE4(*(int *)(p + 0x64));
+        n = stampGetWidth(*(int *)(p + 0x64));
         hh = fn_802C4EFC(*(int *)(p + 0x64));
         minX = x0 - (float)a;
         if (x0 < minX) minX = x0;
@@ -588,7 +588,7 @@ int fn_8022B498(int unused, const char *arg1)
     value = *(int *)((char *)ctx + 0x64);
     *max = 0;
     if (value != 0) {
-        *max = fn_802C4EE4(value);
+        *max = stampGetWidth(value);
     } else {
         int sub = *(int *)((char *)ctx + 0x68);
         if (sub != 0) {
