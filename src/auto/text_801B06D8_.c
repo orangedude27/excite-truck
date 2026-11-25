@@ -486,7 +486,7 @@ u32 fn_801B0F48(u32 a, u32 b) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-/* Build and submit a request for the deity (AI-truck) item at itemIndex with the given value: gather its state (from the resource or the slot), reject it if a raycast finds a conflicting node, otherwise fill in and dispatch the request. */ extern "C" void Deity_submitItemRequest(s32 itemIndex, s32 value) {
+/* Build and submit a request for the deity (AI-truck) item at itemIndex: gather its state, reject a conflicting raycast hit, otherwise dispatch the request. */ /* Build and submit a request for the deity (AI-truck) item at itemIndex with the given value: gather its state (from the resource or the slot), reject it if a raycast finds a conflicting node, otherwise fill in and dispatch the request. */ extern "C" void Deity_submitItemRequest(s32 itemIndex, s32 value) {
     struct Item {
         virtual void d0();
         virtual void d1();
