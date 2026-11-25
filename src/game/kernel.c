@@ -53,7 +53,7 @@ extern void OSTicksToCalendarTime(u64, struct OSTimeCalendar *);
 /* Round up to the next power of two: 1 << bit_length(value), i.e. 1 for 0 and
  * the smallest power of two strictly greater than value otherwise. Used by
  * lookupTextureWidth to size textures to a power-of-two width. */
-unsigned int roundUpPow2(unsigned int value) {
+/* Round value up to the next power of two: 1 << bit_length(value), so 0 gives 1 and any other value gives the smallest power of two strictly greater than it. Used by lookupTextureWidth to size textures to a power-of-two width. */ unsigned int roundUpPow2(unsigned int value) {
     return 1U << (32 - __cntlzw(value));
 }
 #pragma scheduling invalid_target
