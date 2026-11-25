@@ -1027,10 +1027,10 @@ void spuSetVoicePan(void *voice, float pan) {
 void spuSetVoiceSurroundPan(void *voice, float surroundPan) {
     /* Set a voice's surround pan, forcing it to the default (1.0) unless the output mode is surround (2). */
     if ((int)SoundOutputMode == 2) {
-        *(float *)((char *)voice + 0x14) = surroundPan;
+        ((struct SpuChannel *)voice)->surroundPan = surroundPan;
         return;
     }
-    *(float *)((char *)voice + 0x14) = SurroundPanDefault;
+    ((struct SpuChannel *)voice)->surroundPan = SurroundPanDefault;
 }
 
 /* Set a voice handle's playback rate (offset 0x10), the field SND_SetRate writes. */
