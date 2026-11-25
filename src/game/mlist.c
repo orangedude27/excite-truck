@@ -527,12 +527,12 @@ extern int fn_802D0514(int);
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void MlistClearObjectFlag(void *object, int objectIndex) {
+/* Clear this object's per-object flag byte in the shared draw context (the same byte fn_802CDB20 tests): drawContext's +0x10/+0x18 fields are bases into gDrawContext's flag array. */ void MlistClearObjectFlag(void *drawContext, int objectIndex) {
     /* Clear this object's per-object flag byte in the shared draw context, the
      * same byte fn_802CDB20 tests. */
-    int offset18 = *(int *)((char *)object + 0x18);
-    unsigned offset10 = *(int *)((char *)object + 0x10);
-    gDrawContext[objectIndex + offset18 + offset10 + 1] = 0;
+    int flagBase18 = *(int *)((char *)drawContext + 0x18);
+    unsigned flagBase10 = *(int *)((char *)drawContext + 0x10);
+    gDrawContext[objectIndex + flagBase18 + flagBase10 + 1] = 0;
 }
 
 #pragma push
