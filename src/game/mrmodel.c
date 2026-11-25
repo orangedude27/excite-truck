@@ -702,7 +702,7 @@ void ModelDisplayNode_PoolInit(void *entry) {
 
 /* Pool init callback: zero the ref-count (first word) of each 0x10-byte
  * MRModel display entry when the sublist is constructed. */
-void MRModel_InitDisplayEntryRefCount(s32 *entry) {
+/* Pool init callback: zero the ref-count (first word) of each 0x10-byte MRModel display entry when the sublist is constructed. */ void MRModel_InitDisplayEntryRefCount(s32 *entry) {
     *entry = 0;
 }
 
