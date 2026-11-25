@@ -932,6 +932,7 @@ extern long lbl_8033C9C8[];
 extern long lbl_8055EED4;
 extern long lbl_8055EEF0;
 extern long gTrackMusicCurrentSong;
+/* Create the track-music overlay layout resource and open the dash sound's mixer volume handle. */
 void fn_802108C8(void) {
 #define sTrackMusicResource lbl_8055EED4
 #define sTrackMusicHandle lbl_8055EEF0
@@ -939,7 +940,6 @@ void fn_802108C8(void) {
 #define sound_volume_open fn_802090D4
 #define kTrackMusicLayoutName lbl_8033C9BC  /* "tmuslyt.val" */
 #define kTrackMusicSoundName lbl_8033C9C8   /* "TrkMusDash" */
-    /* Create the track-music overlay layout and open its dash sound volume handle. */
     sTrackMusicResource = OverlayLayoutCreate(&kTrackMusicLayoutName[0]);
     sTrackMusicHandle = sound_volume_open(&kTrackMusicSoundName[0]);
 #undef kTrackMusicSoundName
