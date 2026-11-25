@@ -827,7 +827,7 @@ void fn_8020F284(void *carSound, float inputValue) {
 
 /* Reset the state flags (+0x49 set, +0x4A/+0x4B clear) of the child
  * node stored at +0x24 of the object. */
-void fn_8020F30C(void *object) {
+void CarSound_ResetNiceLand(void *object) {
     void *node;
     node = *(void **)((char *)object + 0x24);
     if (node != 0) {
@@ -872,7 +872,7 @@ void fn_8020F378(void *carSound) {
     }
 }
 /* CarSound vtable slot 0x34 (vtable lbl_8033C8C4): does nothing.  Its siblings in
- * that table -- fn_8020F1F8, CarSound_ResetWaterBounce, fn_8020F30C, fn_8020F330, fn_8020F354
+ * that table -- fn_8020F1F8, CarSound_ResetWaterBounce, CarSound_ResetNiceLand, fn_8020F330, fn_8020F354
  * and fn_8020F378 -- each re-arm one of the car's sounds by raising the sound's
  * +0x49 update flag and clearing its +0x4A/+0x4B stop/play requests; the sound
  * behind this slot is driven entirely by the per-frame update fn_8020E598 and
