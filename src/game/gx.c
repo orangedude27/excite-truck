@@ -290,7 +290,7 @@ extern void fn_802D9C4C(void);
 /* GX draw-sync callback (RealName: GX_BlankOnShutdown): when reason is 1,
    unregister the audio DMA and draw-sync callbacks, blank the screen and wait
    for the retrace, then return 0. */
-int fn_802CEC04(int reason) {
+/* GX_BlankOnShutdown draw-sync callback: on reason 1, unregister the audio DMA and draw-sync callbacks, blank the screen and wait for retrace. */ int fn_802CEC04(int reason) {
     if (reason == 1) {
         fn_802D9C4C();
         GXSetDrawSyncCallback();
