@@ -421,7 +421,7 @@ void DrawList_setViewport(int x, int y, int width, int height) {
 #pragma pop
 
 /* Apply the stored value (set by fn_802C86E8) via HomeMenu_setFade, passing flags' low bit as its byte argument. */
-void HomeMenu_applySavedFade(int flags) {
+/* Apply the saved home-menu fade colour through HomeMenu_setFade, enabling the fade when the low bit of flags is set and disabling it otherwise. */ void HomeMenu_applySavedFade(int flags) {
     HomeMenu_setFade(lbl_8055D018, flags & 1);
 }
 
