@@ -946,7 +946,7 @@ void *MRollStatLabel_init(void *statLabel) {
 }
 
 /* If a pending result flag is set, copy its value to outResult and return 1; otherwise return 0. */
-s32 MRoll_getPendingResult(s32 *outResult) {
+/* MRoll getter: if a pending selection result is queued (flag lbl_8055F1FC), copy its code from lbl_8055F200 into outResult and return 1; otherwise return 0. */ s32 MRoll_getPendingResult(s32 *outResult) {
     if (lbl_8055F1FC != 0) {
         *outResult = lbl_8055F200;
         return 1;
