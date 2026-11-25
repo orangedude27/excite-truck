@@ -339,7 +339,7 @@ int FileDisk_seek(void *disk, int position) {
 }
 
 /* Return the cached file length stored at offset 0x84 of the DVD file node (FileDisk::length). */
-int FileDisk_getLength(void *file) {
+/* Return the cached file length stored at FileDisk.length (+0x84) of a DVD file node. */ int FileDisk_getLength(void *file) {
     return *(int *)((char *)file + 0x84);
 }
 
