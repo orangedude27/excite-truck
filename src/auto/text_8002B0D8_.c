@@ -1528,6 +1528,8 @@ double fn_8002EFB4(double x, double y) {
 
 /* MSL log() wrapper: tail-call the fdlibm natural-logarithm kernel (x arrives in f1). */
 double fn_8002EFB8(void) {
+    /* MSL log() wrapper: tail-call __ieee754_log; the argument rides in f1
+     * through the tail call because the kernel has no ANSI prototype here. */
     return __ieee754_log();
 }
 
