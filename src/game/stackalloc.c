@@ -911,6 +911,6 @@ void fn_802DABA4(const float *arg0) {
 }
 
 /* Return the BoneHandleAlloc stack allocator's status byte (0 = not ready). */
-unsigned char fn_802DAC64(void) {
+/* Return the BoneHandleAlloc stack allocator's status byte (0 = not ready); callers use it to choose a draw variant. */ unsigned char fn_802DAC64(void) {
     return ((struct StackAlloc *)lbl_8055FE5C)->status;
 }
