@@ -182,7 +182,7 @@ extern void *memset(void *, int, unsigned long);
 #pragma ctrloop reset
 #pragma dont_inline reset
 
-void fn_8020F6E0(long contextIndex, long event) {
+void TrackMusic_onIdentityEvent(long contextIndex, long event) {
     /* Broadcast callback: when the clear-context event (0) is signalled, zero and
        reinitialise the track-music data block for this context index. */
     if (event != 0) {
@@ -684,7 +684,7 @@ void fn_8021031C(void) {
     trackMusicBuffer = gTrackMusicBuffers;
     memset(&gTrackMusicBuffers, 0, BUFFER_SIZE);
     fn_802E6BD8(resourceTag, 0, trackMusicBuffer, BUFFER_SIZE, 0);
-    fn_8000DBC8(&fn_8020F6E0);
+    fn_8000DBC8(&TrackMusic_onIdentityEvent);
 #undef BUFFER_SIZE
 #undef TMUS_TAG
 }
