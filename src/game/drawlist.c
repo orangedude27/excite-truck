@@ -1320,7 +1320,7 @@ void* fn_802C9C50(void) {
  * caller draws up to fn_802C9CE0 therefore only paints an alpha mask, which
  * that function copies off the frame buffer and blends back over the screen
  * tinted with `tintColor` -- a packed RGBA word, read as a colour by
- * fn_802CEA1C; fn_8029790C passes 0x50000000 for its shadow volumes, black at
+ * gxArgbToRgba; fn_8029790C passes 0x50000000 for its shadow volumes, black at
  * 0x50 alpha.  The tint is kept for that second half, the module's render state
  * becomes the overlay pass, and 0 is returned when the state could not be set
  * up, so the caller skips its drawing.

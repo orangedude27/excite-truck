@@ -205,7 +205,7 @@ extern char lbl_8055FD3C;
     return *(unsigned long *)rgba;
 }
 
-unsigned char fn_802CEA1C(unsigned int argbColor) {
+unsigned char gxArgbToRgba(unsigned int argbColor) {
     /* Convert a packed ARGB color word to GX's RGBA byte order: split out its four
        bytes and repack them (rotated by one byte) through gxPackRGBA. */
     return ((unsigned char (*)(unsigned char, unsigned char, unsigned char, unsigned char))gxPackRGBA)(
@@ -1318,7 +1318,7 @@ void HomeMenu_setFade(int arg0, signed char arg1) {
     unsigned int value;
     lbl_804C9778[0x2d] = arg1;
     lbl_804C9778[0x2c] = 1;
-    value = ((unsigned int (*)(unsigned int))fn_802CEA1C)((unsigned int)arg0);
+    value = ((unsigned int (*)(unsigned int))gxArgbToRgba)((unsigned int)arg0);
     lbl_804C9778[0x31] = value;
     s3 = (value >> 24) & 0xFF;
     s2 = (value >> 16) & 0xFF;
@@ -1991,7 +1991,7 @@ void fn_802D0EEC(void) {
     }
 
     if (lbl_8055FE58 != 0) {
-        packed = ((unsigned int (*)(unsigned int))fn_802CEA1C)(lbl_804DB458[1]);
+        packed = ((unsigned int (*)(unsigned int))gxArgbToRgba)(lbl_804DB458[1]);
         tevColor[3] = packed;
         tevColor[0] = packed >> 24;
         tevColor[1] = packed >> 16;
@@ -3218,7 +3218,7 @@ void fn_802D362C(s32 arg0) {
     GXSetZMode(0, 3, 0);
     GXSetTexCoordGen2(0, 1, 0xC, 0x3C, 0, 0x7D);
     colorPtr = (void *)color;
-    packed = ((unsigned int (*)(unsigned int))fn_802CEA1C)((unsigned int)arg0);
+    packed = ((unsigned int (*)(unsigned int))gxArgbToRgba)((unsigned int)arg0);
     color[3] = packed;
     color[0] = packed >> 24;
     color[1] = packed >> 16;
