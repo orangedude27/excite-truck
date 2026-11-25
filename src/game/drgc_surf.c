@@ -1059,7 +1059,7 @@ void fn_802D6170(struct SurfDraw *surface) {
 /* Update surface state/mode flags from a command packet and apply cache-related side effects. */
 /* Apply a surface state command: packet byte 8 selects the pipeline, byte 0xA carries lighting (bit 3), detail-texture (bit 4) and pipeline-class (bits 0-1) flags, and byte 0x14 is an address compared against lbl_8055FD28; then rebuild GX state. */ void fn_802D61BC(void *packet) {
     extern u8 gRenderRequest[16];
-    extern s32 lbl_8055FD20;
+    extern s32 gGxDirtyStateMask;
     extern volatile u8 lbl_8055FD25;
     extern u32 lbl_8055FD28;
     extern u8 lbl_8055FDFC;
@@ -1098,7 +1098,7 @@ void fn_802D6170(struct SurfDraw *surface) {
 
     if (*(u8 *)(cmd + 0xA) & 4) {
         if (lbl_8055FD28 != *(u32 *)(cmd + 0x14))
-            lbl_8055FD20 |= 0x20;
+            gGxDirtyStateMask |= 0x20;
         lbl_8055FD28 = *(u32 *)(cmd + 0x14);
     }
 

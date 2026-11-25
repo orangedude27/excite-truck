@@ -628,7 +628,7 @@ void fn_802CF600(void) {
     extern int lbl_8055FD7C, lbl_8055FD48, lbl_8055FD4C, lbl_8055FD2C, gGxInitResult, lbl_8055FD40;
     extern unsigned char lbl_8055FD50;
     extern unsigned short lbl_8055FD0A;
-    extern void *lbl_8055FD68, *lbl_8055FD20;
+    extern void *lbl_8055FD68, *gGxDirtyStateMask;
     extern unsigned long lbl_8055FDAC;
     extern void fn_802CF830(void), fn_802CF10C(void), fn_802D9A50(void), fn_802CEC44(void);
     extern void fn_80127468(void), fn_8005954C(void), fn_801282EC(int), fn_801282F4(void);
@@ -692,7 +692,7 @@ void fn_802CF600(void) {
     fn_802CFF5C((void *)0x17);
     fn_802CFFA4(lbl_8055FD0A);
     negative = -1;
-    lbl_8055FD20 = (void *)negative;
+    gGxDirtyStateMask = (void *)negative;
     size = GXGetTexBufferSize(0x280, 0x1C0, 1, 0, 0);
     fn_801282EC(0x20);
     buffer = fn_8012850C((void *)size, base + 0x30C);
@@ -1137,12 +1137,12 @@ void HomeMenu_endFrame(void) {
 #undef sThresholdFlag
 }
 #pragma peephole reset
-extern void *lbl_8055FD20;
+extern void *gGxDirtyStateMask;
 #pragma push
 #pragma dont_inline on
 void gxMarkAllStateDirty(void) {
     /* Reset the GX state-change mask to "everything needs updating" (-1). */
-    lbl_8055FD20 = (void*)-1;
+    gGxDirtyStateMask = (void*)-1;
 }
 #pragma pop
 
@@ -1928,8 +1928,8 @@ void fn_802D0EEC(void) {
     if ((unsigned char)sSkipRenderStateSync != 0)
         return;
 
-    diff = (unsigned int)lbl_8055FD20 | ((unsigned int)gxRenderStateFlags ^ lbl_8055FD74);
-    lbl_8055FD20 = 0;
+    diff = (unsigned int)gGxDirtyStateMask | ((unsigned int)gxRenderStateFlags ^ lbl_8055FD74);
+    gGxDirtyStateMask = 0;
     if (diff != 0) {
         if (diff & 6) {
             if ((unsigned int)gxRenderStateFlags & 6) {
