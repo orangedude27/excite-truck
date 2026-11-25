@@ -3425,6 +3425,7 @@ extern f32 lbl_80561638,lbl_8056163C,lbl_8056164C,lbl_805616FC,lbl_80561700;
 extern f64 lbl_805616A0,lbl_80561708;
 #pragma push
 #pragma processor 750
+#pragma dont_inline off
 void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     f32 scale[9];
     f32 a[12];
