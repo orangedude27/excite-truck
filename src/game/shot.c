@@ -14,7 +14,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void *lbl_8055D1C0;
-extern u16 lbl_8055FF50;
+extern u16 gKeyHistory;
 void fn_802E4A2C(void);
 extern s32 lbl_8055FF5C;
 extern u16 lbl_8055FF5A;
@@ -58,7 +58,7 @@ extern const char lbl_8034D1C0[];
 s32 fn_802E46F0(void) {
     /* Screenshot hotkey check: shift the recent-input history, and when the
        current combo (0x17A/0x17B) follows 0x112, save a numbered "shotNN.tga". */
-#define s_keyHistory    lbl_8055FF50
+#define s_keyHistory    gKeyHistory
 #define lastInputWord   lbl_8055FF5A
 #define previousCombo   lbl_8055FF60
 #define screenshotCount lbl_8055FF64
@@ -105,7 +105,7 @@ void* memset(void*, int, unsigned long);
 /* Poll the screenshot input state, then report whether the current input combo
    is nonzero. */
 s32 fn_802E47B8(void) {
-#define recentKeys lbl_8055FF50
+#define recentKeys gKeyHistory
 #define pollInput  fn_802E4A2C
     pollInput();
     return recentKeys != 0;
@@ -115,7 +115,7 @@ s32 fn_802E47B8(void) {
 
 /* Clear the four-entry (8-byte) recent-key history used for screenshot combos. */
 void fn_802E47E8(void) {
-#define s_keyHistory lbl_8055FF50
+#define s_keyHistory gKeyHistory
     memset(&s_keyHistory, 0, 8);
 #undef s_keyHistory
 }
@@ -132,7 +132,7 @@ void fn_802E4800(u16 inputWord) {
     // Wii Home menu is open): refresh the last-input timestamp, shift the 32-entry
     // 12-bit input history and append the key code, then store the full word in the
     // four-entry recent-key ring (first empty slot, else rotate the oldest out).
-#define s_keyHistory lbl_8055FF50
+#define s_keyHistory gKeyHistory
 #define inputHistoryBuffer lbl_804FC418
 #define lastInputTime lbl_8055FF5C
     volatile u16 *recentKeys;
