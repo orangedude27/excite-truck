@@ -112,7 +112,7 @@ done:
 fail:
     return -1;
 }
-void fn_802E746C(int index, int *outStartSector, int *outSize) {
+void getStreamEntryInfo(int index, int *outStartSector, int *outSize) {
     /* Report the start sector (in 2048-byte units) and byte size of stream entry `index`. */
     StreamEntry *entry = (StreamEntry *)(sStreamEntries + index * 0x90);
     *outStartSector = entry->startSector;

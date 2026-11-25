@@ -346,7 +346,7 @@ extern "C" s32 fn_802E37C4(void);
 extern "C" void closeFileHandle(s32 *);
 extern "C" s32 fn_802E4CA8(void *, s32, s32);
 extern "C" s32 fn_802E7354(void *);
-extern "C" s32 fn_802E746C(s32, s32 *, s32 *);
+extern "C" s32 getStreamEntryInfo(s32, s32 *, s32 *);
 #pragma scheduling off
 extern "C" void fn_8012A7FC(void) {
 #define sLoadRetryFlag lbl_8055DFF9
@@ -513,7 +513,7 @@ extern "C" s32 fn_8012AC28(s32 parser, s32 outSize) {
     fn_802E4CA8(&name[0], parser, 0x104);
     streamIndex = fn_802E7354(&name[0]);
     if (streamIndex != -1) {
-        fn_802E746C(streamIndex, &startSector, &size);
+        getStreamEntryInfo(streamIndex, &startSector, &size);
         if (outSize != 0) *(s32 *)outSize = size;
     }
     return startSector;
