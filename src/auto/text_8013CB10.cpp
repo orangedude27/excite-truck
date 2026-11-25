@@ -2604,9 +2604,7 @@ extern "C" void fn_80140D1C(void *arg0, void *arg1, void *arg2) {
 
 #pragma push
 #pragma use_lmw_stmw off
-/* RealName: updateResultsOverlayRow
- *
- * One update of a row of the results overlay (the panel at owner+0x134) for the
+/* One update of a row of the results overlay (the panel at owner+0x134) for the
  * item record it shows.  It refreshes the row's text fields - the record's
  * three bonus parts (+0x10, +0x14, +0x18) summed at +0x30, the time bonus at
  * +0xb2 as a mm:ss time and its label at +0x58 (both blank when the row's
