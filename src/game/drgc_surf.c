@@ -1107,9 +1107,8 @@ void fn_802D6170(struct SurfDraw *surface) {
 }
 
 #pragma scheduling on
-/* Return the object pointer only if its first word is the surface magic
- * 0x4E444C32 (tested as word + 0xB1BC0000 == 0x4C32); otherwise return 0. */
-/* Return the surface pointer when its type word is the known 'NDL2' surface-format magic (0x4E444C32), or 0 otherwise; callers use it as a known-format predicate. */ s32 drIsKnownSurfFormat(void *surface) {
+/* Return the surface pointer when its type word is the known 'NDL2' surface-format magic (0x4E444C32), or 0 otherwise; callers use it as a known-format predicate. */
+s32 drIsKnownSurfFormat(void *surface) {
     if ((u32)(*(u32 *)surface + 0xB1BC0000) != 0x4C32U) {
         return 0;
     }
