@@ -351,7 +351,7 @@ extern "C" s32 fn_80005930(void) {
 #pragma cplusplus off
 #pragma dont_inline reset
 #pragma pop
-void fn_80005B54(void) {
+/* Empty no-op stub: one of a run of default callback slots that do nothing in this build. */ void fn_80005B54(void) {
     /* Empty no-op stub: one of a run of default callback slots that do nothing. */
     return;
 }
