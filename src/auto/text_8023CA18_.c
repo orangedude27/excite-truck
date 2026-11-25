@@ -356,7 +356,7 @@ void fn_8023D1C0(void) {
 void fn_8023D1F8(void) {}
 
 extern void fn_80221EA0(void *, s32, s32, s32);
-extern s32 fn_80208D3C(void);
+extern s32 GetMixerDeviceCount(void);
 extern void *GetMixerDevice(s32);
 extern char *strcpy(char *, const char *);
 extern u8 lbl_8055BB98;
@@ -372,7 +372,7 @@ void fn_8023D1FC(void *obj) {
     fn_80221EA0(obj, 5, *(s32 *)((u8 *)obj + 0x30), 4);
     fn_80221EA0(obj, 6, *(s32 *)((u8 *)obj + 0x34), 4);
     itemIndex = **(s32 **)((u8 *)obj + 0x24);
-    if (itemIndex >= 0 && itemIndex < fn_80208D3C()) {
+    if (itemIndex >= 0 && itemIndex < GetMixerDeviceCount()) {
         item = GetMixerDevice(itemIndex);
 #pragma cplusplus on
         struct ItemView {
@@ -407,7 +407,7 @@ typedef struct SoundOptions {
     void *widget;        /* 0x38 level (+0x8) and dirty flags (+0x49..+0x4D) */
 } SoundOptions;
 
-#define sound_device_count  fn_80208D3C /* size of the sound device list */
+#define sound_device_count  GetMixerDeviceCount /* size of the sound device list */
 #define sound_device_get    GetMixerDevice /* index -> device (getName at vtable +0xC) */
 #define sound_device_select fn_80208D60 /* index -> current device */
 #define effects_volume_set  SetEffectsVolume /* clamped, saved as "effects_volume" */
