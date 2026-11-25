@@ -640,10 +640,11 @@ s32 fn_80190368(s32 value) {
 }
 
  #pragma push
- #pragma processor 750
+  #pragma processor 750
  #pragma use_lmw_stmw off
- void fn_80190388(void *arg0)
-{
+ #pragma cplusplus on
+ extern "C" void fn_80190388(void *arg0)
+ {
     void *first;
     void *r31v;
     void *sub;
