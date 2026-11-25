@@ -1513,6 +1513,7 @@ double fn_8002EFAC(double x) {
 
 /* MSL atan2() wrapper: tail-call the fdlibm two-argument arctangent kernel. */
 double fn_8002EFB0(double y, double x) {
+    /* MSL atan2() wrapper: tail-call the fdlibm two-argument arcsine kernel. */
     return __ieee754_atan2(y, x);
 }
 
