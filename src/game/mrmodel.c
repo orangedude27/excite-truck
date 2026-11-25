@@ -1753,7 +1753,7 @@ void fn_802C7A00(void) {
 
 /* Diagnostic helper: returns the resource name of the model at the given index
    (carried in the pointer-typed argument) for use in debug printf calls. */
-void MRModel_GetResourceName(void* modelIndex) {
+/* Diagnostic helper: return the resource name of the model instance at the given index (via its group node) for debug printf calls. */ void MRModel_GetResourceName(void* modelIndex) {
     fn_8012C58C(fn_802C53A8(modelIndex));
 }
 
