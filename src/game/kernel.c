@@ -160,7 +160,7 @@ int fn_802E18D4(int width, int height, int texFmt, int wrapST, void *texObj, int
  * a linear IA8 buffer, tile it into imagePtr, flush the cache, initialize texObj
  * and return the texture's 128-byte-aligned byte size.  The chosen width and the
  * fixed height of 4 are written through outWidth/outHeight. */
-int fn_802E1980(int imagePtr, void *texObj, void *outWidth, void *outHeight, unsigned int size) {
+int buildIA8LookupTexture(int imagePtr, void *texObj, void *outWidth, void *outHeight, unsigned int size) {
     unsigned char linearBuf[0x800];
     int width;
     int alignedBytes;
@@ -179,8 +179,8 @@ int fn_802E1980(int imagePtr, void *texObj, void *outWidth, void *outHeight, uns
 /* Build the image bank's two IA8 lookup textures into consecutive image regions, recording each texture object and its width/height at fixed offsets in obj. */
 void buildLookupTextures(void *obj, int imageBase) {
     int firstTexBytes;
-    firstTexBytes = fn_802E1980(imageBase, (char *)obj + 0x190, (char *)obj + 0x180, (char *)obj + 0x184, *(int *)((char *)obj + 0x104));
-    fn_802E1980(imageBase + firstTexBytes, (char *)obj + 0x1b0, (char *)obj + 0x188, (char *)obj + 0x18c, *(int *)((char *)obj + 0x10c));
+    firstTexBytes = buildIA8LookupTexture(imageBase, (char *)obj + 0x190, (char *)obj + 0x180, (char *)obj + 0x184, *(int *)((char *)obj + 0x104));
+    buildIA8LookupTexture(imageBase + firstTexBytes, (char *)obj + 0x1b0, (char *)obj + 0x188, (char *)obj + 0x18c, *(int *)((char *)obj + 0x10c));
 }
 
 extern int align128(int);
