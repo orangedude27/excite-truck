@@ -8,7 +8,7 @@ extern char lbl_805600D1;
 extern float lbl_805651C4;
 extern float lbl_8055D270;
 extern int spuSetVoiceRate(int, float);
-extern int fn_802E61E4(int, float);
+extern int spuSetVoiceVolume(int, float);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -366,7 +366,7 @@ void fn_802E9EB8(void) {
             if ((unsigned char)lbl_805600D0 != 0 && (unsigned char)lbl_805600D1 == 0) en = 1;
             vol = en ? lbl_8055D270 * f30 : lbl_805651C4;
             for (i = 0; i < 2; i++) {
-                fn_802E61E4((&lbl_80560090)[i], vol);
+                spuSetVoiceVolume((&lbl_80560090)[i], vol);
                 fn_802E620C((&lbl_80560090)[i], lbl_805651D0);
             }
         }
@@ -1087,7 +1087,7 @@ void fn_802EBE2C(void) {
     i = 0;
     off = 0;
     do {
-        fn_802E61E4(((volatile int *)&lbl_80560090)[i], lbl_805651C4);
+        spuSetVoiceVolume(((volatile int *)&lbl_80560090)[i], lbl_805651C4);
         spuSetVoiceRate(((volatile int *)&lbl_80560090)[i], lbl_805651C4);
         fn_802E61BC(((volatile int *)&lbl_80560090)[i]);
         i++;
@@ -1205,7 +1205,7 @@ void fn_802EC158(void) {
     index = 0;
     do {
         spuSetVoiceRate(*handle, lbl_805651C4);
-        fn_802E61E4(*handle, lbl_805651C4);
+        spuSetVoiceVolume(*handle, lbl_805651C4);
         index++;
         handle++;
     } while (index < 2);

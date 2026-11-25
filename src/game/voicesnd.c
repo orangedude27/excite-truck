@@ -17,7 +17,7 @@ extern void fn_802E30C8(const char *, ...);
 extern char *strchr(const char *, int);
 extern void Abend_Panic(const char *, ...);
 extern const char lbl_8033C510[];
-extern void fn_802E61E4(float);
+extern void spuSetVoiceVolume(float);
 extern float fn_80209028(void), fn_802091CC(void);
 extern int fn_802090CC(void), KERNEL_GetTimeMs(void);
 extern void fn_802E625C(int);
@@ -421,15 +421,15 @@ extern "C" void fn_8020AC2C(void *arg0) {
                     x = high + -(*(float *)((char *)(p) + (0x20)));
                     if (high < x) x = high;
                     x = x > low ? x : low;
-                    ((void (*)(void *, float))fn_802E61E4)(handle, volume * x);
+                    ((void (*)(void *, float))spuSetVoiceVolume)(handle, volume * x);
                     fn_802E61EC((*(void **)((char *)(p) + (8))), lbl_805632B8);
                     x = high + (*(float *)((char *)(p) + (0x20)));
                     if (high < x) x = high;
                     x = x > low ? x : low;
-                    ((void (*)(void *, float))fn_802E61E4)((*(void **)((char *)(p) + (0xc))), volume * x);
+                    ((void (*)(void *, float))spuSetVoiceVolume)((*(void **)((char *)(p) + (0xc))), volume * x);
                     fn_802E61EC((*(void **)((char *)(p) + (0xc))), lbl_805632B4);
                 } else {
-                    ((void (*)(void *, float))fn_802E61E4)(handle, volume);
+                    ((void (*)(void *, float))spuSetVoiceVolume)(handle, volume);
                     fn_802E61EC((*(void **)((char *)(p) + (8))), (*(float *)((char *)(p) + (0x20))));
                 }
                 for (j = 0; j < 2; j++) {
@@ -717,7 +717,7 @@ typedef struct VoiceSnd {
 // This unit's prototypes for the library still say int, hence the casts.
 #define SND_GrabVoice(res) fn_802E6058((int)(res))
 #define SND_ReleaseVoice(v) ((void (*)(void *))fn_802E6138)((v))
-#define SND_SetVolume(v, x) ((void (*)(void *, float))fn_802E61E4)((v), (x))
+#define SND_SetVolume(v, x) ((void (*)(void *, float))spuSetVoiceVolume)((v), (x))
 #define SND_SetPan(v, x) fn_802E61EC((v), (x))
 #define SND_SetSurroundPan(v, x) fn_802E620C((v), (x))
 #define SND_SetRate(v, x) spuSetVoiceRate((v), (x))
@@ -911,7 +911,7 @@ extern const char lbl_8033C4F0[];
     return success;
 }
 
-extern void fn_802E61E4(float);
+extern void spuSetVoiceVolume(float);
 extern int lbl_8055EDFC;
 extern float lbl_805632B0;
 /* Mute a voice sound (vtable +0x28 of lbl_8033C3F4): if not already muted and
