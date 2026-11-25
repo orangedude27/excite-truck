@@ -755,7 +755,7 @@ extern void fn_802D0E48(int);
 extern void fn_802D2ED8(int, int);
 extern void fn_802D2F70(int);
 extern void fn_802D3D94(void *, int);
-extern void fn_802D6B54(void *);
+extern void drUpdateDisplayList(void *);
 extern void fn_802D6B78(void *);
 extern void fn_802D6B7C(void *);
 extern void buildViewXform(void);
@@ -838,7 +838,7 @@ void fn_802DC8B4(void) {
         coords = (float *)fn_802CFF64(0x50);
         if (colors != 0 && coords != 0) {
             if (*(unsigned char *)(g + 0x218) != 0)
-                fn_802D6B54(*(void **)(g + 0x214));
+                drUpdateDisplayList(*(void **)(g + 0x214));
             data = ((void *(*)(void *))fn_802DC628)(*(void **)(lbl_804DB480 + 0x214));
             n = *(int *)(lbl_804DB480 + 4);
             temp_f29 = lbl_80565040;
@@ -951,7 +951,7 @@ void fn_802DCAE4(void *arg0, void *arg1, float farg0) {
             coords = (float *)fn_802CFF64(0x50);
             if (colors != 0 && coords != 0) {
                 if (*(unsigned char *)(lbl_804DB480 + 0x218) != 0)
-                    fn_802D6B54(*(void **)(lbl_804DB480 + 0x214));
+                    drUpdateDisplayList(*(void **)(lbl_804DB480 + 0x214));
                 data = ((void *(*)(void *))fn_802DC628)(*(void **)(lbl_804DB480 + 0x214));
                 n = *(int *)(lbl_804DB480 + 4);
                 temp_f29 = lbl_80565040;

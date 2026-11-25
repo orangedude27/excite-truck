@@ -1396,7 +1396,7 @@ void fn_802D6B08(void *surface) {
 #pragma pop
 extern s32 fn_802D62E4(void *);
 /* Periodic callback: filter the alarm, then apply the resulting display-list update. */
-void fn_802D6B54(void *alarm) {
+void drUpdateDisplayList(void *alarm) {
     fn_802D5F88(((s32 (*)(void *))fn_802D62E4)(alarm));
 }
 
