@@ -1,14 +1,14 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-extern int fn_801E4FF4();
+extern int endMeshPass();
 extern int beginMeshPass(int);
 /* Tail-call beginMeshPass with the index converted to a word byte offset (index * 4); the callee ignores the argument. */
 void fn_802CE860(int index) { beginMeshPass(index * 4); }
 
 /* Finish the particle system's dynamic mesh pass: flush the accumulated
- * vertex/index buffers and drop the mesh mode back to idle (fn_801E4FF4). */
-void fn_802CE868(void) { fn_801E4FF4(); }
+ * vertex/index buffers and drop the mesh mode back to idle (endMeshPass). */
+void fn_802CE868(void) { endMeshPass(); }
 
 extern void *fn_802C86DC(void);
 extern int fn_801E4F3C(int, int, float, float, float, float, float);

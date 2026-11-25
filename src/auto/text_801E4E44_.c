@@ -96,7 +96,7 @@ s32 fn_801E4F3C(s32 color, s32 emitTriangle, f32 x, f32 y, f32 z, f32 u, f32 v) 
 }
 /* End the current mesh pass: flush/compact the vertex and index buffers
  * (fn_801E4E44) and reset the mesh mode (lbl_8055EAB0) to 0 (idle). */
-void fn_801E4FF4(void) {
+void endMeshPass(void) {
     fn_801E4E44();
     lbl_8055EAB0 = 0;
 }
@@ -130,48 +130,54 @@ extern f32 lbl_80562D44, lbl_80562D48;
 #pragma scheduling invalid_target
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_801E5174(f32 arg0, f32 arg1, f32 arg2) {
-    u8 *baseptr = (u8 *)lbl_80487578;
-    Unk801E4E44Vertex *vertices = (Unk801E4E44Vertex *)baseptr;
-    f32 *center = (f32 *)((u8 *)vertices + 0x700);
-    s32 count;
-    s32 index;
-    s32 base;
-
-    if (lbl_8055EAA8 + 4 > 60 || lbl_8055EAAC + 6 > 174) fn_801E4E44();
-
-    base = lbl_8055EAA8;
-    count = base + 3;
-    {
-        f32 c0 = center[0], c1 = center[1], c2 = center[2], c3 = center[3];
-        Unk801E4E44Vertex *v0 = &vertices[base];
-        Unk801E4E44Vertex *v1 = &vertices[base + 1];
-        Unk801E4E44Vertex *v2 = &vertices[base + 2];
-        Unk801E4E44Vertex *v3 = &vertices[base + 3];
-        v0->x = arg0 - c3; v0->y = arg1; v0->z = arg2;
-        v1->x = arg0 + c3; v1->y = arg1; v1->z = arg2;
-        v2->x = (c0 + v0->x); v2->y = v0->y + c1; v2->z = v0->z + c2;
-        v3->x = v1->x + c0; v3->y = v1->y + c1; v3->z = v1->z + c2;
-        v0->unk_0x10 = lbl_80562D44; v1->unk_0x10 = lbl_80562D48;
-        v2->unk_0x10 = lbl_80562D44; v3->unk_0x10 = lbl_80562D48;
-        v0->unk_0x14 = lbl_80562D48; v1->unk_0x14 = lbl_80562D44;
-        v2->unk_0x14 = lbl_80562D48; v3->unk_0x14 = lbl_80562D44;
-    }
-    if (count > 2) {
-        index = lbl_8055EAAC;
-        *(u16 *)((u8 *)vertices + 0x5a0 + index * 2) = count - 3;
-        *(u16 *)((u8 *)vertices + 0x5a0 + (index + 1) * 2) = count - 2;
-        *(u16 *)((u8 *)vertices + 0x5a0 + (index + 2) * 2) = count - 1;
-        lbl_8055EAAC = index + 3;
-    }
-    lbl_8055EAA8 = count + 1;
-    if (count + 1 > 2) {
-        index = lbl_8055EAAC;
-        *(u16 *)((u8 *)vertices + 0x5a0 + index * 2) = count - 2;
-        *(u16 *)((u8 *)vertices + 0x5a0 + (index + 1) * 2) = count - 1;
-        *(u16 *)((u8 *)vertices + 0x5a0 + (index + 2) * 2) = count;
-        lbl_8055EAAC = index + 3;
-    }
+void fn_801E5174(f32 arg0, f32 arg1, f32 arg2)
+{
+  u8 *baseptr = (u8 *) lbl_80487578;
+  Unk801E4E44Vertex *vertices = (Unk801E4E44Vertex *) baseptr;
+  f32 *center = (f32 *) (((u8 *) ((Unk801E4E44Vertex *) baseptr)) + 0x700);
+  s32 count;
+  s32 index;
+  s32 base;
+  if (((lbl_8055EAA8 + 4) > 60) || ((lbl_8055EAAC + 6) > 174))
+  {
+    fn_801E4E44();
+  }
+  count = (base = lbl_8055EAA8) + 3;
+  {
+    f32 c0 = center[count * 0];
+    f32 c1 = center[1];
+    Unk801E4E44Vertex *v3 = &vertices[base + 3];
+    Unk801E4E44Vertex *v2 = &vertices[base + 2];
+    f32 c2 = center[2];
+    f32 c3 = center[3];
+    Unk801E4E44Vertex *v0 = &vertices[base];
+    Unk801E4E44Vertex *v1 = &vertices[(base & 0xFFFFu) + 1];
+    v0->x = arg0 - c3; v0->y = arg1; v0->z = arg2;
+    v1->x = arg0 + c3; v1->y = arg1; v1->z = arg2;
+    v2->x = v0->x + c0; v2->y = v0->y + c1; v2->z = v0->z + c2;
+    v3->x = v1->x + c0; v3->y = v1->y + c1; v3->z = v1->z + c2;
+    v0->unk_0x10 = lbl_80562D44; v1->unk_0x10 = lbl_80562D48;
+    v2->unk_0x10 = lbl_80562D44; v3->unk_0x10 = lbl_80562D48;
+    v0->unk_0x14 = lbl_80562D48; v1->unk_0x14 = lbl_80562D44;
+    v2->unk_0x14 = lbl_80562D48; v3->unk_0x14 = lbl_80562D44;
+  }
+  if (count > 2)
+  {
+    index = lbl_8055EAAC;
+    *((u16 *) ((((u8 *) vertices) + 0x5a0) + (index * 2))) = (base + 3) - 3;
+    *((0, (u16 *) ((((u8 *) vertices) + 0x5a0) + (((index & 0xFFFF) + 1) * 2)))) = count - 2;
+    *((u16 *) ((((u8 *) vertices) + 0x5a0) + ((index + 2) * 2))) = count - 1;
+    lbl_8055EAAC = (((((((index & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) + (((3 & 0xFFFFu) & 0xFFFFu) & 0xFFFFu);
+  }
+  lbl_8055EAA8 = count - (-1);
+  if ((count + 1) > 2)
+  {
+    index = lbl_8055EAAC;
+    *((u16 *) ((((u8 *) vertices) + 0x5a0) + (index * 2))) = ((base & 0xFFFFu) + 3) - 2;
+    *((u16 *) ((((u8 *) vertices) + 0x5a0) + ((((char) index) + 1) * 2))) = count - 1;
+    *((u16 *) ((0x5a0 + ((u8 *) vertices)) + ((index + 2) * 2))) = base + 3;
+    lbl_8055EAAC = index + 3;
+  }
 }
 #pragma pop
 /* End the current mesh pass: flush/compact the vertex and index buffers

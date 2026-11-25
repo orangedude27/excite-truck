@@ -1166,62 +1166,83 @@ void *fn_80010BEC(void *arg0) {
         lbl_8055D4A8 = 0;
     }
 }
+#pragma scheduling on
 void fn_80010C74(f32 farg0, f32 farg1, f32 farg2) {
     volatile s32 sp34, sp30;
     volatile f32 sp2C, sp28, sp24, sp20;
     volatile s32 sp1C, sp18;
     volatile f32 sp14, sp10, spC, sp8;
-    register s32 index, next;
+    register s32 index, next, offset, count;
     register u32 *configA, *configB;
-    register void *current, *following;
-    register f32 temp_f4, temp_f5, temp_f6;
+    register Unk0x18 *base, *current, *following;
+    register f32 temp_f0, temp_f4, temp_f5, temp_f6, temp_f7, temp_f8, temp_f9;
     u32 word;
+    s32 a0, a1, a2, b0, b1, b2;
+    register s32 value484, value488;
+
     index = lbl_8055D4A8;
     if (index < 0xFF) {
+        offset = index * 0x18;
+        temp_f0 = *(volatile f32 *)&lbl_80560264;
+        temp_f8 = (f32)(double)farg0;
+        value484 = *(volatile s32 *)&lbl_8055D484;
+        value488 = *(volatile s32 *)&lbl_8055D488;
+        base = lbl_8034F6B0;
+        temp_f7 = (f32)(double)farg1;
         configA = (u32 *)&lbl_802ED758;
         temp_f6 = (f32)(double)farg2;
-        temp_f5 = lbl_80560264 + farg0;
-        temp_f4 = farg1 - lbl_80560264;
-        current = &lbl_8034F6B0[index];
-        ((Unk0x18 *)current)->unk_0x00 = (f32)(double)farg0;
+        temp_f5 = temp_f0 + farg0;
+        temp_f4 = farg1 - temp_f0;
+        current = (Unk0x18 *)((u8 *)base + offset);
         word = configA[3];
+        current->unk_0x00 = temp_f8;
+        configB = (u32 *)&lbl_802ED770;
         *(volatile u32 *)&sp2C = word;
         next = index + 1;
-        ((Unk0x18 *)current)->unk_0x04 = (f32)(double)farg1;
-        ((Unk0x18 *)current)->unk_0x08 = temp_f6;
-        following = &lbl_8034F6B0[next];
-        ((Unk0x18 *)current)->unk_0x0C = sp2C;
-        ((Unk0x18 *)current)->unk_0x10 = lbl_8055D484;
-        configB = (u32 *)&lbl_802ED770;
+        offset = next * 0x18;
+        a0 = configA[0];
+        current->unk_0x04 = temp_f7;
+        temp_f9 = sp2C;
+        current->unk_0x08 = temp_f6;
+        following = (Unk0x18 *)((u8 *)base + offset);
+        a1 = configA[1];
+        current->unk_0x0C = temp_f9;
         word = configB[3];
+        count = next + 1;
+        current->unk_0x10 = value484;
+        a2 = configA[2];
         *(volatile u32 *)&sp14 = word;
-        ((Unk0x18 *)current)->unk_0x14 = lbl_8055D484;
-        ((Unk0x18 *)following)->unk_0x00 = temp_f5;
-        ((Unk0x18 *)following)->unk_0x04 = temp_f4;
-        ((Unk0x18 *)following)->unk_0x08 = temp_f6;
-        ((Unk0x18 *)following)->unk_0x0C = sp14;
-        *(volatile u32 *)&sp20 = configA[0];
-        *(volatile u32 *)&sp24 = configA[1];
-        *(volatile u32 *)&sp28 = configA[2];
-        *(volatile u32 *)&sp8 = configB[0];
-        *(volatile u32 *)&spC = configB[1];
-        *(volatile u32 *)&sp10 = configB[2];
-        ((Unk0x18 *)following)->unk_0x10 = lbl_8055D488;
+        b0 = configB[0];
+        current->unk_0x14 = value484;
+        b1 = configB[1];
+        following->unk_0x00 = temp_f5;
+        b2 = configB[2];
+        following->unk_0x04 = temp_f4;
+        temp_f9 = sp14;
+        following->unk_0x08 = temp_f6;
+        following->unk_0x0C = temp_f9;
+        *(volatile u32 *)&sp20 = a0;
+        *(volatile u32 *)&sp24 = a1;
+        *(volatile u32 *)&sp28 = a2;
+        *(volatile u32 *)&sp8 = b0;
+        *(volatile u32 *)&spC = b1;
+        *(volatile u32 *)&sp10 = b2;
+        following->unk_0x10 = value488;
         sp20 = farg0;
         sp24 = farg1;
         sp28 = farg2;
-        sp30 = lbl_8055D484;
-        sp34 = lbl_8055D484;
+        sp30 = value484;
+        sp34 = value484;
         sp8 = temp_f5;
         spC = temp_f4;
         sp10 = farg2;
-        sp18 = lbl_8055D488;
-        sp1C = lbl_8055D488;
-        lbl_8055D4A8 = next + 1;
-        ((Unk0x18 *)following)->unk_0x14 = lbl_8055D488;
+        sp18 = value488;
+        sp1C = value488;
+        lbl_8055D4A8 = count;
+        following->unk_0x14 = value488;
     }
 }
-#pragma pop
+#pragma scheduling invalid_target
 extern u32 lbl_802ED788[];
 extern u32 lbl_802ED7A0[];
 extern s32 lbl_8055D484;
@@ -1610,7 +1631,7 @@ extern s32 fn_8022EDC4(void);
 extern void fn_802C8B98(s32, s32);
 extern s32 beginMeshPass(s32);
 extern s32 fn_801E4F3C(s32, s32, f32, f32, f32, f32, f32);
-extern void fn_801E4FF4(void);
+extern void endMeshPass(void);
 extern f32 lbl_8056025C, lbl_80560264, lbl_80560280, lbl_805602E0, lbl_805602E4;
 extern f32 lbl_805602E0;
 extern f32 lbl_805602E4;
@@ -1716,7 +1737,7 @@ void fn_80011630(s32 arg0, s32 arg1, s32 arg2,
                         temp_f4_2, farg7 + temp_f0_2);
             var_r31++;
         } while (var_r31 < arg1);
-        fn_801E4FF4();
+        endMeshPass();
         DrawList_RestoreNormalMode();
     }
 }

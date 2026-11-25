@@ -61,7 +61,7 @@ struct DrawListWrapper {
 /* Which GX render state the draw lists are drawing in.  Only 0 is read back
  * (fn_802C90E0 asks whether the module is shut down); the other values record
  * the state the function that set them left GX in: 1 the game's normal one
- * (DrawList_RestoreNormalMode puts it back), 2 the one texSelectSlot/fn_801E4FF4 set up,
+ * (DrawList_RestoreNormalMode puts it back), 2 the one texSelectSlot/endMeshPass set up,
  * 3 DrawList_BeginProjection's with the world matrix saved, 4 the alpha-only overlay pass
  * fn_802C9C8C begins, 6 the pass beginDrawListPass begins. */
 #define sRenderMode  lbl_8055FC70
@@ -636,12 +636,12 @@ int beginDrawListPass(void) {
     gDrawListActive = keepFlag;
 }
 
-extern void fn_801E4FF4(void);
-/* End the pending mesh pass -- fn_801E4FF4 flushes the mesh vertex/index buffers
+extern void endMeshPass(void);
+/* End the pending mesh pass -- endMeshPass flushes the mesh vertex/index buffers
  * and drops the mesh mode to idle -- and put the draw lists in render mode 2,
  * the GX state that mesh pass leaves behind. */
 void fn_802C8E48(void) {
-    fn_801E4FF4();
+    endMeshPass();
     sRenderMode = 2;
 }
 
@@ -773,11 +773,11 @@ void fn_802C92D8(void) {
         ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(color, 0, (float)left, (float)top, 0.0f, 0.0f, 0.0f);
         ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(color, 1, (float)right, (float)bottom, 0.0f, 0.0f, 0.0f);
         ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(color, 1, (float)left, (float)bottom, 0.0f, 0.0f, 0.0f);
-        fn_801E4FF4();
+        endMeshPass();
     }
 }
 
-/* Record render mode 2 (the state texSelectSlot/fn_801E4FF4 leave GX in), then hand
+/* Record render mode 2 (the state texSelectSlot/endMeshPass leave GX in), then hand
  * off to DrawList_RestoreNormalMode to restore the normal state and drop any pending overlay. */
 void fn_802C9118(void) {
     sRenderMode = 2;
@@ -792,7 +792,7 @@ void fn_802C9118(void) {
         ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(color, 0, (float)left, (float)top, 0.0f, u0, v0);
         ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(color, 1, (float)right, (float)bottom, 0.0f, u1, v1);
         ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(color, 1, (float)left, (float)bottom, 0.0f, u0, v1);
-        fn_801E4FF4();
+        endMeshPass();
     }
 }
 #pragma processor reset

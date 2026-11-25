@@ -7,7 +7,7 @@ extern void PSVECNormalize(float *, float *);
 extern float PSVECSquareDistance(float *, float *);
 extern void beginMeshPass(int);
 extern void fn_801E4F3C(int, int, float, float, float, float, float);
-extern void fn_801E4FF4(void);
+extern void endMeshPass(void);
 extern void fn_802C8BD0(int);
 extern void DrawList_RestoreNormalMode(void);
 extern const float lbl_80564998, lbl_805649B4, lbl_805649B8, lbl_805649BC;
@@ -273,7 +273,7 @@ void fn_802A9BFC(void *arg0, void *arg1, int arg2, int arg3, int arg4, int arg5,
     fn_801E4F3C(color, 0, ((float *)work.vecB)[0], ((float *)work.vecB)[1], ((float *)work.vecB)[2], scaleB, scaleC);
     fn_801E4F3C(color, 1, ((float *)work.vecA)[0], ((float *)work.vecA)[1] + fraction, ((float *)work.vecA)[2], scaleA, scaleC);
     fn_801E4F3C(color, 1, ((float *)work.vecB)[0], ((float *)work.vecB)[1] + fraction, ((float *)work.vecB)[2], scaleB, scaleC);
-    fn_801E4FF4();
+    endMeshPass();
     DrawList_RestoreNormalMode();
 }
 #pragma opt_propagation reset
