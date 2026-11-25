@@ -149,7 +149,7 @@ void fn_801E7984(long arg0) {
     lbl_8055EB40 = fn_8012850C(0xb40, strings + 0x20);
     lbl_8055EB38 = 0; lbl_8055EB34 = 0; lbl_8055EB08 = 1;
     fn_8001255C(lbl_8055AF18, lbl_80562DA4);
-    fn_801EEFC8(); memset(&sp8, 0, 4); sp8 = *(long *)(arg0 + 0x3e0);
+    Event_ClearAllHandlers(); memset(&sp8, 0, 4); sp8 = *(long *)(arg0 + 0x3e0);
     fn_80127464(); fn_80204BB8(); fn_80203C50(2); fn_801EFF4C(); fn_801EA4C4();
     fn_801AEF28(arg0); fn_80127464(); fn_80176460(arg0 + 0x3e4, arg0, &sp8);
     if ((unsigned char)lbl_8055EB11 == 0) fn_8000D7F0(arg0);
