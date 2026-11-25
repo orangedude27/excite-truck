@@ -6061,11 +6061,6 @@ void GXBeginDisplayList(void *list, u32 size) {
 #pragma dont_inline reset
 extern void GXSetCPUFifo(void *);
 extern char lbl_8037C108[];
-typedef struct GXDispListFifo {
-    unsigned int base;           /* 0x000 */
-    unsigned char pad0[0x67C];
-    unsigned char save[0x600];   /* 0x680 */
-} GXDispListFifo;
 
 #pragma optimize_for_size off
 u32 GXEndDisplayList(void) {
