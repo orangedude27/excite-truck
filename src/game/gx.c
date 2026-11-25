@@ -3031,13 +3031,13 @@ void *gxGetDistortTexObj(void) {
 
 extern void gxLoadDefaultIndTexMtx(void);
 #pragma dont_inline on
+/* Load the default indirect-texture matrix, then return the bump-map GXTexObj
+   at +0x24 of the global state block held in gBumpMapGfxState. */
 void* gxGetBumpMapTexObjImpl(void) {
-    /* Load the default indirect-texture matrix, then return the address of the
-       +0x24 field of the global graphics-state object held in gBumpMapGfxState. */
-    struct { char pad[0x24]; char m; } *state;
+    struct { char pad[0x24]; char texObj; } *state;
     gxLoadDefaultIndTexMtx();
     state = gBumpMapGfxState;
-    return &state->m;
+    return &state->texObj;
 }
 #pragma dont_inline off
 
