@@ -1363,10 +1363,10 @@ s32 stampGetWidth(Stamp *stamp) {
     return 0;
 }
 
-s32 stampGetFrameCount(s32* fields) {
-    /* Null-safe getter for word 4 of a canvas metrics object (used as a tile/cell count by the drawing code); returns 0 when absent. */
-    if (fields != NULL) {
-        return fields[4];
+s32 stampGetFrameCount(Stamp *stamp) {
+    /* Return a stamp's frame count, used as the modulo when picking a frame to draw; 0 for a null stamp. */
+    if (stamp != NULL) {
+        return stamp->frames;
     }
     return 0;
 }
