@@ -360,7 +360,7 @@ copy_done:
 #pragma pop
 /* Voice-sound thunk: drop the unused object pointer and forward the directory
  * and file names to the path-building helper Spu_CacheVoiceByPath. */
-void fn_8020AC0C(int self, int dirName, int fileName) {
+void VoiceSnd_cacheVoiceByPath(int self, int dirName, int fileName) {
     Spu_CacheVoiceByPath(dirName, fileName);
 }
 
