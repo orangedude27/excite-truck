@@ -29,7 +29,7 @@ extern unsigned char lbl_804C1348[];
 struct Entry16 {
     char data[16];
 };
-extern int lbl_804C139C[];
+extern int gModelInstances[];
 extern int lbl_804C13A8[];
 extern int lbl_804C13B4[];
 extern const char lbl_8034B1D8[];
@@ -53,7 +53,7 @@ extern int fn_802C9638(void *, unsigned char *, float);
 
 /* The model manager's tables, as the dispatch code below walks them.
  *
- * lbl_804C139C is the {count, capacity, base} of the model instances and
+ * gModelInstances is the {count, capacity, base} of the model instances and
  * fn_802C5390(id) returns base + id * 0x10, one ModelInstance.  Its groups are
  * the GroupEntry records listed by the {count, items} header at +0x04; the
  * instance's own 4x3 world matrix and view tolerance follow that header at
@@ -98,7 +98,7 @@ struct ModelElement {
 #pragma scheduling off
 void *fn_802C5390(int instanceId) {
     /* Return the 0x10-byte ModelInstance record at instanceId. */
-    u32 instances = *(u32 *)((char *)lbl_804C139C + 8);
+    u32 instances = *(u32 *)((char *)gModelInstances + 8);
     return (void *)(instances + (instanceId << 4));
 }
 #pragma scheduling off
@@ -106,7 +106,7 @@ int MRModel_GetInstanceGroupList(instanceId)
 int instanceId;
 {
     /* Return the group list (+0x4) of a model instance by id, from the instance table's 0x10-byte records. */
-    int *instances = *(int * volatile *)((char *)lbl_804C139C + 8);
+    int *instances = *(int * volatile *)((char *)gModelInstances + 8);
     return *(int *)((char *)instances + (instanceId << 4) + 4);
 }
 #pragma scheduling invalid_target
@@ -233,7 +233,7 @@ extern void fn_802D0610(int);
 extern void fn_802D6B08(int);
 extern void fn_802DAA18(void);
 extern void fn_802DB2BC(unsigned char);
-extern int lbl_804C139C[];
+extern int gModelInstances[];
 /* Tear down this model/resource list: release its handle, destroy each node's resources, then clear the head. */
 /* Tear down a model/resource list: release its handle, walk the node chain at +8 (next at +0x10) releasing each node's resources, restore render state, then clear the list head. */ void fn_802C5690(void *modelList) {
     void *resNode;
@@ -1166,8 +1166,8 @@ s32 mrModelNeedsSubKeys(void *model) {
 extern const char lbl_8034B378[];
 extern const char lbl_8034B3A4[];
 int fn_802C6DC4(int arg0, int arg1, int arg2, int arg3) {
-    int count = lbl_804C139C[0];
-    char *scan = (char *)(unsigned long)lbl_804C139C[2];
+    int count = gModelInstances[0];
+    char *scan = (char *)(unsigned long)gModelInstances[2];
     char *found = 0;
     int i;
     char *empty = 0;
@@ -1188,11 +1188,11 @@ int fn_802C6DC4(int arg0, int arg1, int arg2, int arg3) {
 
     if (found == 0) {
         if (empty == 0) {
-            int *context = lbl_804C139C;
+            int *context = gModelInstances;
             if (count < context[1]) {
-                int next = lbl_804C139C[0];
+                int next = gModelInstances[0];
                 char *base = (char *)(unsigned long)context[2];
-                lbl_804C139C[0] = next + 1;
+                gModelInstances[0] = next + 1;
                 empty = base + next * 0x10;
             } else {
                 empty = 0;
@@ -1237,7 +1237,7 @@ int fn_802C6DC4(int arg0, int arg1, int arg2, int arg3) {
     }
 
     (*(int *)found)++;
-    return (int)(found - (char *)(unsigned long)lbl_804C139C[2]) / 0x10;
+    return (int)(found - (char *)(unsigned long)gModelInstances[2]) / 0x10;
 }
 
 #pragma push
