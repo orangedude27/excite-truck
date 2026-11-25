@@ -25,7 +25,7 @@ void fn_802C57B4(int, int, int, unsigned char, float);
 extern int lbl_8055D00C;
 extern void fn_802DB2B4(void);
 extern int lbl_804C1338[];
-extern unsigned char lbl_804C1348[];
+extern unsigned char gModelDetailLevelTable[];
 struct Entry16 {
     char data[16];
 };
@@ -153,8 +153,8 @@ int fn_802C544C(void **leftEntryPtr, void **__restrict rightEntryPtr) {
     return stricmp(getTextureSlotName(*(char **)leftEntry), getTextureSlotName(*(char **)rightEntry));
 }
 /* Return the 8-byte {items, count} record for a 1-based detail level in the
- * level table at lbl_804C1348 (levels 1..9). */
-void *MRModel_GetDetailLevelRecord(int level) { return (void *)(lbl_804C1348 + (level - 1) * 8); }
+ * level table at gModelDetailLevelTable (levels 1..9). */
+void *MRModel_GetDetailLevelRecord(int level) { return (void *)(gModelDetailLevelTable + (level - 1) * 8); }
 
 /* Return bits 8-15 (the second byte) of the given value as an unsigned byte. */
 unsigned char fn_802C54CC(unsigned int value) { return (unsigned char)(value >> 8); }
