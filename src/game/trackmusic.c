@@ -149,7 +149,7 @@ void TrackMusic_MarkAllLoaded(void) {
 #pragma dont_inline reset
  
 /* Mark all three track-music load slots as unloaded (the inverse of TrackMusic_MarkAllLoaded). */
-/* Marks all three track-music song slots as unloaded. */ void TrackMusic_markSongsUnloaded(void) {
+/* Marks all three track-music song slots as unloaded. */ /* Marks all three track-music song slots as unloaded. */ void TrackMusic_markSongsUnloaded(void) {
     gTrackMusicSongLoaded2 = 0;
     gTrackMusicSongLoaded1 = 0;
     gTrackMusicSongLoaded0 = 0;
