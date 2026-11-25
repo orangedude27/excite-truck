@@ -28,7 +28,7 @@ public:
     virtual int isReadDone(void);                 // 0x14 FileDisk_isReadDone
     virtual int getLength(void);                  // 0x18 fn_802E4400
     virtual int tell(void);                       // 0x1C fn_802E4680
-    virtual int seek(int pos);                    // 0x20 fn_802E43D8
+    virtual int seek(int pos);                    // 0x20 FileDisk_seek
     virtual void seekRelative(int delta);         // 0x24 fn_802E4688
     virtual void flush(void);                     // 0x28 fn_802E46A0
     virtual void *getOwner(void);                 // 0x2C fn_802E4438
@@ -330,7 +330,7 @@ extern "C" int fn_802E4280(void *owner, char *path) {
 #pragma cplusplus reset
 #pragma pop
 /* Seek a DVD file node: set its cursor (0x88) to pos when 0 <= pos <= length (0x84); return 1 on success, 0 if out of range. */
-int fn_802E43D8(void *file, int pos) {
+int FileDisk_seek(void *file, int pos) {
     if (pos >= 0 && pos <= *(int *)((char *)file + 0x84)) {
         *(int *)((char *)file + 0x88) = pos;
         return 1;
