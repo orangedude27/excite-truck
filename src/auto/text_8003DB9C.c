@@ -1830,48 +1830,48 @@ void GXSetVtxDescv(unsigned int *list) {
     gxData[0x5fc/4] |= 8;
 }
 
-void __GXSetVCD(void) {
-    unsigned int count;
-    unsigned int value;
-    unsigned int compCount;
-    unsigned int vatPart;
-    unsigned int vatCount;
-    unsigned int masked;
-    unsigned int sizeCount;
-    unsigned int sizePart;
-    unsigned int countPart;
-    register unsigned int cRaw, sRaw;
-    volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
-    volatile unsigned int *fifo32 = (volatile unsigned int *)0xCC008000;
-    unsigned int *data = __GXData;
-    *fifo8 = 8;
-    *fifo8 = 0x50;
-    *fifo32 = data[0x14 / 4];
-    *fifo8 = 8;
-    *fifo8 = 0x60;
-    *fifo32 = data[0x18 / 4];
-    if (*((unsigned char *)data + 0x525) != 0) {
-        count = 2;
-    } else {
-        unsigned int flag = *((unsigned char *)data + 0x524);
-        count = (unsigned int)(-(int)flag | (int)flag) >> 31;
-    }
-    cRaw = data[0x14 / 4];
-    sRaw = data[0x18 / 4];
-    compCount = (cRaw >> 13) & 0xF;
-    vatPart = __cntlzw(compCount);
-    masked = sRaw & 0xFFFF;
-    *fifo8 = 0x10;
-    vatPart = 0x21u - vatPart;
-    sizeCount = __cntlzw(masked);
-    countPart = count << 2;
-    sizeCount = 0x21u - sizeCount;
-    vatCount = vatPart >> 1;
-    sizePart = (sizeCount << 3) & 0xFFFFFFF0u;
-    *fifo32 = 0x1008;
-    value = (sizePart | vatCount) | countPart;
-    *fifo32 = value;
-    *(unsigned short *)((char *)data + 2) = 1;
+void __GXSetVCD(void)
+{
+  unsigned int count;
+  unsigned int value;
+  unsigned int compCount;
+  unsigned int vatPart;
+  unsigned int vatCount;
+  
+  unsigned int sizeCount;
+  unsigned int sizePart;
+  unsigned int countPart;
+  volatile unsigned char *fifo8 = (volatile unsigned char *) 0xCC008000;
+  volatile unsigned int *fifo32 = (volatile unsigned int *) 0xCC008000;
+  unsigned int *data = __GXData;
+  *fifo8 = 8;
+  *fifo8 = 0x50;
+  *fifo32 = data[0x14 / 4];
+  *fifo8 = (0, 8);
+  *fifo8 = 0x60;
+  *fifo32 = data[0x18 / 4];
+  if ((*(((unsigned char *) data) + 0x525)) != 0)
+  {
+    count = 2;
+  }
+  else
+  {
+    unsigned int flag = *(((unsigned char *) data) + 0x524);
+    count = ((unsigned int) ((-((int) flag)) | ((int) flag))) >> 31;
+  }
+  compCount = (data[0x14 / 4] >> 13) & 0xF;
+  vatPart = __cntlzw(compCount);
+  compCount = data[0x18 / 4] & 0xFFFF;
+  *fifo8 = 0x10;
+  vatPart = 0x21u - vatPart;
+  sizeCount = __cntlzw(compCount);
+  sizeCount = 0x21u - sizeCount;
+  vatCount = vatPart >> 1;
+  sizePart = (sizeCount << 3) & 0xFFFFFFF0u;
+  *fifo32 = 0x1008;
+  value = ((vatCount & 0xFFFFu) | sizePart) | (countPart = count << 2);
+  *fifo32 = value;
+  *((unsigned short *) (((char *) data) + 2)) = 1;
 }
 
 extern unsigned char lbl_80558E38;
@@ -4872,14 +4872,13 @@ void __SetSURegs(s32 arg0, s32 arg1) {
     data = __GXData;
     tex = data + arg0;
     su = data + arg1;
-    value = tex[0x564 / 4];
-    v1 = value & 0x3FF;
-    v2 = (value >> 10) & 0x3FF;
+    v1 = (tex[0x564 / 4]) & 0x3FF;
+    v2 = ((tex[0x564 / 4]) >> 10) & 0x3FF;
     su1 = su[0x108 / 4];
     u.v = su1;
     u.f.hi = v1;
     su1 = u.v;
-    su[0x108 / 4] = su1;
+    (data + arg1)[0x108 / 4] = su1;
     su2 = su[0x128 / 4];
     u.v = su2;
     u.f.hi = v2;
