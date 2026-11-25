@@ -782,7 +782,7 @@ extern "C" void fn_8020899C(void* mgr, void* voice) {
 #pragma pop
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_802089B0(void* self) {
+/* Null-safe deleting destructor: if a sound object exists, call its virtual destroy with flag 1 to tear it down and free its storage. */ extern "C" void fn_802089B0(void* self) {
     class SoundObj {
     public:
         virtual void destroy(int);
