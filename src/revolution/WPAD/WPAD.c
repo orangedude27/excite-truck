@@ -356,15 +356,20 @@ static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs) {
 #define CALC_ANALOG_NOISE_ACC(CHANGED)                                         \
     if (CHANGED) {                                                             \
         q->filterDiffAcc++;                                                    \
+                                                                               \
         if (q->filterDiffAcc > __WPAD_acc_diff_count_threshold) {              \
             q->filterDiffAcc = 0;                                              \
             q->filterSameAcc = 0;                                              \
             changed |= TRUE;                                                   \
         }                                                                      \
+                                                                               \
     } else {                                                                   \
-        q->filterSameAcc = (q->filterSameAcc + 1) % __WPAD_acc_hyst_count_threshold; \
+        q->filterSameAcc =                                                     \
+            (q->filterSameAcc + 1) % __WPAD_acc_hyst_count_threshold;          \
+                                                                               \
         if (q->filterSameAcc == __WPAD_acc_hyst_count_threshold - 1 &&         \
             q->filterDiffAcc > 0) {                                            \
+                                                                               \
             q->filterDiffAcc--;                                                \
         }                                                                      \
     }
@@ -372,14 +377,19 @@ static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs) {
 #define CALC_ANALOG_NOISE_DPD(CHANGED)                                         \
     if (CHANGED) {                                                             \
         q->filterDiffDpd++;                                                    \
+                                                                               \
         if (q->filterDiffDpd > __WPAD_dpd_diff_count_threshold) {              \
             q->filterDiffDpd = 0;                                              \
             changed |= TRUE;                                                   \
         }                                                                      \
+                                                                               \
     } else {                                                                   \
-        q->filterSameDpd = (q->filterSameDpd + 1) % __WPAD_dpd_hyst_count_threshold; \
+        q->filterSameDpd =                                                     \
+            (q->filterSameDpd + 1) % __WPAD_dpd_hyst_count_threshold;          \
+                                                                               \
         if (q->filterSameDpd == __WPAD_dpd_hyst_count_threshold - 1 &&         \
             q->filterDiffDpd > 0) {                                            \
+                                                                               \
             q->filterDiffDpd--;                                                \
         }                                                                      \
     }
@@ -387,15 +397,20 @@ static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs) {
 #define CALC_ANALOG_NOISE_EXT(CHANGED)                                         \
     if (CHANGED) {                                                             \
         q->filterDiffExt++;                                                    \
+                                                                               \
         if (q->filterDiffExt > __WPAD_acc_diff_count_threshold) {              \
             q->filterDiffExt = 0;                                              \
             q->filterSameExt = 0;                                              \
             changed |= TRUE;                                                   \
         }                                                                      \
+                                                                               \
     } else {                                                                   \
-        q->filterSameExt = (q->filterSameExt + 1) % __WPAD_acc_hyst_count_threshold; \
+        q->filterSameExt =                                                     \
+            (q->filterSameExt + 1) % __WPAD_acc_hyst_count_threshold;          \
+                                                                               \
         if (q->filterSameExt == __WPAD_acc_hyst_count_threshold - 1 &&         \
             q->filterDiffExt > 0) {                                            \
+                                                                               \
             q->filterDiffExt--;                                                \
         }                                                                      \
     }
@@ -403,38 +418,47 @@ static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs) {
     if (q->dataFormat == WPAD_FMT_CORE_BTN ||
         q->dataFormat == WPAD_FMT_CORE_BTN_ACC ||
         q->dataFormat == WPAD_FMT_CORE_BTN_ACC_DPD) {
+
         changed = WPAD_BUTTON_CHANGED(pLhsCR->button, pRhsCR->button);
+
         if (pLhsCR->err == WPAD_ERR_OK && pRhsCR->err == WPAD_ERR_OK) {
-            analogChanged = WPAD_ANALOG_CHANGED(pLhsCR->accY, pRhsCR->accY, 12);
+                        analogChanged = WPAD_ANALOG_CHANGED(pLhsCR->accY, pRhsCR->accY, 12);
             analogChanged |= WPAD_ANALOG_CHANGED(pLhsCR->accX, pRhsCR->accX, 12);
             analogChanged |= WPAD_ANALOG_CHANGED(pLhsCR->accZ, pRhsCR->accZ, 12);
             CALC_ANALOG_NOISE_ACC(analogChanged);;
+
             for (i = 0; i < WPAD_MAX_DPD_OBJECTS; i++) {
-                analogChanged = WPAD_ANALOG_CHANGED(pLhsCR->obj[i].y, pRhsCR->obj[i].y, 2);
-                analogChanged |= WPAD_ANALOG_CHANGED(pLhsCR->obj[i].x, pRhsCR->obj[i].x, 2);
-                CALC_ANALOG_NOISE_DPD(analogChanged);;
+                            analogChanged = WPAD_ANALOG_CHANGED(pLhsCR->obj[i].y, pRhsCR->obj[i].y, 2);
+            analogChanged |= WPAD_ANALOG_CHANGED(pLhsCR->obj[i].x, pRhsCR->obj[i].x, 2);
+            CALC_ANALOG_NOISE_DPD(analogChanged);;
             }
         }
     } else if (q->dataFormat == WPAD_FMT_FS_BTN ||
                q->dataFormat == WPAD_FMT_FS_BTN_ACC ||
                q->dataFormat == WPAD_FMT_FS_BTN_ACC_DPD) {
+
         WPADFSStatus* pLhsFS = (WPADFSStatus*)pLhs;
         WPADFSStatus* pRhsFS = (WPADFSStatus*)pRhs;
+
         changed = WPAD_BUTTON_CHANGED(pLhsFS->button, pRhsFS->button);
+
         if (pLhsFS->err == WPAD_ERR_OK && pRhsFS->err == WPAD_ERR_OK) {
-            analogChanged = WPAD_ANALOG_CHANGED(pLhsFS->accY, pRhsFS->accY, 12);
+                        analogChanged = WPAD_ANALOG_CHANGED(pLhsFS->accY, pRhsFS->accY, 12);
             analogChanged |= WPAD_ANALOG_CHANGED(pLhsFS->accX, pRhsFS->accX, 12);
             analogChanged |= WPAD_ANALOG_CHANGED(pLhsFS->accZ, pRhsFS->accZ, 12);
             CALC_ANALOG_NOISE_ACC(analogChanged);;
+
             for (i = 0; i < WPAD_MAX_DPD_OBJECTS; i++) {
-                analogChanged = WPAD_ANALOG_CHANGED(pLhsFS->obj[i].y, pRhsFS->obj[i].y, 2);
-                analogChanged |= WPAD_ANALOG_CHANGED(pLhsFS->obj[i].x, pRhsFS->obj[i].x, 2);
-                CALC_ANALOG_NOISE_DPD(analogChanged);;
+                            analogChanged = WPAD_ANALOG_CHANGED(pLhsFS->obj[i].y, pRhsFS->obj[i].y, 2);
+            analogChanged |= WPAD_ANALOG_CHANGED(pLhsFS->obj[i].x, pRhsFS->obj[i].x, 2);
+            CALC_ANALOG_NOISE_DPD(analogChanged);;
             }
-            analogChanged = WPAD_ANALOG_CHANGED(pLhsFS->fsAccY, pRhsFS->fsAccY, 12);
+
+                        analogChanged = WPAD_ANALOG_CHANGED(pLhsFS->fsAccY, pRhsFS->fsAccY, 12);
             analogChanged |= WPAD_ANALOG_CHANGED(pLhsFS->fsAccX, pRhsFS->fsAccX, 12);
             analogChanged |= WPAD_ANALOG_CHANGED(pLhsFS->fsAccZ, pRhsFS->fsAccZ, 12);
             CALC_ANALOG_NOISE_EXT(analogChanged);;
+
             changed |= WPAD_ANALOG_CHANGED(pLhsFS->fsStickX, pRhsFS->fsStickX, 1);
             changed |= WPAD_ANALOG_CHANGED(pLhsFS->fsStickY, pRhsFS->fsStickY, 1);
         }
@@ -442,8 +466,10 @@ static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs) {
         if (q->dataFormat == WPAD_FMT_CLASSIC_BTN ||
             q->dataFormat == WPAD_FMT_CLASSIC_BTN_ACC ||
             q->dataFormat == WPAD_FMT_CLASSIC_BTN_ACC_DPD) {
+
             WPADCLStatus* pLhsCL = (WPADCLStatus*)pLhs;
             WPADCLStatus* pRhsCL = (WPADCLStatus*)pRhs;
+
             s32 leftStickDiv;
             s32 rightStickDiv;
             s32 triggerDiv;
@@ -454,12 +480,14 @@ static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs) {
                 triggerDiv = 8;
                 break;
             }
+
             case WPAD_DEV_MODE_CLASSIC_STANDARD: {
                 leftStickDiv = 4;
                 rightStickDiv = 4;
                 triggerDiv = 1;
                 break;
             }
+
             default: {
                 leftStickDiv = 1;
                 rightStickDiv = 1;
@@ -467,41 +495,61 @@ static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs) {
                 break;
             }
             }
+
             changed = WPAD_BUTTON_CHANGED(pLhsCL->button, pRhsCL->button);
+
             if (pLhsCL->err == WPAD_ERR_OK && pRhsCL->err == WPAD_ERR_OK) {
-                analogChanged = WPAD_ANALOG_CHANGED(pLhsCL->accY, pRhsCL->accY, 12);
-                analogChanged |= WPAD_ANALOG_CHANGED(pLhsCL->accX, pRhsCL->accX, 12);
-                analogChanged |= WPAD_ANALOG_CHANGED(pLhsCL->accZ, pRhsCL->accZ, 12);
-                CALC_ANALOG_NOISE_ACC(analogChanged);;
+                            analogChanged = WPAD_ANALOG_CHANGED(pLhsCL->accY, pRhsCL->accY, 12);
+            analogChanged |= WPAD_ANALOG_CHANGED(pLhsCL->accX, pRhsCL->accX, 12);
+            analogChanged |= WPAD_ANALOG_CHANGED(pLhsCL->accZ, pRhsCL->accZ, 12);
+            CALC_ANALOG_NOISE_ACC(analogChanged);;
+
                 for (i = 0; i < WPAD_MAX_DPD_OBJECTS; i++) {
-                    analogChanged = WPAD_ANALOG_CHANGED(pLhsCL->obj[i].y, pRhsCL->obj[i].y, 2);
-                    analogChanged |= WPAD_ANALOG_CHANGED(pLhsCL->obj[i].x, pRhsCL->obj[i].x, 2);
-                    CALC_ANALOG_NOISE_DPD(analogChanged);;
+                                analogChanged = WPAD_ANALOG_CHANGED(pLhsCL->obj[i].y, pRhsCL->obj[i].y, 2);
+            analogChanged |= WPAD_ANALOG_CHANGED(pLhsCL->obj[i].x, pRhsCL->obj[i].x, 2);
+            CALC_ANALOG_NOISE_DPD(analogChanged);;
                 }
+
                 changed |= WPAD_BUTTON_CHANGED(pLhsCL->clButton, pRhsCL->clButton);
-                changed |= WPAD_ANALOG_CHANGED(pLhsCL->clLStickX / leftStickDiv, pRhsCL->clLStickX / leftStickDiv, 1);
-                changed |= WPAD_ANALOG_CHANGED(pLhsCL->clLStickY / leftStickDiv, pRhsCL->clLStickY / leftStickDiv, 1);
-                changed |= WPAD_ANALOG_CHANGED(pLhsCL->clRStickX / rightStickDiv, pRhsCL->clRStickX / rightStickDiv, 1);
-                changed |= WPAD_ANALOG_CHANGED(pLhsCL->clRStickY / rightStickDiv, pRhsCL->clRStickY / rightStickDiv, 1);
-                changed |= WPAD_ANALOG_CHANGED(pLhsCL->clTriggerL / triggerDiv, pRhsCL->clTriggerL / triggerDiv, 1);
-                changed |= WPAD_ANALOG_CHANGED(pLhsCL->clTriggerR / triggerDiv, pRhsCL->clTriggerR / triggerDiv, 1);
+
+                changed |= WPAD_ANALOG_CHANGED(pLhsCL->clLStickX / leftStickDiv,
+                                           pRhsCL->clLStickX / leftStickDiv, 1);
+                changed |= WPAD_ANALOG_CHANGED(pLhsCL->clLStickY / leftStickDiv,
+                                           pRhsCL->clLStickY / leftStickDiv, 1);
+
+                changed |=
+                    WPAD_ANALOG_CHANGED(pLhsCL->clRStickX / rightStickDiv,
+                                    pRhsCL->clRStickX / rightStickDiv, 1);
+                changed |=
+                    WPAD_ANALOG_CHANGED(pLhsCL->clRStickY / rightStickDiv,
+                                    pRhsCL->clRStickY / rightStickDiv, 1);
+
+                changed |= WPAD_ANALOG_CHANGED(pLhsCL->clTriggerL / triggerDiv,
+                                           pRhsCL->clTriggerL / triggerDiv, 1);
+                changed |= WPAD_ANALOG_CHANGED(pLhsCL->clTriggerR / triggerDiv,
+                                           pRhsCL->clTriggerR / triggerDiv, 1);
             }
+
         } else {
             changed = WPAD_BUTTON_CHANGED(pLhsCR->button, pRhsCR->button);
+
             if (pLhsCR->err == WPAD_ERR_OK && pRhsCR->err == WPAD_ERR_OK) {
-                analogChanged = WPAD_ANALOG_CHANGED(pLhsCR->accY, pRhsCR->accY, 12);
-                analogChanged |= WPAD_ANALOG_CHANGED(pLhsCR->accX, pRhsCR->accX, 12);
-                analogChanged |= WPAD_ANALOG_CHANGED(pLhsCR->accZ, pRhsCR->accZ, 12);
-                CALC_ANALOG_NOISE_ACC(analogChanged);;
+                            analogChanged = WPAD_ANALOG_CHANGED(pLhsCR->accY, pRhsCR->accY, 12);
+            analogChanged |= WPAD_ANALOG_CHANGED(pLhsCR->accX, pRhsCR->accX, 12);
+            analogChanged |= WPAD_ANALOG_CHANGED(pLhsCR->accZ, pRhsCR->accZ, 12);
+            CALC_ANALOG_NOISE_ACC(analogChanged);;
+
                 for (i = 0; i < WPAD_MAX_DPD_OBJECTS; i++) {
-                    analogChanged = WPAD_ANALOG_CHANGED(pLhsCR->obj[i].y, pRhsCR->obj[i].y, 2);
-                    analogChanged |= WPAD_ANALOG_CHANGED(pLhsCR->obj[i].x, pRhsCR->obj[i].x, 2);
-                    CALC_ANALOG_NOISE_DPD(analogChanged);;
+                                analogChanged = WPAD_ANALOG_CHANGED(pLhsCR->obj[i].y, pRhsCR->obj[i].y, 2);
+            analogChanged |= WPAD_ANALOG_CHANGED(pLhsCR->obj[i].x, pRhsCR->obj[i].x, 2);
+            CALC_ANALOG_NOISE_DPD(analogChanged);;
                 }
             }
         }
     }
+
     return changed;
+
 #undef CALC_ANALOG_NOISE_EXT
 #undef CALC_ANALOG_NOISE_ACC
 #undef CALC_ANALOG_NOISE_DPD
@@ -657,7 +705,7 @@ void fn_8005E298(void) {
 
     if (fn_8006A940() == 3) {
         var_r26 = 0;
-        var_r28 = _wpdcb;
+        var_r28 = lbl_8038F4F0;
         var_r27 = lbl_8055DC00;
         do {
             var_r25 = 0;
@@ -3592,7 +3640,7 @@ void fn_8005EE20(void) {
 /* WPAD-internal fast-simple-sync starter: tail-calls WUDStartFastSyncSimple so
    its result reaches callers such as the home-button sync-check alarm callback
    (which casts this to an s32-returning function). */
-void fn_8005EE6C(void) { WUDStartFastSyncSimple(); }
+/* Tail-call thunk forwarding to WUDStartFastSyncSimple to start a simple fast wireless sync. */ void fn_8005EE6C(void) { WUDStartFastSyncSimple(); }
 
 /* WPAD-internal fast-simple-sync stopper: tail-calls fn_8006AC4C, which stops
    the simple-sync loop when the WUD library is running and reports whether it
@@ -4452,15 +4500,15 @@ s32 fn_80060CC0(s32 chan, u32 command, WPADCallback pCallback) {
         u8* p;
         BOOL handshake;
         BOOL spkEnable;
+        u8 pad[16];
     } cb;
     BOOL enabled;
     s32 status;
     BOOL sendResult;
     BOOL innerEnabled0, innerEnabled1;
     s8 queueSize0, queueSize1;
-
     u8 config[SPK_CONFIG_SIZE];
-
+    cb.pad[0] = 0;
     config[0] = lbl_80560CC0;
     config[1] = lbl_80560CC1;
     config[2] = lbl_80560CC2;
@@ -4469,51 +4517,31 @@ s32 fn_80060CC0(s32 chan, u32 command, WPADCallback pCallback) {
     config[5] = lbl_80560CC5;
     config[6] = lbl_80560CC6;
     cb.p = (u8*)lbl_8038F4F0[chan];
-
     enabled = OSDisableInterrupts();
-
     cb.spkEnable = *(s32*)(cb.p + 0x77C);
     status = *(s32*)(cb.p + 0x7FC);
     cb.handshake = *(s32*)(cb.p + 0x81C);
-
     OSRestoreInterrupts(enabled);
-
-    if (status == WPAD_ERR_NO_CONTROLLER) {
-        goto _end;
-    }
-
-    if (!cb.handshake) {
-        status = WPAD_ERR_COMMUNICATION_ERROR;
-        goto _end;
-    }
-
+    if (status == WPAD_ERR_NO_CONTROLLER) goto _end;
+    if (!cb.handshake) { status = WPAD_ERR_COMMUNICATION_ERROR; goto _end; }
     if (command == WPAD_SPEAKER_OFF) {
         if (!cb.spkEnable) {
             status = WPAD_ERR_OK;
         } else {
             enabled = OSDisableInterrupts();
-
             innerEnabled0 = OSDisableInterrupts();
-            queueSize0 = ((WPADCommandQueue*)(cb.p + 0x160))->back -
-                         ((WPADCommandQueue*)(cb.p + 0x160))->front;
-            if (queueSize0 < 0)
-                queueSize0 += ((WPADCommandQueue*)(cb.p + 0x160))->capacity;
+            queueSize0 = ((WPADCommandQueue*)(cb.p + 0x160))->back - ((WPADCommandQueue*)(cb.p + 0x160))->front;
+            if (queueSize0 < 0) queueSize0 += ((WPADCommandQueue*)(cb.p + 0x160))->capacity;
             OSRestoreInterrupts(innerEnabled0);
-            if ((u32)(queueSize0 + 5) <=
-                ((WPADCommandQueue*)(cb.p + 0x160))->capacity - 1) {
+            if ((u32)(queueSize0 + 5) <= ((WPADCommandQueue*)(cb.p + 0x160))->capacity - 1) {
                 WPADiSendMuteSpeakerInline((WPADCommandQueue*)(cb.p + 0x160), TRUE, NULL);
-
                 WPADiSendWriteDataCmdInline((WPADCommandQueue*)(cb.p + 0x160), 0x01, WM_REG_SPEAKER_01, NULL);
                 WPADiSendWriteDataCmdInline((WPADCommandQueue*)(cb.p + 0x160), 0x00, WM_REG_SPEAKER_09, NULL);
-
                 WPADiSendEnableSpeakerInline((WPADCommandQueue*)(cb.p + 0x160), FALSE, NULL);
-
                 WPADiSendGetContStatInline((WPADCommandQueue*)(cb.p + 0x160), NULL, pCallback);
-
                 OSRestoreInterrupts(enabled);
                 return WPAD_ERR_OK;
             }
-
             status = WPAD_ERR_COMMUNICATION_ERROR;
             OSRestoreInterrupts(enabled);
         }
@@ -4522,76 +4550,45 @@ s32 fn_80060CC0(s32 chan, u32 command, WPADCallback pCallback) {
         case WPAD_SPEAKER_ON:
         case WPAD_SPEAKER_5: {
             enabled = OSDisableInterrupts();
-
             innerEnabled1 = OSDisableInterrupts();
-            queueSize1 = ((WPADCommandQueue*)(cb.p + 0x160))->back -
-                         ((WPADCommandQueue*)(cb.p + 0x160))->front;
-            if (queueSize1 < 0)
-                queueSize1 += ((WPADCommandQueue*)(cb.p + 0x160))->capacity;
+            queueSize1 = ((WPADCommandQueue*)(cb.p + 0x160))->back - ((WPADCommandQueue*)(cb.p + 0x160))->front;
+            if (queueSize1 < 0) queueSize1 += ((WPADCommandQueue*)(cb.p + 0x160))->capacity;
             OSRestoreInterrupts(innerEnabled1);
-            if ((u32)(queueSize1 + 7) <=
-                ((WPADCommandQueue*)(cb.p + 0x160))->capacity - 1) {
+            if ((u32)(queueSize1 + 7) <= ((WPADCommandQueue*)(cb.p + 0x160))->capacity - 1) {
                 WPADiSendEnableSpeakerInline((WPADCommandQueue*)(cb.p + 0x160), TRUE, NULL);
                 WPADiSendMuteSpeakerInline((WPADCommandQueue*)(cb.p + 0x160), TRUE, NULL);
-
                 WPADiSendWriteDataCmdInline((WPADCommandQueue*)(cb.p + 0x160), 0x01, WM_REG_SPEAKER_09, NULL);
                 WPADiSendWriteDataCmdInline((WPADCommandQueue*)(cb.p + 0x160), 0x80, WM_REG_SPEAKER_01, NULL);
-
                 config[4] = _speakerVolume;
-
                 WPADiSendWriteDataInline((WPADCommandQueue*)(cb.p + 0x160), &config, SPK_CONFIG_SIZE, WM_REG_SPEAKER_01, NULL);
-
                 WPADiSendMuteSpeakerInline((WPADCommandQueue*)(cb.p + 0x160), FALSE, NULL);
-
                 WPADiSendGetContStatInline((WPADCommandQueue*)(cb.p + 0x160), NULL, pCallback);
-
                 OSRestoreInterrupts(enabled);
                 return WPAD_ERR_OK;
             }
-
             status = WPAD_ERR_COMMUNICATION_ERROR;
-
             OSRestoreInterrupts(enabled);
             break;
         }
-
         case WPAD_SPEAKER_MUTE: {
             WPADiSendMuteSpeakerResultInline((WPADCommandQueue*)(cb.p + 0x160), TRUE, pCallback, sendResult);
-            if (!sendResult) {
-                status = WPAD_ERR_COMMUNICATION_ERROR;
-                break;
-            }
-
+            if (!sendResult) { status = WPAD_ERR_COMMUNICATION_ERROR; break; }
             return WPAD_ERR_OK;
         }
-
         case WPAD_SPEAKER_UNMUTE: {
             WPADiSendMuteSpeakerResultInline((WPADCommandQueue*)(cb.p + 0x160), FALSE, pCallback, sendResult);
-            if (!sendResult) {
-                status = WPAD_ERR_COMMUNICATION_ERROR;
-                break;
-            }
-
+            if (!sendResult) { status = WPAD_ERR_COMMUNICATION_ERROR; break; }
             return WPAD_ERR_OK;
         }
-
         case WPAD_SPEAKER_PLAY: {
             WPADiSendWriteDataCmdResultInline((WPADCommandQueue*)(cb.p + 0x160), 0x01, WM_REG_SPEAKER_08, pCallback, sendResult);
-            if (!sendResult) {
-                status = WPAD_ERR_COMMUNICATION_ERROR;
-                break;
-            }
-
+            if (!sendResult) { status = WPAD_ERR_COMMUNICATION_ERROR; break; }
             return WPAD_ERR_OK;
         }
         }
     }
-
 _end:
-    if (pCallback != NULL) {
-        pCallback(chan, status);
-    }
-
+    if (pCallback != NULL) pCallback(chan, status);
     return status;
 }
 #pragma inline_depth(1)
@@ -4704,12 +4701,12 @@ extern u8 lbl_802EE8C8[];
 s32 fn_800624A4(s32 chan, s32 arg1, WPADCallback arg2) {
     u8 frame[0x420] ALIGN(8);
     register s32 channel asm("r31") = chan;
-    register u32 value81C asm("r30");
+    register u32 value81C asm("r26");
     register WPADCallback callback asm("r28") = arg2;
-    register u32 value778 asm("r26");
+    register u32 value778 asm("r27");
     register s32 status asm("r25");
     register WPADCB* p asm("r29") = lbl_8038F4F0[channel];
-    register u32 arg asm("r27") = arg1;
+    register u32 arg asm("r30") = arg1;
     BOOL outerEnabled;
     BOOL enabled;
     BOOL nestedEnabled;
@@ -6333,91 +6330,115 @@ void fn_80065934(s32 chan, u8* data)
     OSRestoreInterrupts(irqState);
 }
 
-// fn_800660E8: WPAD data processing
+// fn_800660E8: decode one core button + accelerometer + IR (DPD) input report
+// into the control block's other receive buffer; the
+// WPADiDecodeStatus/WPADiDecodeAccStatus family, without extension data.
 extern f32 lbl_80560CD8;
 void fn_800660E8(s32 chan, u8* data)
 {
+    /* View of the control-block fields this decoder touches. */
+    typedef struct {
+        u8 _head[0xA0];
+        u8 rxBufs[2][RX_BUFFER_SIZE]; /* 0xA0 decoded reports, double buffered */
+        u8 _gap160[0x788 - 0x160];
+        u32 extDisconnected; /* 0x788 bit 7 of the last report's status byte */
+        u8 _gap78C[0x7B4 - 0x78C];
+        s16 accX0g; /* 0x7B4 accelerometer zero-g point, subtracted below */
+        s16 accY0g; /* 0x7B6 */
+        s16 accZ0g; /* 0x7B8 */
+        u8 _gap7BA[0x7F8 - 0x7BA];
+        u32 dataFormat; /* 0x7F8 WPADDataFormat the remote is set to */
+        s32 status;     /* 0x7FC WPADResult of the last read */
+        u8 _gap800;
+        u8 extType;     /* 0x801 WPADDeviceType of the attached extension */
+        u8 _gap802[0x806 - 0x802];
+        u8 rxBufIndex;  /* 0x806 which rxBufs[] holds the last report */
+    } CBView;
+
     WPADCB* pCB;
     volatile u8* pBuf;
-    u32 idx;
+    CBView* cb;
+    WPADStatus* pStatus;
     u32 i;
-    BOOL enabled;
-    u8* p = data;
-    s16 v;
-    f32 scale = lbl_80560CD8;
+    BOOL irqState;
+    /* Raw report bytes: +1 status (bit 7: extension unplugged, bits 5-6: the two
+     * low bits of acc X), +2 buttons (bits 4 and 5: the low bit of acc Y and of
+     * acc Z), +3..5 the accelerometer high bytes, then four IR (DPD) objects of
+     * three bytes each: x, y, and the byte holding both low x/y bit pairs and
+     * the object size. */
+    u8* report = data;
+
     pCB = lbl_8038F4F0[(u8)chan];
-    idx = *(u8*)((u8*)pCB + 0x806);
-    pBuf = (volatile u8*)pCB + idx * 0x60 + 0xA0;
-    for (i = 0; i < 0x60; i++) {
+    cb = (CBView*)pCB;
+    /* Decode into the buffer the application is not reading, then publish it. */
+    pBuf = (volatile u8*)pCB->rxBufs[cb->rxBufIndex];
+    for (i = 0; i < RX_BUFFER_SIZE; i++) {
         pBuf[i] = 0;
     }
-    *(u16*)pBuf = ((u16)p[1] | ((u16)p[2] << 8)) & 0x9F1F;
-    if (*(u32*)((u8*)pCB + 0x7F8) <= 2) {
-        *(u8*)(pBuf + 0x29) = *(u32*)((u8*)pCB + 0x7FC);
-    } else if (*(s32*)((u8*)pCB + 0x7FC) == 0) {
-        *(s8*)(pBuf + 0x29) = -4;
+    pStatus = (WPADStatus*)pBuf;
+    pStatus->button = ((u16)report[1] | ((u16)report[2] << 8)) & WPAD_BUTTON_CORE_ALL;
+    if (cb->dataFormat <= (u32)WPAD_FMT_CORE_BTN_ACC_DPD) {
+        pStatus->err = cb->status;
+    } else if (cb->status == WPAD_ERR_OK) {
+        pStatus->err = WPAD_ERR_INVALID;
     }
-    *(u8*)(pBuf + 0x28) = *(u8*)((u8*)pCB + 0x801);
-    *(s32*)((u8*)pCB + 0x788) = (s32)((s32)(p[1] & 0x80) >> 7);
-    *(s16*)(pBuf + 2) = (s16)((s16)((s16)((s16)(p[3] * 4) & 0xFFFFFFFC) | (((s8)p[1] >> 5) & 3)) - *(s16*)((u8*)pCB + 0x7B4));
-    *(s16*)(pBuf + 4) = (s16)((s16)((s16)((s16)(p[4] * 4) & 0xFFFFFFFC) | (s16)(((s8)p[2] >> 4) & 2)) - *(s16*)((u8*)pCB + 0x7B6));
-    *(s16*)(pBuf + 6) = (s16)((s16)((s16)((s16)(p[5] * 4) & 0xFFFFFFFC) | (s16)(((s8)p[2] >> 5) & 2)) - *(s16*)((u8*)pCB + 0x7B8));
+    pStatus->dev = cb->extType;
+    cb->extDisconnected = (s32)(report[1] & 0x80) >> 7;
+    pStatus->accX = (s16)((s16)((s16)(report[3] << 2) & ~3) | ((s16)(report[1] >> 5) & 3)) - cb->accX0g;
+    pStatus->accY = (s16)((s16)((s16)(report[4] << 2) & ~3) | (s16)((s16)(report[2] >> 4) & 2)) - cb->accY0g;
+    pStatus->accZ = (s16)((s16)((s16)(report[5] << 2) & ~3) | (s16)((s16)(report[2] >> 5) & 2)) - cb->accZ0g;
 
-    v = (s16)p[6];
-    *(s16*)(pBuf + 0x8) = v | (s16)((p[8] << 4) & 0x300);
-    v = (s16)p[7];
-    *(s16*)(pBuf + 0xA) = 0x2FF - (s16)(v | (s16)((p[8] << 2) & 0x300));
-    *(u16*)(pBuf + 0xC) = p[8] & 0xF;
-    *(u16*)(pBuf + 0xC) = (u8)(scale * ((f32)*(u16*)(pBuf + 0xC) * (f32)*(u16*)(pBuf + 0xC)));
-    if (*(u16*)(pBuf + 0xC) == 0 || *(s16*)(pBuf + 0x8) == 0x3FF || *(s16*)(pBuf + 0xA) == 0x2FF) {
-        *(s16*)(pBuf + 0x8) = 0;
-        *(s16*)(pBuf + 0xA) = 0x2FF;
-        *(u16*)(pBuf + 0xC) = 0;
+    /* A size of 0, or a position on the edge of the sensor's 1024x768 field,
+     * means the camera saw nothing there.  The size byte is a radius; the
+     * 3.14159 factor turns it into the object's area. */
+    pStatus->obj[0].x = (s16)(u16)report[6] | ((report[8] << 4) & 0x300);
+    pStatus->obj[0].y = WPAD_MAX_DPD_Y - (s16)((s16)(u16)report[7] | ((report[8] << 2) & 0x300));
+    pStatus->obj[0].size = report[8] & 0xF;
+    pStatus->obj[0].size = (u8)(3.14159f * ((f32)(u32)pStatus->obj[0].size * (f32)(u32)pStatus->obj[0].size));
+    if (pStatus->obj[0].size == 0 || pStatus->obj[0].x == WPAD_MAX_DPD_X || pStatus->obj[0].y == WPAD_MAX_DPD_Y) {
+        pStatus->obj[0].x = 0;
+        pStatus->obj[0].y = WPAD_MAX_DPD_Y;
+        pStatus->obj[0].size = 0;
     }
-    *(u8*)(pBuf + 0xE) = 0;
+    pStatus->obj[0].traceId = 0;
 
-    v = (s16)p[9];
-    *(s16*)(pBuf + 0x10) = v | (s16)((p[11] << 4) & 0x300);
-    v = (s16)p[10];
-    *(s16*)(pBuf + 0x12) = 0x2FF - (s16)(v | (s16)((p[11] << 2) & 0x300));
-    *(u16*)(pBuf + 0x14) = p[11] & 0xF;
-    *(u16*)(pBuf + 0x14) = (u8)(scale * ((f32)*(u16*)(pBuf + 0x14) * (f32)*(u16*)(pBuf + 0x14)));
-    if (*(u16*)(pBuf + 0x14) == 0 || *(s16*)(pBuf + 0x10) == 0x3FF || *(s16*)(pBuf + 0x12) == 0x2FF) {
-        *(s16*)(pBuf + 0x10) = 0;
-        *(s16*)(pBuf + 0x12) = 0x2FF;
-        *(u16*)(pBuf + 0x14) = 0;
+    pStatus->obj[1].x = (s16)(u16)report[9] | ((report[11] << 4) & 0x300);
+    pStatus->obj[1].y = WPAD_MAX_DPD_Y - (s16)((s16)(u16)report[10] | ((report[11] << 2) & 0x300));
+    pStatus->obj[1].size = report[11] & 0xF;
+    pStatus->obj[1].size = (u8)(3.14159f * ((f32)(u32)pStatus->obj[1].size * (f32)(u32)pStatus->obj[1].size));
+    if (pStatus->obj[1].size == 0 || pStatus->obj[1].x == WPAD_MAX_DPD_X || pStatus->obj[1].y == WPAD_MAX_DPD_Y) {
+        pStatus->obj[1].x = 0;
+        pStatus->obj[1].y = WPAD_MAX_DPD_Y;
+        pStatus->obj[1].size = 0;
     }
-    *(u8*)(pBuf + 0x16) = 1;
+    pStatus->obj[1].traceId = 1;
 
-    v = (s16)p[12];
-    *(s16*)(pBuf + 0x18) = v | (s16)((p[14] << 4) & 0x300);
-    v = (s16)p[13];
-    *(s16*)(pBuf + 0x1A) = 0x2FF - (s16)(v | (s16)((p[14] << 2) & 0x300));
-    *(u16*)(pBuf + 0x1C) = p[14] & 0xF;
-    *(u16*)(pBuf + 0x1C) = (u8)(scale * ((f32)*(u16*)(pBuf + 0x1C) * (f32)*(u16*)(pBuf + 0x1C)));
-    if (*(u16*)(pBuf + 0x1C) == 0 || *(s16*)(pBuf + 0x18) == 0x3FF || *(s16*)(pBuf + 0x1A) == 0x2FF) {
-        *(s16*)(pBuf + 0x18) = 0;
-        *(s16*)(pBuf + 0x1A) = 0x2FF;
-        *(u16*)(pBuf + 0x1C) = 0;
+    pStatus->obj[2].x = (s16)(u16)report[12] | ((report[14] << 4) & 0x300);
+    pStatus->obj[2].y = WPAD_MAX_DPD_Y - (s16)((s16)(u16)report[13] | ((report[14] << 2) & 0x300));
+    pStatus->obj[2].size = report[14] & 0xF;
+    pStatus->obj[2].size = (u8)(3.14159f * ((f32)(u32)pStatus->obj[2].size * (f32)(u32)pStatus->obj[2].size));
+    if (pStatus->obj[2].size == 0 || pStatus->obj[2].x == WPAD_MAX_DPD_X || pStatus->obj[2].y == WPAD_MAX_DPD_Y) {
+        pStatus->obj[2].x = 0;
+        pStatus->obj[2].y = WPAD_MAX_DPD_Y;
+        pStatus->obj[2].size = 0;
     }
-    *(u8*)(pBuf + 0x1E) = 2;
+    pStatus->obj[2].traceId = 2;
 
-    v = (s16)p[15];
-    *(s16*)(pBuf + 0x20) = v | (s16)((p[17] << 4) & 0x300);
-    v = (s16)p[16];
-    *(s16*)(pBuf + 0x22) = 0x2FF - (s16)(v | (s16)((p[17] << 2) & 0x300));
-    *(u16*)(pBuf + 0x24) = p[17] & 0xF;
-    *(u16*)(pBuf + 0x24) = (u8)(scale * ((f32)*(u16*)(pBuf + 0x24) * (f32)*(u16*)(pBuf + 0x24)));
-    if (*(u16*)(pBuf + 0x24) == 0 || *(s16*)(pBuf + 0x20) == 0x3FF || *(s16*)(pBuf + 0x22) == 0x2FF) {
-        *(s16*)(pBuf + 0x20) = 0;
-        *(s16*)(pBuf + 0x22) = 0x2FF;
-        *(u16*)(pBuf + 0x24) = 0;
+    pStatus->obj[3].x = (s16)(u16)report[15] | ((report[17] << 4) & 0x300);
+    pStatus->obj[3].y = WPAD_MAX_DPD_Y - (s16)((s16)(u16)report[16] | ((report[17] << 2) & 0x300));
+    pStatus->obj[3].size = report[17] & 0xF;
+    pStatus->obj[3].size = (u8)(3.14159f * ((f32)(u32)pStatus->obj[3].size * (f32)(u32)pStatus->obj[3].size));
+    if (pStatus->obj[3].size == 0 || pStatus->obj[3].x == WPAD_MAX_DPD_X || pStatus->obj[3].y == WPAD_MAX_DPD_Y) {
+        pStatus->obj[3].x = 0;
+        pStatus->obj[3].y = WPAD_MAX_DPD_Y;
+        pStatus->obj[3].size = 0;
     }
-    *(u8*)(pBuf + 0x26) = 3;
+    pStatus->obj[3].traceId = 3;
 
-    enabled = OSDisableInterrupts();
-    *(u8*)((u8*)pCB + 0x806) = (u8)((u32)__cntlzw(*(u8*)((u8*)pCB + 0x806)) >> 5);
-    OSRestoreInterrupts(enabled);
+    /* Swapping the buffer index with interrupts off publishes the new report. */
+    irqState = OSDisableInterrupts();
+    cb->rxBufIndex = (u8)((u32)__cntlzw(cb->rxBufIndex) >> 5);
+    OSRestoreInterrupts(irqState);
 }
 
 /*
@@ -6885,7 +6906,7 @@ void fn_800678DC(s32 chan, u8 *data) {
 
     {
         s16 a = (s16)(data[3] << 2);
-        s16 b = (s16)(((s16)data[1] >> 6) & 2);
+        s16 b = (s16)(((u8)data[1] >> 6) & 2);
         a = a & ~3;
         v = (s16)((s16)(a | b) - *(s16*)((u8*)cb + 0x7B4));
     }
@@ -7255,15 +7276,18 @@ void fn_800684D0(s32 chan) {
     OSRestoreInterrupts(en);
 }
 
-void WPADiDecode(s32 chan, u8* data, WPAD_DECODE_LEN_T len, s32 seed) {
-    WPADCB* cb = lbl_8038F4F0[chan];
-    u8* base = (u8*)cb;
-    u16 i;
+void WPADiDecode(s32 chan, u8 *data, WPAD_DECODE_LEN_T len, s32 seed)
+{
+  WPADCB *cb = lbl_8038F4F0[chan];
+  u8 *base = (u8 *) cb;
+  u16 i;
+  for (i = 0; i < len; i++)
+  {
+    u8 idx = (seed + i) % 8;
+    u8 t1 = base[0x864 + idx], t2 = base[0x86C + idx];
+    data[i] = t1 + (t2 ^ data[i]);
+  }
 
-    for (i = 0; i < len; i++) {
-        u8 idx = (seed + i) % 8;
-        data[i] = base[0x864 + idx] + (data[i] ^ base[0x86C + idx]);
-    }
 }
 
 // WUD function stubs
