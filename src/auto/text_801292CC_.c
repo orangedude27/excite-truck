@@ -6,7 +6,7 @@ extern float lbl_80561238, lbl_8056123C, lbl_80561240; /* full/half/mute mix lev
 extern char lbl_8032A588[0x14], lbl_80559978; /* "SpuQueueLoadBank!" and "%s.bnk" */
 extern char lbl_8032A59C[]; /* "SpuQueueUnloadBank!" */
 extern int unloadStrmBankEx(int,int,int);
-extern int fn_802E7684(float);
+extern int StrmBank_SetLevel(float);
 extern int fn_802E30C8(const char *, ...);
 extern int unloadStrmBank(int);
 extern int strmLoadBank(const char *);
@@ -43,7 +43,7 @@ void fn_80129360(int bankId, int flags) { unloadStrmBankEx(gLoadedBankId, bankId
 #define FULL_LEVEL lbl_80561238 /* 1.0f */
 #define HALF_LEVEL lbl_8056123C /* 0.5f */
 #define MUTE_LEVEL lbl_80561240 /* 0.0f */
-#define setStreamBankLevel fn_802E7684
+#define setStreamBankLevel StrmBank_SetLevel
 
 /* Set a stream-bank channel's mix level: channel 1 uses full scale and channel 0
  * half scale, unless the enable flag is clear, which mutes the channel. */
