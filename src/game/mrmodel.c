@@ -958,7 +958,7 @@ void fn_802C61BC(void *arg0, int arg1) {
     }
 }
 /* Relocate an embedded pointer while fn_802C61BC converts a model: add delta, but leave a zero (null) field untouched. */
-void mrRelocatePointer(s32 *value, s32 delta) {
+/* Relocate an embedded pointer while fn_802C61BC converts a model: add delta, but leave a zero (null) field untouched. */ void mrRelocatePointer(s32 *value, s32 delta) {
     s32 ptr = *value;
     if (ptr != 0) {
         *value = ptr + delta;
