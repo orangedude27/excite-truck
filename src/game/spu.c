@@ -657,12 +657,9 @@ extern void fn_8012BEF0(unsigned char *);
 extern void fn_8012C41C(void (*)(void), int, unsigned char *);
 extern int Spu_CacheVoiceObject(void);
 #pragma dont_inline Spu_CacheVoiceObject
-/* fn_8012C41C callback: for every loaded entry of a resource directory whose
- * data is tagged 'SFX0', allocate a voice object for it (Spu_CacheVoiceObject keeps the
- * resource's name in r3 for fn_802E5AE8); returning 0 stops the walk. */
+/* fn_8012C41C resource-directory walk callback: cache a voice object for each
+ * loaded entry tagged 'SFX0'; other entry types are skipped by returning 1. */
 int Spu_CacheSfx0Voices(void *entry, int dataTag) {
-    /* Resource-directory walk callback: for the 'SFX0' sample type, allocate a
-     * voice object via Spu_CacheVoiceObject; for any other type keep the walk going (1). */
     if (dataTag == TAG_SFX0) return Spu_CacheVoiceObject();
     return 1;
 }
