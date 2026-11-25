@@ -140,7 +140,7 @@ void fn_8020F444(void) {
 #pragma scheduling on
  
 #pragma dont_inline on
-void fn_8020F5C8(void) {
+void TrackMusic_MarkAllLoaded(void) {
     /* Mark all three track-music load slots as loaded (the inverse of TrackMusic_markSongsUnloaded). */
     lbl_8055EEF6 = 1;
     lbl_8055EEF5 = 1;
@@ -148,7 +148,7 @@ void fn_8020F5C8(void) {
 }
 #pragma dont_inline reset
  
-/* Mark all three track-music load slots as unloaded (the inverse of fn_8020F5C8). */
+/* Mark all three track-music load slots as unloaded (the inverse of TrackMusic_MarkAllLoaded). */
 void TrackMusic_markSongsUnloaded(void) {
     lbl_8055EEF6 = 0;
     lbl_8055EEF5 = 0;
@@ -708,10 +708,10 @@ void fn_8021037C(void) {
 }
 #pragma scheduling on
 /* Tail-call thunk: mark all three track-music load slots as loaded (branches to
- * fn_8020F5C8). Called at the end of pre-race setup (fn_8000AB48); the pointer it
+ * TrackMusic_MarkAllLoaded). Called at the end of pre-race setup (fn_8000AB48); the pointer it
  * is passed is ignored by the callee. */
 void fn_802103B8(void) {
-    fn_8020F5C8();
+    TrackMusic_MarkAllLoaded();
 }
 
 #pragma push
