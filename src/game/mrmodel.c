@@ -102,7 +102,7 @@ void *fn_802C5390(int instanceId) {
     return (void *)(instances + (instanceId << 4));
 }
 #pragma scheduling off
-int MRModel_GetInstanceGroupList(instanceId)
+/* Return the group list (ModelInstance.groups, +0x04) of the model instance with the given id. */ int MRModel_GetInstanceGroupList(instanceId)
 int instanceId;
 {
     /* Return the group list (+0x4) of a model instance by id, from the instance table's 0x10-byte records. */
