@@ -2989,7 +2989,7 @@ void gxLoadDefaultIndTexMtx(void) {
 }
 
 extern void *lbl_8055FD5C;
-/* Set the global graphics-state object pointer (read by fn_802D3104 et al.
+/* Set the global graphics-state object pointer (read by gxGetBumpMapTexObjImpl et al.
    for the GXTexObj/indirect-texture state at +0x24). */
 void fn_802D30DC(void* state) {
     lbl_8055FD5C = state;
@@ -3031,7 +3031,7 @@ void *gxGetDistortTexObj(void) {
 
 extern void gxLoadDefaultIndTexMtx(void);
 #pragma dont_inline on
-void* fn_802D3104(void) {
+void* gxGetBumpMapTexObjImpl(void) {
     /* Load the default indirect-texture matrix, then return the address of the
        +0x24 field of the global graphics-state object held in lbl_8055FD5C. */
     struct { char pad[0x24]; char m; } *state;
@@ -3041,22 +3041,22 @@ void* fn_802D3104(void) {
 }
 #pragma dont_inline off
 
-/* Tail-call: load the default indirect-texture matrix (fn_802D3104) and return
+/* Tail-call: load the default indirect-texture matrix (gxGetBumpMapTexObjImpl) and return
  * the indirect-texture GXTexObj at +0x24 of the global GX state block. */
 void* fn_802D312C(void) {
-    return fn_802D3104();
+    return gxGetBumpMapTexObjImpl();
 }
 
-/* Tail-call: load the default indirect-texture matrix (fn_802D3104) and return
+/* Tail-call: load the default indirect-texture matrix (gxGetBumpMapTexObjImpl) and return
  * the indirect-texture GXTexObj at +0x24 of the global GX state block. */
 void* gxGetBumpMapTexObj(void) {
-    return fn_802D3104();
+    return gxGetBumpMapTexObjImpl();
 }
 
 void *fn_802D3134(void) {
-    /* Tail-call: load the default indirect-texture matrix (fn_802D3104) and return
+    /* Tail-call: load the default indirect-texture matrix (gxGetBumpMapTexObjImpl) and return
        the bump-map GXTexObj at +0x24 of the global GX state block (GX_TEXMAP5). */
-    return fn_802D3104();
+    return gxGetBumpMapTexObjImpl();
 }
 
 extern void *lbl_8055FD58;
