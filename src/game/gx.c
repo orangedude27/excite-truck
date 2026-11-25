@@ -3058,7 +3058,9 @@ void fn_802D30DC(void* state) {
 
 /* Return the GXTexObj at +0x24 of the global GX state block; the caller loads it
  * as the indirect texture (GXLoadTexObj, map 7). */
-void* gxGetIndirectTexObj(void) {
+void *gxGetIndirectTexObj(void) {
+    /* Return the GXTexObj at +0x24 of the global GX state block; the caller
+     * loads it as the indirect texture (GX_TEXMAP7). */
     struct { char pad[0x24]; char texObj; } *state;
     state = lbl_8055FD54;
     return &state->texObj;
