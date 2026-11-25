@@ -324,7 +324,10 @@ extern void fn_802CA57C(void *, int, int, int);
  * is never reset. */
 char fn_802CA7D4(void) { return 1; }
 /* True when the path's first byte is '*' (0x2A), marking a special extraction name. */
-int texIsExtractionName(const unsigned char *path) { return ((signed char)*path - 0x2A) == 0; }
+int texIsExtractionName(const unsigned char *path) {
+    /* True when the path begins with '*' (0x2A), the marker for a special texture extraction name. */
+    return ((signed char)*path - 0x2A) == 0;
+}
 
 #pragma dont_inline fn_802CA7F4
 /* Return nonzero when the path string contains a '/' separator. */
