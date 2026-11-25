@@ -1149,7 +1149,7 @@ extern "C" void fn_8013DF24(void *arg0, void *arg1, void *arg2) {
     } while (i < 2);
 }
 #pragma pop
-static inline TVec2 TVec2MulAdd8013E054(const TVec2 &base, const TVec2 &dir, f32 s) {
+static inline TVec2 TVec2MulAdd8013E054(TVec2 base, TVec2 dir, f32 s) {
     TVec2 r;
     r.x = base.x + dir.x * s;
     r.y = base.y + dir.y * s;
@@ -1203,50 +1203,45 @@ static inline f32 PSQUATMultiply_f32(void *a, void *b) {
 extern "C" f32 lbl_80561498, lbl_805614A4;
 #pragma push
 #pragma processor 750
-extern "C" void fn_8013E19C(void *arg0, float arg1) {
-    int s[9];
-    float *p = (float *)arg0;
-    float unit = lbl_805614A4;
-    void *other = (char *)arg0 + 0xC;
-    p[4] = unit;
-    p[1] = unit;
-    float t = arg1 / PSQUATMultiply(arg0, other);
-    float d = p[1];
-    float b = p[2];
-    float g = p[0];
-    float e = p[3];
-    float c = p[4];
-    float a = p[5];
-    float x = b + lbl_80561498 * (a - b);
-    float y = d + lbl_80561498 * (c - d);
-    float z = g + lbl_80561498 * (e - g);
-    float bx = b - x;
-    float by = d - y;
-    float bz = g - z;
-    *(float *)&s[2] = x;
-    *(float *)&s[0] = z;
-    *(float *)&s[1] = y;
-    float ax = a - x;
-    float ay = c - y;
-    float az = e - z;
-    float qx = x + t * bx;
-    float qy = y + t * by;
-    float qz = z + t * bz;
-    float rx = x + t * ax;
-    float ry = y + t * ay;
-    float rz = z + t * az;
-    *(float *)&s[5] = qx;
-    *(float *)&s[3] = qz;
-    *(float *)&s[4] = qy;
-    *(float *)&s[0] = rz;
-    *(float *)&s[1] = ry;
-    *(float *)&s[2] = rx;
-    p[2] = qx;
-    p[0] = qz;
-    p[1] = qy;
-    p[3] = rz;
-    p[4] = ry;
-    p[5] = rx;
+extern "C" void fn_8013E19C(void *arg0, float arg1)
+{
+  int s[9];
+  float *p = (float *) arg0;
+  float unit = lbl_805614A4;
+  void *other;
+  p[4] = unit;
+  p[1] = unit;
+  float t = arg1 / PSQUATMultiply(arg0, ((char *) arg0) + 0xC);
+  float g = p[0];
+  float d = p[1];
+  float b = p[2];
+  float e = p[3];
+  float c = p[4];
+  float a = p[5];
+  float y = d + (lbl_80561498 * (c - d));
+  float z = g + (lbl_80561498 * (e - g));
+  float x = b + (lbl_80561498 * (a - b));
+  *((float *) (&s[8])) = x;
+  *((float *) (&s[6])) = z;
+  *((float *) (&s[7])) = y;
+  float qx = x + (t * (b - x));
+  float qy = y + (t * (d - y));
+  float qz = z + (t * (g - z));
+  float rx = x + (t * (a - x));
+  float ry = y + (t * (c - y));
+  float rz = z + (t * (e - z));
+  *((float *) (&s[5])) = qx;
+  *((float *) (&s[3])) = qz;
+  *((float *) (&s[4])) = qy;
+  *((float *) (&s[0])) = rz;
+  *((float *) (&s[1])) = ry;
+  *((float *) (&s[2])) = rx;
+  p[2] = qx;
+  p[0] = qz;
+  p[1] = qy;
+  p[3] = rz;
+  p[4] = ry;
+  p[5] = rx;
 }
 #pragma pop
 
