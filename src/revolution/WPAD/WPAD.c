@@ -6330,8 +6330,8 @@ void fn_80065934(s32 chan, u8* data)
     OSRestoreInterrupts(irqState);
 }
 
-// fn_800660E8: decode one core button + accelerometer + IR (DPD) input report
-// into the control block's other receive buffer; the
+// decodeWpadReport (fn_800660E8): decode one core button + accelerometer + IR (DPD)
+// input report into the control block's other receive buffer; the
 // WPADiDecodeStatus/WPADiDecodeAccStatus family, without extension data.
 extern f32 lbl_80560CD8;
 void fn_800660E8(s32 chan, u8* data)
