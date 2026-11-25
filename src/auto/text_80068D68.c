@@ -4154,7 +4154,7 @@ void GKI_shutdown(void) {
 /* GkiSchedLock: no-op scheduler-lock stub.  This build pins all Bluetooth work
  * to one fiber, so locking the scheduler does nothing; BTM code still brackets
  * state reads with it for symmetry with the other GKI ports. */
-void fn_8006EAD0(void) {
+/* No-op callback in the Wii runtime glue; no action required. */ void fn_8006EAD0(void) {
 }
 
 /* GKI_sched_unlock (revolution/BTE/gki/common/gki.h:465): no-op scheduler-unlock
