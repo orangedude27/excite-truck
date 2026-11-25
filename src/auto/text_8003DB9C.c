@@ -3635,30 +3635,29 @@ unsigned int GXSetDispCopyYScale(f32 vscale) {
     return numLines;
 }
 
+#pragma opt_common_subs off
 void GXSetCopyClear(unsigned char *color, unsigned int depth) {
-    unsigned int first = 0;
-    unsigned int second = 0;
-    unsigned int third = 0;
+    unsigned int reg = 0;
     unsigned int *data;
-    first = __rlwimi(first, color[0], 0, 24, 31);
+    reg = __rlwimi(reg, color[0], 0, 24, 31);
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    first = __rlwimi(first, color[3], 8, 16, 23);
-    first = __rlwimi(first, 0x4F, 24, 0, 7);
-    *(volatile unsigned int *)0xCC008000 = first;
-    second = __rlwimi(second, color[2], 0, 24, 31);
-    second = __rlwimi(second, color[1], 8, 16, 23);
+    reg = __rlwimi(reg, color[3], 8, 16, 23);
+    reg = __rlwimi(reg, 0x4F, 24, 0, 7);
+    *(volatile unsigned int *)0xCC008000 = reg;
+    reg = 0;
+    reg = __rlwimi(reg, color[2], 0, 24, 31);
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    second = __rlwimi(second, 0x50, 24, 0, 7);
+    reg = __rlwimi(reg, color[1], 8, 16, 23);
+    reg = __rlwimi(reg, 0x50, 24, 0, 7);
     data = __GXData;
-    *(volatile unsigned int *)0xCC008000 = second;
-    third = __rlwimi(third, depth, 0, 8, 31);
-    third = __rlwimi(third, 0x51, 24, 0, 7);
+    *(volatile unsigned int *)0xCC008000 = reg;
+    reg = 0;
+    reg = __rlwimi(reg, depth, 0, 8, 31);
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = third;
+    reg = __rlwimi(reg, 0x51, 24, 0, 7);
+    *(volatile unsigned int *)0xCC008000 = reg;
     *(unsigned short *)((char *)data + 2) = 0;
 }
-
-#pragma opt_propagation off
 void GXSetCopyFilter(int arg0, unsigned char *arg1, int arg2, unsigned char *arg3) {
     union MSLoc {
         unsigned int word;
@@ -4857,40 +4856,42 @@ void *GXSetTlutRegionCallback(void *callback) {
     return old;
 }
 
-void __SetSURegs(u32 arg0, u32 arg1) {
+void __SetSURegs(s32 arg0, s32 arg1) {
+    unsigned int *su;
+    unsigned int *tex;
     unsigned int *data;
     unsigned int value;
     unsigned int v1;
     unsigned int v2;
     unsigned int su1;
     unsigned int su2;
-    u8 s_bias;
-    u8 t_bias;
+    unsigned int mode;
     union { unsigned int v; struct { unsigned int lo : 16; unsigned int hi : 16; } f; } u;
     data = __GXData;
-    value = (data + 0x564 / 4)[arg0];
+    tex = data + arg0;
+    su = data + arg1;
+    value = tex[0x564 / 4];
     v1 = value & 0x3FF;
     v2 = (value >> 10) & 0x3FF;
-    su1 = (data + 0x108 / 4)[arg1];
+    su1 = su[0x108 / 4];
     u.v = su1;
     u.f.hi = v1;
     su1 = u.v;
-    (data + 0x108 / 4)[arg1] = su1;
-    su2 = (data + 0x128 / 4)[arg1];
+    su[0x108 / 4] = su1;
+    su2 = su[0x128 / 4];
     u.v = su2;
     u.f.hi = v2;
     su2 = u.v;
-    (data + 0x128 / 4)[arg1] = su2;
-    s_bias = ((data + 0x584 / 4)[arg0] & 3) == 1;
-    t_bias = (((data + 0x584 / 4)[arg0] >> 2) & 3) == 1;
-    su1 = __rlwimi(su1, s_bias, 16, 15, 15);
-    (data + 0x108 / 4)[arg1] = su1;
-    su2 = __rlwimi(su2, t_bias, 16, 15, 15);
-    (data + 0x128 / 4)[arg1] = su2;
+    su[0x128 / 4] = su2;
+    mode = tex[0x584 / 4];
+    su1 = __rlwimi(su1, __cntlzw((mode & 3) - 1), 11, 15, 15);
+    su[0x108 / 4] = su1;
+    su2 = __rlwimi(su2, __cntlzw(((mode >> 2) & 3) - 1), 11, 15, 15);
+    su[0x128 / 4] = su2;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = (data + 0x108 / 4)[arg1];
+    *(volatile unsigned int *)0xCC008000 = su[0x108 / 4];
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = (data + 0x128 / 4)[arg1];
+    *(volatile unsigned int *)0xCC008000 = su[0x128 / 4];
     *((unsigned short *)((char *)data + 2)) = 0;
 }
 
@@ -5275,44 +5276,48 @@ void __GXFlushTextureState(void) {
 #pragma dont_inline reset
 
 extern unsigned int lbl_80303C30[];
-void GXSetTevOp(int stage, int mode) {
-    unsigned int *base = lbl_80303C30;
-    unsigned int *data;
-    unsigned int *tev;
-    unsigned int *color;
-    unsigned int *alpha;
-    unsigned int value;
-    unsigned int oldValue;
-    unsigned int inputValue;
-
-    if (stage == 0) {
-        color = base;
-        alpha = base + 10;
-        color += mode;
-        alpha += mode;
-    } else {
-        color = base + 5;
-        alpha = base + 15;
-        color += mode;
-        alpha += mode;
-    }
-    data = __GXData;
-    tev = data + stage;
-    inputValue = *color;
-    oldValue = tev[0x180 / 4];
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    value = oldValue & 0xFF000000;
-    value = __rlwimi(value, inputValue, 0, 8, 31);
-    *(volatile unsigned int *)0xCC008000 = value;
-    tev[0x180 / 4] = value;
-    oldValue = tev[0x1C0 / 4];
-    inputValue = *alpha;
-    value = oldValue & 0xFF00000F;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    value = __rlwimi(value, inputValue, 0, 8, 27);
-    *(volatile unsigned int *)0xCC008000 = value;
-    tev[0x1C0 / 4] = value;
-    *(unsigned short *)((char *)data + 2) = 0;
+void GXSetTevOp(int stage, int mode)
+{
+  unsigned int *base = lbl_80303C30;
+  unsigned int *tev;
+  unsigned int *data;
+  unsigned int *color;
+  unsigned int *alpha;
+  unsigned int value;
+  unsigned int inputValue;
+  unsigned int oldValue;
+  unsigned int __repair_inputValue_1;
+  if (stage == 0)
+  {
+    color = base;
+    alpha = base + 10;
+    color += mode;
+    alpha += mode & 0xFFFF;
+  }
+  else
+  {
+    color = base + 5;
+    alpha = base + 15;
+    color += mode;
+    alpha += mode;
+  }
+  data = __GXData;
+  tev = data + stage;
+  inputValue = *color;
+  oldValue = tev[0x180 / 4];
+  *((volatile unsigned char *) 0xCC008000) = 0x61;
+  value = oldValue & 0xFF000000;
+  value = __rlwimi(value, inputValue, 0, 8, 31);
+  *((volatile unsigned int *) 0xCC008000) = value;
+  tev[0x180 / 4] = value;
+  oldValue = tev[0x1C0 / 4];
+  __repair_inputValue_1 = *alpha;
+  value = oldValue & 0xFF00000F;
+  *((volatile unsigned char *) 0xCC008000) = 0x61;
+  value = __rlwimi(value, __repair_inputValue_1, 0, 8, 27);
+  *((volatile unsigned int *) 0xCC008000) = value;
+  tev[0x1C0 / 4] = value;
+  *((unsigned short *) (((char *) data) + 2)) = 0;
 }
 
 // GXData caches the BP's per-stage TEV combiner registers, one word per stage:
@@ -6149,24 +6154,20 @@ void GXSetProjection(float *arg0, int arg1) {
 }
 
 #pragma push
-#pragma processor 750
+#pragma processor gekko
 #pragma paired on
 #pragma paired_single on
 void GXSetProjectionv(float *arg0) {
     unsigned int *data;
-    double *src;
-    double *dst;
     enum E { GX_PERSPECTIVE, GX_ORTHOGRAPHIC };
     enum E type;
     if (lbl_80560BC8 == arg0[0]) type = GX_PERSPECTIVE;
     else type = GX_ORTHOGRAPHIC;
     data = __GXData;
     data[0x528 / 4] = type;
-    src = (double *)(arg0 + 1);
-    dst = (double *)((char *)data + 0x52C);
-    dst[0] = src[0];
-    dst[1] = src[1];
-    dst[2] = src[2];
+    *(float *)((char *)data + 0x52C) = arg0[1];
+    *(float *)((char *)data + 0x534) = arg0[2];
+    *(float *)((char *)data + 0x53C) = arg0[4];
     data[0x5FC / 4] |= 0x08000000;
 }
 #pragma pop
@@ -6257,43 +6258,30 @@ void GXLoadTexMtxImm(const f32 *mtx, u32 id, s32 type) {
 }
 
 void __GXSetViewport(void) {
-    unsigned int *d = __GXData;
-    register f32 f9, f8, f5, f4, f7, f0, f1, f3, f2, f6;
-    volatile u8 *bp8 = (volatile u8 *)0xCC008000;
-    volatile u32 *bp32 = (volatile u32 *)0xCC008000;
-    volatile f32 *bpf = (volatile f32 *)0xCC008000;
+    unsigned int *data = __GXData;
+    f32 a, b, c, d, e, f;
+    f32 nearZ, farZ;
+    volatile u8 *fifo8 = (volatile u8 *)0xCC008000;
+    volatile u32 *fifo32 = (volatile u32 *)0xCC008000;
+    volatile f32 *fifoF = (volatile f32 *)0xCC008000;
 
-    f6 = lbl_80560BCC;
-    f2 = *(f32 *)((u8 *)d + 0x550);
-    f3 = *(f32 *)((u8 *)d + 0x54C);
-    f1 = -f2;
-    f0 = *(f32 *)((u8 *)d + 0x544);
-    f7 = f3 * f6;
-    f4 = *(f32 *)((u8 *)d + 0x548);
-    f5 = f2 * f6;
-    f3 = *(f32 *)((u8 *)d + 0x554);
-    f8 = f1 * f6;
-    f2 = *(f32 *)((u8 *)d + 0x560);
-    f1 = *(f32 *)((u8 *)d + 0x558);
-    f6 = f0 + f7;
-    f0 = *(f32 *)((u8 *)d + 0x55C);
-    f3 = f3 * f2;
-    f9 = f1 * f2;
+    a = *(f32 *)((u8 *)data + 0x54C) / 2.0f;
+    b = -*(f32 *)((u8 *)data + 0x550) / 2.0f;
+    d = *(f32 *)((u8 *)data + 0x544) + (*(f32 *)((u8 *)data + 0x54C) / 2.0f) + 342.0f;
+    e = *(f32 *)((u8 *)data + 0x548) + (*(f32 *)((u8 *)data + 0x550) / 2.0f) + 342.0f;
+    nearZ = *(f32 *)((u8 *)data + 0x554) * *(f32 *)((u8 *)data + 0x560);
+    farZ = *(f32 *)((u8 *)data + 0x558) * *(f32 *)((u8 *)data + 0x560);
+    c = farZ - nearZ;
+    f = farZ + *(f32 *)((u8 *)data + 0x55C);
 
-    *bp8 = 16;
-    f2 = lbl_80560BD0;
-    f1 = f4 + f5;
-    *bp32 = 0x5101A;
-    f3 = f9 - f3;
-    *bpf = f7;
-    f4 = f2 + f6;
-    f1 = f2 + f1;
-    *bpf = f8;
-    f0 = f9 + f0;
-    *bpf = f3;
-    *bpf = f4;
-    *bpf = f1;
-    *bpf = f0;
+    *fifo8 = 0x10;
+    *fifo32 = 0x5101A;
+    *fifoF = a;
+    *fifoF = b;
+    *fifoF = c;
+    *fifoF = d;
+    *fifoF = e;
+    *fifoF = f;
 }
 
 #define GX_JITTER_HALF_PIXEL lbl_80560BCC // 0.5f: vertical offset for even interlaced fields
