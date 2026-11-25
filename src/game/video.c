@@ -411,7 +411,7 @@ void GXResetWaterBumpTevPipelineB(void) {
     GXSetNumTevStages(2);
 }
 #define ResetTevSwapModes fn_802DFAF4 /* reset TEV swap selectors for stages 0 and 1 */
-/* Reset TEV swap selectors (used by GXResetSceneLightsPipeline): set stages 0 and 1 both to swap 0 / swap 0. */ void fn_802DFAF4(void) {
+/* Reset TEV swap selectors (used by GXResetSceneLightsPipeline): set stages 0 and 1 both to swap 0 / swap 0. */ /* Reset TEV swap selectors (used by GXResetSceneLightsPipeline): set stages 0 and 1 both to swap 0 / swap 0. */ void fn_802DFAF4(void) {
     /* Reset the TEV swap selectors to swap 0 for the first two stages. */
     GXSetTevSwapMode(GX_TEVSTAGE0, GX_TEV_SWAP0, GX_TEV_SWAP0);
     GXSetTevSwapMode(GX_TEVSTAGE1, GX_TEV_SWAP0, GX_TEV_SWAP0);
