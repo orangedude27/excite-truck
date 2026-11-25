@@ -165,63 +165,57 @@ void fn_8023C3D4(void) {
     fn_802146BC(data, -0x3E7, -0x3E7, 1, v[3], v[2], v[0], w[4]);
 }
 
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_8023C55C(void *arg0) {
-    char *base = lbl_803413C0;
-    char *b10 = base + 0x10;
-    char *b24 = base + 0x24;
-    char *b38 = base + 0x38;
-    char *b44 = base + 0x44;
-    char *b54 = base + 0x54;
     char obj1[0x1C];
     char obj2[0x1C];
     s32 hdr[5];
     s32 data[35];
     s32 *s = lbl_80498788;
-    s32 *v = lbl_802FA07C;
+    register s32 *v = lbl_802FA07C;
 
     lbl_8055F148 = fn_802C83C4();
     lbl_8055F150 = lbl_8055F148;
-    fn_8023C800(obj1, (s32)&lbl_8055F148, fn_80131234(b10), fn_80131234(b24), 0);
+    fn_8023C800(obj1, (s32)&lbl_8055F148, fn_80131234(lbl_803413C0 + 0x10), fn_80131234(lbl_803413C0 + 0x24), 0);
     lbl_8055F144 = fn_802090CC();
     lbl_8055F14C = lbl_8055F144;
-    fn_8023C800(obj2, (s32)&lbl_8055F144, fn_80131234(b38), fn_80131234(b44), fn_80131234(b54), 0);
+    fn_8023C800(obj2, (s32)&lbl_8055F144, fn_80131234(lbl_803413C0 + 0x38), fn_80131234(lbl_803413C0 + 0x44), fn_80131234(lbl_803413C0 + 0x54), 0);
 
+    data[0] = (s32)lbl_8055BB50;
+    data[3] = (s32)obj1;
+    data[1] = 0x10;
+    data[6] = 0x10;
+    data[2] = 0;
+    data[4] = 0x10;
+    data[5] = (s32)lbl_8055BB58;
+    data[7] = 0;
+    data[8] = (s32)obj2;
+    data[9] = 0;
+    data[11] = 6;
+    data[10] = (s32)&lbl_8055B860;
+    data[12] = (s32)fn_8023C2E4;
+    data[13] = -1;
+    data[14] = 0x1B;
+    data[16] = 0;
+    data[15] = (s32)lbl_8055BB60;
+    data[17] = 0;
+    data[18] = 3;
+    data[19] = 0;
+    data[21] = 8;
+    data[20] = (s32)&lbl_8055BAB8;
+    data[22] = (s32)fn_80236914;
+    data[23] = 2;
+    data[24] = 0;
+    data[26] = 8;
+    data[25] = (s32)&lbl_8055BAC0;
+    data[27] = (s32)fn_8023C2B4;
+    data[28] = 0;
+    data[29] = 0;
     data[30] = s[0];
     data[31] = s[1];
     data[32] = s[2];
     data[33] = s[3];
     data[34] = s[4];
-    data[0] = (s32)lbl_8055BB50;
-    data[1] = 0x10;
-    data[2] = 0;
-    data[3] = (s32)obj1;
-    data[4] = 0x10;
-    data[5] = (s32)lbl_8055BB58;
-    data[6] = 0x10;
-    data[7] = 0;
-    data[8] = (s32)obj2;
-    data[9] = 0;
-    data[10] = (s32)&lbl_8055B860;
-    data[11] = 6;
-    data[12] = (s32)fn_8023C2E4;
-    data[13] = -1;
-    data[14] = 0x1B;
-    data[15] = (s32)lbl_8055BB60;
-    data[16] = 0;
-    data[17] = 0;
-    data[18] = 3;
-    data[19] = 0;
-    data[20] = (s32)&lbl_8055BAB8;
-    data[21] = 8;
-    data[22] = (s32)fn_80236914;
-    data[23] = 2;
-    data[24] = 0;
-    data[25] = (s32)&lbl_8055BAC0;
-    data[26] = 8;
-    data[27] = (s32)fn_8023C2B4;
-    data[28] = 0;
-    data[29] = 0;
     hdr[0] = v[0];
     hdr[2] = v[2];
     hdr[3] = v[3];
@@ -229,8 +223,11 @@ void fn_8023C55C(void *arg0) {
     hdr[0] = (s32)arg0;
     hdr[1] = (s32)data;
     lbl_8055F154 = 0;
-    while (((s32 (*)(s32 *, s32, s32, s32))fn_802146BC)(hdr, -0x3E7, -0x3E7, 1) == 3) {
-        fn_8023C3D4();
+    while (1) {
+        if (((s32 (*)(s32 *, s32, s32, s32))fn_802146BC)(hdr, -0x3E7, -0x3E7, 1) == 3)
+            fn_8023C3D4();
+        else
+            break;
     }
     fn_8023C308(0);
     *(s32 **)(obj2 + 0xC) = &lbl_80341448;
