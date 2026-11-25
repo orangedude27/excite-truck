@@ -1351,7 +1351,7 @@ extern void startTextureRequestRead(void *, void *);
 extern void TexClearRequestRefs(void *, unsigned int);
 extern void fn_802CC03C(int **, int *, int);
 extern int fn_802CC10C(void *, int, int, int);
-extern int fn_802CC404(void *);
+extern int getTextureHeap(void *);
 extern void *fn_802CC2C8(void *, int);
 /* Service the texture manager's active request: split the priority-sorted node list so lower-priority textures can be evicted, allocate the request's texture from the heap (freeing nodes until it fits), and mark the texture active on success. */ void texAllocPending(void *texMgr) {
     // Queue the pending texture by priority, allocate it, evicting lower-priority entries until it fits.
@@ -1400,7 +1400,7 @@ scan_done:
             *(int *)(request + 0x10) = zero;
         alloc_loop:
             *(void **)(request + 8) =
-                fn_802CC2C8((void *)fn_802CC404(base),
+                fn_802CC2C8((void *)getTextureHeap(base),
                             *(int *)(record + 0x3C));
             if (*(void **)(request + 8) == 0 && freeTex != 0 &&
                 fn_802CC10C(base, *(int *)freeTex,
@@ -1617,7 +1617,7 @@ void *fn_802CC2C8(void *arg0, int arg1) {
 
 /* Return the SimpleHeap handle used for texture allocations: the scene context
    holds a heap container at +0x38, whose +4 field is the heap handle. */
-int fn_802CC404(void *context) {
+int getTextureHeap(void *context) {
     char *heapContainer = *(char **)((char *)context + 0x38);
     return *(int *)(heapContainer + 4);
 }
