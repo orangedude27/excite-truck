@@ -14,4 +14,3 @@ unsigned int fn_80138BB0(void) {
     p[0] = 0xFFFF0000;
     return 0xFFFF0000;
 }
-#pragma scheduling on
