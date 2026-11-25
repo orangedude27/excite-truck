@@ -318,13 +318,13 @@ extern int fn_8012C4D8(int);
 extern int fn_802E88D8(void);
 /* After a corrupt NAND read, poll request 4 until it completes and reset the
  * console to the home menu; bail out if request 0 completes first. */
-/* After a corrupt NAND read, poll request 4 and reset to the home menu; bail out if request 0 completes first. */ /* After a corrupt NAND read, poll request 4 until it completes and reset to the home menu; bail out if request 0 completes first. */ void rmemcardCorruptReset(void) {
+void rmemcardCorruptReset(void) {
     for (;;) {
         if (((int (*)(int))fn_802E888C)(4) != 0) {
             ((void (*)(void))fn_802E8918)();
             return;
         }
-        if (rmemcardPollSpaceReady() != 0)
+        if (fn_802E88D8() != 0)
             return;
     }
 }
