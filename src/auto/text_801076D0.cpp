@@ -6227,7 +6227,16 @@ extern "C" f32 fn_80112528(void *writer, const char *str, s32 length) {
  * inlined here.  Returns the width the print loop measured. */
 #pragma push
 #pragma use_lmw_stmw off
+/* RealName: charWriterWriteString - nw4hbm::ut::CharWriter::Write(const char16 *). */
 extern "C" f32 fn_80112960(void *writer, const u16 *str) {
+#define utf16Strlen fn_8002AEE8
+#define printAndMeasure fn_801142F8
+#define getCursorY GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770
+#define getCursorX GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658
+#define setCursor SetCursor__Q36nw4hbm2ut10CharWriterFff
+#define destroyWriterCopy fn_801033F0
+#define nw4hbmPanic Panic__Q26nw4hbm2dbFPCciPCce
+#define assertSourceFile lbl_80329530
     extern s32 fn_8002AEE8(s32);                                    /* the UTF-16 strlen */
     extern f32 fn_801142F8(void *, s32, s32);                       /* the print/measure loop */
     extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(s32); /* the writer's cursor Y */
