@@ -26,7 +26,7 @@ extern int lbl_8055ECCC; /* primary model handle (-1 when unset) */
 extern int lbl_8055ECD0; /* secondary model handle (-1 when unset) */
 #define sPrimaryModelHandle lbl_8055ECCC
 #define sSecondaryModelHandle lbl_8055ECD0
-extern unsigned char lbl_8055ECE0;
+extern unsigned char sRequestedPosPending;
 extern void modPoolReleaseLoadedSlot(int);
 extern int modPoolDestroy(int);
 extern int fn_802CE850(int);
@@ -214,7 +214,7 @@ void fn_802023D4(void) {
     position_defaults[0] = lbl_805630A4;
     position_defaults[1] = lbl_805630A4;
     position_defaults[2] = lbl_805630A4;
-    lbl_8055ECE0 = 0;
+    sRequestedPosPending = 0;
     lbl_8055ECDC = -1;
     flags[0] = -1;
     flags[1] = -1;
@@ -370,7 +370,7 @@ void fn_80202924(void) {
     if (lbl_8055ECC0 <= 0)
         return;
     lbl_8055ECDC = -1;
-    if (lbl_8055ECE0 != 0) {
+    if (sRequestedPosPending != 0) {
         requestedPos = *(Vec *)fn_802023C8();
         nearestIndex = fn_802022E4(&requestedPos);
         lbl_8055ECDC = nearestIndex;
@@ -386,7 +386,7 @@ test:
         if (slotIndex >= 0)
             goto loop;
     }
-    lbl_8055ECE0 = 0;
+    sRequestedPosPending = 0;
     fn_802CE4F4(lbl_8055ECC8);
 }
 void fn_802029FC(void) {
@@ -433,7 +433,7 @@ test:
 
 #pragma scheduling on
 #pragma pop
-extern unsigned char lbl_8055ECE0;
+extern unsigned char sRequestedPosPending;
 extern int lbl_8055ECC8, lbl_8055ECCC, lbl_8055ECD0;
 extern int lbl_804888E0[];
 extern float lbl_805630A4, lbl_805630B0, lbl_805630B4;
@@ -461,7 +461,7 @@ void submitModelBatch(void);
     ((float *)lbl_80488964)[0] = a;
     ((float *)lbl_80488964)[1] = b;
     ((float *)lbl_80488964)[2] = c;
-    lbl_8055ECE0 = 1;
+    sRequestedPosPending = 1;
 }
 #pragma pop
 int fn_80202B00(void) {
