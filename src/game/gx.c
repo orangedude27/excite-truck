@@ -1165,7 +1165,7 @@ void fn_802CFF5C(void* flags) {
 }
 
 /* Bump-allocates size bytes (rounded up to 32) from the GX dynamic-data display-list buffer, wrapping to its start when full. */
-int fn_802CFF64(int size) {
+/* Bump-allocate size bytes, rounded up to 32, from the GX dynamic-data display-list buffer; return the previous offset and advance it, wrapping back to the buffer start when the 0x177000-byte capacity would be exceeded. */ int fn_802CFF64(int size) {
     int newOffset;
     int oldOffset = GX_DYNAMIC_OFFSET;
     int alignedSize = (size + 0x1F) & ~0x1F;
