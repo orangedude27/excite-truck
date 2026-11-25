@@ -640,7 +640,7 @@ extern void endMeshPass(void);
 /* End the pending mesh pass -- endMeshPass flushes the mesh vertex/index buffers
  * and drops the mesh mode to idle -- and put the draw lists in render mode 2,
  * the GX state that mesh pass leaves behind. */
-void DrawList_endMeshPass(void) {
+/* End the pending mesh pass (flush buffers, set mesh mode idle) and record render mode 2, the GX state the pass leaves behind. */ void DrawList_endMeshPass(void) {
     endMeshPass();
     sRenderMode = 2;
 }
