@@ -39,7 +39,7 @@ void fn_8023FE20(void) {
     slots[3] = -1;
 }
 
-s32 fn_8023FE34(void) {
+s32 MRoll_getActivePlayerCount(void) {
     /* Count the active (id >= 0) player slots in g_MRollPlayerSlots (gMRollPlayerSlots). */
     register s32 *cursor = (s32 *)gMRollPlayerSlots;
     s32 activeCount = 0;
@@ -962,10 +962,10 @@ void fn_802411C8(void) { fn_8023FE20(); }
 #pragma dont_inline reset
 
 #pragma dont_inline on
-extern s32 fn_8023FE34(void);
+extern s32 MRoll_getActivePlayerCount(void);
 /* MRoll: non-inlined wrapper that tail-calls the active-driver-slot counter
- * (fn_8023FE34); the returned count drives the caller's per-driver refresh loop. */
-s32 fn_802411CC(void) { fn_8023FE34(); }
+ * (MRoll_getActivePlayerCount); the returned count drives the caller's per-driver refresh loop. */
+s32 fn_802411CC(void) { MRoll_getActivePlayerCount(); }
 #pragma dont_inline reset
 
 extern void fn_8023FE60();
