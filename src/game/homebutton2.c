@@ -34,8 +34,8 @@ void fn_80127464(void);
   s32 fn_8012850C(s32, void *);
   void fn_802E3804(s32, s32, s32);
   void fn_802E3734(s32 *);
-/* Returns true when the console's configured aspect ratio is widescreen (16:9). */
-/* Return true when the console's configured aspect ratio is 16:9 (widescreen). */ s32 HomeMenu_isWidescreen(void) {
+/* Return true when the console's configured aspect ratio is 16:9 (widescreen). */
+s32 HomeMenu_isWidescreen(void) {
     return ConfigGetAspectRatio() == SC_ASPECT_WIDE;
 }
   
