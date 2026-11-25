@@ -348,7 +348,8 @@ int fn_80004D64(char* args) {
 }
 
 #pragma scheduling invalid_target
-int fn_80005158(const char *name) {
+int fn_80005158(const char *name)
+{
     char *data = lbl_802FAEA0;
     int result;
     int saved;
@@ -362,20 +363,16 @@ int fn_80005158(const char *name) {
     found = 0;
     count = fn_80012818();
     first = lbl_8034EC58[0];
-    if (first == '$') goto dollar;
-    if (first != '@') goto generic;
-    result = fn_80004F00(&count, &found, lbl_8034EC58 + 1);
-    if (!result) MenuLog(data + 0x150, lbl_8034EC58 + 1);
-    goto after_lookup;
-dollar:
-    if (first == '\0') goto generic;
-    result = fn_80005044(&count, &found, lbl_8034EC58);
-    if (!result) MenuLog(data + 0x180, lbl_8034EC58);
-    goto after_lookup;
-generic:
-    result = fn_800050D0(&count, &found, name);
-    if (!result) MenuLog(data + 0x1b0, name);
-after_lookup:
+    if (first == '$' || first == '@') {
+        result = fn_80004F00(&count, &found, lbl_8034EC58 + 1);
+        if (!result) MenuLog(data + 0x150, lbl_8034EC58 + 1);
+    } else if (first != '\0') {
+        result = fn_80005044(&count, &found, lbl_8034EC58);
+        if (!result) MenuLog(data + 0x180, lbl_8034EC58);
+    } else {
+        result = fn_800050D0(&count, &found, name);
+        if (!result) MenuLog(data + 0x1b0, name);
+    }
     if (result) {
         fn_8020A600();
         fn_8023BFBC(count, found);
