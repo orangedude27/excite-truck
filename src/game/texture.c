@@ -928,12 +928,12 @@ int fn_802CB128(int width, int height, int unused, int flagsMask) {
 }
 
 /* Return the larger of a texture slot's width and height (its longest side). */
-unsigned short getTextureSlotLongestSide(int slotIndex) {
-    int *slot = (int *)(textureSlots + slotIndex * texSlotSize);
-    unsigned short *dims = (unsigned short *)slot[0x2C / 4];
-    if ((int)dims[1] > (int)dims[0])
-        return dims[1];
-    return dims[0];
+/* Return the larger of a texture slot's width and height (its longest side). */ unsigned short getTextureSlotLongestSide(int slotIndex) {
+    int *slotData = (int *)(textureSlots + slotIndex * texSlotSize);
+    unsigned short *dimensions = (unsigned short *)slotData[0x2C / 4];
+    if ((int)dimensions[1] > (int)dimensions[0])
+        return dimensions[1];
+    return dimensions[0];
 }
 
 #pragma unroll off
