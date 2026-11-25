@@ -618,7 +618,7 @@ extern int fn_80128668(void);
 }
 
 /* Return the "Voice Mixer" name string. */
-void *fn_8020B314(void) {
+void *VoiceMixerDevice_GetName(void) {
 #define sVoiceMixerName lbl_8033C520
     return sVoiceMixerName;
 #undef sVoiceMixerName
