@@ -29,7 +29,7 @@ extern unsigned int lbl_8055EE00;
 
 extern void fn_802E6264(void);
 extern void SpuSampleReleaseRef(void *);
-extern void fn_8020B2BC(void *, int, int);
+extern void VoiceMixer_clearSlot(void *, int, int);
 extern int lbl_8055EE0C;
 extern void *lbl_8055EE10;
 extern char lbl_8033C35C[];
@@ -576,7 +576,7 @@ extern char lbl_8033C3F4[];
         resource = *(int *)((char *)voiceSnd + 0x10);
         if (resource != 0) {
             SpuSampleReleaseRef((void *)resource);
-            ((void (*)(void *, int, int))fn_8020B2BC)(gVoiceMixer, (int)voiceSnd, *(int *)((char *)voiceSnd + 0x40));
+            ((void (*)(void *, int, int))VoiceMixer_clearSlot)(gVoiceMixer, (int)voiceSnd, *(int *)((char *)voiceSnd + 0x40));
         }
         if (shouldFree > 0)
             ((void (*)(void *))VoiceSoundPool_Free)(voiceSnd);
@@ -593,7 +593,7 @@ int VoiceSnd_hasSound(void *voiceSnd) {
 }
 
 /* Clear slot slotIndex in the active voice mixer's work-buffer slot array (voiceSound is passed but unused). */
-void fn_8020B2BC(void *mixer, int voiceSound, int slotIndex) {
+void VoiceMixer_clearSlot(void *mixer, int voiceSound, int slotIndex) {
     int *slots = *(int **)((unsigned char *)mixer + 4);
     slots[slotIndex] = 0;
 }
