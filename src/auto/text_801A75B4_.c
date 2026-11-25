@@ -11,7 +11,7 @@ extern float fn_801A7F98();
 extern float lbl_80562458;
 extern const float lbl_80562468;
 extern float lbl_8056246C;
-extern int fn_802E4A1C(unsigned char);
+extern int isKeyPressed(unsigned char);
 extern float lbl_80562470;
 extern char lbl_8055A850;
 extern void *fn_801A9234(const char *);
@@ -720,9 +720,9 @@ int *input;
             return lbl_80562458;
         }
         break;
-    case 1: /* keyboard/action key, looked up in fn_802E4A1C's table */
+    case 1: /* keyboard/action key, looked up in isKeyPressed's table */
         if (*(unsigned char *)&lbl_8055E5C8 == 0) {
-            if (fn_802E4A1C(*(unsigned char *)(input + 2)) != 0)
+            if (isKeyPressed(*(unsigned char *)(input + 2)) != 0)
                 return lbl_8056246C;
             return lbl_80562458;
         }

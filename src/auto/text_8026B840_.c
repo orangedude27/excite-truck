@@ -43,7 +43,7 @@ extern f32 lbl_80563D88;
 extern f32 lbl_80563D8C;
 extern f32 lbl_80563D9C;
 extern s32 KERNEL_GetTimeMs(void);
-extern s32 fn_802E4A1C();
+extern s32 isKeyPressed();
 extern s32 fn_801298E8(f32 *, s32);
 extern void fn_80015A20();
 extern f32 lbl_80563D90;
@@ -168,9 +168,9 @@ void fn_8026B8A0(void) {
         f32 z = lbl_80563D78;
         f32 sc = lbl_80563DA4;
         f32 dir = z;
-        if (fn_802E4A1C(0x1e) != 0) {
+        if (isKeyPressed(0x1e) != 0) {
             dir = lbl_80563D94;
-        } else if (fn_802E4A1C(0x2c) != 0) {
+        } else if (isKeyPressed(0x2c) != 0) {
             dir = lbl_80563D98;
         }
         push.x = dt * (z * sc);
@@ -262,7 +262,7 @@ extern char lbl_8049A168[];
 extern f32 lbl_80563D88;
 extern f32 lbl_80563D8C;
 extern f64 lbl_80563DD0;
-extern s32 fn_802E4A1C();
+extern s32 isKeyPressed();
 extern f32 lbl_80563DD8;
 extern f32 lbl_80563D9C;
 extern f32 lbl_80563DDC;
@@ -632,9 +632,9 @@ void fn_8026C014(s32 arg0, void *arg1) {
             (*(f32 *)((u8 *)(globalBase) + (0x94))) = temp_f2;
             (*(f32 *)((u8 *)(temp_r4) + (4))) = temp_f1;
             (*(f32 *)((u8 *)(temp_r4) + (8))) = (f32) ((*(f32 *)((u8 *)(temp_r4) + (8))) * lbl_80563DD8);
-            temp_r29 = fn_802E4A1C(0xFD);
+            temp_r29 = isKeyPressed(0xFD);
             var_r28 = 0;
-            if ((fn_802E4A1C(0xFE) != 0) || (fn_802E4A1C(0x3A) != 0)) {
+            if ((isKeyPressed(0xFE) != 0) || (isKeyPressed(0x3A) != 0)) {
                 var_r28 = 1;
             }
             temp_f1_2 = var_f28 / lbl_80563D8C;
@@ -649,50 +649,50 @@ void fn_8026C014(s32 arg0, void *arg1) {
             (*(f32 *)(localFrame + (0x128 - 0x10))) = (*(f32 *)((u8 *)(lbl_802FA778) + (8)));
             (*(s32 *)(localFrame + (0x12c - 0x10))) = (*(s32 *)((u8 *)(lbl_802FA778) + (0xC)));
             temp_f31 = temp_f1_2 * (&(*(f32 *)(localFrame + (0x120 - 0x10))))[temp_r0_2];
-            if (fn_802E4A1C(0x1E) != 0) {
+            if (isKeyPressed(0x1E) != 0) {
                 (*(f32 *)(localFrame + (0x154 - 0x10))) = temp_f28;
-            } else if (fn_802E4A1C(0x2C) != 0) {
+            } else if (isKeyPressed(0x2C) != 0) {
                 (*(f32 *)(localFrame + (0x154 - 0x10))) = -temp_f28;
             }
-            if (fn_802E4A1C(0x51) != 0) {
+            if (isKeyPressed(0x51) != 0) {
                 (*(f32 *)(localFrame + (0x14c - 0x10))) = temp_f28;
-            } else if (fn_802E4A1C(0x4F) != 0) {
+            } else if (isKeyPressed(0x4F) != 0) {
                 (*(f32 *)(localFrame + (0x14c - 0x10))) = -temp_f28;
             }
-            if (fn_802E4A1C(0x53) != 0) {
+            if (isKeyPressed(0x53) != 0) {
                 (*(f32 *)(localFrame + (0x150 - 0x10))) = temp_f28 * lbl_80563D9C;
-            } else if (fn_802E4A1C(0x52) != 0) {
+            } else if (isKeyPressed(0x52) != 0) {
                 (*(f32 *)(localFrame + (0x150 - 0x10))) = -temp_f28 * lbl_80563D9C;
             }
-            if (fn_802E4A1C(0x4D) != 0) {
-                if (fn_802E4A1C(0x4F) != 0) {
+            if (isKeyPressed(0x4D) != 0) {
+                if (isKeyPressed(0x4F) != 0) {
                     (*(f32 *)(localFrame + (0x144 - 0x10))) = temp_f31 * lbl_80563D9C;
                 } else {
                     (*(f32 *)(localFrame + (0x144 - 0x10))) = temp_f31;
                 }
-            } else if (fn_802E4A1C(0x4B) != 0) {
-                if (fn_802E4A1C(0x51) != 0) {
+            } else if (isKeyPressed(0x4B) != 0) {
+                if (isKeyPressed(0x51) != 0) {
                     (*(f32 *)(localFrame + (0x144 - 0x10))) = -temp_f31 * lbl_80563D9C;
                 } else {
                     (*(f32 *)(localFrame + (0x144 - 0x10))) = -temp_f31;
                 }
             }
-            if (fn_802E4A1C(0x48) != 0) {
+            if (isKeyPressed(0x48) != 0) {
                 (*(f32 *)(localFrame + (0x140 - 0x10))) = temp_f31 * lbl_80563D9C;
-            } else if (fn_802E4A1C(0x50) != 0) {
+            } else if (isKeyPressed(0x50) != 0) {
                 (*(f32 *)(localFrame + (0x140 - 0x10))) = -temp_f31 * lbl_80563D9C;
             }
-            if (fn_802E4A1C(0x47) != 0) {
+            if (isKeyPressed(0x47) != 0) {
                 (*(f32 *)(localFrame + (0x148 - 0x10))) = temp_f31;
-            } else if (fn_802E4A1C(0x49) != 0) {
+            } else if (isKeyPressed(0x49) != 0) {
                 (*(f32 *)(localFrame + (0x148 - 0x10))) = -temp_f31;
             }
             temp_f28_2 = lbl_80563DDC;
             temp_f29 = lbl_80563DE0;
             var_f30 = lbl_80563DE4;
-            if (fn_802E4A1C(0x37) != 0) {
+            if (isKeyPressed(0x37) != 0) {
                 lbl_8055F47C += temp_f28_2;
-            } else if (fn_802E4A1C(0xB5) != 0) {
+            } else if (isKeyPressed(0xB5) != 0) {
                 lbl_8055F47C -= temp_f28_2;
             }
             if (var_f30 < lbl_8055F47C) {
