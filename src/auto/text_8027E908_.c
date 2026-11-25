@@ -544,8 +544,8 @@ extern "C" void fn_8027F09C(int arg0) {
     local.args[13] = 0;
     local.args[14] = 0;
     result2 = fn_80131234((int)local.buffer);
-    local.args[16] = 3;
     local.args[17] = result2;
+    local.args[16] = 3;
     local.args[18] = 0;
     local.args[19] = 0;
 
@@ -644,7 +644,6 @@ extern "C" void fn_8027F288(Fn8027F288Obj *arg0, Fn8027F288Obj *arg1) {
     typedef void *(*GetItemAt)(void *, int);
     typedef unsigned char (*GetByte0)(void *);
     typedef char *(*GetString0)(void *);
-    typedef int (*Call4)(void *, int, void *, void *);
     typedef void (*Draw8)(void *, void *, int, int, int, int, int, int);
     extern void fn_801345D8(char *, int, const char *, ...);
     extern int fn_80131234(int);
@@ -674,8 +673,6 @@ extern "C" void fn_8027F288(Fn8027F288Obj *arg0, Fn8027F288Obj *arg1) {
     } frame;
     register char *strings = lbl_80347E50;
     register char *state = (char *)&lbl_804B2FF8;
-    register char *list = state + 0x50;
-    register void *wp = &frame.widget;
     register int zero = 0, two = 2, three = 3, five = 5;
     register int six = 6, minusTwo = -2, thirteen = 0xD;
     register void *c7D8 = (void *)&lbl_8055C7D8;
@@ -683,11 +680,12 @@ extern "C" void fn_8027F288(Fn8027F288Obj *arg0, Fn8027F288Obj *arg1) {
     register void *c7E4 = (void *)&lbl_8055C7E4;
     register void *item;
     register float scale, defval;
-    register int rr, i, idx, cnt, last;
+    register int rr, i, idx, cnt;
     register void **plist;
     register float *val;
     register void *mgr;
     int h1, h2;
+    int b0, b1, b2, b3, b4;
 
     if (arg1 != 0) {
         fn_801345D8(frame.buf84, 0x64, strings + 0x46C,
@@ -719,10 +717,10 @@ extern "C" void fn_8027F288(Fn8027F288Obj *arg0, Fn8027F288Obj *arg1) {
     frame.widget.unk64 = zero;
     frame.widget.unk70 = zero;
     frame.widget.unk74 = zero;
-    cnt = *(int *)(list + 4);
-    plist = *(void ***)list;
-    *(int *)(list + 4) = cnt + 1;
-    plist[cnt] = wp;
+    cnt = ((volatile struct Fn8027F834List *)(state + 0x50))->count;
+    plist = *(void ***)(state + 0x50);
+    ((volatile int *)(state + 0x50))[1] = cnt + 1;
+    plist[cnt] = &frame.widget;
     frame.widget.unk7E = zero;
     frame.widget.unkB0 = zero;
 
@@ -732,7 +730,7 @@ extern "C" void fn_8027F288(Fn8027F288Obj *arg0, Fn8027F288Obj *arg1) {
         frame.widget.unk64 = 1;
         for (; i < ((GetInt0)(*(void ***)frame.widget.object)[6])(frame.widget.object); ++i) {
             item = ((GetItemAt)(*(void ***)frame.widget.object)[7])(frame.widget.object, i);
-            val = &((Fn8027F958Widget *)wp)->values[i];
+            val = &frame.widget.values[i];
             *val = ((GetInt0)(*(void ***)item)[16])(item) ? lbl_805641FC : lbl_80564200;
         }
         frame.widget.unkCC = ((GetByte0)(*(void ***)frame.widget.object)[10])(frame.widget.object);
@@ -770,7 +768,7 @@ extern "C" void fn_8027F288(Fn8027F288Obj *arg0, Fn8027F288Obj *arg1) {
     frame.obj[2].id = zero;
     frame.obj[3].label = c7E4;
     frame.obj[3].type = five;
-    frame.obj[3].value = wp;
+    frame.obj[3].value = &frame.widget;
     frame.obj[3].flags = zero;
     frame.obj[3].id = zero;
 
@@ -791,14 +789,12 @@ extern "C" void fn_8027F288(Fn8027F288Obj *arg0, Fn8027F288Obj *arg1) {
     frame.obj[6].value = &frame.widget.unkB0;
     frame.obj[6].flags = zero;
     frame.obj[6].id = zero;
-    frame.obj[7].value = (void *)(long)((Call4)fn_80131234)(
-        (void *)(strings + 0x3A8), two, &frame.widget.unk7E,
-        (void *)(strings + 0x4FC));
+    frame.obj[7].value = (void *)fn_80131234((int)(strings + 0x3A8));
     frame.obj[7].label = (void *)&lbl_8055C7D0;
     frame.obj[7].type = three;
     frame.obj[7].flags = zero;
     frame.obj[7].id = zero;
-    frame.obj[8].value = (void *)(long)fn_80131234((int)frame.buf84);
+    frame.obj[8].value = (void *)fn_80131234((int)frame.buf84);
     frame.obj[8].label = c7D8;
     frame.obj[8].type = three;
     frame.obj[8].flags = zero;
@@ -808,11 +804,19 @@ extern "C" void fn_8027F288(Fn8027F288Obj *arg0, Fn8027F288Obj *arg1) {
     frame.obj[9].value = 0;
     frame.obj[9].flags = minusTwo;
     frame.obj[9].id = thirteen;
-    frame.footer[0] = ((int *)state)[0];
-    frame.footer[1] = ((int *)state)[1];
-    frame.footer[2] = ((int *)state)[2];
-    frame.footer[3] = ((int *)state)[3];
-    frame.footer[4] = ((int *)state)[4];
+    {
+        int *bp = (int *)state;
+        b0 = bp[0];
+        b1 = bp[1];
+        b2 = bp[2];
+        b3 = bp[3];
+        b4 = bp[4];
+    }
+    frame.footer[0] = b0;
+    frame.footer[1] = b1;
+    frame.footer[2] = b2;
+    frame.footer[3] = b3;
+    frame.footer[4] = b4;
     frame.spC = lbl_802FA93C[0];
     frame.sp14 = lbl_802FA93C[2];
     frame.sp18 = lbl_802FA93C[3];
@@ -822,33 +826,31 @@ extern "C" void fn_8027F288(Fn8027F288Obj *arg0, Fn8027F288Obj *arg1) {
     ((Draw8)(*(void ***)lbl_8055F680)[14])(lbl_8055F680,
         (void *)(strings + 0x1F8),
         lbl_802FA93C[4], lbl_802FA93C[3], lbl_802FA93C[2], lbl_802FA93C[0],
-        ((int *)state)[4], ((int *)state)[3]);
+        b4, b3);
     ((void (*)(void *, int, int, int))fn_802146BC)(&frame.spC, -999, -999, 1);
 
     if (rr != 0) fn_80214AF0(0x1F);
 
     frame.widget.vtable = (void *)lbl_80348798;
-    if (lbl_8055F688 == (unsigned int)wp) lbl_8055F688 = 0;
-    plist = *(void ***)list;
-    cnt = *(int *)(list + 4);
-    idx = zero;
-    if (cnt > 0) {
-        for (;;) {
-            if (*plist == wp) break;
-            ++plist;
-            ++idx;
-            if (--cnt == 0) { idx = -1; break; }
-        }
-    } else idx = -1;
+    if (lbl_8055F688 == (unsigned int)&frame.widget) lbl_8055F688 = 0;
+    plist = *(void ***)(state + 0x50);
+    cnt = ((volatile int *)(state + 0x50))[1];
+    idx = -1;
+    for (i = 0; i < cnt; ++i) {
+        if (*plist != &frame.widget) goto scanNext;
+        idx = i;
+        break;
+    scanNext:
+        ++plist;
+    }
     if (idx != -1 && idx >= 0) {
-        cnt = *(int *)(list + 4);
+        cnt = ((volatile int *)(state + 0x50))[1];
         if (idx < cnt) {
-            last = cnt - 1;
-            if (idx != last) plist[idx] = plist[last];
-            *(int *)(list + 4) = last;
+            if (idx != cnt - 1) plist[idx] = plist[cnt - 1];
+            ((volatile int *)(state + 0x50))[1] = cnt - 1;
         }
     }
-    if (wp != 0) {
+    if (&frame.widget != 0) {
         frame.widget.unk18 = zero;
         frame.widget.unk50 = zero;
         frame.widget.unk5C = zero;
@@ -2672,11 +2674,11 @@ int fn_80283B58(void) {
 int fn_80283E28(void) {
     char *base = (char *)&lbl_804B2FF8;
     struct Fn80283E28List *list = (struct Fn80283E28List *)(base + 0xE0);
-    int i;
-    int idx;
     int count;
-    unsigned int value;
+    int idx;
     struct Fn80283E28Obj **items;
+    unsigned int value;
+    int i;
     struct Fn80283E28Obj *obj;
     count = list->count;
     items = list->items;
@@ -2696,17 +2698,34 @@ int fn_80283E28(void) {
         if (i >= 0 && i < list->count && items[i]->sub != 0) {
             obj = items[i];
             if (obj != 0) {
-                char *s;
+                const char *s;
                 char *d;
-                int c;
+                int n;
                 int a, b;
+                unsigned char c;
                 char tmp[0x20];
                 s = obj->sub->vt->v3(obj->sub);
                 d = base + 0x100;
-                for (c = 0x20;;) { char ch = *s++; *d++ = ch; if (ch == 0) break; if (--c <= 0) { d[-1] = 0; break; } }
+                n = 0x20;
+                goto copyText;
+                for (;;) {
+                    if (--n <= 0) { d[-1] = 0; break; }
+                copyText:
+                    c = *s++;
+                    *d++ = c;
+                    if ((signed char)c == 0) break;
+                }
                 s = obj->sub->vt->v7(obj->sub);
                 d = base + 0x120;
-                for (c = 0x20;;) { char ch = *s++; *d++ = ch; if (ch == 0) break; if (--c <= 0) { d[-1] = 0; break; } }
+                n = 0x20;
+                goto copySound;
+                for (;;) {
+                    if (--n <= 0) { d[-1] = 0; break; }
+                copySound:
+                    c = *s++;
+                    *d++ = c;
+                    if ((signed char)c == 0) break;
+                }
                 a = obj->sub->vt->v9(obj->sub);
                 b = obj->sub->vt->v8(obj->sub);
                 fn_8001BE94(tmp, fn_8000DA10(), 0x20507, b, a);
@@ -2714,9 +2733,17 @@ int fn_80283E28(void) {
                     fn_8001BEE8(tmp);
                     fn_80130980(base + 0x140, 0x14, 3);
                 } else {
-                    s = (char *)fn_80131234((int)lbl_8034862C);
+                    s = (const char *)fn_80131234((int)lbl_8034862C);
                     d = base + 0x140;
-                    for (c = 0x14;;) { char ch = *s++; *d++ = ch; if (ch == 0) break; if (--c <= 0) { d[-1] = 0; break; } }
+                    n = 0x14;
+                    goto copyIcon;
+                    for (;;) {
+                        if (--n <= 0) { d[-1] = 0; break; }
+                    copyIcon:
+                        c = *s++;
+                        *d++ = c;
+                        if ((signed char)c == 0) break;
+                    }
                 }
                 lbl_8055C7E0 = obj->sub->vt->v8(obj->sub);
             } else {
@@ -2734,6 +2761,7 @@ int fn_80283E28(void) {
     }
     return 0;
 }
+#pragma cplusplus off
 
 #pragma scheduling on
 /* Thin wrapper around fn_8027E908: rebuild the UI menu system's item/identifier
