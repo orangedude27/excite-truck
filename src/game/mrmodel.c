@@ -31,7 +31,7 @@ struct Entry16 {
 };
 extern int gModelInstances[];
 extern int lbl_804C13A8[];
-extern int lbl_804C13B4[];
+extern int gModelNameOverrideTable[];
 extern const char lbl_8034B1D8[];
 extern s8 lbl_8055FC20;
 extern s8 gModelDisplayDirty;
@@ -371,7 +371,7 @@ void fn_802C57B4(int instanceId, int transformId, int entryId, unsigned char sta
 }
 #pragma push
 #pragma use_lmw_stmw off
-/* Resolve a resource name through the model name-override table lbl_804C13B4, bounded-copying the matching replacement (or the original lookupName) into outName. */ void fn_802C595C(char *outName, int maxLen, const char *lookupName, int id) {
+/* Resolve a resource name through the model name-override table gModelNameOverrideTable, bounded-copying the matching replacement (or the original lookupName) into outName. */ void fn_802C595C(char *outName, int maxLen, const char *lookupName, int id) {
     /* Resolve a resource name through the (name,id) override table, bounded-copying
        the replacement into outName, or the original name when there is no override. */
     int entryOffset;
@@ -383,7 +383,7 @@ void fn_802C57B4(int instanceId, int transformId, int entryId, unsigned char sta
     entryOffset = 0;
     goto table_check;
 table_loop:
-    overrideEntry = (char *)(unsigned long)lbl_804C13B4[2] + entryOffset;
+    overrideEntry = (char *)(unsigned long)gModelNameOverrideTable[2] + entryOffset;
     if (stricmp(lookupName, overrideEntry) == 0) {
         if (id == *(int *)(overrideEntry + 0x10)) {
             copySrc = (const unsigned char *)(overrideEntry + 0x14);
@@ -404,7 +404,7 @@ table_next:
     entryOffset += 0x2C;
     entryIndex++;
 table_check:
-    if (entryIndex < lbl_804C13B4[0]) goto table_loop;
+    if (entryIndex < gModelNameOverrideTable[0]) goto table_loop;
     else goto fallback_copy;
 fallback_copy:
     goto fallback_body;
@@ -1635,10 +1635,10 @@ float getModelInstanceTolerance(int instanceId) {
 }
 
 #pragma scheduling on
-/* Register `recordCount` 0x2C-byte model resource name-override records from `records` into the name-override table lbl_804C13B4 ({used count, capacity, base} of 0x2C-byte entries). Each record holds a 16-byte lookup name at +0, an id at +0x10, a 16-byte replacement name at +0x14, and a back-reference pointer at +0x28 that is cleared to -1 on copy. The next free entry is taken for each record; bytes are moved individually so the copy is safe even if the source overlaps the table. */ void fn_802C7888(void *records, s32 recordCount)
+/* Register `recordCount` 0x2C-byte model resource name-override records from `records` into the name-override table gModelNameOverrideTable ({used count, capacity, base} of 0x2C-byte entries). Each record holds a 16-byte lookup name at +0, an id at +0x10, a 16-byte replacement name at +0x14, and a back-reference pointer at +0x28 that is cleared to -1 on copy. The next free entry is taken for each record; bytes are moved individually so the copy is safe even if the source overlaps the table. */ void fn_802C7888(void *records, s32 recordCount)
 {
   /* Copy `count` 0x2C-byte model records from `src` into the model-entry pool
-   * lbl_804C13B4 (used-count at +0, capacity at +4, base at +8), taking the next
+   * gModelNameOverrideTable (used-count at +0, capacity at +4, base at +8), taking the next
    * free entry for each record.  Each record's +0x28 word is a back-pointer key
    * that is reset to -1 on copy.  The bytes are moved one at a time so that the
    * copy is safe even when the source overlaps the pool. */
@@ -1657,12 +1657,12 @@ float getModelInstanceTolerance(int instanceId) {
     {
       *backRef = -1;
     }
-    entryIndex = lbl_804C13B4[0];
-    if (entryIndex < lbl_804C13B4[1])
+    entryIndex = gModelNameOverrideTable[0];
+    if (entryIndex < gModelNameOverrideTable[1])
     {
       s32 offset = entryIndex * 0x2C;
-      unsigned char *base = (unsigned char *) ((unsigned long) lbl_804C13B4[2]);
-      lbl_804C13B4[0] = entryIndex + 1;
+      unsigned char *base = (unsigned char *) ((unsigned long) gModelNameOverrideTable[2]);
+      gModelNameOverrideTable[0] = entryIndex + 1;
       entryBytes = (volatile u8 *) (base + offset);
     }
     else
@@ -1743,11 +1743,11 @@ float getModelInstanceTolerance(int instanceId) {
   }
 
 }
-extern int lbl_804C13B4[];
+extern int gModelNameOverrideTable[];
 extern void fn_802C7A00(void);
 void fn_802C7A00(void) {
-    /* Reset the used-count at +0 of the model entry pool lbl_804C13B4, emptying it. */
-    lbl_804C13B4[0] = 0;
+    /* Reset the used-count at +0 of the model entry pool gModelNameOverrideTable, emptying it. */
+    gModelNameOverrideTable[0] = 0;
 }
 
 /* Diagnostic helper: returns the resource name of the model at the given index
