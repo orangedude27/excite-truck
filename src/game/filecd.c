@@ -56,7 +56,7 @@ public:
     virtual void *open(void *owner, char *path);        // 0x10 fn_802E40A0
     virtual int openWritable(void *owner, char *path);  // 0x14 fn_802E4250: "open writable not supported"
     virtual int openAtEnd(void *owner, char *path);     // 0x18 fn_802E4280: opens, then seeks to the end
-    virtual void close(void *file);                     // 0x1C fn_802E4408: releases the node
+    virtual void close(void *file);                     // 0x1C FileCd_close: releases the node
     virtual void report(void);                          // 0x20 fn_802E442C: OSReport("%s") with no argument
     virtual int flush(void);                            // 0x24 FileCd_flush: nothing to flush on a disc
     unsigned char started; // 0x04 set once DVDInit() has started the DVD services
@@ -345,7 +345,7 @@ int fn_802E4400(void *file) {
 
 #pragma push
 #pragma cplusplus on
-extern "C" int fn_802E4408(int unused, void *arg0) {
+extern "C" int FileCd_close(int unused, void *arg0) {
     /* FileCd::close: release the given DVD file node, freeing its pool slot. */
     if (arg0 == 0) return;
     ((FileDisk *)arg0)->release(1);
