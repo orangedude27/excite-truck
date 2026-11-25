@@ -40,7 +40,7 @@ extern void fn_801345D8(void *, ...);
 extern long gMp3PathFormat;
 extern signed char gTrackMusicSongLoaded0;
 extern signed char gTrackMusicSongLoaded1;
-extern signed char lbl_8055EEF6;
+extern signed char gTrackMusicSongLoaded2;
 extern char lbl_804904D0[];
 extern char lbl_8033C95C[];
 extern long *lbl_8055B650;
@@ -93,7 +93,7 @@ extern long gSngPathFormat;
 void fn_8020F444(void) {
 #define gSongLoaded0 gTrackMusicSongLoaded0
 #define gSongLoaded1 gTrackMusicSongLoaded1
-#define gSongLoaded2 lbl_8055EEF6
+#define gSongLoaded2 gTrackMusicSongLoaded2
 #define gSongName0   lbl_804904D0
 #define gSongName1   lbl_8055B650
 #define gSongName2   lbl_8055B654
@@ -142,7 +142,7 @@ void fn_8020F444(void) {
 #pragma dont_inline on
 void TrackMusic_MarkAllLoaded(void) {
     /* Mark all three track-music load slots as loaded (the inverse of TrackMusic_markSongsUnloaded). */
-    lbl_8055EEF6 = 1;
+    gTrackMusicSongLoaded2 = 1;
     gTrackMusicSongLoaded1 = 1;
     gTrackMusicSongLoaded0 = 1;
 }
@@ -150,7 +150,7 @@ void TrackMusic_MarkAllLoaded(void) {
  
 /* Mark all three track-music load slots as unloaded (the inverse of TrackMusic_MarkAllLoaded). */
 void TrackMusic_markSongsUnloaded(void) {
-    lbl_8055EEF6 = 0;
+    gTrackMusicSongLoaded2 = 0;
     gTrackMusicSongLoaded1 = 0;
     gTrackMusicSongLoaded0 = 0;
 }
@@ -852,7 +852,7 @@ void trackMusicUpdate(unsigned char mute) {
     long sceneActive;
     long holdSongChange;
     struct Dummy_802113D8 *resource;
-    if ((unsigned char)gTrackMusicSongLoaded0 == 0 || (unsigned char)gTrackMusicSongLoaded1 == 0 || (unsigned char)lbl_8055EEF6 == 0) {
+    if ((unsigned char)gTrackMusicSongLoaded0 == 0 || (unsigned char)gTrackMusicSongLoaded1 == 0 || (unsigned char)gTrackMusicSongLoaded2 == 0) {
         fn_8020F444();
     }
     songCount = getTrackMusicSongCount();
@@ -1229,7 +1229,7 @@ extern void fn_801345D8(void *, ...);
 extern long gMp3PathFormat;
 extern signed char gTrackMusicSongLoaded0;
 extern signed char gTrackMusicSongLoaded1;
-extern signed char lbl_8055EEF6;
+extern signed char gTrackMusicSongLoaded2;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
  // split_file divides it into the game's real files (file_status shows its range).
 
