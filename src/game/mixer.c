@@ -563,6 +563,17 @@ int fn_802092C8(int object, int deleteFlag) {
 int fn_80209308(void) { return 1; }
 
 extern int KERNEL_GetTimeMs(void);
+/* Shared layout of the sound-timer objects manipulated by the helpers below. */
+struct SoundTimer {
+    /* 0x0 */ int unused;
+    /* 0x4 */ int startTime; /* ms stamp, from KERNEL_GetTimeMs */
+    /* 0x8 */ int state;     /* 1 = running, 2 = stopped/paused, 3 = expired */
+};
+enum SoundTimerState {
+    SOUND_TIMER_RUNNING = 1,
+    SOUND_TIMER_STOPPED = 2,
+    SOUND_TIMER_EXPIRED = 3
+};
 /* RealName: SoundTimer_Start — begins/restarts a sound timer: record the current
  * millisecond count (kernel clock KERNEL_GetTimeMs) as its start time (+4) and set
  * the state to running (1) at +8. This layout is shared by the nearby timer helpers. */
