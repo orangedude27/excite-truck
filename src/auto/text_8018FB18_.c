@@ -818,9 +818,7 @@ char *__repair_addr;
         fn_80176A34(lbl_8055E3C4);
     }
     (*(Driver **)(self + 4))->d74();
-__repair_addr = (char *)((char *)*(void **)(self + 0x20) + 0x2620);
-
-    if (*(int *)(__repair_addr) != 0) {
+    if (*(int *)((char *)*(void **)(self + 0x20) + 0x2620) != 0) {
         (*(Driver **)(self + 4))->d7C();
     }
     if (lbl_8055E529 == 0) {
