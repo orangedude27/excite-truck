@@ -2059,67 +2059,64 @@ static inline float HudEase(float t) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma dont_inline off
-extern "C" int fn_80175238(void *arg0, int arg1) {
- /* HUD update for the crush-mode results overlay.  arg0 is the overlay object;
-    +0x1A8 holds its scene manager and +0x19C a per-frame value.  The manager
-    looks up two shared text nodes (one, two) plus two panels (panel, detail)
-    by key into the label table lbl_80330F48; during the timed window
-    [a..b] / [d..e] the two text lines fade and slide in with a cubic ease. */
+extern "C" int fn_80175238(void *overlay, int player) {
+ /* Update the crush-mode results HUD: during the score and time result
+    windows, fade and slide two text lines into place with a cubic ease. */
  struct TextRect { int a; float b; int c,d; float e; int f,g,h; };
  struct SceneManager { virtual void *unused(); virtual void *get(const char *); };
  struct Frame { TextRect rect2; char text2[24]; TextRect rect1; char text1[20]; } frame;
- const char *base = lbl_80330F48;
- struct SceneManager *mgr; void *one, *two;
- float limit, a, time, b,c,d,e, t, blend, value;
+ const char *labels = lbl_80330F48;
+ struct SceneManager *manager; void *line1, *line2;
+ float window1, startFade1, time, endFade1, window2, startFade2, endFade2, fade, ease, seconds;
  time = *(float *)((char *)fn_801E7E3C()+0x10);
- limit=lbl_80561AB8; a=limit-lbl_80561AE0; b=a-lbl_80561AE4;
- c=b-lbl_80561AE8; d=c-lbl_80561AE0; e=d-lbl_80561AE4;
- mgr=*(struct SceneManager **)((char *)arg0+0x1a8);
- one=mgr->get(base+0x5d8);
- mgr=*(struct SceneManager **)((char *)arg0+0x1a8);
- two=mgr->get(base+0x5e8);
- if (time < e) fn_8000FBE4();
+ window1=lbl_80561AB8; startFade1=window1-lbl_80561AE0; endFade1=startFade1-lbl_80561AE4;
+ window2=endFade1-lbl_80561AE8; startFade2=window2-lbl_80561AE0; endFade2=startFade2-lbl_80561AE4;
+ manager=*(struct SceneManager **)((char *)overlay+0x1a8);
+ line1=manager->get(labels+0x5d8);
+ manager=*(struct SceneManager **)((char *)overlay+0x1a8);
+ line2=manager->get(labels+0x5e8);
+ if (time < endFade2) fn_8000FBE4();
  if (!fn_80161C38()) {
-   if (time < limit) {
+   if (time < window1) {
      void *panel, *detail;
-     t=(time-a)/(b-a); blend=lbl_80561A40;
-     blend = blend < t ? blend : t;
-     blend = blend > lbl_80561A44 ? blend : lbl_80561A44;
-     blend=lbl_80561A44+blend*lbl_80561A40;
-     mgr=*(struct SceneManager **)((char *)arg0+0x1a8);
-     panel=mgr->get(base+0x5f8);
-     mgr=*(struct SceneManager **)((char *)arg0+0x1a8);
-     detail=mgr->get(base+0x604);
-     fn_8001DF08(fn_801E866C(arg1),0);
-     if (one && two && panel && detail) {
-       fn_801479A8(one,two,fn_80131234(base+0x610),HudEase(blend));
+     fade=(time-startFade1)/(endFade1-startFade1); ease=lbl_80561A40;
+     ease = ease < fade ? ease : fade;
+     ease = ease > lbl_80561A44 ? ease : lbl_80561A44;
+     ease=lbl_80561A44+ease*lbl_80561A40;
+     manager=*(struct SceneManager **)((char *)overlay+0x1a8);
+     panel=manager->get(labels+0x5f8);
+     manager=*(struct SceneManager **)((char *)overlay+0x1a8);
+     detail=manager->get(labels+0x604);
+     fn_8001DF08(fn_801E866C(player),0);
+     if (line1 && line2 && panel && detail) {
+       fn_801479A8(line1,line2,fn_80131234(labels+0x610),HudEase(ease));
        fn_80160A74(); ((void (*)(void *,int,int))fn_801308F4)(frame.text1,0x14,fn_80160998());
        frame.rect1.a=*(int *)panel;
        { int cword; int bword; bword=*(volatile int *)((char *)panel+4); cword=*(volatile int *)((char *)panel+8); *(int *)&frame.rect1.b=bword; frame.rect1.c=cword; } frame.rect1.d=*(int *)((char *)panel+12); frame.rect1.e=*(float *)((char *)panel+16); frame.rect1.f=*(int *)((char *)panel+20); frame.rect1.g=*(int *)((char *)panel+24); frame.rect1.h=*(int *)((char *)panel+28);
        frame.rect1.b-=lbl_80561A54*fn_80147204(&frame.rect1,frame.text1);
-       fn_801479A8(&frame.rect1,detail,frame.text1,HudEase(blend));
+       fn_801479A8(&frame.rect1,detail,frame.text1,HudEase(ease));
      }
    }
-   if (time < c) {
+   if (time < window2) {
      void *panel, *detail;
-     fn_8014784C(*(void **)((char *)arg0+0x1a8),base+0x500,base+0x510,0);
-     t=(time-d)/(e-d); blend=lbl_80561A40;
-     blend = blend < t ? blend : t;
-     blend = blend > lbl_80561A44 ? blend : lbl_80561A44;
-     blend=lbl_80561A44+blend*lbl_80561A40;
-     mgr=*(struct SceneManager **)((char *)arg0+0x1a8);
-     panel=mgr->get(base+0x62c);
-     mgr=*(struct SceneManager **)((char *)arg0+0x1a8);
-     detail=mgr->get(lbl_8055A2E4);
-     if (one && two && panel && detail) {
-       fn_801479A8(one,two,fn_80131234(base+0x638),HudEase(blend));
-       t=*(float *)((char *)arg0+0x19c)-fn_801E7E18();
-       value=lbl_80561A44; value = value > t ? value : t;
-       fn_80130978(frame.text2,0x14,value);
+     fn_8014784C(*(void **)((char *)overlay+0x1a8),labels+0x500,labels+0x510,0);
+     fade=(time-startFade2)/(endFade2-startFade2); ease=lbl_80561A40;
+     ease = ease < fade ? ease : fade;
+     ease = ease > lbl_80561A44 ? ease : lbl_80561A44;
+     ease=lbl_80561A44+ease*lbl_80561A40;
+     manager=*(struct SceneManager **)((char *)overlay+0x1a8);
+     panel=manager->get(labels+0x62c);
+     manager=*(struct SceneManager **)((char *)overlay+0x1a8);
+     detail=manager->get(lbl_8055A2E4);
+     if (line1 && line2 && panel && detail) {
+       fn_801479A8(line1,line2,fn_80131234(labels+0x638),HudEase(ease));
+       fade=*(float *)((char *)overlay+0x19c)-fn_801E7E18();
+       seconds=lbl_80561A44; seconds = seconds > fade ? seconds : fade;
+       fn_80130978(frame.text2,0x14,seconds);
        frame.rect2.a=*(int *)panel;
        { int cword; int bword; bword=*(volatile int *)((char *)panel+4); cword=*(volatile int *)((char *)panel+8); *(int *)&frame.rect2.b=bword; frame.rect2.c=cword; } frame.rect2.d=*(int *)((char *)panel+12); frame.rect2.e=*(float *)((char *)panel+16); frame.rect2.f=*(int *)((char *)panel+20); frame.rect2.g=*(int *)((char *)panel+24); frame.rect2.h=*(int *)((char *)panel+28);
        frame.rect2.b+=lbl_80561A54*fn_80147204(&frame.rect2,frame.text2);
-       fn_801479A8(&frame.rect2,detail,frame.text2,HudEase(blend));
+       fn_801479A8(&frame.rect2,detail,frame.text2,HudEase(ease));
      }
    }
  }
