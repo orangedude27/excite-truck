@@ -165,8 +165,9 @@ void fn_8023C3D4(void) {
     fn_802146BC(data, -0x3E7, -0x3E7, 1, v[3], v[2], v[0], w[4]);
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_8023C55C(void *arg0) {
+    char *base = lbl_803413C0;
     char obj1[0x1C];
     char obj2[0x1C];
     s32 hdr[5];
@@ -216,10 +217,10 @@ void fn_8023C55C(void *arg0) {
     data[32] = s[2];
     data[33] = s[3];
     data[34] = s[4];
-    hdr[0] = v[0];
-    hdr[2] = v[2];
-    hdr[3] = v[3];
-    hdr[4] = v[4];
+    hdr[0] = lbl_802FA07C[0];
+    hdr[2] = lbl_802FA07C[2];
+    hdr[3] = lbl_802FA07C[3];
+    hdr[4] = lbl_802FA07C[4];
     hdr[0] = (s32)arg0;
     hdr[1] = (s32)data;
     lbl_8055F154 = 0;
