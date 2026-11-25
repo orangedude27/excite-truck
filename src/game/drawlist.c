@@ -713,7 +713,7 @@ int fn_802C8FF4(float *arg0, float arg1) {
 }
 #pragma scheduling on
 int fn_802C90E0(void) {
-    /* True when no draw-list render pass is active (the render-mode flag is 0); cf. DrawList_isOutsideScene. */
+    /* True when no draw-list render pass is active (the render-mode flag is 0). */
     return sRenderMode == 0;
 }
 
