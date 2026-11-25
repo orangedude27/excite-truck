@@ -163,7 +163,7 @@ void fn_801E7984(long arg0) {
     fn_8027AA50(); fn_801FA9AC(); fn_80127464(); fn_801EEE38(); fn_802C6C30(); fn_80127464();
     fn_8001255C(strings + 0x40, lbl_80562DA8); fn_801EA38C(); fn_80127464();
     fn_802023D4(); fn_80127464(); fn_800125D4(strings + 0x4c, 1);
-    fn_8000D878(); fn_802C2C60(1); fn_802C8218(0); fn_80203FEC(); fn_80127464();
+    fn_8000D878(); fn_802C2C60(1); MRModel_SetMode(0); fn_80203FEC(); fn_80127464();
     fn_802E30C8(strings + 0x60, KERNEL_GetTimeMs() - start);
     fn_802ECC18(1); fn_80127464();
 }
