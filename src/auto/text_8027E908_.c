@@ -326,58 +326,42 @@ static inline void CareerMenuItemSet(CareerMenuItem *item, void *name, int type,
     item->b = b;
 }
 #pragma use_lmw_stmw off
+#pragma opt_propagation off
 void fn_8027ED78(int arg0, int arg1, int arg2) {
+    CareerMenu menu;
+    CareerMenuItem items[4];
+    int c0 = 0;
+    int c3 = 3;
+    void *s1 = &lbl_803480A8;
+    void *s0 = &lbl_8055C7C8;
+    int c6 = 6;
+    void *s2 = &lbl_8055B860;
+    int cm2 = -2;
+    int c13 = 13;
+    CareerMenu *a = (CareerMenu *)&lbl_802FA848;
+    int *bp = (int *)&lbl_804B2FF8;
+    int b0 = bp[0];
+    int b1 = bp[1];
+    int b2 = bp[2];
+    int b3 = bp[3];
+    int b4 = bp[4];
+    int a0 = a->w0;
+    int a2 = a->w2;
+    int a3 = a->w3;
+    int a4 = a->w4;
+    CareerMenuItemSet(&items[0], s0, c3, (void *)arg0, c0, c0);
+    CareerMenuItemSet(&items[1], s1, c3, (void *)arg1, c0, c0);
+    CareerMenuItemSet(&items[2], s2, c6, (void *)c0, cm2, c13);
+    CareerMenuItemSet(&items[3], (void *)b0, b1, (void *)b2, b3, b4);
+    menu.w0 = a0;
+    menu.w2 = a2;
+    menu.w3 = a3;
+    menu.w4 = a4;
+    menu.items = items;
+    ((int (*)(void *, int, int, int))fn_802146BC)(&menu, -999, -999, 1);
+#pragma opt_propagation on
 #pragma scheduling invalid_target
-    register int ptrA8 = (int)&lbl_803480A8;
-    register int zero = 0;
-    register int three = 3;
-    register int six = 6;
-    register int ptrB8 = (int)&lbl_8055B860;
-    register int minusTwo = -2;
-    register int thirteen = 13;
-    register int b0, b1, b2, b3, b4;
-    register int ptrC7 = (int)&lbl_8055C7C8;
-    register int a0, a2, a3, a4;
-    int block[26];
-    int *at = (int *)lbl_802FA848;
-    a0 = *at++;
-    b0 = ((int *)&lbl_804B2FF8)[0];
-    b1 = ((int *)&lbl_804B2FF8)[1];
-    b2 = ((int *)&lbl_804B2FF8)[2];
-    b3 = ((int *)&lbl_804B2FF8)[3];
-    b4 = ((int *)&lbl_804B2FF8)[4];
-    a2 = at[1];
-    a3 = at[2];
-    a4 = at[3];
-
-    block[0] = a0;
-    block[1] = (int)&block[6];
-    block[2] = a2;
-    block[3] = a3;
-    block[4] = a4;
-    block[6] = ptrC7;
-    block[7] = three;
-    block[8] = arg0;
-    block[9] = zero;
-    block[10] = zero;
-    block[11] = ptrA8;
-    block[12] = three;
-    block[13] = arg1;
-    block[14] = zero;
-    block[15] = zero;
-    block[16] = ptrB8;
-    block[17] = six;
-    block[18] = zero;
-    block[19] = minusTwo;
-    block[20] = thirteen;
-    block[21] = b0;
-    block[22] = b1;
-    block[23] = b2;
-    block[24] = b3;
-    block[25] = b4;
-    ((int (*)(int *, int, int, int))fn_802146BC)(block, -999, -999, 1);
 }
-#pragma use_lmw_stmw on
 /* Set the one-shot career level-up flag when `selection` is 2, then refresh
  * the menu; the flag drives fn_8027EE88's unlock sound. */
 void fn_8027EE74(int selection) {
@@ -524,6 +508,7 @@ extern "C" void fn_8027EEE4(int arg0) {
 #pragma scheduling reset
 #pragma pop
 
+#pragma dont_inline off
 extern "C" void fn_8027F09C(int arg0) {
 #pragma use_lmw_stmw off
     extern int fn_801345D8(char *, int, const char *, const char *, int);
@@ -539,11 +524,11 @@ extern "C" void fn_8027F09C(int arg0) {
     } local;
     register int c7d8, six, b860, minusTwo, thirteen;
     register const char *base = lbl_80347E50;
-    int result1;
+    register int result1;
     int result2;
     int *atable;
-    int b0, b1, b2, b3, b4;
     int a0, a2, a3, a4;
+    int b0, b1, b2, b3, b4;
 
     ((int (*)(char *, int, const char *, ...))fn_801345D8)(
         local.buffer, 0x64, base + 0x3D8, arg0);
@@ -555,13 +540,13 @@ extern "C" void fn_8027F09C(int arg0) {
     result1 = ((int (*)(int, int))fn_80131234)(
         (int)(base + 0x40C), (int)lbl_804B3018);
     local.args[12] = result1;
-    local.args[11] = 3;
     local.args[10] = (int)&lbl_8055C7D0;
+    local.args[11] = 3;
     local.args[13] = 0;
     local.args[14] = 0;
     result2 = fn_80131234((int)local.buffer);
-    local.args[17] = result2;
     local.args[16] = 3;
+    local.args[17] = result2;
     local.args[18] = 0;
     local.args[19] = 0;
 
@@ -581,8 +566,8 @@ extern "C" void fn_8027F09C(int arg0) {
     a3 = atable[2];
     a4 = atable[3];
     local.args[15] = c7d8;
-    local.args[20] = b860;
     local.args[21] = six;
+    local.args[20] = b860;
     local.args[22] = 0;
     local.args[23] = minusTwo;
     local.args[24] = thirteen;
@@ -936,25 +921,25 @@ int fn_8027F958(int *selection, void *collection) {
     extern float lbl_805641F8, lbl_805641FC, lbl_80564200;
     extern int fn_80131234(int);
     extern int fn_802808D0(void), fn_80280A38(void), fn_80280C00(void), fn_80280F7C(void);
- extern FN81138_RET fn_80281138(void);
+    extern FN81138_RET fn_80281138(void);
     extern int fn_80280DC8(void), fn_80280898(void);
     typedef void *(*GetItem)(void *, int);
     typedef int (*GetInt)(void *);
     typedef unsigned char (*GetByte)(void *);
     typedef char *(*GetString)(void *);
     Fn8027F958Stack stack;
-    register void *object, *item;
-    register Fn8027F958Widget *widget;
-    register void **items, **storage;
-    register char *constants = (char *)&lbl_802FA848;
-    register char *state = (char *)&lbl_804B2FF8;
-    register char *strings = lbl_80347E50;
-    register float defaultValue;
-    register float defaultScale;
-    register void *widgetVtable;
-    register char *src, *dst;
-    register int i, j, index, remaining, result, mode, count, reported;
-    register float *value;
+    void *object, *item;
+    Fn8027F958Widget *widget;
+    void **items, **storage;
+    char *const constants = (char *)&lbl_802FA848;
+    char *const state = (char *)&lbl_804B2FF8;
+    char *const strings = lbl_80347E50;
+    float defaultValue;
+    float defaultScale;
+    void *widgetVtable;
+    char *src, *dst;
+    int i, j, index, remaining, result, mode, count, reported;
+    float *value;
     object = ((GetItem)(*(void ***)collection)[4])(collection, 0);
     mode = ((GetInt)(*(void ***)object)[5])(object);
     defaultScale = lbl_805641F8;
@@ -2007,9 +1992,8 @@ extern "C" int fn_802812B4(int *arg0, void *arg1, int *arg2, void *arg3) {
             fn_801308F4((char *)o + 0x6C, 0x1E, src);
             {
                 char *d = (char *)o + 0x6C; const char *s = lbl_8055C818; int n = 0x1E;
-                while (*d && --n) ++d;
-                while (n-- > 0) { *d = *s++; if (!*d++) break; }
-                if (n < 0) d[-1] = 0;
+                while (*d != 0) { n--; d++; }
+                if (n > 0) { while ((*d++ = *s++) != 0) { if (--n <= 0) { d[-1] = 0; break; } } }
             }
             child = (void *)rec->child;
             vt = *(void ***)child;
@@ -2017,9 +2001,8 @@ extern "C" int fn_802812B4(int *arg0, void *arg1, int *arg2, void *arg3) {
             fn_801308F4((char *)(sp + 0xB0), 0x14, src);
             {
                 char *d = (char *)o + 0x6C; const char *s = (const char *)(sp + 0xB0); int n = 0x1E;
-                while (*d && --n) ++d;
-                while (n-- > 0) { *d = *s++; if (!*d++) break; }
-                if (n < 0) d[-1] = 0;
+                while (*d != 0) { n--; d++; }
+                if (n > 0) { while ((*d++ = *s++) != 0) { if (--n <= 0) { d[-1] = 0; break; } } }
             }
             child = (void *)rec->child;
             vt = *(void ***)child;
@@ -2030,13 +2013,11 @@ extern "C" int fn_802812B4(int *arg0, void *arg1, int *arg2, void *arg3) {
             if (mode >= 0 && mode < 5) {
                 char *s = (char *)__AXGetStackHead();
                 char *d = (char *)o + 0x8A; int n = 10;
-                while (n-- > 0) { *d = *s++; if (!*d++) break; }
-                if (n < 0) d[-1] = 0;
+                while ((*d++ = *s++) != 0) { if (--n <= 0) { d[-1] = 0; break; } }
             }
         }
         rec->selected = (lbl_8055F698 == (void *)o);
     }
-
 
     {
         volatile unsigned char *o = sp + 0x838;
@@ -2070,9 +2051,8 @@ extern "C" int fn_802812B4(int *arg0, void *arg1, int *arg2, void *arg3) {
             fn_801308F4((char *)o + 0x6C, 0x1E, src);
             {
                 char *d = (char *)o + 0x6C; const char *s = lbl_8055C818; int n = 0x1E;
-                while (*d && --n) ++d;
-                while (n-- > 0) { *d = *s++; if (!*d++) break; }
-                if (n < 0) d[-1] = 0;
+                while (*d != 0) { n--; d++; }
+                if (n > 0) { while ((*d++ = *s++) != 0) { if (--n <= 0) { d[-1] = 0; break; } } }
             }
             child = (void *)rec->child;
             vt = *(void ***)child;
@@ -2080,9 +2060,8 @@ extern "C" int fn_802812B4(int *arg0, void *arg1, int *arg2, void *arg3) {
             fn_801308F4((char *)(sp + 0x9C), 0x14, src);
             {
                 char *d = (char *)o + 0x6C; const char *s = (const char *)(sp + 0x9C); int n = 0x1E;
-                while (*d && --n) ++d;
-                while (n-- > 0) { *d = *s++; if (!*d++) break; }
-                if (n < 0) d[-1] = 0;
+                while (*d != 0) { n--; d++; }
+                if (n > 0) { while ((*d++ = *s++) != 0) { if (--n <= 0) { d[-1] = 0; break; } } }
             }
             child = (void *)rec->child;
             vt = *(void ***)child;
@@ -2093,13 +2072,11 @@ extern "C" int fn_802812B4(int *arg0, void *arg1, int *arg2, void *arg3) {
             if (mode >= 0 && mode < 5) {
                 char *s = (char *)__AXGetStackHead();
                 char *d = (char *)o + 0x8A; int n = 10;
-                while (n-- > 0) { *d = *s++; if (!*d++) break; }
-                if (n < 0) d[-1] = 0;
+                while ((*d++ = *s++) != 0) { if (--n <= 0) { d[-1] = 0; break; } }
             }
         }
         rec->selected = (lbl_8055F698 == (void *)o);
     }
-
 
     {
         volatile unsigned char *o = sp + 0x8D8;
@@ -2133,9 +2110,8 @@ extern "C" int fn_802812B4(int *arg0, void *arg1, int *arg2, void *arg3) {
             fn_801308F4((char *)o + 0x6C, 0x1E, src);
             {
                 char *d = (char *)o + 0x6C; const char *s = lbl_8055C818; int n = 0x1E;
-                while (*d && --n) ++d;
-                while (n-- > 0) { *d = *s++; if (!*d++) break; }
-                if (n < 0) d[-1] = 0;
+                while (*d != 0) { n--; d++; }
+                if (n > 0) { while ((*d++ = *s++) != 0) { if (--n <= 0) { d[-1] = 0; break; } } }
             }
             child = (void *)rec->child;
             vt = *(void ***)child;
@@ -2143,9 +2119,8 @@ extern "C" int fn_802812B4(int *arg0, void *arg1, int *arg2, void *arg3) {
             fn_801308F4((char *)(sp + 0x88), 0x14, src);
             {
                 char *d = (char *)o + 0x6C; const char *s = (const char *)(sp + 0x88); int n = 0x1E;
-                while (*d && --n) ++d;
-                while (n-- > 0) { *d = *s++; if (!*d++) break; }
-                if (n < 0) d[-1] = 0;
+                while (*d != 0) { n--; d++; }
+                if (n > 0) { while ((*d++ = *s++) != 0) { if (--n <= 0) { d[-1] = 0; break; } } }
             }
             child = (void *)rec->child;
             vt = *(void ***)child;
@@ -2156,8 +2131,7 @@ extern "C" int fn_802812B4(int *arg0, void *arg1, int *arg2, void *arg3) {
             if (mode >= 0 && mode < 5) {
                 char *s = (char *)__AXGetStackHead();
                 char *d = (char *)o + 0x8A; int n = 10;
-                while (n-- > 0) { *d = *s++; if (!*d++) break; }
-                if (n < 0) d[-1] = 0;
+                while ((*d++ = *s++) != 0) { if (--n <= 0) { d[-1] = 0; break; } }
             }
         }
         rec->selected = (lbl_8055F698 == (void *)o);
@@ -2195,9 +2169,8 @@ extern "C" int fn_802812B4(int *arg0, void *arg1, int *arg2, void *arg3) {
             fn_801308F4((char *)o + 0x6C, 0x1E, src);
             {
                 char *d = (char *)o + 0x6C; const char *s = lbl_8055C818; int n = 0x1E;
-                while (*d && --n) ++d;
-                while (n-- > 0) { *d = *s++; if (!*d++) break; }
-                if (n < 0) d[-1] = 0;
+                while (*d != 0) { n--; d++; }
+                if (n > 0) { while ((*d++ = *s++) != 0) { if (--n <= 0) { d[-1] = 0; break; } } }
             }
             child = (void *)rec->child;
             vt = *(void ***)child;
@@ -2205,9 +2178,8 @@ extern "C" int fn_802812B4(int *arg0, void *arg1, int *arg2, void *arg3) {
             fn_801308F4((char *)(sp + 0x88), 0x14, src);
             {
                 char *d = (char *)o + 0x6C; const char *s = (const char *)(sp + 0x88); int n = 0x1E;
-                while (*d && --n) ++d;
-                while (n-- > 0) { *d = *s++; if (!*d++) break; }
-                if (n < 0) d[-1] = 0;
+                while (*d != 0) { n--; d++; }
+                if (n > 0) { while ((*d++ = *s++) != 0) { if (--n <= 0) { d[-1] = 0; break; } } }
             }
             child = (void *)rec->child;
             vt = *(void ***)child;
@@ -2218,8 +2190,7 @@ extern "C" int fn_802812B4(int *arg0, void *arg1, int *arg2, void *arg3) {
             if (mode >= 0 && mode < 5) {
                 char *s = (char *)__AXGetStackHead();
                 char *d = (char *)o + 0x8A; int n = 10;
-                while (n-- > 0) { *d = *s++; if (!*d++) break; }
-                if (n < 0) d[-1] = 0;
+                while ((*d++ = *s++) != 0) { if (--n <= 0) { d[-1] = 0; break; } }
             }
         }
         rec->selected = (lbl_8055F698 == (void *)o);
@@ -2257,9 +2228,8 @@ extern "C" int fn_802812B4(int *arg0, void *arg1, int *arg2, void *arg3) {
             fn_801308F4((char *)o + 0x6C, 0x1E, src);
             {
                 char *d = (char *)o + 0x6C; const char *s = lbl_8055C818; int n = 0x1E;
-                while (*d && --n) ++d;
-                while (n-- > 0) { *d = *s++; if (!*d++) break; }
-                if (n < 0) d[-1] = 0;
+                while (*d != 0) { n--; d++; }
+                if (n > 0) { while ((*d++ = *s++) != 0) { if (--n <= 0) { d[-1] = 0; break; } } }
             }
             child = (void *)rec->child;
             vt = *(void ***)child;
@@ -2267,9 +2237,8 @@ extern "C" int fn_802812B4(int *arg0, void *arg1, int *arg2, void *arg3) {
             fn_801308F4((char *)(sp + 0x88), 0x14, src);
             {
                 char *d = (char *)o + 0x6C; const char *s = (const char *)(sp + 0x88); int n = 0x1E;
-                while (*d && --n) ++d;
-                while (n-- > 0) { *d = *s++; if (!*d++) break; }
-                if (n < 0) d[-1] = 0;
+                while (*d != 0) { n--; d++; }
+                if (n > 0) { while ((*d++ = *s++) != 0) { if (--n <= 0) { d[-1] = 0; break; } } }
             }
             child = (void *)rec->child;
             vt = *(void ***)child;
@@ -2280,8 +2249,7 @@ extern "C" int fn_802812B4(int *arg0, void *arg1, int *arg2, void *arg3) {
             if (mode >= 0 && mode < 5) {
                 char *s = (char *)__AXGetStackHead();
                 char *d = (char *)o + 0x8A; int n = 10;
-                while (n-- > 0) { *d = *s++; if (!*d++) break; }
-                if (n < 0) d[-1] = 0;
+                while ((*d++ = *s++) != 0) { if (--n <= 0) { d[-1] = 0; break; } }
             }
         }
         rec->selected = (lbl_8055F698 == (void *)o);
@@ -2345,9 +2313,8 @@ extern "C" int fn_802812B4(int *arg0, void *arg1, int *arg2, void *arg3) {
                     char *d = (char *)rec + 0x6C;
                     const char *s = lbl_8055C818;
                     int n = 0x1E;
-                    while (*d && --n) ++d;
-                    while (n-- > 0) { *d = *s++; if (!*d++) break; }
-                    if (n < 0) d[-1] = 0;
+                    while (*d != 0) { n--; d++; }
+                    if (n > 0) { while ((*d++ = *s++) != 0) { if (--n <= 0) { d[-1] = 0; break; } } }
                 }
                 object = (void *)rec->child;
                 vt = *(void ***)object;
@@ -2357,9 +2324,8 @@ extern "C" int fn_802812B4(int *arg0, void *arg1, int *arg2, void *arg3) {
                     char *d = (char *)rec + 0x6C;
                     const char *s = (const char *)(sp + 0x4C);
                     int n = 0x1E;
-                    while (*d && --n) ++d;
-                    while (n-- > 0) { *d = *s++; if (!*d++) break; }
-                    if (n < 0) d[-1] = 0;
+                    while (*d != 0) { n--; d++; }
+                    if (n > 0) { while ((*d++ = *s++) != 0) { if (--n <= 0) { d[-1] = 0; break; } } }
                 }
                 object = (void *)rec->child;
                 vt = *(void ***)object;
@@ -2371,8 +2337,7 @@ extern "C" int fn_802812B4(int *arg0, void *arg1, int *arg2, void *arg3) {
                     char *srcHead = (char *)__AXGetStackHead();
                     char *d = (char *)rec + 0x8A;
                     int n = 10;
-                    while (n-- > 0) { *d = *srcHead++; if (!*d++) break; }
-                    if (n < 0) d[-1] = 0;
+                    while ((*d++ = *srcHead++) != 0) { if (--n <= 0) { d[-1] = 0; break; } }
                 }
             }
             rec->selected = (lbl_8055F698 == (void *)rec);
@@ -3654,8 +3619,8 @@ void fn_80285CB8(void *arg0) {
     extern void *lbl_8055F698;
     extern char lbl_8055C818[8];
     extern char lbl_80347E50[];
+    unsigned char *b = (unsigned char *)arg0;
     char *base = lbl_80347E50;
-    unsigned char *__restrict b = (unsigned char *)arg0;
     float alpha, shape;
     float f4, f2, f5, f3, dt;
     double lim;
@@ -4212,14 +4177,14 @@ extern "C" void *fn_8028732C(void *arg0, int arg1) {
     class Obj {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
-        virtual void get() __attribute__((noreturn));
+        virtual void *get();
     };
     void *cached = *(void **)((char *)arg0 + 8);
     if (cached != 0 && arg1 == *(int *)((char *)arg0 + 12)) {
         return cached;
     }
     Obj *obj = *(Obj **)((char *)arg0 + 4);
-    obj->get();
+    return obj->get();
 }
 #pragma cplusplus off
 void fn_80287360(void) {
