@@ -3513,8 +3513,8 @@ extern int lbl_804C5710_int;
     copyState[0] = 0;
 }
 
-/* Returns 1 while the frame counter is non-negative (sign bit clear), 0 once
-   it has been invalidated to -1 (sign bit set). */
+/* Nonzero while tileCaptureIndex is >= 0 (a tile-capture grid sweep is in
+   progress), 0 when it has been reset to -1. */
 int isTileCaptureActive(void) {
     return (tileCaptureIndex >> 0x1FU) ^ 1;
 }
