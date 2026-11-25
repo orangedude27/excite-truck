@@ -75,7 +75,7 @@ extern void GXSetScissor(unsigned int, unsigned int, unsigned int, unsigned int)
 extern void fn_802D14D8(void);
 extern unsigned char lbl_8055FD91;
 extern unsigned char sGxResetRegisterPending;
-extern char lbl_8055D100;
+extern char sGxResetCallbackName;
   extern int gxBlankOnShutdown(int);
   extern void KERNEL_AddResetCallback(void (*)(void), void *);
   extern void drInvalidateVertexFormatCache();
@@ -590,7 +590,7 @@ void fn_802CF10C(void) {
 
 void gxRegisterResetCallback(void) {
 #define sGxResetRegistered sGxResetRegisterPending
-#define sGxResetName lbl_8055D100
+#define sGxResetName sGxResetCallbackName
 #define GxResetCallback gxBlankOnShutdown
 #define RegisterResetCallback KERNEL_AddResetCallback
     /* Register the GX reset callback with its "GX" log name, once on first init. */
@@ -3578,7 +3578,7 @@ extern unsigned char lbl_8055FD50;
 extern unsigned char gRenderRequest[12];
 extern unsigned char lbl_8055FD91;
 extern unsigned char sGxResetRegisterPending;
-extern char lbl_8055D100;
+extern char sGxResetCallbackName;
       extern void KERNEL_AddResetCallback(void (*)(void), void *);
     extern int lbl_804C9760[];
 
