@@ -532,7 +532,7 @@ extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv(s32),GetScaleH__Q36nw4hbm2ut10
 extern s32 IsWidthFixed__Q36nw4hbm2ut10CharWriterCFv(s32);
 extern void SetCursorX__Q36nw4hbm2ut10CharWriterFf(s32,f32);
 extern s32 fn_8002F72C(void*,const void*);
-extern u16 array_virtualDispatchThunk(s32*);
+extern u16 arrayVirtualDispatchThunk(s32*);
 extern f32 fn_80111C10(s32);
 extern f32 lbl_80560ED0;
 extern const char lbl_80320560[],lbl_80320980[],lbl_803209B8[],lbl_803209CC[],lbl_80320A04[],lbl_80320A18[],lbl_80320A64[],lbl_80320A78[],lbl_80320AB0[],lbl_80320AC4[],lbl_80320AFC[],lbl_80320B10[],lbl_80320B48[];
@@ -730,7 +730,7 @@ f32 rect[4];
         ((void (*)(const char*, s32, const char*, ...))Panic__Q26nw4hbm2dbFPCciPCce)(lbl_80320B48, 0x4A, lbl_80320B10, (s32) &reader.cursor);
     }
     temp_f27 = lbl_80560ED0;
-    var_r26 = array_virtualDispatchThunk(&reader.cursor);
+    var_r26 = arrayVirtualDispatchThunk(&reader.cursor);
     temp_r24 = (s32) &reader.cursor & 0xFF800000;
     temp_r23 = (s32) &reader.cursor & 0xF8000000;
     temp_r22 = (s32) &reader.cursor & 0xFFFFC000;
@@ -922,7 +922,7 @@ block_241:
         if (var_r3_8 == 0) {
             ((void (*)(const char*, s32, const char*, ...))Panic__Q26nw4hbm2dbFPCciPCce)(lbl_80320B48, 0x4A, lbl_80320B10, (s32) &reader.cursor);
         }
-        var_r26 = array_virtualDispatchThunk(&reader.cursor);
+        var_r26 = arrayVirtualDispatchThunk(&reader.cursor);
         saved.left = *(f32*)(((s32)arg0_ptr) + 0);
         saved.top = *(f32*)(((s32)arg0_ptr) + 4);
         saved.right = *(f32*)(((s32)arg0_ptr) + 8);

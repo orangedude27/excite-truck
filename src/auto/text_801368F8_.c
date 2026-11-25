@@ -535,7 +535,7 @@ null_arg:
     return left == 0 ? 1 : -1;
 }
 
-s32 array_virtualDispatchThunk(void *, s32, s32);
+s32 arrayVirtualDispatchThunk(void *, s32, s32);
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target

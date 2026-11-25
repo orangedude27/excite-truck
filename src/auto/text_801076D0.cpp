@@ -2034,7 +2034,7 @@ extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv(s32),GetScaleH__Q36nw4hbm2ut10
 extern s32 IsWidthFixed__Q36nw4hbm2ut10CharWriterCFv(s32);
 extern void SetCursorX__Q36nw4hbm2ut10CharWriterFf(s32,f32);
 extern s32 fn_8002F72C(void*,const void*);
-extern u16 array_virtualDispatchThunk(s32*);
+extern u16 arrayVirtualDispatchThunk(s32*);
 extern f32 lbl_80561178;
 extern const char lbl_80329530[],lbl_80329938[],lbl_80329900[],lbl_803298EC[],lbl_803298B4[],lbl_803298A0[],lbl_80329824[],lbl_80320AFC[],lbl_80320AC4[],lbl_80320B48[],lbl_80320B10[];
 class Reader { public: s32 cursor; u16 (Reader::*next)(); };
@@ -4401,7 +4401,7 @@ class Processor { public: virtual void d0(); virtual void d1(); virtual s32 rect
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320B48, 0x4A, lbl_80320B10, (s32) &reader.cursor);
     }
     temp_f28 = lbl_80561178;
-    var_r27 = array_virtualDispatchThunk(&reader.cursor);
+    var_r27 = arrayVirtualDispatchThunk(&reader.cursor);
     temp_r22 = (s32) &reader.cursor & 0xFF800000;
     temp_r21 = (s32) &reader.cursor & 0xF8000000;
     temp_r20 = (s32) &reader.cursor & 0xFFFFC000;
@@ -4586,7 +4586,7 @@ block_268:
         if (var_r3_8 == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320B48, 0x4A, lbl_80320B10, (s32) &reader.cursor);
         }
-        var_r27 = array_virtualDispatchThunk(&reader.cursor);
+        var_r27 = arrayVirtualDispatchThunk(&reader.cursor);
         goto loop_279;
     }
 }
@@ -4695,7 +4695,7 @@ extern s32 GetFont__Q36nw4hbm2ut10CharWriterCFv(s32);
 extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(s32),GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(s32),GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(s32);
 extern void MoveCursorX__Q36nw4hbm2ut10CharWriterFf(s32,f32),MoveCursorX__Q36nw4hbm2ut10CharWriterFf_80106524(s32,f32),Print__Q36nw4hbm2ut10CharWriterFUs(s32,u16),SetCursorX__Q36nw4hbm2ut10CharWriterFf(s32,f32),SetCursorX__Q36nw4hbm2ut10CharWriterFf_801062CC(s32,f32),SetCursor__Q36nw4hbm2ut10CharWriterFff(s32,f32,f32);
 extern s32 fn_8002F72C(void*,const void*);
-extern u16 array_virtualDispatchThunk(s32*);
+extern u16 arrayVirtualDispatchThunk(s32*);
 extern void fn_801033F0(void*,unsigned int);
 extern void fn_8010E3BC(void*,f32*,s32,s32);
 extern f32 fn_80110D68(s32,f32*,f32*,s32,s32);
@@ -6432,7 +6432,7 @@ extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv(s32),GetScaleH__Q36nw4hbm2ut10
 extern s32 IsWidthFixed__Q36nw4hbm2ut10CharWriterCFv(s32);
 extern void SetCursorX__Q36nw4hbm2ut10CharWriterFf(s32,f32);
 extern s32 fn_8002F72C(void*,const void*);
-extern u16 array_virtualDispatchThunk(s32*);
+extern u16 arrayVirtualDispatchThunk(s32*);
 extern f32 lbl_80561178;
 extern const char lbl_80320980[],lbl_803209B8[],lbl_803209CC[],lbl_80320A04[],lbl_80320A18[],lbl_80320A64[],lbl_80320A78[],lbl_80320AB0[],lbl_80329530[],lbl_80329938[],lbl_80329900[],lbl_803298EC[],lbl_803298B4[],lbl_803298A0[],lbl_80329824[],lbl_80320AFC[],lbl_80320AC4[],lbl_80320B48[],lbl_80320B10[];
 class Reader { public: s32 cursor; u16 (Reader::*next)(); };
@@ -6672,7 +6672,7 @@ class Processor { public: virtual void d0(); virtual void d1(); virtual s32 rect
     if (var_r6_6 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320B48, 0x4A, lbl_80320B10, (s32) &reader.cursor);
     }
-    var_r28 = array_virtualDispatchThunk(&reader.cursor);
+    var_r28 = arrayVirtualDispatchThunk(&reader.cursor);
     temp_f28 = lbl_80561178;
     temp_r22 = (s32) &reader.cursor & 0xFF800000;
     temp_r21 = (s32) &reader.cursor & 0xF8000000;
@@ -6829,7 +6829,7 @@ block_264:
     if (var_r3_8 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320B48, 0x4A, lbl_80320B10, (s32) &reader.cursor);
     }
-    var_r28 = array_virtualDispatchThunk(&reader.cursor);
+    var_r28 = arrayVirtualDispatchThunk(&reader.cursor);
     var_r3 = 0;
     if ((temp_r31 == 0U) || ((u32) (temp_r22) == 0x81000000U) || ((u32) (temp_r21) == 0x90000000U) || ((u32) (temp_r23) == 0xC0000000U) || ((u32) (temp_r22) == 0xC1000000U) || ((u32) (temp_r21) == 0xD0000000U) || ((u32) (temp_r20) == 0xE0000000U)) {
         var_r3 = 1;
@@ -6958,7 +6958,7 @@ extern "C" f32 fn_801142F8(void *writer, s32 arg1, s32 arg2) {
                     extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(s32),GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(s32),GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(s32);
                     extern void MoveCursorX__Q36nw4hbm2ut10CharWriterFf(s32,f32),MoveCursorX__Q36nw4hbm2ut10CharWriterFf_80106524(s32,f32),Print__Q36nw4hbm2ut10CharWriterFUs(s32,u16),SetCursorX__Q36nw4hbm2ut10CharWriterFf(s32,f32),SetCursorX__Q36nw4hbm2ut10CharWriterFf_801062CC(s32,f32),SetCursor__Q36nw4hbm2ut10CharWriterFff(s32,f32,f32);
                     extern s32 fn_8002F72C(void*,const void*);
-                    extern u16 array_virtualDispatchThunk(s32*);
+                    extern u16 arrayVirtualDispatchThunk(s32*);
                     extern void fn_801033F0(void*,unsigned int);
                     extern void fn_80112EA0(void*,f32*,s32,s32);
                     extern f32 fn_80115848(s32,f32*,f32*,s32,s32);
