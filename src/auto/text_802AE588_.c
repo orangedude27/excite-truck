@@ -1259,14 +1259,17 @@ void fn_802AFF80(void *list, short value) {
 #pragma push
 #pragma scheduling on
 #pragma opt_propagation on
-int fn_802AFFA8(int arg0, int arg1) {
-    float out[3];
-    float x = (float)arg0 * lbl_80564AF0;
-    float z = (float)arg1 * lbl_80564AF0;
-    out[0] = x;
-    out[2] = z;
-    out[1] = fn_801DCF48(0, x, z);
-    return (unsigned short)fn_802B127C(lbl_8055F974, (int)out);
+/* Sample the terrain height at grid cell (gridX, gridZ), scaled by lbl_80564AF0
+ * into world space, append the (x, height, z) point to the point buffer
+ * lbl_8055F974, and return the point's u16 index. */
+int fn_802AFFA8(int gridX, int gridZ) {
+    float point[3];
+    float x = (float)gridX * lbl_80564AF0;
+    float z = (float)gridZ * lbl_80564AF0;
+    point[0] = x;
+    point[2] = z;
+    point[1] = fn_801DCF48(0, x, z);
+    return (unsigned short)fn_802B127C(lbl_8055F974, (int)point);
 }
 #pragma pop
 /* Reset a bounded short list { short* items; u16 count; u16 capacity; },
