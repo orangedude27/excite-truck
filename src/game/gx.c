@@ -2955,7 +2955,7 @@ int GX_GetXFB(int *outWidth, int *outHeight) {
 }
 
 /* Enable destination alpha and cache the value for later GXSetDstAlpha calls. */
-void fn_802D306C(unsigned char alpha) {
+void gxEnableDstAlpha(unsigned char alpha) {
 #define gDstAlpha lbl_8055FD60
     gDstAlpha = alpha;
     GXSetDstAlpha(1, alpha);
