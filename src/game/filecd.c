@@ -171,7 +171,7 @@ void *fn_802E3EBC(void)
     return 0;
 }
 #pragma cplusplus reset
-int fn_802E4030(int object, int destroyFlag) {
+/* FileCd::release: if object is non-null and destroyFlag is positive, call the no-op FileCd deallocator, then return object unchanged. */ int fn_802E4030(int object, int destroyFlag) {
     void (*freeFn)(void);
     /* FileCd::release: free the object through its no-op deallocator when destroying, then return it. */
     if (object != 0 && destroyFlag > 0) {
