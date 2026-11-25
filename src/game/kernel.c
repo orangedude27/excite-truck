@@ -135,7 +135,7 @@ int fn_802E1804(void *dst, void *src, int count, int outerBytes, int stride)
 #pragma optimization_level reset
 /* Initialize a GX texture object with nearest filtering, the same wrap mode on
  * both axes, no mipmaps, and all LOD/bias values zeroed. */
-int fn_802E18D4(int width, int height, int texFmt, int wrapST, void *texObj, int image) {
+int initGXTexObj(int width, int height, int texFmt, int wrapST, void *texObj, int image) {
     GXInitTexObj((GXTexObj *)texObj, (void *)image, (unsigned short)width, (unsigned short)height,
                  texFmt, wrapST, wrapST, 0);
     GXInitTexObjLOD((GXTexObj *)texObj, 0, 0, 0, 0, 0,
@@ -172,7 +172,7 @@ int buildIA8LookupTexture(int imagePtr, void *texObj, void *outWidth, void *outH
     fn_802E1780(linearBuf, size, width);
     fn_802E1804((void *)imagePtr, linearBuf, width, 4, 2);
     DCFlushRange((void *)imagePtr, alignedBytes);
-    fn_802E18D4(width, 4, 3, 1, texObj, imagePtr);
+    initGXTexObj(width, 4, 3, 1, texObj, imagePtr);
     return alignedBytes;
 }
 #pragma use_lmw_stmw reset
@@ -248,22 +248,22 @@ int fn_802E1BB4(void *obj, int unused) {
         if (*(int *)(slot + 0x118) != 0) {           /* first image */
             *(int *)(slot + 0x11C) = (int)image;     /* where its data went */
             *(int *)(slot + 0x120) = widthA;         /* and its width */
-            if (!fn_802E18D4(widthA, *(int *)((char *)obj + 0x108), 1, 0, texObjs, (int)image)) goto fail;
+            if (!initGXTexObj(widthA, *(int *)((char *)obj + 0x108), 1, 0, texObjs, (int)image)) goto fail;
         }
         if (*(int *)(slot + 0x124) != 0) {           /* second, at combinedWidth */
             *(int *)(slot + 0x128) = (int)image + combinedWidth;
             *(int *)(slot + 0x12C) = widthB;
-            if (!fn_802E18D4(widthB, *(int *)((char *)obj + 0x110), 1, 0, texObjs + 0x20, (int)image + combinedWidth)) goto fail;
+            if (!initGXTexObj(widthB, *(int *)((char *)obj + 0x110), 1, 0, texObjs + 0x20, (int)image + combinedWidth)) goto fail;
         }
         if (*(int *)(slot + 0x130) != 0) {           /* third, at combinedPlusHeight */
             *(int *)(slot + 0x134) = (int)image + combinedPlusHeight;
             *(int *)(slot + 0x138) = widthB;
-            if (!fn_802E18D4(widthB, *(int *)((char *)obj + 0x110), 1, 0, texObjs + 0x40, (int)image + combinedPlusHeight)) goto fail;
+            if (!initGXTexObj(widthB, *(int *)((char *)obj + 0x110), 1, 0, texObjs + 0x40, (int)image + combinedPlusHeight)) goto fail;
         }
         if (*(int *)(slot + 0x13C) != 0) {           /* fourth, at alignedWidthA */
             *(int *)(slot + 0x140) = (int)image + alignedWidthA;
             *(int *)(slot + 0x144) = widthA;
-            if (!fn_802E18D4(widthA, *(int *)((char *)obj + 0x108), 1, 0, texObjs + 0x60, (int)image + alignedWidthA)) goto fail;
+            if (!initGXTexObj(widthA, *(int *)((char *)obj + 0x108), 1, 0, texObjs + 0x60, (int)image + alignedWidthA)) goto fail;
         }
     }
     *(int *)((char *)obj + 0x17C) = rowBytes;
@@ -923,7 +923,7 @@ void fn_802E300C(int exitCode) {
 extern unsigned int roundUpPow2(unsigned int);
 extern void fn_802E1780(void *, unsigned int, int);
 extern int fn_802E1804(void *, void *, int, int, int);
-extern int fn_802E18D4(int, int, int, int, void *, int);
+extern int initGXTexObj(int, int, int, int, void *, int);
 extern void DCFlushRange(void *, int);
 
 extern void DCStoreRange(void *, int);
