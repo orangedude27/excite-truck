@@ -588,19 +588,11 @@ void fn_802CF10C(void) {
 
 #pragma dont_inline reset
 
+/* Register the GX shutdown callback under its "GX" log tag, once at init. */
 void gxRegisterResetCallback(void) {
-#define sGxResetRegistered sGxResetRegisterPending
-#define sGxResetName sGxResetCallbackName
-#define GxResetCallback gxBlankOnShutdown
-#define RegisterResetCallback KERNEL_AddResetCallback
-    /* Register the GX reset callback with its "GX" log name, once on first init. */
-    if (sGxResetRegistered == 0) return;
-    sGxResetRegistered = 0;
-    RegisterResetCallback((void (*)(void))GxResetCallback, &sGxResetName);
-#undef sGxResetRegistered
-#undef sGxResetName
-#undef GxResetCallback
-#undef RegisterResetCallback
+    if (sGxResetRegisterPending == 0) return;
+    sGxResetRegisterPending = 0;
+    KERNEL_AddResetCallback((void (*)(void))gxBlankOnShutdown, &sGxResetCallbackName);
 }
 
 #pragma push
