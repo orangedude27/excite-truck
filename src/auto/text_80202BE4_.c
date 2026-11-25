@@ -81,7 +81,7 @@ extern float __fabsf(float);
 extern double __fabs(double);
 extern double fn_8002F234(f32, f32);
 extern double fn_8002EFB0(f32, f32);
-extern void *fn_802C9A40(void);
+extern void *DrawList_getGlobalDrawDirection(void);
 extern void PSVECCrossProduct(f32 *, f32 *, f32 *);
 extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
 extern void DrawList_endMeshPass(void);
@@ -309,7 +309,7 @@ void fn_80202F58(const void *arg0, const void *arg1, void *arg2) {
         (*(f32 *)((u8 *)arg2 + 0x2C)) = zero;
     }
     if (beginDrawListPass(4) != 0) {
-        temp_r3 = fn_802C9A40();
+        temp_r3 = DrawList_getGlobalDrawDirection();
         temp_f0 = (*(f32 *)((u8 *)temp_r3 + 0));
         temp_f2_2 = (*(f32 *)((u8 *)temp_r3 + 8));
         work[2].f = temp_f0;

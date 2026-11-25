@@ -1185,7 +1185,7 @@ void DrawList_applyGlobalDirection(void) {
 #pragma dont_inline reset
 #undef globalDirection
 /* Return a pointer to the global 3-component draw direction vector (gGlobalDrawDirection). */
-void *fn_802C9A40(void) {
+void *DrawList_getGlobalDrawDirection(void) {
     #define globalDirection gGlobalDrawDirection
     return globalDirection;
     #undef globalDirection

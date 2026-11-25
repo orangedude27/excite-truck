@@ -1257,7 +1257,7 @@ extern "C" void *fn_802BA580(void **arg0, void *arg1, float scale) {
     extern void fn_80160B18(void *);
     extern void fn_80160BA0(void *, void *, float);
     extern void fn_80144D64(void *, void *);
-    extern void *fn_802C9A40(void);
+    extern void *DrawList_getGlobalDrawDirection(void);
     extern void fn_801E0F78(void *, void *, void *, float);
     extern void fn_8001BA68(void *);
     extern float fn_801DCF48(void *, float, float);
@@ -1283,7 +1283,7 @@ extern "C" void *fn_802BA580(void **arg0, void *arg1, float scale) {
     fn_801602B0(a); fn_801602B0(b); fn_801602B0(c); fn_801602B0(d);
     value.bits = ((Object *)arg0)->value(&lbl_8055CF04);
     fn_80160BA0(d,&value,scale);
-    fn_80144D64(h,fn_802C9A40());
+    fn_80144D64(h,DrawList_getGlobalDrawDirection());
     fn_801602B0(e);
     fn_8016029C(e,h);
     fn_80160B18(e);

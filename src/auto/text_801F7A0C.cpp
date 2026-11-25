@@ -93,7 +93,7 @@ __declspec(section ".sdata") extern char lbl_8055B3A0[];
 extern u8 lbl_8033B588[];
 extern const float lbl_80562FF0;
 extern "C" void *fn_802C6FC0(void *, int, int);
-extern "C" void *fn_802C9A40(void);
+extern "C" void *DrawList_getGlobalDrawDirection(void);
 extern "C" void fn_8029798C(void *, void *, u32, f32, f32);
 extern "C" void fn_80297988(void *);
 extern "C" void fn_802981EC(void *);
@@ -2796,7 +2796,7 @@ extern "C" void fn_801FB420(void *arg0, void *arg1) {
     *(void **)(obj + 0x38) = fp;
     *(s32 *)(obj + 0x3c) = cnt;
     if (*(s32 *)(self + 0x78) != 0) {
-        vec = fn_802C9A40();
+        vec = DrawList_getGlobalDrawDirection();
         count = *(s32 *)(self + 0x104);
         mask = 0xFFFFFFFFu;
         if (count > 0) {
@@ -2844,7 +2844,7 @@ needZero:
     *(void **)(obj + 0x38) = fp;
     *(void **)(obj + 0x3c) = r24;
     if (*(s32 *)(self + 0x78) != 0) {
-        vec = fn_802C9A40();
+        vec = DrawList_getGlobalDrawDirection();
         count = *(s32 *)(self + 0x104);
         mask = 0xFFFFFFFFu;
         if (count > 0) {

@@ -1053,7 +1053,7 @@ long fn_801E89A4(long);
 short fn_801EAC3C(void*, long);
 long fn_801E9E78(void*, void*, float*, long*, float);
 float PSVECDotProduct(float*, void*);
-void* fn_802C9A40(void);
+void* DrawList_getGlobalDrawDirection(void);
 void fn_802C7AE0(long, void*, long, float);
 void fn_801F13F4(long, float, float);
 #pragma push
@@ -1089,7 +1089,7 @@ process:
     vector[2] = lbl_80562E88;
     result = 0;
     if (fn_801E9E78(&entry, &settings, vector, &result, lbl_80562E88) != 0) {
-        dot = -PSVECDotProduct(vector, fn_802C9A40());
+        dot = -PSVECDotProduct(vector, DrawList_getGlobalDrawDirection());
         limit = lbl_80562E9C;
         var_f29 = *(float*)((char*)arg0 + 0x2C) - settings.second.value;
         limit = limit < dot ? limit : dot;

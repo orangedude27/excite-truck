@@ -1417,7 +1417,7 @@ void fn_8028CA70(s32 arg0) {
     extern s32 beginDrawListPass(s32);
     extern void fn_802C8E00();
     extern void DrawList_endMeshPass(void);
-    extern void *fn_802C9A40(void);
+    extern void *DrawList_getGlobalDrawDirection(void);
     extern f32 fn_802C9A4C(f32);
     extern f64 sin(f32);
     extern f32 lbl_8056432C, lbl_8056434C, lbl_80564358, lbl_805643D8, lbl_805643DC;
@@ -1436,7 +1436,7 @@ void fn_8028CA70(s32 arg0) {
         fn_802C8BD0(*(s32 *)(arg0 + 0xC));
         temp_r3 = *(s32 *)(arg0 + 4);
         if (beginDrawListPass((temp_r3 * 4) - temp_r3) != 0) {
-            *(struct Axis *)&stack.axisX = *(struct Axis *)fn_802C9A40();
+            *(struct Axis *)&stack.axisX = *(struct Axis *)DrawList_getGlobalDrawDirection();
             time = fn_801E7E18();
             one = lbl_8056432C;
             threshold = lbl_805643D8;

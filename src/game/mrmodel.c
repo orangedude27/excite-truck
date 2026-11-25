@@ -47,7 +47,7 @@ int fn_802E30C8(const char *, int);
 int fn_802C6B44(int);
 int fn_802C6DC4(int, int, int, int);
 void fn_802C6C38(int);
-extern float *fn_802C9A40(void);
+extern float *DrawList_getGlobalDrawDirection(void);
 extern float lbl_80564EF4;
 extern int fn_802C9638(void *, unsigned char *, float);
 
@@ -1885,7 +1885,7 @@ void fn_802C7AE0(int arg0, void *arg1, int arg2, float farg0) {
         local.vector[2] = tz + 0.0f;
     }
     {
-        float *vec = fn_802C9A40();
+        float *vec = DrawList_getGlobalDrawDirection();
         float scale = lbl_80564EF4 * farg0;
         local.vector[0] += vec[0] * scale;
         local.vector[1] += vec[1] * scale;

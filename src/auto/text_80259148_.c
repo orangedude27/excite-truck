@@ -1337,7 +1337,7 @@ extern void fn_801BFE7C(void *, void *, void *);
 extern int setDrawListColor(int);
 extern int setLightAmbientColor(int);
 extern float fn_802C99E8(float);
-extern void *fn_802C9A40(void);
+extern void *DrawList_getGlobalDrawDirection(void);
 extern void DrawList_setGlobalDirection(void *);
 extern void fn_802D7554(int);
 extern void getTextureSlotTexObj(int);
@@ -1390,7 +1390,7 @@ void fn_8025AE18(void *arg0) {
     a = setDrawListColor(0xFF646464);
     b = setLightAmbientColor(0xFFB4B4B4);
     old = fn_802C99E8(lbl_80563AE0);
-    *(struct RenderWords3 *)oldcolor = *(struct RenderWords3 *)fn_802C9A40();
+    *(struct RenderWords3 *)oldcolor = *(struct RenderWords3 *)DrawList_getGlobalDrawDirection();
     DrawList_setGlobalDirection(color);
     fn_802D7554(1);
     getTextureSlotTexObj(*(int *)(obj + 0xA8));
