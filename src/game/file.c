@@ -67,7 +67,7 @@ __declspec(section ".sdata") extern char sSdPathPrefix[];
 #pragma dont_inline reset
 /* Return the file system picked by getFileSystemForPath, or the default file system
    (gDefaultFileSystem) when none is available. */
-/* Return the file system selected by getFileSystemForPath for the current path, or gDefaultFileSystem as fallback. The function-pointer cast forces an out-of-line call (MWCC would otherwise inline a direct call and change the code). */ s32 *GetDefaultFileSystem(void) {
+/* Return the file system selected by getFileSystemForPath for the current path, or gDefaultFileSystem as fallback. The function-pointer cast forces an out-of-line call (MWCC would otherwise inline a direct call and change the code). */ /* Return the file system selected by getFileSystemForPath for the current path, or gDefaultFileSystem as fallback. The function-pointer cast forces an out-of-line call (MWCC would otherwise inline a direct call and change the code). */ s32 *GetDefaultFileSystem(void) {
     s32 *fileSystem;
     fileSystem = (s32 *)((s32 (*)())getFileSystemForPath)();
     if (fileSystem != 0) {
