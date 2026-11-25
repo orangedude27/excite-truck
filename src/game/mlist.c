@@ -539,8 +539,9 @@ void fn_802CDAFC(void *object, int objectIndex) {
 #pragma processor 750
 #pragma scheduling invalid_target
 #pragma opt_propagation off
-/* RealName: MlistIsObjectFlagged. Test whether an object's per-object flag byte in the
- * shared draw context is set; fn_802CDAFC clears that same byte. */
+/* RealName: MlistIsObjectFlagged. Test whether the per-object flag byte for
+ * `objectIndex` in the shared draw context is set (fn_802CDAFC clears that same
+ * byte); object fields +0x10 and +0x18 are bases into the flag array. */
 int fn_802CDB20(void *object, int objectIndex) {
     int offset18;
     int offset10;
