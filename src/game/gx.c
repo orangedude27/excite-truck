@@ -1140,9 +1140,9 @@ void HomeMenu_endFrame(void) {
 extern void *gGxDirtyStateMask;
 #pragma push
 #pragma dont_inline on
+/* Force a full GX render-state rebuild by marking every state bit dirty. */
 void gxMarkAllStateDirty(void) {
-    /* Reset the GX state-change mask to "everything needs updating" (-1). */
-    gGxDirtyStateMask = (void*)-1;
+    gGxDirtyStateMask = (void *)-1;
 }
 #pragma pop
 
