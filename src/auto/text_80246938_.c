@@ -1479,19 +1479,19 @@ float fn_80235F64(s32, s32);
 void fn_802353F4(s32, s32, float, float, float);
 #pragma push
 #pragma processor 750
-void fn_80248AF0(void *arg0) {
+void fn_80248AF0(void *element) {
     /* Position a UI element relative to layout coords, wrapping its local X
      * offset within the element width and placing it with computed Y. */
     float layoutX, layoutY;
     float width, height;
     s32 useOffset;
-    fn_80230C30(&layoutX, &layoutY, *(s32*)((char*)arg0+4), *(s32*)((char*)arg0+8));
-    width = (float)*(s32*)((char*)arg0+0xC);
-    height = (float)*(s32*)((char*)arg0+0x10);
-    if (*(float*)((char*)arg0+0x1C) > width)
-        *(float*)((char*)arg0+0x1C) -= width;
-    useOffset = *(float*)((char*)arg0+0x1C) > lbl_805638C8;
-    fn_802353F4(*(s32*)((char*)arg0+0x18), useOffset, layoutX + *(float*)((char*)arg0+0x1C), (layoutY-height)+fn_80235F64(*(s32*)((char*)arg0+0x18), useOffset), lbl_805638B0);
+    fn_80230C30(&layoutX, &layoutY, *(s32*)((char*)element+4), *(s32*)((char*)element+8));
+    width = (float)*(s32*)((char*)element+0xC);
+    height = (float)*(s32*)((char*)element+0x10);
+    if (*(float*)((char*)element+0x1C) > width)
+        *(float*)((char*)element+0x1C) -= width;
+    useOffset = *(float*)((char*)element+0x1C) > lbl_805638C8;
+    fn_802353F4(*(s32*)((char*)element+0x18), useOffset, layoutX + *(float*)((char*)element+0x1C), (layoutY-height)+fn_80235F64(*(s32*)((char*)element+0x18), useOffset), lbl_805638B0);
 }
 #pragma pop
 
