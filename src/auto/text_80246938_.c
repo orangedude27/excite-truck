@@ -1453,8 +1453,8 @@ void fn_802487B4(void *element) {
 }
 #pragma pop
 // Reset this element's local X scroll offset (+0x1C) to lbl_805638B0 (0.0f).
-void fn_80248A68(void *arg0) {
-    *(float*)((char*)arg0 + 0x1C) = lbl_805638B0;
+/* Reset a UI element's local X scroll offset at +0x1C to zero (lbl_805638B0). */ void fn_80248A68(void *element) {
+    *(float*)((char*)element + 0x1C) = lbl_805638B0;
 }
 
 #pragma scheduling invalid_target
