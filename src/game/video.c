@@ -49,7 +49,7 @@ extern void fn_802D3144(void);
 extern void GXSetNumIndStages(u8);
 extern void GXSetTevDirect(GXTevStageID);
 extern void fn_80118DC0(void *);
-extern void fn_802E1728(void *);
+extern void freeStoredBufferHandle(void *);
 
 /* SimpleHeap: the small first-fit heap this TU creates in fn_802E0F98.
  * One 0x10-byte header owns two block lists; every block carries a
@@ -440,7 +440,7 @@ void fn_802DFB30(void) {
 }
 
 #pragma scheduling invalid_target
-void fn_802DFCC0(void) {
+/* Reset TEV stages 0 and 1 swap selectors to GX_TEV_SWAP0, then refresh the shared blend state. */ void fn_802DFCC0(void) {
     /* Reset both TEV stages' swap selectors, then refresh the shared blend state. */
     GXSetTevSwapMode(GX_TEVSTAGE0, (GXTevSwapSel)0, (GXTevSwapSel)0);
     GXSetTevSwapMode(GX_TEVSTAGE1, (GXTevSwapSel)0, (GXTevSwapSel)0);
@@ -915,7 +915,7 @@ void *object;
 
     binkHandle = (s32 *)((u8 *)object + 4);
     if (*binkHandle != 0) {
-        fn_802E1728((u8 *)object + 0x50);
+        freeStoredBufferHandle((u8 *)object + 0x50);
         fn_80118DC0((void *)*binkHandle);
         *binkHandle = 0;
     }
