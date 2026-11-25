@@ -52,7 +52,7 @@ void fn_802E30C8(const char *fmt, ...) {
 }
 
 extern char lbl_8034CF34[];
-extern void fn_802E3150(void *);
+extern void Abend_ReportFatal(void *);
 extern char lbl_8055D190;
 extern char lbl_8055D198;
 extern void exit(int);
@@ -64,7 +64,7 @@ extern void exit(int);
 #pragma scheduling invalid_target
 /* Report a fatal "ABEND" with the given message, then deliberately fault on a
  * write to address 0 and hang so the process cannot continue. */
-void fn_802E3150(void *message) {
+void Abend_ReportFatal(void *message) {
     int zero = 0;
     fn_802E30C8(sAbendFormat, message);
     *(int *)0 = zero;
@@ -79,7 +79,7 @@ void fn_802E3150(void *message) {
     va_start(args, fmt);
     fn_802E3028((const char *)fmt, args, (int)&sPanicPrefix);
     va_end(args);
-    fn_802E3150(&sPanicLabel);
+    Abend_ReportFatal(&sPanicLabel);
     exit(-1);
 }
 
