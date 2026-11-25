@@ -67,7 +67,7 @@ extern void fn_802E6264(void);
 extern void fn_802E7FD0(void);
 extern int OSDisableInterrupts(void);
 extern int OSEnableInterrupts(void);
-extern int fn_802CF834(void);
+extern int GX_IsXFBSet(void);
 extern void fn_802C2AA8(int);
 extern void gxResetFrameCopyState(int);
 extern void fn_802DB03C(void *);
@@ -129,7 +129,7 @@ void fn_802D9A50(void) {
         fn_802E6264();
         fn_802E7FD0();
         OSDisableInterrupts();
-        noFramebuffer = fn_802CF834() == 0;
+        noFramebuffer = GX_IsXFBSet() == 0;
         OSEnableInterrupts();
         if (noFramebuffer != 0 && lbl_8055FE48 == 0) {
             lbl_8055FE48 = flagOn;

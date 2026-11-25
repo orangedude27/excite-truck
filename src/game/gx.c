@@ -719,7 +719,7 @@ void fn_802CF600(void) {
 void fn_802CF830(void) {
 }
 
-int fn_802CF834(void) {
+int GX_IsXFBSet(void) {
     /* Return nonzero when an external frame buffer is currently set: entry [1] of the GX_XFB block holds the buffer being drawn into and shown. */
     return lbl_804C9760[1] != 0;
 }
