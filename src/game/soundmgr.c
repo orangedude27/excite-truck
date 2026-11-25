@@ -101,10 +101,10 @@ void fn_80207960(void) {
 }
 
 #pragma dont_inline on
-void SoundMgr_clearSlot(void* entry) {
+/* Clear a sound-manager slot by zeroing both its pointer and its value word. */ void SoundMgr_clearSlot(void* slot) {
     /* Clear a two-word slot (a pointer plus a word) by zeroing both of its 32-bit halves. */
-    *(signed long*)entry = 0;
-    *((signed long*)entry + 1) = 0;
+    *(signed long*)slot = 0;
+    *((signed long*)slot + 1) = 0;
 }
 #pragma dont_inline reset
 
