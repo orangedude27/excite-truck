@@ -99,7 +99,7 @@ extern char lbl_803315A0[];
 extern char lbl_803315C8[];
 extern u8 lbl_8055E3BC;
 extern u64 KERNEL_GetTimeUs(void);
-extern void fn_802E2D74(s32);
+extern void KERNEL_WaitMilliseconds(s32);
 extern f32 fn_8017970C(void);
 extern f32 fn_8002FD54(u32, u32);
 extern void *fn_80179824(void);
@@ -770,7 +770,7 @@ loop:
         generationSnap != lbl_8055E3C4 || fn_802D3EBC() != 0) {
         goto done;
     }
-    fn_802E2D74(0);
+    KERNEL_WaitMilliseconds(0);
     if (KERNEL_GetTimeMs() - startTimeMs > 0x2710) {
         fn_802E30C8(base + 0x190, fn_8017970C());
         Abend_Panic(base + 0x1C8, 10);

@@ -756,7 +756,7 @@ void fn_80128C5C(void *arg0, int arg1, int arg2)
       offset += (*((int *) (record + 0x28))) + 0x40;
       if ((offset & 0x1F) == 0)
       {
-        fn_802E2D74(1);
+        KERNEL_WaitMilliseconds(1);
       }
     }
 

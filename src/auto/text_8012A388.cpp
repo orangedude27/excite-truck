@@ -336,7 +336,7 @@ failed:
 #pragma pop
 #pragma scheduling reset
 
-extern "C" s32 fn_802E2D74(s32);
+extern "C" s32 KERNEL_WaitMilliseconds(s32);
 extern "C" s32 fn_802E39D0(s32, s32);
 extern "C" void fn_8012A80C(s32);
 extern "C" s32 fn_8012A6C8(s32, s32, s32);
@@ -350,7 +350,7 @@ extern "C" s32 getStreamEntryInfo(s32, s32 *, s32 *);
 #pragma scheduling off
 extern "C" void fn_8012A7FC(void) {
 #define sLoadRetryFlag lbl_8055DFF9
-#define waitMs fn_802E2D74
+#define waitMs KERNEL_WaitMilliseconds
     /* Raise the load-retry flag and busy-wait 50 ms (0x32) on the millisecond timer. */
     sLoadRetryFlag = 1;
     waitMs(0x32);
@@ -2687,7 +2687,7 @@ extern "C" void fn_8012E2CC(void *arg0) {
     goto check_status;
 retry_status:
     fn_80127464();
-    fn_802E2D74(0xA);
+    KERNEL_WaitMilliseconds(0xA);
 check_status:
     if (fn_8012D838(*(s32 *)((u8 *)currentRequest + 0x4C)) != 2) goto retry_status;
     if (obj[0xA20] != 0) return;
@@ -2882,7 +2882,7 @@ extern "C" void fn_8012E67C(s32 loader, s32 name) {
             deadline = start + 0x7D0;
             while (fn_8012D838(*(s32 *)(req + 0x4C)) != 2) {
                 fn_80127464();
-                fn_802E2D74(0xA);
+                KERNEL_WaitMilliseconds(0xA);
                 now = KERNEL_GetTimeMs();
                 if (now > deadline) {
                     fn_802E30C8(lbl_8032AD88, (const char *)(req + 0xC));
@@ -2946,7 +2946,7 @@ extern "C" void fn_8012E81C(s32 arg0) {
             limit = start + 0x7D0;
             do {
                 fn_80127464();
-                fn_802E2D74(0xA);
+                KERNEL_WaitMilliseconds(0xA);
                 current = KERNEL_GetTimeMs();
             } while (current <= limit);
             fn_802E30C8(lbl_8032AD88, (const char *)((u8 *)entry + 0xC));

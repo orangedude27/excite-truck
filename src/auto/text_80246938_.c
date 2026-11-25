@@ -19,7 +19,7 @@ extern float lbl_805638A8;
 extern double lbl_805638A0;
 void fn_80246CAC(float);
 void fn_80127464(void);
-void fn_802E2D74(s32);
+void KERNEL_WaitMilliseconds(s32);
 void fn_8020A5F8(float);
 void fn_8020A634(void);
 s32 KERNEL_GetTimeMs(void);
@@ -424,7 +424,7 @@ void fn_80247174(void)
     fn_80127464();
     if (0 != 1)
     {
-      fn_802E2D74((char) 0x10);
+      KERNEL_WaitMilliseconds((char) 0x10);
       step++;
     }
   }

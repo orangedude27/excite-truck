@@ -98,7 +98,7 @@ extern char lbl_8055BE50, lbl_8055BE58, lbl_8055BE5C;
 extern int fn_80129AFC(void);
 extern int fn_802E47B8(void);
 extern int fn_802E46F0(void);
-extern int fn_802E2D74(int);
+extern int KERNEL_WaitMilliseconds(int);
 extern int KERNEL_GetTimeMs(void);
 extern double sin(double);
 extern void fn_802C5310(int, int, float, float, float);
@@ -370,7 +370,7 @@ int fn_80245360(int *a, struct Menu *b)
         }
       }
     }
-    fn_802E2D74(5);
+    KERNEL_WaitMilliseconds(5);
   }
 
 }

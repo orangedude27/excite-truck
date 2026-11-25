@@ -734,7 +734,7 @@ int fn_801787B4(void *arg0)
     extern int fn_802787FC(void);
     extern int fn_80176A1C(void);
     extern float fn_80176A2C(void);
-    extern void fn_802E2D74(int);
+    extern void KERNEL_WaitMilliseconds(int);
     extern void fn_802E30C8(const char *, ...);
     extern int fn_80265D64(void);
     extern u64 KERNEL_GetTimeUs(void);
@@ -813,7 +813,7 @@ int fn_801787B4(void *arg0)
     if (state == 0) {
         result = 10;
         if ((u8)lbl_8055E3C4 < 0x80 && (u8)(lbl_8055E3C4 - 10) > 0x80) {
-            fn_802E2D74(0x14);
+            KERNEL_WaitMilliseconds(0x14);
         }
     }
     if (r28 == 0) {

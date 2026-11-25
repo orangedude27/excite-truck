@@ -790,7 +790,7 @@ unsigned long long KERNEL_GetTimeUs(void)
 #pragma scheduling invalid_target
 /* Busy-wait until the microsecond timer from KERNEL_GetTimeUs shows that
  * `milliseconds` have elapsed, quitting early if the timer jumps backwards. */
-void fn_802E2D74(int milliseconds) {
+void KERNEL_WaitMilliseconds(int milliseconds) {
     long long limitUs = (long long)milliseconds * 1000;
     u64 startUs = KERNEL_GetTimeUs();
     u64 nowUs;
