@@ -756,9 +756,9 @@ char *__repair_addr;
     int flag;
     int c2;
     int bit29;
+    int off;
     int any;
     int i;
-    int off;
     int v;
     unsigned char sp8;
 
