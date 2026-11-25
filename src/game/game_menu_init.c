@@ -447,7 +447,6 @@ after_lookup:
 }
 
 /* Copy a name into the 32-byte global selection string, truncating with a NUL if the source fills the buffer so the result is always terminated. */ void fn_80004EC0(const char* source) {
-    /* Copy a string into the 32-byte global selection buffer, forcing a trailing NUL if it fills. */
     int remaining = 0x20;
     volatile char* destination = (volatile char*)&lbl_8034EC58;
 
