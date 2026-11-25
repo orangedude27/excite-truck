@@ -716,7 +716,7 @@ done:
     nandLogPrintf(sWriteStartFmt, length, origPath);
 }
 #pragma scheduling on
-extern void fn_802E95CC(int, void **);
+extern void rmemcardWriteAsyncCallback(int, void **);
 extern int NANDCreateAsync(const char *, unsigned char, unsigned char, void (*)(int, void **), void *);
 extern int NANDOpenAsync(const char *, void *, unsigned char, void (*)(int, void **), void *);
 extern int NANDWriteAsync(void *, const void *, unsigned int, void (*)(int, void **), void *);
@@ -744,7 +744,7 @@ extern char lbl_8034E1F8[], lbl_8034E218[], lbl_80560034;
  *   0x00C filename     - NAND path (e.g. "banner.bin"), set by NandBeginWrite
  *   0x10C nand_info    - NANDInfo handle of the open file
  *   0x198 cb_ctx       - points back to this block; handed to the async calls
- *   0x250 async_done   - set to 1 by the completion callback fn_802E95CC
+ *   0x250 async_done   - set to 1 by the completion callback rmemcardWriteAsyncCallback
  *   0x254 async_result - result the callback left behind
  *   0x258 error        - result reported back to the caller
  */
@@ -762,7 +762,7 @@ enum {
 /* rmemcardWriteStep - one step of the removable-memory-card ("rmemcard") async
  * NAND file write.  Called repeatedly (from rmemcardPumpAsync); each call advances
  * the machine in ctx by one NAND operation.  The async calls all complete
- * through fn_802E95CC, which sets ctx's async_done flag (0x250) and stores the
+ * through rmemcardWriteAsyncCallback, which sets ctx's async_done flag (0x250) and stores the
  * operation's result in async_result (0x254); the machine polls that flag,
  * checks the result, and either moves to the next step or bails out to IDLE
  * recording the error in ctx+0x258.  Steps: create -> open -> write -> close.
@@ -778,7 +778,7 @@ enum {
     case RMEMCARD_WRITE_CREATE:
         ctxFlags[0x250] = opStatus;
         *(int *)(ctxBytes + 0x254) = opStatus;
-        nandResult = NANDCreateAsync(ctxBytes + 0xC, 0x30, 0, fn_802E95CC, ctxBytes + 0x198);
+        nandResult = NANDCreateAsync(ctxBytes + 0xC, 0x30, 0, rmemcardWriteAsyncCallback, ctxBytes + 0x198);
         if (nandResult != 0) {
             fn_802E30C8(lbl_8034E114, lbl_8034E218, nandResult); /* "rmemcard: %s failed (%d)", "NANDCreateAsync" */
             *(int *)ctxBytes = opStatus;
@@ -791,7 +791,7 @@ enum {
             if (opStatus == 0 || opStatus == -6) { /* created OK, or already existed */
                 ctxFlags[0x250] = 0;
                 *(int *)(ctxBytes + 0x254) = 0;
-                nandResult = NANDOpenAsync(ctxBytes + 0xC, ctxBytes + 0x10C, 2, fn_802E95CC, ctxBytes + 0x198);
+                nandResult = NANDOpenAsync(ctxBytes + 0xC, ctxBytes + 0x10C, 2, rmemcardWriteAsyncCallback, ctxBytes + 0x198);
                 if (nandResult != 0) {
                     fn_802E30C8(lbl_8034E114, lbl_8034E1F8, nandResult); /* "NANDOpenAsync" */
                     *(int *)ctxBytes = RMEMCARD_WRITE_IDLE;
@@ -816,7 +816,7 @@ enum {
                 ctxFlags[0x250] = 0;
                 *(int *)(ctxBytes + 0x254) = 0;
                 nandResult = NANDWriteAsync(ctxBytes + 0x10C, (const void *)*(int *)(ctxBytes + 8),
-                                        *(unsigned int *)(ctxBytes + 4), fn_802E95CC, ctxBytes + 0x198);
+                                        *(unsigned int *)(ctxBytes + 4), rmemcardWriteAsyncCallback, ctxBytes + 0x198);
                 if (nandResult != 0) {
                     fn_802E30C8(lbl_8034E114, lbl_8034E1C4, nandResult); /* "NANDWriteAsync" */
                     *(int *)ctxBytes = RMEMCARD_WRITE_IDLE;
@@ -836,7 +836,7 @@ enum {
             if (opStatus == *(int *)(ctxBytes + 4)) { /* wrote the whole buffer */
                 ctxFlags[0x250] = 0;
                 *(int *)(ctxBytes + 0x254) = 0;
-                nandResult = NANDCloseAsync(ctxBytes + 0x10C, fn_802E95CC, ctxBytes + 0x198);
+                nandResult = NANDCloseAsync(ctxBytes + 0x10C, rmemcardWriteAsyncCallback, ctxBytes + 0x198);
                 if (nandResult != 0) {
                     fn_802E30C8(lbl_8034E114, lbl_8034E194, nandResult); /* "NANDCloseAsync" */
                     *(int *)ctxBytes = RMEMCARD_WRITE_IDLE;
@@ -870,7 +870,7 @@ enum {
 #pragma scheduling on
 /* Async NAND-completion callback: stores the operation's result in the write
    context's async_result (+0x254) and raises its async_done flag (+0x250). */
-void fn_802E95CC(int result, void **cb_ctx) {
+void rmemcardWriteAsyncCallback(int result, void **cb_ctx) {
     void *ctx = *cb_ctx;
     *(int *)((char *)ctx + 0x254) = result;
     *(char *)((char *)ctx + 0x250) = 1;
