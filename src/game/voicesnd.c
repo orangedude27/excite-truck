@@ -587,7 +587,7 @@ extern char lbl_8033C3F4[];
 
 #pragma pop
 
-int VoiceSnd_hasSound(void *voiceSnd) {
+/* VoiceSnd vtable method: nonzero when this voice sound has a main sound resource loaded (the handle at +0x10). */ int VoiceSnd_hasSound(void *voiceSnd) {
     // Nonzero if this voice sound has a main sound resource loaded (+0x10).
     return *(int *)((char *)voiceSnd + 0x10) != 0;
 }
