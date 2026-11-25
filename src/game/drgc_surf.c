@@ -1174,7 +1174,7 @@ void fn_802D62FC(void *__restrict surface, s32 *outOffset, s32 *outSize) {
 #pragma use_lmw_stmw off
 void fn_802D63FC(void *arg0, s32 arg1) {
     extern void fn_802D62FC(void *, s32 *, s32 *);
-    extern void fn_802D657C(s32 *, s32);
+    extern void drRelocateSurfacePtr(s32 *, s32);
     u8 *p = (u8 *)arg0;
     register u8 *p20;
     s32 sp1C, sp18, sp14, sp10, spC;
@@ -1242,15 +1242,15 @@ void fn_802D63FC(void *arg0, s32 arg1) {
     p[0x13] = b10;
     p[0x11] = (u8)sp18;
     p[0x12] = b11;
-    fn_802D657C((s32 *)p20, arg1);
-    fn_802D657C((s32 *)(p20 + 4), arg1);
-    fn_802D657C((s32 *)(p20 + 8), arg1);
+    drRelocateSurfacePtr((s32 *)p20, arg1);
+    drRelocateSurfacePtr((s32 *)(p20 + 4), arg1);
+    drRelocateSurfacePtr((s32 *)(p20 + 8), arg1);
     fn_802D62FC(arg0, (s32 *)(p + 0x10), (s32 *)&sp8);
     sp8 = sp8 >> 5U;
     p[0x0B] = (u8)sp8;
 }
 #pragma pop
-void fn_802D657C(s32 *value, s32 delta) {
+void drRelocateSurfacePtr(s32 *value, s32 delta) {
     /* Add delta to *value, leaving a zero (null) sentinel unchanged. */
     s32 cur = *value;
     if (cur != 0) {
@@ -1300,7 +1300,7 @@ void fn_802D65F8(s32 arg0, s32 arg1) {
     e=bytes[0x30]; f=bytes[0x33]; g=bytes[0x31]; h=bytes[0x32];
     bytes[0x2C]=b; bytes[0x2F]=a; bytes[0x2D]=d; bytes[0x2E]=c;
     bytes[0x30]=f; bytes[0x33]=e; bytes[0x31]=h; bytes[0x32]=g;
-    ((void (*)(s32 *, s32, u8, u8, u8, u8, u8, u8))fn_802D657C)((s32 *)((u8 *)arg0+0x30),arg1,f,d,b,a,e,c);
+    ((void (*)(s32 *, s32, u8, u8, u8, u8, u8, u8))drRelocateSurfacePtr)((s32 *)((u8 *)arg0+0x30),arg1,f,d,b,a,e,c);
     if((s8)bytes[8]==0x1A) drSwapSurfaceExt1A((void *)bytes);
     if(bytes[8]==0x13) {
         entries=*(u8 **)(bytes+0x20);
