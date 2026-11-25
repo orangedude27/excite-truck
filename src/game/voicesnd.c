@@ -609,7 +609,7 @@ void fn_8020B2D0(void) {
 extern unsigned char lbl_8033C520[];
 extern unsigned char lbl_80489BD0[];
 extern int fn_80128668(void);
-int fn_8020B2D4(int object, int deleteFlag) {
+/* CodeWarrior deleting-destructor helper: when deleteFlag > 0, free a non-null object via operator delete (fn_80128668), then return the object. */ int fn_8020B2D4(int object, int deleteFlag) {
     /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
     if (object != 0 && deleteFlag > 0) {
         fn_80128668();
