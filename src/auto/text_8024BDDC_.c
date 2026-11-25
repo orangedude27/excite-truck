@@ -11,7 +11,7 @@ typedef union { double d; float f[2]; } VtxPair;
 typedef union { int i; float f; } VtxWord;
 extern void fn_80129AFC(void);
 extern void fn_802C2B48(void);
-extern void fn_802C8530(void);
+extern void DrawList_beginFrame(void);
 extern void fn_802C855C(void);
 extern void DrawList_loadMatrix(float*);
 extern void fn_802C86E8(unsigned int);
@@ -97,7 +97,7 @@ void fn_8024BE04(void) {
         m[0] = one; m[1] = zero; m[2] = zero; m[3] = zero;
         m[4] = one; m[5] = zero; m[6] = zero; m[7] = zero;
         m[8] = one; m[9] = zero; m[10] = zero; m[11] = z;
-        fn_802C8530();
+        DrawList_beginFrame();
         DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
         fn_802C86E8(0xFF7F7F7F);
         fn_802C88BC(3);

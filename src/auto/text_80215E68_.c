@@ -22,7 +22,7 @@ extern void (*lbl_8055EF90)(void);
 extern u8 lbl_8055EF70;
 extern u8 lbl_8055F024;
 extern u32 lbl_804908C8[16];
-extern s32 fn_802C8530(void);
+extern s32 DrawList_beginFrame(void);
 extern s32 fn_80216244(void);
 extern s32 lbl_8055CFF0, lbl_8055CFF4;
 extern void fn_802184D0(void);
@@ -381,7 +381,7 @@ void fn_8021662C(void) {
 
 // Renders one UI frame: run render/update steps, optionally the frame callback and extra update pass.
 void fn_802166B8(void) {
-    fn_802C8530();
+    DrawList_beginFrame();
     fn_80216244();
     fn_802160AC();
     if (fn_80211F54() == 0) {

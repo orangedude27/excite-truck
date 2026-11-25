@@ -105,7 +105,7 @@ extern void fn_802C5310(int, int, float, float, float);
 extern void fn_802337A0(int, int, int, void *, void *, float, float, float, float, float, ...);
 extern float lbl_80558DC4[];
 extern char lbl_8055BE60, lbl_8055BE64;
-extern void fn_802C8530(void);
+extern void DrawList_beginFrame(void);
 extern void DrawList_setViewport(int, int, int, int);
 extern void fn_802C88BC(int);
 extern void fn_80230B5C(void *);
@@ -197,7 +197,7 @@ int fn_80245360(int *a, struct Menu *b)
     float x0;
     float x1;
     char *desc;
-    fn_802C8530();
+    DrawList_beginFrame();
     DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
     fn_802C88BC(2);
     fn_80230B5C(obj);
@@ -394,7 +394,7 @@ void fn_8024590C(int *a, int *b) {
     int i, j, n, save;
     char *s, *split, *p, *line;
     float step, shadow, limit, y, h, w, f, x1, x0;
-    fn_802C8530();
+    DrawList_beginFrame();
     DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
     fn_802C88BC(2);
     fn_80230B5C(obj);

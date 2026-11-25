@@ -90,7 +90,7 @@ extern void fn_801E85DC(s32);
 extern void fn_801E882C(void);
 extern s32 Abend_Panic(void *, s32, ...);
 extern void fn_80012158(void);
-extern void fn_802C8530(void);
+extern void DrawList_beginFrame(void);
 extern void DrawList_setViewport(s32, s32, s32, s32);
 extern void fn_801E7E48(void);
 extern void fn_8026A1F0(s32, s32, s32);
@@ -552,7 +552,7 @@ void fn_80008F98(void) {
             else fn_80206444();
         }
         fn_801E7E48();
-        fn_802C8530();
+        DrawList_beginFrame();
         DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
         fn_801E81B8(1, 0);
         DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
@@ -921,7 +921,7 @@ skip16:
         }
     after_first:
         var15 = fn_80008C5C();
-        fn_802C8530();
+        DrawList_beginFrame();
         DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
         fn_801E7E48();
         fn_8026A1F0(var15, 0, var20);

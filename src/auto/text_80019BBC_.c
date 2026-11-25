@@ -43,7 +43,7 @@ extern void* fn_80131808(void*);
 extern void fn_80131818(void*);
 extern int fn_802CB128(int, int, int, int);
 extern void* fn_802CAC28(void*, int);
-extern void fn_802C8530(void);
+extern void DrawList_beginFrame(void);
 extern void fn_802C855C(void);
 typedef struct { int pad[2]; void* (*get)(void*,void*); int pad2[6]; float (*f)(void*,void*); float (*def)(void*,void*,float); int pad3[4]; unsigned long long (*vec)(void*,void*); } VTable;
 
@@ -166,7 +166,7 @@ extern "C" void* fn_80019C68(int arg0) {
  *(int*)(p+4)=fn_802CB128((int)*(float*)(p+28),(int)*(float*)(p+28),0,0x21);
  *(int*)(p+12)=(int)fn_802CAC28(base+100,0);
  *(int*)(p+8)=(int)fn_802CAC28(base+112,0);
- fn_802C8530(); fn_8001B7BC(p); fn_802C855C();
+ DrawList_beginFrame(); fn_8001B7BC(p); fn_802C855C();
  *(TruckDraw**)(p+16)=new(base+128) TruckDraw;
  *(int*)(p+20)=(int)fn_802CAC28(base+140,0);
  *(int*)(p+24)=(int)fn_802CAC28(base+152,0);
@@ -807,7 +807,7 @@ void fn_8001B478(int arg0, float farg0) {
         n++;
     }
     if ((n % 4) > 0) n += 4 - (n % 4);
-    beginDrawListPass((n / 4) * 2 + 2);
+    fn_802C8DBC((n / 4) * 2 + 2);
     n++;
     angle = lbl_80560440;
     t = lbl_80560418;
@@ -893,7 +893,7 @@ extern void* fn_80131808(void*);
 extern void fn_80131818(void*);
 extern int fn_802CB128(int, int, int, int);
 extern void* fn_802CAC28(void*, int);
-extern void fn_802C8530(void);
+extern void DrawList_beginFrame(void);
 extern void fn_802C855C(void);
 
 extern void fn_802CB274(int);
