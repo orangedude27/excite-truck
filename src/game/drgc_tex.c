@@ -1015,7 +1015,7 @@ extern void fn_802D2614(void);
 extern int lbl_8055FE24;
 /* Reset the GX state, then select `texObj` as the current texture object for the
  * GX texture-copy path (lbl_8055FE24); copyTextureToEFB consumes and clears it. */
-void setTextureCopyObject(int texObj) {
+/* Flush all pending GX state, then bind `texObj` as the current texture object for the texture-copy path; copyTextureToEFB consumes and clears the binding. */ void setTextureCopyObject(int texObj) {
     fn_802D2614();
     lbl_8055FE24 = texObj;
 }
