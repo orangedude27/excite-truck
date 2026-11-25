@@ -131,6 +131,9 @@ asm void PPCMtpmc4(register u32 val){
     // clang-format on
 }
 
+/* Read the Floating-Point Status and Control Register (FPSCR) with mffs, then
+ * return its low 32 bits.  Storing f31 to a local is what makes the value
+ * available to C; the surrounding register save/restore is CodeWarrior's. */
 u32 PPCMffpscr(void) {
     // clang-format off
     register u64 fpscr;
