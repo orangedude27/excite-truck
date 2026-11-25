@@ -595,7 +595,7 @@ void SoundTimer_Stop(void *timer) {
     *((int *)((char *)timer + 8)) = 2;
 }
 
-void fn_80209398(void *timer) {
+void SoundTimer_SetRunning(void *timer) {
     /* Set a sound timer's state field (+8) to 1 (running). */
 #define state ((int *)((char *)timer + 8))
     *state = 1;
