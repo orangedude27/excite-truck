@@ -1261,8 +1261,8 @@ void fn_802AFF80(void *list, short value) {
 #pragma opt_propagation on
 int fn_802AFFA8(int arg0, int arg1) {
     float out[3];
-    float x = (float)arg0 * (+2.0f);
-    float z = (float)arg1 * (+2.0f);
+    float x = (float)arg0 * lbl_80564AF0;
+    float z = (float)arg1 * lbl_80564AF0;
     out[0] = x;
     out[2] = z;
     out[1] = fn_801DCF48(0, x, z);
