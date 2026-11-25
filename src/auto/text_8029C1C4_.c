@@ -1427,7 +1427,6 @@ void *fn_8029E754(void *arg0, void *arg1, int arg2) {
     ((int *)arg0)[16] = (int)fn_802CAC28(arg2, 0);
     return arg0;
 }
-#pragma opt_propagation reset
 void *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_8029E888(void *self, int shouldDelete) {
     /* Destroys a J2DAnmTexPatternTIMGPointer instance and optionally deletes it. */
     if (self != 0) {
