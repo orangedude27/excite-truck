@@ -662,8 +662,8 @@ int fn_802E91AC(int *state) { return *state == 0; }
 /* True once the rmemcard async write machine whose context block is ctx has
  * stopped: its state word (RMEMCARD_WRITE_*) is below CREATE (2), i.e. IDLE (0)
  * or DONE (1).  False while it is still running (states 2..6). */
-/* True when the async write machine is idle or done (state below CREATE). */ /* True when the async write machine is idle or done (state below CREATE). */ unsigned int rmemcardWriteStopped(int *ctx) {
-    return *ctx < 2;
+/* True when the async write machine is idle or done (state below CREATE). */ /* True when the async write machine is idle or done (state below CREATE). */ /* True when the async write machine is idle or done (state below CREATE). */ unsigned int rmemcardWriteStopped(int *state) {
+    return *state < 2;
 }
 #pragma pop
 extern int KERNEL_GetTimeMs(void);
