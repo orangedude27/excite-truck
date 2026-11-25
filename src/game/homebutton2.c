@@ -283,7 +283,7 @@ extern void KERNEL_Reset(s32);
 extern void fn_802E30C8(const char *, ...);
 extern void fn_802E5438(void);
 extern void fn_802E7C40(void);
-extern s32 fn_802E8668(s32);
+extern s32 RjoyGetKpadStatus(s32);
 extern void ConfigCacheWpadSettings(void);
 extern s32 lbl_80558898[];
 /* Drive the Home menu / Wii Remote shutdown flow. When a Home-menu request
@@ -321,7 +321,7 @@ void fn_802EC884(void) {
     if ((u8)lbl_805600E8 == 0) return;
     wpadInfoOut = lbl_80558898;
     for (i = 0; i < 4; i++) {
-        *wpadInfoOut = fn_802E8668(i);
+        *wpadInfoOut = RjoyGetKpadStatus(i);
         wpadInfoOut += 4;
     }
     if (fn_800C65CC(lbl_80558898) >= 0) {
