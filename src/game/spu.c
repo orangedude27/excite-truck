@@ -20,7 +20,7 @@ extern float ConfigGetWpadSpeakerVolume(void);
 extern void fn_80060CC0(int, int, void (*)());
 extern void fn_802E30C8(char *, int, char *, ...);
 extern void *memset(void *, int, unsigned int);
-extern void fn_802E5248(int, int);
+extern void SpuSpeaker_SpeakerOnCallback(int, int);
 extern void SpuSpeaker_MarkStreamReady();
 __declspec(section ".sdata") extern char lbl_8055D1D8[];
 extern char lbl_8034D39C[];
@@ -273,21 +273,21 @@ struct SpkStream {
 #pragma scheduling on
 /* Completion callback for the WPAD_SPEAKER_ON command: if the remote accepted
  * it, send WPAD_SPEAKER_PLAY; the reply SpuSpeaker_MarkStreamReady marks the stream ready. */
-void fn_802E5248(int chan, int result) {
+void SpuSpeaker_SpeakerOnCallback(int chan, int result) {
     if (result == 0) fn_80060CC0(chan, WPAD_SPEAKER_PLAY, (void (*)())SpuSpeaker_MarkStreamReady);
 }
 
 /* WPAD connect callback for the Wii remote speaker, reached through
  * fn_802E6B44 from the remote-joy connect handler: it logs which way channel
  * `chan` went (status < 0 is a disconnect), closes that channel's speaker
- * stream, and on a connect turns the remote's speaker on.  fn_802E5248 is
+ * stream, and on a connect turns the remote's speaker on.  SpuSpeaker_SpeakerOnCallback is
  * answered when the speaker is on and queues the play command, whose answer
  * SpuSpeaker_MarkStreamReady uses to mark the stream ready. */
-/* WPAD connect callback for the Wii remote speaker: log connect/disconnect, close the channel's speaker stream, and on connect request WPAD_SPEAKER_ON (queued via fn_802E5248). */ void fn_802E5264(int chan, int status) {
+/* WPAD connect callback for the Wii remote speaker: log connect/disconnect, close the channel's speaker stream, and on connect request WPAD_SPEAKER_ON (queued via SpuSpeaker_SpeakerOnCallback). */ void fn_802E5264(int chan, int status) {
     fn_802E30C8(spuConnectMsg, chan,
                  status < 0 ? spuNameDisconnect : spuNameConnect);
     spuStreams[chan].enabled = 0;
-    if (status >= 0) fn_80060CC0(chan, WPAD_SPEAKER_ON, (void (*)())fn_802E5248);
+    if (status >= 0) fn_80060CC0(chan, WPAD_SPEAKER_ON, (void (*)())SpuSpeaker_SpeakerOnCallback);
 }
 
 
