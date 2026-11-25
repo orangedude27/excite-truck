@@ -69,7 +69,7 @@ extern void fn_802E6B04(void);
 #define gVoiceMixerInstance gVoiceMixer
 extern char lbl_8033C37C[];
 extern void *lbl_8055EE08;
-extern unsigned char lbl_8033C520[];
+extern unsigned char gVoiceMixerName[];
 extern unsigned char sVoiceState[];
 extern int fn_80128668(void);
 extern char gVoiceMixerVtable[];
@@ -606,7 +606,7 @@ void fn_8020B2D0(void) {
 
 }
 
-extern unsigned char lbl_8033C520[];
+extern unsigned char gVoiceMixerName[];
 extern unsigned char sVoiceState[];
 extern int fn_80128668(void);
 /* CodeWarrior deleting-destructor helper: when deleteFlag > 0, free a non-null object via operator delete (fn_80128668), then return the object. */ int fn_8020B2D4(int object, int deleteFlag) {
@@ -619,7 +619,7 @@ extern int fn_80128668(void);
 
 /* Return the "Voice Mixer" name string. */
 void *VoiceMixerDevice_GetName(void) {
-#define sVoiceMixerName lbl_8033C520
+#define sVoiceMixerName gVoiceMixerName
     return sVoiceMixerName;
 #undef sVoiceMixerName
 }
