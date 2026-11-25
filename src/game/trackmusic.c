@@ -49,7 +49,7 @@ extern int fn_8012E938(int);
 extern void fn_8012E81C(void);
 extern long fn_802EC294(long, long);
 extern char gTrackMusicBuffers[16];
-extern long fn_8020F608(long, long);
+extern long TrackMusic_clearContext(long, long);
 // Shuffled track play order: m_entries holds m_count indices into the
 // track-music list; lbl_8055EEC4 is the next cursor into this order.
 extern struct Unk_804902C4 {
@@ -169,7 +169,7 @@ extern void *memset(void *, int, unsigned long);
 #pragma ctrloop on
 /* Clear the track-music buffer for a context and stamp the first word of each
  * of its 64 slots (0x64 bytes apart) with the slot state (0 idle, 1 active). */
-/* Zero a context's 0x1900-byte track-music buffer and set the state word of each of its 64 slots (stride 0x64 = 25 longs) to slotState (0 idle, 1 active). */ long fn_8020F608(long slotState, long contextIndex) {
+/* Zero a context's 0x1900-byte track-music buffer and set the state word of each of its 64 slots (stride 0x64 = 25 longs) to slotState (0 idle, 1 active). */ long TrackMusic_clearContext(long slotState, long contextIndex) {
     long *slotPtr;
     long slotIndex;
     slotPtr = (long *)getTrackMusicBuffer(contextIndex);
@@ -188,7 +188,7 @@ void TrackMusic_onIdentityEvent(long contextIndex, long event) {
     if (event != 0) {
         return;
     }
-    fn_8020F608(0, contextIndex);
+    TrackMusic_clearContext(0, contextIndex);
 }
  
 /* Track-music wrapper for the dash getter getTrackMusicSongCount: the number of songs the
@@ -594,7 +594,7 @@ extern signed char lbl_8055EEEC, lbl_8055EEED;
         fn_8020FDE4(0, (const char *)&lbl_8055B67C,
                     (char *)resourceObj->f6(&lbl_8055B674, lbl_8033C970));
         if ((unsigned char)lbl_8055EEEC != 0) {
-            fn_8020F608(0, fn_8000DA10());
+            TrackMusic_clearContext(0, fn_8000DA10());
         }
     } else if (request == -1) {
         audioContainer = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
@@ -602,7 +602,7 @@ extern signed char lbl_8055EEEC, lbl_8055EEED;
         fn_8020FDE4(1, (const char *)&lbl_8055B67C,
                     (char *)resourceObj->f6(&lbl_8055B674, lbl_8033C970));
         if ((unsigned char)lbl_8055EEED != 0) {
-            fn_8020F608(1, fn_8000DA10());
+            TrackMusic_clearContext(1, fn_8000DA10());
         }
     } else {
         songIndex = request + lbl_8055EEE4 * 10;
@@ -788,10 +788,10 @@ void fn_80210510(float volume) {
 void trackMusicSetSlotStates(int slotState) {
     switch (slotState) {
     case 0:
-        fn_8020F608(0, fn_8000DA10());
+        TrackMusic_clearContext(0, fn_8000DA10());
         break;
     case 1:
-        fn_8020F608(1, fn_8000DA10());
+        TrackMusic_clearContext(1, fn_8000DA10());
         break;
     case 2:
         break;
