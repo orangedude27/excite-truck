@@ -324,7 +324,7 @@ void rmemcardCorruptReset(void) {
             ((void (*)(void))fn_802E8918)();
             return;
         }
-        if (fn_802E88D8() != 0)
+        if (rmemcardPollSpaceReady() != 0)
             return;
     }
 }
