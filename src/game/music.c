@@ -142,7 +142,7 @@ s32 fn_8000DBC8(void*);
 extern void fn_8020A03C(s32, s32);
 extern void LoadFloatOption(int, void *, f32 *);
 #pragma dont_inline on
-/* Registered "Music" volume-change callback: reload the saved music_volume option (using the current volume as the default) and apply it through the global music volume. */ void fn_80209FFC(void) {
+/* Registered "Music" volume-change callback: reload the saved music_volume option (using the current volume as the default) and apply it through the global music volume. */ /* Registered "Music" volume-change callback: reload the saved music_volume option (using the current volume as the default) and apply it through the global music volume. */ void fn_80209FFC(void) {
     f32 newVolume;
 
     /* Load the saved "music_volume" setting (current volume as default) and apply it. */
