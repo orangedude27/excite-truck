@@ -435,7 +435,7 @@ void fn_802C88CC(unsigned int color) {
 extern unsigned int lbl_804C1410[];
 extern void PSQUATMultiply(void *, unsigned int, void *);
 extern void fn_802C7734(unsigned int);
-extern void fn_802C8B70(void);
+extern void DrawList_setupMode2(void);
 #pragma scheduling invalid_target
 void fn_802C88D4(unsigned int quat) {
     /* Tail-call PSQUATMultiply: write quat (a raw bit pointer) multiplied by the cached quaternion at lbl_804C1410 into lbl_804C1410+0x24. */
@@ -542,7 +542,7 @@ void DrawList_copyCurrentMatrix(unsigned int *dst) {
 
 extern void texSelectSlot(void);
 /* Mode-2 draw-list setup: select the texture slot passed through in r3 (texSelectSlot), then set the render mode to 2. */
-void fn_802C8B70(void) {
+void DrawList_setupMode2(void) {
     texSelectSlot();
     sRenderMode = 2;
 }
@@ -552,7 +552,7 @@ void fn_802C8B70(void) {
 /* Queue and apply the draw record at source as the current GX state, then run handle's mode-2 draw-list setup (select texture slot, set render mode 2). */ void fn_802C8B98(int handle, int source) {
     /* Queue the draw record at `source`, apply it as the current GX state, then run `handle`'s mode-2 draw-list setup. */
     fn_802C7734(source);
-    ((void (*)(int))fn_802C8B70)(handle);
+    ((void (*)(int))DrawList_setupMode2)(handle);
 }
 #pragma dont_inline reset
 /* Reset the current GX material/vertex state to its default (fn_802C7758),
@@ -561,7 +561,7 @@ void fn_802C8B70(void) {
  * applying a queued draw record first. */
 /* RealName: DrawList_ResetAndBeginMode2. Resets GX material/vertex state to its default (fn_802C7758), then runs mode-2 draw-list setup on texSlot (select texture slot, set render mode 2). Like fn_802C8B98, but resets to the default instead of applying a queued draw record first. */ /* RealName: DrawList_ResetAndBeginMode2. Resets GX material/vertex state to its default (fn_802C7758), then runs mode-2 draw-list setup on texSlot (select texture slot, set render mode 2). Like fn_802C8B98, but resets to the default instead of applying a queued draw record first. */ void fn_802C8BD0(int texSlot) {
     fn_802C7758(texSlot);
-    ((void (*)(int))fn_802C8B70)(texSlot);
+    ((void (*)(int))DrawList_setupMode2)(texSlot);
 }
 #pragma dont_inline off
 

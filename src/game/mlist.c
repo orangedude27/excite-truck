@@ -564,7 +564,7 @@ extern char lbl_804C1480[];
 extern void fn_801293C8(void *);
 extern void fn_801293E8(void *);
 extern void fn_802D0610(int);
-extern void fn_802C8B70(int);
+extern void DrawList_setupMode2(int);
 extern void DrawList_RestoreNormalMode(void);
 extern int fn_802DB2A8(int);
 extern void fn_802DB2B0(int);
@@ -694,7 +694,7 @@ void fn_802CDB5C(int arg0) {
                 continue;
             if (started == 0) {
                 started = 1;
-                fn_802C8B70(recordId);
+                DrawList_setupMode2(recordId);
                 cursor = fn_802DB2A8(itemCount2);
                 if (cursor == 0) {
                     DrawList_RestoreNormalMode();

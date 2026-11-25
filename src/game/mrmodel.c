@@ -227,7 +227,7 @@ void fn_802C54D4(void) {
 #pragma dont_inline reset
 #pragma scheduling on
 
-extern void fn_802C8B70(int);
+extern void DrawList_setupMode2(int);
 extern void DrawList_RestoreNormalMode(void);
 extern void fn_802D0610(int);
 extern void fn_802D6B08(int);
@@ -238,7 +238,7 @@ extern int lbl_804C139C[];
 /* Tear down a model/resource list: release its handle, walk the node chain at +8 (next at +0x10) releasing each node's resources, restore render state, then clear the list head. */ void fn_802C5690(void *modelList) {
     void *resNode;
     if (*(int *)((char *)modelList + 8) != 0) {
-        fn_802C8B70(*(int *)modelList);
+        DrawList_setupMode2(*(int *)modelList);
         resNode = *(void **)((char *)modelList + 8);
         while (resNode != 0) {
             fn_802D0610(*(int *)((char *)resNode + 8));
