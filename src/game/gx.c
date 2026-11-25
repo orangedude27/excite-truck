@@ -2743,7 +2743,7 @@ void fn_802D2B0C(void) {
     extern unsigned short lbl_8055FD0C;
     extern int memcmp(const void *, const void *, unsigned long);
     extern void fn_802DF21C(void);
-    extern void fn_802DF2F0(void);
+    extern void GXResetTevSwapMode0(void);
     extern void fn_802E09EC(void);
     extern void fn_802E0B68(void);
     extern void fn_802DF300(void);
@@ -2774,7 +2774,7 @@ void fn_802D2B0C(void) {
             case 1:
                 lbl_8055FD70 = 1;
                 fn_802DF21C();
-                lbl_8055FD80 = fn_802DF2F0;
+                lbl_8055FD80 = GXResetTevSwapMode0;
                 break;
             case 5:
                 lbl_8055FD70 = 1;

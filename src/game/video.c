@@ -242,7 +242,7 @@ void GXSetupIndirectTevPipeline(void) {
 }
 
 /* Reset TEV stage 0 to use swap table 0 for both the rasterized and texture colors. */
-void fn_802DF2F0(void) {
+void GXResetTevSwapMode0(void) {
     GXSetTevSwapMode(GX_TEVSTAGE0, GX_TEV_SWAP0, GX_TEV_SWAP0);
 }
 
