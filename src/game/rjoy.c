@@ -776,7 +776,7 @@ void *RjoyGetKpadStatus(int controllerIndex) {
 #undef gWiimoteStateTable
 
 /* Return the cached WPAD device handle (state record + 0x630) of a controller. */
-unsigned char fn_802E86B4(int controllerIndex) {
+unsigned char RjoyGetWpadDeviceHandle(int controllerIndex) {
     unsigned char *base = lbl_80505978;
     return *(base + controllerIndex * 0x638 + 0x630);
 }

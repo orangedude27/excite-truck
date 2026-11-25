@@ -293,7 +293,7 @@ struct SpkStream {
 
 extern int OSRestoreInterrupts(int);
 extern int WPADCanSendStreamData(int);
-extern unsigned char fn_802E86B4(int); /* the remote's radio quality, 0-100 */
+extern unsigned char RjoyGetWpadDeviceHandle(int); /* the remote's radio quality, 0-100 */
 extern int AXRmtGetSamples(int, short *, int);
 extern void WENCGetEncodeData(void *, int, short *, int, void *);
 extern void fn_80062278(int, void *, int); /* WPADSendStreamData(chan, data, len) */
@@ -321,7 +321,7 @@ extern int lbl_8055FFA8;             /* channels whose voices used a speaker lat
     chan = 0;
     do {
         int intr = OSDisableInterrupts();
-        if (WPADCanSendStreamData(chan) && fn_802E86B4(chan) > 0x55 &&
+        if (WPADCanSendStreamData(chan) && RjoyGetWpadDeviceHandle(chan) > 0x55 &&
             AXRmtGetSamples(chan, samples, 0x28) == 0x28) {
             sent = 1;
             if (stream->enabled && (lbl_8055FFA8 & (one << chan))) {
