@@ -10,7 +10,7 @@
 
 extern char HomeMenu_active;
 extern u8 lbl_805600E9;
-extern s8 lbl_805600EA;
+extern s8 HomeMenu_requestPending;
 extern u8 lbl_805600EB;
 extern u8 lbl_805600ED;
 /* The renderer of src/game/gx.c and src/game/drgc_surf.c, used by the handover
@@ -119,7 +119,7 @@ extern void closeFileHandle(s32 *);
 #define gHomeBtn2UiRes     lbl_805600E4
 #define gHomeBtn2Ready     lbl_805600EC
 #define gHomeMenuMode      lbl_805600E9
-#define gHomeMenuRequest   lbl_805600EA
+#define gHomeMenuRequest   HomeMenu_requestPending
     char *const strBase = gHomeBtn2Strings;
     s32 zero = 0;
     s32 *wpadInfo;
@@ -299,8 +299,8 @@ void fn_802EC884(void) {
     s32 i;
 
     if ((u8)lbl_805600EC == 0) return;
-    if ((u8)lbl_805600EA != 0) {
-        lbl_805600EA = 0;
+    if ((u8)HomeMenu_requestPending != 0) {
+        HomeMenu_requestPending = 0;
         if (fn_802D9BF0() == 0) {
             logFormat = menuStrings + 0x16C;
             statusText = &lbl_8055D2F8;
@@ -429,7 +429,7 @@ void fn_802ECA48(void) {
 #pragma dont_inline off
 void fn_802ECBF8(void) {
 #define gHomeMenuActive HomeMenu_active
-#define gHomeMenuRequest lbl_805600EA
+#define gHomeMenuRequest HomeMenu_requestPending
     /* Request the home-button menu: raise the pending-request flag only when the
      * menu isn't already active (the per-frame process loop honours it later). */
     if ((u8)gHomeMenuActive == 0) {
