@@ -942,7 +942,7 @@ void fn_802CFBA8(void) {
     extern void *lbl_8055FD68;
     extern unsigned int lbl_8055FD98;
     extern void fn_80128670();
-    extern void fn_802DA4C4(void);
+    extern void StackAlloc_destroyGlobal(void);
     extern void fn_802D0C98(void);
     extern void fn_802DAE18(void);
     extern void drTexCacheShutdown(void);
@@ -956,7 +956,7 @@ void fn_802CFBA8(void) {
     drVertexFormatCacheShutdown();                     /* free the vertex-format display list; log the ymorph total */
     fn_80128670(GX_SCREEN_TEX_BUFFER); /* the full-screen texture */
     GX_SCREEN_TEX_BUFFER = 0;
-    fn_802DA4C4();                     /* destroy the BoneHandleAlloc stack allocator */
+    StackAlloc_destroyGlobal();                     /* destroy the BoneHandleAlloc stack allocator */
     fn_802D0C98();                     /* copy the EFB to the frame buffer and present it */
     VISetBlack(1);                     /* blank the screen and wait for it */
     VIFlush();

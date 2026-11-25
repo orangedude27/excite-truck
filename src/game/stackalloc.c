@@ -549,7 +549,7 @@ void *StackAlloc_deletingDestructor(void *self, int deleteFlag) {
     return self;
 }
 /* Destroy the global stack allocator instance: release its arena buffer, free the object, and clear the global pointer. */
-void fn_802DA4C4(void) {
+void StackAlloc_destroyGlobal(void) {
     volatile struct StackAlloc *alloc = lbl_8055FE5C;
     if (alloc != 0) {
         if (alloc != 0) {
