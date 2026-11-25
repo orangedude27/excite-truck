@@ -248,8 +248,6 @@ dispatch:
     *((unsigned char *)&lbl_80505978 + channel * 0x638 + 0x631) = channel - channel;
 }
 #pragma pop
-#define sRjoyMotorEnabled  gRjoyMotorEnabled /* cached WPAD rumble-enabled flag used by the motor driver */
-#define getWpadMotorConfig ConfigGetWpadMotorMode  /* config getter: 1 when WPAD rumble is enabled */
 void RjoyUpdateMotorEnabled(void) {
     /* Cache the WPAD rumble config setting into rjoy's motor-enabled flag. */
     gRjoyMotorEnabled = ConfigGetWpadMotorMode();
