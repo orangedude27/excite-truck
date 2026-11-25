@@ -33,7 +33,7 @@ extern int lbl_8056002C;
 extern char lbl_8034E108[];
 extern void rmemcardWriteStep(void *);
 extern unsigned int rmemcardWriteStopped(int *);
-extern int fn_802E91AC(int *);
+extern int rmemcardWriteIsIdle(int *);
 extern void NandBeginWrite(void *, const char *, int, int);
 extern void fn_802E9160(void *);
 extern void fn_802E9118(void *);
@@ -582,7 +582,7 @@ void rmemcardPumpAsync(void) {
 #define bannerPath      lbl_8034E108
 #define beginWrite      NandBeginWrite
 #define writeIdle       rmemcardWriteStopped
-#define writeDone       fn_802E91AC
+#define writeDone       rmemcardWriteIsIdle
 #define finishSave      fn_802E9118
 #define abortSave       fn_802E9160
     char *saveState;
@@ -655,7 +655,7 @@ void fn_802E9118(void *saveState) {
 }
 
 /* True when the rmemcard async NAND write state word is IDLE (0), i.e. no write was started. */
-int fn_802E91AC(int *state) { return *state == 0; }
+int rmemcardWriteIsIdle(int *state) { return *state == 0; }
 
 #pragma push
 #pragma opt_propagation off
