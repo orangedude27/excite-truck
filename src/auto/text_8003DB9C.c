@@ -6075,8 +6075,8 @@ u32 GXEndDisplayList(void) {
     void *data2;
     int interruptState;
     unsigned int saved;
-    GXGetCPUFifo(&lbl_8037C108[0]);
-    wrap = GXGetFifoWrap(&lbl_8037C108[0]);
+    GXGetCPUFifo((u8 *)fifo + 0);
+    wrap = GXGetFifoWrap((u8 *)fifo + 0);
     GXSetCPUFifo((u8 *)fifo + 0x680);
     data = __GXData;
     if (*((u8 *)data + 0x5F9) != 0) {
