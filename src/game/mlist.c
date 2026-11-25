@@ -731,7 +731,7 @@ void fn_802CDB5C(int arg0) {
     }
 }
 #pragma opt_propagation reset
-void fn_802CE260(int *, int);
+void mlistRelocatePointer(int *, int);
 void fn_802CE278(int *, int);
 void fn_802CE290(int *, int);
 void fn_802CE2A8(int *, int);
@@ -864,7 +864,7 @@ void fn_802CDDC8(void *arg0, int arg1) {
     t = base[0x8d]; base[0x8d] = base[0x8e]; base[0x8e] = t;
     t = base[0x90]; base[0x90] = base[0x93]; base[0x93] = t;
     t = base[0x91]; base[0x91] = base[0x92]; base[0x92] = t;
-    fn_802CE260((int *)(base + 0x14), arg1);
+    mlistRelocatePointer((int *)(base + 0x14), arg1);
     fn_802CE278((int *)(base + 0x1C), arg1);
     fn_802CE290((int *)(base + 0x24), arg1);
     fn_802CE2A8((int *)(base + 0x2C), arg1);
@@ -932,7 +932,7 @@ void fn_802CDDC8(void *arg0, int arg1) {
     *(volatile int *)(base + 8) |= 1;
 }
 #pragma scheduling invalid_target
-void fn_802CE260(int *value, int delta) {
+void mlistRelocatePointer(int *value, int delta) {
     /* Add delta to *value, leaving a zero (null) sentinel unchanged. */
     int cur = *value;
     if (cur != 0) {
