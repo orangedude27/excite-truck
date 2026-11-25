@@ -646,12 +646,14 @@ s32 fn_80190368(s32 value) {
  #pragma cplusplus on
 extern "C" void fn_80190388(void *arg0)
 {
+char *__repair_addr;
+
     /* The car object this Hybrid drives (only slot 0x10 is used here). */
     class Car {
     public:
         virtual void c08(); virtual void c0C(); virtual void *c10();
     };
-    /* The race object kept at +0x20, sub-object at its +0x270. */
+    /* The sub-object at +0x270 of the race object (+0x20). */
     class RaceSub {
     public:
         virtual void s08(); virtual void s0C(); virtual void *s10();
@@ -676,7 +678,7 @@ extern "C" void fn_80190388(void *arg0)
         virtual int d3C();
         virtual void d40();
         virtual float d44();
-        virtual int d48();
+        virtual float d48();
         virtual void d4C(); virtual void d50(); virtual void d54(); virtual void d58();
         virtual void d5C(); virtual void d60(); virtual void d64(); virtual void d68();
         virtual void d6C(); virtual void d70();
@@ -736,25 +738,22 @@ extern "C" void fn_80190388(void *arg0)
     RaceSub *raceSub;
     void *res;
     void *mgr;
-    void *race;
     void *sub18;
     void *ptr;
+    void *entry;
     f32 limit;
     f32 f30;
     f32 f29;
     f32 newF30;
     f32 temp;
-    f32 mag;
     f32 diff;
     int idx;
     int lim;
-    int state;
     int isLess;
     int virt38;
     int saved;
     int ret;
     int flag;
-    int c1;
     int c2;
     int bit29;
     int any;
@@ -780,15 +779,20 @@ extern "C" void fn_80190388(void *arg0)
             lbl_8055E524 = nw;
         }
         ((StatusRecord *)fn_80190E00(driver))->value =
-            fn_80190D9C(driver->sub4->d0C(f30), lbl_80562084, lbl_80562088);
+            ((unsigned short (*)(float, float, float))fn_80190D9C)(
+                driver->sub4->d0C(f30), lbl_80562084, lbl_80562088);
         ((StatusRecord *)fn_80190E00(driver))->b3 =
-            fn_80190D38(driver->sub4->d14(), lbl_8056208C, lbl_80562090);
+            ((unsigned char (*)(float, float, float))fn_80190D38)(
+                driver->sub4->d14(), lbl_8056208C, lbl_80562090);
         ((StatusRecord *)fn_80190E00(driver))->b2 =
-            fn_80190D38(driver->sub4->d10(), lbl_8056208C, lbl_80562090);
+            ((unsigned char (*)(float, float, float))fn_80190D38)(
+                driver->sub4->d10(), lbl_8056208C, lbl_80562090);
         ((StatusRecord *)fn_80190E00(driver))->nib.high =
-            fn_80190CD0(driver->sub4->d18(), lbl_8056208C, lbl_80562090);
+            ((unsigned char (*)(float, float, float))fn_80190CD0)(
+                driver->sub4->d18(), lbl_8056208C, lbl_80562090);
         ((StatusRecord *)fn_80190E00(driver))->nib.low =
-            fn_80190CD0(driver->sub4->d1C(), lbl_8056208C, lbl_80562090);
+            ((unsigned char (*)(float, float, float))fn_80190CD0)(
+                driver->sub4->d1C(), lbl_8056208C, lbl_80562090);
         ((StatusRecord *)fn_80190E00(driver))->flags.carType =
             (unsigned char)(driver->sub4->d20() + 1);
         ((StatusRecord *)fn_80190E00(driver))->flags.flag27 =
@@ -802,24 +806,27 @@ extern "C" void fn_80190388(void *arg0)
         ((StatusRecord *)fn_80190E00(driver))->flags.flag31 =
             (unsigned char)driver->sub4->d30();
         ((StatusRecord *)fn_80190E00(driver))->b4 =
-            fn_80190D38(driver->sub4->d44(), lbl_80562094, lbl_80562090);
+            ((unsigned char (*)(float, float, float))fn_80190D38)(
+                driver->sub4->d44(), lbl_80562094, lbl_80562090);
         ((StatusRecord *)fn_80190E00(driver))->b5 =
-            fn_80190D38(driver->sub4->d48(), lbl_80562094, lbl_80562090);
+            ((unsigned char (*)(float, float, float))fn_80190D38)(
+                driver->sub4->d48(), lbl_80562094, lbl_80562090);
     }
     if (fn_801CF064() != 0 && idx >= driver->count - 1) {
         __AXDSPInitCallback_801769E0();
         fn_80176A34(lbl_8055E3C4);
     }
     (*(Driver **)(self + 4))->d74();
-    if (*(int *)((char *)*(void **)(self + 0x20) + 0x2620) != 0) {
+__repair_addr = (char *)((char *)*(void **)(self + 0x20) + 0x2620);
+
+    if (*(int *)(__repair_addr) != 0) {
         (*(Driver **)(self + 4))->d7C();
     }
     if (lbl_8055E529 == 0) {
-        race = *(void **)(self + 0x20);
-        diff = lbl_8055E3C8 - *(f32 *)((char *)race + 0x26D8);
+        diff = lbl_8055E3C8 - *(f32 *)((char *)*(void **)(self + 0x20) + 0x26D8);
         isLess = (diff < lbl_80562098) ? 1 : 0;
-        state = *(int *)((char *)unit + 0x24);
-        if (state == 3 || lbl_8055E528 != 0 || fn_80019B54() != 0) {
+        if (*(int *)((char *)unit + 0x24) == 3 || lbl_8055E528 != 0 ||
+            fn_80019B54() != 0) {
             if (self[0x25] != 0 && self[0x26] != 0) {
                 fn_80191084((int)arg0, *(int *)(self + 8));
             } else {
@@ -827,7 +834,7 @@ extern "C" void fn_80190388(void *arg0)
             }
         } else if (isLess != 0) {
             fn_80191084((int)arg0, *(int *)(self + 8));
-        } else if (state == 1) {
+        } else if (*(int *)((char *)unit + 0x24) == 1) {
             fn_80191084((int)arg0, *(int *)(self + 8));
         } else if (fn_801B851C(*(int *)(self + 0x1C)) == 0) {
             fn_80191084((int)arg0, *(int *)(self + 0xC));
@@ -857,7 +864,7 @@ extern "C" void fn_80190388(void *arg0)
     mgr = fn_801B83A0();
     ret = ((ModeMaster *)mgr)->lookup(*(int *)(self + 0x1C), &sp8);
     if (ret != 0) {
-        flag = __cntlzw(sp8) >> 5;
+        flag = (unsigned int)__cntlzw(sp8) >> 5;
         self[0x34] = flag;
         if (flag != 0) {
             temp = *(f32 *)(self + 0x2C);
@@ -867,21 +874,17 @@ extern "C" void fn_80190388(void *arg0)
             }
         }
     } else {
-        race = *(void **)(self + 0x20);
-        raceSub = *(RaceSub **)((char *)race + 0x270);
-        res = raceSub->s18();
+        res = ((RaceSub *)*(void **)((char *)*(void **)(self + 0x20) + 0x270))->s18();
         newF30 = *(f32 *)((char *)res + 0x48);
         f30 = newF30;
         f29 = newF30 - *(f32 *)(self + 0x30);
-        raceSub = *(RaceSub **)((char *)race + 0x270);
-        bit29 = (*(int *)raceSub->s10() >> 29) & 1;
-        mag = (f32)fabs((double)*(f32 *)((char *)race + 0x2690));
-        c1 = (mag <= lbl_80558DC4) ? 1 : 0;
-        c2 = ((limit - *(f32 *)((char *)race + 0x26D8)) >= lbl_8056207C) ? 1 : 0;
-        if (c1 != 0 && bit29 != 0 && c2 != 0) {
+        bit29 = (*(int *)((RaceSub *)*(void **)((char *)*(void **)(self + 0x20) + 0x270))->s10() >> 29) & 1;
+        c2 = ((limit - *(f32 *)((char *)*(void **)(self + 0x20) + 0x26D8)) >= lbl_8056207C) ? 1 : 0;
+        if ((f32)__fabs((double)*(f32 *)((char *)*(void **)(self + 0x20) + 0x2690)) <= lbl_80558DC4 &&
+            bit29 != 0 && c2 != 0) {
             self[0x34] = 0;
         } else if (f29 > lbl_8056209C || f29 < lbl_805620A0 || c2 == 0 ||
-                   fn_802B02C8((char *)race + 0x60) == 0) {
+                   fn_802B02C8((char *)*(void **)(self + 0x20) + 0x60) == 0) {
             *(f32 *)(self + 0x30) = newF30;
             temp = *(f32 *)(self + 0x2C);
             if (temp > limit) {
@@ -890,9 +893,9 @@ extern "C" void fn_80190388(void *arg0)
             }
             self[0x34] = 1;
         } else if ((limit - *(f32 *)(self + 0x2C)) > lbl_805620A4) {
-            self[0x34] = 0;
             *(f32 *)(self + 0x2C) = lbl_80562090 + (limit - lbl_805620A4);
             *(f32 *)(self + 0x30) = lbl_805620A8 + (newF30 - lbl_8056209C);
+            self[0x34] = 0;
         }
     }
     if (fn_801796C4() != 0 || lbl_8055E522 == 0) {
@@ -923,7 +926,8 @@ extern "C" void fn_80190388(void *arg0)
         i = 0;
         off = 0;
         do {
-            if (fn_80190368(*(int *)(*(unsigned char **)(self + 0x20) + off + 0x2410)) == 0) {
+            if (((s32 (*)(s32))fn_80190368)(
+                    *(int *)((char *)*(void **)(self + 0x20) + off + 0x2410)) == 0) {
                 any = 1;
             }
             i++;
