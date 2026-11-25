@@ -47,7 +47,7 @@ extern int lbl_8055FE24;
 extern unsigned char lbl_804C9778[];
 extern double lbl_80564FB0;
 extern double fn_8002EF30(double);
-extern unsigned long lbl_8055D0B8;
+extern unsigned long tileCaptureIndex;
 extern int gTileGridWidth;
 extern int gTileGridHeight;
 extern float lbl_80564F94, lbl_80564F9C, lbl_80564FC8, lbl_80564FD0;
@@ -1504,7 +1504,7 @@ void fn_802D0610(int arg0) {
 #pragma push
 #pragma opt_common_subs off
 void fn_802D07E4(char* arg0, int arg1) {
-    extern unsigned long lbl_8055D0B8;
+    extern unsigned long tileCaptureIndex;
     extern int gTileGridWidth;
     extern int gTileGridHeight;
     extern signed char lbl_8055FD90;
@@ -1516,9 +1516,9 @@ void fn_802D07E4(char* arg0, int arg1) {
     register unsigned char c;
     register int count;
     register unsigned char *dst;
-    if ((int)lbl_8055D0B8 >= 0) {
+    if ((int)tileCaptureIndex >= 0) {
         fn_802E30C8(lbl_8034C0EC);
-        lbl_8055D0B8 = gTileGridWidth * gTileGridHeight;
+        tileCaptureIndex = gTileGridWidth * gTileGridHeight;
         return;
     }
     lbl_8055FD90 = 1;
@@ -1546,7 +1546,7 @@ done:
         register int *base = gXfbBlock;
         register int v = gTileGridWidth;
         fn_802E30C8(fmt, v * base[2], gTileGridHeight * base[3], base, v);
-        lbl_8055D0B8 = 0;
+        tileCaptureIndex = 0;
     }
 }
 #pragma pop
@@ -1671,7 +1671,7 @@ void fn_802D09E8(void)
   {
     return;
   }
-  if (((long) lbl_8055D0B8) < 0)
+  if (((long) tileCaptureIndex) < 0)
   {
     lbl_8055FD90 = 0;
     ((void (*)(void)) fn_802D09E4)();
@@ -1682,7 +1682,7 @@ void fn_802D09E8(void)
   if (temp_r0 > 2)
   {
     lbl_8055FDC0 = 0;
-    if (lbl_8055D0B8 == 0)
+    if (tileCaptureIndex == 0)
     {
       int r = FileOpenSecondary(lbl_804C9830);
       lbl_8055D10C = r;
@@ -1690,7 +1690,7 @@ void fn_802D09E8(void)
       {
         fn_802E30C8(base + 0x428, lbl_804C9830);
         lbl_8055FD90 = 0;
-        lbl_8055D0B8 = -1;
+        tileCaptureIndex = -1;
         return;
       }
       lbl_8055FDC4 = KERNEL_GetTimeMs();
@@ -1700,18 +1700,18 @@ void fn_802D09E8(void)
         ((void (*)(int, int, int)) fn_802D0914)(lbl_8055D10C, gXfbBlock[2] * gTileGridWidth, gXfbBlock[3] * gTileGridHeight);
       }
     }
-    if (((long) lbl_8055D0B8) < ((long) (gTileGridWidth * gTileGridHeight)))
+    if (((long) tileCaptureIndex) < ((long) (gTileGridWidth * gTileGridHeight)))
     {
-      rem = ((long) lbl_8055D0B8) % gTileGridWidth;
-      div = ((long) lbl_8055D0B8) / gTileGridWidth;
-      fn_802E30C8(base + 0x458, (char *) (lbl_8055D0B8 + 1));
+      rem = ((long) tileCaptureIndex) % gTileGridWidth;
+      div = ((long) tileCaptureIndex) / gTileGridWidth;
+      fn_802E30C8(base + 0x458, (char *) (tileCaptureIndex + 1));
       ((void (*)(int, int, int, int, int, int)) fn_802D0910)(lbl_8055D10C, gXfbBlock[2] * rem, gXfbBlock[3] * div, gXfbBlock[2] * gTileGridWidth, gXfbBlock[3] * gTileGridHeight, gXfbBlock[2]);
-      lbl_8055D0B8++;
+      tileCaptureIndex++;
     }
-    if (((long) lbl_8055D0B8) >= ((long) (gTileGridWidth * gTileGridHeight)))
+    if (((long) tileCaptureIndex) >= ((long) (gTileGridWidth * gTileGridHeight)))
     {
       lbl_8055FD90 = 0;
-      lbl_8055D0B8 = -1;
+      tileCaptureIndex = -1;
       closeFileHandle(&lbl_8055D10C);
       lbl_8055D10C = -1;
       val = KERNEL_GetTimeMs();
@@ -2125,10 +2125,10 @@ void gxRebuildProjection(void) {
     fovDegrees = (lbl_80564FCC * halfFovRad) / lbl_80564FD0; /* 2 * rad / (pi/180): full FOV in degrees */
     aspectArg = aspect;
     C_MTXPerspective(mtx, fovDegrees, aspectArg, *(float *)(params + 4), *(float *)(params + 8));
-    if ((lbl_8055FE24 == 0) && ((int)lbl_8055D0B8 >= 0) && ((int)lbl_8055D0B8 < gTileGridWidth * gTileGridHeight)) {
+    if ((lbl_8055FE24 == 0) && ((int)tileCaptureIndex >= 0) && ((int)tileCaptureIndex < gTileGridWidth * gTileGridHeight)) {
         int gridHeight = gTileGridHeight;
         int gridWidth = gTileGridWidth;
-        int tileIndex = (int)lbl_8055D0B8;
+        int tileIndex = (int)tileCaptureIndex;
         float tileScaleX = lbl_80564F8C / (float)gridWidth;
         float tileScaleY = lbl_80564F8C / (float)gridHeight;
         mtx[0][0] /= tileScaleX;
@@ -3488,7 +3488,7 @@ void fn_802D3DAC(void) {
     GXSetIndTexMtx(1, indMtx, exponent);
 }
 
-extern unsigned long lbl_8055D0B8;
+extern unsigned long tileCaptureIndex;
 __declspec(section ".data") extern unsigned char lbl_804C5710[4];
 extern int lbl_8055FD4C;
 extern unsigned char lbl_8055FD50;
@@ -3516,7 +3516,7 @@ extern int lbl_804C5710_int;
 /* Returns 1 while the frame counter is non-negative (sign bit clear), 0 once
    it has been invalidated to -1 (sign bit set). */
 int fn_802D3EBC(void) {
-    return (lbl_8055D0B8 >> 0x1FU) ^ 1;
+    return (tileCaptureIndex >> 0x1FU) ^ 1;
 }
 
 extern unsigned short lbl_8055FD86;
@@ -3552,7 +3552,7 @@ extern int fn_80015B20(void *, void *, void *);
 extern int transformToGXPosMtx(void *, void *);
 extern int GXLoadPosMtxImm(void *, int);
 extern void fn_802D2ED8(int, int);
-extern unsigned long lbl_8055D0B8;
+extern unsigned long tileCaptureIndex;
 extern unsigned char lbl_804C5710[4];
 extern int lbl_8055FD4C;
 extern unsigned char lbl_8055FD50;
@@ -3560,7 +3560,7 @@ extern unsigned char gRenderRequest[12];
 extern unsigned char lbl_8055FD60;
 extern float lbl_80564F90;
 extern int GXSetDstAlpha(int, int);
-extern unsigned long lbl_8055D0B8;
+extern unsigned long tileCaptureIndex;
 extern unsigned char lbl_804C5710[4];
 extern int lbl_8055FD4C;
 extern unsigned char lbl_8055FD50;
