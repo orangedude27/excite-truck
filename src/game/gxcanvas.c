@@ -82,7 +82,8 @@ extern void gxCanvasFillRectRGBA4444(s32, s32, s32, s32, u32);
 #pragma pop
 #pragma push
 #pragma peephole off
-/* Expand one RGB565 (canvas format 4) pixel into a GX RGBA word: R5/G6/B5 scaled into the colour channels and alpha forced to 0xFF. */ /* Expand one RGB565 (canvas format 4) pixel into a GX RGBA word: R5/G6/B5 scaled into the colour channels and alpha forced to 0xFF. */ s32 gxCanvasConvert565ToRGBA(s32 rgb565) {
+/* Expand one RGB565 (canvas format 4) pixel into a GX RGBA word: R5/G6/B5 scaled into the colour channels and alpha forced to 0xFF. */
+s32 gxCanvasConvert565ToRGBA(s32 rgb565) {
     /* Convert a 16-bit packed pixel from a format-4 canvas into a 32-bit GX
        RGBA color word for blitting into a 4-byte-per-pixel canvas (fn_802C3D74). */
     unsigned int rgbaLow = (rgb565 << 3) & 0xF8;
