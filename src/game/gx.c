@@ -72,7 +72,7 @@ extern unsigned long VIGetNextField(void);
 extern void GXSetViewportJitter(unsigned short, float, float, float, float, float, float);
 extern void GXSetViewport(unsigned short, float, float, float, float, float, float);
 extern void GXSetScissor(unsigned int, unsigned int, unsigned int, unsigned int);
-extern void fn_802D14D8(void);
+extern void gxRebuildProjection(void);
 extern unsigned char gAlphaCompareAppliedRef;
 extern unsigned char sGxResetRegisterPending;
 extern char sGxResetCallbackName;
@@ -2096,7 +2096,7 @@ extern double atan(double);
  * than to the current texture object (lbl_8055FE24) and a viewport tile is
  * selected, the matrix is squeezed and shifted to that tile of the
  * lbl_8055D0BC by lbl_8055D0C0 grid before GXSetProjection(GX_PERSPECTIVE). */
-void fn_802D14D8(void) {
+void gxRebuildProjection(void) {
     float mtx[4][4];
     float pixelAspect;
     float halfAngle;
@@ -2589,7 +2589,7 @@ void fn_802D2218(void)
     sClearState_802D2218.clearColor = 0;
     gxMarkAllStateDirty();
     sClearState_802D2218.dirty = 1;
-    fn_802D14D8();
+    gxRebuildProjection();
     ((unsigned char *) sViewTo_802D18E8)[0x40] = 1;
     lbl_8055FD70 = 1;
     ((unsigned char *) (&sDefaultLight_802D18E8))[0x5C] = 1;
@@ -2602,7 +2602,7 @@ void fn_802D2218(void)
  * set the viewport/scissor, set up the 2D overlay pass, and flush pending
  * render-state changes (blend mode, fog, lights, TEV colors). */
 /* Prepares the GX pipeline for a frame: rebuild projection, apply viewport, set up the 2D overlay, and flush pending render-state changes. */ void gxPrepareFrame(void) {
-    fn_802D14D8();
+    gxRebuildProjection();
     fn_802D1678();
     fn_802D2218();
     fn_802D0EEC();
