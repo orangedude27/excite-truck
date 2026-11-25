@@ -407,7 +407,7 @@ extern void fn_801F4DC4(void);
 extern void fn_80202924(void);
 extern void fn_80134994(void);
 extern void fn_8000D7FC(void);
-extern void fn_80202AD4(long);
+extern void setRequestedPos(long);
 extern void fn_801EAB90(long, void *);
 extern long fn_801EA994(void);
 extern void fn_801EA9DC(long, void *);
@@ -497,7 +497,7 @@ void fn_801E7E48(void) {
         long val = 0;
         idx = fn_801E866C(0);
         if (idx < 8) val = (long)lbl_80488648[idx];
-        fn_80202AD4(val + 0x28);
+        setRequestedPos(val + 0x28);
     }
     fn_80202924();
     fn_80134994();
