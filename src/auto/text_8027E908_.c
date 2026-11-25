@@ -593,7 +593,6 @@ extern "C" void fn_8027F09C(int arg0) {
     ((int (*)(int *, int, int, int))fn_802146BC)(
         local.args, -0x3E7, -0x3E7, 1);
 }
-#pragma dont_inline on
 
 #pragma cplusplus off
 #pragma dont_inline reset
