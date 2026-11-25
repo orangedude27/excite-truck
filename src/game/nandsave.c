@@ -157,7 +157,7 @@ int fn_802E888C(int requestIndex) {
 }
 
 #pragma scheduling invalid_target
-int fn_802E88D8(void) {
+/* rmemcard space-recovery poll (aliased rmemcardSpaceReady by the caller): dispatch NAND request 0 once; when it completes, mark the save invalid (gNandSaveInvalid) and report readiness (1), otherwise report 0. */ int fn_802E88D8(void) {
 #define nandDispatchRequest fn_802E888C
 #define gNandSaveInvalid lbl_80560034
     /* Poll NAND request 0; if it completes, flag the save invalid and report failure. */
