@@ -1222,9 +1222,9 @@ extern void fn_80206454(void);
 extern void fn_801769EC(void);
 #pragma scheduling on
 /* Restore track-music volume to full, resume sound, and run the DSP init hook. */
-void fn_802114C4(void) {
-    float volume = 1.0f;
-    fn_80209190(lbl_8055EEF0, volume);
+/* Restore track-music volume to full, resume sound, then run the DSP init hook. */ void fn_802114C4(void) {
+    float fullVolume = 1.0f;
+    fn_80209190(lbl_8055EEF0, fullVolume);
     fn_80206454();
     fn_801769EC();
 }
