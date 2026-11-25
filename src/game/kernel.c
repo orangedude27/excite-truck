@@ -144,7 +144,7 @@ int fn_802E18D4(int width, int height, int texFmt, int wrapST, void *texObj, int
 }
 #pragma scheduling on
 /* Round size up to the next multiple of 128 (128-byte texture/cache-line alignment). */
-/* Round a byte count up to the next 128-byte boundary (cache-line/texture alignment). */ int fn_802E1954(int size) { return (size + 0x7F) & 0xFFFFFF80; }
+/* Round a byte count up to the next 128-byte boundary (cache-line/texture alignment). */ int align128(int size) { return (size + 0x7F) & 0xFFFFFF80; }
 
 /* Compute the power-of-two width (pixels) of an IA8 lookup texture from its size: size/8 rounded up to a multiple of 4, then up to a power of two. */ unsigned int lookupTextureWidth(unsigned int size) {
     /* Return a power-of-two texture width: size/8 rounded up to a multiple of 4,
@@ -168,7 +168,7 @@ int fn_802E1980(int imagePtr, void *texObj, void *outWidth, void *outHeight, uns
     width = lookupTextureWidth(size);
     *(int *)outWidth = width;
     *(int *)outHeight = 4;
-    alignedBytes = fn_802E1954(width << 3);
+    alignedBytes = align128(width << 3);
     fn_802E1780(linearBuf, size, width);
     fn_802E1804((void *)imagePtr, linearBuf, width, 4, 2);
     DCFlushRange((void *)imagePtr, alignedBytes);
@@ -183,14 +183,14 @@ void buildLookupTextures(void *obj, int imageBase) {
     fn_802E1980(imageBase + firstTexBytes, (char *)obj + 0x1b0, (char *)obj + 0x188, (char *)obj + 0x18c, *(int *)((char *)obj + 0x10c));
 }
 
-extern int fn_802E1954(int);
+extern int align128(int);
 extern unsigned int lookupTextureWidth(unsigned int);
 #pragma optimization_level 2
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 /* Computes aligned layout sizes/offsets for a texture/image block descriptor.
  * Selects width/height factors from descriptor flags, rounds dimensions via
- * fn_802E1954/lookupTextureWidth, and outputs combined byte spans and factor flags. */
+ * align128/lookupTextureWidth, and outputs combined byte spans and factor flags. */
 /* Compute 128-byte-aligned width, height and byte-span layout values for a texture/image descriptor, returning them through the output pointers. */ void fn_802E1A9C(void *desc, int *outCombinedWidth, int *outCombinedPlusHeight, int *outAlignedWidthA, int *outCombinedPlusDoubleHeight, int *outTotalAlignedBytes, int *outWidthFactorMask, int *outHeightFactor, int unused) {
     int alignedWidthA, alignedWidthB, alignedHeight, alignedDimC;
     int baseWidth, baseHeight;
@@ -201,11 +201,11 @@ extern unsigned int lookupTextureWidth(unsigned int);
     heightFactor = *(int *)((char *)desc + 0x24) ? *(int *)((char *)desc + 0xC) : 0;
     baseWidth = *(int *)((char *)desc + 8);
     baseHeight = *(int *)((char *)desc + 0x10);
-    alignedWidthA = fn_802E1954(widthFactorA * baseWidth);
-    alignedWidthB = fn_802E1954(widthFactorB * baseWidth);
-    alignedHeight = fn_802E1954(heightFactor * baseHeight);
-    alignedDimC = fn_802E1954(lookupTextureWidth(*(int *)((char *)desc + 0xC)) << 3);
-    totalAlignedBytes = fn_802E1954(lookupTextureWidth(*(int *)((char *)desc + 4)) << 3);
+    alignedWidthA = align128(widthFactorA * baseWidth);
+    alignedWidthB = align128(widthFactorB * baseWidth);
+    alignedHeight = align128(heightFactor * baseHeight);
+    alignedDimC = align128(lookupTextureWidth(*(int *)((char *)desc + 0xC)) << 3);
+    totalAlignedBytes = align128(lookupTextureWidth(*(int *)((char *)desc + 4)) << 3);
     totalAlignedBytes += alignedDimC;
     *outTotalAlignedBytes = totalAlignedBytes;
     combinedWidth = alignedWidthA + alignedWidthB;
