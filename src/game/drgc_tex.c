@@ -16,7 +16,7 @@ extern void GXInitTexObjWrapMode(void *, int, int);
 extern unsigned int lbl_8055FD2C;
 extern void *lbl_8055FE1C;
 extern void *lbl_8055FE20;
-extern void fn_802CFEEC(void);
+extern void gxDrawSyncAlarm(void);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 extern char lbl_8034C4B0[];
 extern void Abend_Panic(const char *, ...);
@@ -860,7 +860,7 @@ void fn_802D8FB4(void *texObj) {
      * from whichever of the three cached active-texture slots points at it. */
     if (tex->bindCount != 0 &&
         (unsigned int)(lbl_8055FD2C - tex->lastBoundFrame) >= 0xFFFFFF00U) {
-        fn_802CFEEC();
+        gxDrawSyncAlarm();
     }
     if (tex->rgbClut != 0) {
         fn_80128670(tex->rgbClut);
@@ -883,7 +883,7 @@ void fn_802D8FB4(void *texObj) {
 extern unsigned int lbl_8055FD2C;
 extern void *lbl_8055FE1C;
 extern void *lbl_8055FE20;
-extern void fn_802CFEEC(void);
+extern void gxDrawSyncAlarm(void);
 
 /* Return 1 if any texture slot in the drgc pool has no owner (inUse == 0), else 0. */
 int fn_802D9068(void) {
@@ -966,7 +966,7 @@ void fn_802D9230(void *texRecord) {
     gRenderRequest[DRREQ_ENV_ALPHA_TEX] = record->hasAlphaTex;
 }
 
-extern void fn_802CFEEC(void);
+extern void gxDrawSyncAlarm(void);
 extern void fn_80128670(void *);
 extern unsigned int lbl_8055FD2C;
 /* Sets the active lightmap texture, validates it (no alpha channel or LUT), and loads it into GX texture slot 3. */

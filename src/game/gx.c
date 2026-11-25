@@ -1111,7 +1111,7 @@ extern void HomeMenu_beginFrame(void*);
 /* GX draw-sync alarm callback: begin a fresh frame by resetting per-frame state
    and arming the FIFO break point (HomeMenu_beginFrame), then flush the just-finished
    frame's dynamic-data buffer and disarm the break point (HomeMenu_drawUIAndFlush). */
-void fn_802CFEEC(void *alarm) {
+void gxDrawSyncAlarm(void *alarm) {
     HomeMenu_beginFrame(alarm);
     HomeMenu_drawUIAndFlush();
 }
