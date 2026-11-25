@@ -96,10 +96,10 @@ extern int __ieee754_rem_pio2(double, double *);
 extern unsigned char lbl_802FE850[];
 extern double lbl_805609D8, lbl_805609E0, lbl_805609E8, lbl_805609F0, lbl_805609F8, lbl_80560A00, lbl_80560A08;
 void fn_8002B0D8(unsigned char *s) {
+    register unsigned char *p = s;
+    unsigned char *base = lbl_802FE850;
     int c;
     unsigned skip;
-    unsigned char *p = s;
-    unsigned char *base = lbl_802FE850;
     goto check;
 loop:
     c = (signed char)*p;
@@ -133,7 +133,7 @@ int stricmp(unsigned char *str1, unsigned char *str2) {
 }
 
 /* strcmp/strncmp thunk: tail-call the locale-aware n-byte string comparator fn_800248A4. */
-void fn_8002B1D8(void) {
+/* Tail-call thunk delegating to fn_800248A4, a bounded locale-aware case-insensitive string comparison (strnicmp equivalent). */ void fn_8002B1D8(void) {
     fn_800248A4();
 }
 
@@ -248,7 +248,7 @@ double x;
         __LO(w) = 0;
         c = (t - w * w) / (s + w);
         r = p / q;
-        p = (lbl_80560700 * s) * r - (lbl_80560690 - lbl_80560700 * c);
+        p = r * (lbl_80560700 * s) - (lbl_80560690 - lbl_80560700 * c);
         q = lbl_80560708 - lbl_80560700 * w;
         t = lbl_80560708 - (p - q);
     }
@@ -1492,7 +1492,7 @@ double fn_8002EF30(double x) {
     int hx;
     double y[2];
     hx = *(int *)&x & 0x7fffffff;
-    if (hx <= 0x3fe921fb) return __kernel_tan(1, x, lbl_80560AD0);
+    if (hx <= 0x3fe921fb) return __kernel_tan(1, x, 0.0);
     if (hx >= 0x7ff00000) return x - x;
     hx = __ieee754_rem_pio2(x, y);
     return __kernel_tan(1 - ((hx & 1) << 1), y[0], y[1]);
