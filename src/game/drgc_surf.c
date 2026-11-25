@@ -1461,7 +1461,7 @@ extern const char lbl_8034C440[];
 #undef kBadSurfTypeMsg
 }
 #pragma scheduling on
-void fn_802D6C44(void) {
+void mrModelNoopGroupHook(void) {
     /* No-op per-group hook passed to VisitGroupIds during group-list traversal:
        the caller only needs to walk the groups, so this does nothing. */
 }

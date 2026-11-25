@@ -13,7 +13,7 @@ extern const char lbl_8034B314[];
 #pragma push
 #pragma small_data off
 extern void fn_802D6C48(void);
-extern void fn_802D6C44(void);
+extern void mrModelNoopGroupHook(void);
 extern void fn_802D6C4C(float);
 #pragma pop
 void VisitGroupIds(void *, void *);
@@ -596,8 +596,8 @@ __declspec(section ".sdata") extern const char lbl_8055D010[];
 
 void MRModel_ReleaseCallback(void *ownerPtr, void *groupList) {
     /* Release callback for a model resource: when its reference count reaches zero,
-       walk the resource's group list with the no-op hook fn_802D6C44. ownerPtr is unused. */
-    void *groupHook = fn_802D6C44;
+       walk the resource's group list with the no-op hook mrModelNoopGroupHook. ownerPtr is unused. */
+    void *groupHook = mrModelNoopGroupHook;
     ((void (*)(void *, void *))VisitGroupIds)(groupList, groupHook);
 }
 
@@ -1249,10 +1249,10 @@ void fn_802C6FA8(void *groupList) {
     ((void (*)(void *, void *))VisitGroupIds)(groupList, fn_802D6C48);
 }
 
-extern void fn_802D6C44(void);
+extern void mrModelNoopGroupHook(void);
 void mrModelUnregisterTextures(void *groupList) {
-    /* Visit every group in groupList with the no-op per-group hook fn_802D6C44. */
-    ((void (*)(void *, void *))VisitGroupIds)(groupList, fn_802D6C44);
+    /* Visit every group in groupList with the no-op per-group hook mrModelNoopGroupHook. */
+    ((void (*)(void *, void *))VisitGroupIds)(groupList, mrModelNoopGroupHook);
 }
 
 #define Abend_warn(fmt, arg) ((int (*)(const char *, ...))fn_802E30C8)(fmt, arg)
