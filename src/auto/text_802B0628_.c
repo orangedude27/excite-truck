@@ -905,8 +905,8 @@ int fn_802B1B40(int *basePtr, int index) {
 }
 
 /* Indexed accessor: returns the stored base advanced by 128 per step (slot-group stride). */
-int fn_802B1B50(int *base, int step) {
-    return *base + (step << 7);
+/* Return the stored base address advanced by one 128-byte slot-group step. */ int fn_802B1B50(int *baseAddr, int groupIndex) {
+    return *baseAddr + (groupIndex << 7);
 }
 
 
