@@ -250,7 +250,7 @@ s32 fn_802C307C(void *arg0, s32 *left, s32 *top, s32 *right, s32 *bottom) {
 }
 
 /* Hit test: return 1 when (x, y) lies in the canvas's clip rectangle [minX,maxX) by [minY,maxY), else 0. */
-s32 fn_802C3130(void *canvas, s32 x, s32 y) {
+/* Return 1 when point (x, y) lies in the canvas clip rect [minX,maxX) x [minY,maxY), else 0. */ s32 fn_802C3130(void *canvas, s32 x, s32 y) {
     GxCanvas *c = (GxCanvas *)canvas;
     if (x >= c->minX && y >= c->minY && x < c->maxX && y < c->maxY) return 1;
     return 0;
