@@ -69,7 +69,7 @@ extern int OSDisableInterrupts(void);
 extern int OSEnableInterrupts(void);
 extern int fn_802CF834(void);
 extern void fn_802C2AA8(int);
-extern void fn_802D3E9C(int);
+extern void gxResetFrameCopyState(int);
 extern void fn_802DB03C(void *);
 extern void fn_802C2B18(void);
 #pragma opt_propagation off
@@ -136,7 +136,7 @@ void fn_802D9A50(void) {
             fn_802E30C8(msgBase + 0x224);
             fn_802C2AA8(2);
         }
-        fn_802D3E9C(0);
+        gxResetFrameCopyState(0);
         fn_802DB03C(stateMessages[driveState]);
         OSEnableInterrupts();
     }

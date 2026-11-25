@@ -520,7 +520,7 @@ void fn_802168EC(void *parent, void *child, int id) {
 extern s32 fn_8012742C(void);
 extern void fn_80214D50(s32);
 extern void fn_8023660C(void);
-extern void fn_802D3E9C(s32);
+extern void gxResetFrameCopyState(s32);
 extern void fn_80127A84(void *, void *, void *);
 extern void fn_801282E8(void);
 extern void fn_80236780(void);
@@ -554,7 +554,7 @@ s32 fn_802168F0(void *arg0) {
     if (fn_8012742C() != 0) return -1;
     if (*(u8 *)((u8 *)arg0 + 0xDE4) != 0) fn_80214D50(5);
     else fn_8023660C();
-    fn_802D3E9C(0);
+    gxResetFrameCopyState(0);
     *(u8 *)&lbl_8055EF98 = 1;
     fn_80127A84(&lbl_8055EF80, &lbl_8055EF84, &sp8);
     prev = lbl_8055EF88;

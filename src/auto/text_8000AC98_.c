@@ -209,7 +209,7 @@ extern void *memset(void *, int, unsigned int);
 extern void LoadIntOptionValue(int, void *, int *);
 extern int fn_8000AEC8(int);
 extern void fn_80265D74(void), fn_80128678(void), fn_80206454(void), fn_80127930(void);
-extern void fn_802D3E9C(int);
+extern void gxResetFrameCopyState(int);
 extern void fn_8000AEC4(void);
 extern int fn_802E30C8();
 #pragma push
@@ -289,7 +289,7 @@ startupMessage = 0;
     fn_80128678();
     fn_80206454();
     fn_80127930();
-    fn_802D3E9C(0);
+    gxResetFrameCopyState(0);
   }
 }
 #pragma scheduling on
