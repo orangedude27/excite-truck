@@ -101,7 +101,7 @@ void fn_80207960(void) {
 }
 
 #pragma dont_inline on
-void fn_80207980(void* entry) {
+void SoundMgr_clearSlot(void* entry) {
     /* Clear a two-word slot (a pointer plus a word) by zeroing both of its 32-bit halves. */
     *(signed long*)entry = 0;
     *((signed long*)entry + 1) = 0;
@@ -149,11 +149,11 @@ extern "C" void *fn_80207990(void *arg0, void *arg1) {
     float one;
     object = (struct SoundObject *)arg0;
     object->vtable = lbl_8033BEE8;
-    fn_80207980((void *)&object->fieldC);
+    SoundMgr_clearSlot((void *)&object->fieldC);
     slot = &object->slots[0];
     end = &object->slots[9];
     do {
-        fn_80207980(slot);
+        SoundMgr_clearSlot(slot);
         slot++;
     } while (slot < end);
     fn_80207960();
