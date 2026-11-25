@@ -809,7 +809,7 @@ void fn_802C942C(int color) {
 #undef screenWidth
 }
 #pragma dont_inline reset
-void fn_802C9474(void) {
+void DrawList_warnFullscreenAddUnsupported(void) {
 #define sFullscreenWarned lbl_8055FC94
 #define sFormatString lbl_8055D030
 #define sUnsupportedMessage lbl_8034B4E0

@@ -829,7 +829,7 @@ extern double sin(double);
 extern double fabs(double);
 extern void DrawList_copyCurrentMatrix(f32 *);
 extern void fn_802C744C(s32, f32 *);
-extern void fn_802C9474(u32);
+extern void DrawList_warnFullscreenAddUnsupported(u32);
 extern f32 *fn_802C86DC(void);
 extern void fn_802C9900(f32);
 extern void fn_802C9904(void);
@@ -884,7 +884,7 @@ extern "C" void fn_801EBF00(void) {
             scaled = scaled > 0 ? scaled : 0;
             intensity = 0xFF;
             if (scaled < 0xFF) intensity = scaled;
-            fn_802C9474(0xFF000000 | ((intensity & 0xff) << 16) | ((intensity & 0xff) << 8) | (intensity & 0xff));
+            DrawList_warnFullscreenAddUnsupported(0xFF000000 | ((intensity & 0xff) << 16) | ((intensity & 0xff) << 8) | (intensity & 0xff));
             viewMtx = fn_802C86DC();
             l.viewPos[0] = viewMtx[9];
             l.viewPos[1] = viewMtx[10];
