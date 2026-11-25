@@ -602,9 +602,6 @@ void fn_802CF5D0(void) {
 }
 #pragma pop
 
-#define alphaCompareRef gAlphaCompareRef        /* cached alpha-reference byte (GXSetAlphaCompare ref0) */
-#define alphaCompareAppliedRef gAlphaCompareAppliedRef /* last alpha reference programmed into the GX registers */
-
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void gxResetAlphaCompare(void) {
