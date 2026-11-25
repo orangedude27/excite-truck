@@ -426,7 +426,7 @@ focus1_done:
 }
 #pragma pop
 extern char lbl_80342618[];
-s32 fn_802407B0(s32 object, s32 deleteFlag) {
+/* CodeWarrior deleting-destructor helper: when deleteFlag > 0, free a non-null object via operator delete (fn_80128668), then return the object. */ s32 fn_802407B0(s32 object, s32 deleteFlag) {
     /* CodeWarrior deleting-destructor helper: free the object with MemFree when deleting, then return it. */
     if (object != 0 && deleteFlag > 0) {
         fn_80128668();
