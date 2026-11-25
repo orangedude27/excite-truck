@@ -1,6 +1,6 @@
 // strmbank — the global stream-bank manager and its null implementation.
 // Symbol guide: null-manager installer (initStrmBank), shutdownStrmBank (destroyStrmBankManager),
-// loadStrmBank (fn_802E75E4), bank-unload helpers (unloadStrmBank, unloadStrmBankEx),
+// loadStrmBank (strmLoadBank), bank-unload helpers (unloadStrmBank, unloadStrmBankEx),
 // setStrmBankLevel (fn_802E7684), null-manager creation (createNullStrmBank) and the
 // null manager's vtable methods (fn_802E76F0..fn_802E7764).
 // Recovered TU window 0x802E7578..0x802E7768 (see docs/attribution_analysis.md).
@@ -53,7 +53,7 @@ extern "C" void destroyStrmBankManager(void) {
     }
 }
 /* Load a bank by its "<id>.bnk" filename; the bank handle comes back in r3. */
-extern "C" void fn_802E75E4(s32 bankName) {
+extern "C" void strmLoadBank(s32 bankName) {
     ((StrmBankManager*)strmBankManager)->loadBank(bankName);
 }
 

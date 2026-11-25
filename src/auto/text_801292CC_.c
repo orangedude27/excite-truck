@@ -9,7 +9,7 @@ extern int unloadStrmBankEx(int,int,int);
 extern int fn_802E7684(float);
 extern int fn_802E30C8(const char *, ...);
 extern int unloadStrmBank(int);
-extern int fn_802E75E4(const char *);
+extern int strmLoadBank(const char *);
 extern int sprintf(char *, const char *, ...);
 #define spuLogPrint fn_802E30C8
 #define gLoadBankLog lbl_8032A588 /* "SpuQueueLoadBank!" */
@@ -23,7 +23,7 @@ void fn_801292CC(int bankId) {
     char sp8[24];
     spuLogPrint((const char *)(void *)&gLoadBankLog);
     sprintf(sp8, (const char *)(void *)&sBankFileNameFmt, bankId);
-    gLoadedBankId = fn_802E75E4(sp8);
+    gLoadedBankId = strmLoadBank(sp8);
 }
 #pragma scheduling on
 
