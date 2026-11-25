@@ -1574,7 +1574,7 @@ extern float lbl_80561DD0;
 extern float lbl_80561D00;
 extern float lbl_80561DA0;
 extern float lbl_80561CC0;
-extern float lbl_80561CB0;
+/* lbl_80561CB0: declared const at file scope. */
 extern float lbl_80561E6C;
 extern float lbl_80561E58;
 extern float lbl_80561E90;
