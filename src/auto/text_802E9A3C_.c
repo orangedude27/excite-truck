@@ -1148,7 +1148,7 @@ void fn_802EC038(void) {
 }
 
 /* Get the number of music tracks found by the last music dash (lbl_80560080). */
-void* fn_802EC0FC(void) {
+void* getTrackMusicSongCount(void) {
     return lbl_80560080;
 }
 

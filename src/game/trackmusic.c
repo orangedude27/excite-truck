@@ -72,7 +72,7 @@ extern float lbl_80563400;
 extern void fn_802EC1C0();
 extern void fn_802EC1E4();
 extern long fn_802EC12C();
-extern long fn_802EC0FC(void);
+extern long getTrackMusicSongCount(void);
 // Returns the "no song" sentinel (-1). Callers sometimes pass a mode argument (0/1/2), but this stub ignores it and always reports no song.
 long fn_8020F3B4(void) { return -1; }
  
@@ -191,11 +191,11 @@ void fn_8020F6E0(long contextIndex, long event) {
     fn_8020F608(0, contextIndex);
 }
  
-/* Track-music wrapper for the dash getter fn_802EC0FC: the number of songs the
+/* Track-music wrapper for the dash getter getTrackMusicSongCount: the number of songs the
  * dash found on the disc.  The tail branch leaves that count in r3, which is
  * what the callers test; fn_802104D0 is the same check reduced to a 0/1 flag. */
 long fn_8020F6F8(void) {
-    return fn_802EC0FC();
+    return getTrackMusicSongCount();
 }
  
 #pragma dont_inline on
@@ -246,7 +246,7 @@ void fn_8020F730(void) {
     char **entries;
     capacity = gTrackMusicPathList.m_capacity;
     gTrackMusicPathList.m_count = 0;
-    limit = ((long (*)(struct TrackMusicList *))fn_802EC0FC)(&gTrackMusicPathList);
+    limit = ((long (*)(struct TrackMusicList *))getTrackMusicSongCount)(&gTrackMusicPathList);
     if (capacity < limit) {
         limit = capacity;
     }
@@ -767,7 +767,7 @@ long fn_802104B8(void) {
 
 /* True when the dash found at least one track-music song (song count > 0). */
 long fn_802104D0(void) {
-    return fn_802EC0FC() > 0;
+    return getTrackMusicSongCount() > 0;
 }
 
 long fn_802104FC(void) {
@@ -858,7 +858,7 @@ void trackMusicUpdate(unsigned char mute) {
     if ((unsigned char)lbl_8055EEF4 == 0 || (unsigned char)lbl_8055EEF5 == 0 || (unsigned char)lbl_8055EEF6 == 0) {
         fn_8020F444();
     }
-    songCount = fn_802EC0FC();
+    songCount = getTrackMusicSongCount();
     if (songCount != lbl_8055EEBC) {
         fn_802EC12C();
         fn_8020F950();
