@@ -709,7 +709,7 @@ void fn_802E85AC(int controllerId, float levelA, float levelB, float baseLevel) 
 int fn_802E85B0(void) { return 3; }
 
 extern int lbl_802FAE80[4];
-int fn_802E85B8(int socketIndex) {
+/* Map a controller socket index (0-3) to its display string ("Controller Socket 1" through "Controller Socket 4") from a four-entry pointer table. */ int fn_802E85B8(int socketIndex) {
 #define gControllerSocketNames lbl_802FAE80
     int names[4];
     int *cursor = gControllerSocketNames;
