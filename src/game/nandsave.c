@@ -130,7 +130,7 @@ void rmemcardYield(void) {
 #define nandSaveRefCount lbl_8056002C
 #define nandSaveInit fn_802E86D4
 /* Enter the NAND-save subsystem: on first use (refcount 0) start it lazily, then
- * increment the user count. Paired with fn_802E8874 (leave), which decrements and
+ * increment the user count. Paired with nandSaveLeave (leave), which decrements and
  * shuts the subsystem down when the count reaches zero. */
 void fn_802E883C(void) {
     if (nandSaveRefCount == 0) {
@@ -144,7 +144,7 @@ void fn_802E883C(void) {
 #define nandSaveRefCount lbl_8056002C
 #define nandSaveShutdown fn_802E870C
 /* Leaves the NAND-save subsystem: decrement the use count and shut it down when the last user exits (count reaches 0). */
-void fn_802E8874(void) {
+void nandSaveLeave(void) {
     nandSaveRefCount -= 1;
     if (nandSaveRefCount == 0) {
         nandSaveShutdown();
@@ -158,7 +158,7 @@ int fn_802E888C(int requestIndex) {
     int result;
     ((void (*)(void))fn_802E883C)();
     result = fn_802E8744(lbl_8034DB28 + requestIndex * 0x38);
-    ((void (*)(void))fn_802E8874)();
+    ((void (*)(void))nandSaveLeave)();
     return result;
 }
 
