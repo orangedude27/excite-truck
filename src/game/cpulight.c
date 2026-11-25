@@ -32,7 +32,7 @@ extern void GXSetTevKColor(int, fn_802DCAE4_GXColor);
 
 extern unsigned char lbl_8055FEC0;
 extern int lbl_8055FD30;
-extern void fn_802D3360(void);
+extern void gxInitRenderState(void);
 extern void GXSetTevKAlphaSel(int, int);
 extern void GXSetBlendMode(int, int, int, int);
 extern unsigned char lbl_8055FEBA, lbl_8055FEB8;
@@ -455,7 +455,7 @@ void fn_802DBECC(void) {
     /* Disable CPU lighting: reinitialize the GX/TEV render state, reset TEV stage 0's
      * constant-alpha selector, and clear the CPU-lighting enabled flag. */
 #define gCpuLightEnabled lbl_8055FEB8
-    fn_802D3360();
+    gxInitRenderState();
     GXSetTevKAlphaSel(0, 0);
     gCpuLightEnabled = 0;
 #undef gCpuLightEnabled
@@ -472,7 +472,7 @@ typedef unsigned char u8;
 extern void fn_802DBDD8(void);
 extern void GXResetTevSwapModes0To4(void);
 extern void cpulightResetGxCache(void);
-extern void fn_802D3360(void);
+extern void gxInitRenderState(void);
 extern void GXSetTevKAlphaSel(int, int);
 extern void fn_802D0610(int);
 extern void drawFifoTriangles(int, int, int, int);

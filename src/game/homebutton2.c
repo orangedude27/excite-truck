@@ -364,7 +364,7 @@ extern void GXSetCurrentMtx(int);
 extern void C_MTXOrtho(void *, float, float, float, float, float, float);
 extern void GXSetProjection(void *, int);
 extern void fn_800C6610(void);
-extern void fn_802D3360(void);
+extern void gxInitRenderState(void);
 extern s32 HomeMenu_isWidescreen(void);
 extern float lbl_805651E0, lbl_805651E8, lbl_805651F0, lbl_805651F4;
 extern float lbl_805651F8, lbl_805651FC, lbl_80565200, lbl_80565204, lbl_80565208;
@@ -412,7 +412,7 @@ void fn_802ECA48(void) {
             C_MTXOrtho(projection, gOrthoTop, gOrthoBottom, gOrthoLeft4x3, gOrthoRight4x3, gOrthoNear, gOrthoFar);
         GXSetProjection(projection, 1);
         if ((u8)gHomeMenuActive != 0) fn_800C6610();
-        fn_802D3360();
+        gxInitRenderState();
     }
 #undef gOrthoFar
 #undef gOrthoNear

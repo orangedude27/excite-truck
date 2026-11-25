@@ -1134,7 +1134,7 @@ extern void fn_802C8C04(s32);
 extern void DrawList_RestoreNormalMode(void);
 extern void fn_802C8DB8(void *, s32, u16 *, s32, u16, u16, u16, u16);
 extern void fn_802D007C(f32);
-extern void fn_802D3360(void);
+extern void gxInitRenderState(void);
 extern void KERNEL_GetTimeMs(void);
 extern void fn_802E1DA4(void *, u32, u32, f32, f32, f32, f32, f32);
 extern const u16 lbl_802FAE28[];
@@ -1173,7 +1173,7 @@ void fn_802E13D8(f32 p0, f32 p1, f32 p2, f32 p3, void *arg0) {
     u32 *temp_r5_3;
     u32 *temp_r3;
     temp_r31 = fn_802E0BA4();
-    fn_802D3360();
+    gxInitRenderState();
     if (*(u32 **)((u8 *)temp_r31 + 4) != 0) {
         fn_802C8C04(-1);
         var_r3 = (u8 *)sp30;
@@ -1256,7 +1256,7 @@ void fn_802E13D8(f32 p0, f32 p1, f32 p2, f32 p3, void *arg0) {
         GXSetTevKColor(1, kColor);
         GXSetTevKColor(2, kColor);
         GXSetTevSwapModeTable(0, 0, 1, 2, 3);
-        fn_802D3360();
+        gxInitRenderState();
         KERNEL_GetTimeMs();
     }
 }

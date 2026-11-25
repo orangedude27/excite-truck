@@ -489,12 +489,12 @@ void fn_802DE788(void) {
 }
 #pragma pop
 void fn_802DEF70(void); /* video.c: GXSetTevSwapMode(0,0,0) + apply pending blend mode */
-void fn_802D3360(void); /* gx.c: rebuild default texcoord-gen / TEV / matrix state */
+void gxInitRenderState(void); /* gx.c: rebuild default texcoord-gen / TEV / matrix state */
 /* Restores the renderer's default state at the end of the glow/blur pass:
  * clears the TEV swap mode and applies any pending blend-mode change, then
  * rebuilds the default texture-coordinate generators, TEV order/op and
  * current matrix. */
 void fn_802DEA6C(void) {
     fn_802DEF70();
-    fn_802D3360();
+    gxInitRenderState();
 }
