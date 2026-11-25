@@ -894,15 +894,14 @@ void fn_802C3F00(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
 }
 #pragma scheduling on
 #pragma pop
-/* Blit the whole canvas to the global canvas at (dstX,dstY), unless the global
- * canvas's state flag (bit 2 at +1) suppresses drawing. */
-void fn_802C40B8(void *canvas, s32 dstX, s32 dstY) {
-    if ((*(u8 *)((u8 *)lbl_8055FC00 + 1) & 4) != 0) {
+/* Blit the whole source canvas onto the global canvas at (dstX,dstY), unless the
+   global canvas's no-draw flag (bit 2 at +1) suppresses drawing. */
+void fn_802C40B8(GxCanvas *canvas, s32 dstX, s32 dstY) {
+    if ((((GxCanvas *)lbl_8055FC00)->flags & 4) != 0) {
         fn_802DB2C8();
         return;
     }
-    fn_802C3754((s32)canvas, 0, 0,
-        *(s32 *)((u8 *)canvas + 8), *(s32 *)((u8 *)canvas + 0xC),
+    fn_802C3754((s32)canvas, 0, 0, canvas->width, canvas->height,
         lbl_8055FC00, dstX, dstY);
 }
 
