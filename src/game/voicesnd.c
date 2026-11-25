@@ -371,7 +371,7 @@ void fn_8020AC18(void *self, int dirName) { fn_802E59BC((void *)dirName); }
 extern void fn_802E5A54(void);
 /* Voice-sound shutdown: clear the registered voice-entry count, then tear down
  * SPU state (fn_802E5A54). */
-void fn_8020AC20(void) {
+void VoiceSnd_shutdown(void) {
 #define s_voiceEntryCount lbl_8055EE08
     s_voiceEntryCount = 0;
 #undef s_voiceEntryCount
