@@ -77,7 +77,7 @@ __declspec(section ".sdata") extern char sSdPathPrefix[];
 }
 
 /* Return the file system picked by getFileSystemForPath, or the secondary file system (gSecondaryFileSystem) when none is available. */
-s32 *GetSecondaryFileSystem(void) {
+/* Return the file system selected by getFileSystemForPath for the current path, or gSecondaryFileSystem as fallback. The function-pointer cast forces an out-of-line call (MWCC would otherwise inline a direct call and change the code). */ s32 *GetSecondaryFileSystem(void) {
     s32 *fileSystem;
     fileSystem = (s32 *)((s32 (*)())getFileSystemForPath)();
     if (fileSystem != 0) {
