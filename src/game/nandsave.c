@@ -32,7 +32,7 @@ extern void fn_80128670(int);
 extern int lbl_8056002C;
 extern char lbl_8034E108[];
 extern void rmemcardWriteStep(void *);
-extern unsigned int fn_802E91BC(int *);
+extern unsigned int rmemcardWriteStopped(int *);
 extern int fn_802E91AC(int *);
 extern void NandBeginWrite(void *, const char *, int, int);
 extern void fn_802E9160(void *);
@@ -581,7 +581,7 @@ void rmemcardPumpAsync(void) {
 #define rmemcardSave    lbl_80507288
 #define bannerPath      lbl_8034E108
 #define beginWrite      NandBeginWrite
-#define writeIdle       fn_802E91BC
+#define writeIdle       rmemcardWriteStopped
 #define writeDone       fn_802E91AC
 #define finishSave      fn_802E9118
 #define abortSave       fn_802E9160
@@ -662,7 +662,7 @@ int fn_802E91AC(int *state) { return *state == 0; }
 /* True once the rmemcard async write machine whose context block is ctx has
  * stopped: its state word (RMEMCARD_WRITE_*) is below CREATE (2), i.e. IDLE (0)
  * or DONE (1).  False while it is still running (states 2..6). */
-unsigned int fn_802E91BC(int *ctx) {
+unsigned int rmemcardWriteStopped(int *ctx) {
     return *ctx < 2;
 }
 #pragma pop
