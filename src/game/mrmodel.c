@@ -1465,9 +1465,8 @@ extern float PSVECSquareDistance(const float *, const float *);
     }
 }
 
-/* Set a model instance's world transform from a caller-supplied 3x4 matrix,
-   using the default draw entry id (-1) and the all-groups mask (-1). */
-/* Apply a caller-supplied 3x4 world transform to a model instance, with the default draw entry id and the all-groups mask. */ void MRModel_SetInstanceTransform(int instanceId, void *transform) {
+/* Apply a caller-supplied 3x4 world transform to a model instance, with the default draw entry id and the all-groups mask. */
+void MRModel_SetInstanceTransform(int instanceId, void *transform) {
     fn_802C70AC(instanceId, transform, -1, -1);
 }
 
