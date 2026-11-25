@@ -306,7 +306,6 @@ extern "C" void fn_80211690(s32 arg0) {
     s32 isZero;
     s32 notZero;
     s32 i, j;
-    Ent18 *e;
     const char *r25;
     char **srow;
     s32 *drow;
@@ -329,13 +328,14 @@ extern "C" void fn_80211690(s32 arg0) {
         char **s = srow;
         s32 *d = drow;
         for (j = 0; j < 4; j++) {
+            char *art = *s;
             if (isZero != 0) {
                 if (i == 2 && (u32)j <= 1)
-                    *d = gxGetImageArt(*s);
+                    *d = gxGetImageArt(art);
                 else
                     *d = 0;
             } else {
-                *d = gxGetImageArt(*s);
+                *d = gxGetImageArt(art);
             }
             s++;
             d++;
@@ -388,10 +388,10 @@ extern "C" void fn_80211690(s32 arg0) {
         lbl_8055EF28 = 0;
     }
     memset(lbl_80490558, 0, 0xC0);
-    e = (Ent18 *)lbl_80490558;
     if (arg0 == 1) {
+        Ent18 *e = (Ent18 *)lbl_80490558;
         const char *s = base + 0x1D8;
-        e[0].name = base + 0x1E8; e[0].f = lbl_80563438; memset(e[0].v, 0, 0x10);
+        ((Ent18 *)lbl_80490558)[0].name = base + 0x1E8; e[0].f = lbl_80563438; memset(e[0].v, 0, 0x10);
         e[2].name = s;            e[2].f = lbl_80563438; memset(e[2].v, 0, 0x10);
         e[3].name = base + 0x1F4; e[3].f = lbl_80563438; memset(e[3].v, 0, 0x10);
         e[1].name = base + 0x200; e[1].f = lbl_8056343C; memset(e[1].v, 0, 0x10);
@@ -400,8 +400,9 @@ extern "C" void fn_80211690(s32 arg0) {
         e[6].name = s;            e[6].f = lbl_80563438; memset(e[6].v, 0, 0x10);
         e[7].name = s;            e[7].f = lbl_80563438; memset(e[7].v, 0, 0x10);
     } else {
+        Ent18 *e = (Ent18 *)lbl_80490558;
         const char *s = base + 0x238;
-        e[0].name = base + 0x228; e[0].f = lbl_80563438; memset(e[0].v, 0, 0x10);
+        ((Ent18 *)lbl_80490558)[0].name = base + 0x228; e[0].f = lbl_80563438; memset(e[0].v, 0, 0x10);
         e[2].name = s;            e[2].f = lbl_80563438; memset(e[2].v, 0, 0x10);
         e[3].name = s;            e[3].f = lbl_80563438; memset(e[3].v, 0, 0x10);
         e[1].name = s;            e[1].f = lbl_80563438; memset(e[1].v, 0, 0x10);
@@ -410,11 +411,13 @@ extern "C" void fn_80211690(s32 arg0) {
         e[6].name = base + 0x258; e[6].f = lbl_80563438; memset(e[6].v, 0, 0x10);
         e[7].name = base + 0x264; e[7].f = lbl_80563438; memset(e[7].v, 0, 0x10);
     }
-    e = (Ent18 *)lbl_80490558;
-    for (i = 0; i < 8; i++, e++) {
-        if (e->name != 0) {
-            for (j = 0; j < 4; j++)
-                e->v[j] = fn_80207848(e->name, 0);
+    {
+        Ent18 *e = (Ent18 *)lbl_80490558;
+        for (i = 0; i < 8; i++, e++) {
+            if (e->name != 0) {
+                for (j = 0; j < 4; j++)
+                    e->v[j] = fn_80207848(e->name, 0);
+            }
         }
     }
     lbl_8055EF3C = -1;
@@ -432,7 +435,7 @@ extern "C" void fn_80211690(s32 arg0) {
             } else break;
         }
     }
-    r25 = lbl_8055B718;
+    r25 = (const char *)&lbl_8055B718;
     if (isZero != 0) r25 = base + 0x280;
     fn_802E30C8(base + 0x28C, r25, (fn_80128314(0) - lbl_8055EF18) / 1024);
     fn_802ECC18(1);
