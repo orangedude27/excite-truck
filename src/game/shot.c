@@ -102,11 +102,15 @@ done:
 #undef shotNameFormat
 }
 void* memset(void*, int, unsigned long);
+/* Poll the screenshot input state, then report whether the current input combo
+   is nonzero. */
 s32 fn_802E47B8(void) {
-    /* Poll the screenshot input state, then report whether the current input
-     * combo (lbl_8055FF50) is nonzero. */
-    fn_802E4A2C();
-    return lbl_8055FF50 != 0;
+#define recentKeys lbl_8055FF50
+#define pollInput  fn_802E4A2C
+    pollInput();
+    return recentKeys != 0;
+#undef recentKeys
+#undef pollInput
 }
 
 /* Clear the four-entry (8-byte) recent-key history used for screenshot combos. */
