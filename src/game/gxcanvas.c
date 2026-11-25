@@ -1405,7 +1405,7 @@ void fn_802C4F58(s32 x, s32 y, const char *text, s32 color) {
 }
 #pragma pop
 extern unsigned int strlen(const char *);
-/* Width in pixels the string would occupy in the canvas font. */
+/* Width in pixels the string would occupy in the fixed-width canvas font. */
 unsigned int gxCanvasStringWidth(const char *text) { return strlen(text) * CANVAS_CHAR_WIDTH; }
 
 /* The canvas font's character height/width. */
