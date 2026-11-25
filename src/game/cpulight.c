@@ -85,10 +85,10 @@ void copyCpuLightTextures(void *dest, int mode) {
 
 #pragma scheduling on
 int CpuLight_GetTevColorInput(int mode, int textureIndex) {
-    /* TEV color input for GXSetTevOrder: GX_COLOR0A0 (4) for the first texture in mode 2, else GX_COLOR_NULL (0xFF). */
-    int color = 0xFF;
+    /* TEV colour input for GXSetTevOrder: GX_COLOR0A0 for the first texture in 2-texture mode 2, else GX_COLOR_NULL. */
+    int color = GX_COLOR_NULL;
     if (mode == 2) {
-        if (textureIndex == 0) color = 4;
+        if (textureIndex == 0) color = GX_COLOR0A0;
     }
     return color;
 }
