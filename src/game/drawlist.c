@@ -346,10 +346,10 @@ void *fn_802C86DC(void) {
 #undef sCurrentMatrix
 }
 
-extern void *lbl_8055D018;
+extern void *gSavedFadeColor;
 /* Store the packed ARGB color (default 0xFF7F7F7F gray) later applied to GX state by HomeMenu_applySavedFade. */
 void fn_802C86E8(void* color) {
-    lbl_8055D018 = color;
+    gSavedFadeColor = color;
 }
 
 void *DrawList_saveViewport(void *savedViewport, int x, int y, int width, int height) {
@@ -422,7 +422,7 @@ void DrawList_setViewport(int x, int y, int width, int height) {
 
 /* Apply the stored value (set by fn_802C86E8) via HomeMenu_setFade, passing flags' low bit as its byte argument. */
 /* Apply the saved home-menu fade colour through HomeMenu_setFade, enabling the fade when the low bit of flags is set and disabling it otherwise. */ /* Apply the saved home-menu fade colour through HomeMenu_setFade, enabling the fade when the low bit of flags is set and disabling it otherwise. */ void HomeMenu_applySavedFade(int flags) {
-    HomeMenu_setFade(lbl_8055D018, flags & 1);
+    HomeMenu_setFade(gSavedFadeColor, flags & 1);
 }
 
 extern void *lbl_8055FC5C, *lbl_8055FC60, *lbl_8055FC64, *lbl_8055FC68;
