@@ -1854,60 +1854,81 @@ extern "C" int fn_8016E328(void *master, int playerIndex) {
  struct Rect { int a; float b; int c,d; float e; int f,g,h; };
  struct Manager { virtual void *unused(); virtual void *get(const char *); };
  struct Frame { Rect rect2; char text2[24]; Rect rect1; char text1[20]; } frame;
- const char *base = lbl_803306D0;
- struct Manager *scene; void *bgHandle, *fgHandle;
- float tTotal, tFadeOut1, elapsed, tFadeIn1, tFadeOut2, tFadeIn2, tFadeStart, t, fade;
- elapsed = *(float *)((char *)fn_801E7E3C()+0x10);
- tTotal=lbl_805619A8; tFadeOut1=tTotal-lbl_805619AC; tFadeIn1=tFadeOut1-lbl_805619B0;
- tFadeOut2=tFadeIn1-lbl_805619B4; tFadeIn2=tFadeOut2-lbl_805619AC; tFadeStart=tFadeIn2-lbl_805619B0;
- scene=*(struct Manager **)((char *)master+0x98);
- bgHandle=scene->get(base+0x458);
- scene=*(struct Manager **)((char *)master+0x98);
- fgHandle=scene->get(base+0x468);
- if (elapsed < tFadeStart) fn_8000FBE4();
- if (!fn_80161C38()) {
-   if (elapsed < tTotal) {
-     void *panelHandle, *detailHandle;
-     t=(elapsed-tFadeOut1)/(tFadeIn1-tFadeOut1); fade=lbl_80561984;
-     fade = fade < t ? fade : t;
-     fade = fade > lbl_80561980 ? fade : lbl_80561980;
-     fade=lbl_80561980+fade*lbl_80561984;
-     scene=*(struct Manager **)((char *)master+0x98);
-     panelHandle=scene->get(base+0x478);
-     scene=*(struct Manager **)((char *)master+0x98);
-     detailHandle=scene->get(base+0x484);
-     fn_8001DF08(fn_801E866C(playerIndex),0);
-     if (bgHandle && fgHandle && panelHandle && detailHandle) {
-       fn_801479A8(bgHandle,fgHandle,fn_80131234(base+0x490),HudEase(fade));
-       fn_80160A74(); ((void (*)(void *,int,int))fn_801308F4)(frame.text1,0x14,fn_80160998());
-       frame.rect1.a=*(int *)panelHandle;
-       { int cword; int bword; bword=*(volatile int *)((char *)panelHandle+4); cword=*(volatile int *)((char *)panelHandle+8); *(int *)&frame.rect1.b=bword; frame.rect1.c=cword; } frame.rect1.d=*(int *)((char *)panelHandle+12); frame.rect1.e=*(float *)((char *)panelHandle+16); frame.rect1.f=*(int *)((char *)panelHandle+20); frame.rect1.g=*(int *)((char *)panelHandle+24); frame.rect1.h=*(int *)((char *)panelHandle+28);
-       frame.rect1.b-=lbl_80561988*fn_80147204(&frame.rect1,frame.text1);
-       fn_801479A8(&frame.rect1,detailHandle,frame.text1,HudEase(fade));
-     }
-   }
-   if (elapsed < tFadeOut2) {
-     void *panelHandle, *detailHandle;
-     fn_8014784C(*(void **)((char *)master+0x98),base+0x4ac,base+0x4bc,0);
-     t=(elapsed-tFadeIn2)/(tFadeStart-tFadeIn2); fade=lbl_80561984;
-     fade = fade < t ? fade : t;
-     fade = fade > lbl_80561980 ? fade : lbl_80561980;
-     fade=lbl_80561980+fade*lbl_80561984;
-     scene=*(struct Manager **)((char *)master+0x98);
-     panelHandle=scene->get(base+0x4d0);
-     scene=*(struct Manager **)((char *)master+0x98);
-     detailHandle=scene->get(&lbl_8055A248);
-     if (bgHandle && fgHandle && panelHandle && detailHandle) {
-       fn_801479A8(bgHandle,fgHandle,fn_80131234(base+0x4dc),HudEase(fade));
-       fn_80130978(frame.text2,0x14,*(float *)((char *)master+0x38));
-       frame.rect2.a=*(int *)panelHandle;
-       { int cword; int bword; bword=*(volatile int *)((char *)panelHandle+4); cword=*(volatile int *)((char *)panelHandle+8); *(int *)&frame.rect2.b=bword; frame.rect2.c=cword; } frame.rect2.d=*(int *)((char *)panelHandle+12); frame.rect2.e=*(float *)((char *)panelHandle+16); frame.rect2.f=*(int *)((char *)panelHandle+20); frame.rect2.g=*(int *)((char *)panelHandle+24); frame.rect2.h=*(int *)((char *)panelHandle+28);
-       frame.rect2.b+=lbl_80561988*fn_80147204(&frame.rect2,frame.text2);
-       fn_801479A8(&frame.rect2,detailHandle,frame.text2,HudEase(fade));
-     }
-   }
- }
- return 1;
+   const char *base = resultsLabels;
+  struct Manager *scene; void *bgHandle, *fgHandle;
+  float tTotal, tFadeOut1, elapsed, tFadeIn1, tFadeOut2, tFadeIn2, tFadeStart, t, fade;
+  elapsed = *(float *)((char *)getRoundClock()+0x10);
+  tTotal=timelineEnd; tFadeOut1=tTotal-fadeOut1Dur; tFadeIn1=tFadeOut1-fadeIn1Dur;
+  tFadeOut2=tFadeIn1-fadeOut2Dur; tFadeIn2=tFadeOut2-fadeOut1Dur; tFadeStart=tFadeIn2-fadeIn1Dur;
+  scene=*(struct Manager **)((char *)master+0x98);
+  bgHandle=scene->get(base+0x458);
+  scene=*(struct Manager **)((char *)master+0x98);
+  fgHandle=scene->get(base+0x468);
+  if (elapsed < tFadeStart) showCountdown();
+  if (!challengeSubtaskActive()) {
+    if (elapsed < tTotal) {
+      void *panelHandle, *detailHandle;
+      t=(elapsed-tFadeOut1)/(tFadeIn1-tFadeOut1); fade=fadeMax;
+      fade = fade < t ? fade : t;
+      fade = fade > fadeMin ? fade : fadeMin;
+      fade=fadeMin+fade*fadeMax;
+      scene=*(struct Manager **)((char *)master+0x98);
+      panelHandle=scene->get(base+0x478);
+      scene=*(struct Manager **)((char *)master+0x98);
+      detailHandle=scene->get(base+0x484);
+      notifyScoreGrade(getPlayerNumber(playerIndex),0);
+      if (bgHandle && fgHandle && panelHandle && detailHandle) {
+        drawPanelText(bgHandle,fgHandle,lookupMessage(base+0x490),HudEase(fade));
+        fn_80160A74(); ((void (*)(void *,int,int))formatScore)(frame.text1,0x14,getScore());
+        frame.rect1.a=*(int *)panelHandle;
+        { int cword; int bword; bword=*(volatile int *)((char *)panelHandle+4); cword=*(volatile int *)((char *)panelHandle+8); *(int *)&frame.rect1.b=bword; frame.rect1.c=cword; } frame.rect1.d=*(int *)((char *)panelHandle+12); frame.rect1.e=*(float *)((char *)panelHandle+16); frame.rect1.f=*(int *)((char *)panelHandle+20); frame.rect1.g=*(int *)((char *)panelHandle+24); frame.rect1.h=*(int *)((char *)panelHandle+28);
+        frame.rect1.b-=textWidthScale*measureTextWidth(&frame.rect1,frame.text1);
+        drawPanelText(&frame.rect1,detailHandle,frame.text1,HudEase(fade));
+      }
+    }
+    if (elapsed < tFadeOut2) {
+      void *panelHandle, *detailHandle;
+      setupUiElement(*(void **)((char *)master+0x98),base+0x4ac,base+0x4bc,0);
+      t=(elapsed-tFadeIn2)/(tFadeStart-tFadeIn2); fade=fadeMax;
+      fade = fade < t ? fade : t;
+      fade = fade > fadeMin ? fade : fadeMin;
+      fade=fadeMin+fade*fadeMax;
+      scene=*(struct Manager **)((char *)master+0x98);
+      panelHandle=scene->get(base+0x4d0);
+      scene=*(struct Manager **)((char *)master+0x98);
+      detailHandle=scene->get(&dataLabel);
+      if (bgHandle && fgHandle && panelHandle && detailHandle) {
+        drawPanelText(bgHandle,fgHandle,lookupMessage(base+0x4dc),HudEase(fade));
+        formatSeconds(frame.text2,0x14,*(float *)((char *)master+0x38));
+        frame.rect2.a=*(int *)panelHandle;
+        { int cword; int bword; bword=*(volatile int *)((char *)panelHandle+4); cword=*(volatile int *)((char *)panelHandle+8); *(int *)&frame.rect2.b=bword; frame.rect2.c=cword; } frame.rect2.d=*(int *)((char *)panelHandle+12); frame.rect2.e=*(float *)((char *)panelHandle+16); frame.rect2.f=*(int *)((char *)panelHandle+20); frame.rect2.g=*(int *)((char *)panelHandle+24); frame.rect2.h=*(int *)((char *)panelHandle+28);
+        frame.rect2.b+=textWidthScale*measureTextWidth(&frame.rect2,frame.text2);
+        drawPanelText(&frame.rect2,detailHandle,frame.text2,HudEase(fade));
+      }
+    }
+  }
+#undef getRoundClock
+#undef showCountdown
+#undef challengeSubtaskActive
+#undef notifyScoreGrade
+#undef formatScore
+#undef formatSeconds
+#undef lookupMessage
+#undef measureTextWidth
+#undef setupUiElement
+#undef drawPanelText
+#undef getPlayerNumber
+#undef getScore
+#undef resultsLabels
+#undef fadeMax
+#undef fadeMin
+#undef textWidthScale
+#undef timelineEnd
+#undef fadeOut1Dur
+#undef fadeIn1Dur
+#undef fadeOut2Dur
+#undef dataLabel
+  return 1;
 }
 #pragma pop
 #pragma cplusplus reset
