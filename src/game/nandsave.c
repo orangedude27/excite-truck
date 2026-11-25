@@ -65,7 +65,7 @@ extern "C" void fn_802E86D4(void) {
     lbl_80560028 = 1;
 }
 #pragma cplusplus on
-extern "C" void fn_802E870C(void) {
+/* NandSave_Deinit: leave the NAND-save subsystem by calling the interface's shutdown virtual (slot 0xC) and clearing the active flag; paired with fn_802E86D4's startup. */ extern "C" void fn_802E870C(void) {
 #define gNandSaveInterface lbl_80560024
 #define gNandSaveActive lbl_80560028
     /* Leave the NAND-save subsystem: call the interface's shutdown callback and clear its active flag. */
