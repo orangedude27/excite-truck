@@ -3437,7 +3437,7 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     f32 val_f21;
     f32 val_f31;
     f32 val_f30;
-    f32 val_f29;
+    register f32 val_f29;
     f32 c, s;
 
     p2 = ((f32 *)arg0)[2];
@@ -3455,10 +3455,10 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
 
     val_f31 = lbl_80561638 * (f32)fn_8002EFB4(lbl_80561688 * val_f21, lbl_805616A0);
     val_f30 = lbl_80561638 * (f32)fn_8002EFB4(lbl_8056163C * val_f21, lbl_805616A0);
+    val_f29 = lbl_805616FC;
 
     r29 = &lbl_8055E254;
 
-    val_f29 = lbl_805616FC;
     scale[0] = val_f29;
     scale[1] = lbl_80561648;
     scale[2] = lbl_80561648;
@@ -3510,7 +3510,11 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
         MRModel_SetInstanceTransform(*(s32 *)r29, r30);
     }
 
-    MatrixMul80151E60(a, scale, a);
+    {
+        const f32 *scaleMatrix = scale;
+        f32 *matrix = a;
+        MatrixMul80151E60(matrix, scaleMatrix, matrix);
+    }
 
     if (arg1 != 0) {
         fn_802C74D8(*(s32 *)r29, a, lbl_80559EDC);
@@ -3535,10 +3539,10 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     c = (f32)cos(val_f30);
     s = (f32)sin(val_f30);
 
-    val_f29 = val_f29 * lbl_805616FC;
+    val_f29 *= lbl_805616FC;
 
-    r30[1] = lbl_80561648;
     r30[0] = lbl_8056164C;
+    r30[1] = lbl_80561648;
     r30[2] = lbl_80561648;
     r30[3] = lbl_80561648;
     r30[4] = c;
@@ -3557,9 +3561,13 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     scale[7] = lbl_80561648;
     scale[8] = val_f29;
 
-    MatrixMul80151E60(r30, scale, r30);
+    {
+        const f32 *scaleMatrix = scale;
+        f32 *matrix = r30;
+        MatrixMul80151E60(matrix, scaleMatrix, matrix);
+    }
 
-    val_f29 = val_f29 * lbl_805616FC;
+    val_f29 *= lbl_805616FC;
 
     scale[1] = lbl_80561648;
     scale[0] = val_f29;
@@ -3571,7 +3579,11 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     scale[7] = lbl_80561648;
     scale[8] = val_f29;
 
-    MatrixMul80151E60(a, scale, a);
+    {
+        const f32 *scaleMatrix = scale;
+        f32 *matrix = a;
+        MatrixMul80151E60(matrix, scaleMatrix, matrix);
+    }
 
     if (arg1 != 0) {
         fn_802C74D8(*(s32 *)r29, b, lbl_80559EDC);
@@ -3600,23 +3612,13 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     r30[8] = c;
 
     MatrixMul80151E60(a, r30, a);
-    MatrixMul80151E60(b, rotation, b);
+    {
+        const f32 *rotationMatrix = rotation;
+        f32 *matrix = b;
+        MatrixMul80151E60(matrix, rotationMatrix, matrix);
+    }
 
-    val_f29 = val_f29 * lbl_805616FC;
-
-    scale[1] = lbl_80561648;
-    scale[0] = val_f29;
-    scale[2] = lbl_80561648;
-    scale[3] = lbl_80561648;
-    scale[4] = val_f29;
-    scale[5] = lbl_80561648;
-    scale[6] = lbl_80561648;
-    scale[7] = lbl_80561648;
-    scale[8] = val_f29;
-
-    MatrixMul80151E60(b, scale, b);
-
-    val_f29 = val_f29 * lbl_805616FC;
+    val_f29 *= lbl_805616FC;
 
     scale[1] = lbl_80561648;
     scale[0] = val_f29;
@@ -3628,7 +3630,29 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     scale[7] = lbl_80561648;
     scale[8] = val_f29;
 
-    MatrixMul80151E60(a, scale, a);
+    {
+        const f32 *scaleMatrix = scale;
+        f32 *matrix = b;
+        MatrixMul80151E60(matrix, scaleMatrix, matrix);
+    }
+
+    val_f29 *= lbl_805616FC;
+
+    scale[1] = lbl_80561648;
+    scale[0] = val_f29;
+    scale[2] = lbl_80561648;
+    scale[3] = lbl_80561648;
+    scale[4] = val_f29;
+    scale[5] = lbl_80561648;
+    scale[6] = lbl_80561648;
+    scale[7] = lbl_80561648;
+    scale[8] = val_f29;
+
+    {
+        const f32 *scaleMatrix = scale;
+        f32 *matrix = a;
+        MatrixMul80151E60(matrix, scaleMatrix, matrix);
+    }
 
     if (arg1 != 0) {
         fn_802C74D8(*(s32 *)r29, b, lbl_80559EDC);
