@@ -407,9 +407,9 @@ void fn_802DBCFC(int positionArray, int vertexCount) {
 #define sCachedPositionArray gCpuLightCachedPositionArray
 #define sCachedVertexCount   gCpuLightCachedVertexCount
 void CpuLight_InvalidatePositionArray(void) {
-    // Invalidate the cached GX position vertex array so the next setup call reconfigures it.
-    sCachedPositionArray = 0;
-    sCachedVertexCount = 0;
+    /* Invalidate the cached GX position array so the next setup reconfigures it. */
+    gCpuLightCachedPositionArray = 0;
+    gCpuLightCachedVertexCount = 0;
 }
 
 #pragma scheduling off
