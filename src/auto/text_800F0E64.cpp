@@ -5061,8 +5061,8 @@ static inline s32 ClampS32_E(s32 x, s32 low, s32 high) {
 #pragma dont_inline off
 #pragma auto_inline off
 extern "C" void* fn_800F8CA4(s32 player, s32 priority, s32 requestedPriority, s32 ambientInfo, s32 externalPlayer, s32 soundId, void *manager) {
-    /* detail::SoundInstanceManager::Alloc for streaming sounds (the _E helper
-     * variants).  Takes a free StrmSound out of the instance pool; when the pool
+    /* detail::SoundInstanceManager::Alloc for sequence sounds (SeqSound).
+     * Takes a free SeqSound out of the instance pool; when the pool
      * is full it takes the sound with the lowest priority away from that list
      * (stopping it first) if the new sound outranks it, and gives up otherwise.
      * The new sound is then built up: the player's first free frame heap, a copy
