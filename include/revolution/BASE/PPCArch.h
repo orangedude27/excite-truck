@@ -65,11 +65,11 @@ void PPCSetFpNonIEEEMode(void);
         f32 data;                                   \
     } fpscr;                                        \
     PPC_JOIN(__as, m) {                             \
-        li r4, 0                                    \
-        stw val, fpscr.data                         \
-        stw r4, fpscr.tmp                           \
-        lfd f31, fpscr.tmp                          \
-        mtfs f31                                    \
+        li r4, 0;                                   \
+        stw val, fpscr.data;                        \
+        stw r4, fpscr.tmp;                          \
+        lfd f31, fpscr.tmp;                         \
+        mtfs f31;                                   \
     }
 
 void PPCMthid4(u32 val);
