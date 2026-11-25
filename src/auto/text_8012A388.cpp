@@ -418,7 +418,6 @@ extern "C" void fn_8012A80C(s32 arg0) {
 #pragma scheduling reset
 enum { RST0_HEADER_SIZE = 0x34 };
 #define File_readExact      fn_802E39D0
-#define File_readExact      fn_802E39D0
 #define Rst0Header_byteSwap fn_8012A80C
 #define Rst0Header_validate fn_8012A6C8
 extern "C" s32 fn_8012A388(void *);
