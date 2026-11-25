@@ -674,14 +674,14 @@ found:
 }
 
 /* Find the named entry (table at +0xD9C, count at +0xDA0, stride 0x2C) and mark its object active (+0x4A=1, +0x4C=0). */
-void fn_80258F94(void *arg0, const char *arg1) {
+/* Find the named entry in root's table at +0xD9C (count +0xDA0, stride 0x2C) and mark its object active (+0x4A=1, +0x4C=0). */ void fn_80258F94(void *root, const char *name) {
     int index = 0;
     int offset = 0;
     unsigned int entry;
     void *object;
     goto check;
 loop:
-    switch ((unsigned int)__cntlzw(stricmp((const char *)(*(unsigned int *)((char *)arg0 + 0xD9C) + offset), arg1)) >> 5) {
+    switch ((unsigned int)__cntlzw(stricmp((const char *)(*(unsigned int *)((char *)root + 0xD9C) + offset), name)) >> 5) {
     case 0:
         offset += 0x2C;
         index++;
@@ -690,11 +690,11 @@ loop:
         goto found;
     }
 check:
-    if (index < *(int *)((char *)arg0 + 0xDA0)) goto loop;
+    if (index < *(int *)((char *)root + 0xDA0)) goto loop;
     index = -1;
 found:
     if (index >= 0) {
-        entry = *(unsigned int *)((char *)arg0 + 0xD9C);
+        entry = *(unsigned int *)((char *)root + 0xD9C);
         entry += index * 0x2C;
         object = *(void **)(entry + 0x20);
         if (object != 0) {
