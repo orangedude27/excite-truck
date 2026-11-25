@@ -454,15 +454,15 @@ extern int lbl_8055A098, lbl_8055E29C, lbl_8055E2A0;
 void fn_8015F3FC(void *arg0) {
     int max;
     int offset;
-    int index;
     int *src;
+    int index;
     int i;
     int outIndex;
     int count;
     int *dst, *array, *out, *items;
     if (*(volatile int *)(lbl_8055E29C + 4) <= 0) return;
     fn_80265DCC(*(void **)lbl_8055E29C, *(volatile int *)(lbl_8055E29C + 4), 0x10, fn_8015F3EC);
-    count = (int)(*(unsigned int *)(*(int *)((char *)arg0 + 0x2c) + 0x18) >> 16);
+    count = *(unsigned int *)(*(int *)((char *)arg0 + 0x2c) + 0x18) >> 16;
     dst = (int *)fn_801284F8(0x10, lbl_8032F4A0);
     if (!dst) return;
     array = (int *)fn_8012850C(count * 4, (int)&lbl_8055A098);
@@ -472,16 +472,16 @@ void fn_8015F3FC(void *arg0) {
     dst[3] = (int)array;
     *(int *)&lbl_8055E2A0 = (int)dst;
     if (count <= 0) return;
-    for (i = 0; i < count; i++) {
-        index = 0;
-        offset = 0;
-        max = *(volatile int *)(lbl_8055E29C + 4) - 1;
-        while (index < max && *(unsigned short *)((char *)*(int *)lbl_8055E29C + offset) < i) {
+    index = 0;
+    i = 0;
+    offset = 0;
+    for (; i < count; i++) {
+        max = *(volatile int *)(lbl_8055E29C + 4);
+        while (index < max - 1 && *(unsigned short *)((char *)*(int *)lbl_8055E29C + offset) < i) {
             offset += 0x10;
             index++;
         }
-        max = *(volatile int *)(lbl_8055E29C + 4) - 1;
-        if (index == max && *(unsigned short *)((char *)*(int *)lbl_8055E29C + offset) < i) {
+        if (index == *(volatile int *)(lbl_8055E29C + 4) - 1 && *(unsigned short *)((char *)*(int *)lbl_8055E29C + offset) < i) {
             src = (int *)*(int *)lbl_8055E29C;
             out = *(int **)&lbl_8055E2A0;
             items = (int *)out[0];
@@ -891,7 +891,7 @@ extern void fn_801606B8(void);
 extern void *fn_8016060C(void *, void *);
 extern void fn_8016025C(void *, void *, float, float, float, float);
 extern s32 fn_8016024C(s32, s32);
-extern int fn_80160268(int);
+extern int absInt(int);
 extern void fn_80160278(void);
 extern void fn_8016027C(void *, float, float);
 extern void fn_80160288(void *, void *);
@@ -984,13 +984,13 @@ s32 fn_8015FBCC(void *arg0, s32 arg1, u8 arg2, s32 arg3) {
             if (table[t31].x < lim) {
                 t26 = fn_8015FA44(table, t31, lim);
                 t27 = fn_8015FAB8((s32 *)table, t31, lim);
-                if ((t26 >= 0) && ((t27 < 0) || ((t29 = fn_80160268(t27 - t31)), (fn_80160268(t26 - t31) < t29)))) {
+                if ((t26 >= 0) && ((t27 < 0) || ((t29 = absInt(t27 - t31)), (absInt(t26 - t31) < t29)))) {
                     fv = (f32)t26;
                     fv = lbl_8055E2A4 * fv;
                     fn_8016025C(sp18, &table, lbl_80561820 + (fv - lbl_80561800 * lbl_805617DC), table[t26 - 1].x, fv, fv);
                     ((void (*)(void *, f32, f32))fn_8016025C)(sp20, lbl_80561820, lbl_805617D4);
                     ret = 1;
-                } else if ((t27 >= 0) && ((t26 < 0) || ((t29 = fn_80160268(t27 - t31)), (fn_80160268(t26 - t31) > t29)))) {
+                } else if ((t27 >= 0) && ((t26 < 0) || ((t29 = absInt(t27 - t31)), (absInt(t26 - t31) > t29)))) {
                     fv = (f32)t27;
                     fv = lbl_8055E2A4 * fv;
                     fn_8016025C(sp18, &table, (fv - lbl_80561800 * lbl_805617DC) - lbl_80561820, table[t27 + 1].x, fv, fv);
@@ -998,9 +998,9 @@ s32 fn_8015FBCC(void *arg0, s32 arg1, u8 arg2, s32 arg3) {
                     ret = 1;
                 }
             } else {
-                t29 = fn_80160268(0);
+                t29 = absInt(0);
                 t29 = 0x20 - t29;
-                t3 = fn_8016024C(t29, ((s32)(((u32)lbl_8055E2A8 >> 31) + lbl_8055E2A8) >> 1) + fn_80160268(t3) + 1);
+                t3 = fn_8016024C(t29, ((s32)(((u32)lbl_8055E2A8 >> 31) + lbl_8055E2A8) >> 1) + absInt(t3) + 1);
                 ctr = t3 - 1;
                 j = 1;
                 fp = (f32 *)((char *)table + t31 * 8 + 8);
@@ -1070,7 +1070,7 @@ void fn_8016025C(void *out, void *context, float x, float y, float unusedA, floa
 }
 
 /* Integer absolute value: (value ^ sign) - sign, with sign = value >> 31 (all ones if negative). */
-int fn_80160268(int value) {
+int absInt(int value) {
     int sign;
     sign = value >> 31;
     return (sign ^ value) - sign;
@@ -1243,43 +1243,48 @@ f32 fn_801605C8(void *arg0, void *arg1, void *arg2) {
     result2 = negX * (*(f32 *)((u8 *)arg1 + 4) - *(f32 *)((u8 *)arg2 + 4));
     return result1 + result2;
 }
-void *fn_8016060C(void *arg0, void *arg1) {
-    f32 *dst = (f32 *)arg0;
-    f32 *src = (f32 *)arg1;
-    f32 x = src[6];
-    f32 y = src[8];
-    f32 magnitude;
-    f32 limit;
-    f32 clamped;
-    f32 inputX;
-    f32 outputX;
-    f32 inputY;
-    f32 outputY;
-    f32 normalizedX;
-    f32 normalizedY;
-    f32 scale;
-    dst[0] = x;
-    dst[1] = y;
-    magnitude = (f32)fn_8002F234(x * x + y * y, y, x);
-    limit = lbl_8056182C;
-    if (limit > magnitude)
-        clamped = limit;
-    else
-        clamped = magnitude;
-    inputX = src[9];
-    scale = lbl_805617E8 / clamped;
-    outputX = dst[0];
-    inputY = src[11];
-    outputY = dst[1];
-    dst[4] = inputX;
-    normalizedX = outputX * scale;
-    dst[5] = inputY;
-    normalizedY = outputY * scale;
-    dst[0] = normalizedX;
-    dst[1] = normalizedY;
-    dst[2] = normalizedY;
-    dst[3] = -normalizedX;
-    return arg0;
+void *fn_8016060C(void *arg0, void *arg1)
+{
+  f32 *dst = (f32 *) arg0;
+  f32 *src;
+  f32 x = ((f32 *) arg1)[6];
+  f32 y = ((f32 *) arg1)[8];
+  f32 magnitude;
+  f32 limit;
+  f32 inputX;
+  f32 outputX;
+  f32 inputY;
+  f32 outputY;
+  f32 clamped;
+  f32 normalizedY;
+  f32 scale;
+  f32 normalizedX;
+  dst[0] = x;
+  dst[1] = y;
+  magnitude = (f32) fn_8002F234((((double) x) * x) + (y * y), y, x);
+  limit = lbl_8056182C;
+  if (limit > magnitude)
+  {
+    clamped = limit;
+  }
+  else
+  {
+    clamped = magnitude;
+  }
+  inputX = src[9];
+  scale = lbl_805617E8 / clamped;
+  outputX = dst[0];
+  inputY = src[11];
+  outputY = dst[1];
+  dst[4] = inputX;
+  normalizedX = outputX * scale;
+  dst[5] = inputY;
+  normalizedY = outputY * scale;
+  dst[0] = normalizedX;
+  dst[1] = normalizedY;
+  dst[2] = normalizedY;
+  dst[3] = -normalizedX;
+  return arg0;
 }
 #pragma scheduling on
 /* Empty stub. */
