@@ -73,6 +73,7 @@ extern u8 lbl_8055E522;
 extern f32 lbl_80558DC4;
 extern char lbl_80332EC4[];
 extern double fabs(double);
+extern double __fabs(double);
 void fn_80191084(int, int);
 int fn_801B89E0(void);
 extern s32 fn_801CF050(void);
@@ -643,230 +644,286 @@ s32 fn_80190368(s32 value) {
   #pragma processor 750
  #pragma use_lmw_stmw off
  #pragma cplusplus on
- extern "C" void fn_80190388(void *arg0)
- {
-    void *first;
-    void *r31v;
-    void *sub;
-    void *base;
-    void *cObj;
-    void *o20;
+extern "C" void fn_80190388(void *arg0)
+{
+    /* The car object this Hybrid drives (only slot 0x10 is used here). */
+    class Car {
+    public:
+        virtual void c08(); virtual void c0C(); virtual void *c10();
+    };
+    /* The race object kept at +0x20, sub-object at its +0x270. */
+    class RaceSub {
+    public:
+        virtual void s08(); virtual void s0C(); virtual void *s10();
+        virtual void s14(); virtual void *s18();
+    };
+    /* The PlayerDriver kept at +4: the record writer at +4, the exported status
+       record pointer at +8, its entry table at +0x18. */
+    class Driver {
+    public:
+        virtual void d08();
+        virtual float d0C(float value);
+        virtual float d10();
+        virtual float d14();
+        virtual float d18();
+        virtual float d1C();
+        virtual int d20();
+        virtual void d24(); virtual void d28();
+        virtual int d2C();
+        virtual int d30();
+        virtual int d34();
+        virtual int d38();
+        virtual int d3C();
+        virtual void d40();
+        virtual float d44();
+        virtual int d48();
+        virtual void d4C(); virtual void d50(); virtual void d54(); virtual void d58();
+        virtual void d5C(); virtual void d60(); virtual void d64(); virtual void d68();
+        virtual void d6C(); virtual void d70();
+        virtual void d74();
+        virtual void d78(int value);
+        virtual void d7C();
+        /* 0x04 */ Driver *sub4;
+        /* 0x08 */ void *record;
+        /* 0x0C */ int count;
+        /* 0x10 */ int pad10;
+        /* 0x14 */ int pad14;
+        /* 0x18 */ void *entries;
+        /* 0x1C */ int entryLimit;
+    };
+    /* Game-mode master object; slot 0xE0 is the per-driver option lookup. */
+    class ModeMaster {
+    public:
+        virtual void m00(); virtual void m01(); virtual void m02(); virtual void m03();
+        virtual void m04(); virtual void m05(); virtual void m06(); virtual void m07();
+        virtual void m08(); virtual void m09(); virtual void m10(); virtual void m11();
+        virtual void m12(); virtual void m13(); virtual void m14(); virtual void m15();
+        virtual void m16(); virtual void m17(); virtual void m18(); virtual void m19();
+        virtual void m20(); virtual void m21(); virtual void m22(); virtual void m23();
+        virtual void m24(); virtual void m25(); virtual void m26(); virtual void m27();
+        virtual void m28(); virtual void m29(); virtual void m30(); virtual void m31();
+        virtual void m32(); virtual void m33(); virtual void m34(); virtual void m35();
+        virtual void m36(); virtual void m37(); virtual void m38(); virtual void m39();
+        virtual void m40(); virtual void m41(); virtual void m42(); virtual void m43();
+        virtual void m44(); virtual void m45(); virtual void m46(); virtual void m47();
+        virtual void m48(); virtual void m49(); virtual void m50(); virtual void m51();
+        virtual void m52(); virtual void m53();
+        virtual int lookup(int driverId, unsigned char *out);
+    };
+    struct Nibbles { unsigned char high : 4; unsigned char low : 4; };
+    struct Flags {
+        unsigned char carType : 3;
+        unsigned char flag27 : 1;
+        unsigned char flag28 : 1;
+        unsigned char flag29 : 1;
+        unsigned char flag30 : 1;
+        unsigned char flag31 : 1;
+    };
+    /* The driver status record handed out by fn_80190E00. */
+    struct StatusRecord {
+        /* 0x0 */ unsigned short value;
+        /* 0x2 */ unsigned char b2;
+        /* 0x3 */ unsigned char b3;
+        /* 0x4 */ unsigned char b4;
+        /* 0x5 */ unsigned char b5;
+        /* 0x6 */ Nibbles nib;
+        /* 0x7 */ Flags flags;
+    };
+    unsigned char *self = (unsigned char *)arg0;
+    Driver *driver;
+    Driver *active;
+    void *unit;
+    RaceSub *raceSub;
+    void *res;
     void *mgr;
-    void *obj270;
-    void *res18;
-    void *innerObj;
-    void *r10ret;
-    f32 f31v;
-    f32 f30v;
-    f32 f29v;
-    f32 rC;
-    f32 r14;
-    f32 r10;
-    f32 r18;
-    f32 r1C;
-    f32 r44;
-    f32 r48;
-    f32 diff;
+    void *race;
+    void *sub18;
+    void *ptr;
+    f32 limit;
+    f32 f30;
+    f32 f29;
     f32 newF30;
-    f32 tmpF;
-    s32 idx;
-    s32 lim;
-    s32 nw;
-    s32 f24;
-    s32 isLess;
-    s32 virt38;
-    s32 saved;
-    s32 e0ret;
-    s32 c1;
-    s32 c2;
-    s32 bit29;
-    s32 any;
-    s32 i;
-    s32 off;
-    int v0;
-    int v1;
-    int rec;
-    u8 sp8v;
-    first = *(void **)((char *)arg0 + 0x14);
-    r31v = ((void *(*)(void *))(*(void ***)first)[4])(first);
-    f31v = lbl_8055E3C8;
-    sub = *(void **)((char *)arg0 + 4);
-    f30v = fn_80158E80(*(void **)((char *)arg0 + 0x20));
+    f32 temp;
+    f32 mag;
+    f32 diff;
+    int idx;
+    int lim;
+    int state;
+    int isLess;
+    int virt38;
+    int saved;
+    int ret;
+    int flag;
+    int c1;
+    int c2;
+    int bit29;
+    int any;
+    int i;
+    int off;
+    int v;
+    unsigned char sp8;
+
+    unit = ((Car *)*(void **)(self + 0x14))->c10();
+    limit = lbl_8055E3C8;
+    driver = *(Driver **)(self + 4);
+    f30 = fn_80158E80(*(void **)(self + 0x20));
     idx = lbl_8055E3C4;
-    lim = *(s32 *)((char *)sub + 0x1C);
+    lim = driver->entryLimit;
     if (idx >= lim) {
         idx = lim - 1;
     }
-    base = *(void **)((char *)sub + 0x18);
-    *(void **)((char *)sub + 8) = (char *)base + idx * 8;
-    if (((s32 (*)(void *))fn_801CF050)(base) != 0) {
-        if (idx >= *(s32 *)((char *)sub + 0xC)) {
-            nw = idx + 1;
-            *(s32 *)((char *)sub + 0xC) = nw;
+    driver->record = (char *)driver->entries + idx * 8;
+    if (((int (*)(void *))fn_801CF050)(driver->entries) != 0) {
+        if (idx >= driver->count) {
+            int nw = idx + 1;
+            driver->count = nw;
             lbl_8055E524 = nw;
         }
-        rC = ((f32 (*)(void *, f32))(*(void ***)(*(void **)((char *)sub + 4)))[3])(*(void **)((char *)sub + 4), f30v);
-        *(s16 *)(void *)fn_80190E00(sub) = fn_80190D9C(rC, lbl_80562084, lbl_80562088);
-        r14 = ((f32 (*)(void *))(*(void ***)(*(void **)((char *)sub + 4)))[5])(*(void **)((char *)sub + 4));
-        *(s8 *)(void *)((int)fn_80190E00(sub) + 3) = fn_80190D38(r14, lbl_8056208C, lbl_80562090);
-        r10 = ((f32 (*)(void *))(*(void ***)(*(void **)((char *)sub + 4)))[4])(*(void **)((char *)sub + 4));
-        *(s8 *)(void *)((int)fn_80190E00(sub) + 2) = fn_80190D38(r10, lbl_8056208C, lbl_80562090);
-        r18 = ((f32 (*)(void *))(*(void ***)(*(void **)((char *)sub + 4)))[6])(*(void **)((char *)sub + 4));
-        v1 = fn_80190CD0(r18, lbl_8056208C, lbl_80562090);
-        rec = fn_80190E00(sub);
-        *(u8 *)(void *)(rec + 6) = __rlwimi(*(u8 *)(void *)(rec + 6), v1, 4, 24, 27);
-        r1C = ((f32 (*)(void *))(*(void ***)(*(void **)((char *)sub + 4)))[7])(*(void **)((char *)sub + 4));
-        v1 = fn_80190CD0(r1C, lbl_8056208C, lbl_80562090);
-        rec = fn_80190E00(sub);
-        *(u8 *)(void *)(rec + 6) = __rlwimi(*(u8 *)(void *)(rec + 6), v1, 0, 28, 31);
-        v0 = ((s32 (*)(void *))(*(void ***)(*(void **)((char *)sub + 4)))[8])(*(void **)((char *)sub + 4)) + 1;
-        rec = fn_80190E00(sub);
-        *(u8 *)(void *)(rec + 7) = __rlwimi(*(u8 *)(void *)(rec + 7), v0, 5, 24, 26);
-        v0 = ((s32 (*)(void *))(*(void ***)(*(void **)((char *)sub + 4)))[13])(*(void **)((char *)sub + 4));
-        rec = fn_80190E00(sub);
-        *(u8 *)(void *)(rec + 7) = __rlwimi(*(u8 *)(void *)(rec + 7), v0, 4, 27, 27);
-        v0 = ((s32 (*)(void *))(*(void ***)(*(void **)((char *)sub + 4)))[14])(*(void **)((char *)sub + 4));
-        rec = fn_80190E00(sub);
-        *(u8 *)(void *)(rec + 7) = __rlwimi(*(u8 *)(void *)(rec + 7), v0, 3, 28, 28);
-        v0 = ((s32 (*)(void *))(*(void ***)(*(void **)((char *)sub + 4)))[15])(*(void **)((char *)sub + 4));
-        rec = fn_80190E00(sub);
-        *(u8 *)(void *)(rec + 7) = __rlwimi(*(u8 *)(void *)(rec + 7), v0, 2, 29, 29);
-        v0 = ((s32 (*)(void *))(*(void ***)(*(void **)((char *)sub + 4)))[11])(*(void **)((char *)sub + 4));
-        rec = fn_80190E00(sub);
-        *(u8 *)(void *)(rec + 7) = __rlwimi(*(u8 *)(void *)(rec + 7), v0, 1, 30, 30);
-        v0 = ((s32 (*)(void *))(*(void ***)(*(void **)((char *)sub + 4)))[12])(*(void **)((char *)sub + 4));
-        rec = fn_80190E00(sub);
-        *(u8 *)(void *)(rec + 7) = __rlwimi(*(u8 *)(void *)(rec + 7), v0, 0, 31, 31);
-        r44 = ((f32 (*)(void *))(*(void ***)(*(void **)((char *)sub + 4)))[17])(*(void **)((char *)sub + 4));
-        *(s8 *)(void *)((int)fn_80190E00(sub) + 4) = fn_80190D38(r44, lbl_80562094, lbl_80562090);
-        r48 = ((f32 (*)(void *))(*(void ***)(*(void **)((char *)sub + 4)))[18])(*(void **)((char *)sub + 4));
-        *(s8 *)(void *)((int)fn_80190E00(sub) + 5) = fn_80190D38(r48, lbl_80562094, lbl_80562090);
+        ((StatusRecord *)fn_80190E00(driver))->value =
+            fn_80190D9C(driver->sub4->d0C(f30), lbl_80562084, lbl_80562088);
+        ((StatusRecord *)fn_80190E00(driver))->b3 =
+            fn_80190D38(driver->sub4->d14(), lbl_8056208C, lbl_80562090);
+        ((StatusRecord *)fn_80190E00(driver))->b2 =
+            fn_80190D38(driver->sub4->d10(), lbl_8056208C, lbl_80562090);
+        ((StatusRecord *)fn_80190E00(driver))->nib.high =
+            fn_80190CD0(driver->sub4->d18(), lbl_8056208C, lbl_80562090);
+        ((StatusRecord *)fn_80190E00(driver))->nib.low =
+            fn_80190CD0(driver->sub4->d1C(), lbl_8056208C, lbl_80562090);
+        ((StatusRecord *)fn_80190E00(driver))->flags.carType =
+            (unsigned char)(driver->sub4->d20() + 1);
+        ((StatusRecord *)fn_80190E00(driver))->flags.flag27 =
+            (unsigned char)driver->sub4->d34();
+        ((StatusRecord *)fn_80190E00(driver))->flags.flag28 =
+            (unsigned char)driver->sub4->d38();
+        ((StatusRecord *)fn_80190E00(driver))->flags.flag29 =
+            (unsigned char)driver->sub4->d3C();
+        ((StatusRecord *)fn_80190E00(driver))->flags.flag30 =
+            (unsigned char)driver->sub4->d2C();
+        ((StatusRecord *)fn_80190E00(driver))->flags.flag31 =
+            (unsigned char)driver->sub4->d30();
+        ((StatusRecord *)fn_80190E00(driver))->b4 =
+            fn_80190D38(driver->sub4->d44(), lbl_80562094, lbl_80562090);
+        ((StatusRecord *)fn_80190E00(driver))->b5 =
+            fn_80190D38(driver->sub4->d48(), lbl_80562094, lbl_80562090);
     }
-    if (fn_801CF064() != 0 && idx >= *(s32 *)((char *)sub + 0xC) - 1) {
+    if (fn_801CF064() != 0 && idx >= driver->count - 1) {
         __AXDSPInitCallback_801769E0();
         fn_80176A34(lbl_8055E3C4);
     }
-    ((void (*)(void *))(*(void ***)sub)[29])(sub);
-    if (*(s32 *)((char *)(*(void **)((char *)arg0 + 0x20)) + 0x2620) != 0) {
-        ((void (*)(void *))(*(void ***)sub)[31])(sub);
+    (*(Driver **)(self + 4))->d74();
+    if (*(int *)((char *)*(void **)(self + 0x20) + 0x2620) != 0) {
+        (*(Driver **)(self + 4))->d7C();
     }
     if (lbl_8055E529 == 0) {
-        o20 = *(void **)((char *)arg0 + 0x20);
-        diff = f31v - *(f32 *)((char *)o20 + 0x26D8);
+        race = *(void **)(self + 0x20);
+        diff = lbl_8055E3C8 - *(f32 *)((char *)race + 0x26D8);
         isLess = (diff < lbl_80562098) ? 1 : 0;
-        f24 = *(s32 *)((char *)r31v + 0x24);
-        if (f24 == 3 || lbl_8055E528 != 0 || fn_80019B54() != 0) {
-            if (*(u8 *)((char *)arg0 + 0x25) != 0 && *(u8 *)((char *)arg0 + 0x26) != 0) {
-                fn_80191084((int)arg0, *(int *)((char *)arg0 + 8));
+        state = *(int *)((char *)unit + 0x24);
+        if (state == 3 || lbl_8055E528 != 0 || fn_80019B54() != 0) {
+            if (self[0x25] != 0 && self[0x26] != 0) {
+                fn_80191084((int)arg0, *(int *)(self + 8));
             } else {
-                fn_80191084((int)arg0, *(int *)((char *)arg0 + 0xC));
+                fn_80191084((int)arg0, *(int *)(self + 0xC));
             }
         } else if (isLess != 0) {
-            fn_80191084((int)arg0, *(int *)((char *)arg0 + 8));
-        } else if (f24 == 1) {
-            fn_80191084((int)arg0, *(int *)((char *)arg0 + 8));
-        } else if (fn_801B851C(*(int *)((char *)arg0 + 0x1C)) == 0) {
-            fn_80191084((int)arg0, *(int *)((char *)arg0 + 0xC));
-        } else if (fn_8026B7B4(*(int *)((char *)arg0 + 0x1C)) == 0) {
-            fn_80191084((int)arg0, *(int *)((char *)arg0 + 0xC));
+            fn_80191084((int)arg0, *(int *)(self + 8));
+        } else if (state == 1) {
+            fn_80191084((int)arg0, *(int *)(self + 8));
+        } else if (fn_801B851C(*(int *)(self + 0x1C)) == 0) {
+            fn_80191084((int)arg0, *(int *)(self + 0xC));
+        } else if (fn_8026B7B4(*(int *)(self + 0x1C)) == 0) {
+            fn_80191084((int)arg0, *(int *)(self + 0xC));
         } else {
-            fn_80191084((int)arg0, *(int *)((char *)arg0 + 8));
+            fn_80191084((int)arg0, *(int *)(self + 8));
         }
     } else {
-        fn_80191084((int)arg0, *(int *)((char *)arg0 + 0xC));
+        fn_80191084((int)arg0, *(int *)(self + 0xC));
     }
-    cObj = *(void **)((char *)arg0 + 0xC);
-    if (*(void **)((char *)arg0 + 0x10) == cObj) {
-        ((void (*)(void *))(*(void ***)cObj)[18])(cObj);
+    active = *(Driver **)(self + 0xC);
+    if (*(void **)(self + 0x10) == (void *)active) {
+        active->d48();
     } else {
-        ((void (*)(void *, s32))(*(void ***)sub)[30])(sub, 0);
+        (*(Driver **)(self + 4))->d78(0);
     }
-    virt38 = ((s32 (*)(void *))(*(void ***)sub)[14])(sub);
+    virt38 = (*(Driver **)(self + 4))->d38();
     saved = 0;
-    if (virt38 != 0 && *(u8 *)((char *)arg0 + 0x24) == 0) {
+    if (virt38 != 0 && self[0x24] == 0) {
         saved = 1;
-        *(u8 *)((char *)arg0 + 0x24) = 1;
+        self[0x24] = 1;
     } else {
-        *(u8 *)((char *)arg0 + 0x24) = 0;
+        self[0x24] = 0;
     }
-    sp8v = 0;
+    sp8 = 0;
     mgr = fn_801B83A0();
-    e0ret = ((s32 (*)(void *, s32, u8 *))(*(void ***)mgr)[56])(mgr, *(s32 *)((char *)arg0 + 0x1C), &sp8v);
-    if (e0ret != 0) {
-        *(u8 *)((char *)arg0 + 0x34) = (u8)(__cntlzw(sp8v) >> 5);
-        if (*(u8 *)((char *)arg0 + 0x34) != 0) {
-            tmpF = *(f32 *)((char *)arg0 + 0x2C);
-            if (tmpF <= f31v) {
-            } else {
-                *(f32 *)((char *)arg0 + 0x2C) = f31v;
+    ret = ((ModeMaster *)mgr)->lookup(*(int *)(self + 0x1C), &sp8);
+    if (ret != 0) {
+        flag = __cntlzw(sp8) >> 5;
+        self[0x34] = flag;
+        if (flag != 0) {
+            temp = *(f32 *)(self + 0x2C);
+            if (temp > limit) {
+                temp = limit;
+                *(f32 *)(self + 0x2C) = temp;
             }
         }
     } else {
-        o20 = *(void **)((char *)arg0 + 0x20);
-        obj270 = *(void **)((char *)o20 + 0x270);
-        res18 = ((void *(*)(void *))(*(void ***)obj270)[6])(obj270);
-        newF30 = *(f32 *)((char *)res18 + 0x48);
-        f30v = newF30;
-        f29v = newF30 - *(f32 *)((char *)arg0 + 0x30);
-        r10ret = ((void *(*)(void *))(*(void ***)obj270)[4])(obj270);
-        bit29 = (*(s32 *)r10ret >> 29) & 1;
-        tmpF = (f32)fabs((double)*(f32 *)((char *)o20 + 0x2690));
-        c1 = (tmpF <= lbl_80558DC4) ? 1 : 0;
-        c2 = ((f31v - *(f32 *)((char *)o20 + 0x26D8)) >= lbl_8056207C) ? 1 : 0;
+        race = *(void **)(self + 0x20);
+        raceSub = *(RaceSub **)((char *)race + 0x270);
+        res = raceSub->s18();
+        newF30 = *(f32 *)((char *)res + 0x48);
+        f30 = newF30;
+        f29 = newF30 - *(f32 *)(self + 0x30);
+        raceSub = *(RaceSub **)((char *)race + 0x270);
+        bit29 = (*(int *)raceSub->s10() >> 29) & 1;
+        mag = (f32)fabs((double)*(f32 *)((char *)race + 0x2690));
+        c1 = (mag <= lbl_80558DC4) ? 1 : 0;
+        c2 = ((limit - *(f32 *)((char *)race + 0x26D8)) >= lbl_8056207C) ? 1 : 0;
         if (c1 != 0 && bit29 != 0 && c2 != 0) {
-            *(u8 *)((char *)arg0 + 0x34) = 0;
-        } else if (f29v > lbl_8056209C || f29v < lbl_805620A0 || c2 == 0 || fn_802B02C8((char *)o20 + 0x60) == 0) {
-            *(f32 *)((char *)arg0 + 0x30) = newF30;
-            tmpF = *(f32 *)((char *)arg0 + 0x2C);
-            if (tmpF > f31v) {
-            } else {
-                *(f32 *)((char *)arg0 + 0x2C) = f31v;
+            self[0x34] = 0;
+        } else if (f29 > lbl_8056209C || f29 < lbl_805620A0 || c2 == 0 ||
+                   fn_802B02C8((char *)race + 0x60) == 0) {
+            *(f32 *)(self + 0x30) = newF30;
+            temp = *(f32 *)(self + 0x2C);
+            if (temp > limit) {
+                temp = limit;
+                *(f32 *)(self + 0x2C) = temp;
             }
-            *(u8 *)((char *)arg0 + 0x34) = 1;
-        } else if ((f31v - *(f32 *)((char *)arg0 + 0x2C)) > lbl_805620A4) {
-            *(u8 *)((char *)arg0 + 0x34) = 0;
-            *(f32 *)((char *)arg0 + 0x2C) = lbl_80562090 + (f31v - lbl_805620A4);
-            *(f32 *)((char *)arg0 + 0x30) = lbl_805620A8 + (newF30 - lbl_8056209C);
-            if (fn_801796C4() != 0) {
-                tmpF = *(f32 *)((char *)arg0 + 0x2C);
-            } else {
-                if (lbl_8055E522 == 0) {
-                    *(f32 *)((char *)arg0 + 0x2C) = f31v;
-                    *(u8 *)((char *)arg0 + 0x34) = 1;
-                }
-            }
+            self[0x34] = 1;
+        } else if ((limit - *(f32 *)(self + 0x2C)) > lbl_805620A4) {
+            self[0x34] = 0;
+            *(f32 *)(self + 0x2C) = lbl_80562090 + (limit - lbl_805620A4);
+            *(f32 *)(self + 0x30) = lbl_805620A8 + (newF30 - lbl_8056209C);
         }
     }
     if (fn_801796C4() != 0 || lbl_8055E522 == 0) {
-        *(f32 *)((char *)arg0 + 0x2C) = f31v;
-        *(u8 *)((char *)arg0 + 0x34) = 1;
+        *(f32 *)(self + 0x2C) = limit;
+        self[0x34] = 1;
     }
-    if (*(u8 *)((char *)arg0 + 0x34) == 0 && saved != 0) {
-        *(u8 *)((char *)arg0 + 0x34) = 1;
-        tmpF = *(f32 *)((char *)arg0 + 0x2C);
-        if (tmpF > f31v) {
-        } else {
-            *(f32 *)((char *)arg0 + 0x2C) = f31v;
+    if (self[0x34] == 0 && saved != 0) {
+        self[0x34] = 1;
+        temp = *(f32 *)(self + 0x2C);
+        if (temp > limit) {
+            temp = limit;
+            *(f32 *)(self + 0x2C) = temp;
         }
-        fn_801B86A4(*(int *)((char *)arg0 + 0x1C));
+        fn_801B86A4(*(int *)(self + 0x1C));
     }
-    if (*(u8 *)((char *)arg0 + 0x26) == 0) {
-        innerObj = *(void **)((char *)arg0 + 0x18);
-        v0 = 3;
-        if (innerObj != 0) {
-            v0 = *(u8 *)((char *)(*(void **)((char *)innerObj + 4)) + 0x34);
-        }
-        if (v0 == 0) {
-            *(u8 *)((char *)arg0 + 0x26) = 1;
-            *(s32 *)((char *)innerObj + 0xC) = 0;
+    if (self[0x26] == 0) {
+        sub18 = *(void **)(self + 0x18);
+        ptr = *(void **)((char *)sub18 + 4);
+        v = (ptr != 0) ? *(unsigned char *)((char *)ptr + 0x34) : 3;
+        if (v == 0) {
+            self[0x26] = 1;
+            *(int *)(*(unsigned char **)(self + 0x18) + 0xC) = 0;
         }
     }
-    if (*(void **)((char *)arg0 + 0x10) == *(void **)((char *)arg0 + 0xC) && lbl_8055E523 != 0 && lbl_8055E520 == 0) {
+    if (*(void **)(self + 0x10) == *(void **)(self + 0xC) && lbl_8055E523 != 0 &&
+        lbl_8055E520 == 0) {
         any = 0;
         i = 0;
         off = 0;
         do {
-            if (fn_80190368(*(s32 *)((char *)(*(void **)((char *)arg0 + 0x20)) + off + 0x2410)) == 0) {
+            if (fn_80190368(*(int *)(*(unsigned char **)(self + 0x20) + off + 0x2410)) == 0) {
                 any = 1;
             }
             i++;
@@ -874,10 +931,10 @@ s32 fn_80190368(s32 value) {
         } while (i < 4);
         if (any != 0) {
             lbl_8055E520 = 1;
-            DBPrintf_801797A8(*(const char **)((char *)arg0 + 0x28), lbl_80332EC4);
+            DBPrintf_801797A8(*(const char **)(self + 0x28), lbl_80332EC4);
         }
     }
- }
+}
  #pragma cplusplus off
  #pragma use_lmw_stmw reset
  #pragma pop
