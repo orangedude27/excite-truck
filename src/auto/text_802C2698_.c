@@ -66,7 +66,7 @@ extern s32 DrawList_setViewport(s32, s32, s32, s32); /* set a screen rectangle *
 extern s32 fn_802C88BC(s32); /* set a render mode (-1 resets) */
 extern s32 fn_802C9294(s32, s32); /* select the active texture and draw flags */
 extern s32 fn_802C974C(f32, f32, f32); /* update projection / field-of-view parameters */
-extern s32 fn_802CB274(s32); /* bind a render target */
+extern s32 Texture_BindRenderTarget(s32); /* bind a render target */
 /* Swlmap transform constants: a runtime intensity scale, then the literal
  * values 1/512, 0, 512, 0.5, 1, -1, 100 and pi/2. */
 extern f32 lbl_8055FB74; /* runtime swlmap intensity scale */
@@ -99,7 +99,7 @@ void fn_802C276C(void) {
     s32 savedState;
 
     if (sSwlMapFileSlot == NO_TEXTURE_SLOT) {
-        fn_802CB274(sSwlMapTargetSlot);
+        Texture_BindRenderTarget(sSwlMapTargetSlot);
         fn_802C9294(sSwlMapTargetSlot, 0);
         scale = SWL_INTENSITY * SWL_INV_SIZE;
         scale = SWL_SIZE * scale;

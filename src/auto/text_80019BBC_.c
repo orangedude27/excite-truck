@@ -896,7 +896,7 @@ extern void* fn_802CAC28(void*, int);
 extern void DrawList_beginFrame(void);
 extern void DrawList_shutdown(void);
 
-extern void fn_802CB274(int);
+extern void Texture_BindRenderTarget(int);
 extern void fn_802C9294(int, int);
 extern double fn_8002EF30(float);
 extern void DrawList_saveProjection(float *, float, float, float, float);
@@ -923,7 +923,7 @@ void fn_8001B7BC(void *obj) {
     float aspectRatio;
     float tanHalf;
     int savedState;
-    fn_802CB274(*(int *)((char *)obj + 4));
+    Texture_BindRenderTarget(*(int *)((char *)obj + 4));
     fn_802C9294(*(int *)((char *)obj + 4), 0);
     angleRad = lbl_80560458;
     tanHalf = (float)fn_8002EF30((float)angleRad * lbl_80560420);

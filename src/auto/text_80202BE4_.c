@@ -44,7 +44,7 @@ extern u8 lbl_8055ED10;
 extern u8 lbl_8055ED08;
 extern int __cntlzw(unsigned int);
 extern f32 lbl_80563134, lbl_80563138, lbl_8056313C;
-extern void fn_802CB274(s32);
+extern void Texture_BindRenderTarget(s32);
 extern void fn_802C9294(s32, s32);
 extern void DrawList_loadMatrix(f32 *, f32, f32, f32);
 extern void DrawList_setViewport(s32, s32, s32, s32);
@@ -671,7 +671,7 @@ void fn_80203A88(const void* arg0, s32 arg1, unk_80203A88_dest* arg2) {
 void fn_80203B20(s32 arg0, s32 arg1, s32 arg2) {
     u8 stack[0x60];
 
-    fn_802CB274(lbl_8055ECFC);
+    Texture_BindRenderTarget(lbl_8055ECFC);
     if (lbl_8055ED08 != 0) {
         fn_802C9294(lbl_8055ECFC, 0);
         ((f32 *)(stack + 0x30))[9] = lbl_805630CC;
