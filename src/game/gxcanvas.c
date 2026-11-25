@@ -1262,7 +1262,7 @@ ret0:
     return 0;
 }
 #pragma pop
-void fn_802C4C80(Stamp *stamp) {
+/* Release a loaded STMP stamp back through the resource manager; NULL is a no-op. The stamp stays in r3 and flows into the tail-called release helper, which is why no argument is written at the call site. */ void fn_802C4C80(Stamp *stamp) {
     // Release a loaded STMP stamp back through the resource manager; NULL is a no-op.
     if (stamp == NULL) {
         return;
