@@ -648,7 +648,7 @@ extern void *fn_8012850C(int, void *);
 extern void *fn_8002F37C(void *, void *, void *, int, int);
 extern char jumptable_8034B1B8[];
 extern void fn_802C6068(void *);
-extern void fn_802C6074(s32 *);
+extern void MRModel_InitDisplayEntryRefCount(s32 *);
 void fn_802C5F48(void) {
     struct SubList {
         int count;
@@ -671,7 +671,7 @@ void fn_802C5F48(void) {
 
     e64->capacity = 0x280;
     memory = fn_8012850C(0x2810, jumpTable + 0x44);
-    e64->buf = fn_8002F37C(memory, (void (*)(void *))fn_802C6074, 0, 0x10, 0x280);
+    e64->buf = fn_8002F37C(memory, (void (*)(void *))MRModel_InitDisplayEntryRefCount, 0, 0x10, 0x280);
     e64->count = zero;
 
     *(int *)(base + 4) = 0x800;
@@ -701,7 +701,7 @@ void fn_802C6068(void *entry) {
 }
 
 /* Pool element init callback: clear the first 32-bit word of an entry. */
-void fn_802C6074(s32 *entry) {
+void MRModel_InitDisplayEntryRefCount(s32 *entry) {
     *entry = 0;
 }
 
@@ -1491,7 +1491,6 @@ void fn_802C744C(int instanceId, void *transform) {
 
 #pragma scheduling on
 void fn_802C74D8(int arg0, void *arg1, int arg2) {
-#pragma scheduling invalid_target
     int i;
     struct LocalResult {
         unsigned char status;
@@ -1548,7 +1547,7 @@ void fn_802C74D8(int arg0, void *arg1, int arg2) {
         out[1] = ty;
         out[2] = tz;
     }
-    if (fn_802C94A0(out, &local.status, &local.scalar, rot[-1])) {
+    if (fn_802C94A0(out, &local.status, &local.scalar, *(float *)((char *)entry + 0x1C))) {
         if ((u8)lbl_8055FC20 != 0) {
             node = fn_802C5EFC(a2);
             a1 = (void *)fn_802D0514(a1);
