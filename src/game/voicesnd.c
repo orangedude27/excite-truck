@@ -105,8 +105,8 @@ void* fn_8020A76C(void) {
     return lbl_8055EE08;
 }
 
+/* Return a pointer to the 0x24-byte voice-sound entry at `index` in the shared entry table (lbl_804892D0). */
 void *voiceSndGetEntry(int index) {
-    /* Return a pointer to the 0x24-byte voice-sound entry at the given index in lbl_804892D0. */
     return lbl_804892D0 + index * 0x24;
 }
 
