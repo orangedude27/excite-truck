@@ -6,7 +6,7 @@ int fn_80128668(void *);
 int fn_80128670(int);
 int fn_801342B0(int, int);
 char *strcpy(char *, const char *);
-void fn_802C6FB4(int);
+void mrModelUnregisterTextures(int);
 void fn_802C703C(int);
 extern void *fn_801284F8(int, void *);
 extern void *fn_8012850C(int, void *);
@@ -109,7 +109,7 @@ void fn_802CE4F4(void *arg0, int arg1) {
     if (*(int *)((char *)manager + 0xC) - active < 1) {
         if (selected != 0) {
             if (*(int *)((char *)selected + 0x38) == 2) {
-                fn_802C6FB4(*(int *)((char *)selected + 0x30));
+                mrModelUnregisterTextures(*(int *)((char *)selected + 0x30));
                 fn_802C703C(*(int *)((char *)selected + 0x34));
                 *(int *)((char *)selected + 0x34) = -1;
                 *(int *)((char *)selected + 0x30) = 0;
@@ -168,7 +168,7 @@ done:
 /* Release a loaded model-pool slot (state 2): drop its model data and instance, reset both handles to their none values, set state 3 (finished, awaiting reclaim), and clear its in-use flag. */ void modPoolReleaseLoadedSlot(void *modelSlot) {
     /* Release a loaded modpool slot (state 2): destroy its model/handle, mark state 3, and clear the in-use flag. */
     if (*(int *)((char *)modelSlot + 0x38) == 2 && *(int *)((char *)modelSlot + 0x38) == 2) {
-        fn_802C6FB4(*(int *)((char *)modelSlot + 0x30));
+        mrModelUnregisterTextures(*(int *)((char *)modelSlot + 0x30));
         fn_802C703C(*(int *)((char *)modelSlot + 0x34));
         *(volatile int *)((char *)modelSlot + 0x34) = -1;
         *(volatile int *)((char *)modelSlot + 0x30) = 0;

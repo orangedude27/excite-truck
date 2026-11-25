@@ -1250,7 +1250,7 @@ void fn_802C6FA8(void *groupList) {
 }
 
 extern void fn_802D6C44(void);
-void fn_802C6FB4(void *groupList) {
+void mrModelUnregisterTextures(void *groupList) {
     /* Visit every group in groupList with the no-op per-group hook fn_802D6C44. */
     ((void (*)(void *, void *))VisitGroupIds)(groupList, fn_802D6C44);
 }

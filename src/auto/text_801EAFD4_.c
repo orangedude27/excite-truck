@@ -933,14 +933,14 @@ void fn_801EC11C(void) {
 
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_802C6FB4(s32);
+extern "C" void mrModelUnregisterTextures(s32);
 extern "C" void fn_802C703C(s32);
 extern "C" void fn_801EC130(s32 unused, void *arg1, s32 arg2) {
     /* If arg1 has a valid secondary id (offset +4 != -1), update it via
-       fn_802C6FB4(arg2) and fn_802C703C(arg1[1]). If arg1's type (offset +0)
+       mrModelUnregisterTextures(arg2) and fn_802C703C(arg1[1]). If arg1's type (offset +0)
        is 1, look up its object via fn_801EB110 and invoke virtual f3(arg1). */
     if (((s32 *)arg1)[1] != -1) {
-        fn_802C6FB4(arg2);
+        mrModelUnregisterTextures(arg2);
         fn_802C703C(((s32 *)arg1)[1]);
     }
     if (*(s32 *)arg1 == 1) {
