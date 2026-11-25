@@ -95,7 +95,7 @@ extern unsigned long lbl_8055FDA0;
   extern int lbl_8055FDA4;
   extern unsigned int lbl_8055FD30;
       extern float fabsf(float);
-    extern unsigned char lbl_804C97B0[];
+    extern unsigned char gGxFogState[];
     extern unsigned short lbl_8055FD86;
 extern unsigned char lbl_8055FD60;
 extern float lbl_80564F94;
@@ -983,7 +983,7 @@ void HomeMenu_beginFrame(void *alarm) {
 #define sGxPendingBytes   lbl_8055FD9C
 #define sGxDrawSyncCount  lbl_8055FD30
 #define sRenderRequest    gRenderRequest
-#define sSensorStatus     lbl_804C97B0
+#define sSensorStatus     gGxFogState
 #define sJitterThreshold  lbl_80558DC4
     drInvalidateVertexFormatCache();
     *(volatile unsigned char *)&lbl_8055FE39 = 1;
@@ -1194,28 +1194,28 @@ void fn_802CFFAC(int arg0, int arg1, int arg2)
   spB = (unsigned char) packed;
   sp9 = (unsigned char) (packed >> 16);
   b3 = (unsigned char) (packed >> 8);
-  lbl_804C97B0[1] = (sp8 = (unsigned char) (packed >> 24));
-  lbl_804C97B0[2] = sp9;
-  lbl_804C97B0[3] = b3;
-  lbl_804C97B0[4] = (unsigned char) packed;
-  lbl_804C97B0[0x1C] = 1;
+  gGxFogState[1] = (sp8 = (unsigned char) (packed >> 24));
+  gGxFogState[2] = sp9;
+  gGxFogState[3] = b3;
+  gGxFogState[4] = (unsigned char) packed;
+  gGxFogState[0x1C] = 1;
   spA = b3;
 }
 /* Set up a float interpolation in the GX state block (start +8, step +0x10, per-step increment +0xC), active only when |delta| exceeds the jitter threshold. */
 void fn_802D0014(float startValue, float endValue, float delta) {
-    extern unsigned char lbl_804C97B0[];
+    extern unsigned char gGxFogState[];
     extern char lbl_80558DC4[];
     float absDelta = (float)__fabs((double)delta);
-    ((float *)lbl_804C97B0)[2] = startValue;
+    ((float *)gGxFogState)[2] = startValue;
     if (!(absDelta <= *(float *)lbl_80558DC4)) {
-        lbl_804C97B0[0] = 1;
-        ((float *)lbl_804C97B0)[3] = startValue + ((endValue - startValue) / delta);
+        gGxFogState[0] = 1;
+        ((float *)gGxFogState)[3] = startValue + ((endValue - startValue) / delta);
     } else {
-        ((float *)lbl_804C97B0)[3] = endValue;
-        lbl_804C97B0[0] = 0;
+        ((float *)gGxFogState)[3] = endValue;
+        gGxFogState[0] = 0;
     }
-    ((float *)lbl_804C97B0)[4] = delta;
-    lbl_804C97B0[0x1C] = 1;
+    ((float *)gGxFogState)[4] = delta;
+    gGxFogState[0x1C] = 1;
 }
 #pragma push
 #pragma small_data off
@@ -1346,10 +1346,10 @@ void fn_802D0368(float nearZ, float farZ, float fovY, float aspectWidth)
   *((float *) (gfxParams + 0x14)) = aspectWidth;
   *((float *) (gfxParams + 4)) = nearZ;
   tanHalfFov = fn_8002EF30(fovY * halfFovScale);
-  *((float *) (lbl_804C97B0 + 0x14)) = nearZ;
+  *((float *) (gGxFogState + 0x14)) = nearZ;
   *((float *) (gfxParams + 0x10)) = tanHalfFov;
-  *((float *) (lbl_804C97B0 + 0x18)) = farZ;
-  lbl_804C97B0[0x1c] = flagValue;
+  *((float *) (gGxFogState + 0x18)) = farZ;
+  gGxFogState[0x1c] = flagValue;
 }
 
 extern unsigned long lbl_804C56C0[];
@@ -2212,7 +2212,7 @@ typedef struct ClearState_802D2218 {
     /* 0x32 */ unsigned char pad32[6];
 } ClearState_802D2218;
 static ClearState_802D2218 sClearState_802D2218;  /* lbl_804C9778 */
-static unsigned char sFogState_802D2218[0x20];    /* lbl_804C97B0 */
+static unsigned char sFogState_802D2218[0x20];    /* gGxFogState */
 static DefaultLight_802D18E8 sDefaultLight_802D18E8; /* lbl_804C97D0 */
 static unsigned char sBssGap_802D18E8[0x4A38 - 0x4180 - sizeof(DefaultLight_802D18E8)];
 static unsigned char sLightEntries_802D18E8[0x90];  /* lbl_804CA088: SceneLight_802D18E8[], 0x14 each */
@@ -3429,8 +3429,8 @@ void fn_802D3BB4(float *arg0, float *arg1, float *arg2, float *arg3, unsigned in
 
 void fn_802D3D50(void) {
     /* Disable the GX state block (active flag at +0x0) and mark it for update (+0x1C). */
-    lbl_804C97B0[0] = 0;
-    lbl_804C97B0[0x1C] = 1;
+    gGxFogState[0] = 0;
+    gGxFogState[0x1C] = 1;
 }
 
 extern void OSReport(const char *, ...);
@@ -3528,7 +3528,7 @@ void fn_802D3ECC(unsigned short blendMode) {
 
 extern unsigned long lbl_8055FD94;
 extern unsigned long lbl_8055FDA0;
-extern unsigned char lbl_804C97B0[];
+extern unsigned char gGxFogState[];
 extern unsigned long gxPackRGBA();
 extern int fn_802CFF64(int);
 extern unsigned char lbl_8055FD78;
