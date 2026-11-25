@@ -602,8 +602,8 @@ void SoundTimer_Expire(void *timer) {
 }
 
 void SoundTimer_Stop(void *timer) {
-    /* Pause a sound timer by setting its state word (+8) to 2. */
-    *((int *)((char *)timer + 8)) = 2;
+    /* Pause a sound timer by setting its state word (+8) to the stopped/paused state (2). */
+    ((struct SoundTimer *)timer)->state = SOUND_TIMER_STOPPED;
 }
 
 void SoundTimer_SetRunning(void *timer) {
