@@ -594,7 +594,7 @@ __declspec(section ".sdata") extern const char lbl_8055D010[];
     }
 }
 
-void fn_802C5E6C(void *unused, void *groupList) {
+void MRModel_ReleaseCallback(void *unused, void *groupList) {
     /* Resource callback: visit every group in groupList through VisitGroupIds,
        passing the no-op per-group hook fn_802D6C44. arg0 is unused. */
     void *callback = fn_802D6C44;
@@ -1060,9 +1060,9 @@ int fn_802C6B44(int modelPath) {
 }
 
 #pragma dont_inline on
-/* Release a model resource, with fn_802C5E6C called when its reference count reaches zero. */
+/* Release a model resource, with MRModel_ReleaseCallback called when its reference count reaches zero. */
 int MRModel_ReleaseResource(int resource) {
-    return fn_8012C4E4((void *)resource, (void *)fn_802C5E6C, resource);
+    return fn_8012C4E4((void *)resource, (void *)MRModel_ReleaseCallback, resource);
 }
 #pragma dont_inline reset
 
