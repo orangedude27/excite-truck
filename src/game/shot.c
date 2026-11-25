@@ -114,7 +114,7 @@ s32 fn_802E47B8(void) {
 }
 
 /* Clear the four-entry (8-byte) recent-key history used for screenshot combos. */
-void fn_802E47E8(void) {
+/* Clears the four-entry recent-key history ring used for screenshot combos. */ void fn_802E47E8(void) {
     memset(&gKeyHistory, 0, 8);
 }
 
