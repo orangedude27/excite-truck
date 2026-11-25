@@ -37,7 +37,7 @@ extern "C" S12Ptr lbl_802F9E68;
 extern "C" S3Word lbl_802F9E98;
 extern "C" s32 lbl_8055EF08;
 extern "C" s32 lbl_8055EF3C;
-extern "C" char lbl_8055B718[];
+extern "C" char lbl_8055B718;
 extern "C" s32 lbl_80563430;
 extern "C" f32 lbl_80563438;
 extern "C" f32 lbl_8056343C;
