@@ -1109,7 +1109,7 @@ void fn_802D6170(struct SurfDraw *surface) {
 #pragma scheduling on
 /* Return the object pointer only if its first word is the surface magic
  * 0x4E444C32 (tested as word + 0xB1BC0000 == 0x4C32); otherwise return 0. */
-s32 fn_802D62E4(void *object) {
+s32 drIsKnownSurfFormat(void *object) {
     if ((u32)(*(u32 *)object + 0xB1BC0000) != 0x4C32U) {
         return 0;
     }
@@ -1394,11 +1394,11 @@ void fn_802D6B08(void *surface) {
 }
 
 #pragma pop
-extern s32 fn_802D62E4(void *);
+extern s32 drIsKnownSurfFormat(void *);
 /* Periodic callback: filter the alarm, then apply the resulting display-list update. */
 void drUpdateDisplayList(void *displayList) {
     /* Validate the display-list object (NDL2 magic) and replay its GX display list when its normalized state flags changed. */
-    fn_802D5F88(((s32 (*)(void *))fn_802D62E4)(displayList));
+    fn_802D5F88(((s32 (*)(void *))drIsKnownSurfFormat)(displayList));
 }
 
 
@@ -1420,11 +1420,11 @@ extern void Abend_Panic(const char *, ...);
 extern const char lbl_8034C440[];
 #pragma scheduling invalid_target
 /* LoadSurface: byte-swap a surface's 4-byte type code in place; convert it if the format is known, otherwise panic reporting the bad type as a string. */ void fn_802D6B80(u8 *surface, s32 modelBase, s32 name) {
-    extern s32 fn_802D62E4(void *);
+    extern s32 drIsKnownSurfFormat(void *);
     extern void fn_802D65F8(s32, s32);
     extern void Abend_Panic(const char *, ...);
     extern const char lbl_8034C440[];
-#define IsKnownSurfFormat fn_802D62E4
+#define IsKnownSurfFormat drIsKnownSurfFormat
 #define ConvertSurfData   fn_802D65F8
 #define Panic             Abend_Panic
 #define kBadSurfTypeMsg   lbl_8034C440 /* "gx: %s has bad surf type %s" */
