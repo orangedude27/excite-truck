@@ -1,7 +1,7 @@
 /* Sound debug dash ("SOUND DASH"): an on-screen overlay for browsing and
  * adjusting voice volumes, plus a "sounds.txt" table dump. */
 extern int fn_8020A76C(void);
-extern char *fn_8020A774(int);
+extern char *voiceSndGetEntry(int);
 extern void fn_8020BCE4(void);
 extern void fn_802E30C8(const char *, ...);
 
@@ -55,7 +55,7 @@ extern void closeFileHandle(int *);
         fn_802E3AD0(outFile, "\tname\t\t\tvolume\r\n\0\0\0");
         fn_802E3AD0(outFile, ";\t----\t\t\t------\r\n\0\0");
         for (entryIdx = 0; entryIdx < fn_8020A76C(); entryIdx++) {
-            sndEntry = (VoiceSndEntry *)fn_8020A774(entryIdx);
+            sndEntry = (VoiceSndEntry *)voiceSndGetEntry(entryIdx);
             fn_802E3AD0(outFile, "\t%s\t\t%1.2f\r\n\0\0\0", sndEntry->name, sndEntry->volume);
         }
         fn_802E3AD0(outFile, "end\r\n\r\nend\r\n\0\0\0");
@@ -88,7 +88,7 @@ extern void closeFileHandle(int *);
         if (lbl_8055EE24 != 0) break;
         index = lbl_8055EE28;
         if (index < fn_8020A76C()) {
-            entry = (VoiceSndEntry *)fn_8020A774(index);
+            entry = (VoiceSndEntry *)voiceSndGetEntry(index);
             volume = entry->volume - lbl_805632C8;
             volume = volume > lbl_805632CC ? volume : lbl_805632CC;
             entry->volume = volume;
@@ -99,7 +99,7 @@ extern void closeFileHandle(int *);
         if (lbl_8055EE24 != 0) break;
         index = lbl_8055EE28;
         if (index < fn_8020A76C()) {
-            entry = (VoiceSndEntry *)fn_8020A774(index);
+            entry = (VoiceSndEntry *)voiceSndGetEntry(index);
             volume = lbl_805632C8 + entry->volume;
             volume = volume < lbl_805632D0 ? volume : lbl_805632D0;
             entry->volume = volume;
@@ -153,7 +153,7 @@ void fn_8020BF58(void) {
         fn_80238B44(7, 7, 0x12C, 0x1C0, 0x8C000000);
         soundIndex = fn_8020A76C() * 2;
         for (drawSlot = 0; drawSlot < soundIndex; drawSlot++) {
-            sourceText = fn_8020A774(drawSlot / 2);
+            sourceText = voiceSndGetEntry(drawSlot / 2);
             slotSign = (unsigned int)drawSlot >> 31;
             isValueColumn = ((drawSlot & 1) ^ slotSign) - slotSign;
             entryIndex = (int)(slotSign + drawSlot) >> 1;
