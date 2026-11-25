@@ -7,7 +7,7 @@ extern void GXSetAlphaCompare(int, unsigned char, int, unsigned char, int);
 extern void fn_802CADD0(int, int);
 extern void fn_802DFB30(void);
 extern void *lbl_8055FEB4;
-extern unsigned char lbl_8055FEB0, lbl_8055FEB9, lbl_8055FEBB, lbl_8055FD24;
+extern unsigned char lbl_8055FEB0, lbl_8055FEB9, lbl_8055FEBB, gAlphaCompareRef;
 extern unsigned char lbl_804DB480[];
 extern void fn_802D0610(int);
 extern void drawFifoTriangles(int, int, int, int);
@@ -52,13 +52,13 @@ extern float lbl_80565040, lbl_80565044, lbl_80565048, lbl_8056504C;
 extern unsigned char lbl_804DB068[];
 extern unsigned char lbl_802FACF8[];
 extern unsigned char lbl_802FACD8[];
-extern unsigned char lbl_8055FEB0, lbl_8055FD24;
+extern unsigned char lbl_8055FEB0, gAlphaCompareRef;
 #pragma scheduling invalid_target
 /* Clear the blend-override flag, copy the first bound texture's alpha-reference byte
- * (offset 0xE4) into lbl_8055FD24, and set GX alpha compare to pass alpha > reference. */
+ * (offset 0xE4) into gAlphaCompareRef, and set GX alpha compare to pass alpha > reference. */
 /* Clear the blend-override flag, take the alpha-reference byte from the first bound CPU-light texture, and configure GX alpha compare to pass alpha greater than that reference. */ /* Clear the blend-override flag, take the alpha-reference byte from the first bound CPU-light texture, and configure GX alpha compare to pass alpha greater than that reference. */ void fn_802DB2D4(void) {
     lbl_8055FEB0 = 0;
-    lbl_8055FD24 = ((unsigned char *)gCpuLightTextures[0])[0xE4];
+    gAlphaCompareRef = ((unsigned char *)gCpuLightTextures[0])[0xE4];
     GXSetAlphaCompare(4, ((unsigned char *)gCpuLightTextures[0])[0xE4], 1, 0, 0);
 }
 
@@ -807,7 +807,7 @@ extern "C" void fn_802DC71C(int arg0, int arg1) {
         lbl_8055FEB0 = (*(unsigned int *)((unsigned char *)tex1 + 0xE0) >> 3) & 1;
     }
     GXSetAlphaCompare(4, *((unsigned char *)tex1 + 0xE4), 1, 0, 0);
-    lbl_8055FD24 = *((unsigned char *)tex1 + 0xE4);
+    gAlphaCompareRef = *((unsigned char *)tex1 + 0xE4);
     *(unsigned int *)(lbl_804DB480 + 4) = 0;
     *(unsigned int *)(lbl_804DB480 + 0x214) = 0;
     *(unsigned char *)(lbl_804DB480 + 0x218) = 1;

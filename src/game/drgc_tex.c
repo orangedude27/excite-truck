@@ -913,7 +913,7 @@ extern void fn_802CFF5C(void *);
 extern void fn_802CFFA4(unsigned int);
 extern void GXLoadTlut(void *, int);
 extern unsigned int lbl_8055FD1C;
-extern unsigned char lbl_8055FD24;
+extern unsigned char gAlphaCompareRef;
 extern unsigned int lbl_8055FD30;
 /* Bind a texture (and optional secondary texture/TLUT) to GX state and record it as the active primary texture. */ void gxBindTexture(void *texture) {
     char *tex = (char *)texture;
@@ -922,7 +922,7 @@ extern unsigned int lbl_8055FD30;
     lbl_8055FE18 = texture;
     fn_802CFF5C((void *)(*(unsigned int *)(tex + 0xE0) | (lbl_8055FD1C & ~0x14E)));
     fn_802CFFA4(*(unsigned int *)(tex + 0xDC));
-    lbl_8055FD24 = *(unsigned char *)(tex + 0xE4);
+    gAlphaCompareRef = *(unsigned char *)(tex + 0xE4);
     if (*(int *)(tex + 0x70) != 0) GXLoadTlut(tex + 0x64, 0);
     GXLoadTexObj(tex + 0x24, 0);
     if (*(unsigned char *)(tex + 0xCC) != 0) {

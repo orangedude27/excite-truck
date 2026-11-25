@@ -101,7 +101,7 @@ extern unsigned char lbl_8055FD60;
 extern float lbl_80564F94;
 extern unsigned char lbl_804C5690[];
 extern unsigned char lbl_802FAC70[];
-extern unsigned char lbl_8055FD24;
+extern unsigned char gAlphaCompareRef;
 extern void GXSetAlphaCompare(int, unsigned char, int, int, int);
 extern void GXSetZMode(int, int, int);
 extern int lbl_802FACB0[6];
@@ -602,7 +602,7 @@ void fn_802CF5D0(void) {
 }
 #pragma pop
 
-#define alphaCompareRef lbl_8055FD24        /* cached alpha-reference byte (GXSetAlphaCompare ref0) */
+#define alphaCompareRef gAlphaCompareRef        /* cached alpha-reference byte (GXSetAlphaCompare ref0) */
 #define alphaCompareAppliedRef lbl_8055FD91 /* last alpha reference programmed into the GX registers */
 
 #pragma scheduling invalid_target
@@ -1840,7 +1840,7 @@ extern unsigned char lbl_804C5690[];
 extern unsigned char lbl_802FAC70[];
 extern void GXSetAlphaCompare(int, unsigned char, int, int, int);
 extern void GXSetZMode(int, int, int);
-extern unsigned char lbl_8055FD24;
+extern unsigned char gAlphaCompareRef;
 /* Configure alpha compare and Z mode for a transparent (mode 0) or opaque (mode 1) drawing pass. */
 /* Set alpha compare and Z-write state for transparent (mode 0) or opaque (mode 1) passes. */ /* Configure alpha compare and Z-write state for a transparent (mode 0) or opaque (mode 1) drawing pass: the reference byte is the cached alpha-ref used by GXSetAlphaCompare. */ void fn_802D0E48(int mode) {
     if (mode == 0) {
@@ -1976,9 +1976,9 @@ void fn_802D0EEC(void) {
         lbl_8055FD74 = (unsigned int)lbl_8055FD1C;
     }
 
-    if (lbl_8055FD24 != lbl_8055FD91) {
-        GXSetAlphaCompare(4, lbl_8055FD24, 1, 0, 0);
-        lbl_8055FD91 = lbl_8055FD24;
+    if (gAlphaCompareRef != lbl_8055FD91) {
+        GXSetAlphaCompare(4, gAlphaCompareRef, 1, 0, 0);
+        lbl_8055FD91 = gAlphaCompareRef;
     }
 
     if (lbl_8055FD86 != lbl_8055FD88) {
