@@ -732,7 +732,7 @@ void fn_802CDB5C(int arg0) {
 }
 #pragma opt_propagation reset
 void mlistRelocatePointer(int *, int);
-void fn_802CE278(int *, int);
+void mlistRelocatePointer1C(int *, int);
 void fn_802CE290(int *, int);
 void fn_802CE2A8(int *, int);
 void fn_802CE2C0(int *, int);
@@ -865,7 +865,7 @@ void fn_802CDDC8(void *arg0, int arg1) {
     t = base[0x90]; base[0x90] = base[0x93]; base[0x93] = t;
     t = base[0x91]; base[0x91] = base[0x92]; base[0x92] = t;
     mlistRelocatePointer((int *)(base + 0x14), arg1);
-    fn_802CE278((int *)(base + 0x1C), arg1);
+    mlistRelocatePointer1C((int *)(base + 0x1C), arg1);
     fn_802CE290((int *)(base + 0x24), arg1);
     fn_802CE2A8((int *)(base + 0x2C), arg1);
     index = 0;
@@ -940,7 +940,7 @@ void mlistRelocatePointer(int *value, int delta) {
     }
 }
 
-void fn_802CE278(int *value, int delta) {
+void mlistRelocatePointer1C(int *value, int delta) {
     /* Add delta to *value, leaving a zero (null) sentinel unchanged. */
     int cur = *value;
     if (cur != 0) {
