@@ -610,14 +610,14 @@ void fn_802CADD0(int textureSlot, int unitIndex) {
     }
 }
 
-int TextureSlot_isLoaded(int slotIndex) {
+/* Return whether slotIndex is a valid texture slot (0..0x1FF) whose 0x4C-byte record marks a texture as loaded. */ int TextureSlot_isLoaded(int slotIndex) {
     /* Return whether slotIndex names a valid texture slot whose texture is loaded. */
-    int inUse = 0;
+    int isLoaded = 0;
     if (slotIndex >= 0 && slotIndex < 0x200 &&
         *(int *)(gTextureSlotTable + slotIndex * 0x4C) > 0) {
-        inUse = 1;
+        isLoaded = 1;
     }
-    return inUse;
+    return isLoaded;
 }
 
 extern int fn_802C90E0(void);
