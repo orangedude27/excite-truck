@@ -109,7 +109,7 @@ void fn_802C2CE8(void *arg0, s32 arg1, s32 arg2, s8 arg3) {
     fn_802C3014(arg0);
 }
 
-void fn_802C2D94(void *canvas) {
+/* Free a GxCanvas: release its pixel buffer, then zero the whole canvas block. */ void fn_802C2D94(void *canvas) {
     /* Free a canvas: release its pixel buffer (+0x4) then zero the whole GxCanvas block. */
     fn_80128658((s32)((GxCanvas *)canvas)->pixels);
     memset(canvas, 0, sizeof(GxCanvas));
