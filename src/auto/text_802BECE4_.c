@@ -210,7 +210,7 @@ extern void fn_802C9900(float);
 extern void gxLoadTexMtx(void *, int);
 extern void DrawModelInstance(int);
 extern void fn_802C9904(void);
-extern void fn_802D3D80(void);
+extern void gxClearTexCoordMtxFlag(void);
 extern void DrawList_reapplyProjection(void);
 #pragma scheduling invalid_target
 #pragma processor 750
@@ -296,7 +296,7 @@ void fn_802BF160(void) {
         point += 3;
     } while (i < 3);
     fn_802C9904();
-    fn_802D3D80();
+    gxClearTexCoordMtxFlag();
     DrawList_reapplyProjection();
 }
 void fn_802BF350(void) {

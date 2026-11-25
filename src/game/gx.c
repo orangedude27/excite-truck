@@ -3447,7 +3447,7 @@ void fn_802D3D6C(void) {
 #undef texCoordMtxFlag
 }
 
-void fn_802D3D80(void) {
+void gxClearTexCoordMtxFlag(void) {
     /* Disable texture-matrix 0 for texcoord 0 in the shared render request block
        (request +0xC selects GX_IDENTITY instead of GX_TEXMTX0 in buildDefaultTevPipeline). */
     gRenderRequest[12] = 0;
