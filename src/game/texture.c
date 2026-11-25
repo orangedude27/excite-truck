@@ -501,9 +501,9 @@ void fn_802CAC28(int name, int sceneId) {
     fn_802CA898(name, sceneId, 0, 0xE);
 }
 
-void RegisterTextureWithResource(int name, int resource) {
+void RegisterTextureWithResource(int textureName, int resourceHandle) {
     /* Register a named texture backed by an existing resource handle, with no scene id and fixed type 0xE. */
-    fn_802CA898(name, 0, resource, 0xE);
+    fn_802CA898(textureName, 0, resourceHandle, 0xE);
 }
 
 void registerTexture(int name, int type) {
