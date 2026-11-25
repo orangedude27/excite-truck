@@ -42,7 +42,7 @@ int stricmp(const char *, const char *);
 extern const char lbl_8034B3DC[];
 extern const char lbl_8034B34C[];
 int MRModel_ReleaseResource(int);
-int fn_802C90E0(void);
+int DrawList_isOutsideScene(void);
 int fn_802E30C8(const char *, int);
 int fn_802C6B44(int);
 int fn_802C6DC4(int, int, int, int);
@@ -1261,7 +1261,7 @@ void fn_802C6FB4(void *groupList) {
 
 /* Loads a MODL model resource by path and creates a model instance, warning when called during an active scene render pass. */
 void fn_802C6FC0(void *modelPath, int variantIdx, int createFlags) {
-    if (fn_802C90E0() == 0) {
+    if (DrawList_isOutsideScene() == 0) {
         Abend_warn(sModelLoadInSceneFmt, modelPath);
     }
     mrModelCreateInstance((int)modelPath, mrModelLoadResource((int)modelPath), variantIdx, createFlags);
@@ -1273,7 +1273,7 @@ void fn_802C703C(int modelId) {
     fn_802C6C38(modelId);
 }
 
-int fn_802C90E0(void);
+int DrawList_isOutsideScene(void);
 int fn_802E30C8(const char*, int);
 extern const char lbl_8034B34C[];
 int MRModel_GetInstanceGroupList();

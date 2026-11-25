@@ -59,7 +59,7 @@ struct DrawListWrapper {
 #define Pool_Free   fn_8012A364 /* (void *pool, void *element): push one back */
 
 /* Which GX render state the draw lists are drawing in.  Only 0 is read back
- * (fn_802C90E0 asks whether the module is shut down); the other values record
+ * (DrawList_isOutsideScene asks whether the module is shut down); the other values record
  * the state the function that set them left GX in: 1 the game's normal one
  * (DrawList_RestoreNormalMode puts it back), 2 the one texSelectSlot/endMeshPass set up,
  * 3 DrawList_BeginProjection's with the world matrix saved, 4 the alpha-only overlay pass
@@ -712,7 +712,7 @@ int fn_802C8FF4(float *arg0, float arg1) {
     return result;
 }
 #pragma scheduling on
-int fn_802C90E0(void) {
+int DrawList_isOutsideScene(void) {
     /* True when no draw-list render pass is active (the render-mode flag is 0). */
     return sRenderMode == 0;
 }

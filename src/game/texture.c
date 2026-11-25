@@ -10,7 +10,7 @@ extern char texMsgBadExtractionName[];
 extern void *jumptable_8034B794[];
 extern char lbl_8034B618[];
 extern int defaultTextureName;
-extern int fn_802C90E0(void);
+extern int DrawList_isOutsideScene(void);
 extern int fn_802D8E9C(void *, unsigned int);
 extern int lbl_8055D038;
 extern int lbl_8055D040;
@@ -229,7 +229,7 @@ int fn_802CA3F4(void *arg0, int arg1, int arg2, int arg3, int arg4) {
 // Creates a texture from a descriptor and name, logging creation to the current scene when needed.
 /* Build a texture-creation request from a descriptor and name, log it in the scene unless it is the default name, then create the texture. */ int fn_802CA4E0(int textureDesc, int textureName, int isRenderTarget, int createParam, int param4) {
     char request[0x34];
-    if (fn_802C90E0() == 0 && (unsigned int)textureName != (unsigned int)defaultTextureName)
+    if (DrawList_isOutsideScene() == 0 && (unsigned int)textureName != (unsigned int)defaultTextureName)
         fn_802E30C8(lbl_8034B618, textureName);
     fn_802CA3F4(request, textureDesc, isRenderTarget == 1 ? 3 : 1, createParam, param4);
     return fn_802D8E9C(request, textureName);
@@ -623,7 +623,7 @@ void texSelectSlot(register int slotIndex) {
     return isLoaded;
 }
 
-extern int fn_802C90E0(void);
+extern int DrawList_isOutsideScene(void);
 extern void fn_802E30C8(const char *, ...);
 extern int fn_802CA3F4(void *, int, int, int, int);
 extern int fn_802D8E9C(void *, unsigned int);
