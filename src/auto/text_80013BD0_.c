@@ -1097,49 +1097,60 @@ extern f32 lbl_80560368, lbl_80560384, lbl_805603CC, lbl_805603D0;
 extern char lbl_80558BC4;
 #pragma dont_inline on
 #pragma use_lmw_stmw off
-void fn_800154B8(void) {
-    s32 current;
-    s32 *base;
-    s32 *pFirst;
-    register s32 first, left, right, start, i, limit;
-    register f32 y, step;
-    current = fn_801EA994();
-    base = *(s32 **)((char *)lbl_8055D350 + 0x30);
-    left = 2;
-    right = 2;
-    pFirst = (s32 *)((char *)base + 4);
-    first = *pFirst;
-    if (first <= 2) {
-        left = first - 1;
-        right = 2 - left;
-        right = right + 2;
-    } else if (first > current - 2) {
-        left = first - (current - 2);
-        left = left + 2;
-        right = current - first;
-    }
-    y = lbl_805603CC;
-    start = first - (left & ~(left >> 31));
-    right = right & ~(right >> 31);
-    i = 1;
-    if (start >= 1)
-        i = start;
-    step = lbl_80560384;
-    for (; i < (limit = *(s32 *)(*(u8 **)((u8 *)lbl_8055D350 + 0x30) + 4)); ++i) {
-        fn_8000FF88(-1, 9, &lbl_80558BC4, i, fn_801EA9B0(i - 1) + 0x48, lbl_80560368, lbl_805603D0, y);
-        y -= step;
-    }
-    fn_8000FF88(-0x100, 9, &lbl_80558BC4, limit,
-                *(s32 *)((u8 *)lbl_8055D350 + 0x28) + 0x48,
-                lbl_80560368, lbl_805603D0, y);
-    step = lbl_80560384;
+void fn_800154B8(void)
+{
+  s32 current;
+  s32 *base;
+  register s32 first;
+  register s32 left;
+  register s32 right;
+  register s32 start;
+  register s32 i;
+  register s32 limit;
+  register f32 y;
+  register f32 step;
+  current = fn_801EA994();
+  base = *((s32 **) (((char *) lbl_8055D350) + 0x30));
+  left = 2;
+  right = 2;
+  first = base[1];
+  if (first <= 2)
+  {
+    left = first - 1;
+    right = 2 - left;
+    right = (right & 0xFFFFFFFFu) + 2;
+  }
+  else
+    if (first > (current - 2))
+  {
+    left = first - (current - 2);
+    left = left + (((((((((2 & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) & 0xFFFFu);
+    right = current - first;
+  }
+  y = lbl_805603CC;
+  start = first - (left & (~(left >> 31)));
+  right = (right & (~(right >> 31))) & 0xFFFFFFFFu;
+  i = 1;
+  if (start >= 1)
+  {
+    i = start;
+  }
+  step = lbl_80560384;
+  for (; i < (limit = *((s32 *) ((*((u8 **) (((u8 *) lbl_8055D350) + 0x30))) + 4))); ++i)
+  {
+    fn_8000FF88(-1, 9, &lbl_80558BC4, i, fn_801EA9B0(i - 1) + 0x48, lbl_80560368, lbl_805603D0, y);
     y -= step;
-    for (i = *(s32 *)(*(u8 **)((u8 *)lbl_8055D350 + 0x30) + 4) + 1;
-         i <= *(s32 *)(*(u8 **)((u8 *)lbl_8055D350 + 0x30) + 4) + right &&
-         i <= fn_801EA994(); ++i) {
-        fn_8000FF88(-1, 9, &lbl_80558BC4, i, fn_801EA9B0(i - 1) + 0x48, lbl_80560368, lbl_805603D0, y);
-        y -= step;
-    }
+  }
+
+  fn_8000FF88(-0x100, 9, &lbl_80558BC4, limit, (*((s32 *) (((u8 *) lbl_8055D350) + 0x28))) + 0x48, lbl_80560368, lbl_805603D0, y);
+  step = lbl_80560384;
+  y -= step;
+  for (i = (*((s32 *) ((*((u8 **) (((u8 *) lbl_8055D350) + 0x30))) + 4))) + 1; (i <= ((*((s32 *) ((*((u8 **) (((u8 *) lbl_8055D350) + 0x30))) + 4))) + right)) && (i <= fn_801EA994()); ++i)
+  {
+    fn_8000FF88(-1, 9, &lbl_80558BC4, i, fn_801EA9B0(i - 1) + 0x48, lbl_80560368, lbl_805603D0, y);
+    y -= step;
+  }
+
 }
 extern s32 fn_80144F34(void *, s32, void *);
 extern f32 fn_80011DEC(void *);
