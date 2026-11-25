@@ -10083,7 +10083,7 @@ extern "C" void fn_8022A19C(void *arg0, void *arg1) {
 
 extern "C" void *fn_802C86DC(void);
 extern "C" void fn_802C77F0(s32, f32 *);
-extern "C" void fn_802C98DC(f32 *, f32 *, f32 *, f32 *);
+extern "C" void DrawList_getViewParams(f32 *, f32 *, f32 *, f32 *);
 extern "C" f64 fn_8002F234(f32);
 extern "C" f64 atan(f32);
 extern "C" f32 lbl_80563584;
@@ -10131,7 +10131,7 @@ extern "C" void fn_8022A210(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, 
     temp_f31 = deltaY * deltaY + deltaX * deltaX;
     temp_f31 += deltaZ * deltaZ;
     temp_f31 = (f32)fn_8002F234(temp_f31); temp_f31 = lbl_805634C4 * temp_f31;
-    fn_802C98DC(&scratch[1], &scratch[3], &scratch[2], &scratch[0]);
+    DrawList_getViewParams(&scratch[1], &scratch[3], &scratch[2], &scratch[0]);
     var_f30 = temp_f31 / scratch[0];
     var_f2 = temp_f31 / (f32)sin((f64)(f32)atan((scratch[1] * (f32)height) / (f32)width));
     temp_f0 = temp_f31 + lbl_80563584 * scratch[3];

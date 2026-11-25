@@ -1079,7 +1079,7 @@ int fn_802C03E0(unsigned int color) {
 extern float lbl_80564DF4, lbl_80564E00, lbl_80564E04, lbl_80564E08;
 extern double lbl_80564DF8;
 extern int fn_802DD42C(int, float);
-extern void fn_802C98DC(float *, float *, float *, float *, float);
+extern void DrawList_getViewParams(float *, float *, float *, float *, float);
 extern double fn_8002F234(double, double);
 extern float fn_802C9C50(void);
 extern float fn_802C9C40(void);
@@ -1117,7 +1117,7 @@ extern void fn_802C03F0(void *arg0) {
     float *q;
     DrawList_copyCurrentMatrix(&s[84]);
     f14 = s[94] - lbl_8055FAF4;
-    fn_802C98DC(&s[5], &s[3], &s[4], &s[2], s[94]);
+    DrawList_getViewParams(&s[5], &s[3], &s[4], &s[2], s[94]);
     f2 = lbl_80564DF4 * s[4];
     s[126] = f14 * s[91];
     s[127] = s[3];
@@ -1237,7 +1237,7 @@ extern void fn_802C03F0(void *arg0) {
     DrawList_RestoreNormalMode();
     fn_802DBECC();
     DrawList_copyCurrentMatrix(&s[72]);
-    ((void (*)(float *, float *, float *, float *))fn_802C98DC)(&s[0], &s[1], &s[0], &s[0]);
+    ((void (*)(float *, float *, float *, float *))DrawList_getViewParams)(&s[0], &s[1], &s[0], &s[0]);
     f8 = lbl_80564D7C;
     s[1] = s[1] + f8;
     s[36] = s[81] + (s[78] * s[1]);

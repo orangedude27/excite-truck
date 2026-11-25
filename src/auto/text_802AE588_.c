@@ -727,7 +727,7 @@ void fn_802AEB3C(volatile u8 *arg0) {
     temp_f1_2 = (f32) sin(lbl_80564B7C - (temp_f18_2 * lbl_80564B6C));
     temp_r7_2 = workspace + 0x7C8;
     *(f32 *)((u8 *)(temp_r7_2) + (0x3C)) = (f32) (lbl_80564B80 / temp_f1_2);
-    fn_802C98DC(&sp1C, workspace + 0x7C8 + 0x40, workspace + 0x7C8 + 0x44, &sp1C, temp_r7_2, temp_f1_2);
+    DrawList_getViewParams(&sp1C, workspace + 0x7C8 + 0x40, workspace + 0x7C8 + 0x44, &sp1C, temp_r7_2, temp_f1_2);
     sp18 = lbl_80564B84;
     temp_r6_2 = (*(u32 *)&(sp18) >> 0x17U) & 0x7F;
     temp_r14_2 = *(s32 *)lbl_8055F984 + (*(s32 *)(workspace + 0x708 + ((temp_r6_2 + 1) * 4)) * 2);

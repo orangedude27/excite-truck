@@ -17,7 +17,7 @@ extern void fn_801293DC(void *);
 extern void __AXDSPInitCallback_801293D0(void);
 extern void *fn_802C86DC(int);
 extern int fn_802C94A0(void *, void *, void *, float, float, float, float, float, float);
-extern void fn_802C98DC(void *, void *, void *, void *, float, float, float);
+extern void DrawList_getViewParams(void *, void *, void *, void *, float, float, float);
 extern void fn_802CCBC0();
 extern float lbl_8055D0A0;
 extern float lbl_8055D0A4;
@@ -397,7 +397,7 @@ void fn_802CD37C(void *arg0, void *arg1, float *arg2, int arg3, float farg0, flo
         f[65] = z * f[74] + (x * f[72] + y * f[73]);
     }
     f[63] *= lbl_80564F60; f[64] *= lbl_80564F60; f[65] *= lbl_80564F60;
-    fn_802C98DC(&lbl_8055FCD4, &lbl_8055D0A0, &lbl_8055D0A4, &f[1], f[64], f[63], lbl_80564F60);
+    DrawList_getViewParams(&lbl_8055FCD4, &lbl_8055D0A0, &lbl_8055D0A4, &f[1], f[64], f[63], lbl_80564F60);
     {
         float t8 = (lbl_8055D0A4 + lbl_8055D0A0) / (lbl_8055D0A4 - lbl_8055D0A0);
         float t42 = lbl_80564F58 / lbl_8055FCD4;

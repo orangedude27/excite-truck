@@ -96,14 +96,14 @@ extern float lbl_8056448C;
 extern float lbl_80564494;
 extern float lbl_80564498;
 extern float lbl_8056449C;
-/* Fetch the four current view parameters into scratch slots (fn_802C98DC
+/* Fetch the four current view parameters into scratch slots (DrawList_getViewParams
  * reports tangent, view X, view Y and depth), then return view Y minus 1.0
  * (lbl_80564480). The four incoming float arguments are not used. */
 float fn_80291784(float deltaX, float deltaY, float deltaZ, float deltaW) {
     int out0, out1;
     float viewY;
     int out3;
-    fn_802C98DC(&out0, &out1, &viewY, &out3);
+    DrawList_getViewParams(&out0, &out1, &viewY, &out3);
     return viewY - lbl_80564480;
 }
 
@@ -298,39 +298,38 @@ void fn_80291C7C(void *arg0, int arg1) {
     struct Vec3 pos = *(struct Vec3 *)arg0;
     float *p = (float *)arg0;
     float a[3], b[3];
-    float ratio;
-    double angle, s, c;
+    float ratio = 0.0f;
+    float target, s, angle, c;
     unsigned int color;
     int amount;
     double d;
 
+    float num, den;
+
     d = __fabs((double)(pos.x - lbl_80564494 * (float)lbl_8055CFF0));
-    ratio = ((float)d - lbl_805644A4 * (float)lbl_8055CFF0) /
-        (lbl_80564494 * (float)lbl_8055CFF0 - lbl_805644A4 * (float)lbl_8055CFF0);
+    num = (float)d - lbl_805644A4 * (float)lbl_8055CFF0;
+    den = lbl_80564494 * (float)lbl_8055CFF0 - lbl_805644A4 * (float)lbl_8055CFF0;
+    ratio = 0.0f;
+    target = num / den;
     pos.z = 1.0f;
-    if (ratio < 0.0f) {
-        ratio = 0.0f;
-    }
-    if (ratio > 1.0f) {
-        ratio = 1.0f;
-    }
+    ratio = ratio < target ? target : ratio;
+    ratio = ratio > 1.0f ? 1.0f : ratio;
 
     color = *(unsigned int *)((char *)arg0 + 0x18);
-    amount = (int)((lbl_80564480 + ratio * lbl_805644A8) * (float)(color >> 24));
+    amount = (int)((float)(color >> 24) * (lbl_80564480 + ratio * lbl_805644A8));
     if (amount <= 0) {
         return;
     }
-    color = (color & 0xFFFFFF) | (amount << 24);
+    color = (amount << 24) | (color & 0xFFFFFF);
     if (arg1 == 0) {
-        angle = fn_8002EFB4((p[0] - p[1]) / lbl_805644AC, lbl_805644B0);
-        angle = (float)angle;
-        s = (float)sin((float)angle);
-        c = (float)cos((float)angle);
-        a[0] = (float)c;
-        a[1] = (float)s;
+        angle = fn_8002EFB4((pos.x - pos.y) / lbl_805644AC, lbl_805644B0);
+        s = sin(angle);
+        c = cos(angle);
+        a[0] = c;
+        a[1] = s;
         a[2] = 1.0f;
-        b[0] = (float)s;
-        b[1] = (float)-c;
+        b[0] = s;
+        b[1] = -c;
         b[2] = 1.0f;
     } else {
         a[0] = lbl_805644B8;
