@@ -64,9 +64,9 @@ extern void exit(int);
 #pragma scheduling invalid_target
 /* Report a fatal "ABEND" with the given message, then deliberately fault on a
  * write to address 0 and hang so the process cannot continue. */
-void Abend_ReportFatal(void *message) {
+/* Log the ABEND banner with the given label, then fault on a write to address 0 and hang so execution cannot continue. */ void Abend_ReportFatal(void *label) {
     int zero = 0;
-    fn_802E30C8(sAbendFormat, message);
+    fn_802E30C8(sAbendFormat, label);
     *(int *)0 = zero;
     for (;;) {}
 }
