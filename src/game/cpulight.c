@@ -452,10 +452,13 @@ void fn_802DBE4C(void) {
 
 #pragma scheduling on
 void fn_802DBECC(void) {
-    /* Disable CPU lighting: reinitialize the GX/TEV render state, reset TEV stage 0's K-alpha select, and clear the CPU-lighting enabled flag. */
+    /* Disable CPU lighting: reinitialize the GX/TEV render state, reset TEV stage 0's
+     * constant-alpha selector, and clear the CPU-lighting enabled flag. */
+#define gCpuLightEnabled lbl_8055FEB8
     fn_802D3360();
     GXSetTevKAlphaSel(0, 0);
-    lbl_8055FEB8 = 0;
+    gCpuLightEnabled = 0;
+#undef gCpuLightEnabled
 }
 
 #pragma dont_inline on
