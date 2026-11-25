@@ -933,7 +933,7 @@ void fn_802CDDC8(void *arg0, int arg1) {
 }
 #pragma scheduling invalid_target
 /* Relocate an embedded mlist pointer while its data is byte-swapped/converted: add delta, but leave a zero (null) field untouched. */
-void mlistRelocatePointer(int *value, int delta) {
+/* Relocate an embedded mlist pointer while its data is byte-swapped/converted: add delta, but leave a zero (null) field untouched. */ void mlistRelocatePointer(int *value, int delta) {
     int ptr = *value;
     if (ptr != 0) {
         *value = ptr + delta;
