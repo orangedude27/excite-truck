@@ -4,7 +4,7 @@ void *fn_802678E4(int);
 extern float lbl_805640A0, lbl_805640A4, lbl_805640A8, lbl_805640AC;
 extern void fn_8026E22C(float *, void *, void *, float);
 extern void fn_801345D8(char *, int, const char *, ...);
-extern void fn_802D08B4(int, int, int);
+extern void gxSetTileGrid(int, int, int);
 extern void fn_802D07E4(char *, int);
 extern void fn_80128670(int);
 extern const char lbl_80347580[];
@@ -160,89 +160,100 @@ extern double lbl_805640B0;
 #pragma push
 #pragma scheduling invalid_target
 extern char lbl_8055C660;
-void fn_80278360(void *arg0) {
-    register unsigned char state;
-    register int now;
-    int count;
-    int *base;
-    volatile int *dst;
-    volatile int *src;
-    int age;
-    int old;
-    int first;
-    int second;
-    int value;
-    int offset;
-    float f;
-
-    state = *(volatile unsigned char *)&lbl_8055F5B8;
-    if (state == 0)
-        goto record;
-    count = *(volatile int *)&lbl_8055F5B4;
-    if (count != 0)
-        goto record;
-    now = *(volatile int *)&lbl_8055E3C4;
-    if (now > 10)
-        return;
-    if (*(volatile unsigned char *)&lbl_8055F5B8 == 0)
-        goto report_once;
-    count = *(volatile int *)&lbl_8055F5B4;
-    if (count >= 2)
-        goto report_once;
-    if (count == 0)
-        goto report_always;
-    base = (int *)lbl_8055F5B0;
-    old = *(int *)((char *)base + (count - 1) * 0x38 + 0x34);
-    age = lbl_8055E3C4 - old;
-    if (age < 2)
-        return;
-
-record:
-    src = (volatile int *)arg0;
-    count = *(volatile int *)&lbl_8055F5B4;
-    base = (int *)*(volatile int *)&lbl_8055F5B0;
-    offset = count * 0x38;
-    now = *(volatile int *)&lbl_8055E3C4;
-    first = src[0x16];
-    second = src[0x17];
-    *(volatile int *)&lbl_8055F5B4 = count + 1;
-    dst = (volatile int *)((char *)base + offset);
-    value = src[0x18];
-    dst[13] = now;
-    now = src[0x19];
-    dst[0] = first;
-    first = src[0x1A];
-    dst[1] = second;
-    second = src[0x1B];
-    dst[2] = value;
-    value = src[0x1C];
-    dst[3] = now;
-    now = src[0x1D];
-    dst[4] = first;
-    first = src[0x1E];
-    dst[5] = second;
-    second = src[0x1F];
-    dst[6] = value;
-    value = src[0x20];
-    dst[7] = now;
-    now = src[0x21];
-    dst[8] = first;
-    f = *(volatile float *)((char *)src + 0xBC);
-    dst[9] = second;
-    dst[10] = value;
-    dst[11] = now;
-    *(volatile float *)((char *)dst + 0x30) = f;
+void fn_80278360(const void *arg0)
+{
+  register unsigned char state;
+  int count;
+  int *base;
+  volatile int *dst;
+  volatile int *src;
+  int now;
+  int age;
+  int old;
+  int first;
+    int __repair_first_1;
+  int second;
+  int offset;
+  float f;
+  state = *((volatile unsigned char *) (&lbl_8055F5B8));
+  if (state == 0)
+  {
+    goto record;
+  }
+  count = *((volatile int *) (&lbl_8055F5B4));
+  if (count != 0)
+  {
+    goto record;
+  }
+  now = *((volatile int *) (&lbl_8055E3C4));
+  if (now > 10)
+  {
     return;
+  }
+  if (*((volatile unsigned char *) (&lbl_8055F5B8)) == 0)
+  {
+    goto report_once;
+  }
+  count = *((volatile int *) (&lbl_8055F5B4));
+  if (count >= 2)
+  {
+    goto report_once;
+  }
+  if (count == 0)
+  {
+    goto report_once;
+  }
+  base = (int *) lbl_8055F5B0;
+  old = *((int *) ((((char *) base) + ((count - 1) * 0x38)) + 0x34));
+  age = lbl_8055E3C4 - old;
+  if (age < 2)
+  {
+    return;
+  }
+  record:
+  src = (volatile int *) arg0;
 
-report_always:
+  count = *((volatile int *) (&lbl_8055F5B4));
+  base = (int *) (*((volatile int *) (&lbl_8055F5B0)));
+  offset = count * (0x38 & 0xFFFFFFFFFFFFFFFFu);
+  now = *((volatile int *) (&lbl_8055E3C4));
+  first = src[0x16];
+  second = src[0x17];
+  *((volatile int *) (&lbl_8055F5B4)) = count + 1;
+  dst = (volatile int *) (((char *) base) + offset);
+  offset = src[0x18];
+  dst[13] = now;
+  now = src[0x19];
+  dst[0] = first;
+  __repair_first_1 = src[0x1A];
+  dst[1] = second;
+  second = src[0x1B];
+  dst[2] = offset;
+  offset = src[0x1C];
+  dst[3] = now;
+  now = src[0x1D];
+  dst[4] = __repair_first_1;
+  first = src[0x1E];
+  dst[5] = second;
+  second = src[0x1F];
+  dst[6] = offset;
+  offset = src[0x20];
+  dst[7] = now;
+  now = src[0x21];
+  dst[8] = first;
+  f = *((volatile float *) (((char *) src) + 0xBC));
+  dst[9] = second;
+  dst[10] = offset;
+  dst[11] = now;
+  *((volatile float *) (((char *) dst) + 0x30)) = f;
+  return;
+  report_once:
+  if (((((lbl_8055F5C9 & 0xFFu) & 0xFFu) & 0xFFu) & 0xFFu) == 0)
+  {
     lbl_8055F5C9 = 1;
     fn_802E30C8(&lbl_8055C660, lbl_803475D8);
-    return;
-report_once:
-    if (lbl_8055F5C9 == 0) {
-        lbl_8055F5C9 = 1;
-        fn_802E30C8(&lbl_8055C660, lbl_803475D8);
-    }
+  }
+
 }
 
 #pragma push
@@ -292,7 +303,7 @@ void fn_8027847C(void *arg0) {
             if (frame>=0 && frame<=lbl_8055F5BC-lbl_8055F5C0 && lbl_8055F5C0<=lbl_8055F5BC && frame%2==0) {
                 fn_802E30C8(base+0xa8,frame);
                 fn_801345D8(buffer,256,base+0xd0,lbl_804A15D0,frame/2);
-                fn_802D08B4(2,2,1);
+                gxSetTileGrid(2,2,1);
                 fn_802D07E4(buffer,1);
             }
         }

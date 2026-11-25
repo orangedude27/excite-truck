@@ -1571,7 +1571,7 @@ void fn_802E30C8(const char *, ...);
 void closeFileHandle(int *);
 int FileOpenSecondary(unsigned char *);
 /* Configure the tiled offscreen-render grid: set its column count, row count and mode flag. */
-void fn_802D08B4(int columns, int rows, unsigned char mode) {
+void gxSetTileGrid(int columns, int rows, unsigned char mode) {
 #define tileGridWidth lbl_8055D0BC
 #define tileGridHeight lbl_8055D0C0
 #define tileModeFlag lbl_8055FD18
