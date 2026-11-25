@@ -1254,7 +1254,6 @@ void fn_802C6FB4(void *groupList) {
     ((void (*)(void *, void *))VisitGroupIds)(groupList, fn_802D6C44);
 }
 
-#define DrawList_isOutsideScene fn_802C90E0
 #define Abend_warn(fmt, arg) ((int (*)(const char *, ...))fn_802E30C8)(fmt, arg)
 #define sModelLoadInSceneFmt lbl_8034B3DC
 #define mrModelLoadResource fn_802C6B44
