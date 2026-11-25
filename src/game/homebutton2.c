@@ -282,7 +282,7 @@ extern void KERNEL_GetTimeMs(void);
 extern void KERNEL_Reset(s32);
 extern void fn_802E30C8(const char *, ...);
 extern void fn_802E5438(void);
-extern void fn_802E7C40(void);
+extern void RjoyUpdateMotorEnabled(void);
 extern s32 RjoyGetKpadStatus(s32);
 extern void ConfigCacheWpadSettings(void);
 extern s32 lbl_80558898[];
@@ -326,7 +326,7 @@ void fn_802EC884(void) {
     }
     if (fn_800C65CC(lbl_80558898) >= 0) {
         ConfigCacheWpadSettings();
-        fn_802E7C40();
+        RjoyUpdateMotorEnabled();
         fn_802E5438();
         fn_802E30C8(menuStrings + 0x1A4);
         fn_802E30C8(menuStrings + 0x1C0, fn_800C673C());

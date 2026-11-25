@@ -250,7 +250,7 @@ dispatch:
 #pragma pop
 #define sRjoyMotorEnabled  lbl_80560008 /* cached WPAD rumble-enabled flag used by the motor driver */
 #define getWpadMotorConfig ConfigGetWpadMotorMode  /* config getter: 1 when WPAD rumble is enabled */
-void fn_802E7C40(void) {
+void RjoyUpdateMotorEnabled(void) {
     /* Cache the WPAD rumble config setting into rjoy's motor-enabled flag. */
     sRjoyMotorEnabled = getWpadMotorConfig();
 }
@@ -286,7 +286,7 @@ void fn_802E7C64(void) {
         callbackSlot += 1;
     } while (controllerIndex < 4);
     KERNEL_AddResetCallback((int)handleResetEvent, (int)&lbl_8055D22C);
-    fn_802E7C40();
+    RjoyUpdateMotorEnabled();
     lbl_80560009 = 1;
 }
 #pragma pop
