@@ -53,7 +53,7 @@ extern void OSTicksToCalendarTime(u64, struct OSTimeCalendar *);
 /* Round up to the next power of two: 1 << bit_length(value), i.e. 1 for 0 and
  * the smallest power of two strictly greater than value otherwise. Used by
  * fn_802E1960 to size textures to a power-of-two width. */
-unsigned int fn_802E176C(unsigned int value) {
+unsigned int roundUpPow2(unsigned int value) {
     return 1U << (32 - __cntlzw(value));
 }
 #pragma scheduling invalid_target
@@ -148,10 +148,10 @@ int fn_802E1954(int size) { return (size + 0x7F) & 0xFFFFFF80; }
 
 unsigned int fn_802E1960(unsigned int size) {
     /* Return a power-of-two texture width: size/8 rounded up to a multiple of 4,
-     * then raised to the next power of two by fn_802E176C when needed. */
+     * then raised to the next power of two by roundUpPow2 when needed. */
     unsigned int width = ((size >> 3) + 3) & ~3;
     if ((width & (width - 1)) != 0)
-        return fn_802E176C(width);
+        return roundUpPow2(width);
     return width;
 }
 
@@ -920,7 +920,7 @@ void fn_802E300C(int exitCode) {
 #undef KERNEL_LOG_PLAT_EXIT
 }
 #pragma scheduling on
-extern unsigned int fn_802E176C(unsigned int);
+extern unsigned int roundUpPow2(unsigned int);
 extern void fn_802E1780(void *, unsigned int, int);
 extern int fn_802E1804(void *, void *, int, int, int);
 extern int fn_802E18D4(int, int, int, int, void *, int);
