@@ -12,7 +12,7 @@ extern char lbl_8033C3F4[];
 __declspec(section ".sdata") extern const char lbl_8055B5B8[], lbl_8055B5C0[];
 extern float lbl_805632BC, lbl_805632C0, lbl_805632C4;
 extern void *fn_802E5AE8(void *);
-extern float fn_802E6040(void *);
+extern float SpuSampleGetLength(void *);
 extern void fn_802E30C8(const char *, ...);
 extern char *strchr(const char *, int);
 extern void Abend_Panic(const char *, ...);
@@ -517,7 +517,7 @@ appended:                   ;
                     } else Abend_Panic(lbl_8033C4A0, name);
                     *(void **)(obj + 0x14) = fn_802E5AE8(buffer);
                     *(void **)(obj + 0x18) = fn_8020A6AC(name);
-                    length = ((double (*)(void *))fn_802E6040)(*(void **)(obj + 0x10));
+                    length = ((double (*)(void *))SpuSampleGetLength)(*(void **)(obj + 0x10));
                     { float scale = lbl_805632C4, base = lbl_805632C0, n = (float)length;
                     *(float *)(obj + 0x48) = length;
                     *(unsigned int *)(obj + 0x4c) = (unsigned int)(lbl_805632BC * (base + scale * n)); }
