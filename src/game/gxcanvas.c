@@ -82,7 +82,7 @@ extern void gxCanvasFillRectRGBA4444(s32, s32, s32, s32, u32);
 #pragma pop
 #pragma push
 #pragma peephole off
-s32 fn_802C2CC4(s32 pixel16) {
+s32 gxCanvasConvert565ToRGBA(s32 pixel16) {
     /* Convert a 16-bit packed pixel from a format-4 canvas into a 32-bit GX
        RGBA color word for blitting into a 4-byte-per-pixel canvas (fn_802C3D74). */
     unsigned int lowBits = (pixel16 << 3) & 0xF8;
@@ -90,7 +90,7 @@ s32 fn_802C2CC4(s32 pixel16) {
 }
 #pragma pop
 
-#define Convert565ToRGBA fn_802C2CC4 /* one RGB565 (format 4) pixel -> 0x00RRGGBB word */
+#define Convert565ToRGBA gxCanvasConvert565ToRGBA /* one RGB565 (format 4) pixel -> 0x00RRGGBB word */
 #define Convert555ToRGBA gxCanvasConvert1555ToRGBA /* one RGB1555 (format 3) pixel -> 0x00RRGGBB word */
 /* Build a canvas of the given size using the default pixel format held in lbl_8055CFF8 (3 in this build). */
 void fn_802C2CDC(void *canvas, s32 width, s32 height) {
