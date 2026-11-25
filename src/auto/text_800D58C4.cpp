@@ -1487,11 +1487,10 @@ static inline void SetTagProcessorLevel1V2_800D77DC(u8 *self, s32 arg1) {
     }
 }
 #pragma push
-#pragma opt_lifetimes off
 extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
     u8 *self = *(u8 **)((u8 *)arg0 + 0x10);
     if (u8 *cast = DynCast_800D77DC(self)) *(s32 *)(cast + 0xF4) = arg1;
-    for (ChildIter_800D77DC it1 = ChildBegin_800D77DC(self); ChildNotEqual_800D77DC(it1, ChildEnd_800D77DC(self)); ChildNext_800D77DC(it1)) {
+    for (ChildIter_800D77DC it1 = ChildBegin_800D77DC(self); ChildNotEqual_800D77DC(it1, ChildEnd_800D77DC(self)); ChildNext_800D77DC(it1)) { /* level 1 */
         u8 *p1 = ChildPane_800D77DC(it1);
         if (u8 *cast = DynCast_800D77DC(p1)) *(s32 *)(cast + 0xF4) = arg1;
         for (ChildIter_800D77DC it2 = ChildBegin_800D77DC(p1); ChildNotEqual_800D77DC(it2, ChildEnd_800D77DC(p1)); ChildNext_800D77DC(it2)) {
