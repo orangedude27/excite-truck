@@ -1024,7 +1024,7 @@ void spuSetVoicePan(void *voice, float pan) {
     *(float *)((char *)voice + 0xC) = PanCenter;
 }
 
-void fn_802E620C(void *voice, float surroundPan) {
+void spuSetVoiceSurroundPan(void *voice, float surroundPan) {
     /* Set a voice's surround pan, forcing it to the default (1.0) unless the output mode is surround (2). */
     if ((int)SoundOutputMode == 2) {
         *(float *)((char *)voice + 0x14) = surroundPan;

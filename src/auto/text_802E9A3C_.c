@@ -295,7 +295,7 @@ void fn_802E9EB8(void) {
     extern int lbl_805600CC;
     extern char lbl_805600C9;
     extern float lbl_805651BC, lbl_805651C0, lbl_805651C8, lbl_805651CC, lbl_805651D0;
-    extern void fn_802E620C(int, float);
+    extern void spuSetVoiceSurroundPan(int, float);
     extern void fn_802E61BC(int);
     extern char lbl_805600D2;
     extern char lbl_805584A0;
@@ -367,7 +367,7 @@ void fn_802E9EB8(void) {
             vol = en ? lbl_8055D270 * f30 : lbl_805651C4;
             for (i = 0; i < 2; i++) {
                 spuSetVoiceVolume((&lbl_80560090)[i], vol);
-                fn_802E620C((&lbl_80560090)[i], lbl_805651D0);
+                spuSetVoiceSurroundPan((&lbl_80560090)[i], lbl_805651D0);
             }
         }
     }
