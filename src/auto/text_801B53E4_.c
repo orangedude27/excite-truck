@@ -333,8 +333,8 @@ void fn_801B59A4(void *arg0, s32 arg1, s32 arg2) {
     if (entry->children != NULL) { record[2] = *(s32 *)(lbl_80435EC8 + 4); } else { record[2] = 0; }
     node = entry->nodes;
     while (node != NULL) {
-        *idx = *(s32 *)(lbl_80435EC8 + 0x10);
         value = (u16)node->count;
+        *idx = *(s32 *)(lbl_80435EC8 + 0x10);
         (*(u16 **)(lbl_80435EC8 + 0x18))[(*idx)++] = value;
         *(s32 *)(lbl_80435EC8 + 0x10) = *idx;
         node = *(struct Entry **)((u8 *)node + 8);
