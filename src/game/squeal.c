@@ -93,7 +93,7 @@ extern void fn_80128668(void *);
 #pragma scheduling on
 #pragma push
 #pragma cplusplus on
-/* Update the squeal state from the four input records: accumulate clamped (value - 0.8f) contributions, publish the total and active flags into the state object, then notify the listener. */ extern "C" void SquealSound_update(void *self) {
+/* Update tire-squeal state from four input records: accumulate clamp(value - 0.8f, 0, 0.25f) over enabled records, publish the total and change flags into the state object, set active/idle flags, and notify the listener. */ /* Update the squeal state from the four input records: accumulate clamped (value - 0.8f) contributions, publish the total and active flags into the state object, then notify the listener. */ extern "C" void SquealSound_update(void *self) {
     struct Notifier {
         virtual void v0();
         virtual void v1();
