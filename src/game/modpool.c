@@ -14,7 +14,7 @@ extern void *fn_8013420C(int, int);
 extern void *fn_8002F37C(void *, int, int, int);
 extern char lbl_8034BCE4[]; /* "loadpool" - allocation name for the load pool */
 extern char lbl_8034BCD8[]; /* "modelpool" - allocation name for model storage */
-extern void fn_802CE474(void *);
+extern void modPoolInitSlot(void *);
 __declspec(section ".sdata") extern char lbl_8055D0A8[]; /* "modpool" - allocation name for the manager */
 /* Allocate and initialize a pooled manager: its inner load pool, backing slot storage, and a table of slotCount entries. */ void *fn_802CE3A4(int slotCount, int arg1, int arg2) {
     int count;
@@ -32,13 +32,13 @@ __declspec(section ".sdata") extern char lbl_8055D0A8[]; /* "modpool" - allocati
         *(void **)((char *)manager + 4) = loadPool;
         count = *(int *)((char *)manager + 8);
         slotStorage = fn_8012850C((count << 6) + 0x10, lbl_8034BCD8);
-        *(void **)manager = ((void *(*)(void *, void *, int, int, int))fn_8002F37C)(slotStorage, fn_802CE474, 0, 0x40, count);
+        *(void **)manager = ((void *(*)(void *, void *, int, int, int))fn_8002F37C)(slotStorage, modPoolInitSlot, 0, 0x40, count);
         *(int *)((char *)manager + 0x10) = 0;
     }
     return manager;
 }
 
-void fn_802CE474(void *slot) {
+void modPoolInitSlot(void *slot) {
     /* Initialise one 0x40-byte model-pool slot to its empty state: clear the
      * manager pointer, in-use flag and state, and reset the load/model handles
      * and timestamp to their "none" values. */
