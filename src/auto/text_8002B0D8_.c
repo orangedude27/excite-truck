@@ -1535,6 +1535,7 @@ double fn_8002EFB8(void) {
 
 /* MSL pow() wrapper: tail-call the fdlibm power kernel on x and y. */
 double fn_8002EFBC(double x, double y) {
+    /* MSL pow() wrapper: tail-call the fdlibm x-to-the-y kernel. */
     return __ieee754_pow(x, y);
 }
 
