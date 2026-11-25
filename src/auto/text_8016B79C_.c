@@ -82,6 +82,8 @@ extern f32 lbl_805619A0;
 extern f32 lbl_805619A4;
 extern void fn_802AE0E0(s32);
 extern char lbl_80330AEC[];
+/* Label-key table for the Crush-mode results overlay: HUD text nodes and
+   info panels are looked up by the scene manager using offsets into this. */
 extern char lbl_803306D0[];
 extern void fn_801345D8(void *, s32, const char *, ...);
 extern void Abend_Panic(const char *, ...);
