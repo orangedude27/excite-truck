@@ -1600,7 +1600,7 @@ void fn_802C7758(void) {
 }
 
 #pragma dont_inline fn_802C7760
-void MRModel_GetBoundingBoxArray(void *model, f32 *out) {
+/* Read a model instance's six bounding-box floats (min/max per axis) into out[0..5]. */ void MRModel_GetBoundingBoxArray(void *model, f32 *out) {
     /* Read the model's six bounding-box values (min/max per axis) into out[0..5]. */
     fn_802C7760(model, out, out + 1, out + 2, out + 3, out + 4, out + 5);
 }
