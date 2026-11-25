@@ -1373,15 +1373,15 @@ s32 fn_802C4F14(s32* fields) {
     return 0;
 }
 
-void stampGetOffsets(void *object, s32 *outFirst, s32 *outSecond) {
+/* Copy a stamp's x/y draw offsets (x_off at 8, y_off at 0xC) to the outputs; zero both for a null stamp. */ void stampGetOffsets(void *stamp, s32 *outX, s32 *outY) {
     /* Copy the two 32-bit metrics at offsets 8 and 12 of a font/bitmap object
      * into the outputs; zero both when the object pointer is null. */
-    if (object == 0) {
-        *outSecond = 0;
-        *outFirst = 0;
+    if (stamp == 0) {
+        *outY = 0;
+        *outX = 0;
     } else {
-        *outFirst = *(s32 *)((u8 *)object + 8);
-        *outSecond = *(s32 *)((u8 *)object + 0xC);
+        *outX = *(s32 *)((u8 *)stamp + 8);
+        *outY = *(s32 *)((u8 *)stamp + 0xC);
     }
 }
 
