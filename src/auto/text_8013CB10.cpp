@@ -4746,8 +4746,8 @@ extern "C" s32 fn_80144454(void) { return 0; }
 
 extern "C" s32 fn_8013D1F0(s32);
 #pragma scheduling invalid_target
-extern "C" s32 fn_8014445C(s32 arg0, s32 arg1) {
-    return fn_8013D1F0(arg1) < 10;
+/* Vtable callback: ignore the receiver, look up the current entry-info field (+0x10) through fn_8013D1F0 and report whether it is below 10. */ extern "C" s32 fn_8014445C(s32 self, s32 index) {
+    return fn_8013D1F0(index) < 10;
 }
 /* Vtable callback that ignores its first argument and returns the second unchanged. */
 extern "C" s32 fn_80144494(s32 self, s32 value) { return value; }
