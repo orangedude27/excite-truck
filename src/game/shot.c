@@ -2,7 +2,7 @@
 // Symbol guide (the project cannot rename game symbols yet): initShotHooks
 // (fn_802E46AC), initShot (fn_802E46B0), invalidateSavedState (fn_802E46E4),
 // checkScreenshotHotkey (fn_802E46F0), anyInputPending (fn_802E47B8),
-// (fn_802E47E8), recordInput (fn_802E4800), matchKeySequence
+// (fn_802E47E8), recordInput (recordInputHistory), matchKeySequence
 // (MatchKeySequence), inputNibble (fn_802E4A10), keyPressed (isKeyPressed),
 // pollInput (fn_802E4A2C), restoreSavedState (restoreSavedInputState).
 // Recovered TU window 0x802E46AC..0x802E4C0C (see docs/attribution_analysis.md).
@@ -125,7 +125,7 @@ s32 fn_802E47F8(void) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_802E4800(u16 inputWord) {
+void recordInputHistory(u16 inputWord) {
     // Record one input word into the screenshot key-history subsystem (skipped while the
     // Wii Home menu is open): refresh the last-input timestamp, shift the 32-entry
     // 12-bit input history and append the key code, then store the full word in the

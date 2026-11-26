@@ -1297,7 +1297,7 @@ void* fn_8024859C(void *object, s32 shouldDelete) {
 #pragma scheduling on
 /* Secret key-code check: copies the trigger sequence stored in .rodata (device 1
  * key codes 0x126, 0x128, 0x125, 0x127, then the 0 terminator) and asks the
- * debug input history (MatchKeySequence, filled by fn_802E4800) whether those keys
+ * debug input history (MatchKeySequence, filled by recordInputHistory) whether those keys
  * were the last ones entered.  If they were, the music is silenced -
  * fn_80246CAC scales its argument by the volume saved when the demo mode
  * started, so 0.0 is silence - and the pre-race music hook is called.
