@@ -73,7 +73,7 @@ extern void *fn_8025F9C0(void *);
 extern void fn_8025F9B8(void *, int);
 extern int fn_8025E678(void);
 extern int fn_8025ECBC(void);
-extern void fn_8025F274(void);
+extern void refreshTimesScreenPanes(void);
 extern char lbl_80345828[];
 extern char lbl_8055BAC0[];
 extern char lbl_8055B860[];
@@ -129,7 +129,7 @@ void fn_8025E034(void)
     ctx.list = ctx.seq[2];
     fn_8025F46C(&ctx);
 
-    DbgMenuItemSet(&items[0], lbl_8055BAC0, 8, (void *)fn_8025F274, 0, 0);
+    DbgMenuItemSet(&items[0], lbl_8055BAC0, 8, (void *)refreshTimesScreenPanes, 0, 0);
     DbgMenuItemSet(&items[1], lbl_80345828 + 0x18, 3, ctx.rows[0].name, 0, 0);
     DbgMenuItemSet(&items[2], lbl_80345828 + 0x24, 2, &ctx.rows[0].state, 0, 0);
     DbgMenuItemSet(&items[3], lbl_80345828 + 0x34, 3, ctx.rows[1].name, 0, 0);
@@ -572,7 +572,7 @@ typedef int (*TestFn)(void *);
    still holds a usable entry for that row, and hides its "select" pane group
    unless one of them holds an in-use entry.  It then leaves visible only the
    pane holding the time variant selected for each of the five event rows. */
-extern "C" void fn_8025F274(void) {
+extern "C" void refreshTimesScreenPanes(void) {
 #define UIHideGroup fn_80214A9C
 #define UIShowGroup fn_80214AF0
 #define dbgCtx lbl_8055F3D4
