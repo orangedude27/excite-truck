@@ -696,12 +696,8 @@ struct PlacedObj {
     ShadowDesc shadow;    /* 0x78 */
 };
 
-/* createPlacedObject - object factory: looks at the parameter node's "type" ("composite", "animation",
- * "sound", or none of them) and lets the matching creator in the table at 0x802F9BA0 allocate the
- * object, then fills in what every type shares: its placement matrix (optionally transformed by
- * `transform`), model name, drop height, "forbidden in objects file" flag and shadow description,
- * and finally its "name" when the caller asks for it. Returns the new object. */
-/* Create a placed object from a parameter node: select the type's creator from placedObjectCreators, then fill the shared placement, model, drop height, forbidden flag, shadow and optional name. */ extern "C" void *createPlacedObject(void *node, s32 transform, s32 copyName) {
+/* Create a placed object from a parameter node: pick the type's creator from placedObjectCreators, then fill the shared placement, model, drop height, forbidden flag, shadow and optional name. */
+extern "C" void *createPlacedObject(void *node, s32 transform, s32 copyName) {
     /* The parameter node: reads values and child nodes by key through its vtable. */
     class Node {
     public:
