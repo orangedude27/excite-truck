@@ -12445,7 +12445,7 @@ extern "C" void fn_800B78F4(void *dateOut, void *timeOut) {
 
 extern "C" s32 lbl_80559238;
 extern "C" s32 fn_800BA404(void);
-extern "C" s32 fn_800B7968(u32 arg0, s32 arg1, s32 arg2, void* arg3) {
+extern "C" s32 dispatchVfDriveRequest(u32 arg0, s32 arg1, s32 arg2, void* arg3) {
     struct Req {
         void *list[2];
         u8 info[0x50];

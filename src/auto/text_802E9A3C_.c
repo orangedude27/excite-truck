@@ -205,7 +205,7 @@ void fn_802E9CAC(int eventArg) {
 #pragma pop
 extern long fn_800B7CE8(long, void *, void *);
 extern long fn_800B7DB0(long, void (*)(long), void (*)(int));
-extern long fn_800B7968(long, long, long, void *);
+extern long dispatchVfDriveRequest(long, long, long, void *);
 extern void Abend_Panic(const char *, ...);
 #pragma push
 #pragma scheduling invalid_target
@@ -225,7 +225,7 @@ void fn_802E9CF0(void) {
         Abend_Panic(strings + 0x14C);
     if (fn_800B7DB0(0, fn_802E9C68, fn_802E9CAC) != 0)
         Abend_Panic(strings + 0x15C);
-    if (fn_800B7968(0, 0, 0, base + 0xB8) != 0)
+    if (dispatchVfDriveRequest(0, 0, 0, base + 0xB8) != 0)
         Abend_Panic(strings + 0x170);
     lbl_80560061 = ((unsigned char *)(base + 0xB8))[9] >> 4 & 1;
 }
