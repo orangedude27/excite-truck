@@ -431,7 +431,7 @@ extern "C" void fn_801345D8(void *, int, const char *, ...);
  * its square.  value44 is the resource's "dist" and value48 the "range" value
  * (default 500) squared.  Without the key, a single entry loads the "<value>.mod"
  * model at distance zero.  The table is stored at WheelMod+0xEC. */
-extern "C" void fn_801F06DC(void *arg0, void *arg1) {
+extern "C" void loadWheelLodTable(void *arg0, void *arg1) {
     class WheelLodResource {
     public:
         virtual void unused0();
@@ -506,7 +506,7 @@ extern "C" int fn_8012C33C(char *);
 extern "C" void *fn_80131808(void *);
 extern "C" void fn_80131818(void *);
 extern "C" void readWheelModLods(void *, void *, char *);
-extern "C" void fn_801F06DC(void *, void *);
+extern "C" void loadWheelLodTable(void *, void *);
 extern "C" void fn_801F08AC(int, const char *);
 extern "C" void fn_801F08AC(int arg0, const char *arg1) {
     class Fn801F08ACResource {
@@ -530,7 +530,7 @@ extern "C" void fn_801F08AC(int arg0, const char *arg1) {
     readWheelModLods((void *)arg0, resource->lookup((const char *)&lbl_8055B108), nameBuffer);
     ((void (*)(void *, void *))loadWheelModels)((void *)arg0, resource->lookup((const char *)&lbl_8055B0F0));
     if (resource->has((const char *)&lbl_8055B10C) != 0) {
-        fn_801F06DC((char *)arg0 + 0xEC, resource->lookup((const char *)&lbl_8055B10C));
+        loadWheelLodTable((char *)arg0 + 0xEC, resource->lookup((const char *)&lbl_8055B10C));
     } else {
         *(int *)(arg0 + 0x12C) = 0;
     }
