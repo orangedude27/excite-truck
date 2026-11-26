@@ -3388,42 +3388,42 @@ unsigned char fn_80165050(void *menu) {
     return ((struct LevelSelectMenu *)menu)->done;
 }
 
-s32 handleMenuNavigationInput(void *arg0, s32 arg1) {
-    s32 temp_r30;
-    s32 temp_r29;
-    /* Handle menu/navigation input (up/down/select/back/cancel) when not blocked; updates selection at +8. */
+/* Handle menu/navigation input (up/down/select/back/cancel) when not blocked; updates selection at +8. */
+s32 handleMenuNavigationInput(void *menu, s32 button) {
+    s32 previousIndex;
+    s32 nextIndex;
     if ((s32)*(u32 *)((u8 *)fn_801E7E34() + 0xDB0) == 0) {
-        if (*(u8 *)((u8 *)arg0 + 6) == 0) {
-            switch (arg1) {
+        if (*(u8 *)((u8 *)menu + 6) == 0) {
+            switch (button) {
             case 0x126:
-                temp_r30 = *(s32 *)((u8 *)arg0 + 8) - 1;
-                *(s32 *)((u8 *)arg0 + 8) = temp_r30;
-                if (temp_r30 < 1) {
-                    *(s32 *)((u8 *)arg0 + 8) = *(s32 *)((u8 *)&lbl_8042FDEC + 4);
+                previousIndex = *(s32 *)((u8 *)menu + 8) - 1;
+                *(s32 *)((u8 *)menu + 8) = previousIndex;
+                if (previousIndex < 1) {
+                    *(s32 *)((u8 *)menu + 8) = *(s32 *)((u8 *)&lbl_8042FDEC + 4);
                 } else {
-                    register u8 *limits = (u8 *)&lbl_8042FDEC;
-                    if (temp_r30 > *(s32 *)(limits + 4))
-                        *(s32 *)((u8 *)arg0 + 8) = 1;
-                    else if ((temp_r30 > fn_80160CE4()) && (temp_r30 < *(s32 *)(limits + 4)))
-                        *(s32 *)((u8 *)arg0 + 8) = fn_80160CE4();
+                    register u8 *menuLimits = (u8 *)&lbl_8042FDEC;
+                    if (previousIndex > *(s32 *)(menuLimits + 4))
+                        *(s32 *)((u8 *)menu + 8) = 1;
+                    else if ((previousIndex > fn_80160CE4()) && (previousIndex < *(s32 *)(menuLimits + 4)))
+                        *(s32 *)((u8 *)menu + 8) = fn_80160CE4();
                 }
                 fn_80230E90(1);
                 return 1;
             case 0x128:
-                temp_r29 = *(s32 *)((u8 *)arg0 + 8) + 1;
-                *(s32 *)((u8 *)arg0 + 8) = temp_r29;
-                if (temp_r29 < 1) *(s32 *)((u8 *)arg0 + 8) = *(s32 *)((u8 *)&lbl_8042FDEC + 4);
-                else if (temp_r29 > *(s32 *)((u8 *)&lbl_8042FDEC + 4)) *(s32 *)((u8 *)arg0 + 8) = 1;
-                else if ((temp_r29 > fn_80160CE4()) && (temp_r29 < *(s32 *)((u8 *)&lbl_8042FDEC + 4))) *(s32 *)((u8 *)arg0 + 8) = *(s32 *)((u8 *)&lbl_8042FDEC + 4);
+                nextIndex = *(s32 *)((u8 *)menu + 8) + 1;
+                *(s32 *)((u8 *)menu + 8) = nextIndex;
+                if (nextIndex < 1) *(s32 *)((u8 *)menu + 8) = *(s32 *)((u8 *)&lbl_8042FDEC + 4);
+                else if (nextIndex > *(s32 *)((u8 *)&lbl_8042FDEC + 4)) *(s32 *)((u8 *)menu + 8) = 1;
+                else if ((nextIndex > fn_80160CE4()) && (nextIndex < *(s32 *)((u8 *)&lbl_8042FDEC + 4))) *(s32 *)((u8 *)menu + 8) = *(s32 *)((u8 *)&lbl_8042FDEC + 4);
                 fn_80230E90(1);
                 return 1;
-            case 0x58: *(u8 *)((u8 *)arg0 + 4) = 1; return 1;
+            case 0x58: *(u8 *)((u8 *)menu + 4) = 1; return 1;
             case 0x1B: lbl_8055E2DD = 1; return 1;
             }
         } else {
-            switch (arg1) {
-            case 0x58: *(s32 *)((u8 *)arg0 + 8) = *(s32 *)((u8 *)&lbl_8042FDEC + 4); *(u8 *)((u8 *)arg0 + 4) = 1; return 1;
-            case 0x53: *(u8 *)((u8 *)arg0 + 6) = 0; return 1;
+            switch (button) {
+            case 0x58: *(s32 *)((u8 *)menu + 8) = *(s32 *)((u8 *)&lbl_8042FDEC + 4); *(u8 *)((u8 *)menu + 4) = 1; return 1;
+            case 0x53: *(u8 *)((u8 *)menu + 6) = 0; return 1;
             }
         }
     }
