@@ -127,7 +127,7 @@ typedef struct Camera {
 #define sound_object_create fn_80207848 /* name, arg -> 0x70-byte sound object */
 #define callback_install  Event_RegisterHandler  /* fn, category -> first free of 4 slots */
 
-/* The replay spin fn_80267EF8 runs on the chase/replay cameras: one full turn
+/* The replay spin Camera_updateReplaySpin runs on the chase/replay cameras: one full turn
  * about the camera's up axis over SPIN_DURATION seconds, with the crash level
  * dipping into a crowd cheer over the same clock. */
 #define MS_TO_SEC         lbl_80563C80 /* 0.001f: KERNEL_GetTimeMs's ms -> seconds */
@@ -140,7 +140,7 @@ typedef struct Camera {
 #define SPIN_DURATION     lbl_80563C34 /* 3.0f: how long the turn takes */
 #define SPIN_RAMP_BACK    lbl_80563C84 /* 2.5f: when the levels ramp back */
 #define SPIN_IDLE         lbl_80563C64 /* -1000.0f: no spin started */
-#define sSpinActive       lbl_8055F488 /* 1 while fn_80267EF8 is turning a camera */
+#define sSpinActive       lbl_8055F488 /* 1 while Camera_updateReplaySpin is turning a camera */
 #define sSpinStartTime    lbl_8055F48C /* seconds (MS_TO_SEC clock) it started at */
 
 /* The "Sound" object sound_object_create builds (0x70 bytes).  The mixer only
@@ -1280,7 +1280,7 @@ void *fn_80267EE4(int cameraIndex) {
  * cheer takes the level the crash loses.  Past SPIN_DURATION the spin is
  * switched off, the crash level is restored and, unless the pause menu has the
  * sound, the sound manager is told to go on. */
-void fn_80267EF8(void *arg0) {
+void Camera_updateReplaySpin(void *arg0) {
     Camera *cam = (Camera *)arg0;
     float elapsed = MS_TO_SEC * (float)KERNEL_GetTimeMs() - sSpinStartTime;
     if (elapsed > SPIN_DURATION) {
@@ -1892,7 +1892,7 @@ extern char lbl_80346848[];
 extern void fn_802733F4(void *);
 extern int fn_8026A698(void *, int);
 extern void fn_80278360(void *);
-extern void fn_80267EF8(void *);
+extern void Camera_updateReplaySpin(void *);
 extern void fn_802704E4(void *);
 extern void fn_80274660(int, void *);
 extern void fn_80274460(void *);
@@ -1979,7 +1979,7 @@ void fn_802693F4(char *p, unsigned char *flag, int arg) {
         case 24: fn_8027847C(p); break;
         case 4: case 5: case 6: case 7: case 8: case 23:
             fn_802704D4(mode, p);
-            if (*(unsigned char *)&lbl_8055F488 != 0) fn_80267EF8(p);
+            if (*(unsigned char *)&lbl_8055F488 != 0) Camera_updateReplaySpin(p);
             break;
         case 9: fn_802704E4(p); break;
         case 10: case 16: fn_80274660(mode, p); break;
@@ -2215,7 +2215,7 @@ int fn_802678C0(void) {
     return (int)&((Camera *)fn_80267EE4())->transform;
 }
 /* Returns lbl_8055F488 (sSpinActive): nonzero while a camera spin
- * (fn_80267EF8) is in progress. */
+ * (Camera_updateReplaySpin) is in progress. */
 char fn_8026A38C(void) {
     return lbl_8055F488;
 }
