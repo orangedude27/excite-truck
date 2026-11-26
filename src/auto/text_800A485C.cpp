@@ -13304,11 +13304,10 @@ extern "C" s32 fn_800B8FE4(s32 buffer, s32 path, s32 length, s32 offset, s32 *ou
 #define SLOT_FLAGS    0xe4
 #define SLOT_BUSY     2
 #define SLOT_HANDLE   0x58
-/* NAND prfile2: under the slot-table semaphore, clear the error and busy flag
- * of the slot for fileId, then reset its NAND handle (get length, close, reopen
- * for write, seek to end). On a NAND error, store it in the slot's error field.
- * Returns 0 on success, -20 for a bad handle / missing slot, -22 if no slot.
- * (lbl_/fn_ names kept: rename_symbol unavailable for game symbols.) */
+/* Clear a NAND prfile2 slot's error and busy flags, then reset its handle:
+ * get the file length, close it, reopen it for writing and seek back to the
+ * end.  Fail with -20 for a null ID or missing slot, -22 if no slot matches;
+ * on a NAND error store it in the slot's error field. */
 extern "C" s32 resetNandFileHandle(s32 fileId)
 {
   s32 result;
