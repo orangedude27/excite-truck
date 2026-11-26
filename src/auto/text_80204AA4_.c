@@ -240,7 +240,7 @@ extern "C" void Abend_Panic(const char *, ...);
  * string parsed as a number. */
 #pragma push
 #pragma scheduling invalid_target
-extern "C" int getDifficultySettingString(const char *name) {
+/* Looks up a current-scene difficulty setting's value string, trying the contest-prefixed key in the stage then scene difficulty sets and then the plain key, panicking if none has it. */ extern "C" int getDifficultySettingString(const char *settingName) {
     /* A difficulty setting set: has() at +0xC, the value string get() at +0x14. */
     class DifficultySet {
     public:
@@ -263,7 +263,7 @@ extern "C" int getDifficultySettingString(const char *name) {
     int found;
     info = (DifficultyInfo *)sDifficultyInfo;
     if (info->contestName != 0) {
-        fn_801345D8(key, 0x64, sDifficultyKeyFormat, info->contestName, name);
+        fn_801345D8(key, 0x64, sDifficultyKeyFormat, info->contestName, settingName);
         if (info->stageSet != 0 && info->stageSet->has(key)) {
             found = info->stageSet->get(key);
         } else if (info->sceneSet->has(key)) {
@@ -274,16 +274,16 @@ extern "C" int getDifficultySettingString(const char *name) {
         setting = found;
     }
     if (setting == 0) {
-        if (info->stageSet != 0 && info->stageSet->has((void *)name)) {
-            found = info->stageSet->get((void *)name);
-        } else if (info->sceneSet->has((void *)name)) {
-            found = info->sceneSet->get((void *)name);
+        if (info->stageSet != 0 && info->stageSet->has((void *)settingName)) {
+            found = info->stageSet->get((void *)settingName);
+        } else if (info->sceneSet->has((void *)settingName)) {
+            found = info->sceneSet->get((void *)settingName);
         } else {
             found = 0;
         }
         setting = found;
     }
-    if (setting == 0) Abend_Panic(sDifficultyNotFoundMsg, name);
+    if (setting == 0) Abend_Panic(sDifficultyNotFoundMsg, settingName);
     return setting;
 }
 #pragma cplusplus reset
