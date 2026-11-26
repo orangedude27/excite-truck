@@ -3249,7 +3249,7 @@ extern s32 __DVDDequeueWaitingQueue(void *);
 // Returns FALSE when a cancel is already in flight (only one at a time).
 // (callback is a DVDCommandCallback; the driver's callers all keep it as a
 // plain (s32, void *) function pointer, so the parameter does too.)
-s32 DVDCancelAsyncCore(DVDCommandBlock *block, void (*callback)(s32, void *)) {
+/* Cancel a DVD command block asynchronously, optionally invoking a callback, without waiting for the drive to finish. */ s32 DVDCancelAsyncCore(DVDCommandBlock *block, void (*callback)(s32, void *)) {
     s32 enabled = OSDisableInterrupts();
     switch (block->state) {
     case DVD_STATE_FATAL: case DVD_STATE_IDLE: case DVD_STATE_CANCELED:
