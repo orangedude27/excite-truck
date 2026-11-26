@@ -4643,8 +4643,8 @@ s32 WPADSendStreamDataInline(s32 chan, void* pData, u16 len) {
     s8 usedCount, tailIndex;
     s32 lastSlot, wrapMask;
     intrState = OSDisableInterrupts();
-    status = *(s32*)((u8*)cb + 0x7FC);
-    handshakeDone = *(s32*)((u8*)cb + 0x81C);
+    status = cb->readStatus;
+    handshakeDone = cb->handshakeDone;
     OSRestoreInterrupts(intrState);
     if (status == WPAD_ERR_NO_CONTROLLER) return WPAD_ERR_NO_CONTROLLER;
     if (handshakeDone == 0) return WPAD_ERR_COMMUNICATION_ERROR;
@@ -4660,7 +4660,7 @@ s32 WPADSendStreamDataInline(s32 chan, void* pData, u16 len) {
     *(double*)&command[0x48] = *(double*)&command[0x18];
     *(double*)&command[0x50] = *(double*)&command[0x20];
     *(double*)&command[0x58] = *(double*)&command[0x28];
-    cmdQueue = (u8*)cb + 0x160;
+    cmdQueue = (u8*)&cb->stdCmdQueue;
     intrState = OSDisableInterrupts();
     nestedIntrState = OSDisableInterrupts();
     head = cmdQueue[0];
@@ -4684,7 +4684,7 @@ s32 WPADSendStreamDataInline(s32 chan, void* pData, u16 len) {
     }
     if (enqueueOk == 0) return WPAD_ERR_COMMUNICATION_ERROR;
     intrState = OSDisableInterrupts();
-    ((u8*)cb)[0x80E]++;
+    cb->pendingCmdCount++;
     OSRestoreInterrupts(intrState);
     return WPAD_ERR_OK;
 }
