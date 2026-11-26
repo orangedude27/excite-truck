@@ -439,7 +439,7 @@ int fn_801D4CB8(int object, int deleteFlag) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" int ActionSequence_load(void *arg0, void *arg1) {
+/* Load an ActionSequence from a value-file node: copy its name, collect its "element" children, and read its reset/lap/rumble attributes. */ extern "C" int ActionSequence_load(void *arg0, void *arg1) {
     /* Fills an ActionSequence (arg0) from a value-file node (arg1): reads the
      * "name" attribute, walks the node's children collecting the ones named
      * "element" (building each via createASEElement and appending to elements), and
