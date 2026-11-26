@@ -1612,7 +1612,7 @@ extern "C" void fn_80251078(void *arg0, s32 index, s32 selected, f32 x, f32 y, f
     extern const f32 lbl_80563964, lbl_80563980, lbl_80563984, lbl_80563988;
     extern f32 fn_80216CB4(void);
     extern f32 getPictureWidth(s32, s32);
-    extern f32 fn_80235F64(s32, s32);
+    extern f32 getPictureHeight(s32, s32);
     extern void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
     extern void fn_80231220(s32, s32, u32, f32, f32, f32, f32, f32, f32, f32, f32);
     class Control {
@@ -1668,7 +1668,7 @@ extern "C" void fn_80251078(void *arg0, s32 index, s32 selected, f32 x, f32 y, f
             limit = one < factor ? one : factor;
             limit = limit > zero ? limit : zero;
             sh = half + limit * half;
-            { f32 glyph = fn_80235F64(*(s32 *)(self + 0x24), (unsigned)id); sh = glyph * sh; }
+            { f32 glyph = getPictureHeight(*(s32 *)(self + 0x24), (unsigned)id); sh = glyph * sh; }
             rounded = alpha < zero ? alpha - half : half + alpha;
             if (a > 0x13F) a = 0x13F;
             a = rounded;

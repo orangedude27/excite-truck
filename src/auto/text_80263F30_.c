@@ -7,7 +7,7 @@ extern int fn_8023695C(void *);
 
 extern void fn_80216CA8(void);
 extern void fn_802168BC(int);
-extern float fn_80235F64(void *, int);
+extern float getPictureHeight(void *, int);
 extern float getPictureWidth(void *, int);
 extern void fn_80235AFC(void *, int, unsigned int, float, float, float, float, float, float);
 typedef struct SparkParticle {
@@ -814,7 +814,7 @@ extern "C" void fn_80264FE4(void *arg0) {
         if (a < 0xFF) alpha = a;
         id = *(int *)(item + 0x1C);
         base = *(float *)(p + 0xAC) + *(float *)(p + 0xB0) * (limit - *(float *)(item + 0x18) * *(float *)(p + 0xC8));
-        intensity = base * fn_80235F64(*(void **)(p + 0xB4), id);
+        intensity = base * getPictureHeight(*(void **)(p + 0xB4), id);
         fn_80235AFC(*(void **)(p + 0xB4), id, ((unsigned int)alpha << 24) | 0xFFFFFF,
                     *(float *)item, *(float *)(item + 4), lbl_80563BF0,
                     base * getPictureWidth(*(void **)(p + 0xB4), *(int *)(item + 0x1C)), intensity, *(float *)(item + 0x10));
@@ -836,7 +836,7 @@ extern "C" void fn_80264FE4(void *arg0) {
         if (a < 0xFF) alpha = (int)a;
         id = *(int *)(item + 0x1C);
         base = *(float *)(p + 0x4C) + *(float *)(p + 0x50) * (limit - *(float *)(item + 0x18) * *(float *)(p + 0x68));
-        intensity = base * fn_80235F64(*(void **)(p + 0x54), id);
+        intensity = base * getPictureHeight(*(void **)(p + 0x54), id);
         fn_80235AFC(*(void **)(p + 0x54), id, ((unsigned int)alpha << 24) | 0xFFFFFF,
                     *(float *)item, *(float *)(item + 4), lbl_80563BF0,
                     base * getPictureWidth(*(void **)(p + 0x54), *(int *)(item + 0x1C)), intensity, *(float *)(item + 0x10));

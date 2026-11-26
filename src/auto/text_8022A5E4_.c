@@ -900,7 +900,7 @@ unsigned int fn_8022BC30(unsigned int arg0, unsigned int arg1, float farg0)
 extern double fn_8002EFB4(float arg0, double arg1);
 extern float fn_8023659C(void);
 extern float getPictureWidth(int arg0, int arg1);
-extern float fn_80235F64(int arg0, int arg1);
+extern float getPictureHeight(int arg0, int arg1);
 extern int gxGetImageFrameCount();
 extern int fn_80235FD8();
 extern void gxDrawPictureAt();
@@ -1008,9 +1008,9 @@ void fn_8022BD40(int arg0, int i19arg, int arg2_, unsigned char i20_, float farg
         fl = *(int *)((char *)base + 0x38);
         i30 = arg2copy % fn_80235FD8(*(int *)((char *)base + 0x6C));
         if (fl & 0x10) {
-            sp1C += fn_80235F64(*(int *)((char *)base + 0x6C), i30) * lbl_80563598;
+            sp1C += getPictureHeight(*(int *)((char *)base + 0x6C), i30) * lbl_80563598;
         } else if (fl & 0x40) {
-            sp1C += fn_80235F64(*(int *)((char *)base + 0x6C), i30);
+            sp1C += getPictureHeight(*(int *)((char *)base + 0x6C), i30);
         }
         if (fl & 4) {
             sp20 -= (*(float *)((char *)lbl_8055E050 + 0x70) + getPictureWidth(*(int *)((char *)base + 0x6C), i30)) * lbl_80563598;
@@ -1019,7 +1019,7 @@ void fn_8022BD40(int arg0, int i19arg, int arg2_, unsigned char i20_, float farg
             sp20 -= ((float (*)(void *, char *, float))fn_8023293C)(*(void **)((char *)base + 8), i19, lbl_80563588) * f29v;
         }
         f29v = *(float *)((char *)lbl_8055E050 + 0x70) + getPictureWidth(*(int *)((char *)base + 0x6C), i30);
-        f30v = fn_80235F64(*(int *)((char *)base + 0x6C), i30);
+        f30v = getPictureHeight(*(int *)((char *)base + 0x6C), i30);
         fn_802354A0(*(int *)((char *)base + 0x6C), i30, -1, sp20, sp1C, lbl_8056358C, f29v, f30v);
         if (i28 == 1) {
             f3v = lbl_80563598 * sp30;
@@ -1030,14 +1030,14 @@ void fn_8022BD40(int arg0, int i19arg, int arg2_, unsigned char i20_, float farg
         if (arg2copy == 1) {
             i18 = *(int *)((char *)base + 0x54);
             if (i18 >= 0) {
-                f30v = fn_80235F64(*(int *)((char *)base + 0x6C), i30);
+                f30v = getPictureHeight(*(int *)((char *)base + 0x6C), i30);
                 f29v = getPictureWidth(*(int *)((char *)base + 0x6C), *(int *)((char *)base + 0x54));
                 fn_802354A0(*(int *)((char *)base + 0x6C), i18, -1, sp20 + getPictureWidth(*(int *)((char *)base + 0x6C), i30), sp1C, lbl_8056358C, f29v, f30v);
             }
         }
         if ((*(int *)((char *)base + 0x70) != 0) && (arg2copy == 1)) {
             i18 = *(int *)((char *)base + 0x58);
-            f29v = fn_80235F64(*(int *)((char *)base + 0x70), i18);
+            f29v = getPictureHeight(*(int *)((char *)base + 0x70), i18);
             fn_802354A0(*(int *)((char *)base + 0x70), i18, -1, sp20 + *(float *)((char *)base + 0x5C), sp1C + *(float *)((char *)base + 0x60), lbl_8056358C, getPictureWidth(*(int *)((char *)base + 0x70), *(int *)((char *)base + 0x58)), f29v);
         }
     } else if (i26 != 0) {

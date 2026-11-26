@@ -670,7 +670,7 @@ float getPictureWidth(int resourceSet, int index) {
 #pragma dont_inline reset
 extern const char lbl_80340878[];
 #pragma dont_inline on
-float fn_80235F64(int resourceSet, int index) {
+float getPictureHeight(int resourceSet, int index) {
     /* Return the float height at +0x10 for the looked-up art node, or 0.0f if missing. */
     void *node;
 

@@ -1475,7 +1475,7 @@ void fn_80248A74(void *element) {
 }
 #pragma scheduling on
 void fn_80230C30(float *, float *, s32, s32);
-float fn_80235F64(s32, s32);
+float getPictureHeight(s32, s32);
 void fn_802353F4(s32, s32, float, float, float);
 #pragma push
 #pragma processor 750
@@ -1491,7 +1491,7 @@ void fn_80248AF0(void *element) {
     if (*(float*)((char*)element+0x1C) > width)
         *(float*)((char*)element+0x1C) -= width;
     useOffset = *(float*)((char*)element+0x1C) > lbl_805638C8;
-    fn_802353F4(*(s32*)((char*)element+0x18), useOffset, layoutX + *(float*)((char*)element+0x1C), (layoutY-height)+fn_80235F64(*(s32*)((char*)element+0x18), useOffset), lbl_805638B0);
+    fn_802353F4(*(s32*)((char*)element+0x18), useOffset, layoutX + *(float*)((char*)element+0x1C), (layoutY-height)+getPictureHeight(*(s32*)((char*)element+0x18), useOffset), lbl_805638B0);
 }
 #pragma pop
 

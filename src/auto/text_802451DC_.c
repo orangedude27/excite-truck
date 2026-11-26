@@ -885,7 +885,7 @@ struct BarWidget {
 extern void fn_80230C30(float *, float *, int, int);
 extern void fn_80230924(int, float, float, float, float, float);
 extern float getPictureWidth(int, int);
-extern float fn_80235F64(int, int);
+extern float getPictureHeight(int, int);
 extern void fn_802353F4(int, int, float, float, float);
 extern void fn_802354A0(int, int, int, float, float, float, float, float);
 extern void fn_80235758(int, int, int, float, float, float, float, float, float, float, float);
@@ -919,7 +919,7 @@ void fn_802465A4(struct BarWidget *widget) {
         rightWidth = getPictureWidth(widget->image, BAR_PIECE_FRAME_RIGHT);
         midWidth = (width-leftWidth)-rightWidth;
         totalWidth = rightWidth+(leftWidth+midWidth);
-        barHeight = fn_80235F64(widget->image, BAR_PIECE_FRAME_LEFT);
+        barHeight = getPictureHeight(widget->image, BAR_PIECE_FRAME_LEFT);
         x = (x + BAR_HALF*width) - BAR_HALF*totalWidth;
         y = (y + BAR_HALF*height) - BAR_HALF*barHeight;
         fillWidth = totalWidth * widget->fill;

@@ -4,7 +4,7 @@
 float getPictureWidth(int, int);
 extern float lbl_80563AD0;
 extern float getPictureWidth(int, int);
-extern float fn_80235F64(int, int);
+extern float getPictureHeight(int, int);
 extern void fn_802354A0(int, int, int, float, float, float, float);
 extern float lbl_80563ACC;
 extern void fn_80235380(int);
@@ -167,7 +167,7 @@ extern int ArtSetGet(void *);
  * 0x20 entries of 0x48 bytes; fn_80258550 adds them and fn_8025878C,
  * fn_802588C8, fn_80258A00, fn_80258AB0, fn_80258B60 and fn_80258C08 look them
  * up by name).  The pair at +0x40 says which item of an art set the object
- * shows: getPictureWidth and fn_80235F64 read that item's two floats, which the
+ * shows: getPictureWidth and getPictureHeight read that item's two floats, which the
  * callers use as the x and y offset to draw at. */
 typedef struct UIObjectEntry {
     char name[0x20];    /* +0x00 what callers look the object up by */
@@ -317,7 +317,7 @@ void fn_8025878C(void *arg0, const char *arg1, int flags, int arg3, float x, flo
 
   index = (int) ((*((unsigned int *) (((char *) arg0) + 4))) + (index * 0x48));
   cosine = getPictureWidth(*((int *) (index + new_var)), *((int *) (index + 0x44)));
-  sine = fn_80235F64(*((int *) (index + new_var)), *((int *) (index + 0x44)));
+  sine = getPictureHeight(*((int *) (index + new_var)), *((int *) (index + 0x44)));
   if (flags & 2)
   {
     x -= cosine;
@@ -380,7 +380,7 @@ void fn_802588C8(void *arg0, const char *arg1, int flags, int arg3, float x, flo
   index = (*((int *) (((char *) arg0) + 4))) + (index * 0x48);
   new_var = flags & 0x10;
   c = scale * getPictureWidth(*((int *) (index + 0x40)), *((int *) (index + 0x44)));
-  s = scale * fn_80235F64(*((int *) (index + 0x40)), *((int *) (index + 0x44)));
+  s = scale * getPictureHeight(*((int *) (index + 0x40)), *((int *) (index + 0x44)));
   if (flags & 2)
   {
     x -= c;
@@ -449,7 +449,7 @@ check:
 found:
     if (index >= 0) {
         unsigned int entry = *(unsigned int *)((char *)table + 4) + index * 0x48;
-        return fn_80235F64(*(unsigned int *)(entry + 0x40), *(unsigned int *)(entry + 0x44));
+        return getPictureHeight(*(unsigned int *)(entry + 0x40), *(unsigned int *)(entry + 0x44));
     }
     return lbl_80563AD0;
 }
