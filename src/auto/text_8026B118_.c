@@ -172,7 +172,7 @@ extern "C" void fn_8026B260(void) {
 #pragma processor 750
 #pragma push
 #pragma opt_common_subs off
-void fn_8026B3D4(int arg0) {
+void updateJumpCamSlot(int arg0) {
     /* JumpCam per-slot update.  When the JumpCam mode is active (fn_80178CA4()==1)
      * and the local player is in JumpCam state (truck +0x1F0 == 0x50), refresh
      * this slot's state from the shared per-player table lbl_8049A0E8 (eight
@@ -291,7 +291,7 @@ extern int lbl_8055F4C8;
 extern int lbl_8055F4CC, lbl_8055F4D0;
 extern void *memset(void *, int, unsigned int);
 extern int fn_801B2F24(void);
-extern void fn_8026B3D4(int);
+extern void updateJumpCamSlot(int);
 extern void deleteThreads__6SystemFv_8026B178(void *);
 #pragma scheduling invalid_target
 void fn_8026B6D0(void) {
@@ -301,11 +301,11 @@ void fn_8026B6D0(void) {
 }
 #pragma scheduling on
 /* For each player/slot, refresh its per-frame state when this subsystem is active.
- * RealName: unknown (rename_symbol disabled). lbl_8055F4C8 = active slot/player count (or >0 flag), fn_801B2F24() = player count, fn_8026B3D4(i) = update slot i. */
+ * RealName: unknown (rename_symbol disabled). lbl_8055F4C8 = active slot/player count (or >0 flag), fn_801B2F24() = player count, updateJumpCamSlot(i) = update slot i. */
 void fn_8026B6E4(void) {
 #define activeCount lbl_8055F4C8
 #define getPlayerCount fn_801B2F24
-#define updateSlot fn_8026B3D4
+#define updateSlot updateJumpCamSlot
     int i;
     if (activeCount > 0) {
         for (i = 0; i < getPlayerCount(); i++) {
