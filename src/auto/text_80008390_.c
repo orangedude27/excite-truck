@@ -83,7 +83,7 @@ extern void fn_80008F98(void);
 extern void fn_80230E90(s32);
 extern void fn_8017691C(void);
 extern s32 fn_801E8838(void);
-extern s32 fn_80008DBC(s32);
+extern s32 SoundTest_keyToCommand(s32);
 extern s32 fn_80008F68(s32);
 extern void fn_8026DDD8(s32);
 extern void fn_801E85DC(s32);
@@ -453,7 +453,7 @@ void fn_80008684(s32 arg0) {
  * and the special keys as 0x100+n; 0x170-0x176 are muted on purpose.  Whether a
  * command is honoured at all is decided by the enabled-command list fn_80008390
  * builds, which fn_800085D8 looks the result up in. */
-s32 fn_80008DBC(s32 keyCode) {
+s32 SoundTest_keyToCommand(s32 keyCode) {
     switch (keyCode) {
     case 0x125: return 2;      /* audio mode 0 (fn_8026DDD8(0)) */
     case 0x126: return 4;      /* audio mode 1 (fn_8026DDD8(1)) */
@@ -806,7 +806,7 @@ skip16:
             }
             if (fn_801E8838() != 0) {
                 var15 = 0;
-                var15 = fn_80008DBC((unsigned short)var15);
+                var15 = SoundTest_keyToCommand((unsigned short)var15);
                 if (var15 != 0 && fn_80008F68(var15) == 0) {
                     s32 cur = p27[1];
                     if (cur - *(s32 *)(p28 + 8) >= 0xBB8) {
