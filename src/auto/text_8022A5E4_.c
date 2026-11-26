@@ -1452,11 +1452,9 @@ __declspec(section ".sdata") extern char lbl_8055B948[];
 __declspec(section ".sdata") extern char lbl_8055B950[];
 extern char lbl_8033FBE8[], textEffectNormal[], lbl_8055B938[], lbl_8055B940[], lbl_8055B948[], lbl_8055B950[];
 #pragma cplusplus on
-void readTextEffectProps(int *d, void *o) {
-    /* Reads a record of seven int attributes out of an XML node into d[0..6]:
-     * four numeric attributes (d[0..3]) via parseStyleColor, a named enum attribute
-     * mapped by name (d[4]), and a "%d %d" pair (d[5..6]).  Attribute keys come
-     * from the string table lbl_8033FBE8. */
+void readTextEffectProps(int *out, void *node) {
+    /* Read a text-effect descriptor from config node `node` into out[0..6]:
+     * four ARGB colors, an effect-type enum, and an x/y offset pair. */
     class Xml {
     public:
         virtual void v0();
@@ -1464,37 +1462,41 @@ void readTextEffectProps(int *d, void *o) {
         virtual void v2();
         virtual char *get(const char *);
     };
-    register const char *base = lbl_8033FBE8;
-    register char *s;
-    Xml *xo = (Xml *)o;
-    if (!o)
+    #define EffectPulse   lbl_8055B938
+    #define EffectShadow  lbl_8055B940
+    #define OffsetProp    lbl_8055B948
+    #define OffsetFmt     lbl_8055B950
+    register const char *strBase = lbl_8033FBE8;
+    register char *value;
+    Xml *xml = (Xml *)node;
+    if (!node)
         return;
-    if (xo->has(base + 0x498))
-        d[0] = parseStyleColor(xo->get(base + 0x498));
-    if (xo->has(base + 0x4A4))
-        d[1] = parseStyleColor(xo->get(base + 0x4A4));
-    if (xo->has(base + 0x4BC))
-        d[2] = parseStyleColor(xo->get(base + 0x4BC));
-    if (xo->has(base + 0x4C8))
-        d[3] = parseStyleColor(xo->get(base + 0x4C8));
-    if (xo->has(base + 0x4E0)) {
-        s = xo->get(base + 0x4E0);
-        if (stricmp(s, textEffectNormal) == 0)
-            d[4] = 0;
-        else if (stricmp(s, lbl_8055B938) == 0)
-            d[4] = 4;
-        else if (stricmp(s, lbl_8055B940) == 0)
-            d[4] = 2;
-        else if (stricmp(s, base + 0x4EC) == 0)
-            d[4] = 1;
-        else if (stricmp(s, base + 0x4F8) == 0)
-            d[4] = 5;
-        else if (stricmp(s, base + 0x504) == 0)
-            d[4] = 6;
+    if (xml->has(strBase + 0x498))
+        out[0] = parseStyleColor(xml->get(strBase + 0x498));
+    if (xml->has(strBase + 0x4A4))
+        out[1] = parseStyleColor(xml->get(strBase + 0x4A4));
+    if (xml->has(strBase + 0x4BC))
+        out[2] = parseStyleColor(xml->get(strBase + 0x4BC));
+    if (xml->has(strBase + 0x4C8))
+        out[3] = parseStyleColor(xml->get(strBase + 0x4C8));
+    if (xml->has(strBase + 0x4E0)) {
+        value = xml->get(strBase + 0x4E0);
+        if (stricmp(value, textEffectNormal) == 0)
+            out[4] = 0;
+        else if (stricmp(value, EffectPulse) == 0)
+            out[4] = 4;
+        else if (stricmp(value, EffectShadow) == 0)
+            out[4] = 2;
+        else if (stricmp(value, strBase + 0x4EC) == 0)
+            out[4] = 1;
+        else if (stricmp(value, strBase + 0x4F8) == 0)
+            out[4] = 5;
+        else if (stricmp(value, strBase + 0x504) == 0)
+            out[4] = 6;
         else
-            d[4] = parseStyleColor(s);
+            out[4] = parseStyleColor(value);
     }
-    if (xo->has(lbl_8055B948))
-        sscanf(xo->get(lbl_8055B948), lbl_8055B950, &d[5], &d[6]);
+    if (xml->has(OffsetProp))
+        sscanf(xml->get(OffsetProp), OffsetFmt, &out[5], &out[6]);
 }
 #pragma cplusplus off
