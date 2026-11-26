@@ -591,7 +591,7 @@ done:
 #pragma pop
 
 #pragma cplusplus on
-extern "C" void registerNamedObject(void *arg0) {
+/* Look up an object's name in the 0x24-byte name table (adding it if new), then allocate and fill a 0x34-byte instance entry with its id, a bool flag, type id, position and direction vectors, and initialize the trailing subfield. */ extern "C" void registerNamedObject(void *arg0) {
     class Obj {
     public:
         virtual void v0();
