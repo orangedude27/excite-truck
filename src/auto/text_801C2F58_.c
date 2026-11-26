@@ -3589,70 +3589,70 @@ extern "C" void fn_801CA070(char *fileName) {
 #pragma scheduling invalid_target
 #pragma cplusplus on
 /* Draw type-specific detail lines for the selected debug timeline entry at (x, y), advancing y by lineHeight between lines. */
-extern "C" void drawEntryDetails(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+extern "C" void drawEntryDetails(void *entry, s32 x, s32 y, s32 lineHeight) {
     char buf[256];
     char *base = lbl_80336B00;
-    u8 *record = (u8 *)arg0;
+    u8 *record = (u8 *)entry;
     if (lbl_8055E7F0 == 0 || lbl_8055E828 >= lbl_8055E7F0)
         return;
     switch (*(u32 *)(record + 8)) {
     case 0:
         sprintf(buf, lbl_8055AB00, record + 0xC);
-        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(x, y, buf, -1);
         break;
     case 2:
         sprintf(buf, base + 0xD70);
-        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(x, y, buf, -1);
         break;
     case 3:
         sprintf(buf, base + 0xD84, fn_801C98F4((char *)lbl_80562960, *(s32 *)(record + 0x10)));
-        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(x, y, buf, -1);
         break;
     case 4:
         sprintf(buf, base + 0xD94, fn_801C98F4((char *)lbl_80562954, *(s32 *)(record + 0x210)));
-        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
-        arg2 += arg3;
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(x, y, buf, -1);
+        y += lineHeight;
         sprintf(buf, lbl_8055AB08, record + 0x10);
-        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
-        arg2 += arg3;
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(x, y, buf, -1);
+        y += lineHeight;
         sprintf(buf, base + 0xDA8, record + 0x110);
-        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
-        arg2 += arg3;
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(x, y, buf, -1);
+        y += lineHeight;
         sprintf(buf, base + 0xDB4, *(f32 *)(record + 0x214) / lbl_805629D4);
-        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(x, y, buf, -1);
         break;
     case 5:
         sprintf(buf, base + 0xDC0, fn_801C98F4((char *)lbl_80562958, *(s32 *)(record + 0x210)));
-        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
-        arg2 += arg3;
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(x, y, buf, -1);
+        y += lineHeight;
         sprintf(buf, lbl_8055AB08, record + 0x10);
-        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
-        arg2 += arg3;
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(x, y, buf, -1);
+        y += lineHeight;
         sprintf(buf, base + 0xDA8, record + 0x110);
-        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
-        arg2 += arg3;
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(x, y, buf, -1);
+        y += lineHeight;
         sprintf(buf, base + 0xDB4, *(f32 *)(record + 0x218) / lbl_805629D4);
-        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(x, y, buf, -1);
         break;
     case 6:
         sprintf(buf, base + 0xDD0, fn_801C98F4((char *)lbl_8056295C, *(s32 *)(record + 0xC)));
-        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
-        arg2 += arg3;
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(x, y, buf, -1);
+        y += lineHeight;
         sprintf(buf, lbl_8055AB08, record + 0x14);
-        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
-        arg2 += arg3;
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(x, y, buf, -1);
+        y += lineHeight;
         sprintf(buf, base + 0xDA8, record + 0x114);
-        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(x, y, buf, -1);
         break;
     case 7: {
         char text[50] = {0};
         strncpy(text, (char *)record + 0xC, 0x31);
         sprintf(buf, base + 0xDE0, text);
-        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
-        arg2 += arg3;
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(x, y, buf, -1);
+        y += lineHeight;
         strncpy(text, (char *)record + 0x10C, 0x31);
         sprintf(buf, base + 0xDEC, text);
-        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(x, y, buf, -1);
         break;
     }
     default:
