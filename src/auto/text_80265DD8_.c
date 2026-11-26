@@ -1347,9 +1347,11 @@ void Camera_updateReplaySpin(void *arg0) {
         spun.pos.y = spun.pos.y + spun.m[7] * level;
         spun.pos.z = spun.pos.z + spun.m[8] * level;
         turnAxis.x = FLOAT_ZERO;
-        turnAxis.y = spin;
+        turnAxis.y = spin;                     /* radians about the up (Y) axis */
         turnAxis.z = FLOAT_ZERO;
+        /* fn_8022FF10 builds a rotation matrix from these axis angles */
         fn_8022FF10(turnMatrix, &turnAxis);
+        /* fn_80015B20 applies that rotation to the offset copy in place */
         fn_80015B20(&spun, &spun, turnMatrix);
         level = -level;
         spun.pos.x = spun.pos.x + spun.m[6] * level;
