@@ -21,7 +21,7 @@ extern float lbl_805627A4;
 extern char lbl_80336A30[];
 extern void fn_8017B4AC(void *, void *);
 extern void fn_8018ADA4(void *, float);
-extern void fn_801AD394(void *);
+extern void applySpringForce(void *);
 extern void fn_802E30C8(const char *, ...);
 extern long fn_801796CC(long, long, long);
 extern float PSVECDotProduct(const float *, const float *);
@@ -48,7 +48,7 @@ extern void* lbl_80436D28[];
 
 /* What ties a body's point to a target point; see the Spring note in
    src/auto/text_801A9660_.c, whose fn_801AD0E0/fn_801AD148/fn_801AD28C set one
-   up and fn_801AD394 measures it and applies the force it gives. */
+   up and applySpringForce measures it and applies the force it gives. */
 struct Spring {
     Vec target;       /* 0x00 the point the anchor is pulled towards */
     void *other;      /* 0x0C the body the target is a point of, 0 for a fixed point */
@@ -723,7 +723,7 @@ extern "C" void fn_801B97D8(struct TrlrCar *car) {
     }
 
     if (car->flag275C == 0) {
-        fn_801AD394(&car->spring);
+        applySpringForce(&car->spring);
         over = car->spring.stretch > car->spring.range;
         if (over != 0) {
             car->unk2758 += lbl_8056279C;

@@ -1695,7 +1695,7 @@ void fn_801ACF94(void) {
 /* A spring between a point of a rigid body (+0x34) and a target point: a fixed
    world point (+0x00) when there is no second body (+0x0C == 0), or that body's
    world position of +0x00.  fn_801AD0E0/fn_801AD148/fn_801AD28C set one up and
-   fn_801AD394 measures it and feeds the force it produces into the bodies. */
+   applySpringForce measures it and feeds the force it produces into the bodies. */
 typedef struct Spring {
     Vec target;                 /* +0x00: point to pull the anchor towards */
     void *other;                /* +0x0C: the body +0x00 is a point of, 0 for a fixed point */
@@ -1817,7 +1817,7 @@ void fn_801AD28C(void *arg0, void *arg1, void *arg2, Vec *arg3, f32 farg1, f32 f
    force and pushed into the body at the anchor - and, for a spring between two
    bodies, into the other body the other way round. */
 #pragma scheduling invalid_target
-void fn_801AD394(Spring *spring) {
+void applySpringForce(Spring *spring) {
     extern double fn_8002F234(float);              /* sqrt */
     extern float lbl_8056247C;                     /* 0.0f */
     extern float lbl_805624A4;                     /* -1.0f */
