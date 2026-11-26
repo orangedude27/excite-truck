@@ -974,22 +974,22 @@ void fn_802D5B8C(void *arg0) {
 /* Build and set the GX vertex descriptor list for an indexed display list from
  * the surface attribute flags: PNMTXIDX is direct, POS/NRM/CLR0/TEX0/TEX1 are
  * INDEX8 or INDEX16 per flag, terminated by GX_VA_NULL. */
-void drSetVtxDescFromFlags(u32 flags) {
+/* Build and install the GX vertex descriptor list for an indexed display list from the surface attribute flags. */ void drSetVtxDescFromFlags(u32 surfaceFlags) {
     int vtxDescList[54];
     int *desc;
     memset(vtxDescList, 0, 0xD8);
     desc = vtxDescList;
-    if (flags & 1) { desc[0] = GX_VA_PNMTXIDX; desc[1] = GX_DIRECT; desc += 2; }
-    if (flags & 2) { desc[0] = GX_VA_POS; desc[1] = GX_INDEX8; desc += 2; }
-    else if (flags & 4) { desc[0] = GX_VA_POS; desc[1] = GX_INDEX16; desc += 2; }
-    if (flags & 8) { desc[0] = GX_VA_NRM; desc[1] = GX_INDEX8; desc += 2; }
-    else if (flags & 0x10) { desc[0] = GX_VA_NRM; desc[1] = GX_INDEX16; desc += 2; }
-    if (flags & 0x20) { desc[0] = GX_VA_CLR0; desc[1] = GX_INDEX8; desc += 2; }
-    else if (flags & 0x40) { desc[0] = GX_VA_CLR0; desc[1] = GX_INDEX16; desc += 2; }
-    if (flags & 0x80) { desc[0] = GX_VA_TEX0; desc[1] = GX_INDEX8; desc += 2; }
-    else if (flags & 0x100) { desc[0] = GX_VA_TEX0; desc[1] = GX_INDEX16; desc += 2; }
-    if (flags & 0x200) { desc[0] = GX_VA_TEX1; desc[1] = GX_INDEX8; desc += 2; }
-    else if (flags & 0x400) { desc[0] = GX_VA_TEX1; desc[1] = GX_INDEX16; desc += 2; }
+    if (surfaceFlags & 1) { desc[0] = GX_VA_PNMTXIDX; desc[1] = GX_DIRECT; desc += 2; }
+    if (surfaceFlags & 2) { desc[0] = GX_VA_POS; desc[1] = GX_INDEX8; desc += 2; }
+    else if (surfaceFlags & 4) { desc[0] = GX_VA_POS; desc[1] = GX_INDEX16; desc += 2; }
+    if (surfaceFlags & 8) { desc[0] = GX_VA_NRM; desc[1] = GX_INDEX8; desc += 2; }
+    else if (surfaceFlags & 0x10) { desc[0] = GX_VA_NRM; desc[1] = GX_INDEX16; desc += 2; }
+    if (surfaceFlags & 0x20) { desc[0] = GX_VA_CLR0; desc[1] = GX_INDEX8; desc += 2; }
+    else if (surfaceFlags & 0x40) { desc[0] = GX_VA_CLR0; desc[1] = GX_INDEX16; desc += 2; }
+    if (surfaceFlags & 0x80) { desc[0] = GX_VA_TEX0; desc[1] = GX_INDEX8; desc += 2; }
+    else if (surfaceFlags & 0x100) { desc[0] = GX_VA_TEX0; desc[1] = GX_INDEX16; desc += 2; }
+    if (surfaceFlags & 0x200) { desc[0] = GX_VA_TEX1; desc[1] = GX_INDEX8; desc += 2; }
+    else if (surfaceFlags & 0x400) { desc[0] = GX_VA_TEX1; desc[1] = GX_INDEX16; desc += 2; }
     desc[0] = GX_VA_NULL; desc[1] = GX_NONE;
     GXClearVtxDesc();
     GXSetVtxDescv(vtxDescList);
