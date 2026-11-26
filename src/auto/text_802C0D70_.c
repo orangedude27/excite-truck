@@ -134,7 +134,7 @@ void fn_802C1018(void) {
 
 extern float *DrawList_getCurrentMatrix(float);
 extern void MRModel_SetInstanceTransform(int, float *);
-extern void fn_802A4E08(void);
+extern void drawSnowWeather(void);
 extern void fn_8029231C(char *);
 extern int fn_8012C33C(char (*)[4]);
 extern int fn_802B2C34(void *, char (*)[4]);
@@ -179,7 +179,7 @@ void fn_802C1020(void) {
         matrix[11] = drawlistBase[11];
         MRModel_SetInstanceTransform(*(int *)lbl_8055FB14, matrixPtr);
     }
-    fn_802A4E08();
+    drawSnowWeather();
     fn_8029231C((char *)lbl_804C0800);
 }
 #pragma pop
