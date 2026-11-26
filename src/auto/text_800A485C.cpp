@@ -557,7 +557,7 @@ extern "C" s32 fn_800B5988(void *);
 extern "C" void VFiPFDIR_FinalizeAllDirs(u8 *);
 extern "C" void VFiPFFILE_FinalizeAllFiles(u8 *);
 extern "C" s32 fn_800AEF6C(void *);
-extern "C" s32 fn_800B5700(s32, void *, s32, u16, u32, u32 *, u32);
+extern "C" s32 VFiPFCACHE_WriteData(s32, void *, s32, u16, u32, u32 *, u32);
 extern "C" void fn_800A52A0(void *, const void *);
 extern "C" s32 fn_800A98B8(void *arg0, s32 arg1, s32 arg2, void *arg3);
 extern "C" s32 fn_800A95B4(void *arg0);
@@ -4366,7 +4366,7 @@ extern "C" s32 fn_800AAF70(void *arg0) {
         fn_800A499C((const char *)*(void **)((u8 *)sp10 + 8), 0, *(u16 *)arg0);
         var_r30 = *(u32 *)((u8 *)arg0 + 0x2C);
         while (var_r30 < *(u32 *)((u8 *)arg0 + 0x30)) {
-            result = ((ReadData)fn_800B5700)((s32)arg0,
+            result = ((ReadData)VFiPFCACHE_WriteData)((s32)arg0,
                                             *(s32 *)((u8 *)sp10 + 8),
                                             (s32)var_r30, 0, *(u16 *)arg0,
                                             &spC, 0);
@@ -4394,7 +4394,7 @@ finish:
     return 0;
 }
 
-extern "C" s32 fn_800B5700(s32, void *, s32, u16, u32, u32 *, u32);
+extern "C" s32 VFiPFCACHE_WriteData(s32, void *, s32, u16, u32, u32 *, u32);
 extern "C" s32 fn_800AB0C0(u8 *p_ent, u32 arg1)
 {
   u8 buf[32];
@@ -4441,7 +4441,7 @@ extern "C" s32 fn_800AB0C0(u8 *p_ent, u32 arg1)
     high = __rlwimi(high, tmp32, 8, 24, 31);
     *((u32 *) (buf + 28)) = low | high;
   }
-  result = fn_800B5700(handle, buf, *((s32 *) (p_ent + 0x238)), *((u16 *) (p_ent + 0x23C)), 32, &count, 0);
+  result = VFiPFCACHE_WriteData(handle, buf, *((s32 *) (p_ent + 0x238)), *((u16 *) (p_ent + 0x23C)), 32, &count, 0);
   if (result != 0)
   {
     return result;
@@ -4541,7 +4541,7 @@ extern "C" u8 fn_800AB2F4(void *dateOut, void *timeOut, s32 unused) {
  */
 extern "C" s32 fn_800AB378(void *arg0, s32 grow) {
     typedef s32 (*ClaimPage)(void *, s32, void **, s32 *);              /* fn_800A8D08: a page of the volume's cache; -1 asks for one held by nobody */
-    typedef s32 (*WriteSector)(void *, s32, s32, s32, u16, u32 *, s32); /* fn_800B5700: write bytes to a sector */
+    typedef s32 (*WriteSector)(void *, s32, s32, s32, u16, u32 *, s32); /* VFiPFCACHE_WriteData: write bytes to a sector */
     VFiPFEntIter *it = (VFiPFEntIter *)arg0;
     void *page;
     u32 bytesWritten;
@@ -4570,7 +4570,7 @@ extern "C" s32 fn_800AB378(void *arg0, s32 grow) {
                 fn_800A499C((const char *)VF_PAGE_DATA(page), 0, VF_VOL_SECTOR_SIZE(it->volume));
                 for (i = 0; i < VF_VOL_SECTORS_PER_CLUSTER(it->volume); i++) {
                     void *volume = it->volume;
-                    result = ((WriteSector)fn_800B5700)(volume, (s32)VF_PAGE_DATA(page), it->sector + i, 0, VF_VOL_SECTOR_SIZE(volume), &bytesWritten, 0);
+                    result = ((WriteSector)VFiPFCACHE_WriteData)(volume, (s32)VF_PAGE_DATA(page), it->sector + i, 0, VF_VOL_SECTOR_SIZE(volume), &bytesWritten, 0);
                     if (result != 0) {
                         VFiPFCACHE_FreeFATPage_800A8E10(it->volume, page); /* gives the page back to the volume's data list */
                         return result;
@@ -5677,7 +5677,7 @@ test:
 #pragma pop
 extern s32 fn_800A8D08(void *, s32, void **, s32 *);
 extern s32 readVolumeData(void *, s32, s32, s32, u16, u32 *, s32);
-extern s32 fn_800B5700(void *, s32, s32, s32, u16, u32 *, s32);
+extern s32 VFiPFCACHE_WriteData(void *, s32, s32, s32, u16, u32 *, s32);
 extern s32 fn_800A499C(s32, s32);
 #pragma push
 #pragma opt_strength_reduction off
@@ -5702,7 +5702,7 @@ extern "C" s32 fn_800ACDF8(void *arg0, s32 arg1)
       break;
     }
     fn_800A499C(*((s32 *) (((u8 *) sp10) + 8)), arg1 * 0);
-    if ((fn_800B5700(arg0, *((s32 *) (((u8 *) sp10) + 8)), base + i, 0, *((u16 *) arg0), &sp8, 1) != 0) || (sp8 != (*((u16 *) arg0))))
+    if ((VFiPFCACHE_WriteData(arg0, *((s32 *) (((u8 *) sp10) + 8)), base + i, 0, *((u16 *) arg0), &sp8, 1) != 0) || (sp8 != (*((u16 *) arg0))))
     {
       break;
     }
@@ -6312,7 +6312,7 @@ extern "C" s32 fn_800AF144(void *volume) {
                     (fsInfoValue >> 24) | ((fsInfoValue >> 8) & 0x0000FF00) |
                     ((fsInfoValue << 8) & 0x00FF0000) | (fsInfoValue << 24);
             }
-            readResult = ((s32 (*)(s32, void *, s32, u16, u32, u32 *, u32))fn_800B5700)(
+            readResult = ((s32 (*)(s32, void *, s32, u16, u32, u32 *, u32))VFiPFCACHE_WriteData)(
                 (s32)volume, *(void **)((u8 *)pageHandle + 8), *(u16 *)((u8 *)volume + 0x14),
                 0, *(u16 *)volume, &bytesTransferred, 0);
             result = readResult;
@@ -7211,7 +7211,7 @@ extern "C" s32 fn_800AEF6C(void *volume) {
     fn_800A499C((const char *)VF_PAGE_DATA(page), 0, VF_VOL_SECTOR_SIZE(volume));
     sector = VF_VOL_DATA_START(volume) + ((*(s32 *)((u8 *)volume + 0x10) - VF_FAT_FIRST_CLUSTER) << VF_VOL_CLUSTER_SHIFT(volume));
     for (i = 0; (u32)i < VF_VOL_SECTORS_PER_CLUSTER(volume); i++) {
-        result = ((s32 (*)(s32, void *, s32, u16, u32, u32 *, u32))fn_800B5700)((s32)volume, VF_PAGE_DATA(page), sector + i, 0, VF_VOL_SECTOR_SIZE(volume), &written, 0);
+        result = ((s32 (*)(s32, void *, s32, u16, u32, u32 *, u32))VFiPFCACHE_WriteData)((s32)volume, VF_PAGE_DATA(page), sector + i, 0, VF_VOL_SECTOR_SIZE(volume), &written, 0);
         if (result != 0) {
             VFiPFCACHE_FreeFATPage_800A8E10(volume, page);
             return result;
@@ -8470,7 +8470,7 @@ struct VFiPFDirEntry {
         runSector = frame.prefix + 8;
         while (entryIndex >= 1) {
             VFiPFENT_storeLFNEntryFieldsToBuf(frame.prefix + 0x20, (u8 *)entry, (u8)entryIndex, (u8)nameChars, entryIndex == lfnEntries);
-            result = ((s32 (*)(s32, void *, s32, u16, u32, u32 *, u32))fn_800B5700)(
+            result = ((s32 (*)(s32, void *, s32, u16, u32, u32 *, u32))VFiPFCACHE_WriteData)(
                 (s32)volume, frame.prefix + 0x20, sector, ent->entrySectorOff, 0x20,
                 (u32 *)(frame.prefix + 4), 0);
             if (result != 0) {
@@ -11008,7 +11008,7 @@ extern "C" s32 readVolumeData(void *vol, u8 *dest, u32 sector, u32 offset, u32 l
  * write that got fewer sectors than asked for is 17.  claimPage is passed on
  * to the page write, which marks the page as held by the file when it is set.
  */
-extern "C" s32 fn_800B5700(s32 vol, void *src, s32 sector, u16 offset, u32 length, u32 *writeOut, u32 claimPage) {
+extern "C" s32 VFiPFCACHE_WriteData(s32 vol, void *src, s32 sector, u16 offset, u32 length, u32 *writeOut, u32 claimPage) {
     VFiPFCACHEPage *page;
     u32 count;
     s32 result;
@@ -24781,7 +24781,7 @@ extern "C" f32 lbl_80560E18;
 extern "C" f32 lbl_80560DC8;
 extern "C" void fn_800CB820(void *arg0, const char *arg1, void *arg2) {
     s32 paneNo = ((homebutton::HomeButton *)arg0)->getPaneNo(arg1);
-    u32 changed = 0;
+    s32 changed = 0;
     if (*(s32 *)(((u8 *)arg0) + 0x10) == 2 && paneNo != -1 &&
         *(s32 *)(((u8 *)arg0) + 0x1C + paneNo * 4) == 0) {
         if (*(s32 *)((u8 *)arg0) != 2 && paneNo < *(s32 *)(((u8 *)arg0) + 8)) {
@@ -24789,11 +24789,13 @@ extern "C" void fn_800CB820(void *arg0, const char *arg1, void *arg2) {
             s32 count = *(s32 *)(((u8 *)arg0) + 0x0C);
             s32 *entry = lbl_802F4528;
             for (i = 0; i < count; ++i, entry += 2) {
-                if (paneNo == entry[0] && entry[1] == 0)
+                if (paneNo != entry[0])
+                    continue;
+                if (entry[1] == 0)
                     goto found_entry;
             }
             i = -1;
- found_entry:
+found_entry:
             void *pane = *(void **)(((u8 *)arg0) + 0x268 + i * 4);
             fn_800CF3EC(pane);
             *(s32 *)((u8 *)pane + 0x14) = 1;
@@ -24871,7 +24873,7 @@ extern "C" void fn_800CB820(void *arg0, const char *arg1, void *arg2) {
                         ++index;
                     }
                     index = -1;
- found_case1_0:;
+found_case1_0:;
                     s32 indexA = 0;
                     s32 indexB = 0;
                     s32 indexC = 0;
@@ -24886,7 +24888,7 @@ extern "C" void fn_800CB820(void *arg0, const char *arg1, void *arg2) {
                         ++indexA;
                     }
                     indexA = -1;
- found_case1_1:;
+found_case1_1:;
                     entry = lbl_802F4588;
                     for (i = 0; i < 0x25; ++i, entry += 4) {
                         if (entry[0] == 5 && entry[1] == 3)
@@ -24897,7 +24899,7 @@ extern "C" void fn_800CB820(void *arg0, const char *arg1, void *arg2) {
                         ++indexB;
                     }
                     indexB = -1;
- found_case1_2:;
+found_case1_2:;
                     entry = lbl_802F4588;
                     for (i = 0; i < 0x25; ++i, entry += 4) {
                         if (entry[0] == 4 && entry[1] == 0x13)
@@ -24908,7 +24910,7 @@ extern "C" void fn_800CB820(void *arg0, const char *arg1, void *arg2) {
                         ++indexC;
                     }
                     indexC = -1;
- found_case1_3:;
+found_case1_3:;
                     entry = lbl_802F4588;
                     for (i = 0; i < 0x25; ++i, entry += 4) {
                         if (entry[0] == 5 && entry[1] == 0x14)
@@ -24919,7 +24921,7 @@ extern "C" void fn_800CB820(void *arg0, const char *arg1, void *arg2) {
                         ++indexD;
                     }
                     indexD = -1;
- found_case1_4:;
+found_case1_4:;
                     if (*(s32 *)arg0 == 2 &&
                         *(s32 *)((u8 *)*(void **)(((u8 *)arg0) + 0x298 + indexA * 4) + 0x14) != 1 &&
                         *(s32 *)((u8 *)*(void **)(((u8 *)arg0) + 0x298 + indexB * 4) + 0x14) != 1 &&
@@ -24962,7 +24964,7 @@ extern "C" void fn_800CB820(void *arg0, const char *arg1, void *arg2) {
                         ++index;
                     }
                     index = -1;
- found_case1b_0:;
+found_case1b_0:;
                     s32 indexA = 0;
                     s32 indexB = 0;
                     s32 indexC = 0;
@@ -24977,7 +24979,7 @@ extern "C" void fn_800CB820(void *arg0, const char *arg1, void *arg2) {
                         ++indexA;
                     }
                     indexA = -1;
- found_case1b_1:;
+found_case1b_1:;
                     entry = lbl_802F4588;
                     for (i = 0; i < 0x25; ++i, entry += 4) {
                         if (entry[0] == 5 && entry[1] == 3)
@@ -24988,7 +24990,7 @@ extern "C" void fn_800CB820(void *arg0, const char *arg1, void *arg2) {
                         ++indexB;
                     }
                     indexB = -1;
- found_case1b_2:;
+found_case1b_2:;
                     entry = lbl_802F4588;
                     for (i = 0; i < 0x25; ++i, entry += 4) {
                         if (entry[0] == 4 && entry[1] == 0x13)
@@ -24999,7 +25001,7 @@ extern "C" void fn_800CB820(void *arg0, const char *arg1, void *arg2) {
                         ++indexC;
                     }
                     indexC = -1;
- found_case1b_3:;
+found_case1b_3:;
                     entry = lbl_802F4588;
                     for (i = 0; i < 0x25; ++i, entry += 4) {
                         if (entry[0] == 5 && entry[1] == 0x14)
@@ -25010,7 +25012,7 @@ extern "C" void fn_800CB820(void *arg0, const char *arg1, void *arg2) {
                         ++indexD;
                     }
                     indexD = -1;
- found_case1b_4:;
+found_case1b_4:;
                     if (*(s32 *)arg0 == 2 &&
                         *(s32 *)((u8 *)*(void **)(((u8 *)arg0) + 0x298 + indexA * 4) + 0x14) != 1 &&
                         *(s32 *)((u8 *)*(void **)(((u8 *)arg0) + 0x298 + indexB * 4) + 0x14) != 1 &&
@@ -25056,7 +25058,7 @@ extern "C" void fn_800CB820(void *arg0, const char *arg1, void *arg2) {
                         ++index;
                     }
                     index = -1;
- found_entry_1:;
+found_entry_1:;
                     void *pane = *(void **)(((u8 *)arg0) + 0x298 + index * 4);
                     if (*(s32 *)((u8 *)pane + 0x14) != 1) {
                         fn_800CF3EC(pane);
@@ -25099,7 +25101,7 @@ extern "C" void fn_800CB820(void *arg0, const char *arg1, void *arg2) {
                         ++index;
                     }
                     index = -1;
- found_entry_2:;
+found_entry_2:;
                     void *pane = *(void **)(((u8 *)arg0) + 0x298 + index * 4);
                     if (*(s32 *)((u8 *)pane + 0x14) != 1) {
                         fn_800CF3EC(pane);
@@ -25142,7 +25144,7 @@ extern "C" void fn_800CB820(void *arg0, const char *arg1, void *arg2) {
                         ++index;
                     }
                     index = -1;
- found_entry_3:;
+found_entry_3:;
                     void *pane = *(void **)(((u8 *)arg0) + 0x298 + index * 4);
                     if (*(s32 *)((u8 *)pane + 0x14) != 1) {
                         fn_800CF3EC(pane);
@@ -25185,7 +25187,7 @@ extern "C" void fn_800CB820(void *arg0, const char *arg1, void *arg2) {
                         ++index;
                     }
                     index = -1;
- found_entry_4:;
+found_entry_4:;
                     void *pane = *(void **)(((u8 *)arg0) + 0x298 + index * 4);
                     if (*(s32 *)((u8 *)pane + 0x14) != 1) {
                         fn_800CF3EC(pane);
@@ -25228,7 +25230,7 @@ extern "C" void fn_800CB820(void *arg0, const char *arg1, void *arg2) {
                         ++index;
                     }
                     index = -1;
- found_entry_5:;
+found_entry_5:;
                     void *pane = *(void **)(((u8 *)arg0) + 0x298 + index * 4);
                     fn_800CF3EC(pane);
                     *(s32 *)((u8 *)pane + 0x14) = 1;
@@ -25267,7 +25269,7 @@ extern "C" void fn_800CB820(void *arg0, const char *arg1, void *arg2) {
                         ++index;
                     }
                     index = -1;
- found_entry_6:;
+found_entry_6:;
                     void *pane = *(void **)(((u8 *)arg0) + 0x298 + index * 4);
                     fn_800CF3EC(pane);
                     *(s32 *)((u8 *)pane + 0x14) = 1;
@@ -25306,7 +25308,7 @@ extern "C" void fn_800CB820(void *arg0, const char *arg1, void *arg2) {
                         ++index;
                     }
                     index = -1;
- found_entry_7:;
+found_entry_7:;
                     void *pane = *(void **)(((u8 *)arg0) + 0x298 + index * 4);
                     fn_800CF3EC(pane);
                     *(s32 *)((u8 *)pane + 0x14) = 1;
@@ -25345,7 +25347,7 @@ extern "C" void fn_800CB820(void *arg0, const char *arg1, void *arg2) {
                         ++index;
                     }
                     index = -1;
- found_entry_8:;
+found_entry_8:;
                     void *pane = *(void **)(((u8 *)arg0) + 0x298 + index * 4);
                     fn_800CF3EC(pane);
                     *(s32 *)((u8 *)pane + 0x14) = 1;
