@@ -29,7 +29,7 @@ extern void DSPSendMailToDSP(u32);
 #include <ctype.h>
 #include "revolution/DSP/dsp_task_types.h"
 #include "revolution/DSP/dsp_task_types.h"
-extern void fn_80038368(void *);
+extern void __DVDStateBusy(void *);
 extern void fn_80035A04(u32);
 extern s32 fn_8003B81C(void *, s32, s32, s32);
 extern s32 lbl_8055D8CC;
@@ -280,7 +280,7 @@ enum { MOTOR_STATE_WORKING, MOTOR_STATE_PENDING_STOP, MOTOR_STATE_STOPPED };
 #define DVDCancelAsync DVDCancelAsyncCore   // cancel one command block, answer when done
 #define stateReady     __DVDStateReady   // start the next command on the waiting queue
 #define stateCoverClosed     fn_8003773C // the drive's cover-closed state
-#define stateBusy            fn_80038368 // the drive's busy state: run the block's command
+#define stateBusy            __DVDStateBusy // the drive's busy state: run the block's command
 #define CoverAlarmHandler    fn_8003801C // the alarm that polls the cover register
 #define __DVDStoreErrorCode  fn_8003A1A0 // write a drive error code, then carry on
  #define cbForStoreErrorCode1 fn_80035C64 // carried on from the code just written
@@ -2174,7 +2174,7 @@ void fn_8003727C(u32 status) {
         }
         if (resetHandled == 0) {
             *(s32 *)((u8 *)executing_8055D8C8 + 0xC) = 1;
-            fn_80038368((void *)executing_8055D8C8);
+            __DVDStateBusy((void *)executing_8055D8C8);
         }
     } else {
         fn_800356F4(0x27, 0, 0);
@@ -2298,7 +2298,7 @@ void fn_800375A8(u32 statusCode) {
 extern s32 MotorState_8055D8A8;
 extern s32 lbl_8055D8BC;
 extern void __DVDClearWaitingQueue(void);
-extern void fn_80038368(void *);
+extern void __DVDStateBusy(void *);
 extern void fn_800379A8(u32);
 extern BOOL __OSInIPL;
 /* Handle DVD command completion/error state transitions based on the current executing command. */
@@ -2322,7 +2322,7 @@ void fn_8003773C(void) {
         MotorState_8055D8A8 = 0;
     case 35: case 36: case 37:
         *(s32 *)((char *)executing_8055D8C8 + 0xC) = 1;
-        fn_80038368((void *)executing_8055D8C8);
+        __DVDStateBusy((void *)executing_8055D8C8);
         break;
     case 1: case 2:
         if (__OSInIPL)
@@ -2754,13 +2754,13 @@ extern void (*lbl_80558E08)(void *, void *);
 /* DVD low-level command completion handler (the driver's busy state). Logs
  * selected commands to the error-info ring buffer, then dispatches each one to
  * the matching DVDLow routine; long reads are split into 0x80000-byte chunks. */
-void fn_80038368(void *block) {
+void __DVDStateBusy(void *block) {
  u8 *blockBytes = block;
  int offset;
  int length;
  int command;
  u32 transferSize;
- lbl_8055D8CC = (int)fn_80038368;   /* LastState = stateBusy */
+ lbl_8055D8CC = (int)__DVDStateBusy;   /* LastState = stateBusy */
  command = *(int *)(blockBytes+8);
  switch (command) {                  /* StampCommand: log the interesting commands */
  case 2: case 3: case 5: case 13: case 14: case 15: case 16: case 34: case 37: {
@@ -3016,7 +3016,7 @@ void fn_80038870(u32 arg0) {
                 if (cmd_valid) {
                     block = (char *)executing_8055D8C8;
                     if (*(u32 *)(block + 0x20) != *(u32 *)(block + 0x14)) {
-                        fn_80038368(block);
+                        __DVDStateBusy(block);
                         return;
                     }
                     executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
