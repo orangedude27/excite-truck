@@ -11558,7 +11558,7 @@ extern "C" void *fn_800B65A0(s8 driveLetter) {
 }
 
 
-/* The device description a drive is attached with (fn_800B6628); the mount
+/* The device description a drive is attached with (VFiPFDRV_Attach); the mount
  * copies its params into the volume and writes back the drive letter. */
 struct VFiPFDriver {
     void *device;                     /* 0x00 device the volume is read through */
@@ -11611,7 +11611,7 @@ extern "C" s32 fn_800A53F8(void *);
  * keeps the drive attached.  Returns 0 once the drive is attached, or the error
  * that kept it from being attached.
  */
-extern "C" s32 fn_800B6628(VFiPFDriver *driver, const char *name, s32 index) {
+extern "C" s32 VFiPFDRV_Attach(VFiPFDriver *driver, const char *name, s32 index) {
     u8 *base;
     s32 result = index, slot_index, open_result, mount_result, attached, error;
     VFiPFDriverParams *params, *params2, *cache;
@@ -12204,9 +12204,9 @@ extern "C" s32 fn_800B73E4(s32 status) {
 extern "C" s32 fn_800B73BC(s32);
 
 #pragma dont_inline on
-/* Attaches/mounts a NULL-terminated list of VF drivers (fn_800B6628). Optional context at +0x50 is passed as the third argument; on empty list sets lbl_803D2140+0x40 (last error) to 10 and returns fn_800B73BC(result). */
+/* Attaches/mounts a NULL-terminated list of VF drivers (VFiPFDRV_Attach). Optional context at +0x50 is passed as the third argument; on empty list sets lbl_803D2140+0x40 (last error) to 10 and returns fn_800B73BC(result). */
 extern "C" void fn_800B7408(s32* drivers, void* context) {
-    extern s32 fn_800B6628(void*, void*, s32);
+    extern s32 VFiPFDRV_Attach(void*, void*, s32);
     extern s32 fn_800B73BC(s32);
     extern s32 lbl_803D2140[];
     s32 result;
@@ -12216,9 +12216,9 @@ extern "C" void fn_800B7408(s32* drivers, void* context) {
     } else {
         while (*drivers != 0) {
             if (context != 0)
-                result = fn_800B6628((void*)*drivers, context, *(s32*)((u8*)context + 0x50));
+                result = VFiPFDRV_Attach((void*)*drivers, context, *(s32*)((u8*)context + 0x50));
             else
-                result = fn_800B6628((void*)*drivers, 0, 0);
+                result = VFiPFDRV_Attach((void*)*drivers, 0, 0);
             if (result != 0) {
                 fn_800B73BC(result);
                 return;
