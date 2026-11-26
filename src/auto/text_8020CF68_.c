@@ -65,7 +65,7 @@ extern void fn_8020C908(float);
 extern void fn_8000C6E4(void);
 extern void fn_80209190(int, float);
 extern void fn_80206454(void);
-extern void fn_801769EC(void);
+extern void Sound_start(void);
 extern void fn_80206444(void);
 extern float fn_80209028(void);
 extern float fn_8020A5F0(void);
@@ -303,7 +303,7 @@ void fn_8020D29C(void) {
     lbl_8055EE94 = 0;
     fn_80209190(id, volume);
     fn_80206454();
-    fn_801769EC();
+    Sound_start();
 }
 
 #pragma push
@@ -312,184 +312,288 @@ void fn_8020D29C(void) {
 #pragma use_lmw_stmw off
 extern "C" void fn_8020D2D4(void)
 {
-    char *fmt = lbl_8033C690;
-    char buf130[0x30];
-    char buf110[32];
-    char bufF0[32];
-    char bufD0[32];
-    Item8020D2D4 spB0, sp94, sp78;
-    char buf58[32];
-    Item8020D2D4 sp38, sp1C;
-    unsigned char sp8;
-    float spC;
-    float f31, f30, f29, f28, f27, f26, f25, f24, f23, f22, f21;
-    unsigned int i;
+  char buf130[0x30];
+  char buf110[32];
+  char bufF0[32];
+  char bufD0[32];
+  Item8020D2D4 spB0;
+  Item8020D2D4 sp94;
+  Item8020D2D4 sp78;
+  char buf58[32];
+  Item8020D2D4 sp38;
+  Item8020D2D4 sp1C;
+  unsigned char sp8;
+  float spC;
+  float f31;
+  float f30;
+  float f29;
+  float f28;
+  float f27;
+  float f26;
+  float f25;
+  float f24;
+  float f23;
+  float f22;
+  float f21;
+  unsigned int i;
+  char *fmt = lbl_8033C690;
+  if (lbl_8055EE80 != 0)
+  {
+    ((void (*)(void)) lbl_8055EE80)();
+  }
+  fn_80230B5C(buf130);
+  DrawList_loadMatrix(buf130);
+  fn_802C974C(lbl_8056331C, lbl_80563324, lbl_80563328);
+  f21 = lbl_8056332C * ((float) KERNEL_GetTimeMs());
+  fn_800109E4(0x7F000000 & 0xFFu, lbl_80563330, lbl_80563334, lbl_80563338, lbl_8056333C);
+  if (lbl_8055EEA0 != 0)
+  {
+    fn_801473F8(lbl_8055EEA0, lbl_8055B630, lbl_8055B638, fn_80131234(fmt + 0x68));
+  }
+  Names8020D2D4 names = lbl_802F9E58;
+  if (lbl_8055EEA0 != 0)
+  {
+    f24 = lbl_80563320;
+    f25 = lbl_8056331C;
+    f22 = lbl_80563344;
+    f23 = lbl_80563340;
+    f26 = lbl_80563348;
+    f27 = lbl_80563350;
+    f28 = lbl_8056334C;
+    f29 = lbl_80563354;
+    f30 = lbl_80563358;
+    f31 = lbl_8056335C;
+    for (i = 0; i < 3; i++)
+    {
+      int isSel;
+      char *name;
+      {
+        unsigned long z;
+        for (z = 0; z < 8; z++)
+        {
+          ((unsigned int *) buf110)[z] = 0;
+        }
 
-    if (lbl_8055EE80 != 0) ((void (*)(void))lbl_8055EE80)();
-    fn_80230B5C(buf130);
-    DrawList_loadMatrix(buf130);
-    fn_802C974C(lbl_8056331C, lbl_80563324, lbl_80563328);
-    f21 = lbl_8056332C * (float)KERNEL_GetTimeMs();
-    fn_800109E4(0x7F000000, lbl_80563330, lbl_80563334, lbl_80563338, lbl_8056333C);
-    if (lbl_8055EEA0 != 0)
-        fn_801473F8(lbl_8055EEA0, lbl_8055B630, lbl_8055B638, fn_80131234(fmt + 0x68));
-    Names8020D2D4 names = lbl_802F9E58;
-    if (lbl_8055EEA0 != 0) {
-        f24 = lbl_80563320;
-        f25 = lbl_8056331C;
-        f22 = lbl_80563344;
-        f23 = lbl_80563340;
-        f26 = lbl_80563348;
-        f27 = lbl_80563350;
-        f28 = lbl_8056334C;
-        f29 = lbl_80563354;
-        f30 = lbl_80563358;
-        f31 = lbl_8056335C;
-        for (i = 0; i < 3; i++) {
-            int isSel;
-            char *name;
-            {
-                int z;
-                for (z = 0; z < 8; z++) ((unsigned int*)buf110)[z] = 0;
-            }
-            name = fn_80131234(names.s[i]);
-            switch (i) {
-            case 0:
-                fn_801345D8(buf110, 0x20, fmt + 0x78, name, (int)(f23 + f22 * lbl_8055EE8C));
-                break;
-            case 1:
-                fn_801345D8(buf110, 0x20, fmt + 0x78, name, (int)(f23 + f22 * lbl_8055EE90));
-                break;
-            case 4:
-                fn_801345D8(buf110, 0x20, fmt + 0x84, fn_8000C69C());
-                break;
-            default: {
-                char *d = buf110;
-                int n = 0x20;
-                do {
-                    char c = *name++;
-                    *d++ = c;
-                    if (c == 0) break;
-                } while (--n > 0);
-                if (n <= 0) d[-1] = 0;
-                break;
-            }
-            }
-            fn_801345D8(bufF0, 0x20, fmt + 0x90, i);
-            fn_801345D8(bufD0, 0x20, lbl_8055B63C, i);
-            isSel = (i == lbl_8055EE78);
-            {
-                Item8020D2D4 *it = ((Dummy_8020D2D4 *)lbl_8055EEA0)->m3(bufD0);
-                spB0.h = it->h;
-                spB0.e = it->e;
-                spB0.f = it->f;
-                spB0.color = it->color;
-            }
-            sp8 = 0xFF;
-            spC = f24;
-            if (isSel) fn_80230F78(&sp8, &spC, &spB0.color, 1);
-            {
-                Item8020D2D4 *it = ((Dummy_8020D2D4 *)lbl_8055EEA0)->m3(bufF0);
-                if (it != 0) {
-                    sp94.h = it->h;
-                    sp94.e = it->e;
-                    sp94.f = it->f;
-                    sp94.color = it->color;
-                    if (i == 2 && fn_8020CF68() == 0)
-                        sp94.color = (sp94.color & 0x00FF0000) | ((sp94.color >> 1) & 0x7F000000) | (sp94.color & 0xFFFF);
-                    fn_80147940(lbl_8055EEA0, &sp94, fmt + 0xA0, ((-isSel | isSel) >> 31) + 2);
-                    if (isSel) {
-                        sp78.h = it->h;
-                        sp78.e = it->e;
-                        sp78.f = it->f;
-                        sp78.h.b = sp78.h.b - f23 * sp78.e * spC;
-                        sp78.h.c = sp78.h.c - f23 * sp78.f * spC;
-                        sp78.e = sp78.e * (f25 + spC);
-                        sp78.f = sp78.f * (f25 + spC);
-                        sp78.color = (it->color & 0x00FF0000) | (sp8 << 24) | (it->color & 0xFFFF);
-                        fn_80147940(lbl_8055EEA0, &sp78, fmt + 0xA0, 1, sp8);
-                    }
-                }
-            }
-            if (isSel && i < 5) {
-                int a = 1, b = 1;
-                unsigned int c30, c24;
-                switch (i) {
-                case 0:
-                    if ((float)__fabs((double)lbl_8055EE8C) <= lbl_80558DC4) a = 0;
-                    if (f25 == lbl_8055EE8C) b = 0;
-                    break;
-                case 1:
-                    if ((float)__fabs((double)lbl_8055EE90) <= lbl_80558DC4) a = 0;
-                    if (f25 == lbl_8055EE90) b = 0;
-                    break;
-                case 2:
-                    b = 0;
-                    a = 0;
-                    break;
-                }
-                c30 = -1;
-                c24 = -1;
-                if (a == 0) {
-                    float f = ((f21 - lbl_8055EE98) - f24) / f26;
-                    if (f25 < f) f = f25;
-                    if (f <= f24) f = f24;
-                    c30 = ((int)(f28 + f * f27) << 24) | 0xFFFFFF;
-                }
-                if (b == 0) {
-                    float f = ((f21 - lbl_8055EE9C) - f24) / f26;
-                    if (f25 < f) f = f25;
-                    if (f <= f24) f = f24;
-                    c24 = ((int)(f28 + f * f27) << 24) | 0xFFFFFF;
-                }
-                fn_801345D8(buf58, 0x20, fmt + 0xAC, bufD0);
-                {
-                    Item8020D2D4 *it = ((Dummy_8020D2D4 *)lbl_8055EEA0)->m3(buf58);
-                    if (it != 0) {
-                        float f;
-                        sp38.h = it->h;
-                        sp38.e = it->e;
-                        sp38.f = it->f;
-                        f = ((f21 - lbl_8055EE98) - f29) / f30;
-                        sp38.color = it->color;
-                        if (f25 < f) f = f25;
-                        if (f <= f24) f = f24;
-                        sp38.color = c30;
-                        sp38.h.b = sp38.h.b - (f24 + f * f31);
-                        fn_80147940(lbl_8055EEA0, &sp38, fmt + 0xBC, 1);
-                    }
-                }
-                fn_801345D8(buf58, 0x20, fmt + 0xCC, bufD0);
-                {
-                    Item8020D2D4 *it = ((Dummy_8020D2D4 *)lbl_8055EEA0)->m3(buf58);
-                    if (it != 0) {
-                        float f;
-                        sp1C.h = it->h;
-                        sp1C.e = it->e;
-                        sp1C.f = it->f;
-                        f = ((f21 - lbl_8055EE9C) - f29) / f30;
-                        sp1C.color = it->color;
-                        if (f25 < f) f = f25;
-                        if (f <= f24) f = f24;
-                        sp1C.color = c24;
-                        sp1C.h.b = sp1C.h.b + (f24 + f * f31);
-                        fn_80147940(lbl_8055EEA0, &sp1C, fmt + 0xE0, 1);
-                    }
-                }
-            }
-            if (i == 2 && fn_8020CF68() == 0)
-                spB0.color = (spB0.color & 0x00FF0000) | ((spB0.color >> 1) & 0x7F000000) | (spB0.color & 0xFFFF);
-            fn_80147230(&spB0, lbl_8055B638, buf110);
+      }
+      name = fn_80131234(names.s[i]);
+      switch (i)
+      {
+        case 0:
+          fn_801345D8(buf110, 0x20, fmt + 0x78, name, (int) (f23 + (f22 * lbl_8055EE8C)));
+          break;
+
+        case 1:
+          fn_801345D8(buf110, 0x20, fmt + 0x78, name, (int) (f23 + (f22 * lbl_8055EE90)));
+          break;
+
+        case 4:
+          fn_801345D8(buf110, 0x20, fmt + 0x84, fn_8000C69C());
+          break;
+
+        default:
+          if (1)
+        {
         }
-        ((Dummy_8020D2D4 *)lbl_8055EEA0)->m1(fmt + 0xF0);
-        fn_801476C4();
-        if (lbl_8055EE78 == 2) {
-            ((Dummy_8020D2D4 *)lbl_8055EEA0)->m1(fmt + 0x100);
-            fn_801476C4();
+        {
+          char *d = buf110;
+          int n = 0x20;
+          do
+          {
+            volatile char c = *(name++);
+            *(d++) = c;
+            do
+            {
+              if (c == 0)
+              {
+                break;
+              }
+            }
+            while (0);
+          }
+          while ((--n) > 0);
+          if (n <= 0)
+          {
+            d[-1] = 0;
+          }
+          break;
         }
+
+      }
+
+      fn_801345D8(bufF0, 0x20, fmt + 0x90, i & 0xFFFFu);
+      fn_801345D8(bufD0, 0x20, lbl_8055B63C, i);
+      isSel = i == lbl_8055EE78;
+      {
+        Item8020D2D4 *it = ((Dummy_8020D2D4 *) lbl_8055EEA0)->m3(bufD0);
+        spB0.h = it->h;
+        spB0.e = it->e;
+        spB0.f = it->f;
+        spB0.color = it->color;
+      }
+      sp8 = 0xFF;
+      spC = f24;
+      if (isSel)
+      {
+        fn_80230F78(&sp8, &spC, &spB0.color, 1);
+      }
+      {
+        Item8020D2D4 *it = ((Dummy_8020D2D4 *) (lbl_8055EEA0 & 0xFF))->m3(bufF0);
+        if (it != 0)
+        {
+          sp94.h = it->h;
+          sp94.e = it->e;
+          sp94.f = it->f;
+          sp94.color = it->color;
+          if ((i == 2) && (fn_8020CF68() == 0))
+          {
+            sp94.color = ((sp94.color & 0x00FF0000) | (0x7F000000 & (sp94.color >> 1))) | (((((((((((sp94.color & 0xFFFF) & 0xFFFFFFFFFFFFFFFFu) & 0xFFFFFFFFFFFFFFFFu) & 0xFFFFFFFFFFFFFFFFu) & 0xFFFFFFFFFFFFFFFFu) & 0xFFFFFFFFFFFFFFFFu) & 0xFFFFFFFFFFFFFFFFu) & 0xFFFFFFFFFFFFFFFFu) & 0xFFFFFFFFFFFFFFFFu) & 0xFFFFFFFFFFFFFFFFu) & 0xFFFFFFFFFFFFFFFFu);
+          }
+          fn_80147940(lbl_8055EEA0, &sp94, fmt + 0xA0, (((-isSel) | isSel) >> 31) + 2);
+          if (isSel)
+          {
+            sp78.h = it->h;
+            sp78.e = it->e;
+            sp78.f = it->f;
+            sp78.h.b = sp78.h.b - ((f23 * sp78.e) * spC);
+            sp78.h.c = sp78.h.c - ((f23 * sp78.f) * spC);
+            sp78.e = sp78.e * (f25 + spC);
+            sp78.f = sp78.f * (f25 + spC);
+            sp78.color = ((it->color & 0x00FF0000) | (sp8 << 24)) | (it->color & 0xFFFF);
+            fn_80147940(lbl_8055EEA0, &sp78, fmt + 0xA0, 1, sp8);
+          }
+        }
+      }
+      if (isSel && ((i <= (5 - 1)) & 0xFFFFu))
+      {
+        int a = 1;
+        int b = 1;
+        unsigned int c30;
+        unsigned int c24;
+        switch (i)
+        {
+          case 0:
+            if (((float) __fabs((double) lbl_8055EE8C)) <= lbl_80558DC4)
+          {
+            a = 0;
+          }
+            if (f25 == lbl_8055EE8C)
+          {
+            b = 0;
+          }
+            break;
+
+          case 1:
+            if (((float) __fabs((double) lbl_8055EE90)) <= lbl_80558DC4)
+          {
+            a = 0;
+          }
+            if (f25 == lbl_8055EE90)
+          {
+            b = 0;
+          }
+            break;
+
+          case 2:
+            b = 0;
+            a = 0;
+            break;
+
+        }
+
+        c30 = -1;
+        c24 = -1;
+        if (a == 0)
+        {
+          float f = ((f21 - lbl_8055EE98) - f24) / f26;
+          if (f25 < f)
+          {
+            f = f25;
+          }
+          if (f <= f24)
+          {
+            f = f24;
+          }
+          c30 = (((int) (f28 + (f * f27))) << (24 & 0xFFFFFFFFFFFFFFFF)) | 0xFFFFFF;
+        }
+        if (b == 0)
+        {
+          float f = ((f21 - lbl_8055EE9C) - f24) / f26;
+          if (f25 < f)
+          {
+            f = f25;
+          }
+          if (f <= f24)
+          {
+            f = f24;
+          }
+          c24 = (((int) (f28 + (f * f27))) << 24) | 0xFFFFFF;
+        }
+        fn_801345D8(buf58, 0x20, fmt - (-0xAC), bufD0);
+        {
+          Item8020D2D4 *it = ((Dummy_8020D2D4 *) lbl_8055EEA0)->m3(buf58);
+          if (it != 0)
+          {
+            float f;
+            sp38.h = it->h;
+            sp38.e = it->e;
+            sp38.f = it->f;
+            f = ((f21 - lbl_8055EE98) - f29) / f30;
+            sp38.color = it->color;
+            if (f25 < f)
+            {
+              f = f25;
+            }
+            if (f <= f24)
+            {
+              f = f24;
+            }
+            sp38.color = c30;
+            sp38.h.b = sp38.h.b - (f24 + (f * f31));
+            fn_80147940(lbl_8055EEA0, &sp38, fmt + 0xBC, 1);
+          }
+        }
+        fn_801345D8(buf58, 0x20, fmt + 0xCC, bufD0);
+        {
+          Item8020D2D4 *it = ((Dummy_8020D2D4 *) lbl_8055EEA0)->m3(buf58);
+          if (it != 0)
+          {
+            float f;
+            sp1C.h = it->h;
+            sp1C.e = it->e;
+            sp1C.f = it->f;
+            f = ((f21 - lbl_8055EE9C) - f29) / f30;
+            sp1C.color = it->color;
+            if (f25 < f)
+            {
+              f = f25;
+            }
+            if (f < (f24 + 1))
+            {
+              f = f24;
+            }
+            sp1C.color = c24;
+            sp1C.h.b = sp1C.h.b + (f24 + (f * f31));
+            fn_80147940(lbl_8055EEA0, &sp1C, fmt + 0xE0, 1);
+          }
+        }
+      }
+      if ((i == (2 & 0xFFFFFFFFu)) && (fn_8020CF68() == 0))
+      {
+        spB0.color = ((spB0.color & 0x00FF0000) | ((spB0.color >> 1) & 0x7F000000)) | ((spB0.color & 0xFFFF) & 0xFFu);
+      }
+      fn_80147230(&spB0, lbl_8055B638, buf110);
     }
-    fn_80011A2C();
-    fn_802C9904();
+
+    ((Dummy_8020D2D4 *) lbl_8055EEA0)->m1(fmt + 0xF0);
+    fn_801476C4();
+    if (lbl_8055EE78 == 2)
+    {
+      ((Dummy_8020D2D4 *) lbl_8055EEA0)->m1(fmt + 0x100);
+      fn_801476C4();
+    }
+  }
+  fn_80011A2C();
+  fn_802C9904();
 }
 #pragma cplusplus off
 #pragma pop

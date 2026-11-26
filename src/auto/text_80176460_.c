@@ -443,7 +443,7 @@ u32 *fn_801769D8(void) {
 }
 
 extern void __AXDSPInitCallback_801769E0(void);
-extern void fn_801769EC(void);
+extern void Sound_start(void);
 
 #pragma scheduling invalid_target
 /* Return true while a physics fade is in progress (fading in or out). */
@@ -467,7 +467,7 @@ void fn_80176FC4(void) {
         *(u8 *)(lbl_80430558 + 0x14) = 0;
         __AXDSPInitCallback_801769E0();
     }
-    fn_801769EC();
+    Sound_start();
 }
 #pragma push
 #pragma opt_common_subs off
@@ -502,7 +502,7 @@ void fn_801770C8(void) {
     *(s32 *)(lbl_80430558 + 8) = 7;
     *(u8 *)(lbl_80430558 + 0x14) = 0;
     __AXDSPInitCallback_801769E0();
-    fn_801769EC();
+    Sound_start();
 }
 
 void fn_80177138(void) {
@@ -514,7 +514,7 @@ void fn_80177138(void) {
     *(s32 *)(lbl_80430558 + 8) = 7;
     *(u8 *)(lbl_80430558 + 0x14) = 0;
     __AXDSPInitCallback_801769E0();
-    fn_801769EC();
+    Sound_start();
 }
 
 #pragma push
@@ -682,7 +682,7 @@ void __AXDSPInitCallback_801769E0(void) {
 #undef sSoundInitState
 }
 
-void fn_801769EC(void) {
+void Sound_start(void) {
     /* Request sound-init state 2 (reset the one-shot flag), then run the DSP init hook. */
 #define sSoundInitState lbl_8055E3C0
     sSoundInitState = 2;
@@ -910,7 +910,7 @@ void fn_80176DE0(void) {
  * 3 frames out) and no completion callback. */
 void fn_80176E4C(void) {
     fn_80179308();
-    fn_801769EC();
+    Sound_start();
     *(s32 *)(sFadeState + 0xC) = FADE_MODE_IN;
     *(s32 *)(sFadeState + 0x10) = 0;
     *(s32 *)(sFadeState + 4) = ((s32 (*)(void))KERNEL_GetTimeMs)() + 0x32;
@@ -942,14 +942,14 @@ void fn_80176F24(void) {
 /* Fade-out done handler (armed by fn_80177048 / fn_80176FC4 as the fader's
  * onDone): takes the pending PhysicsCommand over into the active slot and
  * starts the physics tick it was waiting for (fn_80176EC0), tells the AX DSP
- * the transition is through (fn_801769EC), and re-arms the fader to fade back
+ * the transition is through (Sound_start), and re-arms the fader to fade back
  * in -- FADE_MODE_IN with the ramp restarted at 0, no done handler and nothing
  * held at the end, its next step 50 ms / 3 frames out so the screen stays
  * black for a moment.  fn_80176DE0 arms the same fade-in without applying a
  * command first. */
 void fn_80176F28(void) {
     fn_80176EC0();
-    fn_801769EC();
+    Sound_start();
     *(s32 *)(sFadeState + 0xC) = FADE_MODE_IN;
     *(s32 *)(sFadeState + 0x10) = 0;
     *(s32 *)(sFadeState + 4) = ((s32 (*)(void))KERNEL_GetTimeMs)() + 0x32;

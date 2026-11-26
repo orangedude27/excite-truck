@@ -73,7 +73,7 @@ extern s32 fn_8018FD38(void);
 extern void __AXDSPInitCallback_801769E0(void);
 extern void fn_80206454(void);
 extern void fn_80206444(void);
-extern void fn_801769EC(void);
+extern void Sound_start(void);
 extern s32 fn_802E47B8(void);
 extern s32 fn_802E46F0(void);
 extern void fn_802E4A10(void);
@@ -620,14 +620,14 @@ void fn_80008F98(void) {
                 break;
             case 0x70:
             case 0x113:
-                if (fn_801769F8() != 0) fn_801769EC();
+                if (fn_801769F8() != 0) Sound_start();
                 else __AXDSPInitCallback_801769E0();
                 fn_8027888C(0);
                 break;
             case 0x73:
                 var_r24 = 1;
                 fn_8027888C(0);
-                fn_801769EC();
+                Sound_start();
                 break;
             case 0x46: fn_8027888C(1); break;
             case 0x66: fn_8027888C(0); break;
@@ -750,7 +750,7 @@ skip16:
                     lbl_8055D39D = var26;
                 }
             } else if (lbl_8055D39D != 0) {
-                fn_801769EC();
+                Sound_start();
             }
         }
         if (fn_802E47B8() != 0) {
@@ -884,7 +884,7 @@ skip16:
                 case 11:
                     if (fn_801769F8() != 0) {
                         fn_801E882C();
-                        fn_801769EC();
+                        Sound_start();
                     } else {
                         __AXDSPInitCallback_801769E0();
                     }

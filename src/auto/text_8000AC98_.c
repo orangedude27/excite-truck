@@ -204,7 +204,7 @@ extern void fn_8012E81C(void *);
 extern void fn_8000AB44(void), fn_8023889C(void), fn_801CB808(void);
 extern void fn_801617BC(void), fn_802061F8(void), fn_80006D9C(void);
 extern void fn_8000CE60(void), fn_8020D178(void), fn_802108C8(void);
-extern void fn_802B8744(void), fn_801769EC(void);
+extern void fn_802B8744(void), Sound_start(void);
 extern void *memset(void *, int, unsigned int);
 extern void LoadIntOptionValue(int, void *, int *);
 extern int fn_8000AEC8(int);
@@ -248,7 +248,7 @@ startupMessage = 0;
   fn_8020D178();
   fn_802108C8();
   fn_802B8744();
-  fn_801769EC();
+  Sound_start();
   ((void (*)(int)) fn_8000AF04)(*((int *) (((char *) arg0) + 0x3E8)));
   entry = lbl_8034F5B8;
   i = 0;
@@ -576,7 +576,7 @@ extern int fn_80265D64(void);
 extern int fn_801769F8(void);
 extern int fn_801E86E8(int, int);
 extern void fn_8000D000(void *, void *, int);
-extern void fn_801769EC(void);
+extern void Sound_start(void);
 extern void fn_80206454(void);
 extern void fn_80206444(void);
 extern void fn_8000BF10(int, int);
@@ -635,7 +635,7 @@ event_1b:
 event_50:
     if (fn_80265D64() == 0 && Sound_isActive() == 0) {
         if (fn_801769F8() != 0) {
-            fn_801769EC();
+            Sound_start();
             fn_80206454();
         } else {
             __AXDSPInitCallback_801769E0();
@@ -751,7 +751,7 @@ void fn_8000B950(void) {
             fn_801DF060() == 0 &&
             lbl_8055D3D0 == (void *)lbl_802FBC90) {
             if (state == 0) {
-                fn_801769EC();
+                Sound_start();
                 fn_80206454();
             } else {
                 __AXDSPInitCallback_801769E0();

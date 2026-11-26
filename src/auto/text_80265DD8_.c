@@ -157,7 +157,7 @@ extern float lbl_8055F48C;
 extern int KERNEL_GetTimeMs(void);
 extern void fn_80209190(int, float);
 extern int Sound_isActive(void);
-extern void fn_801769EC(void);
+extern void Sound_start(void);
 extern void fn_8022FF10(void *, void *);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -1288,7 +1288,7 @@ void Camera_updateReplaySpin(void *arg0) {
         sSpinStartTime = SPIN_IDLE;
         sound_volume_set(sCrashVolume, FLOAT_ONE);
         if (Sound_isActive() == 0) {
-            fn_801769EC();
+            Sound_start();
         }
     } else {
         float spin = elapsed / SPIN_DURATION; /* of a turn; eased, then radians */

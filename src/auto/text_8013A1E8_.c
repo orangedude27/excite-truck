@@ -36,7 +36,7 @@ void fn_8013A204(s32 value) {
 
 }
 
-/* Empty hook that fn_801769EC tail-calls right after it requests the sound/steering
+/* Empty hook that Sound_start tail-calls right after it requests the sound/steering
  * reset (state 2 in lbl_8055E3C0); the shipped game leaves it doing nothing. */
 void fn_8013A208(void) {
 

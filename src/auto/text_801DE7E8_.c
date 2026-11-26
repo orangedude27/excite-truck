@@ -440,7 +440,7 @@ void fn_801DEF98(void) {
 }
 /* If enabled (lbl_8055E9E8), run the AX DSP init callback and apply level
  * lbl_80562BE8 to lbl_8055E9EC. Otherwise, when the 64-bit value at
- * lbl_8055ADF0/lbl_8055ADF4 is non-negative, run fn_801769EC, apply
+ * lbl_8055ADF0/lbl_8055ADF4 is non-negative, run Sound_start, apply
  * lbl_80562BF4 to lbl_8055E9EC, then clear both to -1. */
 void fn_801DEFE0(void) {
     extern int lbl_8055E9E8;
@@ -450,7 +450,7 @@ void fn_801DEFE0(void) {
     extern float lbl_80562BE8;
     extern float lbl_80562BF4;
     extern void __AXDSPInitCallback_801769E0(void);
-    extern void fn_801769EC(void);
+    extern void Sound_start(void);
     extern int fn_80209190(int, float);
 
     if (lbl_8055E9E8 != 0) {
@@ -459,7 +459,7 @@ void fn_801DEFE0(void) {
         return;
     }
     if (*(long long *)&lbl_8055ADF0 >= 0) {
-        fn_801769EC();
+        Sound_start();
         fn_80209190(lbl_8055E9EC, lbl_80562BF4);
         lbl_8055ADF4 = -1;
         lbl_8055ADF0 = -1;
@@ -479,7 +479,7 @@ extern char lbl_804873B8[];
 extern int fn_801E85A4(void);
 extern int fn_80209190(int, float);
 extern void __AXDSPInitCallback_801769E0(void);
-extern void fn_801769EC(void);
+extern void Sound_start(void);
 extern int fn_8000DA10(void);
 extern void LoadIntOptionValue(int, int*, int*);
 /* Return nonzero while a popup is being shown (lbl_8055E9E8 holds the active popup id, 0 when none). */

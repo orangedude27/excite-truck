@@ -70,7 +70,7 @@ extern f32 lbl_80560234;
 extern char lbl_802FC1CC[];
 extern void fn_80206454(void);
 extern void fn_802E30C8(const char*, ...);
-extern void fn_801769EC(void);
+extern void Sound_start(void);
 
 // Externs for fn_8000CCB8
 extern s32 fn_800075A0(s32);
@@ -229,7 +229,7 @@ void fn_8000D100(void) {
         lbl_8055D404 = 0;
         return;
     }
-    fn_801769EC();
+    Sound_start();
 }
 void fn_8000D19C(void) {
     /* Update the cached audio slot while the audio flag is set; clear it if no slot is available. */

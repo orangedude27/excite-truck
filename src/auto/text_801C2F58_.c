@@ -3182,7 +3182,7 @@ void fn_801C94C0(s32 x, s32 y) {
     #undef end_text_pass
 }
 
-extern void fn_801769EC(void);
+extern void Sound_start(void);
 extern void fn_80176610(void);
 extern void __AXDSPInitCallback_801769E0(void);
 #pragma push
@@ -3194,7 +3194,7 @@ void fn_801C9514(void) {
     f32 targetTime;
     f32 startTime;
     startTime = lbl_8055E3C8;
-    fn_801769EC();
+    Sound_start();
     targetTime = lbl_805629AC + startTime;
     while (lbl_8055E3C8 < targetTime && lbl_8055E3C8 >= startTime) {
         fn_80176610();
