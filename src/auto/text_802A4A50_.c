@@ -340,7 +340,7 @@ typedef void DrawTexturedQuad(f32, f32, f32, f32, s32, s32, s32, s32, s32);
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void drawSnowWeather(void) {
+/* Draw the snow weather pass: a tinted full-screen quad plus the spinning, camera-centred snow model. */ void drawSnowWeather(void) {
     /* Draw the snow weather pass for the entry being rendered: a full-screen
      * snowquad.tex quad tinted pale blue with the entry's +0xDC alpha, then the
      * snow model (lbl_8055F898) centred on the camera, spun about Y by the +0xE0
