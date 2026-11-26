@@ -1653,7 +1653,7 @@ next_done:
 
 // One row of the achievements display: a value counting up to a goal, graded
 // against the thresholds of one achievement (lbl_802FDF30, "score", "win",
-// "AAA", "air", "tree_run", "drift", "rings", ...).  fn_8025B520 fills a row
+// "AAA", "air", "tree_run", "drift", "rings", ...).  resetAchievementRow fills a row
 // in and updateAchievementRow updates it once per frame.
 #ifndef ACHIEVEMENT_ROW_DEFINED
 #define ACHIEVEMENT_ROW_DEFINED
@@ -1681,7 +1681,7 @@ typedef struct AchievementRow {
 
 extern char lbl_80344E20[];
 #pragma cplusplus on
-extern "C" void fn_8025B520(void *arg0) {
+extern "C" void resetAchievementRow(void *arg0) {
     // The "achieve tally" banner of the results/pause screen (lbl_8055F394);
     // slots 12 and 14 are the ones updateAchievementRow uses as show() and setProgress().
     class AchievementBanner {
@@ -1830,7 +1830,7 @@ extern void fn_80236958(void *);          // clears the "reached" flag of this a
 extern void fn_802168BC(int);             // asks for a result sound to be played
 extern float lbl_80563B34;                // 0.8f: seconds the value waits before it starts climbing
 
-// (AchievementRow is declared above fn_8025B520.)
+// (AchievementRow is declared above resetAchievementRow.)
 
 #pragma cplusplus on
 // One row of the achievements display: eases the shown value towards the goal,
