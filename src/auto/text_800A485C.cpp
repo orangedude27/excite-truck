@@ -8504,7 +8504,7 @@ extern "C" s32 fn_800B10E0(void *volume, void *entry, s32 name, s32 unused) {
 }
 
 extern "C" void fn_800B36C4(s32, s32, s32);
-extern "C" s32 fn_800B143C(void *volume, s32 path, s32 mode, void **fileHandleOut) {
+extern "C" s32 VFiPFOpenFile(void *volume, s32 path, s32 mode, void **fileHandleOut) {
     struct LocalFrame {
         u32 value8;
         u32 valueC;
@@ -8887,7 +8887,7 @@ enum {
  * and says whether it can be used at all.  A write-protected volume still
  * lets an open for writing get as far as the open itself - the same
  * allowance close() makes - so the handle is created and the error recorded
- * there instead of the open being refused here.  fn_800B143C then looks the
+ * there instead of the open being refused here.  VFiPFOpenFile then looks the
  * file up (or creates it), takes a stream and one of the volume's five file
  * handles for it and hands that handle back in *handleOut; a file open on
  * the volume is counted.  A failure is left in the VF instance's last error
@@ -8907,7 +8907,7 @@ extern "C" s32 fn_800B1AFC(s32 path, s32 mode, s32 *handleOut, s32 arg3 /* unuse
         VF_VOL_ERROR(volume) = result;
         return result;
     }
-    result = fn_800B143C(volume, path, mode, (void **)handleOut);
+    result = VFiPFOpenFile(volume, path, mode, (void **)handleOut);
     if (result != 0) {
         VF_LAST_ERROR = result;
         VF_VOL_ERROR(volume) = result;
