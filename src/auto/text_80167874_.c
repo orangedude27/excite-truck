@@ -148,7 +148,7 @@ struct SpinMatrix {
 };
 
 extern "C" {
-extern char lbl_8055A1C0[8];
+extern char poopGroupNameFormat[8];
 extern char hitParamName[4];
 extern char locParamName[4];
 extern f32 lbl_80561924;
@@ -1502,7 +1502,7 @@ s32 fn_80169D64(s32 unused, s32 name) {
     f32 zero;
 
     /* "poop_<id>" - the number in the table's name is the group's id */
-    sscanf(table->getName(), lbl_8055A1C0, &parsedId);
+    sscanf(table->getName(), poopGroupNameFormat, &parsedId);
     groupId = parsedId;
     {
         /* One group entry up front; flag1E158 keeps every item below in it */
