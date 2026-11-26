@@ -7430,13 +7430,15 @@ retryCheck:
     goto loop;
 }
 
-/* Set a packed 12-bit FAT entry (even/odd nibble layout), updating it across
- * all FAT copies while preserving the neighbouring nibble/byte in the sector.
- */
-extern "C" s32 VFiPF_setFatEntry12(void *fatCtx, s32 clusterIndex, s32 entryValue) {
+/* Set a packed 12-bit FAT entry (even/odd nibble layout), writing the changed
+ * sector back to every FAT copy of the volume while preserving the neighbouring
+ * nibble or byte. Returns the first write error, or 0 on success. */
+extern "C" s32 VFiPF_setFatEntry12(void *volume, s32 clusterIndex, s32 entryValue) {
     extern s32 fn_800B5618(void *, void *, u32, u16, s32);
+#define readFatSector  fn_800B5260
+#define writeFatSector fn_800B5618
     u32 byteOffsetInPage;
-    u8 *fat = (u8 *)fatCtx;
+    u8 *fat = (u8 *)volume;
     u8 sectorBytes[2];
     u16 bytesPerSector = *(u16 *)fat;
     u8 sectorShift = fat[0x20];
@@ -7449,13 +7451,13 @@ extern "C" s32 VFiPF_setFatEntry12(void *fatCtx, s32 clusterIndex, s32 entryValu
     s32 status;
     byteOffsetInPage = entryByteOffset & (bytesPerSector - 1);
     if (clusterIndex & 1) {
-        status = fn_800B5260(fatCtx, sectorBytes, fatSector, (u16)byteOffsetInPage, 1);
+        status = readFatSector(volume, sectorBytes, fatSector, (u16)byteOffsetInPage, 1);
         if (status != 0)
             return status;
         packedValue = ((u16)entryValue << 4) + (sectorBytes[0] & 0xF);
     } else {
         s32 nextByteOffset = entryByteOffset + 1;
-        status = fn_800B5260(fatCtx, sectorBytes, (u16)(fatBaseSector + (nextByteOffset >> sectorShift)), (u16)(nextByteOffset & (bytesPerSector - 1)), 1);
+        status = readFatSector(volume, sectorBytes, (u16)(fatBaseSector + (nextByteOffset >> sectorShift)), (u16)(nextByteOffset & (bytesPerSector - 1)), 1);
         if (status != 0)
             return status;
         packedValue = ((sectorBytes[0] << 8) & 0xF000) + (entryValue & 0xFFF);
@@ -7465,20 +7467,22 @@ extern "C" s32 VFiPF_setFatEntry12(void *fatCtx, s32 clusterIndex, s32 entryValu
     firstError = 0;
     for (fatCopyIndex = 0; fatCopyIndex < fat[0x22]; fatCopyIndex++) {
         if ((s32)byteOffsetInPage < *(u16 *)fat - 1) {
-            status = fn_800B5618(fatCtx, sectorBytes, fatSector, byteOffsetInPage, 2);
+            status = writeFatSector(volume, sectorBytes, fatSector, byteOffsetInPage, 2);
             if (status != 0 && firstError == 0)
                 firstError = status;
         } else {
-            status = fn_800B5618(fatCtx, sectorBytes, fatSector, byteOffsetInPage, 1);
+            status = writeFatSector(volume, sectorBytes, fatSector, byteOffsetInPage, 1);
             if (status != 0 && firstError == 0)
                 firstError = status;
-            status = fn_800B5618(fatCtx, sectorBytes + 1, fatSector + 1, 0, 1);
+            status = writeFatSector(volume, sectorBytes + 1, fatSector + 1, 0, 1);
             if (status != 0 && firstError == 0)
                 firstError = status;
         }
         fatSector = fatSector + *(u32 *)(fat + 0xC);
     }
     return firstError;
+#undef writeFatSector
+#undef readFatSector
 }
 
 #pragma use_lmw_stmw off
