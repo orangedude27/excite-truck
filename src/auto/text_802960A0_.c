@@ -420,84 +420,84 @@ void fn_80296AAC(void *arg0) {
 #pragma use_lmw_stmw off
 #pragma push
 #pragma cplusplus on
-/* Looks up or builds a 0x30-byte-entry table from a named collection iterator,
- * filtering/copying entries into a newly allocated result buffer. */
+/* Return the named FlipBook from the global registry, or parse the matching
+ * value file to build one from its "frame" entries and "default" template. */
 extern "C" void *FlipBook_create(char *name, void *config) {
     class Iterator {
     public:
         virtual void v0();
         virtual void *get(int);
     };
-    int closeCount, openCount;
-    void *result;
-    int ok;
-    Iterator *it;
-    void *entry;
-    int idx, off, back;
-    char sp8[0x30];
+    int otherCount, frameCount;
+    void *book;
+    int valid;
+    Iterator *iterator;
+    void *node;
+    int index, dstOffset, skipped;
+    char defaultFrame[0x30];
 
-    result = fn_80296950(name);
-    if (result == 0) {
-        ok = 0;
+    book = fn_80296950(name);
+    if (book == 0) {
+        valid = 0;
         if (fn_8012C33C(name) != 0) {
-            it = (Iterator *)fn_80131808(name);
-            openCount = 0;
-            fn_80296AAC(sp8);
-            closeCount = 0;
+            iterator = (Iterator *)fn_80131808(name);
+            frameCount = 0;
+            fn_80296AAC(defaultFrame);
+            otherCount = 0;
             for (;;) {
-                entry = it->get(openCount + closeCount);
-                if (entry == 0) break;
-                if (fn_802962CC(entry) != 0) {
-                    openCount++;
+                node = iterator->get(frameCount + otherCount);
+                if (node == 0) break;
+                if (fn_802962CC(node) != 0) {
+                    frameCount++;
                 } else {
-                    if (fn_80296308(entry) != 0) {
-                        fn_802964EC(sp8, entry, sp8);
+                    if (fn_80296308(node) != 0) {
+                        fn_802964EC(defaultFrame, node, defaultFrame);
                     }
-                    closeCount++;
+                    otherCount++;
                 }
             }
             if (config != 0) {
-                fn_802964EC(sp8, config, sp8);
+                fn_802964EC(defaultFrame, config, defaultFrame);
             }
-            if (openCount != 0) {
-                ok = 1;
-                result = fn_801284F8(0x30, lbl_80349348);
-                *(void **)((char *)result + 0x24) = fn_8002F37C(fn_8012850C(openCount * 0x30 + 0x10, lbl_80349354, openCount * 0x30), (void *)fn_80296D24, 0, 0x30, openCount);
-                *(int *)((char *)result + 0x2C) = openCount;
-                *(int *)((char *)result + 0x28) = 0;
+            if (frameCount != 0) {
+                valid = 1;
+                book = fn_801284F8(0x30, lbl_80349348);
+                *(void **)((char *)book + 0x24) = fn_8002F37C(fn_8012850C(frameCount * 0x30 + 0x10, lbl_80349354, frameCount * 0x30), (void *)fn_80296D24, 0, 0x30, frameCount);
+                *(int *)((char *)book + 0x2C) = frameCount;
+                *(int *)((char *)book + 0x28) = 0;
                 if (config != 0) {
-                    *(char *)result = 0;
+                    *(char *)book = 0;
                 } else {
-                    strncpy((char *)result, name, 0x20);
+                    strncpy((char *)book, name, 0x20);
                 }
-                idx = 0;
-                back = 0;
-                off = 0;
-                while (ok != 0) {
-                    void *item = it->get(idx);
-                    if (item == 0) break;
-                    if (fn_802962CC(item) != 0) {
-                        if (fn_802964EC((char *)*(void **)((char *)result + 0x24) + off - back, item, sp8) == 0) {
-                            ok = 0;
+                index = 0;
+                skipped = 0;
+                dstOffset = 0;
+                while (valid != 0) {
+                    void *frameNode = iterator->get(index);
+                    if (frameNode == 0) break;
+                    if (fn_802962CC(frameNode) != 0) {
+                        if (fn_802964EC((char *)*(void **)((char *)book + 0x24) + dstOffset - skipped, frameNode, defaultFrame) == 0) {
+                            valid = 0;
                         }
                     } else {
-                        back += 0x30;
+                        skipped += 0x30;
                     }
-                    off += 0x30;
-                    idx++;
+                    dstOffset += 0x30;
+                    index++;
                 }
             }
-            fn_80131818(it);
+            fn_80131818(iterator);
         }
-        if (ok == 0) {
-            fn_80296838(result);
-            result = 0;
+        if (valid == 0) {
+            fn_80296838(book);
+            book = 0;
         }
     }
-    if (result != 0) {
-        fn_802968E8(result);
+    if (book != 0) {
+        fn_802968E8(book);
     }
-    return result;
+    return book;
 }
 #pragma pop
 /* No-op element constructor for the 0x30-byte open-entry records that
