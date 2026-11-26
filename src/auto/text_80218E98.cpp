@@ -3254,7 +3254,7 @@ enum IndicatorSide { INDICATOR_LEFT = 0, INDICATOR_RIGHT = 1, INDICATOR_UP = 2, 
  * fn_80230C30 turns a screen position into the screen-centred one the art is
  * drawn in, gxDrawPicture(art, frame, x, y, z, width, height) draws the art and
  * gxGetImageHeight / gxGetImageWidth are its height and width. */
-extern "C" void fn_8021D378(void *object, s32 device) {
+extern "C" void drawOptionBlinkerArrows(void *object, s32 device) {
     OptionWidget *widget = (OptionWidget *)object;
     f32 scale, zero, leftHeight, rightHeight;
     f32 x, y;

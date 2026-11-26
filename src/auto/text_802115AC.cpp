@@ -2441,7 +2441,7 @@ extern "C" void fn_8021541C(void *widget) {
  * widget's draw method (VfObj::vf8; the layout wrapper forwards its own slot
  * 0x28 to the widget held at +0x244 -- fn_80215B30).  Derived widgets override
  * it to draw their content: fn_80219660 draws a text line through drawTextIntArgs,
- * fn_802299FC hands the box to a callback, and the option widget's fn_8021D378
+ * fn_802299FC hands the box to a callback, and the option widget's drawOptionBlinkerArrows
  * chains to fn_80219660 before drawing its blinker arrows.  The base widget has
  * nothing of its own to draw, so the default does nothing. */
 extern "C" void fn_80215420(void *widget) {
