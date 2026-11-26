@@ -1098,7 +1098,7 @@ loop_27:
  * gStreamRecords - allocates and constructs the 0x698-byte front/rear wheel
  * buffer object ("CarUISM") at +8, and finally registers the car itself with
  * fn_80255A84. */
-void setupUICarObject(void *car, s32 reloadParams) {
+/* Second-stage setup of a UI car object: clears state, installs defaults, then (optionally) reloads params, registers per-car stream records and the wheel-buffer object. */ void setupUICarObject(void *car, s32 reloadParams) {
     extern char lbl_803447C0[]; /* this file's string pool, "fwheelbuf" ... */
     extern void *lbl_80498E08[]; /* live stream records, by gStreamRecordCount */
     extern long lbl_8055C190; /* "CarUISM", the wheel buffer object's heap name */
