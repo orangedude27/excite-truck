@@ -11,7 +11,7 @@ extern int lbl_8055E170;
 extern float lbl_80561478, lbl_8056147C;
 extern float lbl_8042F8B8[];
 extern int fn_801E87A8(void);
-extern void fn_8013B7B4(float*, int);
+extern void readCatchupParams(float*, int);
 extern void fn_8013B6C0(int*, float*, int);
 extern void *fn_80131808(void *);
 extern void fn_80131818(void *);
@@ -30,7 +30,7 @@ extern char lbl_80559CD8;
 #pragma readonly_strings off
 #pragma pool_strings off
 /* Fill a 3x4 catch-up-assist parameter table from catchup.val: one row each for Easy, Medium and Hard. */
-extern "C" void fn_8013B7B4(float *catchupParams, int carCount) {
+extern "C" void readCatchupParams(float *catchupParams, int carCount) {
     struct List {
         virtual void v0() = 0;
         virtual void *getAt(int) = 0;
@@ -164,7 +164,7 @@ void fn_8013BAE4(int arg0) {
     int i;
     int n;
     *((unsigned char*)lbl_8042F8A8 + 4) = 0;
-    fn_8013B7B4(sp10, arg0);
+    readCatchupParams(sp10, arg0);
     index = *(int*)((char*)fn_801E87A8() + 0xC);
     fn_8013B6C0(&spC, &sp8, index);
     p = (volatile float *)(sp10 + spC * 4);
