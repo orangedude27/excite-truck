@@ -398,7 +398,7 @@ int fn_80296A10(unsigned int arg0, unsigned int arg1, float arg2) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_80296AAC(void *arg0) {
+void FlipBookFrame_initDefaults(void *arg0) {
     /* Initialize a 0x30-byte record: zero it, then set default float/int fields. */
     register float value68;
     register float value64;
@@ -442,7 +442,7 @@ extern "C" void *FlipBook_create(char *name, void *config) {
         if (fn_8012C33C(name) != 0) {
             iterator = (Iterator *)fn_80131808(name);
             frameCount = 0;
-            fn_80296AAC(defaultFrame);
+            FlipBookFrame_initDefaults(defaultFrame);
             otherCount = 0;
             for (;;) {
                 node = iterator->get(frameCount + otherCount);
