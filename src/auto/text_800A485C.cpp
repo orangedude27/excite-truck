@@ -229,7 +229,7 @@ struct VFiPFCursor { u8 pad0[8]; VFiPFFile *file; u8 pad1[0x10]; u32 pos; u32 cl
 
 /* The directory-entry iterator the VFiPFENT code builds on its own stack, with
  * the fields as its readers use them (the VF_ITER_* macros in front of
- * fn_800AAC08 name the same offsets).  The directory being walked is copied
+ * VFiPFENT_findFreeEntries name the same offsets).  The directory being walked is copied
  * into `dir`; it keeps the volume its entries are read through at 0x34, which
  * lands at +0x3C and is what fn_800AC1B4 reads.  fn_800AC1B4 puts an iterator
  * on an entry and VFiPFENT_ITER_Advance moves it on; both read the entry
@@ -562,7 +562,7 @@ extern "C" void fn_800A52A0(void *, const void *);
 extern "C" s32 fn_800A98B8(void *arg0, s32 arg1, s32 arg2, void *arg3);
 extern "C" s32 fn_800A95B4(void *arg0);
 extern "C" s32 fn_800AF574(void *arg0);
-extern "C" s32 fn_800AAC08(void *arg0, u32 arg1, void *arg2, void *arg3, s32 arg4, s32 *arg5);
+extern "C" s32 VFiPFENT_findFreeEntries(void *arg0, u32 arg1, void *arg2, void *arg3, s32 arg4, s32 *arg5);
 extern "C" s32 fn_800AA924(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 *arg6, s32 *arg7);
 extern "C" s32 fn_800A7090(void *arg0, s32 arg1, s32 *arg2);
 extern "C" s32 fn_800A7610(void *);
@@ -4213,7 +4213,7 @@ extern "C" s32 fn_800B4D00(s32);
  * volume will not create (fn_800B4D00) is refused before anything is read.
  * Nothing left long enough is VF_ERR_NO_FREE_ENTRIES; 0 is room found.
  */
-extern "C" s32 fn_800AAC08(void *outEntry, u32 neededEntries, void *dir, void *freeSectors, s32 name, s32 *outPosition) {
+extern "C" s32 VFiPFENT_findFreeEntries(void *outEntry, u32 neededEntries, void *dir, void *freeSectors, s32 name, s32 *outPosition) {
     struct DirCopy { u32 word[14]; };
     u8 iter[0x70];
     u8 converted[0x240];
@@ -4307,12 +4307,12 @@ done:
     return 0;
 }
 #pragma pop
-/* Tail-call the create-file directory scan (fn_800AAC08), forwarding the five
+/* Tail-call the create-file directory scan (VFiPFENT_findFreeEntries), forwarding the five
    incoming argument registers and passing &outPosition as the sixth argument. */
 extern "C" void fn_800AAED8(void) {
     s32 outPosition;
     s32 entryObj, neededEntries, dir, freeSectors, fileName;
-    ((void (*)(s32, s32, s32, s32, s32, void *))fn_800AAC08)(entryObj, neededEntries, dir, freeSectors, fileName, &outPosition);
+    ((void (*)(s32, s32, s32, s32, s32, void *))VFiPFENT_findFreeEntries)(entryObj, neededEntries, dir, freeSectors, fileName, &outPosition);
 }
 
 /* Initializes a VFiPF slot/context structure (0x248 bytes) with default state for the given owner. */
@@ -4533,7 +4533,7 @@ extern "C" u8 fn_800AB2F4(void *dateOut, void *timeOut, s32 unused) {
  * refreshed from it.
  *
  * `grow` is what a caller that writes passes (VFiPFENT_ITER_Advance takes it
- * from the entry-creating fn_800AAC08): when the chain ends here, one more
+ * from the entry-creating VFiPFENT_findFreeEntries): when the chain ends here, one more
  * cluster is taken for the directory and, unless the iterator was already off
  * its end, written out empty a sector at a time from a cache page.  A caller
  * that cannot place the position it asked for puts the old one back and calls
@@ -8380,7 +8380,7 @@ struct VFiPFDirEntry {
  * is stored on the entry in the form it came in.
  *
  * A name that needs long-name entries has room looked for in the directory for
- * those plus the short-name one (fn_800AAC08); the entries then go in 0x20 bytes
+ * those plus the short-name one (VFiPFENT_findFreeEntries); the entries then go in 0x20 bytes
  * at a time, moving to the next sector of the directory once the offset runs
  * past a sector.  A name that needs none has room looked for for its single
  * entry (fn_800AAED8).  fn_800AB0C0 writes the short-name entry itself, last.
@@ -8453,7 +8453,7 @@ struct VFiPFDirEntry {
         wholeEntries = (s32)nameChars / 13;
         restChars = (s32)nameChars % 13;
         lfnEntries = (u8)(wholeEntries + (restChars != 0));
-        result = ((s32 (*)(void *, u8, void *, s32 *, s32, s32 *, s32))fn_800AAC08)(
+        result = ((s32 (*)(void *, u8, void *, s32 *, s32, s32 *, s32))VFiPFENT_findFreeEntries)(
             entry, (u8)(lfnEntries + 1), frame.prefix + 0x40, (s32 *)(frame.prefix + 8), name,
             (s32 *)frame.prefix, wholeEntries);
         if (result != 0) {
