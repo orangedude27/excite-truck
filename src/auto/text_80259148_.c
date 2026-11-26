@@ -1836,7 +1836,7 @@ extern float lbl_80563B34;                // 0.8f: seconds the value waits befor
 // One row of the achievements display: eases the shown value towards the goal,
 // refreshes the value and next-threshold text and the name of the threshold
 // reached, and fades the HUD elements that go with them in and out.
-extern "C" void updateAchievementRow(void *arg0) {
+/* Update one achievements-display row: ease the shown value toward the goal, refresh the progress/next-threshold text and threshold name, close the banner on completion, and fade the associated HUD groups in/out. */ extern "C" void updateAchievementRow(void *arg0) {
     class AchievementBanner {
     public:
         virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
