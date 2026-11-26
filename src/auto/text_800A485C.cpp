@@ -8112,54 +8112,57 @@ extern "C" s32 VFiPFFILE_Cursor_AdvanceToRead(void *cursor, s32 byteCount, s32 s
     return 0;
 }
 
-extern "C" s32 VFiPFFILE_ReadWholeSectors(void *file, s32 dst, u32 length, u32 *bytesReadOut) {
-    /* Reads file data into dst, clamping to available/cluster-aligned bytes and advancing the file cursor. */
-    s32 clusters;
+extern "C" s32 VFiPFFILE_ReadWholeSectors(void *cursor, s32 dest, u32 length, u32 *bytesReadOut) {
+    /* Read the whole-sector middle of a three-part file read: ask the FAT for the
+     * clusters the request spans, clamp the run to the clusters available and to
+     * the file's end, read it through the volume's page cache, advance the cursor
+     * and report how many bytes came back. */
+    s32 clusterCount;
     u32 bytesRead;
     u8 *volume;
-    s32 result;
-    s32 sectorOffset;
+    s32 status;
+    s32 cluster;
 
     *bytesReadOut = 0;
-    volume = file == 0 ? 0 : *(u8 **)(*(u8 **)((u8 *)file + 8) + 0x268);
-    clusters = 0;
-    result = fn_800AE664(*(u8 **)((u8 *)file + 8) + 4, *(u32 *)((u8 *)file + 0x24), length, (s32 *)((volatile u8 *)file + 0x20), &clusters);
-    if (result != 0)
-        return result;
-    sectorOffset = *(s32 *)((u8 *)file + 0x20);
-    if ((u32)(sectorOffset + 0x10000) == 0xFFFF) {
-        u8 *fs = *(u8 **)((u8 *)file + 8);
-        u8 *volume2;
-        u32 pos;
-        *(u32 *)((u8 *)file + 0x1C) = *(u32 *)(fs + 0x264);
-        volume2 = file == 0 ? 0 : *(u8 **)(fs + 0x268);
-        pos = *(u32 *)((u8 *)file + 0x1C);
-        *(u32 *)((u8 *)file + 0x24) = pos >> volume2[0x20];
-        *(u16 *)((u8 *)file + 0x28) = pos & (*(u16 *)volume2 - 1);
+    volume = cursor == 0 ? 0 : *(u8 **)(*(u8 **)((u8 *)cursor + 8) + 0x268);
+    clusterCount = 0;
+    status = fn_800AE664(*(u8 **)((u8 *)cursor + 8) + 4, *(u32 *)((u8 *)cursor + 0x24), length, (s32 *)((volatile u8 *)cursor + 0x20), &clusterCount);
+    if (status != 0)
+        return status;
+    cluster = *(s32 *)((u8 *)cursor + 0x20);
+    if ((u32)(cluster + 0x10000) == 0xFFFF) {
+        u8 *fileObj = *(u8 **)((u8 *)cursor + 8);
+        u8 *volumeForPos;
+        u32 finalPos;
+        *(u32 *)((u8 *)cursor + 0x1C) = *(u32 *)(fileObj + 0x264);
+        volumeForPos = cursor == 0 ? 0 : *(u8 **)(fileObj + 0x268);
+        finalPos = *(u32 *)((u8 *)cursor + 0x1C);
+        *(u32 *)((u8 *)cursor + 0x24) = finalPos >> volumeForPos[0x20];
+        *(u16 *)((u8 *)cursor + 0x28) = finalPos & (*(u16 *)volumeForPos - 1);
         return 0x1C;
     }
     {
-        u32 maxBytes = (u32)clusters << volume[0x20];
-        u32 start, end;
+        u32 maxBytes = (u32)clusterCount << volume[0x20];
+        u32 startPos, fileSize;
         if (length > maxBytes)
             length = maxBytes;
-        start = *(u32 *)((u8 *)file + 0x1C);
-        end = *(u32 *)(*(u8 **)((u8 *)file + 8) + 0x264);
-        if (start + length > end) {
+        startPos = *(u32 *)((u8 *)cursor + 0x1C);
+        fileSize = *(u32 *)(*(u8 **)((u8 *)cursor + 8) + 0x264);
+        if (startPos + length > fileSize) {
             u32 sectorSize = *(u16 *)volume;
-            length = end - start;
+            length = fileSize - startPos;
             length = length - (length & (sectorSize - 1));
             if (length < sectorSize)
                 return 0;
         }
     }
-    result = ((s32 (*)(void *, u8 *, u32, u32, u32, u32 *, s32))readVolumeData)(volume, (u8 *)dst, sectorOffset, *(u16 *)((u8 *)file + 0x28), length, &bytesRead, 1);
-    if (result != 0 && bytesRead == 0)
-        return result;
+    status = ((s32 (*)(void *, u8 *, u32, u32, u32, u32 *, s32))readVolumeData)(volume, (u8 *)dest, cluster, *(u16 *)((u8 *)cursor + 0x28), length, &bytesRead, 1);
+    if (status != 0 && bytesRead == 0)
+        return status;
     *bytesReadOut = bytesRead;
-    VFiPFFILE_Cursor_AdvanceToRead(file, bytesRead, *(s32 *)((u8 *)file + 0x20));
+    VFiPFFILE_Cursor_AdvanceToRead(cursor, bytesRead, *(s32 *)((u8 *)cursor + 0x20));
     if (bytesRead != length - (length & (*(u16 *)volume - 1)))
-        return result;
+        return status;
     return 0;
 }
 
