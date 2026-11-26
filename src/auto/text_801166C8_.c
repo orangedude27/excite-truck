@@ -9431,7 +9431,7 @@ done:
 }
 #pragma pop
 extern void fn_80126A10(s8 *, void *, u32);
-void addDecodedResidualBlock8x8(u8 *dstBlock, s32 dstPitch, s32 reader, s32 maxCoeffs, u8 *srcBlock, s32 srcPitch) {
+void addDecodedResidualBlock8x8(u8 *dstBlock, s32 dstPitch, s32 bitReader, s32 maxCoeffs, u8 *srcBlock, s32 srcPitch) {
     // Decodes one 8x8 block of signed 8-bit residuals from the bit stream at
     // `reader` (fn_80126A10, at most `maxCoeffs` coefficients) into `coeffs`,
     // then adds them to the 8x8 block at `srcBlock` and writes the result to
@@ -9439,93 +9439,93 @@ void addDecodedResidualBlock8x8(u8 *dstBlock, s32 dstPitch, s32 reader, s32 maxC
     // The decoder fills the coefficient buffer four bytes at a time, and each
     // 4-byte run becomes a 2x2 block of the output, so the rows below read the
     // buffer back in that interleaved order.
-    u32 coeffs[16] = {0};
+    u32 residuals[16] = {0};
     u8 *dst = dstBlock;
     u8 *src = srcBlock;
 
-    fn_80126A10((s8 *)coeffs, (void *)reader, (u32)maxCoeffs);
+    fn_80126A10((s8 *)residuals, (void *)bitReader, (u32)maxCoeffs);
     // output rows 0-1 <- coefficient runs 0, 1, 2, 3
-    dst[0] = ((u8 *)coeffs)[0] + src[0];
-    dst[1] = ((u8 *)coeffs)[1] + src[1];
-    dst[2] = ((u8 *)coeffs)[4] + src[2];
-    dst[3] = ((u8 *)coeffs)[5] + src[3];
-    dst[4] = ((u8 *)coeffs)[8] + src[4];
-    dst[5] = ((u8 *)coeffs)[9] + src[5];
-    dst[6] = ((u8 *)coeffs)[12] + src[6];
-    dst[7] = ((u8 *)coeffs)[13] + src[7];
+    dst[0] = ((u8 *)residuals)[0] + src[0];
+    dst[1] = ((u8 *)residuals)[1] + src[1];
+    dst[2] = ((u8 *)residuals)[4] + src[2];
+    dst[3] = ((u8 *)residuals)[5] + src[3];
+    dst[4] = ((u8 *)residuals)[8] + src[4];
+    dst[5] = ((u8 *)residuals)[9] + src[5];
+    dst[6] = ((u8 *)residuals)[12] + src[6];
+    dst[7] = ((u8 *)residuals)[13] + src[7];
     dst += dstPitch;
     src += srcPitch;
-    dst[0] = ((u8 *)coeffs)[2] + src[0];
-    dst[1] = ((u8 *)coeffs)[3] + src[1];
-    dst[2] = ((u8 *)coeffs)[6] + src[2];
-    dst[3] = ((u8 *)coeffs)[7] + src[3];
-    dst[4] = ((u8 *)coeffs)[10] + src[4];
-    dst[5] = ((u8 *)coeffs)[11] + src[5];
-    dst[6] = ((u8 *)coeffs)[14] + src[6];
-    dst[7] = ((u8 *)coeffs)[15] + src[7];
+    dst[0] = ((u8 *)residuals)[2] + src[0];
+    dst[1] = ((u8 *)residuals)[3] + src[1];
+    dst[2] = ((u8 *)residuals)[6] + src[2];
+    dst[3] = ((u8 *)residuals)[7] + src[3];
+    dst[4] = ((u8 *)residuals)[10] + src[4];
+    dst[5] = ((u8 *)residuals)[11] + src[5];
+    dst[6] = ((u8 *)residuals)[14] + src[6];
+    dst[7] = ((u8 *)residuals)[15] + src[7];
     dst += dstPitch;
     src += srcPitch;
     // output rows 2-3 <- coefficient runs 6, 11, 4, 5
-    dst[0] = ((u8 *)coeffs)[24] + src[0];
-    dst[1] = ((u8 *)coeffs)[25] + src[1];
-    dst[2] = ((u8 *)coeffs)[44] + src[2];
-    dst[3] = ((u8 *)coeffs)[45] + src[3];
-    dst[4] = ((u8 *)coeffs)[16] + src[4];
-    dst[5] = ((u8 *)coeffs)[17] + src[5];
-    dst[6] = ((u8 *)coeffs)[20] + src[6];
-    dst[7] = ((u8 *)coeffs)[21] + src[7];
+    dst[0] = ((u8 *)residuals)[24] + src[0];
+    dst[1] = ((u8 *)residuals)[25] + src[1];
+    dst[2] = ((u8 *)residuals)[44] + src[2];
+    dst[3] = ((u8 *)residuals)[45] + src[3];
+    dst[4] = ((u8 *)residuals)[16] + src[4];
+    dst[5] = ((u8 *)residuals)[17] + src[5];
+    dst[6] = ((u8 *)residuals)[20] + src[6];
+    dst[7] = ((u8 *)residuals)[21] + src[7];
     dst += dstPitch;
     src += srcPitch;
-    dst[0] = ((u8 *)coeffs)[26] + src[0];
-    dst[1] = ((u8 *)coeffs)[27] + src[1];
-    dst[2] = ((u8 *)coeffs)[46] + src[2];
-    dst[3] = ((u8 *)coeffs)[47] + src[3];
-    dst[4] = ((u8 *)coeffs)[18] + src[4];
-    dst[5] = ((u8 *)coeffs)[19] + src[5];
-    dst[6] = ((u8 *)coeffs)[22] + src[6];
-    dst[7] = ((u8 *)coeffs)[23] + src[7];
+    dst[0] = ((u8 *)residuals)[26] + src[0];
+    dst[1] = ((u8 *)residuals)[27] + src[1];
+    dst[2] = ((u8 *)residuals)[46] + src[2];
+    dst[3] = ((u8 *)residuals)[47] + src[3];
+    dst[4] = ((u8 *)residuals)[18] + src[4];
+    dst[5] = ((u8 *)residuals)[19] + src[5];
+    dst[6] = ((u8 *)residuals)[22] + src[6];
+    dst[7] = ((u8 *)residuals)[23] + src[7];
     dst += dstPitch;
     src += srcPitch;
     // output rows 4-5 <- coefficient runs 7, 8, 12, 13
-    dst[0] = ((u8 *)coeffs)[28] + src[0];
-    dst[1] = ((u8 *)coeffs)[29] + src[1];
-    dst[2] = ((u8 *)coeffs)[32] + src[2];
-    dst[3] = ((u8 *)coeffs)[33] + src[3];
-    dst[4] = ((u8 *)coeffs)[48] + src[4];
-    dst[5] = ((u8 *)coeffs)[49] + src[5];
-    dst[6] = ((u8 *)coeffs)[52] + src[6];
-    dst[7] = ((u8 *)coeffs)[53] + src[7];
+    dst[0] = ((u8 *)residuals)[28] + src[0];
+    dst[1] = ((u8 *)residuals)[29] + src[1];
+    dst[2] = ((u8 *)residuals)[32] + src[2];
+    dst[3] = ((u8 *)residuals)[33] + src[3];
+    dst[4] = ((u8 *)residuals)[48] + src[4];
+    dst[5] = ((u8 *)residuals)[49] + src[5];
+    dst[6] = ((u8 *)residuals)[52] + src[6];
+    dst[7] = ((u8 *)residuals)[53] + src[7];
     dst += dstPitch;
     src += srcPitch;
-    dst[0] = ((u8 *)coeffs)[30] + src[0];
-    dst[1] = ((u8 *)coeffs)[31] + src[1];
-    dst[2] = ((u8 *)coeffs)[34] + src[2];
-    dst[3] = ((u8 *)coeffs)[35] + src[3];
-    dst[4] = ((u8 *)coeffs)[50] + src[4];
-    dst[5] = ((u8 *)coeffs)[51] + src[5];
-    dst[6] = ((u8 *)coeffs)[54] + src[6];
-    dst[7] = ((u8 *)coeffs)[55] + src[7];
+    dst[0] = ((u8 *)residuals)[30] + src[0];
+    dst[1] = ((u8 *)residuals)[31] + src[1];
+    dst[2] = ((u8 *)residuals)[34] + src[2];
+    dst[3] = ((u8 *)residuals)[35] + src[3];
+    dst[4] = ((u8 *)residuals)[50] + src[4];
+    dst[5] = ((u8 *)residuals)[51] + src[5];
+    dst[6] = ((u8 *)residuals)[54] + src[6];
+    dst[7] = ((u8 *)residuals)[55] + src[7];
     dst += dstPitch;
     src += srcPitch;
     // output rows 6-7 <- coefficient runs 9, 10, 14, 15
-    dst[0] = ((u8 *)coeffs)[36] + src[0];
-    dst[1] = ((u8 *)coeffs)[37] + src[1];
-    dst[2] = ((u8 *)coeffs)[40] + src[2];
-    dst[3] = ((u8 *)coeffs)[41] + src[3];
-    dst[4] = ((u8 *)coeffs)[56] + src[4];
-    dst[5] = ((u8 *)coeffs)[57] + src[5];
-    dst[6] = ((u8 *)coeffs)[60] + src[6];
-    dst[7] = ((u8 *)coeffs)[61] + src[7];
+    dst[0] = ((u8 *)residuals)[36] + src[0];
+    dst[1] = ((u8 *)residuals)[37] + src[1];
+    dst[2] = ((u8 *)residuals)[40] + src[2];
+    dst[3] = ((u8 *)residuals)[41] + src[3];
+    dst[4] = ((u8 *)residuals)[56] + src[4];
+    dst[5] = ((u8 *)residuals)[57] + src[5];
+    dst[6] = ((u8 *)residuals)[60] + src[6];
+    dst[7] = ((u8 *)residuals)[61] + src[7];
     dst += dstPitch;
     src += srcPitch;
-    dst[0] = ((u8 *)coeffs)[38] + src[0];
-    dst[1] = ((u8 *)coeffs)[39] + src[1];
-    dst[2] = ((u8 *)coeffs)[42] + src[2];
-    dst[3] = ((u8 *)coeffs)[43] + src[3];
-    dst[4] = ((u8 *)coeffs)[58] + src[4];
-    dst[5] = ((u8 *)coeffs)[59] + src[5];
-    dst[6] = ((u8 *)coeffs)[62] + src[6];
-    dst[7] = ((u8 *)coeffs)[63] + src[7];
+    dst[0] = ((u8 *)residuals)[38] + src[0];
+    dst[1] = ((u8 *)residuals)[39] + src[1];
+    dst[2] = ((u8 *)residuals)[42] + src[2];
+    dst[3] = ((u8 *)residuals)[43] + src[3];
+    dst[4] = ((u8 *)residuals)[58] + src[4];
+    dst[5] = ((u8 *)residuals)[59] + src[5];
+    dst[6] = ((u8 *)residuals)[62] + src[6];
+    dst[7] = ((u8 *)residuals)[63] + src[7];
 }
 
 #pragma scheduling invalid_target
