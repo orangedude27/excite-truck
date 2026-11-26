@@ -644,7 +644,7 @@ void fn_801D50B0(int sequence) {
  * (auto_reset) or ends.  In every other state it follows the lap of the race
  * leader and keeps the sequence ready only while that lap lies between
  * first_active_lap and last_active_lap. */
-void updateActionSequence(int arg0) {
+void updateActionSequence(int sequence) {
     /* One *_ASE element: state() is vtable+0x18, update() +0x2C and reset()
      * +0x30; the two leading slots are this ABI's destructor pair. */
     struct Element {
@@ -669,7 +669,7 @@ void updateActionSequence(int arg0) {
     extern int fn_8017960C(int);
     extern void *fn_801B2EC0(int);
     extern int fn_801B2F24(void);
-    ActionSequence *seq = (ActionSequence *)arg0;
+    ActionSequence *seq = (ActionSequence *)sequence;
     if (seq->state == ACTION_SEQ_PLAYING) {
         int offset;
         int waiting;
