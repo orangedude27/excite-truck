@@ -328,7 +328,7 @@ typedef struct VehicleObject {
 
 /* One armed soevent spawn: slot N of the 8-record table lbl_80438898, which
  * runs beside the car table lbl_804348E8 (the vehicle it follows).  fn_801D2C70
- * arms a record when a class' spawn group fires; fn_801D2214 reports it every
+ * arms a record when a class' spawn group fires; reportSoeventSpawns reports it every
  * frame until the game clock passes its due time. */
 typedef struct SoeventRecord {
     /* 0x00 */ u8 active;    /* record in use */
@@ -352,7 +352,7 @@ extern void *lbl_804348E8[];
 #pragma push
 #pragma use_lmw_stmw off
 #pragma processor 750
-void fn_801D2214(void) {
+void reportSoeventSpawns(void) {
 #define sSoeventRecords lbl_80438898 /* the 8 spawn records, one per car slot */
 #define sCarTable lbl_804348E8 /* this race's vehicles; fn_801B2F24() of them */
 #define sGameTime lbl_8055E3C8 /* current game time, in seconds */

@@ -310,7 +310,7 @@ void fn_80265D88(void);
 void fn_801B2364(void);
 void fn_8026B6E4(void);
 void fn_801CEDDC(void);
-void fn_801D2214(void);
+void reportSoeventSpawns(void);
 void musicPreRaceUpdate(void);
 void fn_801DEFE0(void);
 void fn_801EA1F0(void);
@@ -369,7 +369,7 @@ void fn_80177F40(void) {
     fn_801B2364();
     fn_8026B6E4();
     fn_801CEDDC();
-    fn_801D2214();
+    reportSoeventSpawns();
     musicPreRaceUpdate();
     fn_801DEFE0();
     if (flag) fn_801EA1F0();
