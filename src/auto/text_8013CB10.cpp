@@ -1468,7 +1468,7 @@ extern "C" s32 lbl_8055E1C0;
  * sub-objects at +0x134, +0xC0 and +8.  The instance pointer lbl_8055E1C0 is
  * cleared on the way, and delete_flag > 0 (the object was allocated) frees
  * the ZoneMaster itself at the end. */
-extern "C" void *fn_8013E77C(void *instance, s32 delete_flag) {
+extern "C" void *destroyZoneMaster(void *instance, s32 delete_flag) {
     class VObj { public: virtual void destroy(int); };  /* owned object: slot +8 is its destructor */
     u8 *self=(u8 *)instance;
     VObj *obj;
