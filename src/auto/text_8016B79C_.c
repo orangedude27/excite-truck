@@ -273,7 +273,7 @@ typedef struct CachedMessage8016B964 {
 } CachedMessage8016B964;
 
 /* One round's results state, carried at +0xAC of the "ringchalmaster" object and
-   laid out exactly like the crush-mode CrushRoundState (fn_8017272C).  The ten
+   laid out exactly like the crush-mode CrushRoundState (updateCrushRoundResults).  The ten
    text cells are the results overlay's fields; fn_8016B964 refills them. */
 typedef struct CrushRoundState8016B964 {
     int state;                    /* +0x00: 0 idle, 1 running, 2 ended, 4 scored */
@@ -307,7 +307,7 @@ extern "C" void fn_8016B964(CrushRoundState8016B964 *round, s32 totalScore, s32 
     /* Refills the results overlay's text cells (bonus, the time bonus counting up,
        its caption, total, score without the time bonus, time left and the grade)
        and steps the round's animation and sound state machine.  Same shape as the
-       crush-mode twin fn_8017272C, for the round state carried at +0xAC here. */
+       crush-mode twin updateCrushRoundResults, for the round state carried at +0xAC here. */
     f32 startTime, gameTime, sinceStart, elapsed, progress;
     s32 left, counted, state;
     u8 byte;

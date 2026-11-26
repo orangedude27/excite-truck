@@ -62,7 +62,7 @@ typedef struct CachedMessage {
 
 /* Crush-mode round state, embedded in the "crushmaster" object (fn_80172C28)
    at +0x1AC and built by fn_8017353C.  The ten text cells are the results
-   overlay's fields; fn_8017272C refills them every frame and fn_80173ACC
+   overlay's fields; updateCrushRoundResults refills them every frame and fn_80173ACC
    writes the last three. */
  #define CRUSH_ROUND_ENDED 2 /* round.state: results shown, awaiting finish (fn_801758B8) */
  typedef struct CrushRoundState {
@@ -567,7 +567,7 @@ extern void fn_801CB648(int, int, float);
    earns ("-" when it earns none).  The round then walks its animation cue -
    start, pause, resume, pause again - asking the round's sounds to play as it
    goes, and the animation player is advanced at the end. */
-void fn_8017272C(CrushRoundState *round, int totalScore, int bonusScore, int timeBonus, int scale) {
+void updateCrushRoundResults(CrushRoundState *round, int totalScore, int bonusScore, int timeBonus, int scale) {
     extern void fn_802ADFF4(void *, int);  /* ArtAnimManager::StartAnim(manager, cue) */
     extern void fn_802AE02C(void *, int);  /* ArtAnimManager::PauseAnim(manager, cue) */
     extern void fn_802AE0B8(void *, int);  /* ArtAnimManager::ResumeAnim(manager, cue) */
@@ -1504,7 +1504,7 @@ extern "C" void fn_80173ACC(void *arg0) {
             char *r = p + fn_80179630(0) * 0x1C;
             int a = *(int *)(r + 0x94);
             int b = *(int *)((char *)lbl_8043038C + 0x14) * (*(int *)(r + 0x98) + *(int *)(r + 0x9C));
-            fn_8017272C((CrushRoundState *)(p + 0x1AC), a + b, b, a, *(int *)((char *)lbl_8043038C + 0x14));
+            updateCrushRoundResults((CrushRoundState *)(p + 0x1AC), a + b, b, a, *(int *)((char *)lbl_8043038C + 0x14));
         }
     }
 }
