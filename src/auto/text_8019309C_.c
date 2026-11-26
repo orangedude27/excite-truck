@@ -345,7 +345,7 @@ void fn_801935EC(void *sound) {
 #pragma dont_inline on
 /* Collision callback: add to the owner's rival/contact and impact counters from
    the other truck's kind, the contact normal and the hit code. */
-void handleTruckCollision(void *ownerObj, const void *contactNormal, void *unused, int hitCode, void *otherObj) {
+/* Collision callback: bump the owner's rival-contact and impact counters based on the other truck's kind, the contact normal and the hit code. */ void handleTruckCollision(void *ownerObj, const void *contactNormal, void *unused, int hitCode, void *otherObj) {
     extern float PSVECDotProduct(const void *, const void *);
     extern float PSVECMag(const void *);
     extern float lbl_80562140, lbl_80562144, lbl_80562148, lbl_8056215C;
