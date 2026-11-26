@@ -4154,7 +4154,7 @@ extern "C" void fn_8021EC1C(void* entity, s32 canvas) {
  * the middle of the screen with y upwards, so every position goes through the
  * same centring before gxDrawPicture/fn_8022BAD0/fn_80230924 see it.  No code
  * calls this; it is reached through the object' vtable. */
-extern "C" void fn_8021EDA4(void *self) {
+extern "C" void drawTextBox(void *self) {
     /* The text box being drawn; only the fields used here are named. */
     struct TextBox {
         void *vtable;                /* 0x00; the virtual at 0x78 is the width */
