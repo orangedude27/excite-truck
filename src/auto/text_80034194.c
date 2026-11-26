@@ -104,7 +104,7 @@ extern void fn_80035C78(void);
 extern void fn_80035E6C();
 extern void fn_8003BCC0(void);
 extern void fn_80035DA8(s32);
-extern void fn_80036370(u32);
+extern void __DVDHandleError(u32);
 extern void fn_8003773C(void);
 extern void fn_8003801C(void);
 extern void fn_800373E0(u32);
@@ -1636,7 +1636,7 @@ void fn_80035E6C(u32 arg0) {
     if (status == 3) {
         if ((u32)((taskType & 0x00FFFFFF) - 0x00030000) == 0x1100) {
             fn_800356F4(2, *(u32 *)((char *)executing_8055D8C8 + 0x10), 0);
-            fn_8003B9CC(*(u32 *)((char *)executing_8055D8C8 + 0x10), (void *)fn_80036370);
+            fn_8003B9CC(*(u32 *)((char *)executing_8055D8C8 + 0x10), (void *)__DVDHandleError);
             return;
         }
         ((void (*)(void *))lbl_8055D8CC)((void *)executing_8055D8C8);
@@ -1696,7 +1696,7 @@ void fn_80035E6C(u32 arg0) {
     fn_8003A1A0(0x1234567, fn_80035C64);
 }
 extern void fn_80036550(u32);
-void fn_80036370(u32 arg0) {
+void __DVDHandleError(u32 arg0) {
     register u32 errorCode = arg0;
     s32 interrupts;
     u32 tick;
