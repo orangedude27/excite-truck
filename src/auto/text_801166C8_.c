@@ -250,7 +250,7 @@ void* ARCGetStartAddrInMem(ARCFileInfo* info) {
 }
 
 /* Returns the byte length of the file described by the ARCFileInfo, from its header field at +8. */
-s32 fn_80116A30(ARCFileInfo *info) {
+s32 ARCGetFileLength(ARCFileInfo *info) {
     return info->length;
 }
 
