@@ -424,7 +424,7 @@ void fn_802AA25C(void *arg0, void *arg1, float farg0) {
 
 #pragma push
 #pragma processor 750
-void updateStunSparkEmitter(UnkAA9D4 *arg0, void *arg1, float delta) {
+/* Per-frame update for the stun spark emitter: ramp the emission amount toward 0 or 1, then place the emitter in the object's local space and dispatch a particle emission when the amount clears a random threshold. */ void updateStunSparkEmitter(UnkAA9D4 *arg0, void *arg1, float delta) {
     extern float lbl_805649F4, lbl_80564A08, lbl_80564A04, lbl_80564A48, lbl_80564A4C, lbl_80564A50;
     extern float fn_80287BC8(float, float);
     extern void fn_8028E590(int, Vec *, Vec *, float);
