@@ -6047,7 +6047,7 @@ void fn_80065524(s32 chan, WPADStatus* pReport)
      * written, with the last read's result and the attached extension's kind,
      * into the control block's other receive buffer, which is cleared first;
      * flipping rxBufIndex at the end, with interrupts off, publishes it.
-     * fn_800656E8 does the same with the accelerometer and fn_80065934 with an
+     * WPADiDecodeAccStatus does the same with the accelerometer and fn_80065934 with an
      * extension's data. */
     typedef struct {
         u8 _head[0xA0];
