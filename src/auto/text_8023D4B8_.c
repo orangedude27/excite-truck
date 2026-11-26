@@ -9,7 +9,7 @@ extern __declspec(section ".sdata") char gJBLeftLabel[];
 extern __declspec(section ".sdata") char gPOVAnyLabel[];
 extern __declspec(section ".sdata") char gHorn2Label[];
 extern __declspec(section ".sdata") char gJBUpLabel[];
-extern __declspec(section ".sdata") char lbl_8055BC80[];
+extern __declspec(section ".sdata") char gJBDownLabel[];
 extern __declspec(section ".sdata") int lbl_8055BC08;
 extern void fn_802E30C8(void *);
 extern void fn_802E8664(int);
@@ -259,14 +259,14 @@ void fn_8023D7CC(void) {
             SetControlOption(slotIndex + 8, (int)gHornLabel, optionData + 0x278);
             SetControlOption(slotIndex + 8, (int)gViewLabel, optionData + 0x29C);
             SetControlOption(slotIndex + 8, (int)(optionData + 0x184), gJBUpLabel);
-            SetControlOption(slotIndex + 8, (int)(optionData + 0x16C), lbl_8055BC80);
+            SetControlOption(slotIndex + 8, (int)(optionData + 0x16C), gJBDownLabel);
             break;
         case 1:
             fn_802E8664(0);
             SetControlOption(slotIndex + 8, (int)(optionData + 0x1E4), gJBLeftLabel);
             SetControlOption(slotIndex + 8, (int)(optionData + 0x208), optionData + 0x290);
             SetControlOption(slotIndex + 8, (int)(optionData + 0x184), gJBUpLabel);
-            SetControlOption(slotIndex + 8, (int)(optionData + 0x16C), lbl_8055BC80);
+            SetControlOption(slotIndex + 8, (int)(optionData + 0x16C), gJBDownLabel);
             SetControlOption(slotIndex + 8, (int)(optionData + 0x1B4), (void *)&lbl_8055BC08);
             SetControlOption(slotIndex + 8, (int)(optionData + 0x1CC), (void *)&lbl_8055BC08);
             SetControlOption(slotIndex + 8, (int)gBrakingLabel, optionData + 0x468);
@@ -639,7 +639,7 @@ extern char gJBLeftLabel[];
 extern char gPOVAnyLabel[];
 extern char gHorn2Label[];
 extern char gJBUpLabel[];
-extern char lbl_8055BC80[];
+extern char gJBDownLabel[];
 extern void fn_80137D10(void);
 
 extern void fn_802E30C8(void *);
