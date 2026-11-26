@@ -91,11 +91,11 @@ int gxGetImageHeight(void* image) {
     return inside;
 }
 #pragma dont_inline reset
-extern void fn_802353F4(void);
+extern void drawPicture(void);
 extern void fn_802354A0(void*, void*, int);
 extern void fn_80235758(void*, float, float, float, float, float, float, int);
-/* If the art set is non-null, draw its picture at pictureIndex and (x,y,z); the additional arguments are forwarded unchanged by the tail call to fn_802353F4. A null handle is ignored. */
-void gxDrawPictureAt(void* artSet) { if (artSet != 0) fn_802353F4(); }
+/* If the art set is non-null, draw its picture at pictureIndex and (x,y,z); the additional arguments are forwarded unchanged by the tail call to drawPicture. A null handle is ignored. */
+void gxDrawPictureAt(void* artSet) { if (artSet != 0) drawPicture(); }
 
 /* Draw one picture (frame `picture`) from art set `artSet` with the default
    color/tint -1; the float position/size arguments x,y,z,width,height arrive in

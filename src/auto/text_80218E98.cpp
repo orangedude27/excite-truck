@@ -581,7 +581,7 @@ extern "C" void fn_8022B91C(s32, s32, s32, s32, s32);
 extern "C" s32 gxGetImageFrameCount(s32);
 extern "C" s32 gxDrawPictureAt(s32, s32, f32, f32, f32);
 extern "C" void fn_80230C30(f32 *, f32 *, s32, s32);
-extern "C" void fn_802353F4(s32, s32, f32, f32, f32);
+extern "C" void drawPicture(s32, s32, f32, f32, f32);
 extern "C" f32 getPictureWidth(s32, s32);
 extern "C" f32 getPictureHeight(s32, s32);
 extern "C" void gxDrawPicture(s32, s32, f32, f32, f32, f32, f32);
@@ -5946,7 +5946,7 @@ extern "C" void fn_80222788(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) 
     if (*(s32 *)((u8 *)arg0 + 4) != 0) {
         f32 scale = lbl_805634A8;
         fn_80230C30(&outX, &outY, arg1, arg2);
-        fn_802353F4(*(s32 *)((u8 *)arg0 + 4), arg4, outX, outY, scale);
+        drawPicture(*(s32 *)((u8 *)arg0 + 4), arg4, outX, outY, scale);
     }
 }
 #pragma pop
@@ -8392,7 +8392,7 @@ extern "C" void drawBoxBorder(s32 imageSet, f32 x, f32 y, f32 width, f32 height)
             while (pos < width) {
                 f32 frameWidth = getPictureWidth(imageSet, frame);
                 if (frameWidth - 1.0f < width - pos) {
-                    fn_802353F4(imageSet, frame, x + pos, y, lbl_805634A8);
+                    drawPicture(imageSet, frame, x + pos, y, lbl_805634A8);
                 } else {
                     fn_802354A0(imageSet, frame, -1, x + pos, y, lbl_805634A8, width - pos, getPictureHeight(imageSet, frame));
                 }
@@ -8409,7 +8409,7 @@ extern "C" void drawBoxBorder(s32 imageSet, f32 x, f32 y, f32 width, f32 height)
             while (pos < width) {
                 f32 frameWidth = getPictureWidth(imageSet, frame);
                 if (frameWidth - 1.0f < width - pos) {
-                    fn_802353F4(imageSet, frame, x + pos, yPos, lbl_805634A8);
+                    drawPicture(imageSet, frame, x + pos, yPos, lbl_805634A8);
                 } else {
                     fn_802354A0(imageSet, frame, -1, x + pos, yPos, lbl_805634A8, width - pos, frameHeight);
                 }
@@ -8424,7 +8424,7 @@ extern "C" void drawBoxBorder(s32 imageSet, f32 x, f32 y, f32 width, f32 height)
             while (pos < height) {
                 f32 frameHeight = getPictureHeight(imageSet, frame);
                 if (frameHeight - 1.0f < height - pos) {
-                    fn_802353F4(imageSet, frame, x, y - pos, lbl_805634A8);
+                    drawPicture(imageSet, frame, x, y - pos, lbl_805634A8);
                 } else {
                     fn_802354A0(imageSet, frame, -1, x, y - pos, lbl_805634A8, getPictureWidth(imageSet, frame), height - pos);
                 }
@@ -8440,7 +8440,7 @@ extern "C" void drawBoxBorder(s32 imageSet, f32 x, f32 y, f32 width, f32 height)
             while (pos < height) {
                 f32 frameHeight = getPictureHeight(imageSet, frame);
                 if (frameHeight - 1.0f < height - pos) {
-                    fn_802353F4(imageSet, frame, xPos, y - pos, lbl_805634A8);
+                    drawPicture(imageSet, frame, xPos, y - pos, lbl_805634A8);
                 } else {
                     fn_802354A0(imageSet, frame, -1, xPos, y - pos, lbl_805634A8, getPictureWidth(imageSet, frame), height - pos);
                 }
@@ -8449,11 +8449,11 @@ extern "C" void drawBoxBorder(s32 imageSet, f32 x, f32 y, f32 width, f32 height)
                     frame = 6;
             }
         }
-        fn_802353F4(imageSet, 0, x - lbl_805634EC, lbl_805634EC + y, lbl_805634A8);
-        fn_802353F4(imageSet, 1, (lbl_805634EC + (x + width)) - getPictureWidth(imageSet, 1), lbl_805634EC + y, lbl_805634A8);
-        fn_802353F4(imageSet, 2, x - lbl_805634EC, ((y - height) - lbl_805634EC) + getPictureHeight(imageSet, 2), lbl_805634A8);
+        drawPicture(imageSet, 0, x - lbl_805634EC, lbl_805634EC + y, lbl_805634A8);
+        drawPicture(imageSet, 1, (lbl_805634EC + (x + width)) - getPictureWidth(imageSet, 1), lbl_805634EC + y, lbl_805634A8);
+        drawPicture(imageSet, 2, x - lbl_805634EC, ((y - height) - lbl_805634EC) + getPictureHeight(imageSet, 2), lbl_805634A8);
         y = ((y - height) - lbl_805634EC) + getPictureHeight(imageSet, 3);
-        fn_802353F4(imageSet, 3, (lbl_805634EC + (x + width)) - getPictureWidth(imageSet, 3), y, lbl_805634A8);
+        drawPicture(imageSet, 3, (lbl_805634EC + (x + width)) - getPictureWidth(imageSet, 3), y, lbl_805634A8);
     }
 }
 
@@ -8618,7 +8618,7 @@ f32 width = fn_8023293C(*(s32*)((u8*)arg0 + 0x250), glyph,
 lbl_805634A4);
 f32 charWidth = charWidthDefault > width ? charWidthDefault : width;
 f32 y = sp8;
-fn_802353F4(*(s32*)((u8*)arg0 + 0x254), 0, progress, y,
+drawPicture(*(s32*)((u8*)arg0 + 0x254), 0, progress, y,
 lbl_805634A8);
 progress += duration;
 fn_802354A0(*(s32*)((u8*)arg0 + 0x254), 1, -1, progress, y,
@@ -8628,7 +8628,7 @@ isLast ? -1 : 0xFF707070, 0x14,
 progress + charWidth * scale, y - radiusScale,
 lbl_805634A4, lbl_805634A8, lbl_805634A4);
 progress += charWidth;
-fn_802353F4(*(s32*)((u8*)arg0 + 0x254), 2, progress, y,
+drawPicture(*(s32*)((u8*)arg0 + 0x254), 2, progress, y,
 lbl_805634A8);
 progress += step;
 }
@@ -8648,7 +8648,7 @@ s32 span = *(s32*)((u8*)arg0 + 0x10) - *(s32*)((u8*)arg0 + 8);
 fn_80227880(span, endPos, sp8 - radius, virtualPos, (f32)span);
 f32 phase3Pos = endPos;
 if (flag != 0) {
-fn_802353F4(*(s32*)((u8*)arg0 + 0x254), 3, endPos, topAdjusted,
+drawPicture(*(s32*)((u8*)arg0 + 0x254), 3, endPos, topAdjusted,
 lbl_805634A8);
 phase3Pos = endPos + offset3;
 }
@@ -8662,7 +8662,7 @@ fn_80232BA4((char*)text, *(s32*)((u8*)arg0 + 0x250), -1, 0x14, finalX,
 (lbl_805634E0 + topAdjusted) - lbl_805634C4 * width5,
 lbl_80563578, lbl_805634A8, lbl_805634A4);
 if (flag != 0)
-fn_802353F4(*(s32*)((u8*)arg0 + 0x254), 4, phase3Pos + remaining,
+drawPicture(*(s32*)((u8*)arg0 + 0x254), 4, phase3Pos + remaining,
 topAdjusted, lbl_805634A8);
 drawBoxBorder(*(s32*)((u8*)arg0 + 0x258), endPos, negTop, virtualPos,
 (f32)span);

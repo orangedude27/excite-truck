@@ -1476,7 +1476,7 @@ void fn_80248A74(void *element) {
 #pragma scheduling on
 void fn_80230C30(float *, float *, s32, s32);
 float getPictureHeight(s32, s32);
-void fn_802353F4(s32, s32, float, float, float);
+void drawPicture(s32, s32, float, float, float);
 #pragma push
 #pragma processor 750
 void fn_80248AF0(void *element) {
@@ -1491,7 +1491,7 @@ void fn_80248AF0(void *element) {
     if (*(float*)((char*)element+0x1C) > width)
         *(float*)((char*)element+0x1C) -= width;
     useOffset = *(float*)((char*)element+0x1C) > lbl_805638C8;
-    fn_802353F4(*(s32*)((char*)element+0x18), useOffset, layoutX + *(float*)((char*)element+0x1C), (layoutY-height)+getPictureHeight(*(s32*)((char*)element+0x18), useOffset), lbl_805638B0);
+    drawPicture(*(s32*)((char*)element+0x18), useOffset, layoutX + *(float*)((char*)element+0x1C), (layoutY-height)+getPictureHeight(*(s32*)((char*)element+0x18), useOffset), lbl_805638B0);
 }
 #pragma pop
 
@@ -1748,7 +1748,7 @@ s32 fn_80249154(void *arg0) {
 extern float lbl_805638E0, lbl_805638E4, lbl_805638E8, lbl_805638EC, lbl_805638F0, lbl_805638F4, lbl_805638F8, lbl_805638FC, lbl_80563900;
 extern char lbl_8055BF00, lbl_8055BF08;
 extern float getPictureWidth(s32, s32);
-extern void fn_802353F4(s32, s32, float, float, float);
+extern void drawPicture(s32, s32, float, float, float);
 extern void fn_802354A0(s32, s32, s32, float, float, float, float, float);
 extern void fn_80234AFC(s32, char *, float, float, ...);
 extern int __cntlzw(unsigned int);
@@ -1782,7 +1782,7 @@ void fn_802491A8(const void *arg0)
     {
       obj = *((int *) (base + 0x1C));
     }
-    fn_802353F4(obj, 0, (origin + offset) - getPictureWidth(obj, 0), lbl_805638E4, lbl_805638B0);
+    drawPicture(obj, 0, (origin + offset) - getPictureWidth(obj, 0), lbl_805638E4, lbl_805638B0);
     x = xOrigin + offset;
     fn_802354A0(*((int *) (base + 0x20)), i, (selected) ? (-0x100) : ((int) 0xC0202020), x, lbl_805638F0, lbl_805638B0, lbl_805638F4, lbl_805638F4);
     *((int *) ((*((int *) (base + 0x30))) + 4)) = (selected) ? (-0x100) : ((int) 0xC0202020);

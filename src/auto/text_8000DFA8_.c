@@ -1358,14 +1358,14 @@ typedef struct Unk80350F88 {
 extern char *strncpy(char *, const char *, unsigned long);
 extern f32 lbl_80560264;
 extern f32 lbl_80560280;
-extern void fn_802353F4(f32, f32, f32, f32, f32, f32);
+extern void drawPicture(f32, f32, f32, f32, f32, f32);
 extern void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 extern void fn_80010E94(f32, f32, f32, f32, s32, s32);
 void fn_80010E94(f32 x, f32 y, f32 scaleX, f32 scaleY, s32 artSet, s32 pictureIndex) {
     /* Draw a picture at (x,y): when both scales are the DEFAULT_SCALE (zero)
-       draw it unscaled via fn_802353F4, otherwise draw a sized quad. */
+       draw it unscaled via drawPicture, otherwise draw a sized quad. */
     if (DEFAULT_SCALE == scaleX && DEFAULT_SCALE == scaleY) {
-        fn_802353F4(x, y, ONE_PIXEL, scaleY, scaleY, scaleX);
+        drawPicture(x, y, ONE_PIXEL, scaleY, scaleY, scaleX);
     } else {
         fn_802354A0(artSet, pictureIndex, -1, x, y, ONE_PIXEL, scaleX, scaleY);
     }

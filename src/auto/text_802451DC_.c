@@ -886,7 +886,7 @@ extern void fn_80230C30(float *, float *, int, int);
 extern void fn_80230924(int, float, float, float, float, float);
 extern float getPictureWidth(int, int);
 extern float getPictureHeight(int, int);
-extern void fn_802353F4(int, int, float, float, float);
+extern void drawPicture(int, int, float, float, float);
 extern void fn_802354A0(int, int, int, float, float, float, float, float);
 extern void fn_80235758(int, int, int, float, float, float, float, float, float, float, float);
 #pragma push
@@ -929,12 +929,12 @@ void fn_802465A4(struct BarWidget *widget) {
             fn_80235758(widget->image, BAR_PIECE_FILL_LEFT, -1, x, y, fillWidth, barHeight, BAR_Z, BAR_Z, fillWidth/leftWidth, BAR_TEX_V);
         } else if (fillWidth < leftWidth+midWidth) {
             /* covers the left cap and part of the middle */
-            fn_802353F4(widget->image, BAR_PIECE_FILL_LEFT, x, y, BAR_Z);
+            drawPicture(widget->image, BAR_PIECE_FILL_LEFT, x, y, BAR_Z);
             partWidth = fillWidth-leftWidth;
             fn_80235758(widget->image, BAR_PIECE_FILL_MID, -1, x+leftWidth, y, partWidth, barHeight, BAR_Z, BAR_Z, partWidth/midWidth, BAR_TEX_V);
         } else {
             /* covers the middle too, and eats into the right cap */
-            fn_802353F4(widget->image, BAR_PIECE_FILL_LEFT, x, y, BAR_Z);
+            drawPicture(widget->image, BAR_PIECE_FILL_LEFT, x, y, BAR_Z);
             fn_802354A0(widget->image, BAR_PIECE_FILL_MID, -1, x+leftWidth, y, BAR_Z, midWidth, barHeight);
             midX = x+leftWidth;
             partWidth = (fillWidth-leftWidth)-midWidth;
@@ -942,9 +942,9 @@ void fn_802465A4(struct BarWidget *widget) {
         }
 
         /* frame over the full width */
-        fn_802353F4(widget->image, BAR_PIECE_FRAME_LEFT, x, y, BAR_Z);
+        drawPicture(widget->image, BAR_PIECE_FRAME_LEFT, x, y, BAR_Z);
         fn_802354A0(widget->image, BAR_PIECE_FRAME_MID, -1, x+leftWidth, y, BAR_Z, midWidth, barHeight);
-        fn_802353F4(widget->image, BAR_PIECE_FRAME_RIGHT, midWidth+(x+leftWidth), y, BAR_Z);
+        drawPicture(widget->image, BAR_PIECE_FRAME_RIGHT, midWidth+(x+leftWidth), y, BAR_Z);
     } else {
         fn_80230924(-1, x, y, x+width* widget->fill, y-height, BAR_Z);
     }

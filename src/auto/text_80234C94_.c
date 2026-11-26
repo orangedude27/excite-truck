@@ -367,7 +367,7 @@ extern void fn_802C8B98(int, int);
 #pragma push
 #pragma processor 750
 /* Draws a picture from an art set by index at (x, y, z), or logs if the index is not found. */
-void fn_802353F4(int artSet, int pictureIndex, float x, float y, float z) {
+void drawPicture(int artSet, int pictureIndex, float x, float y, float z) {
     void *pictureNode;
     if (pictureIndex < 0) return;
     pictureNode = ((void *(*)(void *, int))fn_8023505C)((void *)artSet, pictureIndex);

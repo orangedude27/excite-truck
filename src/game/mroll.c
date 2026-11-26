@@ -1203,7 +1203,7 @@ extern void fn_80235758(int, int, unsigned, float, float, float, float, float, f
 extern s32 fn_80211660(s32);
 extern float getPictureHeight(s32, s32);
 extern float getPictureWidth(s32, s32);
-extern void fn_802353F4(s32, s32, float, float, float);
+extern void drawPicture(s32, s32, float, float, float);
 extern void fn_8022BD40(int, void *, int, int, float, float, float, float, float, float, float, float);
 #pragma scheduling invalid_target
 void fn_80241820(void *arg0) {
@@ -1265,13 +1265,13 @@ void fn_80241820(void *arg0) {
                 s32 o = fn_80211660(0);
                 float k = (h - getPictureHeight(o, 1)) * lbl_80563784;
                 float m = lbl_80563794 + *(float *)(self + 0x54);
-                fn_802353F4(o, 1, (sx - getPictureWidth(o, 1)) - m, sy - k, lbl_80563758);
+                drawPicture(o, 1, (sx - getPictureWidth(o, 1)) - m, sy - k, lbl_80563758);
             }
             if (*(int *)(self + 0x2c) < *(int *)(*(char **)self + 0x28) + 0x98 == 0) {}
             if (*(int *)(self + 0x2c) < *(int *)(*(char **)(self + 0x28) + 0x98) - 1) {
                 s32 o = fn_80211660(1);
                 float k = (h - getPictureHeight(o, 1)) * lbl_80563784;
-                fn_802353F4(o, 1, (lbl_80563794 + *(float *)(self + 0x58)) + (sx + w), sy - k, lbl_80563758);
+                drawPicture(o, 1, (lbl_80563794 + *(float *)(self + 0x58)) + (sx + w), sy - k, lbl_80563758);
             }
             {
                 float a = *(float *)(self + 0x54) - lbl_80563764;
