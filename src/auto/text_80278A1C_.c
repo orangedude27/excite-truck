@@ -54,7 +54,7 @@ __declspec(section ".sdata") extern const char lbl_8055C6B8[];
 __declspec(section ".sdata") extern const char lbl_8055C6C0[];
 extern char lbl_80347690[];
 extern const char carLayoutAllocLabel[4];
-extern const char lbl_8055C6D0[4];
+extern const char boundsResourceName[4];
 extern const char lbl_8055C6D8[4];
 extern const char lbl_8055C6E0[4];
 typedef struct Vec3_80279004 { f32 x, y, z; } Vec3_80279004;
@@ -339,8 +339,8 @@ extern "C" void* loadCarResource(s32 name, s32 arg1) {
     }
     fn_80278A64((CarObject*)carObj, (File_80279004*)boneFile, (File_80279004*)altBoneFile, (s32)carName);
     memset(carObj + 0x2138, 0, 0x300);
-    if (((File_Vtable_80279004*)boneFile)->hasRes(lbl_8055C6D0) != 0) {
-        boundsRes = ((File_Vtable_80279004*)boneFile)->getRes(lbl_8055C6D0);
+    if (((File_Vtable_80279004*)boneFile)->hasRes(boundsResourceName) != 0) {
+        boundsRes = ((File_Vtable_80279004*)boneFile)->getRes(boundsResourceName);
         boundsPtr = carObj;
         for (boundIndex = 0; boundIndex < 0x20; boundIndex++) {
             sprintf(key, lbl_8055C6D8, boundIndex);
