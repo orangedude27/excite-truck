@@ -133,7 +133,7 @@ return_null:
  * voice, stream the next half of its sample buffer (or wrap to the start at the
  * loop point), flushing the cache; write silence instead while the disc drive
  * is active, and flag completion when done. */
-void SpuVoiceRefillCallback(void) {
+/* AI DMA callback: refill the 0x20 SPU voice stream buffers; stream the next half of each active voice's sample (wrapping at the loop point), flush the cache, and write silence while the disc drive is active. */ void SpuVoiceRefillCallback(void) {
     extern char lbl_8055FFA4;
     extern char lbl_8055FFA5;
     extern char lbl_8055FFA6;
