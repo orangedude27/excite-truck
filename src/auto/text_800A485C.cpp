@@ -9229,6 +9229,7 @@ extern "C" void *VFiPFFILE_GetFileInfo(void *fileObj, void *info) {
     *(FatCopyA *)((u8 *)fileObj + 0x1C) = savedCursorA;
     *(FatCopyB *)((u8 *)fileObj + 0xC) = savedCursorB;
     *(s32 *)((u8 *)volume + 0x1644) = 0;
+    *(s32 *)((u8 *)volume + 0x1644) = 0;
     if (result != 0) {
         VF_LAST_ERROR = result;
         VF_VOL_ERROR(VF_STREAM_ENTRY_VOLUME(VF_HANDLE_STREAM(fileObj))) = result;
