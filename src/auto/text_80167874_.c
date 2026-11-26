@@ -150,7 +150,7 @@ struct SpinMatrix {
 extern "C" {
 extern char lbl_8055A1C0[8];
 extern char lbl_8055A1C8[4];
-extern char lbl_8055A1CC[4];
+extern char locParamName[4];
 extern f32 lbl_80561924;
 extern f32 lbl_80561938;
 extern f32 lbl_80561950;
@@ -1522,7 +1522,7 @@ s32 fn_80169D64(s32 unused, s32 name) {
 
     for (i = 0; (item = table->getItem(i)) != 0; i++) {
         f32 hit = item->getHit(lbl_8055A1C8);   /* "hit" */
-        DummyVec2 loc = item->getLoc(lbl_8055A1CC); /* "loc" */
+        DummyVec2 loc = item->getLoc(locParamName); /* "loc" */
         DummyRecord *pickup = &manager->records[manager->recordCount++];
         f32 sum;
         pickup->obj = 0;
