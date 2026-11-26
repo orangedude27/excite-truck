@@ -12,6 +12,13 @@
 #include <extras.h>
 #include <string.h>
 
+/* Readable aliases for the placeholder symbols below; rename_symbol is blocked for this
+   translation unit, so these macros keep the file readable while the emitted symbols stay. */
+#define resolveMenuEntry fn_80005158
+#define selectionString lbl_8034EC58
+#define menuActiveFlag lbl_8055D430
+#define menuLogStrings lbl_802FAEA0
+
 extern void KERNEL_ReadStartupCalendar(void* out);
 extern void fn_80129C80(int, u32, u32);
 extern int  fn_80129D18(int, int);
