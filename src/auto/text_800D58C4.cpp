@@ -1603,7 +1603,7 @@ extern "C" f32 lbl_80560E98;
 /* Set an indirect (bump-mapping) texture matrix: first scale the six elements so every
  * |component| falls in [0.5, 1.0), tracking the power-of-two applied as a signed exponent,
  * then forward the matrix and exponent to GXSetIndTexMtx for the given matrix id. */
-extern "C" void setIndirectTextureMatrix(void* mtxId, const f32* srcMtx) {
+/* Scales a 2x3 indirect texture matrix into [0.5,1) and forwards it with a power-of-two exponent to GXSetIndTexMtx. */ extern "C" void setIndirectTextureMatrix(void* mtxId, const f32* srcMtx) {
     s8 scaleExp=0;
     f32 m0=srcMtx[0], m1=srcMtx[1], m2=srcMtx[2], m3=srcMtx[3], m4=srcMtx[4], m5=srcMtx[5];
     f32 a0=__fabsf(m0), a1=__fabsf(m1), a2=__fabsf(m2), a3=__fabsf(m3), a4=__fabsf(m4), a5=__fabsf(m5);
