@@ -9338,29 +9338,29 @@ static inline u16 Fn800B25CCUpperSjis(u16 *c, u16 *out) {
  * says whether the result should be Unicode (otherwise OEM/CP932).  Invalid
  * name characters become '_', and ASCII and fullwidth lowercase letters are
  * upper-cased; a zero code ends the path. */
-extern "C" u16 VFiPFPATH_readNextChar(void *path, s32 wantUnicode) {
+/* Read the next character code from a VFiPF path cursor, converting CP932/UTF-16 and upper-casing letters; 0 ends the path */ extern "C" u16 VFiPFPATH_readNextChar(void *path, s32 wantUnicode) {
     u8 scratch[0x14];
-    s32 lowerAscii;
-    u32 code;
-    u32 lowerFull;
-    u32 convertedLower;
-    u8 *readPtr;
-    u8 *src;
-    u8 c0;
+    s32 isLowerAscii;
+    u32 charCode;
+    u32 isLowerFullwidth;
+    u32 isLowerConverted;
+    u8 *cursor;
+    u8 *stream;
+    u8 firstByte;
 
     if ((u32) M2C_FIELD(path, u32 *, 0xC) == 1U) {
-        src = M2C_FIELD(path, u8 **, 0);
-        M2C_FIELD(path, u8 **, 0) = (u8 *) (src + 1);
-        c0 = *src;
-        scratch[8] = c0;
+        stream = M2C_FIELD(path, u8 **, 0);
+        M2C_FIELD(path, u8 **, 0) = (u8 *) (stream + 1);
+        firstByte = *stream;
+        scratch[8] = firstByte;
         scratch[9] = 0;
-        if (((s8) c0 == 0) || ((u8 *)M2C_FIELD(path, u32 *, 4) < M2C_FIELD(path, u8 **, 0))) {
+        if (((s8) firstByte == 0) || ((u8 *)M2C_FIELD(path, u32 *, 4) < M2C_FIELD(path, u8 **, 0))) {
             return 0U;
         }
-        if (M2C_FIELD(&lbl_803D2140, s32 (**)(s8, s32), 0x54)((s8) c0, 1) != 0) {
-            readPtr = M2C_FIELD(path, u8 **, 0);
-            scratch[9] = *readPtr++;
-            M2C_FIELD(path, u8 **, 0) = readPtr;
+        if (M2C_FIELD(&lbl_803D2140, s32 (**)(s8, s32), 0x54)((s8) firstByte, 1) != 0) {
+            cursor = M2C_FIELD(path, u8 **, 0);
+            scratch[9] = *cursor++;
+            M2C_FIELD(path, u8 **, 0) = cursor;
             (*(u16 *)(scratch + 4)) = (scratch[8] << 8) + scratch[9];
         } else if ((M2C_FIELD(&lbl_803D2140, s32 *, 0x38) & 0x10000) || (scratch[8] >= 0x80U) || ((scratch[8] >= 0x20U) && (((u8 *)lbl_802EEEE0)[scratch[8] - 0x20] & 2))) {
             (*(u16 *)(scratch + 4)) = (u16) (s8) scratch[8];
@@ -9391,41 +9391,41 @@ extern "C" u16 VFiPFPATH_readNextChar(void *path, s32 wantUnicode) {
         }
     }
 block_27:
-    code = (*(u16 *)(scratch + 4));
-    lowerAscii = 0;
-    if ((code >= 0x61U) && (code <= 0x7AU)) {
-        lowerAscii = 1;
+    charCode = (*(u16 *)(scratch + 4));
+    isLowerAscii = 0;
+    if ((charCode >= 0x61U) && (charCode <= 0x7AU)) {
+        isLowerAscii = 1;
     }
-    if (lowerAscii != 0) {
-        code -= 0x20;
+    if (isLowerAscii != 0) {
+        charCode -= 0x20;
     }
-    (*(u16 *)(scratch + 4)) = code;
+    (*(u16 *)(scratch + 4)) = charCode;
     if (wantUnicode != 0) {
-        code = (u16)code;
-        if ((code >= 0xFF41U) && (code <= 0xFF5AU)) {
-            lowerFull = 1U;
-            (*(u16 *)scratch) = code - 0x20;
+        charCode = (u16)charCode;
+        if ((charCode >= 0xFF41U) && (charCode <= 0xFF5AU)) {
+            isLowerFullwidth = 1U;
+            (*(u16 *)scratch) = charCode - 0x20;
         } else {
-            lowerFull = 0U;
+            isLowerFullwidth = 0U;
         }
-        if (lowerFull == 1U) {
+        if (isLowerFullwidth == 1U) {
             (*(u16 *)(scratch + 4)) = (*(u16 *)scratch);
         }
     } else {
         M2C_FIELD(&lbl_803D2140, s32 (**)(u8 *, u16 *, s32 *), 0x48)((u8 *) &(*(u16 *)(scratch + 4)), &(*(u16 *)scratch), (s32 *)lbl_803D2140);
         if (((*(u16 *)scratch) >= 0xFF41U) && ((*(u16 *)scratch) <= 0xFF5AU)) {
-            convertedLower = 1U;
+            isLowerConverted = 1U;
             (*(u16 *)scratch) -= 0x20;
         } else {
-            convertedLower = 0U;
+            isLowerConverted = 0U;
         }
-        if (convertedLower == 1U) {
+        if (isLowerConverted == 1U) {
             M2C_FIELD(&lbl_803D2140, s32 (**)(u16 *, u16 *), 0x4C)(&(*(u16 *)scratch), &(*(u16 *)scratch));
-            convertedLower = 1U;
+            isLowerConverted = 1U;
         } else {
-            convertedLower = 0U;
+            isLowerConverted = 0U;
         }
-        if (convertedLower == 1U) {
+        if (isLowerConverted == 1U) {
             (*(u16 *)(scratch + 4)) = (*(u16 *)scratch);
         }
     }
