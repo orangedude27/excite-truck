@@ -31,52 +31,52 @@ enum IdealResExtType {
  * first the four bytes of each 32-bit word are reversed (0x00..0x2F), then the
  * 0x10..0x33 region is byte-swapped with its mirrored counterpart in a fixed
  * pattern (0x10<->0x29, 0x11<->0x2C, ... 0x28<->0x2B). */
-extern "C" void byteSwapLoadedNode(void *arg0, int arg_sp0) {
+/* Fix the byte order of one 0x38-byte node loaded by fn_801381B4: reverse the four bytes of every word in 0x00..0x2F, then swap the 0x10..0x33 region with its mirrored counterpart in a fixed pattern. */ extern "C" void byteSwapLoadedNode(void *arg0, int arg_sp0) {
     volatile int sp18, sp14, sp10, spC, sp8;
-    volatile unsigned char *p = (volatile unsigned char *)arg0;
+    volatile unsigned char *bytes = (volatile unsigned char *)arg0;
     register unsigned int temp_r0, temp_r0_2, temp_r0_4, temp_r0_5, temp_r0_3;
     register unsigned int swap_t;
     register unsigned int temp_r14 asm("r14"), temp_r4 asm("r4"), temp_r5 asm("r5"), temp_r6 asm("r6"), temp_r7 asm("r7"), temp_r8 asm("r8"), temp_r9 asm("r9"), temp_r10 asm("r10"), temp_r11 asm("r11"), temp_r12 asm("r12"), temp_r31 asm("r31"), temp_r30 asm("r30"), temp_r29 asm("r29"), temp_r28 asm("r28"), temp_r27 asm("r27"), temp_r26 asm("r26"), temp_r25 asm("r25"), temp_r24 asm("r24"), temp_r23 asm("r23"), temp_r22 asm("r22"), temp_r21 asm("r21"), temp_r20 asm("r20"), temp_r19 asm("r19"), temp_r18 asm("r18"), temp_r17 asm("r17"), temp_r16 asm("r16"), temp_r15 asm("r15");
-    swap_t=p[0]; p[0]=p[3]; p[3]=swap_t;
-    swap_t=p[1]; p[1]=p[2]; p[2]=swap_t;
-    swap_t=p[4]; p[4]=p[7]; p[7]=swap_t;
-    swap_t=p[5]; p[5]=p[6]; p[6]=swap_t;
-    swap_t=p[8]; p[8]=p[11]; p[11]=swap_t;
-    swap_t=p[9]; p[9]=p[10]; p[10]=swap_t;
-    swap_t=p[12]; p[12]=p[15]; p[15]=swap_t;
-    swap_t=p[13]; p[13]=p[14]; p[14]=swap_t;
-    temp_r0=p[0x2a]; temp_r17=p[0x29]; sp18=temp_r0;
-    temp_r0_2=p[0x2f]; temp_r24=p[0x2c]; sp8=temp_r0_2;
-    temp_r0_3=p[0x2e]; temp_r16=p[0x2d]; spC=temp_r0_3;
-    temp_r0_4=p[0x33]; temp_r23=p[0x30]; sp10=temp_r0_4;
-    temp_r0_5=p[0x32]; temp_r15=p[0x31]; sp14=temp_r0_5;
+    swap_t=bytes[0]; bytes[0]=bytes[3]; bytes[3]=swap_t;
+    swap_t=bytes[1]; bytes[1]=bytes[2]; bytes[2]=swap_t;
+    swap_t=bytes[4]; bytes[4]=bytes[7]; bytes[7]=swap_t;
+    swap_t=bytes[5]; bytes[5]=bytes[6]; bytes[6]=swap_t;
+    swap_t=bytes[8]; bytes[8]=bytes[11]; bytes[11]=swap_t;
+    swap_t=bytes[9]; bytes[9]=bytes[10]; bytes[10]=swap_t;
+    swap_t=bytes[12]; bytes[12]=bytes[15]; bytes[15]=swap_t;
+    swap_t=bytes[13]; bytes[13]=bytes[14]; bytes[14]=swap_t;
+    temp_r0=bytes[0x2a]; temp_r17=bytes[0x29]; sp18=temp_r0;
+    temp_r0_2=bytes[0x2f]; temp_r24=bytes[0x2c]; sp8=temp_r0_2;
+    temp_r0_3=bytes[0x2e]; temp_r16=bytes[0x2d]; spC=temp_r0_3;
+    temp_r0_4=bytes[0x33]; temp_r23=bytes[0x30]; sp10=temp_r0_4;
+    temp_r0_5=bytes[0x32]; temp_r15=bytes[0x31]; sp14=temp_r0_5;
     temp_r0=sp18;
-    temp_r30=p[0x10]; temp_r31=p[0x13]; p[0x29]=temp_r0;
+    temp_r30=bytes[0x10]; temp_r31=bytes[0x13]; bytes[0x29]=temp_r0;
     temp_r0_2=sp8;
-    temp_r22=p[0x11]; temp_r12=p[0x12]; p[0x2c]=temp_r0_2;
+    temp_r22=bytes[0x11]; temp_r12=bytes[0x12]; bytes[0x2c]=temp_r0_2;
     temp_r0_3=spC;
-    temp_r29=p[0x18]; temp_r11=p[0x1b]; p[0x2d]=temp_r0_3;
+    temp_r29=bytes[0x18]; temp_r11=bytes[0x1b]; bytes[0x2d]=temp_r0_3;
     temp_r0_4=sp10;
-    temp_r21=p[0x19]; temp_r10=p[0x1a]; p[0x30]=temp_r0_4;
+    temp_r21=bytes[0x19]; temp_r10=bytes[0x1a]; bytes[0x30]=temp_r0_4;
     temp_r14=sp14;
-    temp_r28=p[0x1c]; temp_r9=p[0x1f]; temp_r20=p[0x1d]; temp_r8=p[0x1e];
-    temp_r27=p[0x20]; temp_r7=p[0x23]; temp_r19=p[0x21]; temp_r6=p[0x22];
-    temp_r26=p[0x24]; temp_r5=p[0x27]; temp_r18=p[0x25]; temp_r4=p[0x26];
-    temp_r25=p[0x28]; temp_r0_5=p[0x2b];
-    p[0x10]=temp_r31; p[0x13]=temp_r30;
-    p[0x11]=temp_r12; p[0x12]=temp_r22;
-    p[0x18]=temp_r11; p[0x1b]=temp_r29;
-    p[0x19]=temp_r10; p[0x1a]=temp_r21;
-    p[0x1c]=temp_r9; p[0x1f]=temp_r28;
-    p[0x1d]=temp_r8; p[0x1e]=temp_r20;
-    p[0x20]=temp_r7; p[0x23]=temp_r27;
-    p[0x21]=temp_r6; p[0x22]=temp_r19;
-    p[0x24]=temp_r5; p[0x27]=temp_r26;
-    p[0x25]=temp_r4; p[0x26]=temp_r18;
-    p[0x28]=temp_r0_5; p[0x2b]=temp_r25;
-    p[0x2a]=temp_r17; p[0x2f]=temp_r24;
-    p[0x2e]=temp_r16; p[0x33]=temp_r23;
-    p[0x31]=temp_r14; p[0x32]=temp_r15;
+    temp_r28=bytes[0x1c]; temp_r9=bytes[0x1f]; temp_r20=bytes[0x1d]; temp_r8=bytes[0x1e];
+    temp_r27=bytes[0x20]; temp_r7=bytes[0x23]; temp_r19=bytes[0x21]; temp_r6=bytes[0x22];
+    temp_r26=bytes[0x24]; temp_r5=bytes[0x27]; temp_r18=bytes[0x25]; temp_r4=bytes[0x26];
+    temp_r25=bytes[0x28]; temp_r0_5=bytes[0x2b];
+    bytes[0x10]=temp_r31; bytes[0x13]=temp_r30;
+    bytes[0x11]=temp_r12; bytes[0x12]=temp_r22;
+    bytes[0x18]=temp_r11; bytes[0x1b]=temp_r29;
+    bytes[0x19]=temp_r10; bytes[0x1a]=temp_r21;
+    bytes[0x1c]=temp_r9; bytes[0x1f]=temp_r28;
+    bytes[0x1d]=temp_r8; bytes[0x1e]=temp_r20;
+    bytes[0x20]=temp_r7; bytes[0x23]=temp_r27;
+    bytes[0x21]=temp_r6; bytes[0x22]=temp_r19;
+    bytes[0x24]=temp_r5; bytes[0x27]=temp_r26;
+    bytes[0x25]=temp_r4; bytes[0x26]=temp_r18;
+    bytes[0x28]=temp_r0_5; bytes[0x2b]=temp_r25;
+    bytes[0x2a]=temp_r17; bytes[0x2f]=temp_r24;
+    bytes[0x2e]=temp_r16; bytes[0x33]=temp_r23;
+    bytes[0x31]=temp_r14; bytes[0x32]=temp_r15;
 }
 #pragma cplusplus reset
 #pragma scheduling on
