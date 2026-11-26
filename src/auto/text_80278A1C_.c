@@ -305,68 +305,68 @@ extern "C" void fn_80278A64(CarObject* car, File_80279004* file, File_80279004* 
 #pragma cplusplus on
 extern "C" void* loadCarResource(s32 name, s32 arg1) {
     #pragma scheduling invalid_target
-    char path[0x80];
-    char path2[0x80];
-    char key[0x20];
-    char* formatStrings = lbl_80347690;
-    char* boundsPtr;
-    char* carObj;
-    void* altBoneFile;
+    char physicsPath[0x80];
+    char boneModPath[0x80];
+    char boundKey[0x20];
+    char* layoutStrings = lbl_80347690;
+    char* boundsDst;
+    char* resource;
+    void* boneModFile;
     void* boneFile;
     Res_Vtable_80279004* boundsRes;
     s32 boundIndex;
-    char* carName = (char*)name;
+    char* resourceName = (char*)name;
     Vec3_80279004 minVec;
     Vec3_80279004 maxVec;
 
-    /* Load a car layout: allocate the car object, attach its physics file, load the
-     * bone-info file (with a .mvl/.val fallback) and build the bone layout, then copy
-     * the per-bone min/max bounds out of the "bounds" resource, and register the car
-     * at the head of the global car list. */
-    carObj = (char*)fn_801284F8(0x2464, carLayoutAllocLabel);
-    sprintf(path, formatStrings + 0xF4, carName);
-    *(void**)(carObj + 0x2438) = fn_80131808(path);
-    sprintf(path, formatStrings + 0x108, carName);
-    if (fn_8012C33C(path) == 0) {
-        sprintf(path, formatStrings + 0x118, carName);
+    /* Allocate a car layout resource, attach its physics file and build the bone
+     * layout from the bone .mvl/.val files (plus an optional bonemod .bvl), copy
+     * the 32 per-bone min/max bounds out of the "bounds" resource, then push the
+     * new resource onto the head of gCarResourceList. */
+    resource = (char*)fn_801284F8(0x2464, carLayoutAllocLabel);
+    sprintf(physicsPath, layoutStrings + 0xF4, resourceName);
+    *(void**)(resource + 0x2438) = fn_80131808(physicsPath);
+    sprintf(physicsPath, layoutStrings + 0x108, resourceName);
+    if (fn_8012C33C(physicsPath) == 0) {
+        sprintf(physicsPath, layoutStrings + 0x118, resourceName);
     }
-    boneFile = fn_80131808(path);
-    sprintf(path2, formatStrings + 0x128, carName);
-    if (fn_8012C33C(path2) != 0) {
-        altBoneFile = fn_80131808(path2);
+    boneFile = fn_80131808(physicsPath);
+    sprintf(boneModPath, layoutStrings + 0x128, resourceName);
+    if (fn_8012C33C(boneModPath) != 0) {
+        boneModFile = fn_80131808(boneModPath);
     } else {
-        altBoneFile = NULL;
+        boneModFile = NULL;
     }
-    fn_80278A64((CarObject*)carObj, (File_80279004*)boneFile, (File_80279004*)altBoneFile, (s32)carName);
-    memset(carObj + 0x2138, 0, 0x300);
+    fn_80278A64((CarObject*)resource, (File_80279004*)boneFile, (File_80279004*)boneModFile, (s32)resourceName);
+    memset(resource + 0x2138, 0, 0x300);
     if (((File_Vtable_80279004*)boneFile)->hasRes(boundsResourceName) != 0) {
         boundsRes = ((File_Vtable_80279004*)boneFile)->getRes(boundsResourceName);
-        boundsPtr = carObj;
+        boundsDst = resource;
         for (boundIndex = 0; boundIndex < 0x20; boundIndex++) {
-            sprintf(key, minBoundKeyFormat, boundIndex);
-            minVec = boundsRes->getVec(key);
-            *(f32*)(boundsPtr + 0x2138) = minVec.x;
-            *(f32*)(boundsPtr + 0x213C) = minVec.y;
-            *(f32*)(boundsPtr + 0x2140) = minVec.z;
-            sprintf(key, maxBoundKeyFormat, boundIndex);
-            maxVec = boundsRes->getVec(key);
-            *(f32*)(boundsPtr + 0x2144) = maxVec.x;
-            *(f32*)(boundsPtr + 0x2148) = maxVec.y;
-            *(f32*)(boundsPtr + 0x214C) = maxVec.z;
-            boundsPtr += 0x18;
+            sprintf(boundKey, minBoundKeyFormat, boundIndex);
+            minVec = boundsRes->getVec(boundKey);
+            *(f32*)(boundsDst + 0x2138) = minVec.x;
+            *(f32*)(boundsDst + 0x213C) = minVec.y;
+            *(f32*)(boundsDst + 0x2140) = minVec.z;
+            sprintf(boundKey, maxBoundKeyFormat, boundIndex);
+            maxVec = boundsRes->getVec(boundKey);
+            *(f32*)(boundsDst + 0x2144) = maxVec.x;
+            *(f32*)(boundsDst + 0x2148) = maxVec.y;
+            *(f32*)(boundsDst + 0x214C) = maxVec.z;
+            boundsDst += 0x18;
         }
     } else {
-        fn_802E30C8(formatStrings + 0x13C, (s32)carName);
+        fn_802E30C8(layoutStrings + 0x13C, (s32)resourceName);
     }
     fn_80131818(boneFile);
-    if (altBoneFile != NULL) fn_80131818(altBoneFile);
-    *(s32*)(carObj + 0x245C) = 1;
-    strncpy(carObj + 0x243C, carName, 0x20);
-    *(u8*)(carObj + 0x245B) = 0;
-    *(void**)(carObj + 0x2134) = *(void**)(carObj + 0x2438);
-    *(void**)(carObj + 0x2460) = lbl_8055F5F0;
-    lbl_8055F5F0 = carObj;
-    return carObj;
+    if (boneModFile != NULL) fn_80131818(boneModFile);
+    *(s32*)(resource + 0x245C) = 1;
+    strncpy(resource + 0x243C, resourceName, 0x20);
+    *(u8*)(resource + 0x245B) = 0;
+    *(void**)(resource + 0x2134) = *(void**)(resource + 0x2438);
+    *(void**)(resource + 0x2460) = gCarResourceList;
+    gCarResourceList = resource;
+    return resource;
 }
 #pragma cplusplus reset
 
