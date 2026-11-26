@@ -133,7 +133,7 @@ extern void fn_80037CEC(void);
 extern void fn_80037DBC(u32);
 extern void fn_8003A834(void *, void *);
 extern void fn_8003B69C(u32, void *);
-extern void fn_80037B54(u32);
+extern void __DVDRecordStatusEvent(u32);
 
 extern s32 DVDInitialized_8055D888;
 extern s32 FirstTimeInBootrom_8055D868;
@@ -2353,7 +2353,7 @@ void fn_8003773C(void) {
         *(volatile u32 *)&lbl_8055D848 =
             *(volatile u32 *)&lbl_8055D848 + 1;
         OSRestoreInterrupts(savedInterrupts);
-        fn_8003B69C(0x20000, fn_80037B54);
+        fn_8003B69C(0x20000, __DVDRecordStatusEvent);
     } else {
         DCInvalidateRange(lbl_80376B00, 0x20);
         lbl_8055D8CC = (s32)fn_80037CEC;
@@ -2410,11 +2410,11 @@ void fn_800379A8(u32 status) {
 #pragma pop
 extern s32 fn_8003BCDC(s32);
 extern void fn_8003B69C(u32, void*);
-extern void fn_80037B54(u32);
+extern void __DVDRecordStatusEvent(u32);
 void fn_80037A8C(void) {
     /* Request a DVD cover-interrupt clear, log error command 0x25 into the next
      * __ErrorInfo slot, then configure DVD audio buffering and continue via
-     * fn_80037B54. */
+     * __DVDRecordStatusEvent. */
     s32 enabled;
     u8 *base;
     fn_8003BCDC(0);
@@ -2427,14 +2427,14 @@ void fn_80037A8C(void) {
     *(s32*)(base + (*(volatile u32*)&lbl_8055D848) * 0x14 + 0x2C) = OSGetTick();
     lbl_8055D848 = (*(volatile u32*)&lbl_8055D848) + 1;
     OSRestoreInterrupts(enabled);
-    fn_8003B69C(0x20000, fn_80037B54);
+    fn_8003B69C(0x20000, __DVDRecordStatusEvent);
 }
 
 #pragma push
 #pragma dont_inline on
 /* Record a DVD/error status event and dispatch the matching follow-up action
  * (direct callback, async read request, or generic error path). */
-void fn_80037B54(u32 status_code) {
+void __DVDRecordStatusEvent(u32 status_code) {
     register s32 saved_interrupts_async;
     s32 saved_interrupts;
 
