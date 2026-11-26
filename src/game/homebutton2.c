@@ -286,11 +286,20 @@ extern void RjoyUpdateMotorEnabled(void);
 extern s32 RjoyGetKpadStatus(s32);
 extern void ConfigCacheWpadSettings(void);
 extern s32 lbl_80558898[];
-/* Drive the Home menu / Wii Remote shutdown flow. When a Home-menu request
- * arrives, stop all rumble and snapshot the menu state; then gather WPAD info
- * and, once the menu reports completion, log the result and reset the console. */
+/* Process a pending Home-button menu request. Before the menu can open, silence
+ * every Wiimote's rumble and back up the UI buffer; then snapshot the four
+ * controllers' KPAD status, report the result, and hand the console back to the
+ * kernel reset path once the menu is done. */
 void HomeMenu_processRequest(void) {
-    register char *menuStrings = lbl_8034E9E0;
+#define gHomeBtn2Ready      lbl_805600EC
+#define gHomeMenuMode       lbl_805600E9
+#define gHandoverRequested  lbl_805600EB
+#define gHomeBtn2Strings    lbl_8034E9E0
+#define gStatusNormal       lbl_8055D2F8
+#define gWpadInfo           lbl_80558898
+#define gHomeBtn2UiRes      lbl_805600E4
+#define gHomeBtn2UiBuffer   lbl_805600E0
+    register char *menuStrings = gHomeBtn2Strings;
     const char *statusText;
     char *logFormat;
     register s32 *wpadInfoOut;
@@ -298,20 +307,20 @@ void HomeMenu_processRequest(void) {
     s32 channel;
     s32 i;
 
-    if ((u8)lbl_805600EC == 0) return;
+    if ((u8)gHomeBtn2Ready == 0) return;
     if ((u8)HomeMenu_requestPending != 0) {
         HomeMenu_requestPending = 0;
         if (fn_802D9BF0() == 0) {
             logFormat = menuStrings + 0x16C;
-            statusText = &lbl_8055D2F8;
-            isNormalBoot = (u32)__cntlzw((u32)lbl_805600E9);
+            statusText = &gStatusNormal;
+            isNormalBoot = (u32)__cntlzw((u32)gHomeMenuMode);
             isNormalBoot >>= 5;
-            lbl_805600EB = isNormalBoot;
+            gHandoverRequested = isNormalBoot;
             if (isNormalBoot != 0) statusText = menuStrings + 0x198;
             fn_802E30C8(logFormat, statusText);
             HomeMenu_active = 1;
             for (channel = 0; channel < 4; channel++) WPADControlMotor(channel, 0);
-            fn_800C6774(lbl_805600E4, lbl_805600E0, 0x19000);
+            fn_800C6774(gHomeBtn2UiRes, gHomeBtn2UiBuffer, 0x19000);
             fn_800C65C4();
             HomeMenu_isWidescreen();
             fn_800C675C();
@@ -319,12 +328,12 @@ void HomeMenu_processRequest(void) {
     }
     KERNEL_GetTimeMs();
     if ((u8)HomeMenu_active == 0) return;
-    wpadInfoOut = lbl_80558898;
+    wpadInfoOut = gWpadInfo;
     for (i = 0; i < 4; i++) {
         *wpadInfoOut = RjoyGetKpadStatus(i);
         wpadInfoOut += 4;
     }
-    if (fn_800C65CC(lbl_80558898) >= 0) {
+    if (fn_800C65CC(gWpadInfo) >= 0) {
         ConfigCacheWpadSettings();
         RjoyUpdateMotorEnabled();
         fn_802E5438();
@@ -334,17 +343,25 @@ void HomeMenu_processRequest(void) {
         switch (fn_800C673C()) {
         case 1:
             fn_802E30C8(menuStrings + 0x1E0);
-            fn_802E2E38(1);
+            KERNEL_Reset(1);
             break;
         case 2:
             fn_802E30C8(menuStrings + 0x200);
-            fn_802E2E38(0);
+            KERNEL_Reset(0);
             break;
         }
         fn_800C687C();
         *(volatile u8 *)&HomeMenu_active = 0;
     }
     if (*(volatile u8 *)&HomeMenu_active != 0) fn_800C68B0();
+#undef gHomeBtn2UiBuffer
+#undef gHomeBtn2UiRes
+#undef gWpadInfo
+#undef gStatusNormal
+#undef gHomeBtn2Strings
+#undef gHandoverRequested
+#undef gHomeMenuMode
+#undef gHomeBtn2Ready
 }
 
 extern void *fn_802D2D14(void);
