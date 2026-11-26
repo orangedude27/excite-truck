@@ -11008,7 +11008,7 @@ extern "C" s32 readVolumeData(void *vol, u8 *dest, u32 sector, u32 offset, u32 l
  * write that got fewer sectors than asked for is 17.  claimPage is passed on
  * to the page write, which marks the page as held by the file when it is set.
  */
-extern "C" s32 VFiPFCACHE_WriteData(s32 vol, void *src, s32 sector, u16 offset, u32 length, u32 *writeOut, u32 claimPage) {
+/* Write a byte range from a buffer into a volume's data area via its sector cache, handling partial-sector pages and whole-sector runs. */ extern "C" s32 VFiPFCACHE_WriteData(s32 vol, void *src, s32 sector, u16 offset, u32 length, u32 *writeOut, u32 claimPage) {
     VFiPFCACHEPage *page;
     u32 count;
     s32 result;
