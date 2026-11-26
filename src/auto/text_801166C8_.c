@@ -393,7 +393,7 @@ u32 fn_80116BD4(s32 arg0, s32 arg1, s32 arg2) {
 
 /* Fill `count` 16-bit samples at `dst` with `value`: two samples are written per word
  * (the pattern replicated into both halves), and an odd last sample with a halfword store.
- * The band decoder calls it to repeat one decoded sample (fn_8011DC5C). */
+ * The band decoder calls it to repeat one decoded sample (decodeBandBlock). */
 void fn_80116CC4(s32 *dst, u16 value, u32 count) {
     u32 words;
     u32 fill;
@@ -4752,7 +4752,7 @@ void fn_8011D378(void *arg0, void *arg1, void *arg2)
  * low nibble and the number of bits they cost in their high one; set, the 4-bit
  * value behind it is repeated count times over the block. */
 void fn_8011D5F0(void* arg0, BitReader8011 *reader) {
-    /* One band of the stream; see the BandState8011 layout above fn_8011DC5C. */
+    /* One band of the stream; see the BandState8011 layout above decodeBandBlock. */
     struct Band {
         u8 *start;      /* 0x00 first value of the published block */
         u8 *end;        /* 0x04 one past its last value */
@@ -5002,7 +5002,7 @@ void fn_8011D7F8(void *arg0, void *arg1)
  * index' width, and every non-zero symbol is followed by its sign bit; set, a
  * single 4-bit value (again signed) is repeated over the whole block. */
 void fn_8011D9E4(void *arg0, BitReader8011 *reader) {
-    /* One band of the stream; see the BandState8011 layout above fn_8011DC5C. */
+    /* One band of the stream; see the BandState8011 layout above decodeBandBlock. */
     struct Band {
         u8 *start;      /* 0x00 first value of the published block */
         u8 *end;        /* 0x04 one past its last value */
@@ -5119,7 +5119,7 @@ typedef struct {
    of that many bits (again with a sign bit when non-zero) accumulate into the
    previous sample, while a width of zero repeats the current sample for the
    whole group. */
-void fn_8011DC5C(BandState8011 *band, BitReader8011 *reader) {
+void decodeBandBlock(BandState8011 *band, BitReader8011 *reader) {
     s32 group;
     u32 count;
     u32 *in;
