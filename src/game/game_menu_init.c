@@ -357,7 +357,7 @@ int fn_80005158(const char *name)
     int count;
     char first;
     fn_80127434();
-    pendingControlInit();
+    fn_8023D7CC();
     fn_8023D70C();
     SaveMenuFlag(&saved);
     found = 0;
