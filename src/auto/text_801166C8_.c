@@ -18,7 +18,7 @@ extern s32 lbl_8055DEE0;
 extern s32 lbl_8055DEE8;
 typedef struct { s32 first, second; } Pair8011A168;
 extern void TRKGetFreeBuffer(void *);
-extern void fn_80117074(void*);
+extern void BinkMgr_RefillStreams(void*);
 /* Pointer to the stream entry at byte offset `off` in the manager's entry table
  * (base+0x2F0, stride 0x17C). Each entry holds callbacks at +0/+4/+8, a circular
  * source buffer (+0x2C start, +0x30 end, +0x38 cursor), a byte counter (+0x40),
@@ -554,7 +554,7 @@ u32 fn_80116F8C(void *arg0)
 // that many bytes out of the stream's circular source buffer, wrapping at its
 // end; when the stream's format flag (+0x44) is set the 16-bit source samples
 // are narrowed to 8-bit with fn_80116EE4, otherwise they are copied verbatim.
-void fn_80117074(void *mgr) {
+void BinkMgr_RefillStreams(void *mgr) {
     u8 *base = (u8 *)mgr;
     s32 entryOff;
     u32 i;
@@ -636,7 +636,7 @@ void fn_80117380(void *arg0, s32 arg1) {
     if (arg1 != 0) index = arg1 - 1;
 
     *(s32 *)((u8 *)arg0 + 0x2F8) = 0;
-    if (*(s32 *)((u8 *)arg0 + 0x2E8) != 0) fn_80117074(arg0);
+    if (*(s32 *)((u8 *)arg0 + 0x2E8) != 0) BinkMgr_RefillStreams(arg0);
 
     *(s32 *)((u8 *)arg0 + 0x10) = *(s32 *)((u8 *)arg0 + 0xC);
 
@@ -663,7 +663,7 @@ void fn_80117380(void *arg0, s32 arg1) {
         seekCallback((u8 *)arg0 + 0xF0, index, startOffset, *(s32 *)((u8 *)arg0 + 0xE4), endOffset - startOffset);
     }
 
-    if (*(s32 *)((u8 *)arg0 + 0x2E8) != 0) fn_80117074(arg0);
+    if (*(s32 *)((u8 *)arg0 + 0x2E8) != 0) BinkMgr_RefillStreams(arg0);
     *(s32 *)((u8 *)arg0 + 0xC) = index + 1;
 }
 
@@ -744,7 +744,7 @@ s32 fn_80117598(s32 node, s32 tickCount) {
  * fn_8011BEC8 at the manager's node (mgr+0x340) alongside the check callback
  * fn_80117598. The periodic tick driver (fn_8011BD20) calls it once per alarm
  * with the running tick count. Recovers the manager base from the node pointer
- * (mgr = node - 0x340), refills the active output streams via fn_80117074 when
+ * (mgr = node - 0x340), refills the active output streams via BinkMgr_RefillStreams when
  * any are open (mgr+0x2E8 entry count), then records the tick count at mgr+0x33C.
  * The offset/mgr temporaries reproduce the compiler's addi/subf/subf idiom for
  * the base recovery; folding them into one subtraction would not match. */
@@ -755,7 +755,7 @@ void fn_801175C4(s32 node, s32 tickCount) {
     offset -= node;
     mgr = node - offset;
     if (*(s32 *)(mgr + 0x2E8) != 0) {
-        fn_80117074((void *)mgr);
+        BinkMgr_RefillStreams((void *)mgr);
     }
     *(s32 *)(mgr + 0x33C) = tickCount;
 }
@@ -1340,7 +1340,7 @@ signed long fn_801186B8(void* arg0) {
             *(signed long*)(m + 0x25C) = *(signed long*)(m + 0x260);
             *(signed long*)(m + 0x128) = 0;
         } else if (*(signed long*)(m + 0x2E8) != 0) {
-            fn_80117074(m);
+            BinkMgr_RefillStreams(m);
         }
         *(signed long*)(m + 0x274) = *(signed long*)(m + 0x260);
         if (*(signed long*)(m + 0x110) != 0) *(signed long*)(m + 0x1C) = 1;
@@ -1423,7 +1423,7 @@ signed long fn_801186B8(void* arg0) {
                 }
                 *(signed long*)(m + 0x2E0) = fn_8011FC2C((void*)(*(signed long*)(m + 0xB8)), *(signed long*)(m + 0xBC), *(signed long*)(m + 0xC0), (signed long*)list, *(signed long*)(*(signed long*)(m + 0xEC) + (*(signed long*)(m + 0xC) - 1) * 4) & 1, (signed long)(m + 0x300), *(signed long*)(m + 0x20), *(signed long*)(m + 0x24));
             }
-            if (*(signed long*)(m + 0x2E8) != 0) fn_80117074(m);
+            if (*(signed long*)(m + 0x2E8) != 0) BinkMgr_RefillStreams(m);
             tmp2 = *(signed long*)(m + 0x258);
             *(signed long*)(m + 0xB4) = -1;
             *(signed long*)(m + 0x258) = tmp2 + 1;
@@ -1534,7 +1534,7 @@ void fn_80118C44(void* bink) {
         }
         *inCallback = 1;
         if (*(s32*)((u8*)bink + 0x2E8) != 0)
-            fn_80117074(bink);              /* refill every stream's output buffer */
+            BinkMgr_RefillStreams(bink);              /* refill every stream's output buffer */
         fn_80118C1C(bink, fn_80116D30());   /* fold this frame's time into the total */
         bufferedFrames = *(u32*)((u8*)bink + 0x0C);
         fn_80117380(bink, (bufferedFrames < *(u32*)((u8*)bink + 0x08)) ? (s32)(bufferedFrames + 1) : 1);
@@ -1745,7 +1745,7 @@ s32 fn_80118F78(void *bink, s32 paused) {
     fn_8011C2EC(lbl_8055DED4, s->tickNode);
     if (*(s32 *)((u8 *)bink + 0x258) != 0 &&
         s->frameCount != 0) {
-        fn_80117074(bink);
+        BinkMgr_RefillStreams(bink);
     }
 
     if (resuming != 0) {
