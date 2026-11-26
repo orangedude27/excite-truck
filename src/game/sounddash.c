@@ -6,7 +6,7 @@ extern void fn_8020BCE4(void);
 extern void fn_802E30C8(const char *, ...);
 
 /* Debug-dash state: display mode and the currently selected entry index. */
-extern int lbl_8055EE24, lbl_8055EE28;
+extern int soundDashMode, lbl_8055EE28;
 /* Volume step, lower clamp and upper clamp. */
 extern float lbl_805632C8, lbl_805632CC, lbl_805632D0;
 /* "writing sounds.txt..." and the "SOUND DASH" overlay title. */
@@ -72,20 +72,20 @@ extern void closeFileHandle(int *);
     float volume;
     switch (command) {
     case SOUND_DASH_CMD_TOGGLE_MODE:
-        lbl_8055EE24 = !lbl_8055EE24;
+        soundDashMode = !soundDashMode;
         return 1;
     case SOUND_DASH_CMD_NEXT:
-        if (lbl_8055EE24 != 0) break;
+        if (soundDashMode != 0) break;
         index = fn_8020A76C() - 1;
         lbl_8055EE28 = index < lbl_8055EE28 + 1 ? index : lbl_8055EE28 + 1;
         return 1;
     case SOUND_DASH_CMD_PREV:
-        if (lbl_8055EE24 != 0) break;
+        if (soundDashMode != 0) break;
         index = lbl_8055EE28 - 1;
         lbl_8055EE28 = index & ~(index >> 31);
         return 1;
     case SOUND_DASH_CMD_VOL_DOWN:
-        if (lbl_8055EE24 != 0) break;
+        if (soundDashMode != 0) break;
         index = lbl_8055EE28;
         if (index < fn_8020A76C()) {
             entry = (VoiceSndEntry *)voiceSndGetEntry(index);
@@ -96,7 +96,7 @@ extern void closeFileHandle(int *);
         }
         break;
     case SOUND_DASH_CMD_VOL_UP:
-        if (lbl_8055EE24 != 0) break;
+        if (soundDashMode != 0) break;
         index = lbl_8055EE28;
         if (index < fn_8020A76C()) {
             entry = (VoiceSndEntry *)voiceSndGetEntry(index);
@@ -107,7 +107,7 @@ extern void closeFileHandle(int *);
         }
         break;
     case SOUND_DASH_CMD_DUMP:
-        if (lbl_8055EE24 != 0) break;
+        if (soundDashMode != 0) break;
         fn_802E30C8(lbl_8033C5B4);
         fn_8020BCE4();
         return 1;
@@ -133,7 +133,7 @@ void drawSoundDash(void) {
     fn_8023895C();
     fn_80238A74(0xC, 0xC, lbl_8033C5CC, 0xFF2D2DC8);
 
-    if (lbl_8055EE24 == 1) {
+    if (soundDashMode == 1) {
         fn_80238B44(7, 7, 0x15E, 0x1C0, 0x8C000000);
         soundIndex = 0;
         do {
@@ -149,7 +149,7 @@ void drawSoundDash(void) {
             fn_80238A74(nameX, (column * 0xE) + 0x1A, scratch.sp48, -0x100);
             soundIndex += 1;
         } while (soundIndex < 0x20);
-    } else if (lbl_8055EE24 == 0) {
+    } else if (soundDashMode == 0) {
         fn_80238B44(7, 7, 0x12C, 0x1C0, 0x8C000000);
         soundIndex = fn_8020A76C() * 2;
         for (drawSlot = 0; drawSlot < soundIndex; drawSlot++) {
