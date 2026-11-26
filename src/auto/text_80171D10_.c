@@ -883,7 +883,7 @@ int fn_80172E24(int object, int deleteFlag) {
 }
 
 #pragma cplusplus on
-extern "C" void *fn_80172E64(CrushMaster *self, int deleteFlag) {
+extern "C" void *destroyCrushMaster(CrushMaster *self, int deleteFlag) {
     /* Destructor of the "crushmaster" object (createCrushMaster): drops the prerace
        sound, the shared "crush_nogo.val" forbidden-zone set and both overlay
        textures, then releases the round's animation set and its six sounds and
