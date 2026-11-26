@@ -355,40 +355,44 @@ int fn_80004D64(char* args) {
 }
 
 #pragma scheduling invalid_target
-int fn_80005158(const char *name)
+int resolveMenuEntry(const char *menuName)
 {
-    char *data = lbl_802FAEA0;
-    int result;
-    int saved;
-    int found;
-    int count;
-    char first;
+    char *logBase = menuLogStrings;
+    int isFound;
+    int savedMenuFlag;
+    int contestIndex;
+    int eventIndex;
+    char firstChar;
+    /* Clear the mode-exit request flag, set up the menu controls, then resolve the
+       requested menu entry: a leading '$'/'@' selects a contest entry, any other
+       non-empty name selects an event by track name, and an empty name selects an
+       event by menu name. */
     fn_80127434();
     fn_8023D7CC();
     fn_8023D70C();
-    SaveMenuFlag(&saved);
-    found = 0;
-    count = fn_80012818();
-    first = lbl_8034EC58[0];
-    if (first == '$' || first == '@') {
-        result = fn_80004F00(&count, &found, lbl_8034EC58 + 1);
-        if (!result) MenuLog(data + 0x150, lbl_8034EC58 + 1);
-    } else if (first != '\0') {
-        result = fn_80005044(&count, &found, lbl_8034EC58);
-        if (!result) MenuLog(data + 0x180, lbl_8034EC58);
+    SaveMenuFlag(&savedMenuFlag);
+    contestIndex = 0;
+    eventIndex = fn_80012818();
+    firstChar = selectionString[0];
+    if (firstChar == '$' || firstChar == '@') {
+        isFound = fn_80004F00(&eventIndex, &contestIndex, selectionString + 1);
+        if (!isFound) MenuLog(logBase + 0x150, selectionString + 1);
+    } else if (firstChar != '\0') {
+        isFound = fn_80005044(&eventIndex, &contestIndex, selectionString);
+        if (!isFound) MenuLog(logBase + 0x180, selectionString);
     } else {
-        result = fn_800050D0(&count, &found, name);
-        if (!result) MenuLog(data + 0x1b0, name);
+        isFound = fn_800050D0(&eventIndex, &contestIndex, menuName);
+        if (!isFound) MenuLog(logBase + 0x1b0, menuName);
     }
-    if (result) {
+    if (isFound) {
         fn_8020A600();
-        fn_8023BFBC(count, found);
-    } else if (lbl_8034EC58[0] != '\0') {
-        MenuLog(data + 0x1dc, lbl_8034EC58);
+        fn_8023BFBC(eventIndex, contestIndex);
+    } else if (selectionString[0] != '\0') {
+        MenuLog(logBase + 0x1dc, selectionString);
     } else {
-        MenuLog(data + 0x1f0, name);
+        MenuLog(logBase + 0x1f0, menuName);
     }
-    RestoreMenuFlag(&saved);
+    RestoreMenuFlag(&savedMenuFlag);
     return 0;
 }
 /* Shutdown/reset sequence for game/menu subsystems during bootstrap teardown. */
