@@ -1386,7 +1386,7 @@ void fn_802487A8(void *group) {
 
 #pragma push
 #pragma opt_propagation off
-void fn_802487B4(void *element) {
+void updateTextElementMotion(void *element) {
     extern void fn_80214BE4(s32, s32, s32);
     extern float lbl_805638B8, lbl_805638BC, lbl_805638C0, lbl_805638C4;
     float value, x1, x0, y1, y0, factor, pa, pb, pc;
