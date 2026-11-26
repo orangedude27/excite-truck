@@ -7097,26 +7097,26 @@ static inline s32 FatSetEndMark(void *ctx, s32 idx, u32 value) {
 }
 /* Format a volume's FAT: clear and write out every FAT sector, then put the
  * media descriptor in entry 0 and the end-of-chain marker in entry 1. */
-extern "C" s32 vfFormatFat(void *volume) {
-    void *page;
-    s32 unusedOut;
+/* Format a volume's FAT: clear and write every FAT sector, then set the media descriptor in entry 0 and the end-of-chain marker in entry 1. */ extern "C" s32 vfFormatFat(void *volume) {
+    void *fatPage;
+    s32 ignoredOut;
     s32 result;
     s32 fatType;
     u32 sector;
     u32 entryValue;
-    result = ((s32 (*)(void *, s32, void **, s32 *))fn_800A8C90)(volume, -1, &page, &unusedOut);
+    result = ((s32 (*)(void *, s32, void **, s32 *))fn_800A8C90)(volume, -1, &fatPage, &ignoredOut);
     if (result != 0) return result;
-    fn_800A499C((const char *)*(void **)((u8 *)page + 8), 0, *(u16 *)volume);
+    fn_800A499C((const char *)*(void **)((u8 *)fatPage + 8), 0, *(u16 *)volume);
     sector = *(u16 *)((u8 *)volume + 2);
     while (sector < *(u32 *)((u8 *)volume + 0x2C)) {
-        result = ((s32 (*)(void *, s32, u32))VFiPFCACHE_WriteFATSectorAndFreeIfNeeded)(volume, *(s32 *)((u8 *)page + 8), sector);
+        result = ((s32 (*)(void *, s32, u32))VFiPFCACHE_WriteFATSectorAndFreeIfNeeded)(volume, *(s32 *)((u8 *)fatPage + 8), sector);
         if (result != 0) {
-            VFiPFCACHE_FreeFATPage(volume, page);
+            VFiPFCACHE_FreeFATPage(volume, fatPage);
             return result;
         }
         sector++;
     }
-    VFiPFCACHE_FreeFATPage(volume, page);
+    VFiPFCACHE_FreeFATPage(volume, fatPage);
     fatType = *(s32 *)((u8 *)volume + 0x1C);
     /* Entry 0: the media descriptor byte in the low byte, the type's reserved
      * high bits above it. */
