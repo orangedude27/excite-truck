@@ -253,7 +253,7 @@ extern "C" void fn_801A5434(void *arg0) {
 }
 extern "C" void fn_80186DE4(void);
 extern "C" void fn_801A5434(void *);
-extern "C" void fn_801A56A0(void *, void *, float *);
+extern "C" void applyWallContactImpulse(void *, void *, float *);
 extern "C" void fn_801A61B0(void *, void *, float);
 extern unsigned char lbl_8055A518;
 #pragma cplusplus on
@@ -286,7 +286,7 @@ extern "C" void fn_801A54EC(void *arg0) {
     i = 0;
     obj = base + 0x2724;
     do {
-        fn_801A56A0(obj, arg0, vec);
+        applyWallContactImpulse(obj, arg0, vec);
         i++;
         obj = (char *)obj + 0x24;
     } while (i < 8);
@@ -338,7 +338,7 @@ extern double __fabs(double);
 extern "C" void fn_8017B3A8(void *, float *, float *);
 extern "C" float fn_801A5A7C(void *, float *, float *);
 #pragma opt_dead_assignments off
-extern "C" void fn_801A56A0(void *contactPtr, void *carPtr, float *pointVelocity) {
+extern "C" void applyWallContactImpulse(void *contactPtr, void *carPtr, float *pointVelocity) {
     /* Apply one frame of a spring-wall contact impulse.  contactPtr is one of the
        car's eight WallContact slots (filled by fn_801A5AD0), carPtr is the car and
        pointVelocity its velocity at the contact point; the slot's wall normal
@@ -468,7 +468,7 @@ extern "C" float fn_801A5A7C(void * __restrict contact, float * __restrict point
 
 /* One of the eight spring-wall contacts a car carries from +0x2724, 0x24 apart.
  * fn_801A5C4C() picks the slot a wall may use, fn_801A5AD0() fills it in and
- * fn_801A56A0() turns it into an impulse every frame until it is released. */
+ * applyWallContactImpulse() turns it into an impulse every frame until it is released. */
 typedef struct WallContact {
     float normal[3];           /* 0x00 wall normal; the impulse pushes along it */
     float startSpeed;          /* 0x0C speed closing on the normal when claimed */
@@ -615,7 +615,6 @@ extern "C" void fn_801A5C4C(void *arg0, unsigned int key) {
         record = (char *)record + 0x48;
         slot = (char *)slot + 0x24;
     }
-    i = i;
 
     if (candidate != 0) {
         fn_801A5AD0(candidate, key, arg0, other);
@@ -881,14 +880,14 @@ extern float lbl_8055E3C8, lbl_805623C8, lbl_805623CC, lbl_805623D4, lbl_8056241
 extern "C" void fn_801A61B0(void *arg0, void *arg1, float arg2)
 {
   int active;
+  float zero;
   int counter;
   float limit;
-  register float bound;
+  float bound;
   float ratio;
   float value;
   float tmp;
   float scale;
-  float zero;
   if (*((int *) arg0))
   {
     active = 1;
