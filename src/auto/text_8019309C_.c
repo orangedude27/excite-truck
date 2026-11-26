@@ -2779,26 +2779,38 @@ extern float lbl_80562160, lbl_8056222C, lbl_80562268, lbl_8056226C;
 #pragma processor 750
 /* Steer the output 2D vector from the object's XY direction when its speed exceeds the entry threshold: normalize, project, blend and set state flags. */
 void steerAIDriverOutputVector(void *state, float *out) {
+    #define driverSpeed (*(float *)((char *)state + 0x270))
+    #define driverSetting (*(int *)((char *)state + 0x290))
+    #define driverObject (*(void **)((char *)state + 0x294))
+    #define driverAdjustment (*(float *)((char *)state + 0x26C))
+    #define driverCurrent (*(float *)((char *)state + 0x1F8))
+    #define driverDot (*(float *)((char *)state + 0x20C))
+    #define driverFlags (*(int *)((char *)state + 0x2D0))
+    #define SPEED_ENTRY_THRESHOLD (40.0f / 9.0f)
+    #define FLAG_SPEED_THRESHOLD 40.0f
     float projected[2];
-    float direction[2];
+    float dir[2];
     float norm;
     float minLength;
     float scale;
-    float clamped;
+    float adjusted;
     float upper;
     float lower;
     float diff;
     float weight;
     float factor;
-    int index;
+    int settingIndex;
     void *obj;
 
-    if (*(float *)((char *)state + 0x270) > 40.0f / 9.0f) {
-        index = fn_801671AC(*(int *)((char *)state + 0x290));
-        obj = *(void **)((char *)state + 0x294);
-        direction[0] = *(float *)((char *)obj + 0x70);
-        direction[1] = *(float *)((char *)obj + 0x78);
-        norm = (float)fn_8002F234(direction[0] * direction[0] + direction[1] * direction[1]);
+    /* Steer the output 2D vector from the object's XY direction once speed passes
+     * the entry threshold: normalize, project onto the driver's path, blend in the
+     * projected direction and set the steering/active state flags. */
+    if (driverSpeed > SPEED_ENTRY_THRESHOLD) {
+        settingIndex = fn_801671AC(driverSetting);
+        obj = driverObject;
+        dir[0] = *(float *)((char *)obj + 0x70);
+        dir[1] = *(float *)((char *)obj + 0x78);
+        norm = (float)fn_8002F234(dir[0] * dir[0] + dir[1] * dir[1]);
         minLength = lbl_80562148;
         if (minLength > norm) {
             minLength = lbl_80562148;
@@ -2806,35 +2818,43 @@ void steerAIDriverOutputVector(void *state, float *out) {
             minLength = norm;
         }
         scale = lbl_80562140 / minLength;
-        direction[0] = direction[0] * scale;
-        direction[1] = direction[1] * scale;
-        if (((int (*)(void *, float *, int, int))fn_8015FBCC)(*(void **)((char *)state + 0x294), projected, 0, index)) {
-            clamped = *(float *)((char *)state + 0x26C);
-            upper = lbl_8056226C + *(float *)((char *)state + 0x1F8);
-            lower = clamped - lbl_80562268;
-            clamped = clamped < upper ? clamped : upper;
-            clamped = clamped > lower ? clamped : lower;
-            *(float *)((char *)state + 0x1F8) = clamped;
-            *(float *)((char *)state + 0x20C) = fn_801973FC(direction, projected, out);
+        dir[0] = dir[0] * scale;
+        dir[1] = dir[1] * scale;
+        if (((int (*)(void *, float *, int, int))fn_8015FBCC)(driverObject, projected, 0, settingIndex)) {
+            adjusted = driverAdjustment;
+            upper = lbl_8056226C + driverCurrent;
+            lower = adjusted - lbl_80562268;
+            adjusted = adjusted < upper ? adjusted : upper;
+            adjusted = adjusted > lower ? adjusted : lower;
+            driverCurrent = adjusted;
+            driverDot = fn_801973FC(dir, projected, out);
             {
-                const float flagThreshold = 40.0f;
                 out[0] = projected[0];
                 out[1] = projected[1];
-                if (*(float *)((char *)state + 0x270) > flagThreshold) {
-                    *(int *)((char *)state + 0x2D0) |= 0x40;
+                if (driverSpeed > FLAG_SPEED_THRESHOLD) {
+                    driverFlags |= 0x40;
                 }
-                *(int *)((char *)state + 0x2D0) |= 0x800;
+                driverFlags |= 0x800;
             }
         } else {
-            diff = *(float *)((char *)state + 0x26C) - *(float *)((char *)state + 0x1F8);
+            diff = driverAdjustment - driverCurrent;
             if (diff < lbl_80562268) {
                 weight = lbl_80562140 - diff / lbl_80562268;
-                factor = *(float *)((char *)state + 0x20C) * weight;
-                out[0] = out[0] + direction[0] * factor;
-                out[1] = out[1] + direction[1] * factor;
+                factor = driverDot * weight;
+                out[0] = out[0] + dir[0] * factor;
+                out[1] = out[1] + dir[1] * factor;
             }
         }
     }
+    #undef driverSpeed
+    #undef driverSetting
+    #undef driverObject
+    #undef driverAdjustment
+    #undef driverCurrent
+    #undef driverDot
+    #undef driverFlags
+    #undef SPEED_ENTRY_THRESHOLD
+    #undef FLAG_SPEED_THRESHOLD
 }
 
 static inline void sub_801973FC(Vec2_801973FC *out, float *a, float *b) {
