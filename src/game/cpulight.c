@@ -1185,7 +1185,7 @@ typedef struct { LightVec3 pos; u32 color; f32 u, v; } LightVtx;
  * position, color 0 and texture coordinate 0 arrays at the vertex buffer,
  * flushes it and begins a GX_TRIANGLES draw in vertex format 0, writing each
  * 16-bit index three times (once per array) to the FIFO. */
-void fn_802DD27C(LightVtx *__restrict vertices, s32 vertexCount,
+void CpuLight_DrawIndexedTriangles(LightVtx *__restrict vertices, s32 vertexCount,
                  u16 *__restrict indices, s32 count) {
     register s32 listIndex;
     u16 vertexIndex;

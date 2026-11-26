@@ -1102,7 +1102,7 @@ extern double lbl_80564DE0;
 extern float lbl_80564E1C, lbl_80564E20, lbl_80564E24, lbl_80564E28, lbl_80564D78;
 extern void fn_802C8BD0(int), fn_802DBECC(void);
 extern int CpuLight_BeginIndirectPass(int, int, int, int, float, float);
-extern void fn_802DD27C(void *, int, void *, int), CpuLight_EndIndirectPass(void);
+extern void CpuLight_DrawIndexedTriangles(void *, int, void *, int), CpuLight_EndIndirectPass(void);
 extern void fn_802C03F0(void *arg0) {
     float s[0x83];
     float f0, f1, f2, f14;
@@ -1236,7 +1236,7 @@ extern void fn_802C03F0(void *arg0) {
     vo = *(void ***)((char *)arg0 + 0x2C58);
     vr = ((int (*)(void **))((void **)vo[0])[4])(vo);
     CpuLight_BeginIndirectPass(vr, *(int *)((char *)arg0 + 0x2C54), *(int *)((char *)arg0 + 0x2C50), (int)r25, lbl_8055CF74, lbl_80564D80 / (lbl_80564E20 * lbl_80564D78));
-    fn_802DD27C(verts, 0x400, (char *)arg0 + 4, 0x1626);
+    CpuLight_DrawIndexedTriangles(verts, 0x400, (char *)arg0 + 4, 0x1626);
     CpuLight_EndIndirectPass();
     DrawList_RestoreNormalMode();
     fn_802DBECC();
