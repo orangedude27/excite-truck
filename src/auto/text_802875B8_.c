@@ -760,7 +760,7 @@ void fn_802882A0(void) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void CarSnapshotPool_rebuild(void) {
+/* Rebuild the global per-car snapshot pool: copy each car's physics state, normalized velocity, flags and four wheel records into its 0x160-byte snapshot slot. */ void CarSnapshotPool_rebuild(void) {
     extern u8 *fn_801EA9CC(s32);
     extern f32 PSVECDotProduct(void *, void *);
     extern double fn_8002F234(double); /* sqrt */
