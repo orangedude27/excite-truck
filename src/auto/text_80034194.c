@@ -2751,22 +2751,20 @@ extern void fn_8003AC24(void *);
 extern void (*lbl_80558E08)(void *, void *);
 #pragma push
 #pragma use_lmw_stmw off
-/* DVD low-level command completion handler (the driver's busy state): reads the
- * command code from a DVD command block, logs selected commands to the debug
- * error-info ring buffer, then dispatches each command to its DVDLow* routine
- * (read, seek, inquiry, open partition, ...). Long reads are split into
- * 0x80000-byte chunks. */
+/* DVD low-level command completion handler (the driver's busy state). Logs
+ * selected commands to the error-info ring buffer, then dispatches each one to
+ * the matching DVDLow routine; long reads are split into 0x80000-byte chunks. */
 void fn_80038368(void *block) {
- u8 *p = block;
+ u8 *blockBytes = block;
  int offset;
  int length;
  int command;
- u32 chunkSize;
- lbl_8055D8CC = (int)fn_80038368;
- command = *(int *)(p+8);
- switch (command) {
+ u32 transferSize;
+ lbl_8055D8CC = (int)fn_80038368;   /* LastState = stateBusy */
+ command = *(int *)(blockBytes+8);
+ switch (command) {                  /* StampCommand: log the interesting commands */
  case 2: case 3: case 5: case 13: case 14: case 15: case 16: case 34: case 37: {
-   length = *(int *)(p+0x14); offset = *(int *)(p+0x10);
+   length = *(int *)(blockBytes+0x14); offset = *(int *)(blockBytes+0x10);
    {
  int irq = OSDisableInterrupts(); int tick;
  if (*(volatile u32 *)&lbl_8055D848 >= 5) *(volatile u32 *)&lbl_8055D848 = 0;
@@ -2781,78 +2779,81 @@ void fn_80038368(void *block) {
  } break;
  default: break;
  }
- switch (*(u32 *)(p+8)) {
- case 5:
-   fn_8003BCDC(0); *(int *)(p+0x1c) = 0x20;
-   fn_8003A834(*(void **)(p+0x18),fn_80038870); break;
- case 1: case 4:
-   if (*(int *)(p+0x14) == 0) {
-     u8 *old = (u8 *)executing_8055D8C8;
+ switch (*(u32 *)(blockBytes+8)) {
+ case 5:                             /* COMMAND_READID -> DVDLowReadDiskID */
+   fn_8003BCDC(0);                   /* DVDLowClearCoverInterrupt(NULL) */
+   *(int *)(blockBytes+0x1c) = 0x20; /* transferSize = sizeof(DVDDiskID) */
+   fn_8003A834(*(void **)(blockBytes+0x18),fn_80038870); break;
+ case 1: case 4:                     /* COMMAND_READ / COMMAND_BSREAD */
+   if (*(int *)(blockBytes+0x14) == 0) {
+     u8 *previousBlock = (u8 *)executing_8055D8C8;
      executing_8055D8C8 = (int)DummyCommandBlock_80376AA0;
-     *(int *)(old+0xc) = 0;
-     if (*(void (**)(int))(old+0x28)) (*(void (**)(int))(old+0x28))(0);
-     fn_80038040(); break;
+     *(int *)(previousBlock+0xc) = 0; /* state = DVD_STATE_IDLE */
+     if (*(void (**)(int))(previousBlock+0x28)) (*(void (**)(int))(previousBlock+0x28))(0);
+     fn_80038040();                   /* stateReady() */
+     break;
    }
-   fn_8003BCDC(0);
+   fn_8003BCDC(0);                   /* DVDLowClearCoverInterrupt(NULL) */
    {
-     u32 remaining = *(u32 *)(p+0x14) - *(u32 *)(p+0x20);
-     u32 offset2; int cmd;
-     chunkSize = 0x80000;
-     if (remaining <= chunkSize) chunkSize = remaining;
-     *(u32 *)(p+0x1c) = chunkSize;
-     cmd = *(int *)(p+8);
-     offset2 = *(u32 *)(p+0x10) + (*(u32 *)(p+0x20) >> 2);
+     u32 remaining = *(u32 *)(blockBytes+0x14) - *(u32 *)(blockBytes+0x20);
+     u32 stampOffset; int stampCommand;
+     transferSize = 0x80000;         /* MAX_TRANSFER_SIZE */
+     if (remaining <= transferSize) transferSize = remaining;
+     *(u32 *)(blockBytes+0x1c) = transferSize;
+     stampCommand = *(int *)(blockBytes+8);
+     stampOffset = *(u32 *)(blockBytes+0x10) + (*(u32 *)(blockBytes+0x20) >> 2);
      {
  int irq = OSDisableInterrupts(); int tick;
  if (*(volatile u32 *)&lbl_8055D848 >= 5) *(volatile u32 *)&lbl_8055D848 = 0;
- *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x1c) = cmd;
- *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x20) = offset2;
- *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x24) = chunkSize;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x1c) = stampCommand;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x20) = stampOffset;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x24) = transferSize;
  tick = OSGetTick();
  *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x2c) = tick;
  *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
  OSRestoreInterrupts(irq);
 }
-     ((int (*)(void *, u32, u32, void *))fn_8003B81C)(*(u8 **)(p+0x18)+*(u32 *)(p+0x20), *(u32 *)(p+0x1c), *(u32 *)(p+0x10)+(*(u32 *)(p+0x20)>>2), fn_80038870);
+     /* DVDLowRead(addr+transferTotal, transferSize, offset+DVD_LOW_OFFSET(transferTotal), cbForStateBusy) */
+     ((int (*)(void *, u32, u32, void *))fn_8003B81C)(*(u8 **)(blockBytes+0x18)+*(u32 *)(blockBytes+0x20), *(u32 *)(blockBytes+0x1c), *(u32 *)(blockBytes+0x10)+(*(u32 *)(blockBytes+0x20)>>2), fn_80038870);
    } break;
- case 2: fn_8003BCDC(0); fn_8003B9CC(*(u32 *)(p+0x10),fn_80038870); break;
- case 3: fn_8003AF1C(0,0,fn_80038870); break;
- case 15: fn_8003AF1C(0,0,fn_80038870); break;
- case 13: fn_8003BCDC(0); fn_8003B508(*(u32 *)(p+0x10),*(u32 *)(p+0x14),fn_80038870); break;
- case 14: fn_8003BCDC(0); *(int *)(p+0x1c)=0x20; fn_8003B0B0(*(void **)(p+0x18),fn_80038870); break;
- case 16: fn_8003BCDC(0); fn_8003AF1C(0,0,fn_80038870); break;
- case 34: fn_8003B380(1); fn_8003B38C(fn_80038870); break;
- case 37:
-   if (*(int *)(p+0x14) == 0) {
-     u8 *old = (u8 *)executing_8055D8C8;
+ case 2: fn_8003BCDC(0); fn_8003B9CC(*(u32 *)(blockBytes+0x10),fn_80038870); break;                  /* clear cover; DVDLowSeek */
+ case 3: fn_8003AF1C(0,0,fn_80038870); break;                                                       /* DVDLowStopMotor */
+ case 15: fn_8003AF1C(0,0,fn_80038870); break;                                                      /* DVDLowStopMotor */
+ case 13: fn_8003BCDC(0); fn_8003B508(*(u32 *)(blockBytes+0x10),*(u32 *)(blockBytes+0x14),fn_80038870); break; /* DVDLowAudioBufferConfig */
+ case 14: fn_8003BCDC(0); *(int *)(blockBytes+0x1c)=0x20; fn_8003B0B0(*(void **)(blockBytes+0x18),fn_80038870); break; /* DVDLowInquiry */
+ case 16: fn_8003BCDC(0); fn_8003AF1C(0,0,fn_80038870); break;                                      /* DVDLowStopMotor */
+ case 34: fn_8003B380(1); fn_8003B38C(fn_80038870); break;                                          /* spin up; DVDLowReset */
+ case 37:                            /* COMMAND_SET_MAX_ROTATION -> DVDLowUnencryptedRead */
+   if (*(int *)(blockBytes+0x14) == 0) {
+     u8 *previousBlock = (u8 *)executing_8055D8C8;
      executing_8055D8C8 = (int)DummyCommandBlock_80376AA0;
-     *(int *)(old+0xc) = 0;
-     if (*(void (**)(int))(old+0x28)) (*(void (**)(int))(old+0x28))(0);
+     *(int *)(previousBlock+0xc) = 0;
+     if (*(void (**)(int))(previousBlock+0x28)) (*(void (**)(int))(previousBlock+0x28))(0);
      fn_80038040(); break;
    }
    fn_8003BCDC(0);
    {
-     u32 remaining = *(u32 *)(p+0x14) - *(u32 *)(p+0x20);
-     int cmd; u32 offset3;
-     chunkSize = 0x80000;
-     if (remaining <= chunkSize) chunkSize = remaining;
-     *(u32 *)(p+0x1c) = chunkSize;
-     cmd = *(int *)(p+8);
-     offset3 = *(u32 *)(p+0x10) + (*(u32 *)(p+0x20) >> 2);
+     u32 remaining = *(u32 *)(blockBytes+0x14) - *(u32 *)(blockBytes+0x20);
+     int stampCommand; u32 stampOffset;
+     transferSize = 0x80000;
+     if (remaining <= transferSize) transferSize = remaining;
+     *(u32 *)(blockBytes+0x1c) = transferSize;
+     stampCommand = *(int *)(blockBytes+8);
+     stampOffset = *(u32 *)(blockBytes+0x10) + (*(u32 *)(blockBytes+0x20) >> 2);
      {
  int irq = OSDisableInterrupts(); int tick;
  if (*(volatile u32 *)&lbl_8055D848 >= 5) *(volatile u32 *)&lbl_8055D848 = 0;
- *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x1c) = cmd;
- *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x20) = offset3;
- *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x24) = chunkSize;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x1c) = stampCommand;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x20) = stampOffset;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x24) = transferSize;
  tick = OSGetTick();
  *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x2c) = tick;
  *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
  OSRestoreInterrupts(irq);
 }
-     ((void (*)(void *, u32, u32, void *))fn_8003AD88)(*(u8 **)(p+0x18)+*(u32 *)(p+0x20), *(u32 *)(p+0x1c), *(u32 *)(p+0x10)+(*(u32 *)(p+0x20)>>2), fn_80038870);
+     ((void (*)(void *, u32, u32, void *))fn_8003AD88)(*(u8 **)(blockBytes+0x18)+*(u32 *)(blockBytes+0x20), *(u32 *)(blockBytes+0x1c), *(u32 *)(blockBytes+0x10)+(*(u32 *)(blockBytes+0x20)>>2), fn_80038870);
    } break;
- case 35: fn_8003BCDC(0); ((void (*)(u32, int, int, int, void *, void *))DVDLowOpenPartition)(*(u32 *)(p+0x10),0,0,0,*(void **)(p+0x18),fn_80038870); break;
+ case 35: fn_8003BCDC(0); ((void (*)(u32, int, int, int, void *, void *))DVDLowOpenPartition)(*(u32 *)(blockBytes+0x10),0,0,0,*(void **)(blockBytes+0x18),fn_80038870); break; /* DVDLowClosePartition */
  case 36: fn_8003BCDC(0); fn_8003AC24(fn_80038870); break;
  case 32: fn_8003BB58((void (*)(void))fn_80038870); break;
  case 33: fn_8003BB58((void (*)(void))fn_80038870); break;
