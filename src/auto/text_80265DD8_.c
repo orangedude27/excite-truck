@@ -1897,7 +1897,7 @@ extern void fn_80278360(void *);
 extern void Camera_updateReplaySpin(void *);
 extern void fn_802704E4(void *);
 extern void fn_80274660(int, void *);
-extern void fn_80274460(void *);
+extern void applyFlippedTransform(void *);
 extern void fn_8027847C(void *);
 extern void fn_8026DAA8(void *);
 extern void fn_802682B0(void *);
@@ -1977,7 +1977,7 @@ void fn_802693F4(char *p, unsigned char *flag, int arg) {
         case 0: fn_80273BD0(p); break;
         case 1: fn_8027445C(p); break;
         case 2: fn_80274268(p); break;
-        case 3: fn_80274460(p); break;
+        case 3: applyFlippedTransform(p); break;
         case 24: fn_8027847C(p); break;
         case 4: case 5: case 6: case 7: case 8: case 23:
             fn_802704D4(mode, p);

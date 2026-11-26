@@ -279,7 +279,7 @@ void fn_80273BD0(void *arg0) {
 
 #pragma dont_inline fn_80273B4C
 void fn_80274268(void *cam) {
-    extern void fn_80274460(void *);
+    extern void applyFlippedTransform(void *);
     extern void fn_80273B4C(void *);
     extern const float lbl_80563FE8, lbl_80563FE4, lbl_80563FEC;
     struct MtxWords { unsigned int word[12]; };
@@ -298,7 +298,7 @@ void fn_80274268(void *cam) {
     // current angles. If the state flag is set, defer to the mode-3 placement.
     char *state = *(char **)((char *)cam + 0x140);
     if (*(unsigned char *)(state + 0x260C) != 0) {
-        fn_80274460(cam);
+        applyFlippedTransform(cam);
         return;
     }
     ((struct TransformObj *)cam)->mtx = ((struct TransformObj *)cam)->srcMtx;
@@ -360,7 +360,7 @@ void fn_8027445C(void) {
 
 #pragma push
 #pragma processor 750
-void fn_80274460(void *arg0) {
+void applyFlippedTransform(void *arg0) {
 #pragma opt_common_subs off
 #pragma scheduling on
     /* Mode-3 placement (fn_802693F4 case 3): copy the source 3x4 transform at +0xC0
@@ -809,43 +809,61 @@ void fn_802750C4(void *object, float gain, float desired) {
     *(float *)(p + 0x84) += *(float *)(p + 0x78) * step;
 }
 #pragma processor 750
-void fn_802751AC(void *arg0) {
-    struct Matrix { int v[12]; };
-    char *self = (char *)arg0;
-    float axis[3], input[3], matrix[9];
-    volatile int params[7];
-    float mag, scale, x, y, z, s, c, t;
-    volatile int *p = (volatile int *)lbl_802FA788;
-    params[3] = p[3]; params[4] = p[4]; params[5] = p[5];
-    params[0] = p[0]; params[1] = p[1]; params[2] = p[2];
-    params[6] = p[6];
-    *(struct Matrix *)(self + 0x58) = *(struct Matrix *)(self + 0xC0);
-    input[0] = lbl_80564024 * *(float *)&params[3];
-    input[1] = lbl_80564024 * *(float *)&params[4];
-    input[2] = lbl_80564024 * *(float *)&params[5];
-    axis[0] = *(float *)&params[0]; axis[1] = *(float *)&params[1]; axis[2] = *(float *)&params[2];
-    mag = PSVECMag(input);
-    if (mag > lbl_80564020) {
-        scale = lbl_80563FAC / mag;
-        x = scale * input[0]; y = scale * input[1]; z = scale * input[2];
-        s = (float)sin(mag); c = (float)cos(mag); t = lbl_80563FAC - c;
-        matrix[0] = c + t * (x*x);
-        matrix[1] = y * (t*x) + s*z;
-        matrix[2] = z * (t*x) - s*y;
-        matrix[3] = y * (t*x) - s*z;
-        matrix[4] = c + t * (y*y);
-        matrix[5] = z * (t*y) + s*x;
-        matrix[6] = z * (t*x) + s*y;
-        matrix[7] = z * (t*y) - s*x;
-        matrix[8] = c + t * (z*z);
-    } else {
-        matrix[0]=lbl_80563FAC; matrix[1]=lbl_80563FB0; matrix[2]=lbl_80563FB0;
-        matrix[3]=lbl_80563FB0; matrix[4]=lbl_80563FAC; matrix[5]=lbl_80563FB0;
-        matrix[6]=lbl_80563FB0; matrix[7]=lbl_80563FB0; matrix[8]=lbl_80563FAC;
-    }
-    fn_801BFD34(self+0x7C, axis, self+0xC0);
-    fn_80015B20(self+0x58, matrix, self+0xC0);
-    *(float *)(self+0xBC) = lbl_80564024 * *(float *)&params[6];
+void fn_802751AC(void *arg0)
+{
+  struct Matrix
+  {
+    int v[12];
+  };
+  char *self = (char *) arg0;
+  float axis[3];
+  float input[3];
+  float matrix[9];
+  volatile int params[7];
+  float mag;
+  float scale;
+  float x;
+  float s;
+  float c;
+  float t;
+  volatile int *p = (volatile int *) lbl_802FA788;
+  float z;
+  float y;
+  params[3] = p[3]; params[4] = p[4]; params[5] = p[5];
+  params[0] = p[0]; params[1] = p[1]; params[2] = p[2] ^ 0;
+  params[6] = p[6];
+  *((struct Matrix *) (self + 0x58)) = *((struct Matrix *) (self + 0xC0));
+  input[0] = lbl_80564024 * (*((float *) (&params[3])));
+  input[1] = lbl_80564024 * (*((float *) (&params[4])));
+  input[2] = lbl_80564024 * (*((float *) (&params[5])));
+  axis[0] = *((float *) (&params[0])); axis[1] = *((float *) (&params[1])); axis[2] = *((float *) (&params[2]));
+  mag = PSVECMag(input);
+  if (mag > lbl_80564020)
+  {
+    scale = lbl_80563FAC / mag;
+    x = scale * input[0]; y = scale * input[1]; z = scale * input[2];
+    s = (float) sin(mag); c = (float) cos(mag); t = lbl_80563FAC - c;
+    matrix[0] = c + (t * (x * x));
+    matrix[1] = (y * (t * x)) + (z * s);
+    matrix[2] = (z * (t * x)) - (s * y);
+    matrix[3] = (y * (x * t)) - (s * z);
+    matrix[4] = (0, c + (t * (y * y)));
+    matrix[5] = (s * x) + (z * (t * y));
+    matrix[6] = (0, (z * (t * x)) + (s * y));
+    matrix[7] = (z * (t * y)) - (s * x);
+    matrix[8] = c + (t * (z * z));
+  }
+  else
+  {
+    matrix[0] = lbl_80563FAC;
+    matrix[1] = (double) lbl_80563FB0;
+    matrix[2] = lbl_80563FB0;
+    matrix[3] = lbl_80563FB0; matrix[4] = lbl_80563FAC; matrix[5] = lbl_80563FB0;
+    matrix[6] = lbl_80563FB0; matrix[7] = lbl_80563FB0; matrix[8] = lbl_80563FAC;
+  }
+  fn_801BFD34(self + 0x7C, axis, self + 0xC0);
+  fn_80015B20(self + 0x58, matrix, self + 0xC0);
+  *((float *) (self + 0xBC)) = (*((float *) (&params[6]))) * lbl_80564024;
 }
 
 #pragma push
@@ -899,87 +917,141 @@ extern double sin(double), cos(double);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_802756A4(void *arg0) {
-    extern float lbl_802FA7C0[], lbl_80564030, lbl_80563FDC, lbl_80563FD8;
-    struct Matrix { int v[12]; };
-    struct Params { float a[7]; };
-    char *self = (char *)arg0;
-    char *state = *(char **)(self+0x140);
-    struct Params params = *(struct Params *)lbl_802FA7C0;
-    float axis[4], input[4], matrix[12];
-    float mag, scale, x, y, z, s, c, t;
-    axis[0] = *(float *)(state+0x2538) + lbl_80564030;
-    axis[1] = *(float *)(state+0x253C) + lbl_80563FDC;
-    axis[2] = *(float *)(state+0x2540) + lbl_80563FD8;
-    *(struct Matrix *)(self+0x58) = *(struct Matrix *)(self+0xC0);
-    input[0] = lbl_80564024 * params.a[3];
-    input[1] = lbl_80564024 * params.a[4];
-    input[2] = lbl_80564024 * params.a[5];
-    mag = PSVECMag(input);
-    if (mag > lbl_80564020) {
-        scale = lbl_80563FAC / mag;
-        x = scale * input[0]; y = scale * input[1]; z = scale * input[2];
-        s = (float)sin(mag); c = (float)cos(mag); t = lbl_80563FAC - c;
-        matrix[0] = c + t * (x*x);
-        matrix[1] = y * (t*x) + s*z;
-        matrix[2] = z * (t*x) - s*y;
-        matrix[3] = y * (t*x) - s*z;
-        matrix[4] = c + t * (y*y);
-        matrix[5] = z * (t*y) + s*x;
-        matrix[6] = z * (t*x) + s*y;
-        matrix[7] = z * (t*y) - s*x;
-        matrix[8] = c + t * (z*z);
-    } else {
-        matrix[0]=lbl_80563FAC; matrix[1]=lbl_80563FB0; matrix[2]=lbl_80563FB0;
-        matrix[3]=lbl_80563FB0; matrix[4]=lbl_80563FAC; matrix[5]=lbl_80563FB0;
-        matrix[6]=lbl_80563FB0; matrix[7]=lbl_80563FB0; matrix[8]=lbl_80563FAC;
+void fn_802756A4(void *arg0)
+{
+  extern float lbl_802FA7C0[];
+  extern float lbl_80564030;
+  extern float lbl_80563FDC;
+  extern float lbl_80563FD8;
+  struct Matrix
+  {
+    int v[12];
+  };
+  struct Params
+  {
+    float a[7];
+  };
+  char *self = (char *) arg0;
+  char *state = *((char **) (((char *) arg0) + 0x140));
+  struct Params params = *((struct Params *) lbl_802FA7C0);
+  float axis[4];
+  float input[4];
+  float matrix[12];
+  float mag;
+  float scale;
+  float x;
+  float y;
+  float z;
+  float s;
+  float c;
+  float t;
+  axis[0] = (*((float *) (state + 0x2538))) + lbl_80564030;
+  axis[1] = (*((float *) (state + 0x253C))) + lbl_80563FDC;
+  axis[2] = lbl_80563FD8 + (*((float *) (state + 0x2540)));
+  *((struct Matrix *) (((char *) arg0) + 0x58)) = *((struct Matrix *) (((char *) arg0) + 0xC0));
+  input[1] = (long long) (lbl_80564024 * ((0, params.a[4])));
+  input[0] = lbl_80564024 * params.a[3];
+  input[2] = lbl_80564024 * params.a[5];
+  mag = PSVECMag(input);
+  if (mag > lbl_80564020)
+  {
+    scale = lbl_80563FAC / mag;
+    x = scale * input[0]; y = scale * input[1]; z = scale * input[2];
+    s = (float) sin(mag); c = (float) cos(mag); t = lbl_80563FAC - c;
+    matrix[0] = c + (t * (x * x));
+    matrix[1] = (y * (t * x)) + (s * z);
+    matrix[2] = (z * (t * x)) - (y * s);
+    matrix[3] = (y * (t * x)) - (s * z);
+    matrix[4] = c + (t * (y * y));
+    matrix[5] = (s * x) + (z * (t * y));
+    matrix[6] = (z * (t * x)) + (s * y);
+    matrix[7] = (z * (t * y)) - (s * x);
+    matrix[8] = c + (t * ((0, (double) (z * z))));
+  }
+  else
+  {
+    if (1)
+    {
+      matrix[0] = lbl_80563FAC; matrix[1] = lbl_80563FB0;
     }
-    fn_801BFD34(self+0x7C, axis, self+0xC0);
-    fn_80015B20(self+0x58, matrix, self+0xC0);
-    *(float *)(self+0xBC) = lbl_80564024 * params.a[6];
+    matrix[2] = lbl_80563FB0;
+    matrix[3] = lbl_80563FB0; matrix[4] = lbl_80563FAC; matrix[5] = lbl_80563FB0;
+    matrix[6] = lbl_80563FB0; matrix[7] = lbl_80563FB0; matrix[8] = lbl_80563FAC;
+  }
+  fn_801BFD34(((char *) arg0) + 0x7C, axis, ((char *) arg0) + 0xC0);
+  fn_80015B20(self + 0x58, matrix, self + 0xC0);
+  *((float *) (((char *) arg0) + 0xBC)) = params.a[6] * lbl_80564024;
 }
 
 extern float lbl_802FA7DC[];
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_80275938(void *arg0) {
-    struct Matrix { int v[12]; };
-    char *self = (char *)arg0;
-    float axis[3], input[3], matrix[9];
-    volatile int params[7];
-    float mag, scale, x, y, z, s, c, t;
-    volatile int *p = (volatile int *)lbl_802FA7DC;
-    params[3] = p[3]; params[4] = p[4]; params[5] = p[5];
-    params[0] = p[0]; params[1] = p[1]; params[2] = p[2];
-    params[6] = p[6];
-    *(struct Matrix *)(self + 0x58) = *(struct Matrix *)(self + 0xC0);
-    input[0] = lbl_80564024 * *(float *)&params[3];
-    input[1] = lbl_80564024 * *(float *)&params[4];
-    input[2] = lbl_80564024 * *(float *)&params[5];
-    axis[0] = *(float *)&params[0]; axis[1] = *(float *)&params[1]; axis[2] = *(float *)&params[2];
-    mag = PSVECMag(input);
-    if (mag > lbl_80564020) {
-        scale = lbl_80563FAC / mag;
-        x = scale * input[0]; y = scale * input[1]; z = scale * input[2];
-        s = (float)sin(mag); c = (float)cos(mag); t = lbl_80563FAC - c;
-        matrix[0] = c + t * (x*x);
-        matrix[1] = y * (t*x) + s*z;
-        matrix[2] = z * (t*x) - s*y;
-        matrix[3] = y * (t*x) - s*z;
-        matrix[4] = c + t * (y*y);
-        matrix[5] = z * (t*y) + s*x;
-        matrix[6] = z * (t*x) + s*y;
-        matrix[7] = z * (t*y) - s*x;
-        matrix[8] = c + t * (z*z);
-    } else {
-        matrix[0]=lbl_80563FAC; matrix[1]=lbl_80563FB0; matrix[2]=lbl_80563FB0;
-        matrix[3]=lbl_80563FB0; matrix[4]=lbl_80563FAC; matrix[5]=lbl_80563FB0;
-        matrix[6]=lbl_80563FB0; matrix[7]=lbl_80563FB0; matrix[8]=lbl_80563FAC;
+void fn_80275938(void *arg0)
+{
+  struct Matrix
+  {
+    int v[12];
+  };
+  char *self = (char *) arg0;
+  float axis[3];
+  float input[3];
+  float matrix[9];
+  volatile int params[7];
+  float mag;
+  float scale;
+  float x;
+  float y;
+  float z;
+  float s;
+  float c;
+  float t;
+  volatile int *p = (volatile int *) lbl_802FA7DC;
+  params[3] = p[3]; params[4] = p[4]; params[5] = p[5];
+  params[0] = (0, p[0]); params[1] = p[1]; params[2] = p[2];
+  params[6] = p[6];
+  *((struct Matrix *) (self + 0x58)) = *((struct Matrix *) (self + 0xC0));
+  input[0] = lbl_80564024 * (*((float *) (&params[3])));
+  input[1] = (0, lbl_80564024 * (*((float *) (&params[4]))));
+  input[2] = lbl_80564024 * (*((float *) (&params[5])));
+  axis[0] = *((float *) (&params[0])); axis[1] = *((float *) (&params[1])); axis[2] = *((float *) (&params[2]));
+  mag = PSVECMag(input);
+  if (mag > lbl_80564020)
+  {
+    scale = lbl_80563FAC / mag;
+    x = scale * input[0];
+    if (1)
+    {
+      if (1)
+      {
+        y = scale * input[1]; z = scale * input[2];
+        s = (float) sin(mag); c = (float) cos(mag); t = lbl_80563FAC - c;
+        matrix[0] = c + (t * (x * x));
+        matrix[1] = (y * (t * x)) + (s * z);
+        matrix[2] = (z * (t * x)) - (y * s);
+        matrix[3] = (0, (y * (t * x)) - (s * z));
+      }
     }
-    fn_801BFD34(self+0x7C, axis, self+0xC0);
-    fn_80015B20(self+0x58, matrix, self+0xC0);
-    *(float *)(self+0xBC) = lbl_80564024 * *(float *)&params[6];
+    matrix[4] = c + (t * (y * y));
+    matrix[5] = (0, (s * x) + (z * (t * y)));
+    matrix[6] = (z * (t * x)) + (s * y);
+    matrix[7] = (z * (t * y)) - (s * x);
+    matrix[8] = c + (t * ((0, z * z)));
+  }
+  else
+  {
+    matrix[0] = lbl_80563FAC; matrix[1] = lbl_80563FB0;
+    do
+    {
+      matrix[2] = lbl_80563FB0; matrix[3] = lbl_80563FB0; matrix[4] = lbl_80563FAC;
+    }
+    while (0);
+    matrix[5] = lbl_80563FB0;
+    matrix[6] = lbl_80563FB0; matrix[7] = lbl_80563FB0; matrix[8] = lbl_80563FAC;
+  }
+  fn_801BFD34(self + 0x7C, axis, self + 0xC0);
+  fn_80015B20(((char *) arg0) + 0x58, matrix, ((char *) arg0) + 0xC0);
+  *((float *) (((char *) arg0) + 0xBC)) = (*((float *) (&params[6]))) * lbl_80564024;
 }
 #pragma pop
 
@@ -1039,93 +1111,100 @@ void fn_80275B9C(void *arg0, float farg0, float farg1, float farg2) {
 }
 #pragma push
 #pragma use_lmw_stmw off
-void fn_80275D0C(void *arg0, void *arg1) {
-    struct Words12 { unsigned int value[12]; };
-    struct Words7 { unsigned int value[7]; };
-    struct Work {
-        float sp8[3];
-        struct Words7 local_14;
-        float sp30[3];
-        float sp3C[3];
-        float sp48[3];
-        float sp54[3];
-        float matrix[9];
-        float sp84[3];
-        char pad[0x20];
-    } work;
-
-    extern const struct Words7 lbl_802FA7F8;
-
-    float x, s, z, y, mag;
-    float scale, c, t;
-    float m2, m1, m0;
-    float zero, one;
-
-    work.local_14 = lbl_802FA7F8;
-    *(struct Words12 *)((char *)arg0 + 0x58) = *(struct Words12 *)((char *)arg0 + 0xC0);
-
-    work.sp54[0] = *(float *)((char *)arg0 + 0xE4);
-    work.sp54[1] = *(float *)((char *)arg0 + 0xE8);
-    work.sp54[2] = *(float *)((char *)arg0 + 0xEC);
-
-    work.sp48[0] = *(float *)((char *)arg0 + 0xD8);
-    work.sp48[1] = *(float *)((char *)arg0 + 0xDC);
-    work.sp48[2] = *(float *)((char *)arg0 + 0xE0);
-
-    work.sp3C[0] = lbl_80563FB0;
-    work.sp3C[1] = lbl_80563FAC;
-    work.sp3C[2] = lbl_80563FB0;
-
-    PSVECCrossProduct(work.sp3C, work.sp48, work.sp30);
-    PSVECCrossProduct(work.sp48, work.sp30, work.sp3C);
-
-    m2 = ((float *)&work.local_14)[5] * lbl_80564024;
-    m1 = ((float *)&work.local_14)[4] * lbl_80564024;
-    m0 = ((float *)&work.local_14)[3] * lbl_80564024;
-
-    work.sp84[1] = ((float *)&work.local_14)[1];
-    work.sp84[0] = ((float *)&work.local_14)[0];
-    work.sp84[2] = ((float *)&work.local_14)[2];
-
-    work.sp8[0] = m0;
-    work.sp8[1] = m1;
-    work.sp8[2] = m2;
-
-    mag = PSVECMag(work.sp8);
-    if (mag > lbl_80564020) {
-        scale = lbl_80563FAC / mag;
-        x = scale * work.sp8[0];
-        y = scale * work.sp8[1];
-        z = scale * work.sp8[2];
-        s = (float)sin(mag);
-        c = (float)cos(mag);
-        t = lbl_80563FAC - c;
-        work.matrix[0] = c + t * (x * x);
-        work.matrix[1] = y * (t * x) + s * z;
-        work.matrix[3] = y * (t * x) - s * z;
-        work.matrix[2] = z * (t * x) - s * y;
-        work.matrix[4] = c + t * (y * y);
-        work.matrix[5] = z * (t * y) + s * x;
-        work.matrix[6] = z * (t * x) + s * y;
-        work.matrix[7] = z * (t * y) - s * x;
-        work.matrix[8] = c + t * (z * z);
-    } else {
-        zero = lbl_80563FB0;
-        one = lbl_80563FAC;
-        work.matrix[1] = zero;
-        work.matrix[0] = one;
-        work.matrix[2] = zero;
-        work.matrix[3] = zero;
-        work.matrix[4] = one;
-        work.matrix[5] = zero;
-        work.matrix[6] = zero;
-        work.matrix[7] = zero;
-        work.matrix[8] = one;
-    }
-
-    fn_801BFD34((char *)arg0 + 0x7C, work.sp84, work.sp30);
-    fn_80015B20((char *)arg0 + 0x58, work.matrix, work.sp30);
-    *(float *)((char *)arg0 + 0xBC) = ((float *)&work.local_14)[6] * lbl_80564024;
+void fn_80275D0C(void *arg0, void *arg1)
+{
+  struct Words12
+  {
+    unsigned int value[12];
+  };
+  struct Words7
+  {
+    unsigned int value[7];
+  };
+  struct Work
+  {
+    float sp8[3];
+    struct Words7 local_14;
+    float sp30[3];
+    float sp3C[3];
+    float sp48[3];
+    float sp54[3];
+    float matrix[9];
+    float sp84[3];
+    char pad[0x20];
+  } work;
+  extern const struct Words7 lbl_802FA7F8;
+  float x;
+  float s;
+  float z;
+  float y;
+  float mag;
+  float scale;
+  float c;
+  float t;
+  float m2;
+  float m1;
+  float m0;
+  float zero;
+  float one;
+  work.local_14 = lbl_802FA7F8;
+  *((struct Words12 *) (((char *) arg0) + ((unsigned long long) 0x58))) = *((struct Words12 *) (((char *) arg0) + 0xC0));
+  work.sp54[0] = *((float *) (((char *) arg0) + 0xE4));
+  work.sp54[1] = *((float *) (((char *) arg0) + 0xE8));
+  do
+  {
+    work.sp54[2] = *((float *) (((char *) arg0) + 0xEC)); work.sp48[0] = *((float *) (((char *) arg0) + 0xD8)); work.sp48[1] = *((float *) (((char *) arg0) + 0xDC)); work.sp48[2] = *((float *) (((char *) arg0) + 0xE0)); work.sp3C[0] = lbl_80563FB0; work.sp3C[1] = lbl_80563FAC;
+  }
+  while (0);
+  work.sp3C[2] = lbl_80563FB0;
+  PSVECCrossProduct(work.sp3C, work.sp48, work.sp30);
+  PSVECCrossProduct(work.sp48, work.sp30, work.sp3C);
+  m2 = ((float *) (&work.local_14))[5] * lbl_80564024;
+  m1 = ((float *) (&work.local_14))[4] * lbl_80564024;
+  m0 = ((float *) (&work.local_14))[3] * lbl_80564024;
+  work.sp84[1] = ((float *) (&work.local_14))[1];
+  work.sp84[0] = ((float *) (&work.local_14))[0];
+  work.sp84[2] = ((float *) (&work.local_14))[2];
+  work.sp8[0] = m0;
+  work.sp8[1] = m1;
+  work.sp8[2] = m2;
+  mag = PSVECMag(work.sp8);
+  if (mag > lbl_80564020)
+  {
+    scale = lbl_80563FAC / mag;
+    x = scale * work.sp8[0];
+    y = scale * work.sp8[1];
+    z = scale * work.sp8[2];
+    s = (float) sin(mag);
+    c = (float) cos(mag);
+    t = lbl_80563FAC - c;
+    work.matrix[0] = c + (t * (x * x));
+    work.matrix[1] = (y * (t * x)) + (s * z);
+    work.matrix[3] = (y * (t * x)) - (s * z);
+    work.matrix[2] = (z * (t * x)) - (s * y);
+    work.matrix[4] = (0, c + (t * (y * y)));
+    work.matrix[5] = (s * x) + (z * (t * y));
+    work.matrix[6] = (z * (t * x)) + (s * y);
+    work.matrix[7] = (z * (t * y)) - (s * x);
+    work.matrix[8] = c + (t * (z * z));
+  }
+  else
+  {
+    zero = lbl_80563FB0;
+    one = lbl_80563FAC;
+    work.matrix[1] = zero;
+    work.matrix[0] = one;
+    work.matrix[2] = zero;
+    work.matrix[3] = zero;
+    work.matrix[4] = one;
+    work.matrix[5] = zero;
+    work.matrix[6] = zero;
+    work.matrix[7] = zero;
+    work.matrix[8] = one;
+  }
+  fn_801BFD34(((char *) arg0) + 0x7C, work.sp84, work.sp30);
+  fn_80015B20(((char *) arg0) + 0x58, work.matrix, work.sp30);
+  *((float *) (((char *) arg0) + 0xBC)) = ((float *) (&work.local_14))[6] * lbl_80564024;
 }
 #pragma pop
 #pragma pop
