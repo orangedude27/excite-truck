@@ -267,8 +267,8 @@ extern float lbl_80563800, lbl_80563804, lbl_80563808, lbl_8056380C, lbl_8056381
  * Reputation Rating it costs and the lock icon, unlocked once the player's
  * rating reaches the entry's.  Positions and sizes are the unl_* constants
  * above; the window's own fields are the unl_* accessors. */
-void UnlockList_DrawRows(void *arg0) {
-    char *win = (char *)arg0;
+/* Draws the visible rows of the unlockable list: each row's name, description, required Game Reputation Rating and lock icon (shown unlocked once the player's rating meets the entry's). */ void UnlockList_DrawRows(void *window) {
+    char *win = (char *)window;
     float x, y;
     float xpos, mid, step, dy_icon, dy_desc, dy_name, width, xicon, xrating, name_scale, desc_scale, row;
     int rating, i;
