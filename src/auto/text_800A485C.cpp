@@ -8943,7 +8943,7 @@ extern "C" FN786C_RET fn_800B786C(void *);
  * Any failure is left in the VF instance's last error, in the volume's and in
  * the handle's, and is the return value.
  */
-extern "C" void *fn_800B1BDC(void *file) {
+extern "C" void *VFiPFFILE_p_fclose(void *file) {
     u8 *volume;
     s32 result = 0;
     s32 status;
@@ -12241,12 +12241,12 @@ extern "C" s32 fn_800B74B8(s8 drive) {
 }
 #pragma dont_inline reset
 
-extern "C" void* fn_800B1BDC(void*);
+extern "C" void* VFiPFFILE_p_fclose(void*);
 extern "C" void fn_800B74E0(OSAlarm *alarm, OSContext *ctx) {
 #pragma unused(ctx)
     /* File-thread alarm callback: the alarm pointer doubles as the file handle
        to close; fold the close result into fn_800B73BC's 0/-1 status mask. */
-    fn_800B73BC((s32)fn_800B1BDC(alarm));
+    fn_800B73BC((s32)VFiPFFILE_p_fclose(alarm));
 }
 
 extern "C" void* fn_800B224C(void*, void*);
