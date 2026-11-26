@@ -688,8 +688,8 @@ void fn_802B9964(void *arg0, s32 arg1, s32 arg2, s32 arg3)
       tail = cell[1];
       item = tail->used;
       data = tail->data;
-      tail->used = item + 1;
       slot = data + item;
+      tail->used = item + 1;
     }
   }
   else
@@ -697,8 +697,8 @@ void fn_802B9964(void *arg0, s32 arg1, s32 arg2, s32 arg3)
     tail = node;
     item = tail->used;
     data = tail->data;
-    tail->used = item + 1;
     slot = data + item;
+    tail->used = item + 1;
   }
   if (slot != 0)
   {
