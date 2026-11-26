@@ -1696,7 +1696,7 @@ void fn_80035E6C(u32 arg0) {
     fn_8003A1A0(0x1234567, fn_80035C64);
 }
 extern void fn_80036550(u32);
-void __DVDHandleError(u32 arg0) {
+/* Record a DVD error in the __ErrorInfo ring and dispatch the appropriate drive recovery. */ void __DVDHandleError(u32 arg0) {
     register u32 errorCode = arg0;
     s32 interrupts;
     u32 tick;
