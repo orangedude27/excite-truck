@@ -1999,7 +1999,7 @@ void fn_802569DC(void *arg0, int arg1, float scale) {
 }
 #pragma pop
 
-/* Light colours (packed RGB, alpha ignored) fn_80256DD8 gives the car
+/* Light colours (packed RGB, alpha ignored) drawCarPreview gives the car
  * preview's light: the diffuse colour depends on the view mode (field
  * mode), the ambient colour is always the same warm white. */
 #define UI_LIGHT_DIFFUSE_MODE1 0x00AAAAC8
@@ -2016,7 +2016,7 @@ void fn_802569DC(void *arg0, int arg1, float scale) {
  * from level, or stretched 1% in Y, and every piece of renderer state is put
  * back before returning.
  */
-void fn_80256DD8(struct CarUIModelRec *model) {
+void drawCarPreview(struct CarUIModelRec *model) {
 
 extern void *DrawList_getCurrentMatrix(void);          /* the current 4x3 model matrix */
 extern void fn_80253004(s32, void *);    /* copy a camera record by index */
