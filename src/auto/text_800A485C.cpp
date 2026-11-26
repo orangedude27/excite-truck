@@ -23232,7 +23232,7 @@ extern "C" void fn_80062088(s32);
 extern "C" f32 lbl_80560DDC,lbl_80560DE0,lbl_80560DE4;
 extern "C" f32 lbl_80560DD0,lbl_80560DE8;
 #pragma dont_inline off
-extern "C" s32 fn_800C7C70(void *arg0) {
+extern "C" s32 setupHomeButtonSpeakerSlots(void *arg0) {
     /* Initialize/update this object's timer and slot UI state from global timing values. */
     u8 *p;
     s32 i, index;
