@@ -12759,7 +12759,7 @@ done:
     return result;
 }
 
-extern "C" s32 formatNandFatImage(void *fileState) {
+/* Formats a NAND-backed FAT image: writes the boot sector (plus the FS-info sector for FAT32), zeroes all remaining sectors, and closes/deletes the file on any write error. */ extern "C" s32 formatNandFatImage(void *fileState) {
     extern s32 NANDClose(void *); extern s32 NANDDelete(void *);
     extern s32 createOrOpenNandFile(void); extern s32 buildFATBootSector(void *,u8*,s32*,s32);
     extern s32 fn_800B8520(void *,u32 *); extern void fn_800B865C(void *);
