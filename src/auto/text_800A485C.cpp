@@ -10587,88 +10587,89 @@ extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_80559234[]; }
 extern "C" const u8 lbl_80560D98;
 extern "C" const u8 lbl_80560D99;
 #pragma scheduling 750
-/* Parses a numeric token (up to 8 digits) from a VFiPF path context, stopping
-   at path separators (\\, /, space, NUL).  When allowWildcards is set, '*' and
-   '?' are also accepted as valid token characters.  Returns the number of
-   characters consumed, or 0 if the token was not at a valid start position. */
-extern "C" s16 parseNumericPathToken(void *arg0, u32 p1, u32 arg2) {
+/* Parse a numeric token (at most 8 digits) at the current position of a VFiPF
+ * path context.  Parsing stops at the path separators ('\\', '/', space, NUL);
+ * when allowWildcards is set, '*' and '?' count as token characters too.  The
+ * return value is the number of characters consumed, or 0 when the token does
+ * not start at a valid position. */
+extern "C" s16 parseNumericPathToken(void *path, u32 selector, u32 allowWildcards) {
 u8 prefix[2];
-s16 value;
+s16 digit;
 struct { void *v; } w_p0; void *&p0 = w_p0.v;
-struct { s32 v; } w_sp; s32 &sp = w_sp.v;
-struct { s32 v; } w_off; s32 &off = w_off.v;
-struct { s32 v; } w_res; s32 &res = w_res.v;
-struct { s32 v; } w_idx; s32 &idx = w_idx.v;
-struct { u32 v; } w_fnd; u32 &fnd = w_fnd.v;
-struct { u32 v; } w_p2; u32 &p2 = w_p2.v;
-w_p0.v = arg0;
-sp = 0;
-off = 4;
-res = 0;
-idx = 2;
-fnd = 0;
-w_p2.v = arg2;
+struct { s32 v; } w_sp; s32 &isSeparator = w_sp.v;
+struct { s32 v; } w_off; s32 &charOffset = w_off.v;
+struct { s32 v; } w_res; s32 &result = w_res.v;
+struct { s32 v; } w_idx; s32 &charIndex = w_idx.v;
+struct { u32 v; } w_fnd; u32 &foundSeparator = w_fnd.v;
+struct { u32 v; } w_p2; u32 &wildcards = w_p2.v;
+w_p0.v = path;
+isSeparator = 0;
+charOffset = 4;
+result = 0;
+charIndex = 2;
+foundSeparator = 0;
+w_p2.v = allowWildcards;
 prefix[0] = lbl_80560D98;
 prefix[1] = lbl_80560D99;
-if (VFiPFSTR_StrNCmp((s32)p0, (const void *)prefix, (s32)p1, 0, 2) == 0)
+if (VFiPFSTR_StrNCmp((s32)p0, (const void *)prefix, (s32)selector, 0, 2) == 0)
 goto begin;
-if (VFiPFSTR_StrNCmp((s32)p0, lbl_80559228, (s32)p1, 0, 1) == 0) {
-if (VFiPFSTR_StrNCmp((s32)p0, lbl_80559228, (s32)p1, 1, 1) == 0)
+if (VFiPFSTR_StrNCmp((s32)p0, lbl_80559228, (s32)selector, 0, 1) == 0) {
+if (VFiPFSTR_StrNCmp((s32)p0, lbl_80559228, (s32)selector, 1, 1) == 0)
 goto begin;
-if (VFiPFSTR_StrNCmp((s32)p0, lbl_80559224, (s32)p1, 0, 1) == 0)
+if (VFiPFSTR_StrNCmp((s32)p0, lbl_80559224, (s32)selector, 0, 1) == 0)
 goto begin;
 }
-if (VFiPFSTR_StrNCmp((s32)p0, lbl_80559224, (s32)p1, 0, 1) != 0)
+if (VFiPFSTR_StrNCmp((s32)p0, lbl_80559224, (s32)selector, 0, 1) != 0)
 goto return_result;
 begin:
-idx = 2;
-off = 4;
+charIndex = 2;
+charOffset = 4;
 goto loop_check;
 parse:
 if (fn_800A4D44(p0) == 1U)
-value = (s16)((s8)((u8 *)(u32)fn_800A4D74(p0, p1))[(s16)idx] - 0x30);
+digit = (s16)((s8)((u8 *)(u32)fn_800A4D74(p0, selector))[(s16)charIndex] - 0x30);
 else
-value = (s16)(*((u16 *)((u8 *)(u32)fn_800A4D74(p0, p1) + off)) - 0x30);
-if (value < 0 || value > 9) {
-if ((s32)p2 == 0)
+digit = (s16)(*((u16 *)((u8 *)(u32)fn_800A4D74(p0, selector) + charOffset)) - 0x30);
+if (digit < 0 || digit > 9) {
+if ((s32)wildcards == 0)
 goto after_loop;
-if (VFiPFSTR_StrNCmp((s32)p0, lbl_80559224, (s32)p1, (s16)idx, 1) != 0 &&
-VFiPFSTR_StrNCmp((s32)p0, lbl_80559228, (s32)p1, (s16)idx, 1) != 0)
+if (VFiPFSTR_StrNCmp((s32)p0, lbl_80559224, (s32)selector, (s16)charIndex, 1) != 0 &&
+VFiPFSTR_StrNCmp((s32)p0, lbl_80559228, (s32)selector, (s16)charIndex, 1) != 0)
 goto after_loop;
-if ((u32)p2 == 1U &&
-VFiPFSTR_StrNCmp((s32)p0, lbl_80559224, (s32)p1, (s16)idx, 1) == 0)
-fnd = 1;
+if ((u32)wildcards == 1U &&
+VFiPFSTR_StrNCmp((s32)p0, lbl_80559224, (s32)selector, (s16)charIndex, 1) == 0)
+foundSeparator = 1;
 }
-off += 2;
-idx = idx + 1;
+charOffset += 2;
+charIndex = charIndex + 1;
 loop_check:
-if ((s16)idx >= 8)
+if ((s16)charIndex >= 8)
 goto after_loop;
-sp = 0;
-if (VFiPFSTR_StrNCmp((s32)p0, lbl_8055921C, (s32)p1, (s16)idx, 1) == 0 ||
-VFiPFSTR_StrNCmp((s32)p0, lbl_80559220, (s32)p1, (s16)idx, 1) == 0)
-sp = 1;
-if (sp != 0)
+isSeparator = 0;
+if (VFiPFSTR_StrNCmp((s32)p0, lbl_8055921C, (s32)selector, (s16)charIndex, 1) == 0 ||
+VFiPFSTR_StrNCmp((s32)p0, lbl_80559220, (s32)selector, (s16)charIndex, 1) == 0)
+isSeparator = 1;
+if (isSeparator != 0)
 goto after_loop;
-if (VFiPFSTR_StrNCmp((s32)p0, lbl_80559234, (s32)p1, (s16)idx, 1) == 0)
+if (VFiPFSTR_StrNCmp((s32)p0, lbl_80559234, (s32)selector, (s16)charIndex, 1) == 0)
 goto after_loop;
-if (VFiPFSTR_StrNCmp((s32)p0, lbl_8055920C, (s32)p1, (s16)idx, 1) == 0)
+if (VFiPFSTR_StrNCmp((s32)p0, lbl_8055920C, (s32)selector, (s16)charIndex, 1) == 0)
 goto after_loop;
 goto parse;
 after_loop:
-if ((s16)idx == 8 || fnd == 1) {
-if (VFiPFSTR_StrNCmp((s32)p0, lbl_80559234, (s32)p1, (s16)idx, 1) != 0) {
-sp = 0;
-if (VFiPFSTR_StrNCmp((s32)p0, lbl_8055921C, (s32)p1, (s16)idx, 1) == 0 ||
-VFiPFSTR_StrNCmp((s32)p0, lbl_80559220, (s32)p1, (s16)idx, 1) == 0)
-sp = 1;
-if (sp != 0 && VFiPFSTR_StrNCmp((s32)p0, lbl_8055920C, (s32)p1, (s16)idx, 1) != 0)
+if ((s16)charIndex == 8 || foundSeparator == 1) {
+if (VFiPFSTR_StrNCmp((s32)p0, lbl_80559234, (s32)selector, (s16)charIndex, 1) != 0) {
+isSeparator = 0;
+if (VFiPFSTR_StrNCmp((s32)p0, lbl_8055921C, (s32)selector, (s16)charIndex, 1) == 0 ||
+VFiPFSTR_StrNCmp((s32)p0, lbl_80559220, (s32)selector, (s16)charIndex, 1) == 0)
+isSeparator = 1;
+if (isSeparator != 0 && VFiPFSTR_StrNCmp((s32)p0, lbl_8055920C, (s32)selector, (s16)charIndex, 1) != 0)
 goto return_result;
 }
-res = (s16)idx;
+result = (s16)charIndex;
 }
 return_result:
-return (s16)res;
+return (s16)result;
 }
 extern "C" const u8 lbl_80560D9C;
 extern "C" const u8 lbl_80560D9D;
