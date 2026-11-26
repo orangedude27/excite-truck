@@ -738,7 +738,7 @@ extern unsigned char lbl_8055D3ED;
 /* Per-frame home/menu/audio-key handler: tracks home-button state transitions,
  * handles menu open conditions, runs input/audio updates, and dispatches key events.
  */
-void fn_8000B950(void) {
+void GameLoop_handleHomeAndKeys(void) {
     int state;
     int result;
     int key;
@@ -878,7 +878,7 @@ check:
     /* the current game mode's (lbl_8055D3D0) per-frame callback */
     if (*(void (**)(void))((char *)lbl_8055D3D0 + 8))
         (*(void (**)(void))((char *)lbl_8055D3D0 + 8))();
-    fn_8000B950();
+    GameLoop_handleHomeAndKeys();
     if (fn_801E89EC() == 3) {
         ((void (*)(char *, ...))fn_802E30C8)(lbl_802FBFDC);
         lbl_8055D3D4 = 0;
