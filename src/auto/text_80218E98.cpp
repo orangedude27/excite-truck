@@ -4265,7 +4265,7 @@ extern "C" s32 isKeyPressed(s32);
    erases with backspace/delete, inserts a typed character at the caret and
    hands tab to the widget group to move the focus.  Returns whether the key
    was used. */
-extern "C" s32 fn_8021F06C(void *widget, s32 keyCode) {
+extern "C" s32 handleTextFieldKey(void *widget, s32 keyCode) {
     s32 insertCursor;
     char *text;
     s32 capacity;
