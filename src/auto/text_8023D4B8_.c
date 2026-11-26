@@ -38,7 +38,7 @@ typedef struct ControlInfo {
     char *name;
 } ControlInfo;
 
-extern void fn_8013358C(int, int, void *);
+extern void setStringOption(int, int, void *);
 extern void fn_801A7974(const char *, int, int);
 extern int gEmptyControlName;
 extern char lbl_802FA218[];
@@ -230,7 +230,7 @@ void fn_8023D7CC(void) {
 #define sOptionData          gControlOptions
 #define ApplyControlDefaults applyControlDefaults
 #define GetControlScheme     (((void* (*)(void))getControlScheme)())
-#define SetControlOption     fn_8013358C
+#define SetControlOption     setStringOption
     char *optionData = sOptionData;
     int slotIndex;
     int scheme;
@@ -334,9 +334,9 @@ void applyControlDefaults(void *context, int skipLookup, int flag) {
             if (skipLookup == 0)
                 fn_801A7974((const char *)&locals.sp8, (int)entry->name, (int)targetBase);
             if (locals.sp8 == 0)
-                fn_8013358C((int)targetBase, (int)entry->name, *(void **)((char *)foundEntry + 4));
+                setStringOption((int)targetBase, (int)entry->name, *(void **)((char *)foundEntry + 4));
         } else {
-            fn_8013358C((int)targetBase, (int)entry->name, (void *)&gEmptyControlName);
+            setStringOption((int)targetBase, (int)entry->name, (void *)&gEmptyControlName);
         }
         index++;
         entry++;
@@ -345,7 +345,7 @@ void applyControlDefaults(void *context, int skipLookup, int flag) {
     entry = (Entry *)lbl_802FA218;
     secondIndex = 0;
     do {
-        fn_8013358C((int)targetBase, entry->unk0, (void *)entry->name);
+        setStringOption((int)targetBase, entry->unk0, (void *)entry->name);
         secondIndex++;
         entry++;
     } while (secondIndex < 8);

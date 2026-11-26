@@ -5,7 +5,7 @@
 // out as "options.dat") into the table lbl_8055E07C, which fn_80133024
 // allocates here.  findOrAddOption looks an option up by section + key and adds it
 // when it is missing; LoadIntOptionValue/fn_80133348/fn_8013323C/fn_80133460/
-// fn_8013358C read and write the typed values it keeps.
+// setStringOption read and write the typed values it keeps.
 
 // Fourcc the resource manager (getResourceData) looks an options file up by.
 #define OPTIONS_TAG 0x424F5054  // 'BOPT'
@@ -46,7 +46,7 @@ typedef enum OptionValueType {
     OPTIONS_VALUE_FILE = 0,
     OPTIONS_VALUE_BOOL = 1,   // fn_80133460
     OPTIONS_VALUE_INT = 2,    // fn_80133348
-    OPTIONS_VALUE_STRING = 3, // fn_8013358C
+    OPTIONS_VALUE_STRING = 3, // setStringOption
     OPTIONS_VALUE_FLOAT = 4   // fn_8013323C
 } OptionValueType;
 
@@ -284,14 +284,14 @@ int fn_80133460(int section, int key, unsigned char value) {
     return (int)result;
 }
 #pragma scheduling on
-/* Copy a value's string (offset 0x14) for (groupId, valueId) into outBuf, or initialize it via fn_8013358C. */
+/* Copy a value's string (offset 0x14) for (groupId, valueId) into outBuf, or initialize it via setStringOption. */
 void fn_801334F4(int groupId, int valueId, char *outBuf, int outSize) {
     void *sp8;
     if (findOrAddOption(&sp8, groupId, valueId) != 0) {
         strncpy(outBuf, (char *)sp8 + 0x14, outSize);
         outBuf[outSize - 1] = 0;
     } else {
-        fn_8013358C(groupId, valueId, outBuf);
+        setStringOption(groupId, valueId, outBuf);
     }
 }
 
@@ -301,7 +301,7 @@ void fn_801334F4(int groupId, int valueId, char *outBuf, int outSize) {
  * into the entry's text buffer (+0x14, null-terminated at +0x23), refresh its
  * int/float/bool readings, mark its type as OPTIONS_VALUE_STRING (3), and warn
  * via lbl_8032B8F8 if the input was truncated (longer than 15 chars). */
-int fn_8013358C(int section, int key, char *valueStr) {
+int setStringOption(int section, int key, char *valueStr) {
     void *entry;
     int savedSection = section;
     int savedKey = key;

@@ -214,7 +214,7 @@ void fn_801A7974(const char *outBinding, int valueId, int groupId) {
 #pragma scheduling on
 #pragma pop
 extern void fn_801A90A4(char *, int, const char *);
-extern int fn_8013358C(int, int, char *);
+extern int setStringOption(int, int, char *);
 #pragma push
 #pragma scheduling invalid_target
 /* Save a control's binding in the options: resolve the input binding the key
@@ -224,7 +224,7 @@ void fn_801A7A08(const char *keySpec, int valueId, int groupId) {
     char bindingName[0x20];
 
     fn_801A90A4(bindingName, 0x20, keySpec);
-    fn_8013358C(groupId, valueId, bindingName);
+    setStringOption(groupId, valueId, bindingName);
 }
 #pragma pop
 extern float lbl_80562458;
