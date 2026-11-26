@@ -72,7 +72,7 @@ struct Fn80157CF0Obj {
 };
 
 // Frame-driven player over a list of 0x38-byte records (mRecords / mCount).
-// fn_80158B0C and BonusTracker_updateFromInput advance the progress counters by
+// BonusTracker_updateFromPlayer and BonusTracker_updateFromInput advance the progress counters by
 // (speed * lbl_8056177C) each frame, lbl_8056177C being one 60 Hz frame
 // (0.0166834 s); fn_80158D60, fn_80159AB4 and fn_8015B23C
 // emit the current record's value and reset the counters.
@@ -182,7 +182,7 @@ public:
 // the gain applied to its value (0x250), seconds since the last reset (0x258),
 // the three progress counters advanced by speed * one frame (0x25C, 0x260,
 // 0x264), the instance 0x260 counts for (0x268), an object to stop (0x26C)
-// and the flags set by fn_80158A74 / fn_80158B0C (0x270..0x273).
+// and the flags set by fn_80158A74 / BonusTracker_updateFromPlayer (0x270..0x273).
 class Unk801577F0 {
 public:
     virtual void v0();
@@ -1672,7 +1672,7 @@ extern "C" void fn_80158A84(Unk801577F0 *player) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma processor 750
-extern "C" f32 fn_80158B0C(void* arg0, void* arg1) {
+extern "C" f32 BonusTracker_updateFromPlayer(void* arg0, void* arg1) {
 #define playerProgress   (*(f32*)((u8*)arg0 + 0x25C))
 #define playerProgressY  (*(f32*)((u8*)arg0 + 0x260))
 #define playerProgressZ  (*(f32*)((u8*)arg0 + 0x264))
