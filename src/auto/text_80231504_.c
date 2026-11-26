@@ -1100,7 +1100,7 @@ void fn_80232D3C(u8 *text, s32 font, s32 color, s32 x, s32 flags, f32 y, f32 sca
 void fn_80232DF4(u8 *text, s32 font, s32 color, s32 flags, f32 x, f32 y, f32 scale, f32 spacing, f32 extra) {
     u8 *pText = text;
     s32 nFont = font;
-    volatile s32 sp10;
+    s32 sp10;
     f32 spC;
     f32 sp8;
     s32 curColor;
@@ -1112,10 +1112,11 @@ void fn_80232DF4(u8 *text, s32 font, s32 color, s32 flags, f32 x, f32 y, f32 sca
     s32 textOffset;
     s32 passes;
     s32 curFont;
+    s32 temp;
     sp8 = x;
     spC = y;
     sp10 = color;
-    fn_80231714((s32 *)&sp10);
+    fn_80231714(&sp10);
     if ((s8)*pText != 0) {
         f32 rate = *(f32 *)((u8 *)fn_8022EDC4() + 0x34);
         f32 f0 = (f32)*(u8 *)(nFont + 4) * scale;
@@ -1126,7 +1127,8 @@ void fn_80232DF4(u8 *text, s32 font, s32 color, s32 flags, f32 x, f32 y, f32 sca
             strlen((const char *)pText);
             passes = (*(void **)(nFont + 8) != NULL) + 1;
             while (passes > 0) {
-                curColor = sp10;
+                temp = *(volatile s32 *)&sp10;
+                curColor = temp;
                 sp8 = startX;
                 curFont = nFont;
                 textOffset = 0;
