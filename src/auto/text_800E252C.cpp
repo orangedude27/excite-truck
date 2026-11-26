@@ -3253,7 +3253,7 @@ extern float lbl_80560F5C;
    mix frames; the ramp starts from the column's previous volume (self+0x18C[]) once
    the first AX voice is playing, and from the stored start volume (self+0x19C)
    before that.  Returns 1 while any voice is still ramping, 0 when they all match. */
-extern "C" int UpdateAxVolume__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
+/* Ramp every AX voice volume toward its target and return whether any voice is still ramping */ extern "C" int UpdateAxVolume__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
     float *prevColumnVolume;
     unsigned char *columnVolume;
     int columnOffset;
