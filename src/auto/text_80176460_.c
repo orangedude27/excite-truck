@@ -528,7 +528,7 @@ void fn_80177138(void) {
  * 0xFA, hold re-armed) so its callback cannot fire.  Once alpha has sat at
  * 0xFF for `hold` steps, the mode becomes FADE_MODE_IDLE (faded in) or
  * FADE_MODE_DONE (faded out) and the armed onDone callback runs once. */
-void stepPhysFade(void) {
+/* Advances the physics fade's alpha ramp for one frame and runs the completion callback once the ramp has held at full alpha. */ void stepPhysFade(void) {
     f32 speed;
     s32 elapsed, ramp, value;
     if ((u32)fader.mode - 1 <= 1U) {
