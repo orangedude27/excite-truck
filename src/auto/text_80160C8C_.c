@@ -1515,7 +1515,7 @@ extern f32 lbl_80558DC4[];
 #pragma push
 #pragma processor 750
 #pragma cplusplus on
-extern "C" void fn_80162268(void *challengeMgr) {
+extern "C" void GateChallenge_update(void *challengeMgr) {
     /* Per-frame update for the gate challenge: in its scoring phase (f7()==0) it tests each
      * player truck ("PCAR") against every active gate, scoring a pass when the truck's velocity
      * aligns with the gate direction or it comes within range, and finishes once the met count
@@ -3218,7 +3218,7 @@ extern s32 lbl_8055E4D0;
  * number of met goals that finishes it.  fn_80161D50 counts the mandatory goals
  * met so far, so [challenge_step_min, challenge_step_max) means "still on this
  * step"; the challenge screens advance it with challenge_step_min =
- * challenge_step_max++ (fn_80162268 and friends). */
+ * challenge_step_max++ (GateChallenge_update and friends). */
 #define challenge_step_min lbl_8055A0B4
 #define challenge_step_max lbl_8055A0B8
 /* The car table: one pointer per vehicle of the race (each carries its FourCC
