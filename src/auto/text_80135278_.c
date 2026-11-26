@@ -183,7 +183,7 @@ void fn_801353C8(Unk_80135278 *follower, s32 point, s32 hint, s32 startNode) {
     fn_801357A4(follower, point);
 }
 // The circular list of stretches the samplers search: only its first stretch
-// is read here.  (The searches below walk it with fn_80135420's own loads.)
+// is read here.  (The searches below walk it with findPathStretch's own loads.)
 #define PATH_FIRST(list) (*(PathNode **)((char *)(list) + 0x1C))
 
 #define PATH_ZERO lbl_80561320        /* 0.0f: the side of a stretch's start */
@@ -208,7 +208,7 @@ void fn_801353C8(Unk_80135278 *follower, s32 point, s32 hint, s32 startNode) {
  * is past one end of the path, so a second pass takes the stretch with the
  * least along^2 + across^2 within 4e6 of it; if even that finds nothing the
  * two "ideal:" warnings are printed and 0 comes back. */
-void *fn_80135420(float *point, void *unused, void *list) {
+void *findPathStretch(float *point, void *unused, void *list) {
     extern double __fabs(double);
     extern void fn_802E30C8(const char *, ...);
     extern const char lbl_8032BDB8[], lbl_8032BDE4[];
@@ -319,7 +319,7 @@ void fn_801355C0(void *arg0, s32 arg1, s32 arg2, void *arg3, s32 arg4) {
     st->unk8 = *(s32 *)((char *)arg0 + 0xC);
     if (((s32 (*)(void *, void *, void *, void *))fn_801355B8)(arg0, (void *)arg1, arg3, &st->frac) != 0) return;
     if (st->node == 0) {
-        tmpNode = fn_80135420((float *)arg1, (void *)arg2, *(void **)((char *)arg0 + 0x2C));
+        tmpNode = findPathStretch((float *)arg1, (void *)arg2, *(void **)((char *)arg0 + 0x2C));
         tmpFrac = lbl_80561320;
         st->node = tmpNode;
         st->frac = tmpFrac;

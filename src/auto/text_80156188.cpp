@@ -761,7 +761,7 @@ extern "C" void fn_80156DCC(void *seq, s32 elementIndex) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-extern "C" void* fn_80135420(f32*, s32, s32);
+extern "C" void* findPathStretch(f32*, s32, s32);
 extern f32 lbl_80561748;
 extern "C" void fn_80156E74(void *arg0, s32 arg1, void *arg2) {
     f32 point[2];
@@ -784,7 +784,7 @@ extern "C" void fn_80156E74(void *arg0, s32 arg1, void *arg2) {
     minimum = lbl_80561748;
     while (i < *(s32 *)((u8 *)arg0 + 8)) {
         void *entry = *(void **)((u8 *)*(void **)((u8 *)arg0 + 4) + offset);
-        void *result = fn_80135420(point, 0, (s32)entry);
+        void *result = findPathStretch(point, 0, (s32)entry);
         dy = point[1] - *(f32 *)((u8 *)result + 4);
         dx = point[0] - *(f32 *)result;
         {
