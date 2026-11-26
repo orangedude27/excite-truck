@@ -19,7 +19,7 @@ extern void fn_802D6C4C(float);
 void VisitGroupIds(void *, void *);
 extern int lbl_8055D008;
 void* MRModel_GetInstance(int);
-int fn_802C94A0(void*, unsigned char*, float*, float);
+int isPointInViewVolume(void*, unsigned char*, float*, float);
 void MRModel_SubmitInstance(int, int, int, unsigned char, float);
 
 extern int gModelMode;
@@ -1283,7 +1283,7 @@ int MRModel_GetInstanceGroupList();
 int MRModel_ReleaseResource(int);
 int fn_802C6B44(int);
 extern const char lbl_8034B3DC[];
-int fn_802C94A0(void*, unsigned char*, float*, float);
+int isPointInViewVolume(void*, unsigned char*, float*, float);
 void MRModel_SubmitInstance(int, int, int, unsigned char, float);
 void DrawModelInstance(int instanceId) {
     /* Draw one model instance if its stored world position passes the view-volume test. */
@@ -1293,7 +1293,7 @@ void DrawModelInstance(int instanceId) {
 
     if (instanceId != -1) {
         instanceHeader = *(void **)((char *)MRModel_GetInstance(instanceId) + 4);
-        if (fn_802C94A0((char *)instanceHeader + 0x20, &status, &depth, *(float *)((char *)instanceHeader + 0x1C))) {
+        if (isPointInViewVolume((char *)instanceHeader + 0x20, &status, &depth, *(float *)((char *)instanceHeader + 0x1C))) {
             MRModel_SubmitInstance(instanceId, 0, -1, status, depth);
         }
     }
@@ -1369,7 +1369,7 @@ void fn_802C70AC(int arg0, void *arg1, int arg2, int arg3) {
         out[1] = ty;
         out[2] = tz;
     }
-    ok = fn_802C94A0(out, &local.status, &local.scalar, *(float *)((char *)groupHeader + 0x1C));
+    ok = isPointInViewVolume(out, &local.status, &local.scalar, *(float *)((char *)groupHeader + 0x1C));
     if (ok != 0)
         MRModel_SubmitInstance(arg0, fn_802D0514(arg1), arg2, local.status, local.scalar);
     lbl_8055D008 = previousMask;
@@ -1484,7 +1484,7 @@ void MRModel_SetInstanceTransform(int instanceId, void *transform) {
         savedGroupMask = lbl_8055D008;
         lbl_8055D008 = groupMask;
         groupHeader = *(void **)((char *)MRModel_GetInstance(instanceId) + 4);
-        if (fn_802C94A0((char *)groupHeader + 0x20, &visibilityStatus, &distance, *(float *)((char *)groupHeader + 0x1C))) {
+        if (isPointInViewVolume((char *)groupHeader + 0x20, &visibilityStatus, &distance, *(float *)((char *)groupHeader + 0x1C))) {
             MRModel_SubmitInstance(instanceId, 0, -1, visibilityStatus, distance);
         }
         lbl_8055D008 = savedGroupMask;
@@ -1549,7 +1549,7 @@ void fn_802C74D8(int arg0, void *arg1, int arg2) {
         out[1] = ty;
         out[2] = tz;
     }
-    if (fn_802C94A0(out, &local.status, &local.scalar, *(float *)((char *)entry + 0x1C))) {
+    if (isPointInViewVolume(out, &local.status, &local.scalar, *(float *)((char *)entry + 0x1C))) {
         if ((u8)gModelBatchActive != 0) {
             node = fn_802C5EFC(a2);
             a1 = (void *)fn_802D0514(a1);
@@ -1606,7 +1606,7 @@ void MRModel_GetBoundingBoxArray(void *model, f32 *out) {
 }
 
 /* Return the model instance's view tolerance (+0x1C of its group list) - the
- * threshold passed to the visibility/culling test in fn_802C94A0. */
+ * threshold passed to the visibility/culling test in isPointInViewVolume. */
 float getModelInstanceTolerance(int instanceId) {
     struct ModelInstance *instance = (struct ModelInstance *)MRModel_GetInstance(instanceId);
     return *(float *)((char *)instance->groups + 0x1C);
@@ -1977,7 +1977,7 @@ void fn_802C7D54(int arg0, const float *arg1, int arg2, float fa, float fb, floa
         out[1] = ty;
         out[2] = tz;
     }
-    if (fn_802C94A0(out, &local.status, &local.scalar, rot[-1]) != 0) {
+    if (isPointInViewVolume(out, &local.status, &local.scalar, rot[-1]) != 0) {
         r20 = fn_802D0514((void *)arg1);
         if ((unsigned char)gModelBatchActive == 0) {
             mrModelResetDisplayEntries();

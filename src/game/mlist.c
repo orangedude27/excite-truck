@@ -16,7 +16,7 @@ extern void fn_801293C8(void *);
 extern void fn_801293DC(void *);
 extern void __AXDSPInitCallback_801293D0(void);
 extern void *DrawList_getCurrentMatrix(int);
-extern int fn_802C94A0(void *, void *, void *, float, float, float, float, float, float);
+extern int isPointInViewVolume(void *, void *, void *, float, float, float, float, float, float);
 extern void DrawList_getViewParams(void *, void *, void *, void *, float, float, float);
 extern void fn_802CCBC0();
 extern float lbl_8055D0A0;
@@ -422,7 +422,7 @@ void fn_802CD37C(void *arg0, void *arg1, float *arg2, int arg3, float farg0, flo
             float a = ((float *)e)[0], b = ((float *)e)[1], c = ((float *)e)[2], dd = ((float *)e)[3];
             f[22] = a; f[23] = b; f[24] = c; f[25] = dd;
             f[11] = f[22]; f[12] = f[23]; f[13] = f[24];
-            if (fn_802C94A0(&f[11], &sp9, &lbl_8055FCE0, c, b, a, dd, f[23], f[22]) != 0) {
+            if (isPointInViewVolume(&f[11], &sp9, &lbl_8055FCE0, c, b, a, dd, f[23], f[22]) != 0) {
                 int res = sp9 ? 0x81 : 1;
                 lbl_8055FCDC = res;
                 *out = res;
@@ -471,7 +471,7 @@ void fn_802CD37C(void *arg0, void *arg1, float *arg2, int arg3, float farg0, flo
             if (*(unsigned short *)((char *)e3 + 0x12) == (*(unsigned char *)(gDrawContext + *(unsigned short *)((char *)e3 + 0x10)) & 0x7F)) {
                 a = ((float *)e3)[0]; b = ((float *)e3)[1]; c = ((float *)e3)[2]; dd = ((float *)e3)[3];
                 f[10] = a; f[11] = b; f[12] = c;
-                if (fn_802C94A0(&f[10], &sp8, &lbl_8055FCE0, c, b, a, dd, b, a) != 0) {
+                if (isPointInViewVolume(&f[10], &sp8, &lbl_8055FCE0, c, b, a, dd, b, a) != 0) {
                     res = sp8 ? 0x81 : 1;
                     lbl_8055FCDC = res;
                 } else {
