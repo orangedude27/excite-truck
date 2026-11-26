@@ -846,16 +846,16 @@ void fn_801945F8(void *driver) {
 }
 
 extern float *fn_8013A604(void *aiExceptionConfig, float lon); /* AI params covering lon, or the defaults */
-void updateAiTuningBlend(void *driver) {
+/* Selects the AI driving params covering the driver's current track position; when the active set changes it saves the old set and blend start time, then eases five tuning values from the old set toward the new one over on_t. */ void updateAiTuningBlend(void *driver) {
     /* Selects the AI driving params covering the driver's current track position; when the
        active set changes it saves the old set and blend start time, then eases five tuning
        values from the old set toward the new one over on_t. */
     char *base = (char *)driver;
-    void *params = fn_8013A604((void **)(*(char **)(base + 0x2C8) + 0x40), *(float *)(base + 0x280));
+    void *newParams = fn_8013A604((void **)(*(char **)(base + 0x2C8) + 0x40), *(float *)(base + 0x280));
     float ratio, target, previous, blend, blended;
-    if (params != *(void **)(base + 0x2D8)) {
+    if (newParams != *(void **)(base + 0x2D8)) {
         *(void **)(base + 0x2D4) = *(void **)(base + 0x2D8);
-        *(void **)(base + 0x2D8) = params;
+        *(void **)(base + 0x2D8) = newParams;
         *(float *)(base + 0x2DC) = *(float *)(base + 0x26C);
     }
     ratio = (*(float *)(base + 0x26C) - *(float *)(base + 0x2DC)) / **(float **)(base + 0x2D8);
