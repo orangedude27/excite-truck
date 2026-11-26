@@ -80,7 +80,7 @@ struct TimedEffect {
 };
 #pragma cplusplus reset
 
-/* The element fn_801D701C constructs and fn_801D707C reads parameters for is
+/* The element initRingMasterASE constructs and fn_801D707C reads parameters for is
  * the "RingMaster_ASE" (its name comes back from fn_801D7200) and its vtable
  * is lbl_80338B08: +0x8 fn_801D7034 (delete), +0xC fn_801D707C (read
  * parameters), +0x10 fn_801D71A8 (free the sound), +0x14 fn_801D7200 (class
@@ -2306,7 +2306,7 @@ void fn_801D6FB8(int self) {
 #pragma scheduling invalid_target
 /* Constructor for a RingMaster_ASE action-sequence element: install its
  * vtable (lbl_80338B08) at +0 and clear its state word at +4. */
-void fn_801D701C(UnkStruct_801D701C *element) {
+void initRingMasterASE(UnkStruct_801D701C *element) {
     extern char lbl_80338B08[];
     element->name = lbl_80338B08;
     element->state = 0;
@@ -2633,7 +2633,7 @@ extern "C" void *createASEElement(void *arg0) {
     if (stricmp(name, type_ring_set) == 0) {
         object = fn_801284F8(0x3C, alloc_RingMaster_ASE);
         if (object != 0) {
-            object = ((void *(*)(void *))fn_801D701C)(object); /* RingMaster_ASE ctor */
+            object = ((void *(*)(void *))initRingMasterASE)(object); /* RingMaster_ASE ctor */
         }
         element = object;
         goto done;
