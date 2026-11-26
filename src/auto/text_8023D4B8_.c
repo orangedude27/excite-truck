@@ -50,7 +50,7 @@ extern void fn_8023E16C(void *, int);
 extern void fn_8023E0DC(void *, int, int);
 extern void *lbl_8055F19C;
 extern void *lbl_8055F190;
-extern void fn_8023DA64(void *, int, int);
+extern void applyControlDefaults(void *, int, int);
 extern void fn_8023E1FC(void *);
   extern void *lbl_8055F18C;
   extern s32 fn_8023DD4C(void);
@@ -228,7 +228,7 @@ void fn_8023D70C(void) {
    error for an unrecognized scheme. */
 void fn_8023D7CC(void) {
 #define sOptionData          gControlOptions
-#define ApplyControlDefaults fn_8023DA64
+#define ApplyControlDefaults applyControlDefaults
 #define GetControlScheme     (((void* (*)(void))getControlScheme)())
 #define SetControlOption     fn_8013358C
     char *optionData = sOptionData;
@@ -310,7 +310,7 @@ void fn_8023DA2C(long section, void *key, char value, long isSet) {
 
 extern char *fn_8023DCCC(char *);
 #pragma use_lmw_stmw off
-void fn_8023DA64(void *context, int skipLookup, int flag) {
+void applyControlDefaults(void *context, int skipLookup, int flag) {
     /* Applies name/value entries from two tables into a target object, then finalizes a field. */
     typedef struct { int unk0; char *name; } Entry;
     struct StackLocals { int sp8; int spC; char pad[4]; char sp14; };
@@ -441,7 +441,7 @@ loop_1:
    to the parent context (lbl_8055F19C), then refill the control rows in the control
    context (lbl_8055F190). */
 int fn_8023DD4C() {
-    fn_8023DA64(lbl_8055F19C, 1, 1);
+    applyControlDefaults(lbl_8055F19C, 1, 1);
     fn_8023E1FC(lbl_8055F190);
 }
 
@@ -638,7 +638,7 @@ int fn_8023E028(void) {
 }
 
 extern int fn_80128668(void);
-extern void fn_8023DA64(void *, int, int);
+extern void applyControlDefaults(void *, int, int);
 extern char gBrakingLabel[];
 extern char gViewLabel[];
 extern char gHornLabel[];
