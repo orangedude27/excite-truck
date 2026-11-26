@@ -559,17 +559,18 @@ int optionSectionFromName(char *sectionName) {
 
 #pragma use_lmw_stmw off
 /*
- * readOptionsFile - read an options file into the option table.
+ * readOptionsFile - read a BOPT options file into the option table.
  *
  * Asks the resource manager for the "BOPT" file called `path` and reads it
- * line by line.  "[SECTION]" lines pick the section (optionSectionFromName knows the 17
- * names), ';' '#' and empty lines are skipped, and any other line inside the
- * file is "key value": the text after the first space is stored under that
- * section and key, together with its int, float and true/false readings
- * (findOrAddOption finds the option and adds it when it isn't there yet).  The
- * file has to start with "version 2" unless ignoreVersion is set, and only
- * options of wantSection are stored - OPTIONS_SECTION_NONE takes them all.
- * Returns 0 when the file can't be read or has the wrong version.
+ * line by line.  "[SECTION]" lines pick the section (optionSectionFromName
+ * knows the 17 names), ';' '#' and empty lines are skipped, and any other
+ * line inside the file is "key value": the text after the first space is
+ * stored under that section and key, together with its int, float and
+ * true/false readings (findOrAddOption finds the option and adds it when it
+ * isn't there yet).  The file has to start with "version 2" unless
+ * ignoreVersion is set, and only options of wantSection are stored -
+ * OPTIONS_SECTION_NONE takes them all.  Returns 0 when the file can't be
+ * read or has the wrong version.
  */
 int readOptionsFile(int path, int ignoreVersion, int wantSection) {
     int size;
