@@ -1275,7 +1275,7 @@ extern void *memset(void *, int, unsigned int);
  * released.  The calls at the end shut down the subsystems fn_80006D9C
  * started up, the last of them the mode master's own teardown.
  */
-extern "C" void shutdownGameManagers(void) {
+/* Tear down the game's managers: call the mode master's teardown hook, release every object in the manager table and its singletons, clear the table, then shut down the subsystems the startup routine opened. */ extern "C" void shutdownGameManagers(void) {
     /* What the table's objects have in common: the game's usual release call,
      * the first virtual of their base class, with the "delete too" flag set. */
     struct Releasable {
