@@ -168,7 +168,7 @@ int fn_80204CF0(void) {
 }
 
 extern double atof(const char *);
-__declspec(section ".sdata") extern const char lbl_8055B4AC[];
+__declspec(section ".sdata") extern const char sDifficultyKeyFormat[];
 extern const char lbl_8033BBF4[];
 #pragma cplusplus on
 extern "C" int fn_801345D8(void *, int, const char *, ...);
@@ -206,7 +206,7 @@ extern "C" void Abend_Panic(const char *, ...);
     int foundString;
     info = (DifficultyInfo *)sDifficultyInfo;
     if (info->contestName != 0) {
-        fn_801345D8(key, 0x64, lbl_8055B4AC, info->contestName, name);
+        fn_801345D8(key, 0x64, sDifficultyKeyFormat, info->contestName, name);
         if (info->stageSet != 0 && info->stageSet->has(key)) {
             foundString = info->stageSet->get(key);
         } else if (info->sceneSet->has(key)) {
@@ -263,7 +263,7 @@ extern "C" int getDifficultySettingString(const char *name) {
     int found;
     info = (DifficultyInfo *)sDifficultyInfo;
     if (info->contestName != 0) {
-        fn_801345D8(key, 0x64, lbl_8055B4AC, info->contestName, name);
+        fn_801345D8(key, 0x64, sDifficultyKeyFormat, info->contestName, name);
         if (info->stageSet != 0 && info->stageSet->has(key)) {
             found = info->stageSet->get(key);
         } else if (info->sceneSet->has(key)) {
@@ -299,7 +299,7 @@ __declspec(section ".sdata") extern const char lbl_8055B4B8[];
  * off.  The string the lookup returns is the flag: only "yes" and "true" are on. */
 /* Report whether the current scene's difficulty setting `name` is on (via the stage/scene difficulty sets, then the plain name). */ extern "C" int isDifficultySettingOn(const char *settingName) {
     #define DIFFICULTY_INFO sDifficultyInfo  /* the published difficulty info block */
-    #define KEY_FORMAT      lbl_8055B4AC  /* "%s_%s" */
+    #define KEY_FORMAT      sDifficultyKeyFormat  /* "%s_%s" */
     #define NOT_FOUND_MSG   lbl_8033BBF4  /* Difficulty: "%s" was not found */
     #define YES_STRING      lbl_8055B4B4  /* "yes" */
     #define TRUE_STRING     lbl_8055B4B8  /* "true" */
@@ -423,7 +423,7 @@ extern "C" int getDifficultyProperty(const char *propName, int typeIndex, int st
     typedef void *(*StageEntryOf)(int);
 
     #define DIFFICULTY_VAL   lbl_8033BBE4 /* "difficulty.val" value group */
-    #define STAGE_KEY_FORMAT lbl_8055B4AC /* "%s_%s" */
+    #define STAGE_KEY_FORMAT sDifficultyKeyFormat /* "%s_%s" */
     #define NOT_FOUND_PANIC  lbl_8033BBF4 /* 'Difficulty: "%s" was not found' */
     #define KEY_BUF_SIZE     0x64
 
@@ -580,7 +580,7 @@ inline DiffLookup802054EC::DiffLookup802054EC(int type, int stageIndex) {
     /* Read a difficulty property as a boolean: resolve its value string first under the
      * stage-specific "<contest>_<propName>" key, then under the plain name, panicking if
      * no set defines it; return 1 when the value is "yes" or "true", otherwise 0. */
-    #define STAGE_KEY_FORMAT lbl_8055B4AC /* "%s_%s" */
+    #define STAGE_KEY_FORMAT sDifficultyKeyFormat /* "%s_%s" */
     #define NOT_FOUND_PANIC  lbl_8033BBF4 /* 'Difficulty: "%s" was not found' */
     #define YES_VALUE        lbl_8055B4B4 /* "yes" */
     #define TRUE_VALUE       lbl_8055B4B8 /* "true" */
