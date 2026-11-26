@@ -191,6 +191,7 @@ extern double lbl_805639F0;
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_80252C90(void) {
     int a,b,c,d,count;
     int i,j;
@@ -199,7 +200,7 @@ void fn_80252C90(void) {
     fn_801BEDA8(&a,&b,&c,&d,&count);
     for (i=0;i<count;i++)
         fn_8025280C((void *)(a+i*0xb0), *(float *)(&lbl_8055F300+4));
-    carPostUpdate();
+    fn_801BEDD4();
     phase = lbl_805639D0;
     dst=lbl_80498D00;
     for(i=0;i<count;i++,dst+=0x78) {
@@ -208,20 +209,36 @@ void fn_80252C90(void) {
         float *wheel=(float *)(c+i*0x190);
         Vec4_80252 previous; Vec4_80252 current;
         float *out=(float *)dst;
-        { float z=src[2], y=src[1], x=src[0]; out[9]=x; out[10]=y; out[11]=z; }
-        { float z=src[6], y=src[5], x=src[4]; out[0]=x; out[1]=y; out[2]=z; }
-        { float z=src[10], y=src[9], x=src[8]; out[3]=x; out[4]=y; out[5]=z; }
-        { float z=src[14], y=src[13], x=src[12]; out[6]=x; out[7]=y; out[8]=z; }
-        { float z=src[22], y=src[21], x=src[20]; out[24]=x; out[25]=y; out[26]=z; }
-        { float z=src[26], y=src[25], x=src[24]; out[27]=x; out[28]=y; out[29]=z; }
+        { float z=src[2], y=src[1], x=src[0]; out[11]=z;
+        out[10]=y;
+        out[9]=x; }
+        { float z=src[6], y=src[5], x=src[4]; out[2]=z;
+        out[1]=y;
+        out[0]=x; }
+        { float z=src[10], y=src[9], x=src[8]; out[5]=z;
+        out[4]=y;
+        out[3]=x; }
+        { float z=src[14], y=src[13], x=src[12]; out[8]=z;
+        out[7]=y;
+        out[6]=x; }
+        { float z=src[22], y=src[21], x=src[20]; out[26]=z;
+        out[25]=y;
+        out[24]=x; }
+        { float z=src[26], y=src[25], x=src[24]; out[29]=z;
+        out[28]=y;
+        out[27]=x; }
         current=*(Vec4_80252 *)(angles+4);
         previous=*(Vec4_80252 *)angles;
         out[20]=current.x; out[21]=current.y; out[22]=current.z; out[23]=current.w;
         for (j=0;j<4;j++) {
+          s32 j_x4 = j * 4;
             out[20+j]=(float)fn_8002EFB4(phase+out[20+j],lbl_805639F0);
-            out[16+j]=wheel[j*4+1]+((float *)&previous)[j];
+            out[16+j]=wheel[j_x4+1]+((float *)&previous)[j];
         }
-        { float w=out[23], z=out[22], y=out[21], x=out[20]; angles[4]=x; angles[5]=y; angles[6]=z; angles[7]=w; }
+        { float w=out[23], z=out[22], y=out[21], x=out[20]; angles[7]=w;
+        angles[6]=z;
+        angles[5]=y;
+        angles[4]=x; }
         dst[0x30]=1;
     }
     fn_801BF1B4();
