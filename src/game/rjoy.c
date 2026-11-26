@@ -414,7 +414,7 @@ extern void WPADiDisableRecalibration(int);
 extern unsigned char fn_8005EE80(int);
 extern int fn_800604E8(int, int, void *);
 extern int fn_802ECC10(void);
-extern void fn_802EC884(void);
+extern void HomeMenu_processRequest(void);
 extern void HomeMenu_request(void);
 extern void KERNEL_Reset(int);
 extern void rjoyWpadCommandDone(int);
@@ -559,7 +559,7 @@ void fn_802E7FD0(void) {
         devices += 1;
         lastState += 1;
     } while (channel < 4);
-    fn_802EC884();
+    HomeMenu_processRequest();
 }
 #pragma scheduling invalid_target
 /* Initializes the 14-entry field-offset/state table with its default index map. */

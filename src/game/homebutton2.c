@@ -289,7 +289,7 @@ extern s32 lbl_80558898[];
 /* Drive the Home menu / Wii Remote shutdown flow. When a Home-menu request
  * arrives, stop all rumble and snapshot the menu state; then gather WPAD info
  * and, once the menu reports completion, log the result and reset the console. */
-void fn_802EC884(void) {
+void HomeMenu_processRequest(void) {
     register char *menuStrings = lbl_8034E9E0;
     const char *statusText;
     char *logFormat;
@@ -436,7 +436,7 @@ void HomeMenu_request(void) {
 }
 
 char fn_802ECC10(void) {
-    /* Returns HomeMenu_active (gHomeMenuActive), the flag raised by fn_802EC884
+    /* Returns HomeMenu_active (gHomeMenuActive), the flag raised by HomeMenu_processRequest
      * while the Wii Home menu is open; callers use it to suppress gameplay and
      * input handling. */
     return HomeMenu_active;
