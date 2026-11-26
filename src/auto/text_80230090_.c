@@ -129,7 +129,7 @@ struct Quad {
 // grows the screen box it is wrapped in by `margin`, and flags 8/0x10 also
 // draw a copy one box-width/height away whenever the quad has left that box,
 // so the scroll tiles seamlessly.
-void drawScrollingOverlayQuad(s32 colorId, u32 flags, f32 x, f32 y, f32 z, f32 w, f32 h, f32 speed, f32 time, f32 margin) {
+/* Draw one textured, scroll-wrapped quad of the 2D overlay into the current display list. */ void drawScrollingOverlayQuad(s32 colorId, u32 flags, f32 x, f32 y, f32 z, f32 w, f32 h, f32 speed, f32 time, f32 margin) {
     extern void fn_802C8B98(s32, s32);                            // start a draw: colour, display list
     extern s32 fn_80230B9C(u32);                                  // colour id -> packed RGBA
     extern void fn_80230C9C(f32 *, f32 *, f32, f32, f32);         // wrap a span into the screen box
