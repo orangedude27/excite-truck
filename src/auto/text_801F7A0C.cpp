@@ -2103,7 +2103,7 @@ extern "C" void fn_80203FF8(void);
 #pragma push
 #pragma opt_propagation off
 #pragma processor 750
-extern "C" void updateStageDistanceAnims(void) {
+/* Each frame, start or stop the stage's distance-controlled animations by player proximity and the current load-pass tag, advance their players, toggle pass-tagged sounds, then run the end-of-pass hook. */ extern "C" void updateStageDistanceAnims(void) {
     extern unsigned char lbl_8055EC40;
     u8 *passTag;
     u8 *node;
