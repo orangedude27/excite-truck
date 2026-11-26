@@ -51,7 +51,7 @@ extern int sprintf(char *, const char *, ...);
 
 #pragma scheduling invalid_target
 /* Draws the debug/status overlay panel with device, recording, and log information. */
-void drawDebugPanel(void) {
+/* Draw the debug/status overlay panel: device, recording, and log info. */ void drawDebugPanel(void) {
     char textBuf[80];
     register char *textBase = DBG_FORMAT_STR;
     int y;
