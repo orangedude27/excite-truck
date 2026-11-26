@@ -465,7 +465,7 @@ extern "C" int fn_80198F64(void *arg0, int arg1, void *arg2, float *arg3, void *
  * each other.  That tangential slip is turned around and scaled by kSlipScale,
  * then shortened to at most half the two shapes' radii added times `scale`, and
  * written to `out`. */
-extern "C" void computeContactSlip(Vec* out, s32 contactPoint, Vec* normal, void* shapeA, void* shapeB, f32 scale) {
+/* Compute the clamped tangential slip velocity at a contact, used to drive friction between the two touching shapes. */ extern "C" void computeContactSlip(Vec* out, s32 contactPoint, Vec* normal, void* shapeA, void* shapeB, f32 scale) {
     #define kZero      lbl_805622D0 /* 0.0f */
     #define kSlipScale lbl_805622E4 /* -1000.0f */
     #define kHalf      lbl_805622E8 /* 0.5f */
