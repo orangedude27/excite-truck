@@ -1190,29 +1190,29 @@ void emitStunParticleInBox(const void *object, const void *direction, float half
     extern float lbl_80564A04, lbl_80564A48, lbl_80564A4C, lbl_805649F0, lbl_805649FC;
     extern void *lbl_8055F924;
     extern double cos(double), sin(double);
-    Vec pos, callPos, dirVec, sideVec, forwardVec;
+    Vec pos, emitPos, dirVec, sideAxis, forwardAxis;
     float angle, scale;
-    /* Emit one particle at a random point inside the object's local box
-     * (forward*halfWidth, side*halfDepth, up*halfHeight) in the given direction. */
+    /* Emit one stun particle at a random point in the object's local box
+     * (forward*halfWidth, side*halfDepth, up*halfHeight), in the given direction. */
     angle = fn_80287BC8(lbl_80564A48, lbl_80564A4C);
-    forwardVec = *(Vec *)object;
-    sideVec = *(Vec *)((char *)object + 0x18);
+    forwardAxis = *(Vec *)object;
+    sideAxis = *(Vec *)((char *)object + 0x18);
     pos = *(Vec *)((char *)object + 0x24);
     scale = halfWidth * (float)cos(angle);
-    pos.x += forwardVec.x * scale;
-    pos.y += forwardVec.y * scale;
-    pos.z += forwardVec.z * scale;
+    pos.x += forwardAxis.x * scale;
+    pos.y += forwardAxis.y * scale;
+    pos.z += forwardAxis.z * scale;
     scale = halfDepth * (float)sin(angle);
-    pos.x += sideVec.x * scale;
-    pos.y += sideVec.y * scale;
-    pos.z += sideVec.z * scale;
+    pos.x += sideAxis.x * scale;
+    pos.y += sideAxis.y * scale;
+    pos.z += sideAxis.z * scale;
     scale = fn_80287BC8(lbl_805649F0, lbl_80564A04 * halfHeight);
     pos.x += ((float *)((char *)object + 0xC))[0] * scale;
     pos.y += ((float *)((char *)object + 0xC))[1] * scale;
     pos.z += ((float *)((char *)object + 0xC))[2] * scale;
     dirVec = *(Vec *)direction;
-    callPos = pos;
-    fn_8028E590(*(int *)lbl_8055F924, &callPos, &dirVec, lbl_805649FC);
+    emitPos = pos;
+    fn_8028E590(*(int *)lbl_8055F924, &emitPos, &dirVec, lbl_805649FC);
 }
 
 /* Draw the primary particle-emitter list (mode 0) via the particle draw routine. */
