@@ -166,7 +166,7 @@ void fn_8001EFA8(void) {
 /* RealName: Achievements_GetLevelModelName
  * Thunk for the achievements UI: the model (rank) name string of threshold
  * `level` (1-based) of lifetime counter `coefSet`, or 0 when it has none. */
-const char *getAchievementLevelName(s32 coefSet, s32 level) {
+/* Return the display name of a given level of the achievement counter. */ const char *getAchievementLevelName(s32 coefSet, s32 level) {
 #define GetAchCoefName fn_8001F3AC
     /* Achievement thunk: return the source-coefficient name for coefSet/level,
        reinterpreting the id from GetAchCoefName as a string pointer. */
