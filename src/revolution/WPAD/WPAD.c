@@ -4154,7 +4154,7 @@ s32 fn_800604E8(s32 chan, s32 statusOut, void* callback) {
     s32 negTwo;
     s32 resultMask;
     u8 command[0x60] ALIGN(8);
-    u8* cmdQueue;
+    u8* cmdQueue; /* &cb->stdCmdQueue as bytes: [0]=front, [1]=back, [4]=buffer, [8]=capacity */
     s8 usedCount, tailIndex;
     s32 lastSlot, wrapMask;
     intrState = OSDisableInterrupts();
