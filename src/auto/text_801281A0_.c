@@ -279,7 +279,7 @@ do_log:
 }
 #pragma opt_propagation reset
 extern char lbl_8032A0A0[];
-void fn_80128AA4(void *, u8 *, s32, s32);
+void freeRingHeapBlock(void *, u8 *, s32, s32);
 #pragma dont_inline on
 #pragma scheduling invalid_target
 void fn_80128584(s32 ptr, s32 arg1) {
@@ -301,10 +301,10 @@ void fn_80128584(s32 ptr, s32 arg1) {
                 inPrimaryBuffer = 1;
         }
         if (inPrimaryBuffer != 0) {
-            ((void (*)(void *, u8 *, s32))fn_80128AA4)(lbl_8041E140, (u8 *)ptr, arg1);
+            ((void (*)(void *, u8 *, s32))freeRingHeapBlock)(lbl_8041E140, (u8 *)ptr, arg1);
             return;
         }
-        ((void (*)(void *, u8 *, s32))fn_80128AA4)(lbl_8041E160, (u8 *)ptr, arg1);
+        ((void (*)(void *, u8 *, s32))freeRingHeapBlock)(lbl_8041E160, (u8 *)ptr, arg1);
     }
 }
 #pragma scheduling on
@@ -651,7 +651,7 @@ extern "C" void *fn_801288AC(void *arg0, s32 arg1, char *arg2, s32 arg3) {
 u32 fn_801281A0(s32);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_80128AA4(void *heap, u8 *pBlock, s32 allocSource, s32 arg3) {
+void freeRingHeapBlock(void *heap, u8 *pBlock, s32 allocSource, s32 arg3) {
     /* Validate a ring-buffer allocation's 0x40-byte header and data region, report any
        corruption to the panic logger, then walk the heap's free list to recompute its
        used offset. pBlock points just past the header; arg3 is unused by callers. */
