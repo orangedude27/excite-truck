@@ -278,7 +278,7 @@ void fn_80273BD0(void *arg0) {
 #pragma pop
 
 #pragma dont_inline fn_80273B4C
-void placeCameraMode2(void *cam) {
+/* Mode-2 camera placement: restore the saved rotation, offset the camera by a fixed local vector rotated into its basis, then rebuild the rotation from the current angles (or defer to mode 3 when flagged). */ void placeCameraMode2(void *cam) {
     extern void applyFlippedTransform(void *);
     extern void fn_80273B4C(void *);
     extern const float lbl_80563FE8, lbl_80563FE4, lbl_80563FEC;
