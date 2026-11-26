@@ -1488,13 +1488,8 @@ s32 fn_80169D64(s32 unused, s32 name) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-/* Place one "poop_<id>" object group: the table's own name carries the group id,
- * and every item it holds is a scene object with a "loc" position and a "hit"
- * radius.  Each item becomes a coin-type (1) pickup record standing on the
- * ground at its position, lifted by the pickup type's height offset and by its
- * own hit radius; the whole group shares one entry in the manager's group list.
- * fn_80169D64() is the name check that picks this handler for a table. */
-/* Place one "poop_<id>" object group: parse the id from the table name, create one group entry and one coin-type pickup record per item, lifting each to ground height plus its hit radius. */ extern "C" s32 placePoopGroup(void *unused, DummyArg1 *table, DummyManager *manager) {
+/* Place one "poop_<id>" object group: parse the id from the table's name, open one group entry, and add one coin-type pickup per item at ground height plus its hit radius; fn_80169D64 is the name check that selects this handler. */
+extern "C" s32 placePoopGroup(void *unused, DummyArg1 *table, DummyManager *manager) {
     s32 parsedId = -1;
     DummyItem *item = 0;
     s32 groupId = 0;
