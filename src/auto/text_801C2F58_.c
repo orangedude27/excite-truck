@@ -17,7 +17,7 @@ extern void DBPrintf_80179758(const char *, ...);
 /* Debug event timeline drawn by this unit: 0x30C-byte entries appended by
  * fn_801C3C80 and kept sorted by fn_801C3B7C on the time at entry+0x0.
  * entry+0x4 is the rank among entries sharing a time, entry+0x8 the event type
- * (0..7, which selects the fields fn_801CA1C4 prints). */
+ * (0..7, which selects the fields drawEntryDetails prints). */
 #define sTimelineEntries   lbl_8055E7F8 /* entry table, 0xC300 bytes = 100 entries */
 #define sTimelineCount     lbl_8055E7F0 /* entries in sTimelineEntries */
 #define sTimelineSelection lbl_8055E828 /* entry the overlay shows details for */
@@ -28,7 +28,7 @@ extern void DBPrintf_80179758(const char *, ...);
 #define text_line_height   fn_80238A20  /* overlay line advance: (int)(0.4f * font height) */
 #define debug_draw_text    fn_801C94B8  /* x, y, text, color (-1 = default) */
 #define nth_string         fn_801C98F4  /* string blob, index -> index-th string */
-#define draw_entry_details fn_801CA1C4  /* entry, x, y, line advance */
+#define draw_entry_details drawEntryDetails  /* entry, x, y, line advance */
 
 #define FLOAT_TEN lbl_80562978 /* 10.0f: squared it is the 1/100 quantum
                                 * fn_801C3450 truncates to, and a 10-unit
@@ -3589,7 +3589,7 @@ extern "C" void fn_801CA070(char *fileName) {
 #pragma scheduling invalid_target
 #pragma cplusplus on
 /* Draw type-specific detail lines for the selected debug timeline entry at (x, y), advancing y by lineHeight between lines. */
-extern "C" void fn_801CA1C4(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+extern "C" void drawEntryDetails(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     char buf[256];
     char *base = lbl_80336B00;
     u8 *record = (u8 *)arg0;
@@ -3665,7 +3665,7 @@ extern "C" void fn_801CA1C4(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
 
 #pragma cplusplus reset
 
-extern void fn_801CA1C4(void *, s32, s32, s32);
+extern void drawEntryDetails(void *, s32, s32, s32);
 extern char lbl_80337944[];
 extern s32 lbl_8055AB10;
 extern s32 lbl_80562950;
