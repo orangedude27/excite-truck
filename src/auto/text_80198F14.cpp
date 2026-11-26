@@ -1660,7 +1660,7 @@ extern f32 lbl_8056232C;
    (+0x58).  Sides closer than 0.1 (squared) simply get the larger of the two.
    Both radii are stored at +0x24, which fn_8019B068 then runs the collision
    between the two positions with. */
-extern "C" void applyFloorInfluence(void *object, void *shape) {
+/* Floor (FLSR) influence pass: for each of the two colliding shapes, pick a collision radius by projecting the normalized vector toward the other shape onto that shape's influence axis and lerping between its min/max radius (or taking the max when very close); store both radii at +0x24, then run the sphere/sphere collision. */ extern "C" void applyFloorInfluence(void *object, void *shape) {
     CollisionObject *obj = (CollisionObject *)object;
     CollisionObject *floorShape = (CollisionObject *)shape;
     {
