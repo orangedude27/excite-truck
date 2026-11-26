@@ -2617,7 +2617,7 @@ extern s32 lbl_8055D8B4, lbl_8055D878;
  * every block is failed where it stands and the next one is taken in turn.
  * (The file calls this state stateReady.)
  */
-void __DVDStateReady(void) {
+/* The DVD driver's ready state: pop the next queued command block and dispatch it according to the pending resume point or the motor state. */ void __DVDStateReady(void) {
     void *block;
     void *failedBlock;
     void (*callback)(s32, void *);
