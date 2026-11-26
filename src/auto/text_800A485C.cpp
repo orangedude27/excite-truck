@@ -19984,7 +19984,7 @@ void homebutton::FrameController::calc() {
     }
 }
 
-extern "C" void drawColoredLine(s32 arg0, u8 *arg1, f32 x0, f32 y0, f32 x1, f32 y1, f32 z) {
+/* Draws a single solid-colored GX line segment at constant z with an identity position matrix. */ extern "C" void drawColoredLine(s32 lineWidth, u8 *color, f32 x0, f32 y0, f32 x1, f32 y1, f32 z) {
     /* Draws a single colored line segment (two vertices) at constant z with identity rotation. */
     f32 mtx[3][4];
     GXClearVtxDesc();
@@ -20002,16 +20002,16 @@ extern "C" void drawColoredLine(s32 arg0, u8 *arg1, f32 x0, f32 y0, f32 x1, f32 
     GXSetBlendMode(0, 0, 0, 5);
     PSMTXRotRad(mtx, lbl_80560E28, lbl_80560E28, lbl_80560E28);
     GXLoadPosMtxImm((const f32 *)mtx, 0);
-    GXSetLineWidth(arg0, 0);
+    GXSetLineWidth(lineWidth, 0);
     GXBegin(0xA8, 0, 2);
     *(volatile f32 *)0xCC008000 = x0;
     *(volatile f32 *)0xCC008000 = y0;
     *(volatile f32 *)0xCC008000 = z;
-    *(volatile u32 *)0xCC008000 = *(u32 *)arg1;
+    *(volatile u32 *)0xCC008000 = *(u32 *)color;
     *(volatile f32 *)0xCC008000 = x1;
     *(volatile f32 *)0xCC008000 = y1;
     *(volatile f32 *)0xCC008000 = z;
-    *(volatile u32 *)0xCC008000 = *(u32 *)arg1;
+    *(volatile u32 *)0xCC008000 = *(u32 *)color;
 }
 
 // Trivial predicate stub; always reports true (1).
