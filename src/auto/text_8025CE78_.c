@@ -41,7 +41,7 @@ extern char lbl_80498ED0[];
 extern char lbl_802FA678[];
 extern char lbl_8055B860[];
 extern char lbl_803456B8[];
-extern void fn_8025DAEC(void *, void *);
+extern void selectBestRecordDisplay(void *, void *);
 #define sp8 low.f8
 #define spC low.fC
 #define sp10 low.f10
@@ -128,23 +128,23 @@ void fn_8025CE78(void) {
     *(void **)(buf6 + 0x424) = lbl_8055F2E4;
     sp30 = 0; sp1C = &lbl_803456B8; sp34 = (int)&sp40[0]; sp3C = 0x1E; sp38 = 0;
     lbl_8055F3C4 = (int)(long)&sp1C;
-    ((void (*)(void *, int, int, void *, void *, int, void *))fn_8025DAEC)(buf0, 0x40901, 0x1E, &sp40[0], &lbl_803456B8, 0, lbl_8055F2E4);
+    ((void (*)(void *, int, int, void *, void *, int, void *))selectBestRecordDisplay)(buf0, 0x40901, 0x1E, &sp40[0], &lbl_803456B8, 0, lbl_8055F2E4);
     if (*(int *)(buf0 + 0x408) != 0) APPEND(1);
     if (*(int *)(buf0 + 0x408) != 1) APPEND(0xB);
     if (*(int *)(buf0 + 0x408) != 2) APPEND(0x15);
-    fn_8025DAEC(buf1, (void *)0x40902);
+    selectBestRecordDisplay(buf1, (void *)0x40902);
     if (*(int *)(buf1 + 0x408) != 0) APPEND(2);
     if (*(int *)(buf1 + 0x408) != 1) APPEND(0xC);
     if (*(int *)(buf1 + 0x408) != 2) APPEND(0x16);
-    fn_8025DAEC(buf2, (void *)0x41206);
+    selectBestRecordDisplay(buf2, (void *)0x41206);
     if (*(int *)(buf2 + 0x408) != 0) APPEND(3);
     if (*(int *)(buf2 + 0x408) != 1) APPEND(0xD);
     if (*(int *)(buf2 + 0x408) != 2) APPEND(0x17);
-    fn_8025DAEC(buf3, (void *)0x48203);
+    selectBestRecordDisplay(buf3, (void *)0x48203);
     if (*(int *)(buf3 + 0x408) != 0) APPEND(4);
     if (*(int *)(buf3 + 0x408) != 1) APPEND(0xE);
     if (*(int *)(buf3 + 0x408) != 2) APPEND(0x18);
-    fn_8025DAEC(buf4, (void *)0x50204);
+    selectBestRecordDisplay(buf4, (void *)0x50204);
     if (*(int *)(buf4 + 0x408) != 0) APPEND(5);
     if (*(int *)(buf4 + 0x408) != 1) APPEND(0xF);
     if (*(int *)(buf4 + 0x408) != 2) APPEND(0x19);
@@ -351,7 +351,7 @@ extern char lbl_803456A4[];
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void fn_8025DAEC(void *arg0, void *arg1) {
+extern "C" void selectBestRecordDisplay(void *arg0, void *arg1) {
     /* Select the best matching record for arg1, copy its display/name data into arg0, or fill defaults if none found. */
     struct Source {
         virtual void s2();
