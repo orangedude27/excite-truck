@@ -5209,18 +5209,18 @@ finish:
     return status;
 }
 extern const char lbl_803122F4[];
-void WPADiSendOutputReport(s32 chan, WPADGameInfo *pCommand) {
+/* Send one Wiimote output HID report: set up the control block, apply rumble/ack state, build the report buffer and send it */ void WPADiSendOutputReport(s32 chan, WPADGameInfo *pCommand) {
     /* Send one Wiimote output report on channel: set up the controller block,
      * handle rumble/ack timing, build a HID report buffer and send it over HID. */
     WPADCommand* command = (WPADCommand*)pCommand;
     s32 enabled;
     s32 rumble;
     s8 devHandle;
-    u8* cb;
+    u8* controlBlock;
     u8 reportID;
     BT_HDR* pBuffer;
     u8* pRptData;
-    s32 status;
+    s32 commStatus;
     u8* pCmdData;
     u16 len;
     u32 time;
@@ -5229,27 +5229,27 @@ void WPADiSendOutputReport(s32 chan, WPADGameInfo *pCommand) {
     len = command->dataLength;
     pCmdData = command->dataBuf;
     enabled = OSDisableInterrupts();
-    cb = (u8*)lbl_8038F4F0[chan];
-    devHandle = *(s8*)(cb + 0x803);
-    status = *(s32*)(cb + 0x7fc);
+    controlBlock = (u8*)lbl_8038F4F0[chan];
+    devHandle = *(s8*)(controlBlock + 0x803);
+    commStatus = *(s32*)(controlBlock + 0x7fc);
     if (devHandle < 0) {
         OSRestoreInterrupts(enabled);
         return;
     }
-    *(s32*)(cb + 0x7fc) = WPAD_ERR_COMMUNICATION_ERROR;
-    rumble = *(u32*)(cb + 0x814) & (u32)lbl_8055DC14;
+    *(s32*)(controlBlock + 0x7fc) = WPAD_ERR_COMMUNICATION_ERROR;
+    rumble = *(u32*)(controlBlock + 0x814) & (u32)lbl_8055DC14;
     OSRestoreInterrupts(enabled);
 
     if (reportID == RPTID_SET_RUMBLE) {
         enabled = OSDisableInterrupts();
-        *(s32*)(cb + 0x7fc) = status;
+        *(s32*)(controlBlock + 0x7fc) = commStatus;
         OSRestoreInterrupts(enabled);
         goto send;
     }
     if (reportID == RPTID_SEND_SPEAKER_DATA) {
         enabled = OSDisableInterrupts();
-        *(s32*)(cb + 0x7fc) = status;
-        cb[0x80e]--;
+        *(s32*)(controlBlock + 0x7fc) = commStatus;
+        controlBlock[0x80e]--;
         OSRestoreInterrupts(enabled);
         goto send;
     }
@@ -5259,29 +5259,29 @@ void WPADiSendOutputReport(s32 chan, WPADGameInfo *pCommand) {
     case RPTID_WRITE_DATA:
         break;
     case RPTID_READ_DATA:
-        *(s32*)(cb + 0x8bc) = 0;
-        *(s32*)(cb + 0x8b8) = (s32)command->readAddress;
-        *(u16*)(cb + 0x8c0) = command->readLength;
-        *(s32*)(cb + 0x8b4) = (s32)command->dstBuf;
+        *(s32*)(controlBlock + 0x8bc) = 0;
+        *(s32*)(controlBlock + 0x8b8) = (s32)command->readAddress;
+        *(u16*)(controlBlock + 0x8c0) = command->readLength;
+        *(s32*)(controlBlock + 0x8b4) = (s32)command->dstBuf;
         break;
     case RPTID_REQUEST_STATUS:
-        *(s32*)(cb + 0x7fc) = status;
-        *(void**)(cb + 0x790) = command->statusReportOut;
-        cb[0x800] = 1;
+        *(s32*)(controlBlock + 0x7fc) = commStatus;
+        *(void**)(controlBlock + 0x790) = command->statusReportOut;
+        controlBlock[0x800] = 1;
         break;
     case 0xFF:
         memcpy(&time, command->dataBuf, sizeof(u32));
-        *(s64*)(cb + 0x848) = __OSGetSystemTime() + time;
-        cb[0x850] = 1;
+        *(s64*)(controlBlock + 0x848) = __OSGetSystemTime() + time;
+        controlBlock[0x850] = 1;
         return;
     default:
         pCmdData[0] |= (1 << RPT_OUT_FLAG_REQUEST_ACK_RPT);
         break;
     }
-    *(void**)(cb + 0x7dc) = command->cmdCB;
-    cb[0x8c7] = reportID;
-    *(s64*)(cb + 0x848) = __OSGetSystemTime() + OS_SEC_TO_TICKS(lbl_8055DC1A * 60);
-    cb[0x850] = 0;
+    *(void**)(controlBlock + 0x7dc) = command->cmdCB;
+    controlBlock[0x8c7] = reportID;
+    *(s64*)(controlBlock + 0x848) = __OSGetSystemTime() + OS_SEC_TO_TICKS(lbl_8055DC1A * 60);
+    controlBlock[0x850] = 0;
     OSRestoreInterrupts(enabled);
 
 send:
