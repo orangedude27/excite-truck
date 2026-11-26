@@ -1768,7 +1768,7 @@ void fn_801D6600(UnkStruct_801D701C *object) {
 }
 
 #pragma scheduling invalid_target
-void fn_801D6618(UnkStruct_801D701C *object) {
+void initTrackEffectASE(UnkStruct_801D701C *object) {
     /* Constructor: install the type/vtable table lbl_80338C40 in the object's
        first field and reset its state. */
     extern char lbl_80338C40[];
@@ -2588,7 +2588,7 @@ extern "C" void *createASEElement(void *arg0) {
     if (stricmp(name, type_track_effect) == 0) {
         object = fn_801284F8(0x34, alloc_TrackEffect_ASE);
         if (object != 0) {
-            object = ((void *(*)(void *))fn_801D6618)(object); /* TrackEffect_ASE ctor */
+            object = ((void *(*)(void *))initTrackEffectASE)(object); /* TrackEffect_ASE ctor */
         }
         element = object;
         goto done;
