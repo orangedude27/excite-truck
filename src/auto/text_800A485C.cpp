@@ -14566,7 +14566,7 @@ extern "C" s32 fn_800BB4D4(s32 device, s32 offset, s32 buffer, s32 length) {
     return SDCard_writeBlocks(device, offset, buffer, length, 0, 0);
 }
 
-extern "C" s32 fn_800BAE98(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+extern "C" s32 sdCommandIoctlv(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 
 struct IosDevice {
     s32 fd;             /* 0x00 the IOS handle of the opened card */
@@ -14589,7 +14589,7 @@ struct SdRequest {
 };
 
 /* The SD module takes one MMC/SD command per request through its ioctl 7
-   (runSdCardCommand and fn_800BAE98 build that request block).  The read path
+   (runSdCardCommand and sdCommandIoctlv build that request block).  The read path
    readSdCardBlocks sends 7, 0x10 and 0x12; its write twin SDCard_writeBlocks sends 0x19. */
 #define SD_BLOCK_SIZE       0x200 /* one card block, and the alignment of a transfer */
 #define SD_CMD_SEND_CSD     7     /* MMC SEND_CSD */
@@ -14677,7 +14677,7 @@ else {
 if(result!=0){lbl_8055DD6C=0;goto done;}
 }
 DCInvalidateRange((void*)buffer,(u32)length);
-result=fn_800BAE98(*(s32*)dev,0x12,3,1,offset,buffer,blocks,blockSize,1,lbl_8055DD78,callback,callbackArg); /* MMC READ_MULTIPLE_BLOCK */
+result=sdCommandIoctlv(*(s32*)dev,0x12,3,1,offset,buffer,blocks,blockSize,1,lbl_8055DD78,callback,callbackArg); /* MMC READ_MULTIPLE_BLOCK */
 if(result!=0){OSReport(messages+0x418,messages+0x398,result);lbl_8055DD6C=0;}
 if(callback==0)lbl_8055DD6C=0; /* waited for it: the card is free again */
 }
@@ -27542,7 +27542,7 @@ extern "C" const char lbl_8031EA80[];
 extern "C" const char lbl_8031EA90[];
 extern "C" void fn_800A71D0(void *, s32);
 
-extern "C" s32 fn_800BAE98(s32 fd, s32 command, s32 type, s32 responseKind, s32 argument, s32 buffer, s32 count, s32 blockSize, s32 writeFlag, s32 responseOut, s32 callback, s32 callbackArg) {
+extern "C" s32 sdCommandIoctlv(s32 fd, s32 command, s32 type, s32 responseKind, s32 argument, s32 buffer, s32 count, s32 blockSize, s32 writeFlag, s32 responseOut, s32 callback, s32 callbackArg) {
     /* RealName: SD_CommandIoctlv (sends an SD command via IOS ioctlv 7, sync or async)
      * Builds a 0x40-byte command block and a 6-entry ioctlv vector in the shared
      * lbl_8055DD80 buffer (request block + response buffer lbl_8055DD74). When callback
@@ -27638,7 +27638,7 @@ extern "C" s32 IOS_IoctlAsync(s32, s32, void *, s32, void *, s32, void *, void *
  * block itself only when the request never got going (no response, no
  * callback, or IOS refused it).  A command that moves data (the 0x19 write of
  * SDCard_writeBlocks) describes its buffer inside the block; the read path
- * uses the ioctlv twin fn_800BAE98 instead, which hands the buffer to IOS as
+ * uses the ioctlv twin sdCommandIoctlv instead, which hands the buffer to IOS as
  * its own vector.  lbl_80559248 is the SD library's heap and lbl_8031B838 its
  * message strings.
  */
