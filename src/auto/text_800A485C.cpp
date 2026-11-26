@@ -7239,7 +7239,7 @@ extern "C" void fn_800AF2B8(void *field) {
     ((s32 *)field)[2] = 0;
 }
 
-extern "C" s32 VFiPFFAT_SeekCluster(void *fatFile, u32 startCluster, s32 length, s32 *clusterOut, u32 *nextClusterOut, s32 flags) {
+/* Walk the FAT chain forward by a byte length, returning the cluster reached and its successor while caching the last page for reuse. */ extern "C" s32 VFiPFFAT_SeekCluster(void *fatFile, u32 startCluster, s32 length, s32 *clusterOut, u32 *nextClusterOut, s32 flags) {
     /* Walks the FAT chain for a length to find the resulting cluster and next-cluster value, updating cached end state. */
     u32 nextCluster;
     s32 one;
