@@ -107,7 +107,7 @@ u8 VFiPFENT_CalcCheckSum(u8* p_ent) {
 }
 
 /* ---- VFiPFFAT_TraceClustersChain@0x800AF474 ---- */
-extern s32 readFat12Entry(void* p_ffd, u16 start_clst);
+extern s32 readFat12ClusterEntry(void* p_ffd, u16 start_clst);
 extern s32 fn_800AFE14(void* p_ffd);
 extern s32 fn_800B0258(void* p_ffd);
 
