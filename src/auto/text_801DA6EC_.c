@@ -401,7 +401,7 @@ extern int fn_801DA648(int);
 extern int fn_801DA688(int);
 #pragma push
 #pragma scheduling invalid_target
-void updatePathmanSlots(void *space) {
+/* Advance each active pathman slot: step its timer, sample and scale its bounds, write them back, and retire finished slots. */ void updatePathmanSlots(void *space) {
     // Advance each active pathman slot: step its timer, sample/scale its bounds, write back, retire finished slots.
     register void *base;
     register unsigned char *slot;
