@@ -84,7 +84,7 @@ void *fn_801EC204(void) {
 
 extern double fn_8002EFB0(float,float);
 extern void fn_801345D8(void *,int,const char *,...);
-extern int fn_801E3004(int,const char *,int);
+extern int createModelHandle(int,const char *,int);
 extern void Abend_Panic(const char *,...);
 extern float lbl_80562E88;
 extern char lbl_8033A060[];
@@ -123,7 +123,7 @@ extern "C" void fn_801EC214(void *outp, void *obj, int arg2, char *name, int arg
     b = lbl_80562E88;
     if (sscanf((char *)((Unk_801EEA64Iface *)obj)->m14(name), lbl_8055AFCC, &a, &b) != 2)
         Abend_Panic(base, name);
-    out->handle = fn_801E3004(arg2, name, -1);
+    out->handle = createModelHandle(arg2, name, -1);
     scale = f1 - f2;
     zero = lbl_80562E88;
     for (out->count = 0; out->count < 8; out->count++) {
@@ -1266,8 +1266,8 @@ loop30:
     }
     h = *(int *)((char *)arg0 + 0x48);
     *(void **)((char *)arg0 + 0x178) = (void *)fn_802C6FC0(buf20, idx, (int)arg4);
-    *(int *)((char *)arg0 + 0x17C) = fn_801E3004(*(int *)((char *)arg0 + 0x178), lbl_8055B068, -1);
-    *(int *)((char *)arg0 + 0x180) = fn_801E3004(*(int *)((char *)arg0 + 0x178), base + 0xF4, -1);
+    *(int *)((char *)arg0 + 0x17C) = createModelHandle(*(int *)((char *)arg0 + 0x178), lbl_8055B068, -1);
+    *(int *)((char *)arg0 + 0x180) = createModelHandle(*(int *)((char *)arg0 + 0x178), base + 0xF4, -1);
     *(int *)((char *)arg0 + 0x184) = fn_802002D4((int)arg1, h, idx);
     node = V2(p29, 0x18, void *(*)(void *, void *, void *), base + 0x100, base + 0x10C);
     h = fn_801284F8(4, base + 0x100);

@@ -288,7 +288,7 @@ static inline void Mtx3MultVec(void *argOut, void *argIn, void *argMtx) {
 #pragma cplusplus on
 #pragma cplusplus on
 extern "C" int fn_801E320C(int, int);
-extern "C" void *fn_801E3004(int, int, int);
+extern "C" void *createModelHandle(int, int, int);
 extern "C" void fn_801E3488(void *, void *);
 extern "C" void fn_801E323C(void *);
 extern "C" int MRModel_GetResourceName(int);
@@ -315,7 +315,7 @@ extern "C" void fn_801B8CC0(float *arg0, int arg1, int *arg2, float *arg3, float
     dst[2] = c;
     result = fn_801E320C(arg1, (int)arg2);
     if (result != 0) {
-        p = fn_801E3004(arg1, (int)arg2, -1);
+        p = createModelHandle(arg1, (int)arg2, -1);
         if (p != 0) {
             fn_801E3488(arg0, p);
             fn_801E323C(p);

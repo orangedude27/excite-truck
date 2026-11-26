@@ -26,7 +26,7 @@ extern char lbl_80339904[];
 extern void *lbl_8055EA50;
 extern void *fn_801284F8(s32, void *);
 extern void fn_8012A13C(void *, s32, s32);
-void *fn_801E3004();
+void *createModelHandle();
 #pragma push
 #pragma small_data off
 #pragma pop
@@ -208,7 +208,7 @@ extern char lbl_803398E4[];
 // identity matrix and an empty model handle (-1). When archiveCtx is not -1,
 // look up the archive item by name (which yields a resource path), copy the
 // item's data in, and load the model that the path points to.
-void *fn_801E3004(s32 archiveCtx, s32 itemName, s32 variant)
+void *createModelHandle(s32 archiveCtx, s32 itemName, s32 variant)
 {
   struct Pair
   {
@@ -287,7 +287,7 @@ void *fn_801E3004(s32 archiveCtx, s32 itemName, s32 variant)
 }
 /* Allocates a child record from *record and stores a back-pointer to record at offset 4. */
 void fn_801E31D8(s32 *record) {
-    *(s32 **)((u8 *)((void *(*)(s32))fn_801E3004)(*record) + 4) = record;
+    *(s32 **)((u8 *)((void *(*)(s32))createModelHandle)(*record) + 4) = record;
 }
 
 /* Look up an MRJT sound-archive item by name, copying its value to outValue when

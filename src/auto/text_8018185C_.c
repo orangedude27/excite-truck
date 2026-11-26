@@ -737,7 +737,7 @@ void fn_80182074(void *arg0, void *arg1) {
 
 extern void *fn_801284F8(int, const char *);
 extern void fn_802C7760(void *, float *, float *, float *, float *, float *, float *);
-extern void *fn_801E3004(void *, const char *, int);
+extern void *createModelHandle(void *, const char *, int);
 extern float *fn_801E3630(void *);
 extern void fn_801E323C(void *);
 extern void *fn_801AE180(void);
@@ -795,7 +795,7 @@ extern "C" void fn_80182DF4(void *arg0) {
     float x, y, z, m, half, zero, off;
 
     fn_802C7760(self->model, &minX, &maxX, &minY, &maxY, &minZ, &maxZ);
-    handle = fn_801E3004(self->model, lbl_8055A3E8, -1);
+    handle = createModelHandle(self->model, lbl_8055A3E8, -1);
     if (handle != 0) {
         v = fn_801E3630(handle);
         nodeA.z = v[2];
