@@ -87,7 +87,7 @@ extern f32 lbl_80560460;
 extern f32 lbl_80560464;
 extern f64 lbl_80560468;
 
-/* ---- the overheat overlay (fn_8001E2AC) ----
+/* ---- the overheat overlay (updateOverheatOverlay) ----
  * One slot per player in the array handed to it, three floats at playerIndex *
  * 3 (fn_8001E544 clears them): [1] the time the truck started overheating, [2]
  * the 0..1 level of its OVERHEAT text and [3] the truck's own warning level.
@@ -429,7 +429,7 @@ extern "C" s32 fn_8001E26C(s32 object, s32 deleteFlag) {
    level * OVERLAY_ALPHA_MAX; otherwise a warning level above OVERLAY_WARN_MIN
    shows the "overheat_warn" pane, its colour pulsed between 0xC0FFFFFF and
    0xFFFF2020. */
-extern "C" void fn_8001E2AC(void* slots, s32 playerIndex) {
+extern "C" void updateOverheatOverlay(void* slots, s32 playerIndex) {
     PaneData warnData;
     PaneData textData;
     f32* slot;
