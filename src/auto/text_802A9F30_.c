@@ -1184,7 +1184,7 @@ void fn_802ABC2C(void) {
 }
 
 #pragma processor 750
-void fn_802ABC80(const void *object, const void *direction, float halfWidth, float halfDepth, float halfHeight) {
+void emitStunParticleInBox(const void *object, const void *direction, float halfWidth, float halfDepth, float halfHeight) {
     extern float fn_80287BC8(float, float);
     extern void fn_8028E590(int, Vec *, Vec *, float);
     extern float lbl_80564A04, lbl_80564A48, lbl_80564A4C, lbl_805649F0, lbl_805649FC;
