@@ -641,8 +641,7 @@ extern unsigned int gCpuLightTexData;
 
 extern float lbl_80565040, lbl_80565044, lbl_80565048;
 extern void GXSetTevColor();
-/* fn_802DC464 (intended name CpuLight_DrawFadeFans; rename_symbol is currently refused
- * project-wide): draws an indexed triangle-fan overlay with a cpu-light fade alpha. */
+/* Draws an indexed triangle-fan overlay with a CPU-light fade alpha. */
 #define CpuLight_SetPositionArray fn_802DBBE4
 #define CpuLight_AlphaScale lbl_80565040 /* 255.0f */
 #define CpuLight_RoundHalf lbl_80565044  /* 0.5f */
