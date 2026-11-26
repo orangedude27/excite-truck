@@ -2746,7 +2746,7 @@ void dvdStreamPaceRead(void *arg0, s32 arg1, s32 arg2) {
    ahead of the wanted data, so slide the chunk into the ring, update the stream's
    counters, wait off the pacing rate and queue the next read unless the stream is
    paused.  @p fileInfo is the +0x54 file info the read was started with. */
-void dvdStreamReadCallback(s32 transferSize, DVDFileInfo *fileInfo) {
+/* Completion callback for a queued 32 KiB DVD read: slides any leading pad bytes out of the chunk, advances the ring pointers and stream counters, accounts for read timing, and queues the next read unless the stream is paused. */ void dvdStreamReadCallback(s32 transferSize, DVDFileInfo *fileInfo) {
     s32 padMoved, elapsed, padSize;
     u32 writePos, newWritePos, size;
     DvdStream *stream;
