@@ -132,7 +132,7 @@ s32 fn_801B60F4(void *pos, f32 radius) {
  * by the "bigphoblist" (lbl_8055E714) of objects too large for a cell;
  * *outCount receives how many lists were written.
  */
-void gatherPhobLists(u32 *outLists, s32 *outCount, const f32 *pos) {
+/* Gathers the phob grid-cell lists touched by a box around a point, plus the big-phob list, for collision queries. */ void gatherPhobLists(u32 *outLists, s32 *outCount, const f32 *pos) {
     s32 minX = GridCell(pos[0] - 9.599999f);
     s32 maxX = GridCell(9.599999f + pos[0]);
     s32 minZ = GridCell(pos[2] - 9.599999f);
