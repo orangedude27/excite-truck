@@ -1888,7 +1888,7 @@ extern "C" void fn_801345D8(void *, s32, void *, ...);
     }
 }
 #pragma pop
-extern "C" void fn_80251934(void *menu) {
+extern "C" void updateMenuState(void *menu) {
     /* Refresh a menu's per-item active flags from its input entries, animate each
      * item's highlight value toward its flag, smooth the selection value, then
      * enable or disable the menu through its Selector. */
