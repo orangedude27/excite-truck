@@ -2336,7 +2336,7 @@ void fn_8003773C(void) {
     }
 }
 
-void DVDInitErrorPath(void) {
+/* Initializes the DVD error path for the current boot code: picks the platform's error callback, records a fresh error entry in __ErrorInfo, then starts the matching error transfer/callback. */ void DVDInitErrorPath(void) {
     /* Initializes a platform-specific error path, logging an error record and starting the corresponding transfer/callback. */
     s32 savedInterrupts;
 
