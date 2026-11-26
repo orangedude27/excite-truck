@@ -95,7 +95,7 @@ void fn_801E45CC(void) {
  * returns 0 when the key is not the panel's. */
 int handleDebugPanelKey(int key) {
     double lod;
-    int handled = 1;
+    int wasHandled = 1;
     int toggle;
     switch (key) {
     case 't': /* the DMA test, armed only while the physics are paused */
@@ -121,7 +121,7 @@ int handleDebugPanelKey(int key) {
     case 0xB: fn_801EC1F8(); fn_802E4CDC(); break; /* first cache table, then the vmem hook */
     case 0x4: fn_801EC204(); fn_802E4CDC(); break; /* the second one */
     case 0x9: break;                              /* tab: swallowed, nothing to do */
-    default: handled = 0; break;
+    default: wasHandled = 0; break;
     }
     /* the panel's factor stays inside [0.2, 20.0] however it was changed */
     lod = DBG_LOD_FACTOR;
@@ -130,7 +130,7 @@ int handleDebugPanelKey(int key) {
         DBG_LOD_FACTOR = LOD_MAX;
     }
     if ((float)lod < LOD_STEP) DBG_LOD_FACTOR = LOD_STEP;
-    return handled;
+    return wasHandled;
 }
 
 #pragma scheduling on
