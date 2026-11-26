@@ -4970,7 +4970,7 @@ void fn_80155AEC(void) {
 }
 
 #pragma cplusplus on
-extern "C" void registerTargetEntry(void *arg0, void *arg1) {
+extern "C" void registerTargetEntry(void *manager, void *object) {
     /* Register an object as a target entry in one of the manager's two arrays:
      * objects whose subtype is named "points" are appended to the first array
      * (count at +0x330, list at +0x32c), others to the second (+0x3bc/+0x3b8).
@@ -4994,41 +4994,41 @@ extern "C" void registerTargetEntry(void *arg0, void *arg1) {
     s32 matches;
     s32 count;
     void **array;
-    subObject = ((VArg1 *)arg1)->getSubObject();
+    subObject = ((VArg1 *)object)->getSubObject();
     matches = subObject->matchesName((void *)lbl_80559FB8);
     if (matches != 0) {
         entry = (void *)fn_801284F8(0x1c, stringTable + 0xdcc);
         if (entry != 0) {
             *(void **)((u8 *)entry + 0x18) = lbl_8032E1E4;
-            *(void **)entry = arg1;
-            position = ((VArg1 *)arg1)->getPosition((void *)lbl_8032E1E4);
+            *(void **)entry = object;
+            position = ((VArg1 *)object)->getPosition((void *)lbl_8032E1E4);
             *(float *)((u8 *)entry + 8) = position[0];
             *(float *)((u8 *)entry + 0xc) = position[1];
             *(float *)((u8 *)entry + 0x10) = position[2];
             *(void **)((u8 *)entry + 0x18) = lbl_8032E1D8;
         }
-        count = *(s32 *)((u8 *)arg0 + 0x330);
-        array = *(void ***)((u8 *)arg0 + 0x32c);
-        *(s32 *)((u8 *)arg0 + 0x330) = count + 1;
+        count = *(s32 *)((u8 *)manager + 0x330);
+        array = *(void ***)((u8 *)manager + 0x32c);
+        *(s32 *)((u8 *)manager + 0x330) = count + 1;
         array[count] = entry;
         return;
     }
-    subObject = ((VArg1 *)arg1)->getSubObject();
+    subObject = ((VArg1 *)object)->getSubObject();
     matches = subObject->matchesName((void *)(stringTable + 0xdd8));
     if (matches != 0) {
         entry = (void *)fn_801284F8(0x1c, stringTable + 0xde8);
         if (entry != 0) {
             *(void **)((u8 *)entry + 0x18) = lbl_8032E1E4;
-            *(void **)entry = arg1;
-            position = ((VArg1 *)arg1)->getPosition((void *)lbl_8032E1E4);
+            *(void **)entry = object;
+            position = ((VArg1 *)object)->getPosition((void *)lbl_8032E1E4);
             *(float *)((u8 *)entry + 8) = position[0];
             *(float *)((u8 *)entry + 0xc) = position[1];
             *(float *)((u8 *)entry + 0x10) = position[2];
             *(void **)((u8 *)entry + 0x18) = lbl_8032E1CC;
         }
-        count = *(s32 *)((u8 *)arg0 + 0x3bc);
-        array = *(void ***)((u8 *)arg0 + 0x3b8);
-        *(s32 *)((u8 *)arg0 + 0x3bc) = count + 1;
+        count = *(s32 *)((u8 *)manager + 0x3bc);
+        array = *(void ***)((u8 *)manager + 0x3b8);
+        *(s32 *)((u8 *)manager + 0x3bc) = count + 1;
         array[count] = entry;
     }
 }
