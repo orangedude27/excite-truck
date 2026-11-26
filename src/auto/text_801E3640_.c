@@ -73,8 +73,7 @@ int fn_801E36F0(int color) {
 
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
-#pragma opt_propagation off
+#pragma scheduling on
 void fn_801E370C(float *arg0, int arg1, int arg2) {
     float outbuf[3], inbuf[3];
     float *out = outbuf;
