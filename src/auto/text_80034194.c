@@ -31,7 +31,7 @@ extern void DSPSendMailToDSP(u32);
 #include "revolution/DSP/dsp_task_types.h"
 extern void __DVDStateBusy(void *);
 extern void fn_80035A04(u32);
-extern s32 fn_8003B81C(void *, s32, s32, s32);
+extern s32 DVDLowReadAsync(void *, s32, s32, s32);
 extern s32 lbl_8055D8CC;
 extern u8 lbl_80376A80[];
 extern char lbl_80302120[];
@@ -1297,7 +1297,7 @@ void fn_8003588C(void) {
     *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
     OSRestoreInterrupts(interrupts);
 
-    fn_8003B81C(*(void **)((u8 *)bootInfo_8055D8C0 + 0x38),
+    DVDLowReadAsync(*(void **)((u8 *)bootInfo_8055D8C0 + 0x38),
                 ((*(u32 *)(lbl_80376A80 + 8) << (~(*(volatile u32 *)&__DVDLayoutFormat) & 2)) + 0x1F) & ~0x1F,
                 *(u32 *)(lbl_80376A80 + 4) >> *(volatile u32 *)&__DVDLayoutFormat,
                 (s32)fn_80035A04);
@@ -2128,7 +2128,7 @@ void fn_800370F4(u32 errorCode) {
         *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;
         *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
         OSRestoreInterrupts(interrupts);
-        fn_8003B81C(lbl_80376A80, 0x20, 0x108, (s32)fn_800375A8);
+        DVDLowReadAsync(lbl_80376A80, 0x20, 0x108, (s32)fn_800375A8);
     } else {
         fn_800356F4(0x27, 0, 0);
         fn_8003B218(fn_80035E6C);
@@ -2288,7 +2288,7 @@ void fn_800375A8(u32 statusCode) {
         discOffset = rawLength >> layoutShift;
         readLength = (shiftedLength + 0x1F) & (~0x1F);
         ((void (*)(s32, s32, s32, u32, u32)) fn_800356F4)(1, (unsigned long long) discOffset, readLength, layoutShift, rawLength);
-        fn_8003B81C(*((void **) (((u8 *) bootInfo_8055D8C0) + 0x38)), (((*((u32 *) (lbl_80376A80 + 8))) << ((~(*((volatile u32 *) (&__DVDLayoutFormat)))) & 2)) + 0x1F) & (~0x1F), (*((u32 *) (lbl_80376A80 + 4))) >> (*((volatile u32 *) (&__DVDLayoutFormat))), (s32) fn_80035A04);
+        DVDLowReadAsync(*((void **) (((u8 *) bootInfo_8055D8C0) + 0x38)), (((*((u32 *) (lbl_80376A80 + 8))) << ((~(*((volatile u32 *) (&__DVDLayoutFormat)))) & 2)) + 0x1F) & (~0x1F), (*((u32 *) (lbl_80376A80 + 4))) >> (*((volatile u32 *) (&__DVDLayoutFormat))), (s32) fn_80035A04);
     } else {
         fn_800356F4(0x27, 0, 0);
         fn_8003B218(fn_80035E6C);
@@ -2814,7 +2814,7 @@ extern void (*lbl_80558E08)(void *, void *);
  OSRestoreInterrupts(irq);
 }
      /* DVDLowRead(addr+transferTotal, transferSize, offset+DVD_LOW_OFFSET(transferTotal), cbForStateBusy) */
-     ((int (*)(void *, u32, u32, void *))fn_8003B81C)(*(u8 **)(blockBytes+0x18)+*(u32 *)(blockBytes+0x20), *(u32 *)(blockBytes+0x1c), *(u32 *)(blockBytes+0x10)+(*(u32 *)(blockBytes+0x20)>>2), fn_80038870);
+     ((int (*)(void *, u32, u32, void *))DVDLowReadAsync)(*(u8 **)(blockBytes+0x18)+*(u32 *)(blockBytes+0x20), *(u32 *)(blockBytes+0x1c), *(u32 *)(blockBytes+0x10)+(*(u32 *)(blockBytes+0x20)>>2), fn_80038870);
    } break;
  case 2: fn_8003BCDC(0); fn_8003B9CC(*(u32 *)(blockBytes+0x10),fn_80038870); break;                  /* clear cover; DVDLowSeek */
  case 3: fn_8003AF1C(0,0,fn_80038870); break;                                                       /* DVDLowStopMotor */

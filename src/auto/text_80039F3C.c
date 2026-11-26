@@ -1000,6 +1000,9 @@ int fn_8003B69C(int arg0, void *arg1)
   if (next >= 4)
   {
     lbl_8055D8E8 = 0;
+    if (1)
+    {
+    }
   }
   callbackEntry = ((unsigned char *) lbl_8037B820) + (slot * 0x20);
   index = lbl_8055D8E4 + 1;
@@ -1022,7 +1025,7 @@ int fn_8003B69C(int arg0, void *arg1)
 }
 #pragma scheduling on
 /* Queue an async DVD low-level read (command 0x71) of `size` bytes at disc `offset` into `dst`, claiming a context slot and calling `callback` when it completes; returns 0 for a misaligned buffer or IOS error, 1 when queued. */
-int fn_8003B81C(void *dst, int size, int offset, void (*callback)(int, void *)) {
+int DVDLowReadAsync(void *dst, int size, int offset, void (*callback)(int, void *)) {
     const char *msgs = lbl_80302848;
     unsigned char *contexts;
     int byteOffset;
