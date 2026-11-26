@@ -1230,9 +1230,9 @@ done:
 /* Emit one effect entry when the emitter's wrapped phase at +0x9C has reached
  * 1.0 (1.0 - lbl_80558DC4) and its playback index at +0x90 differs from the entry
  * count at +0x94: build a random 3D value from the +0x10/+0x1C/+0x28 fields and
- * forward it with fn_8028FEE4. */
+ * forward it with appendParticleEntry. */
 void fn_8028FAE4(void *emitter, int posA, float *basePos, float angle) {
-    extern void fn_8028FEE4(void *, int, float *, float, float);
+    extern void appendParticleEntry(void *, int, float *, float, float);
     float generatedPos[3];
     int shouldEmit = 0;
 
@@ -1245,7 +1245,7 @@ void fn_8028FAE4(void *emitter, int posA, float *basePos, float angle) {
                     (float *)((char *)emitter + 0x10),
                     (float *)((char *)emitter + 0x1C),
                     *(float *)((char *)emitter + 0x28), lbl_80564424);
-        fn_8028FEE4(emitter, posA, generatedPos, lbl_80564420, angle);
+        appendParticleEntry(emitter, posA, generatedPos, lbl_80564420, angle);
     }
 }
 #pragma scheduling on
@@ -1256,9 +1256,9 @@ void fn_8028FAE4(void *emitter, int posA, float *basePos, float angle) {
 /* Emit one effect entry when the emitter's wrapped phase at +0x9C has reached
  * 1.0 (1.0 - lbl_80558DC4) and its playback index at +0x90 differs from the
  * entry count at +0x94: build a random 3D value from the +0x10/+0x1C/+0x28
- * fields, scaled by `spread`, and forward it with fn_8028FEE4. */
+ * fields, scaled by `spread`, and forward it with appendParticleEntry. */
 void fn_8028FB98(void *emitter, int posA, float *basePos, float spread) {
-    extern void fn_8028FEE4(void *, int, float *, float, float);
+    extern void appendParticleEntry(void *, int, float *, float, float);
     extern float lbl_80564424;
     extern float lbl_80558DC4;
     extern float lbl_80564420;
@@ -1274,7 +1274,7 @@ void fn_8028FB98(void *emitter, int posA, float *basePos, float spread) {
                     (float *)((char *)emitter + 0x10),
                     (float *)((char *)emitter + 0x1C),
                     *(float *)((char *)emitter + 0x28), spread);
-        fn_8028FEE4(emitter, posA, generatedPos, lbl_80564420, lbl_80564424);
+        appendParticleEntry(emitter, posA, generatedPos, lbl_80564420, lbl_80564424);
     }
 }
 
@@ -1289,7 +1289,7 @@ extern float fn_80287BC8(float, float);
 #pragma dont_inline on
 /* Emits an effect at a computed position when the emitter is active and its index has changed. */
 void fn_8028FC40(void *emitter, int param, float *basePos, float angleOffset) {
-    extern void fn_8028FEE4(void *, int, float *, float, float);
+    extern void appendParticleEntry(void *, int, float *, float, float);
     float pos[3];
     float range;
     int shouldEmit = 0;
@@ -1302,7 +1302,7 @@ void fn_8028FC40(void *emitter, int param, float *basePos, float angleOffset) {
                     (float *)((char *)emitter + 0x1C),
                     *(float *)((char *)emitter + 0x28), lbl_80564424);
         range = *(float *)((char *)emitter + 0x2C);
-        fn_8028FEE4(emitter, param, pos,
+        appendParticleEntry(emitter, param, pos,
                     angleOffset + fn_80287BC8(-range, range),
                     lbl_80564424);
     }
@@ -1467,7 +1467,7 @@ extern char lbl_80349024[];
 extern char lbl_80349078[];
 extern unsigned char lbl_8055F74C;
 #pragma cplusplus on
-void fn_8028FEE4(void *emitterPtr, int basePosAddr, float *generatedPos, float angle, float scale) {
+void appendParticleEntry(void *emitterPtr, int basePosAddr, float *generatedPos, float angle, float scale) {
     /* Append one particle entry to the emitter's ring buffer: pack the base/generated position pair and the mode-dependent color/rotation byte, warn once if called outside the particle update window. */
     EfEntry2 entry;
     EfEntry2 *dst;
