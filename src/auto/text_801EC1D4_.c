@@ -34,7 +34,7 @@ __declspec(section ".sdata") extern char lbl_8055AFF4[];
 void fn_801EE974(void *, void *);
 void loadResourceConfig(void *, void *, int, int);
 void *fn_801E87A8(void);
-void fn_801EDD7C(void *, long);
+void refreshVehicleEffectState(void *, long);
 long fn_80179CB0(void);
 void fn_801EECAC(long, long);
 void fn_802C6CF8(long);
@@ -988,7 +988,7 @@ extern float __fabsf(float);
  * scale within epsilon), build a scaled copy of the 12-word transform into
  * the effect's cached slot, then re-submit each of its four effect entries.
  * The second parameter is reused as the loop counter once its scale is read. */
-void fn_801EDD7C(void *renderState, long data) {
+void refreshVehicleEffectState(void *renderState, long data) {
     void *object = renderState;
     long dataOffset;
     char *slot;
@@ -1398,7 +1398,7 @@ extern char lbl_8055B080;
  *(int *)((char *)arg0+0x488)=-1; *(int *)((char *)arg0+0x494)=0; *((char *)arg1+0xEC)=0;
 }
 #pragma cplusplus reset
-void fn_801EDD7C(void *, long);
+void refreshVehicleEffectState(void *, long);
 long fn_80179CB0(void);
 void fn_801EECAC(long, long);
 void fn_802C6CF8(long);
@@ -1531,7 +1531,7 @@ void fn_801EEF44(void *renderState, void *vehicle) {
     *(unsigned int *)((char *)renderState + 0x16C) = renderObject + 0x44;
     *(unsigned int *)((char *)renderState + 0x170) = renderObject + 0xC8;
     *(unsigned int *)((char *)renderState + 0x174) = renderObject + 0x148;
-    fn_801EDD7C(renderState, (long)vehicle);
+    refreshVehicleEffectState(renderState, (long)vehicle);
 }
 
 unsigned int fn_801EEF74(void) {
