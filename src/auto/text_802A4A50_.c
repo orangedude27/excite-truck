@@ -17,7 +17,7 @@ extern s32 fn_8028E584(s32, f32 *, f32 *, f32, f32);
 extern void fn_802C8BD0(s32);
 extern s32 fn_802CE860(s32);
 extern void fn_802CE868(void);
-extern void fn_802CE86C(void *, s32, f32, double, double, double);
+extern void drawBillboardParticle(void *, s32, f32, double, double, double);
 extern f32 lbl_805648D8;
 extern f32 lbl_80564860;
 extern s32 fn_801E85B4(void);
@@ -1974,7 +1974,7 @@ s32 fn_802A79CC(s32 arg0) {
                     raw = magnitude;
                 else
                     raw = alpha;
-                fn_802CE86C((void *)((raw << 24) | 0x00FFFFFF), i,
+                drawBillboardParticle((void *)((raw << 24) | 0x00FFFFFF), i,
                             pointScale, pointX, pointY, pointZ);
                 offset += 0xC;
                 i++;

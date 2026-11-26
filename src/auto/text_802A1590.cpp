@@ -20,7 +20,7 @@ extern "C" void fn_802C8BD0(void*);
 extern "C" void DrawList_RestoreNormalMode(void);
 extern "C" int fn_802CE860(void*);
 extern "C" void fn_802CE868(void);
-extern "C" void fn_802CE86C(unsigned int, int, f32, f32, f32, f32);
+extern "C" void drawBillboardParticle(unsigned int, int, f32, f32, f32, f32);
 extern "C" f32 lbl_8056483C;
 extern "C" void fn_8028E590(int, f32 *, f32 *, f32);
 extern "C" f32 randFloatInRange(s32, f32, f32);
@@ -1901,7 +1901,7 @@ extern "C" s32 drawParticleSystem(void *arg0) {
                     rampHigh = minValue;
                 rampLow = *(f32 *)(system + 0x4C);
                 rampLow = rampLow < age ? rampLow : age;
-                fn_802CE86C(color, 0,
+                drawBillboardParticle(color, 0,
                     *(f32 *)(system + 0x40) + *(f32 *)(system + 0x44) * rampLow +
                     *(f32 *)(system + 0x48) * rampHigh,
                     *(f32 *)p, *(f32 *)(p + 4), *(f32 *)(p + 8));

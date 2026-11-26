@@ -18,7 +18,7 @@ extern float lbl_802FAC60[];
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_802CE86C(void *arg0, int arg1, float scale, double x0, double y0, double z0)
+void drawBillboardParticle(void *arg0, int arg1, float scale, double x0, double y0, double z0)
 {
   struct SignTable
   {
