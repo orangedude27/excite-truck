@@ -3032,7 +3032,7 @@ extern "C" float lbl_80564200;
 extern "C" void fn_801345D8(char *, int, const char *, ...);
 extern "C" void fn_80236954(char *);
 extern "C" void fn_8027F204(char *);
-extern "C" void fn_80284760(void *widget) {
+extern "C" void updateRingMenuInfo(void *widget) {
     /* Per-frame update of the ring menu's information fields.  The widget owns
      * an item list (+0x60); this refreshes where the ring is drawn, whether it
      * may be shown, and the three readouts next to it: the "earned/total"
