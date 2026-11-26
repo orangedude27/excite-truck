@@ -1031,90 +1031,131 @@ extern "C" void* fn_80157CF0(void* arg0, s32 arg1, s32 arg2) {
     obj->vtable = lbl_8032EE68;
     return arg0;
 }
-extern "C" void *fn_80157DA0(void *self, s32 arg1, s32 arg2) {
-    extern void *lbl_8032EF08;
-    extern float lbl_80561760;
-    extern char lbl_8032F2BC[];
-    char *base = (char *)self;
-    char *p, *q, *end, *r6, *r4, *end2;
-    s32 dist, r8, r9, r10;
-    s32 v3, v6, v6b, v7;
-    u32 ctr, ctr2;
-    p = base + 0x14;
-    *(void **)(base + 8) = p;
-    *(void **)base = lbl_8032F2BC;
-    *(int *)(base + 0x10) = 10;
-    *(int *)(base + 0xc) = 0;
-    do {
-        memset(p, 0, 4);
-        p += 0x38;
-    } while (p < base + 0x244);
-    *(s32 *)(base + 4) = arg2;
-    q = base + 0x280;
-    *(int *)(base + 0xc) = 0;
-    end = base + 0x2f0;
-    *(s32 *)(base + 0x244) = arg1;
-    *(int *)(base + 0x258) = 0;
-    *(float *)(base + 0x250) = lbl_80561760;
-    *(int *)(base + 0x268) = 0;
-    *(int *)(base + 0x248) = 0;
-    *(void **)base = &lbl_8032EF08;
-    *(int *)(base + 0x270) = 0;
-    *(int *)(base + 0x274) = 0;
-    if (q < end) {
-        r6 = base + 0x280;
-        dist = end - r6;
-        r8 = dist + 0xf;
-        r9 = r8 / 16;
-        r10 = r9 + 1;
-        r4 = base + 0x270;
-        if (r10 > 8) {
-            v3 = 0;
-            v6 = 0;
-            if (r6 <= end) {
-                v7 = 1;
-                if (!((u32)dist & 0x80000000) && ((u32)r8 & 0x80000000)) v7 = 0;
-                if (v7 != 0) v6 = 1;
-            }
-            if (v6 != 0) {
-                s32 s9 = r9 & 0x80000000;
-                v6b = 1;
-                if (s9 == 0 && s9 != (s32)(r10 & 0x80000000)) v6b = 0;
-                if (v6b != 0) v3 = 1;
-            }
-            if (v3 != 0) {
-                ctr = (u32)((r4 + 0x7f) - q) >> 7;
-                if (q < r4) {
-                    do {
-                        *(int *)(q + 0) = 0; *(int *)(q + 4) = 0;
-                        *(int *)(q + 0x10) = 0; *(int *)(q + 0x14) = 0;
-                        *(int *)(q + 0x20) = 0; *(int *)(q + 0x24) = 0;
-                        *(int *)(q + 0x30) = 0; *(int *)(q + 0x34) = 0;
-                        *(int *)(q + 0x40) = 0; *(int *)(q + 0x44) = 0;
-                        *(int *)(q + 0x50) = 0; *(int *)(q + 0x54) = 0;
-                        *(int *)(q + 0x60) = 0; *(int *)(q + 0x64) = 0;
-                        *(int *)(q + 0x70) = 0; *(int *)(q + 0x74) = 0;
-                        q += 0x80;
-                        ctr -= 1;
-                    } while (ctr != 0);
-                }
-            }
+extern "C" void *fn_80157DA0(void *self, s32 arg1, s32 arg2)
+{
+  extern void *lbl_8032EF08;
+  extern float lbl_80561760;
+  extern char lbl_8032F2BC[];
+  char *base = (char *) self;
+  char *p;
+  char *q;
+  char *r6;
+  char *r4;
+  char *end2;
+  s32 r8;
+  s32 dist;
+  s32 r9;
+  char *end;
+  s32 v3;
+  s32 v6;
+  s32 r10;
+  s32 v7;
+  u32 ctr;
+  u32 ctr2;
+  p = base + 0x14;
+  *((void **) (base + 8)) = p;
+  *((void **) base) = lbl_8032F2BC;
+  *((int *) (base + 0x10)) = 10;
+  *((int *) (base + 0xc)) = 0;
+  do
+  {
+    memset(p, 0, 4);
+    p += 0x38;
+  }
+  while (p < (base + 0x244));
+  *((s32 *) (base + 4)) = arg2;
+  q = base + 0x280;
+  *((int *) (base + 0xc)) = 0;
+  *((s32 *) (base + 0x244)) = arg1;
+  *((int *) (base + 0x258)) = 0;
+  *((float *) (base + 0x250)) = lbl_80561760;
+  *((int *) (base + 0x268)) = 0;
+  *((int *) (base + 0x248)) = 0;
+  *((void **) base) = &lbl_8032EF08;
+  *((int *) (base + 0x270)) = 0;
+  *((int *) (base + 0x274)) = 0;
+  if ((((q + 1) - 1) - 1) < ((end = base + 0x2f0) - 1))
+  {
+    r6 = base + 0x280;
+    dist = end - r6;
+    r10 = (r9 = (r8 = dist + 0xf) / 16) + 1;
+    r4 = base + 0x270;
+    if (r10 > 8)
+    {
+      v6 = 0;
+      v3 = 0;
+      if (r6 <= end)
+      {
+        v7 = 1;
+        if ((!(((u32) dist) & 0x80000000)) && (((u32) r8) & 0x80000000))
+        {
+          v7 = 0;
         }
-        end2 = base + 0x2f0;
-        ctr2 = (u32)((end2 + 0xf) - q) >> 4;
-        if (q < end2) {
-            do {
-                *(int *)(q + 0) = 0;
-                *(int *)(q + 4) = 0;
-                q += 0x10;
-                ctr2 -= 1;
-            } while (ctr2 != 0);
+        if (v7 != 0)
+        {
+          v6 = 1;
         }
+      }
+      if (v6 != 0)
+      {
+        s32 s9 = (r9 & 0xFFFFu) & 0x80000000;
+        r9 = 1;
+        if (((s9 == 0) && (s9 != ((s32) (r10 & 0x80000000)))) != 0.0f)
+        {
+          r9 = 0;
+        }
+        if (r9 != 0)
+        {
+          v3 = 1;
+        }
+      }
+      if (v3 != 0)
+      {
+        ctr = ((u32) ((r4 + 0x7f) - q)) >> 7;
+        if (q < r4)
+        {
+          do
+          {
+            *((int *) (q + 0)) = 0;
+            *((int *) (q + 4)) = 0;
+            *((int *) (q + 0x10)) = 0;
+            *((int *) (q + 0x14)) = 0;
+            *((int *) (q + 0x20)) = 0;
+            *((int *) (q + 0x24)) = 0;
+            *((int *) (q + 0x30)) = 0;
+            *((int *) (q + 0x34)) = 0;
+            *((int *) (q + 0x40)) = 0;
+            *((int *) (q + 0x44)) = 0;
+            *((int *) (q + 0x50)) = 0;
+            *((int *) (0x54 + q)) = 0;
+            *((int *) (q + 0x60)) = 0;
+            *((int *) (q + 0x64)) = 0;
+            *((int *) (q + 0x70)) = 0;
+            *((int *) (q + 0x74)) = 0;
+            q += 0x80;
+            ctr -= 1;
+          }
+          while (ctr != 0);
+        }
+      }
     }
-    *(int *)(base + 0x26c) = 0;
-    *(char *)(base + 0x2f0) = 0;
-base = 0;
-    return self;
+    end2 = base + 0x2f0;
+    ctr2 = ((u32) ((end2 + 0xf) - q)) >> 4;
+    if (q < end2)
+    {
+      do
+      {
+        *((int *) (q + 0)) = 0;
+        *((int *) (q + 4)) = 0;
+        q += 0x10;
+        ctr2 -= 1;
+      }
+      while (ctr2 != 0);
+    }
+  }
+  *((int *) (base + 0x26c)) = 0;
+  *((char *) (base + 0x2f0)) = 0;
+  return self;
 }
 #pragma scheduling on
 extern "C" f32 lbl_80561750;
@@ -2317,74 +2358,97 @@ extern f32 lbl_8055A02C;
 extern f32 lbl_80561788;
 extern f32 lbl_805617B4;
 #pragma scheduling invalid_target
-extern "C" void fn_8015A5E0(void *arg0, void *arg1, s32 arg2, u32 arg3) {
-    u8 *base;
-    u8 *p;
-    u8 *q;
-    s32 found;
-    s32 i;
-    f32 now;
-    f32 tol;
-    f32 lim;
-    if (!(*(f32 *)((u8 *)arg1 + 0x25d4) > lbl_805617B4 * lbl_8055A02C)) return;
-    if (arg2 != 0x3eb) return;
-    if (*((u8 *)arg0 + 0x2d1)) return;
-    lim = lbl_80561788;
-    tol = lbl_80558DC4[0];
-    now = lbl_8055E3C8;
-    base = (u8 *)arg0 + 0x26c;
-    found = 0;
-    p = base;
-    for (i = 0; i < 2; i++) {
-        if ((f32)__fabs(*(f32 *)(p + 0x4) - now) <= tol) {
-            found = 1;
-        }
-        if (*(u32 *)p == arg3 && now - *(f32 *)(p + 0x4) < lim) {
-            return;
-        }
-        if ((f32)__fabs(*(f32 *)(p + 0x10) - now) <= tol) {
-            found = 1;
-        }
-        if (*(u32 *)(p + 0xc) == arg3 && now - *(f32 *)(p + 0x10) < lim) {
-            return;
-        }
-        if ((f32)__fabs(*(f32 *)(p + 0x1c) - now) <= tol) {
-            found = 1;
-        }
-        if (*(u32 *)(p + 0x18) == arg3 && now - *(f32 *)(p + 0x1c) < lim) {
-            return;
-        }
-        if ((f32)__fabs(*(f32 *)(p + 0x28) - now) <= tol) {
-            found = 1;
-        }
-        if (*(u32 *)(p + 0x24) == arg3 && now - *(f32 *)(p + 0x28) < lim) {
-            return;
-        }
-        p += 0x30;
+extern "C" void fn_8015A5E0(void *arg0, void *arg1, s32 arg2, u32 arg3)
+{
+  u8 *base;
+  s32 found;
+  u8 *p;
+  u8 *q;
+  s32 i;
+  f32 now;
+  f32 tol;
+  f32 lim;
+  if (!((*((f32 *) (((u8 *) arg1) + 0x25d4))) > (lbl_805617B4 * lbl_8055A02C)))
+  {
+    return;
+  }
+  if (arg2 != 0x3eb)
+  {
+    return;
+  }
+  if (*(((u8 *) arg0) + 0x2d1))
+  {
+    return;
+  }
+  lim = lbl_80561788;
+  tol = lbl_80558DC4[0];
+  now = lbl_8055E3C8;
+  base = ((u8 *) arg0) + 0x26c;
+  found = 0;
+  p = base;
+  for (i = 0; i < 2; i++)
+  {
+    if (((f32) __fabs((*((f32 *) (p + 0x4))) - now)) <= tol)
+    {
+      found = 1;
     }
-    p = 0;
-    q = base;
-    for (i = 0; i < 2; i++) {
-        if (p == 0 || *(f32 *)(q + 0x4) < *(f32 *)(p + 0x4)) {
-            p = q;
-        }
-        q += 0xc;
-        if (p == 0 || *(f32 *)(q + 0x4) < *(f32 *)(p + 0x4)) {
-            p = q;
-        }
-        q += 0xc;
-        if (p == 0 || *(f32 *)(q + 0x4) < *(f32 *)(p + 0x4)) {
-            p = q;
-        }
-        q += 0xc;
-        if (p == 0 || *(f32 *)(q + 0x4) < *(f32 *)(p + 0x4)) {
-            p = q;
-        }
-        q += 0xc;
+    if (((*((u32 *) p)) == arg3) && ((now - (*((f32 *) (p + 0x4)))) < lim))
+    {
+      return;
     }
-    *(f32 *)(p + 0x4) = now;
-    p[8] = found;
-    *(u32 *)p = arg3;
+    if (((f32) __fabs((*((f32 *) (p + 0x10))) - now)) <= tol)
+    {
+      found = 1;
+    }
+    if (((*((u32 *) (p + 0xc))) == arg3) && ((now - (*((f32 *) (p + 0x10)))) < lim))
+    {
+      return;
+    }
+    if (((f32) __fabs((*((f32 *) (p + 0x1c))) - now)) <= tol)
+    {
+      found = 1;
+    }
+    if (((*((u32 *) (p + 0x18))) == arg3) && ((now - (*((f32 *) (p + 0x1c)))) < lim))
+    {
+      return;
+    }
+    if (((f32) __fabs((*((f32 *) (p + 0x28))) - now)) <= tol)
+    {
+      found = 1;
+    }
+    if (((*((u32 *) (p + 0x24))) == arg3) && ((now - (*((f32 *) (p + 0x28)))) < lim))
+    {
+      return;
+    }
+    p += 0x30;
+  }
+
+  p = 0;
+  q = base;
+  for (i = 0; i < 2; i++)
+  {
+    if ((p == 0) || ((*((f32 *) (q + 0x4))) < (*((f32 *) (p + 0x4)))))
+    {
+      p = q;
+    }
+    if ((p == 0) || ((double) ((*((f32 *) (q + 0x10))) < ((0, *((f32 *) (p + 0x4)))))))
+    {
+      p = q + 0xc;
+    }
+    if ((p == 0) || ((*((f32 *) (q + 0x1c))) < (*((f32 *) (p + 0x4)))))
+    {
+      p = q + 0x18;
+    }
+    if ((p == 0) || ((*((f32 *) (q + 0x28))) < (*((f32 *) (p + 0x4)))))
+    {
+      p = q + 0x24;
+    }
+    q += 0x30;
+  }
+
+  *((f32 *) (p + 0x4)) = now;
+  p[8] = found;
+  *((u32 *) p) = arg3;
 }
 // lbl_80558DC4 is the "has this float moved at all" tolerance; lbl_8055E3C8 is
 // the running game clock, saved here as the tracker's start time.
@@ -2443,7 +2507,7 @@ extern "C" void fn_801E9DC4(void*);
 extern "C" void fn_80198EA0(s32);
 extern "C" f32 lbl_805617B4, lbl_805617B8, lbl_805617BC;
 #pragma scheduling on
-extern "C" f32 fn_8015A8D8(void* a, void* arg1) {
+extern "C" f32 updateBonusTracker(void* a, void* arg1) {
     /* Frame-driven player update.  When the player's "any slot active" flag
      * (+0x2F0) is set, step each of the eight 0x10-byte slots through a
      * 6-state machine (idle -> queued -> running -> armed -> playing -> done)
