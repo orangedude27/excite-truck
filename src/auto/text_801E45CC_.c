@@ -51,7 +51,7 @@ extern int sprintf(char *, const char *, ...);
 
 #pragma scheduling invalid_target
 /* Draws the debug/status overlay panel with device, recording, and log information. */
-void fn_801E45CC(void) {
+void drawDebugPanel(void) {
     char textBuf[80];
     register char *textBase = DBG_FORMAT_STR;
     int y;
@@ -90,7 +90,7 @@ void fn_801E45CC(void) {
     fn_802389E4();
 }
 
-/* Key handler of the debug overlay panel (fn_801E45CC): takes one typed key as
+/* Key handler of the debug overlay panel (drawDebugPanel): takes one typed key as
  * its ASCII code, adjusts the LOD factor or flips one of the debug flags, and
  * returns 0 when the key is not the panel's. */
 int handleDebugPanelKey(int key) {
