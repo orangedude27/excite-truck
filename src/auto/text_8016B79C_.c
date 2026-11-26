@@ -303,7 +303,7 @@ typedef struct CrushRoundState8016B964 {
     int counters[4];              /* +0xF8: cue flags: abort, step, pause, finish */
 } CrushRoundState8016B964;
 #pragma scheduling invalid_target
-extern "C" void updateRingChallengeResults(CrushRoundState8016B964 *round, s32 totalScore, s32 bonusScore, s32 timeBonus) {
+/* Refill the ring-challenge results overlay's text cells (bonus, counting time bonus, caption, totals and grade) and step the round's animation/sound state machine. */ extern "C" void updateRingChallengeResults(CrushRoundState8016B964 *round, s32 totalScore, s32 bonusScore, s32 timeBonus) {
     /* Refills the results overlay's text cells (bonus, the time bonus counting up,
        its caption, total, score without the time bonus, time left and the grade)
        and steps the round's animation and sound state machine.  Same shape as the
