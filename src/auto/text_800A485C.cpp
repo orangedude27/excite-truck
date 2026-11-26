@@ -13850,7 +13850,7 @@ extern "C" s32 fn_800BB3F4(s32);
 #pragma opt_propagation off
 /* Lazily open the storage device and register an interrupt callback for the
    given device id: zero id -> 1, a conflicting id -> 0xB, setup failure -> 0x15. */
-extern "C" s32 fn_800B9DCC(u32 deviceId) {
+extern "C" s32 openStorageDevice(u32 deviceId) {
     u32 zero = 0;
     void *device;
     s32 status;
