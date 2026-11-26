@@ -672,6 +672,7 @@ extern "C" void fn_80245D74(void *arg0, void *arg1) {
     fn_802146BC((int *)frame.args, -999, -999, 1);
     *(void **)((char *)a0 + 0x20) = 0;
 }
+#pragma pop
 
 #pragma cplusplus reset
 int fn_802461D0(int object, int deleteFlag) {
