@@ -99,7 +99,7 @@ extern void fn_80230B5C(void *);
 extern void DrawList_loadMatrix(void *);
 extern void fn_802C974C(float, float, float);
 extern void fn_80012624(float);
-extern void fn_802C9A70(s32);
+extern void DrawList_drawLetterboxBars(s32);
 extern s32 fn_802787F4(void);
 extern void fn_800073D8(s32);
 extern void fn_80007318(s32);
@@ -938,7 +938,7 @@ skip16:
             fn_80012624((float)(biasedFrames.value - frameBias) / frameLimit);
             fn_80206444();
         }
-        fn_802C9A70(0);
+        DrawList_drawLetterboxBars(0);
         flag31 = KERNEL_GetTimeMs();
         if (fn_802ECC10() == 0) {
             p27[1] += flag31 - lbl_8055D380[0];

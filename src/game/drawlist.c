@@ -1231,7 +1231,7 @@ extern float lbl_80564F18, lbl_80564F28;
  * Sets a draw-guard flag, updates viewport/projection if needed, then draws
  * left/right and/or top/bottom black bars based on scaled view dimensions.
  */
-void fn_802C9A70(int drawBars) {
+void DrawList_drawLetterboxBars(int drawBars) {
     int sideBarWidth;
     int topBarHeight;
     int horizontalDelta;

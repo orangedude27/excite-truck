@@ -401,7 +401,7 @@ extern void DrawList_beginFrame(void);
 extern int fn_801DF060(void);
 extern void updateGameFrame(int, void (*)(void *));
 extern void fn_801DFFB4(void);
-extern void fn_802C9A70(int);
+extern void DrawList_drawLetterboxBars(int);
 extern int fn_801E8838(void);
 extern int fn_800217AC(void);
 extern void fn_802C942C(int);
@@ -415,7 +415,7 @@ void fn_8000B2AC(void) {
         ? (void (*)(void *))fn_8000B288
         : (void (*)(void *))fn_8000B210);
     fn_801DFFB4();
-    fn_802C9A70(0);
+    DrawList_drawLetterboxBars(0);
     if (fn_801E8838() != 0 && fn_800217AC() != 0) {
         fn_802C942C(fn_801E8838() << 24);
     }
