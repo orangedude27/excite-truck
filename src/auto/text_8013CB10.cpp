@@ -2621,7 +2621,7 @@ extern "C" void fn_80140D1C(void *arg0, void *arg1, void *arg2) {
  * with the ready widget (2) and pause it again once the row's done flag
  * (+0x118) is set (3).  The animation manager is advanced afterwards, and the
  * row reports whether it is still running. */
-extern "C" u32 updateResultsOverlayRow(void *panel, void *item) {
+/* Update one row of the results overlay panel: refresh its text fields (bonus parts, time bonus, mode, total/base score, rank name) and advance its stage/animation. */ extern "C" u32 updateResultsOverlayRow(void *panel, void *item) {
 #define formatInt fn_801345D8
 #define formatScore fn_801308F4
 #define formatTimeMMSS fn_80130980
