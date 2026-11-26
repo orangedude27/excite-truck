@@ -587,7 +587,7 @@ extern "C" { DECL_SECTION(".sdata") extern s32 lbl_8055DD28; }
 extern "C" s32 lbl_8055DD30;
 extern "C" s32 fn_800B8004(s32);
 extern "C" s32 fn_800B8048(s32);
-extern "C" s32 fn_800B960C(s32, s32, s32, s32, s32 *, s32);
+extern "C" s32 prfile2ReadBlocks(s32, s32, s32, s32, s32 *, s32);
 struct FatCopyA { s32 w[4]; };
 struct FatCopyB { s32 w[3]; };
 extern "C" s32 lbl_803D2140[];
@@ -13261,7 +13261,7 @@ extern "C" s32 fn_800B8F20(s32 buffer, s32 path, s32 length, s32 offset, s32 *ou
         fn_800B8048(lbl_8055DD30);
         return -0x14;
     }
-    result = fn_800B960C(offset, path, length, 0x200, outBytes, buffer);
+    result = prfile2ReadBlocks(offset, path, length, 0x200, outBytes, buffer);
     if (result != 0) {
         fn_800B8048(lbl_8055DD30);
         return result;
@@ -13557,7 +13557,7 @@ static inline void fn800B960CSetSlotError(u32 key, s32 err) {
         }
     }
 }
-extern "C" s32 fn_800B960C(s32 blockCount, s32 dst, s32 blockIndex, s32 blockSize, s32 *blocksRead, s32 fileId) {
+extern "C" s32 prfile2ReadBlocks(s32 blockCount, s32 dst, s32 blockIndex, s32 blockSize, s32 *blocksRead, s32 fileId) {
     /* prfile2: read blockCount blocks of blockSize bytes out of the NAND image file
      * held open in the file-state slot tagged fileId, starting at block blockIndex,
      * into the buffer at dst.  The slot's NAND handle is seeked to the start
@@ -27527,7 +27527,7 @@ extern "C" f32 lbl_80560E3C;
   extern "C" s32 lbl_8055DD30;
   extern "C" s32 fn_800B8004(s32);
   extern "C" s32 fn_800B8048(s32);
-  extern "C" s32 fn_800B960C(s32, s32, s32, s32, s32 *, s32);
+  extern "C" s32 prfile2ReadBlocks(s32, s32, s32, s32, s32 *, s32);
 extern "C" const char lbl_8031E764[];
 extern "C" const char lbl_8031E740[];
 namespace nw4hbm { namespace db { namespace detail { struct ConsoleHead; } s32 Console_GetTotalLines(detail::ConsoleHead *); } }
