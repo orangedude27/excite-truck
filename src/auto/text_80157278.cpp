@@ -2507,14 +2507,14 @@ extern "C" void fn_801E9DC4(void*);
 extern "C" void fn_80198EA0(s32);
 extern "C" f32 lbl_805617B4, lbl_805617B8, lbl_805617BC;
 #pragma scheduling on
-extern "C" f32 updateBonusTracker(void* a, void* arg1) {
+/* Advance the bonus tracker for one frame: step each player's 6-state slot machine, update progress counters, and finalize or accumulate the bonus value. */ extern "C" f32 updateBonusTracker(void* tracker, void* playerCar) {
     /* Frame-driven player update.  When the player's "any slot active" flag
      * (+0x2F0) is set, step each of the eight 0x10-byte slots through a
      * 6-state machine (idle -> queued -> running -> armed -> playing -> done)
      * keyed off the player's car, and count slot completions.  Then advance the
      * shared progress counters and either finalize the bonus accumulator or
      * park it for the next frame, returning the accumulated bonus value. */
-    u8* p = (u8*)a;
+    u8* p = (u8*)tracker;
     s32 end;
     if (p[0x2f0]) {
         s32 active = fn_801D48FC(*(s32*)(p+0x26c));
@@ -2577,7 +2577,7 @@ extern "C" f32 updateBonusTracker(void* a, void* arg1) {
                 ++*(s32*)(p+0x260);
                 *(f32*)(p+0x254) = *(f32*)(p+0x250);
                 *(f32*)(p+0x25c) = full;
-                ((Fn8015889C*)a)->v32();
+                ((Fn8015889C*)tracker)->v32();
                 if (*(s32*)(p+0x248) && *(void**)(p+0x268))
                     *(s32*)((u8*)*(void**)(p+0x268)+8) = 0;
                 fn_80198EA0(i);
@@ -2586,20 +2586,20 @@ extern "C" f32 updateBonusTracker(void* a, void* arg1) {
         if (!p[0x2f0]) *(s32*)(p+0x26c) = 0;
     }
     *(f32*)(p+0x254) = fn_801429D0(lbl_80561754, *(f32*)(p+0x254)-lbl_8056177C);
-    if (!fn_8015A404(arg1) && !((Fn8015889C*)a)->v37())
+    if (!fn_8015A404(playerCar) && !((Fn8015889C*)tracker)->v37())
         *(f32*)(p+0x254) = fn_801429D0(*(f32*)(p+0x254), lbl_8056179C);
     f32 result = lbl_80561754;
     end = 0;
-    if (((Fn8015889C*)a)->v39()) {
-        s32 last = fn_80158D04(a)-1;
-        s32 current = ((Fn8015889C*)a)->v23();
+    if (((Fn8015889C*)tracker)->v39()) {
+        s32 last = fn_80158D04(tracker)-1;
+        s32 current = ((Fn8015889C*)tracker)->v23();
         if (current == last) end = 1;
     }
     if (fn_80141F7C(*(f32*)(p+0x254)) || end) {
-        if (*(s32*)(p+0x264) > 0) result = ((f32 (*)(void*, void*))fn_8015A368)(a,arg1);
-        if (!end) flushPendingBonusEvent((Unk8015A368C*)a);
+        if (*(s32*)(p+0x264) > 0) result = ((f32 (*)(void*, void*))fn_8015A368)(tracker,playerCar);
+        if (!end) flushPendingBonusEvent((Unk8015A368C*)tracker);
     } else if (*(s32*)(p+0x264) > 0) {
-        ((Fn8015889C*)a)->v34();
+        ((Fn8015889C*)tracker)->v34();
     }
     return result;
 }
