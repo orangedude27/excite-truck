@@ -1855,7 +1855,7 @@ extern u8 lbl_80376A80[];
 extern s32 lbl_8055D87C, lbl_8055D8BC;
 extern s32 IDShouldBe_8055D8C4, executing_8055D8C8, lbl_8055D860;
 extern BOOL DVDCompareDiskID(void *, void *);
-extern s32 fn_8003AD88(void *, s32, s32, u32);
+extern s32 DVDLowUnencryptedReadAsync(void *, s32, s32, u32);
 extern void __DVDHandleCommandStatus(u32);
 extern char lbl_80376B20[];
 extern char lbl_80376B40[];
@@ -1890,7 +1890,7 @@ void fn_8003684C(void) {
             lbl_8055D860 = 0;
             fn_8003BCDC(0);
             LOG_ENTRY(0x21, 0x10000, 0x20);
-            fn_8003AD88(idBase + 0xA0, 0x20, 0x10000, (u32)__DVDHandleCommandStatus);
+            DVDLowUnencryptedReadAsync(idBase + 0xA0, 0x20, 0x10000, (u32)__DVDHandleCommandStatus);
         } else {
             LOG_ENTRY(0x10, 0, 0);
             DVDLowRawReadAsync(0, 0, __DVDHandleMotorError);
@@ -1904,7 +1904,7 @@ void fn_8003684C(void) {
             lbl_8055D860 = 0;
             fn_8003BCDC(0);
             LOG_ENTRY(0x21, 0x10000, 0x20);
-            fn_8003AD88(idBase + 0xA0, 0x20, 0x10000, (u32)__DVDHandleCommandStatus);
+            DVDLowUnencryptedReadAsync(idBase + 0xA0, 0x20, 0x10000, (u32)__DVDHandleCommandStatus);
         }
         break;
     }
@@ -1953,7 +1953,7 @@ void __DVDHandleCommandStatus(u32 status) {
         *(s32 *)(errorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
         *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
         OSRestoreInterrupts(savedIrq);
-        fn_8003AD88(lbl_80376B40, 0x20, 0x10008, (u32)fn_80036D24);
+        DVDLowUnencryptedReadAsync(lbl_80376B40, 0x20, 0x10008, (u32)fn_80036D24);
         return;
     }
 
@@ -2851,7 +2851,7 @@ extern void (*lbl_80558E08)(void *, void *);
  *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
  OSRestoreInterrupts(irq);
 }
-     ((void (*)(void *, u32, u32, void *))fn_8003AD88)(*(u8 **)(blockBytes+0x18)+*(u32 *)(blockBytes+0x20), *(u32 *)(blockBytes+0x1c), *(u32 *)(blockBytes+0x10)+(*(u32 *)(blockBytes+0x20)>>2), fn_80038870);
+     ((void (*)(void *, u32, u32, void *))DVDLowUnencryptedReadAsync)(*(u8 **)(blockBytes+0x18)+*(u32 *)(blockBytes+0x20), *(u32 *)(blockBytes+0x1c), *(u32 *)(blockBytes+0x10)+(*(u32 *)(blockBytes+0x20)>>2), fn_80038870);
    } break;
  case 35: fn_8003BCDC(0); ((void (*)(u32, int, int, int, void *, void *))DVDLowOpenPartition)(*(u32 *)(blockBytes+0x10),0,0,0,*(void **)(blockBytes+0x18),fn_80038870); break; /* DVDLowClosePartition */
  case 36: fn_8003BCDC(0); fn_8003AC24(fn_80038870); break;

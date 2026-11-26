@@ -95,7 +95,7 @@ extern unsigned char lbl_80560C70, lbl_80560C71, lbl_80560C72, lbl_80560C73;
 extern void *lbl_8055DA34;
 extern unsigned int *lbl_8055DA38, *lbl_8055DA3C, *lbl_8055DA40;
 extern int fn_8003AC24(void *callback, ...);
-extern int fn_8003AD88(void *buffer, int length, int input, void *callback);
+extern int DVDLowUnencryptedReadAsync(void *buffer, int length, int input, void *callback);
 extern int fn_8003A834(void *buffer, void *callback);
 extern void DVDLowOpenPartition(unsigned int partition, int arg1, int arg2, int arg3, void *buffer, void *callback);
 extern void DVDLowInit(void);
@@ -145,7 +145,7 @@ void fn_8004DDFC(void) {
     entry = (unsigned int *)(base - 0x4300);
     lbl_8055DA40 = (unsigned int *)entry;
     lbl_8055DA2C = 0;
-    fn_8003AD88(entry, 0x20, 0x10000, (void *)fn_8004DDF4);
+    DVDLowUnencryptedReadAsync(entry, 0x20, 0x10000, (void *)fn_8004DDF4);
     if (lbl_8055DA2C != 0) {
         if (lbl_8055DA2C != (void *)1) {
             const char *format = lbl_803049C0;
@@ -157,7 +157,7 @@ void fn_8004DDFC(void) {
     entry = (unsigned int *)(base - 0x42E0);
     lbl_8055DA3C = (unsigned int *)entry;
     lbl_8055DA2C = 0;
-    fn_8003AD88(entry, 0x20, *(int *)((unsigned char *)lbl_8055DA40 + 4), (void *)fn_8004DDF4);
+    DVDLowUnencryptedReadAsync(entry, 0x20, *(int *)((unsigned char *)lbl_8055DA40 + 4), (void *)fn_8004DDF4);
     if (lbl_8055DA2C != 0) {
         if (lbl_8055DA2C != (void *)1) {
             const char *format = lbl_803049C0;
@@ -241,7 +241,7 @@ void fn_8004DDFC(void) {
     entry = (unsigned int *)(base - 0x4300);
     lbl_8055DA40 = (unsigned int *)entry;
     lbl_8055DA2C = 0;
-    fn_8003AD88(entry, 0x20, 0x10000, (void *)fn_8004DDF4);
+    DVDLowUnencryptedReadAsync(entry, 0x20, 0x10000, (void *)fn_8004DDF4);
     if (lbl_8055DA2C != 0) {
         if (lbl_8055DA2C != (void *)1) {
             const char *format = lbl_803049C0;
@@ -253,7 +253,7 @@ void fn_8004DDFC(void) {
     entry = (unsigned int *)(base - 0x42E0);
     lbl_8055DA3C = (unsigned int *)entry;
     lbl_8055DA2C = 0;
-    fn_8003AD88(entry, 0x20, *(int *)((unsigned char *)lbl_8055DA40 + 4), (void *)fn_8004DDF4);
+    DVDLowUnencryptedReadAsync(entry, 0x20, *(int *)((unsigned char *)lbl_8055DA40 + 4), (void *)fn_8004DDF4);
     if (lbl_8055DA2C != 0) {
         if (lbl_8055DA2C != (void *)1) {
             const char *format = lbl_803049C0;

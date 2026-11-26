@@ -679,7 +679,7 @@ int fn_8003AC24(void *arg0) {
  * length and input) in the next command-buffer slot and submit it through
  * IOS_IoctlAsync using buffer/length as the transfer. Frees the claimed context
  * if dispatch fails; returns 0 on failure, else 1. */
-int fn_8003AD88(void *buffer, int length, int input, void *callback) {
+int DVDLowUnencryptedReadAsync(void *buffer, int length, int input, void *callback) {
     const char *msg = lbl_80302848;
     unsigned int one = 1;
     unsigned char *context;
