@@ -284,7 +284,7 @@ extern u8 lbl_8055B374[];
 extern void *lbl_8055EC38;
 extern void *lbl_8055EC44;
 int stricmp(const char *, const char *);
-    void *fn_801F8188(void *a, s32 b, s32 c);
+    void *createPlacedObject(void *a, s32 b, s32 c);
   void Abend_Panic(const char *, ...);
   s32 fn_801F9450(void *node);
       void *fn_801F95C4(void *fn, void *node);
@@ -664,7 +664,7 @@ extern "C" s32 fn_801F815C(const char *typeName) {
     return stricmp(typeName, lbl_8055B2C4) == 0;
 }
 
-/* Keys fn_801F8188 reads out of the parameter node (the game's object/parameter files). */
+/* Keys createPlacedObject reads out of the parameter node (the game's object/parameter files). */
 #define OBJ_KEY_TYPE        ((const char *)lbl_8055B2CC)  /* "type": composite / animation / sound */
 #define OBJ_KEY_MODEL       lbl_8055B2A8                  /* "model" */
 #define OBJ_KEY_NAME        ((const char *)lbl_8055B2DC)  /* "name" */
@@ -696,12 +696,12 @@ struct PlacedObj {
     ShadowDesc shadow;    /* 0x78 */
 };
 
-/* fn_801F8188 - object factory: looks at the parameter node's "type" ("composite", "animation",
+/* createPlacedObject - object factory: looks at the parameter node's "type" ("composite", "animation",
  * "sound", or none of them) and lets the matching creator in the table at 0x802F9BA0 allocate the
  * object, then fills in what every type shares: its placement matrix (optionally transformed by
  * `transform`), model name, drop height, "forbidden in objects file" flag and shadow description,
  * and finally its "name" when the caller asks for it. Returns the new object. */
-extern "C" void *fn_801F8188(void *node, s32 transform, s32 copyName) {
+extern "C" void *createPlacedObject(void *node, s32 transform, s32 copyName) {
     /* The parameter node: reads values and child nodes by key through its vtable. */
     class Node {
     public:
@@ -896,7 +896,7 @@ extern "C" void *fn_801F861C(void) {
 #define OBS_OPT_REFLECT_LOAD  0x100 /* "reflect_on_load": mirror the placement (fn_801FB284) */
 #define OBS_OPT_ONESIDED      0x200 /* "onesided": nothing shows through it */
 
-/* fn_801F86C8 - the obstacle creator.  The object factory (fn_801F8188) falls through to it for
+/* fn_801F86C8 - the obstacle creator.  The object factory (createPlacedObject) falls through to it for
  * any node whose "type" is none of composite / animation / sound, so an obstacle is what a plain
  * object in the game's object files becomes.  It allocates the object under the "ObstacleDI" tag,
  * builds the part every created object shares plus the "OBST" record at +0x10C (fn_801F8988), and
@@ -1346,7 +1346,7 @@ extern "C" void *fn_801F9338(void *self) {
 
 body:
     if (strcmp(((Node *)child)->name(), (const char *)&lbl_8055B36C) == 0) {
-        void *placed = fn_801F8188(child, (s32)transform, 0);
+        void *placed = createPlacedObject(child, (s32)transform, 0);
         *(void **)((u8 *)placed + 0x24) = head;
         head = placed;
     }
@@ -1366,7 +1366,7 @@ get_node:
 extern "C" void *fn_801F93FC(void *node) {
     /* Create a placed object from the given node and push it onto the global
      * placed-object list (lbl_8055EC38). */
-    void *placedObj = fn_801F8188(node, 0, 1);
+    void *placedObj = createPlacedObject(node, 0, 1);
     fn_801F9440((F92Node **)&lbl_8055EC38, (F92Node *)placedObj);
     return placedObj;
 }
