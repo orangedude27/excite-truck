@@ -2751,10 +2751,11 @@ extern void fn_8003AC24(void *);
 extern void (*lbl_80558E08)(void *, void *);
 #pragma push
 #pragma use_lmw_stmw off
-/* DVD low-level command completion handler: reads the command code from a DVD
- * command block, logs selected commands to the debug error-info ring buffer,
- * then dispatches each command to its DVDLow* routine (read, seek, inquiry,
- * open partition, ...). Long reads are split into 0x80000-byte chunks. */
+/* DVD low-level command completion handler (the driver's busy state): reads the
+ * command code from a DVD command block, logs selected commands to the debug
+ * error-info ring buffer, then dispatches each command to its DVDLow* routine
+ * (read, seek, inquiry, open partition, ...). Long reads are split into
+ * 0x80000-byte chunks. */
 void fn_80038368(void *block) {
  u8 *p = block;
  int offset;
