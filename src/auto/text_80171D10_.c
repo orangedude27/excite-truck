@@ -801,9 +801,8 @@ extern void fn_801CB648(int, int, float);
 
 #pragma push
 #pragma scheduling invalid_target
-// Allocates and initializes a 0x2BC-byte object: sets vtable/data fields and counters,
-// initializes several float/word fields, clears/initializes fixed-size byte/string regions,
-// caches related resource IDs/handles, and returns the object (or NULL on allocation failure).
+/* Allocate and initialize the crush-mode "crushmaster" controller: its vtable,
+ * buffer and round-result strings, overlay textures and prerace sound. */
 void *createCrushMaster(void) {
     extern void *fn_801284F8(unsigned int, void *);
     extern void fn_8001DAE0(void *, float);
@@ -816,19 +815,19 @@ void *createCrushMaster(void) {
     extern char lbl_80331018[];
     extern float lbl_80561A44, lbl_80561A80, lbl_80561A90, lbl_8055E3A8;
     extern int lbl_8055E3A4;
-    char *base = lbl_80330F48;
+    char *strings = lbl_80330F48;
     unsigned int zero = 0;
-    void *object = fn_801284F8(0x2BC, base + 0x2C);
-    if (object != 0) {
-        unsigned char *bytes = (unsigned char *)object;
-        void *data = bytes + 0x10;
+    void *master = fn_801284F8(0x2BC, strings + 0x2C);
+    if (master != 0) {
+        unsigned char *bytes = (unsigned char *)master;
+        void *taskBuffer = bytes + 0x10;
         void *vtable = lbl_80331018;
-        float firstValue = lbl_80561A44;
+        float initialValue = lbl_80561A44;
         *(void **)bytes = vtable;
-        *(void **)(bytes + 4) = data;
+        *(void **)(bytes + 4) = taskBuffer;
         *(int *)(bytes + 0xC) = 0x10;
         *(int *)(bytes + 8) = zero;
-        fn_8001DAE0(bytes + 0x174, firstValue);
+        fn_8001DAE0(bytes + 0x174, initialValue);
         fn_8001DAE0(bytes + 0x17C, lbl_80561A80);
         fn_8001DAE0(bytes + 0x184, lbl_80561A90);
         fn_8001DAE0(bytes + 0x18C, lbl_80561A90);
@@ -859,18 +858,18 @@ void *createCrushMaster(void) {
         bytes[0x275] = (unsigned char)zero;
         memset(bytes + 0x286, 0x30, 3);
         {
-            void *name = base + 0x38;
+            void *zoneSetName = strings + 0x38;
             bytes[0x289] = (unsigned char)zero;
-            lbl_8055E3A4 = fn_80139D4C(name);
-            *(int *)&lbl_8055E3A8 = RegisterTextureByName(base + 0x48, 0);
-            *(int *)(bytes + 0x198) = RegisterTextureByName(base + 0x58, 0);
+            lbl_8055E3A4 = fn_80139D4C(zoneSetName);
+            *(int *)&lbl_8055E3A8 = RegisterTextureByName(strings + 0x48, 0);
+            *(int *)(bytes + 0x198) = RegisterTextureByName(strings + 0x58, 0);
             if (lbl_8055E3A4 != 0)
-                fn_802E30C8(base + 0x64, name);
-            *(int *)(bytes + 0x2B4) = fn_80207848(base + 0x8C, 1);
+                fn_802E30C8(strings + 0x64, zoneSetName);
+            *(int *)(bytes + 0x2B4) = fn_80207848(strings + 0x8C, 1);
             bytes[0x2B8] = (unsigned char)zero;
         }
     }
-    return object;
+    return master;
 }
 #pragma scheduling on
 #pragma pop
