@@ -4148,7 +4148,7 @@ void fn_8006022C(s32 chan)
 #pragma opt_propagation off
 s32 fn_800604E8(s32 chan, s32 statusOut, void* callback) {
     /* Queue a RPTID_REQUEST_STATUS report on a ready channel: check status and handshake, copy the command into a free standard-queue slot and advance its tail. Returns WPAD_ERR_OK, WPAD_ERR_COMMUNICATION_ERROR if unready or full, or the channel's prior error. */
-    WPADCB* cb = lbl_8038F4F0[chan];
+    WPADCB* cb = _wpdcb[chan];
     s32 intrState, nestedIntrState, result, handshakeDone;
     s32 enqueueOk;
     s32 negTwo;
