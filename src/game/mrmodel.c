@@ -1379,17 +1379,17 @@ extern float gModelBaseRadius;
 extern float PSVECSquareDistance(const float *, const float *);
 /* For each type-2 group of the model, cull it by SPHL sphere distance and submit
  * its eligible elements through fn_802C53C4 / fn_802CC550 using the global context. */
-/* Submit eligible elements of the model's type-2 groups for display, culling groups by SPHL sphere distance first. */ void MRModel_SubmitType2Groups(int instanceId, float viewDistance) {
-    char *groupEntry;
+/* Cull each type-2 group of a model instance by its SPHL bounding-sphere distance from the camera, then link a display entry for every eligible element and update that element's texture-slot weight. */ /* Submit eligible elements of the model's type-2 groups for display, culling groups by SPHL sphere distance first. */ void MRModel_SubmitType2Groups(int instanceId, float viewDistance) {
+    char *group;
     int transformId;
-    int j;
-    int *elementList;
+    int elementIndex;
+    int *elements;
     int groupOffset;
-    void *distanceVector;
-    void *heightVector;
+    void *sphereCenter;
+    void *sphereTolerance;
     int elementOffset;
-    int *groupList;
-    void *modelVectors;
+    int *groups;
+    void *sphl;
     int groupIndex;
     float squareDistance;
     float baseRadius;
@@ -1399,41 +1399,41 @@ extern float PSVECSquareDistance(const float *, const float *);
     if (instanceId == -1)
         return;
 
-    groupList = (int *)MRModel_GetInstanceGroupList(instanceId);
-    if (*groupList <= 0)
+    groups = (int *)MRModel_GetInstanceGroupList(instanceId);
+    if (*groups <= 0)
         return;
 
     baseRadius = gModelBaseRadius;
-    modelVectors = (void *)fn_802C5E7C(groupList);
-    distanceVector = modelVectors;
-    heightVector = modelVectors;
+    sphl = (void *)fn_802C5E7C(groups);
+    sphereCenter = sphl;
+    sphereTolerance = sphl;
 
     for (groupIndex = 0, groupOffset = 0;
-         groupIndex < *groupList;
+         groupIndex < *groups;
          groupOffset += 0x10,
-         distanceVector = (char *)distanceVector + 0x10,
-         heightVector = (char *)heightVector + 0x10,
+         sphereCenter = (char *)sphereCenter + 0x10,
+         sphereTolerance = (char *)sphereTolerance + 0x10,
          groupIndex++) {
-        if (*(int *)((char *)*(int **)((char *)groupList + 4) + groupOffset) != 2)
+        if (*(int *)((char *)*(int **)((char *)groups + 4) + groupOffset) != 2)
             continue;
-        if (modelVectors != 0) {
+        if (sphl != 0) {
             squareDistance = PSVECSquareDistance((float *)(gModelDrawContext + 4),
-                                                 (float *)distanceVector);
-            if (!(squareDistance < (viewDistance + *(float *)((char *)heightVector + 0xC)) *
-                                    (viewDistance + *(float *)((char *)heightVector + 0xC))))
+                                                 (float *)sphereCenter);
+            if (!(squareDistance < (viewDistance + *(float *)((char *)sphereTolerance + 0xC)) *
+                                    (viewDistance + *(float *)((char *)sphereTolerance + 0xC))))
                 continue;
         }
 
-        j = 0;
+        elementIndex = 0;
         transformId = *(int *)gModelDrawContext;
         elementOffset = 0;
-        groupEntry = (char *)*(int **)((char *)groupList + 4) + groupOffset;
-        elementList = *(int **)(groupEntry + 8);
+        group = (char *)*(int **)((char *)groups + 4) + groupOffset;
+        elements = *(int **)(group + 8);
 
-        for (; j < *elementList;
-             elementOffset += 4, j++) {
+        for (; elementIndex < *elements;
+             elementOffset += 4, elementIndex++) {
             int valid = 0;
-            void **innerEntries = *(void ***)((char *)elementList + 4);
+            void **innerEntries = *(void ***)((char *)elements + 4);
             void *element = *(void **)((char *)innerEntries + elementOffset);
             unsigned int type = *(unsigned int *)element;
 
@@ -1456,12 +1456,12 @@ extern float PSVECSquareDistance(const float *, const float *);
             }
             if (valid) {
                 void *node = *(void **)((char *)element + 0x14);
-                void *r4;
-                fn_802C53C4(groupEntry, node, transformId, -1, 0);
-                r4 = ((void *(*)(void *))fn_802C57B0)(
-                    *(void **)(groupEntry + 0xC));
-                fn_802CC550(*(int *)node, r4, baseRadius,
-                            *(float *)((char *)r4 + 0x18));
+                void *lookupData;
+                fn_802C53C4(group, node, transformId, -1, 0);
+                lookupData = ((void *(*)(void *))fn_802C57B0)(
+                    *(void **)(group + 0xC));
+                fn_802CC550(*(int *)node, lookupData, baseRadius,
+                            *(float *)((char *)lookupData + 0x18));
             }
         }
     }
