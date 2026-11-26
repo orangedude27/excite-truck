@@ -114,7 +114,7 @@ struct SurfXform {
    word after them (+0x4000).  While there is room a draw only queues its transform,
    which fn_802D6C78 then runs in chunks out of the L2 cache at the start of the next
    frame; once the queue is full the drawer transforms its vertices itself.
-   lbl_804CEC3C is the queue of the format-16 drawer fn_802D45C0. */
+   lbl_804CEC3C is the queue of the format-16 drawer drDrawSurfLayout16. */
 struct SurfXformQueue {
     struct SurfXform entry[0x400];
     s32 queued;
@@ -341,7 +341,7 @@ void fn_802D4458(void *arg0) {
  * displacing each weighted source vertex along the shared offset direction, queue
  * that transform for the next frame's streaming pass when there is room (or do it
  * inline when the queue is full), then bind the arrays and submit the prebuilt list. */
-void fn_802D45C0(void *surface) {
+void drDrawSurfLayout16(void *surface) {
     /* Source vertices of this layout: a position plus how far along lbl_804C56F0
        (the renderer's shared normalized offset direction) to push it. */
     struct WeightedPos { f32 x, y, z, weight; };
@@ -1023,7 +1023,7 @@ void fn_802D5F88(s32 arg0) {
     case 0: drDrawSurfLayout10(surface); break;
     case 4: if (fn_802DAC64()) drDrawSurfLayout14(surface); else fn_802D42E4(surface); break;
     case 9: fn_802D4458(surface); break;
-    case 16: fn_802D45C0(surface); break;
+    case 16: drDrawSurfLayout16(surface); break;
     case 17: fn_802D50B4(surface); break;
     case 5: fn_802D5270(surface); break;
     case 1: drDrawSurfLayout11(surface); break;
