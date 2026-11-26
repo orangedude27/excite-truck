@@ -1685,48 +1685,48 @@ extern "C" int nextEntryOnPage(void) {
         }
     };
     unsigned int pageKey;
-    int itemIndex;
+    int index;
     void *item;
-    Object *obj;
+    Object *object;
 
     if (*(volatile unsigned int *)&lbl_8055F688 == 0)
         goto reset;
-    itemIndex = ItemFinder::indexOf((void *)lbl_8055F688);
-    item = lbl_804B3048.items[itemIndex];
+    index = ItemFinder::indexOf((void *)lbl_8055F688);
+    item = lbl_804B3048.items[index];
     if (*(Object * volatile *)((char *)item + 0x60) == 0)
         goto finish;
-    obj = *(Object **)((char *)item + 0x60);
-    pageKey = obj->getKey();
-    itemIndex++;
-    while (itemIndex < lbl_804B3048.count) {
-        item = lbl_804B3048.items[itemIndex];
-        obj = *(Object **)((char *)item + 0x60);
-        if (obj != 0 && obj->getKey() == pageKey)
+    object = *(Object **)((char *)item + 0x60);
+    pageKey = object->getKey();
+    index++;
+    while (index < lbl_804B3048.count) {
+        item = lbl_804B3048.items[index];
+        object = *(Object **)((char *)item + 0x60);
+        if (object != 0 && object->getKey() == pageKey)
             break;
-        itemIndex++;
+        index++;
     }
-    if (itemIndex >= lbl_804B3048.count)
+    if (index >= lbl_804B3048.count)
         goto finish;
     lbl_804B3068[0] = 0;
-    if (itemIndex < 0)
+    if (index < 0)
         goto clear;
-    if (itemIndex >= lbl_804B3048.count)
+    if (index >= lbl_804B3048.count)
         goto clear;
-    item = lbl_804B3048.items[itemIndex];
+    item = lbl_804B3048.items[index];
     lbl_8055F688 = (unsigned int)item;
     if (item != 0 && *(Object * volatile *)((char *)item + 0x60) != 0) {
-        Object *o = *(Object **)((char *)item + 0x60);
-        char *src = o->getText();
-        int n = 100;
-        char *dst = (char *)lbl_804B3068;
+        Object *selected = *(Object **)((char *)item + 0x60);
+        char *sourceText = selected->getText();
+        int remaining = 100;
+        char *display = (char *)lbl_804B3068;
         goto copy_test;
         for (;;) {
-            if (--n <= 0) {
-                dst[-1] = 0;
+            if (--remaining <= 0) {
+                display[-1] = 0;
                 break;
             }
 copy_test:
-            if ((*dst++ = *src++) == 0)
+            if ((*display++ = *sourceText++) == 0)
                 break;
         }
     }
