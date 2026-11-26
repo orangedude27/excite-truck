@@ -422,7 +422,7 @@ void fn_80296AAC(void *arg0) {
 #pragma cplusplus on
 /* Looks up or builds a 0x30-byte-entry table from a named collection iterator,
  * filtering/copying entries into a newly allocated result buffer. */
-extern "C" void *FlipBook_create(char *arg0, void *arg1) {
+extern "C" void *FlipBook_create(char *name, void *config) {
     class Iterator {
     public:
         virtual void v0();
@@ -436,11 +436,11 @@ extern "C" void *FlipBook_create(char *arg0, void *arg1) {
     int idx, off, back;
     char sp8[0x30];
 
-    result = fn_80296950(arg0);
+    result = fn_80296950(name);
     if (result == 0) {
         ok = 0;
-        if (fn_8012C33C(arg0) != 0) {
-            it = (Iterator *)fn_80131808(arg0);
+        if (fn_8012C33C(name) != 0) {
+            it = (Iterator *)fn_80131808(name);
             openCount = 0;
             fn_80296AAC(sp8);
             closeCount = 0;
@@ -456,8 +456,8 @@ extern "C" void *FlipBook_create(char *arg0, void *arg1) {
                     closeCount++;
                 }
             }
-            if (arg1 != 0) {
-                fn_802964EC(sp8, arg1, sp8);
+            if (config != 0) {
+                fn_802964EC(sp8, config, sp8);
             }
             if (openCount != 0) {
                 ok = 1;
@@ -465,10 +465,10 @@ extern "C" void *FlipBook_create(char *arg0, void *arg1) {
                 *(void **)((char *)result + 0x24) = fn_8002F37C(fn_8012850C(openCount * 0x30 + 0x10, lbl_80349354, openCount * 0x30), (void *)fn_80296D24, 0, 0x30, openCount);
                 *(int *)((char *)result + 0x2C) = openCount;
                 *(int *)((char *)result + 0x28) = 0;
-                if (arg1 != 0) {
+                if (config != 0) {
                     *(char *)result = 0;
                 } else {
-                    strncpy((char *)result, arg0, 0x20);
+                    strncpy((char *)result, name, 0x20);
                 }
                 idx = 0;
                 back = 0;
