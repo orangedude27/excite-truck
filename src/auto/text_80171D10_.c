@@ -2009,7 +2009,7 @@ void fn_80174918(void *arg0, int arg1) {
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" __declspec(section ".sdata") const char lbl_8055A2EC[4];
-/* Build a formatted message/value object: look up two entries by key in a table,
+/* Builds a message/value entry: look up two entries by key in a value table,
  * convert the numeric value through the first entry (or copy the second verbatim
  * when it is absent), then attach a printf-formatted string (or clear it). */
 extern "C" void buildMessageEntry(void **table, int valueKey, int fallbackKey, char *format, double number, ...) {
