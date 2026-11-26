@@ -277,7 +277,7 @@ enum { MOTOR_STATE_WORKING, MOTOR_STATE_PENDING_STOP, MOTOR_STATE_STOPPED };
 #define ResetDone      lbl_8055D890  // set by cbForPrepareReset; __DVDPrepareReset polls it
 
 // The cancel helpers below, under the names the RVL SDK's DVD.cpp gives them.
-#define DVDCancelAsync fn_80039424   // cancel one command block, answer when done
+#define DVDCancelAsync DVDCancelAsyncCore   // cancel one command block, answer when done
 #define stateReady     fn_80038040   // start the next command on the waiting queue
 #define stateCoverClosed     fn_8003773C // the drive's cover-closed state
 #define stateBusy            fn_80038368 // the drive's busy state: run the block's command
@@ -3249,7 +3249,7 @@ extern s32 __DVDDequeueWaitingQueue(void *);
 // Returns FALSE when a cancel is already in flight (only one at a time).
 // (callback is a DVDCommandCallback; the driver's callers all keep it as a
 // plain (s32, void *) function pointer, so the parameter does too.)
-s32 fn_80039424(DVDCommandBlock *block, void (*callback)(s32, void *)) {
+s32 DVDCancelAsyncCore(DVDCommandBlock *block, void (*callback)(s32, void *)) {
     s32 enabled = OSDisableInterrupts();
     switch (block->state) {
     case DVD_STATE_FATAL: case DVD_STATE_IDLE: case DVD_STATE_CANCELED:
@@ -3369,7 +3369,7 @@ s32 DVDCancel(void *block) {
     u32 command;
     /* Synchronously cancel a DVD command block, waiting for the drive/driver to
      * reach a terminal or safely cancelable state. */
-    if (((s32 (*)(void *, void *))fn_80039424)(block, (void *)fn_80039838) == 0)
+    if (((s32 (*)(void *, void *))DVDCancelAsyncCore)(block, (void *)fn_80039838) == 0)
         return -1;
     enabled = OSDisableInterrupts();
     for (;;) {
@@ -3390,7 +3390,7 @@ s32 DVDCancel(void *block) {
 }
 
 /* RVL SDK DVD cbForCancelSync (dvdcancel.c): the cancel-completion callback
- * DVDCancel hands to DVDCancelAsync(fn_80039424).  The driver calls it once the
+ * DVDCancel hands to DVDCancelAsync(DVDCancelAsyncCore).  The driver calls it once the
  * cancel has landed, waking the thread that is sleeping on __DVDThreadQueue
  * waiting for the command block to reach a terminal state. */
 void fn_80039838(void) {
