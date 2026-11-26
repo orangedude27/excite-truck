@@ -935,7 +935,7 @@ extern "C" void *fn_80207428(void *object, int arg1, int arg2, int soundIndex, i
 /* Check whether a sound's key appears in a record list and update its flags:
  * set flag6e when any record's value matches the key, then clear flag18 unless
  * flag6e is set. */
-extern "C" void checkSoundKeyInRecords(Obj80207490 *sound, const Rec80207490 *entries, int count) {
+/* Set the sound's key-found flag when any record's value equals its key, then clear the dependent flag unless the key was found. */ extern "C" void checkSoundKeyInRecords(Obj80207490 *sound, const Rec80207490 *entries, int count) {
     sound->flag6e = false;
     int index = 0;
     if (count > 0) {
