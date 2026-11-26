@@ -1486,7 +1486,7 @@ copyDone:
 extern int fn_80214A9C(int);
 extern int fn_80214AF0(int);
 /* Update 5-star level indicators: highlight selected (0x74) and show achieved (<= 0x1C). */
-void updateStarLevelIndicators(void *menu) {
+/* Show/hide the five star level indicators: highlight the selected star and mark stars up to the achieved level. */ void updateStarLevelIndicators(void *menu) {
     int i;
     for (i = 1; i <= 5; i++) {
         if (*(int *)((char *)menu + 0x74) == i)
