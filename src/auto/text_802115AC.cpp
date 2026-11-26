@@ -2356,7 +2356,7 @@ extern "C" void fn_802152C8(void) {
 }
 #pragma dont_inline reset
 
-extern "C" s32 fn_802192A4(void *, s32);
+extern "C" s32 baseWidgetOnMessage(void *, s32);
 #pragma dont_inline on
 extern "C" void fn_802152C8(void);
 #pragma dont_inline reset
@@ -2858,11 +2858,11 @@ extern "C" s32 fn_80215A74(void *arg0, s32 arg1) {
 /* Vtable slot 0x64 of the widget wrapper (vtable lbl_8033D480): forward the
  * call to the wrapped widget at +0x244 through its vtable slot 0x58, and report
  * 1 when that answers nonzero; otherwise fall back on the base handler
- * fn_802192A4, which answers 0. */
+ * baseWidgetOnMessage, which answers 0. */
 extern "C" s32 fn_80215AA4(void *wrapper, s32 arg1) {
     VfObj *widget = *(VfObj **)((u8 *)wrapper + 0x244);
     if (widget->vf20() != 0) return 1;
-    return fn_802192A4(wrapper, arg1);
+    return baseWidgetOnMessage(wrapper, arg1);
 }
 
 /* Forward to the wrapped widget at +0x244 and invoke its vtable slot 0x5C (vf21). */

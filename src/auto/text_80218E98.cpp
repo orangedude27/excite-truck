@@ -874,7 +874,7 @@ extern "C" void fn_802192A0(void) {
  * widget class claims no message, so it always answers 0 ("not handled");
  * derived widgets' handlers call it as the fallback for every key they do not
  * use themselves (see fn_8021AB90, fn_802239C8 and the text field's handler). */
-extern "C" s32 fn_802192A4(void *widget, s32 message) { return 0; }
+extern "C" s32 baseWidgetOnMessage(void *widget, s32 message) { return 0; }
 extern "C" int memcmp(const void *, const void *, size_t);
 extern "C" void *memcpy(void *, const void *, size_t);
 #pragma use_lmw_stmw off
@@ -1142,11 +1142,11 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80219900(void *self, 
 }
 
 #pragma dont_inline on
-/* Forward a widget message to the default message handler (fn_802192A4),
+/* Forward a widget message to the default message handler (baseWidgetOnMessage),
  * which always reports the message as unhandled. Kept out-of-line by the
  * surrounding #pragma dont_inline so the call is a tail call. */
 extern "C" s32 fn_80219958(void *widget, s32 message) {
-    return fn_802192A4(widget, message);
+    return baseWidgetOnMessage(widget, message);
 }
 #pragma dont_inline reset
 extern "C" void *fn_8021995C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
@@ -1566,10 +1566,10 @@ extern "C" s32 fn_8022F8CC(s32);
 extern "C" s32 fn_8022FFE8(s32);
 extern f32 lbl_805634E4;
 #pragma dont_inline on
-/* Tail-call forwarder to the base widget message handler fn_802192A4, which
+/* Tail-call forwarder to the base widget message handler baseWidgetOnMessage, which
  * reports every message as unhandled (returns 0). */
 extern "C" s32 fn_8021A804(void *widget, s32 message) {
-    return fn_802192A4(widget, message);
+    return baseWidgetOnMessage(widget, message);
 }
 
 /* Cursor-bound icon widget (0x25C bytes), built by fn_8021A808 (vtable
@@ -1704,7 +1704,7 @@ extern "C" s32 fn_8021AB88(void) { return 0; }
  * widget's handler. */
 #define SelectPrevWidget fn_80217AC0
 #define SelectNextWidget fn_802179A0
-#define BaseOnMessage fn_802192A4
+#define BaseOnMessage baseWidgetOnMessage
 
 #pragma push
 #pragma scheduling invalid_target
@@ -4311,7 +4311,7 @@ insert_check:
             if(field->active!=0)field->dirty=1;
             goto handled;
         }
-        return fn_802192A4(widget,key);
+        return baseWidgetOnMessage(widget,key);
     }
 handled:
 #pragma scheduling off
@@ -6675,7 +6675,7 @@ lower:
     ((void (*)(void *))fn_80223644)(object);
     return 1;
 fallback:
-    return fn_802192A4(object, message);
+    return baseWidgetOnMessage(object, message);
 }
 
 /* Row-draw override for the sound-list menu (it replaces the base class's
@@ -6704,7 +6704,7 @@ extern "C" void fn_80223A58(MenuSoundList *list) {
 
 /* Always-true stub of the menu-list class family implemented here: reports 1
  * ("yes" / "message handled") without looking at the object or its arguments.
- * The base version of the same hook answers 0 (fn_802192A4) and the working
+ * The base version of the same hook answers 0 (baseWidgetOnMessage) and the working
  * overrides are fn_80223760 (cursor keys) and fn_802239C8.  It is not one of
  * the first 24 slots of the sibling vtables lbl_8033E3D4, lbl_8033E458 or
  * lbl_8033E4DC, so it overrides a later slot or is used as a plain callback. */
