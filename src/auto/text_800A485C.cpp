@@ -12445,47 +12445,47 @@ extern "C" void fn_800B78F4(void *dateOut, void *timeOut) {
 
 extern "C" s32 lbl_80559238;
 extern "C" s32 fn_800BA404(void);
-extern "C" s32 dispatchVfDriveRequest(u32 arg0, s32 arg1, s32 arg2, void* arg3) {
+/* Dispatch a VF/NAND drive request: validate the operation and drive context, resolve a handle for ops 0-2, submit the request (copying extra info for op 2), then update the per-drive handle/id tables. */ extern "C" s32 dispatchVfDriveRequest(u32 operation, s32 infoData, s32 extraInfo, void* drive) {
     struct Req {
         void *list[2];
         u8 info[0x50];
         s32 extra;
     } __attribute__((aligned(8)));
-    s32 sp8;
+    s32 handle;
     Req req;
-    s32 r;
+    s32 status;
     /* Dispatches a VF/NAND drive request (arg0 selects the operation) for the drive
      * context in arg3: validates inputs, resolves a handle for ops 0-2, submits it
      * via fn_800B7408 (copying extra info when arg0==2), and updates the per-drive
      * handle/id tables indexed by the drive letter at arg3+8. */
-    if (arg0 >= 4) return -2;
-    if (arg3 == 0) return -2;
-    if (arg0 == 2 && arg1 == 0) return -2;
-    if (arg0 == 3 && *(s32*)arg3 == 0) return -2;
-    if (arg0 <= 2) {
-        if (fn_800A5958((u8*)lbl_80559238 + ((arg0 & 0xFF) << 3), &sp8)) return -1;
-        if (fn_800A5994((void*)sp8, 0, (s32*)arg3)) return -1;
+    if (operation >= 4) return -2;
+    if (drive == 0) return -2;
+    if (operation == 2 && infoData == 0) return -2;
+    if (operation == 3 && *(s32*)drive == 0) return -2;
+    if (operation <= 2) {
+        if (fn_800A5958((u8*)lbl_80559238 + ((operation & 0xFF) << 3), &handle)) return -1;
+        if (fn_800A5994((void*)handle, 0, (s32*)drive)) return -1;
     }
-    req.list[0] = arg3;
+    req.list[0] = drive;
     req.list[1] = 0;
-    if (arg0 == 2) {
-        memcpy(req.info, (void*)arg1, 0x4e);
-        req.extra = arg2;
+    if (operation == 2) {
+        memcpy(req.info, (void*)infoData, 0x4e);
+        req.extra = extraInfo;
     }
-    if (arg0 == 2) {
-        r = ((s32 (*)(void*, void*))fn_800B7408)(req.list, req.info);
+    if (operation == 2) {
+        status = ((s32 (*)(void*, void*))fn_800B7408)(req.list, req.info);
     } else {
-        r = ((s32 (*)(void*, void*))fn_800B7408)(req.list, 0);
+        status = ((s32 (*)(void*, void*))fn_800B7408)(req.list, 0);
     }
-    if (r) return -1;
-    s32 idx = *(s8*)((u8*)arg3 + 8) - 0x41;
-    if (arg0 <= 2) {
-        lbl_80405C30[idx] = sp8;
-        lbl_80405C98[idx] = *(s32*)arg3;
-        if (arg0 == 0 && fn_800BA404()) *((u8*)req.list[0] + 9) |= 0x10;
+    if (status) return -1;
+    s32 driveIndex = *(s8*)((u8*)drive + 8) - 0x41;
+    if (operation <= 2) {
+        lbl_80405C30[driveIndex] = handle;
+        lbl_80405C98[driveIndex] = *(s32*)drive;
+        if (operation == 0 && fn_800BA404()) *((u8*)req.list[0] + 9) |= 0x10;
     } else {
-        lbl_80405C30[idx] = 0;
-        lbl_80405C98[idx] = 0;
+        lbl_80405C30[driveIndex] = 0;
+        lbl_80405C98[driveIndex] = 0;
     }
     return 0;
 }
