@@ -4639,7 +4639,7 @@ s32 WPADSendStreamDataInline(s32 chan, void* pData, u16 len) {
     s32 enqueueOk;
     s32 head;
     u8 command[0x60] ALIGN(8);
-    u8* cmdQueue;
+    WPADCommandQueue* queue;
     s8 usedCount, tailIndex;
     s32 lastSlot, wrapMask;
     intrState = OSDisableInterrupts();
@@ -4660,25 +4660,25 @@ s32 WPADSendStreamDataInline(s32 chan, void* pData, u16 len) {
     *(double*)&command[0x48] = *(double*)&command[0x18];
     *(double*)&command[0x50] = *(double*)&command[0x20];
     *(double*)&command[0x58] = *(double*)&command[0x28];
-    cmdQueue = (u8*)&cb->stdCmdQueue;
+    queue = &cb->stdCmdQueue;
     intrState = OSDisableInterrupts();
     nestedIntrState = OSDisableInterrupts();
-    head = cmdQueue[0];
-    usedCount = (s8)(cmdQueue[1] - head);
+    head = (u8)queue->front;
+    usedCount = (s8)((u8)queue->back - head);
     if (usedCount < 0) {
-        usedCount = (s8)(usedCount + *(u32*)(cmdQueue + 8));
+        usedCount = (s8)(usedCount + queue->capacity);
     }
     OSRestoreInterrupts(nestedIntrState);
-    if (*(u32*)(cmdQueue + 8) - 1 == (u32)usedCount) {
+    if (queue->capacity - 1 == (u32)usedCount) {
         OSRestoreInterrupts(intrState);
         enqueueOk = 0;
     } else {
-        memset(*(u8**)(cmdQueue + 4) + (s8)cmdQueue[1] * 0x30, 0, 0x30);
-        memcpy(*(u8**)(cmdQueue + 4) + (s8)cmdQueue[1] * 0x30, command + 0x30, 0x30);
-        tailIndex = (s8)cmdQueue[1];
-        lastSlot = *(s32*)(cmdQueue + 8) - 1;
+        memset((u8*)queue->buffer + (s8)queue->back * 0x30, 0, 0x30);
+        memcpy((u8*)queue->buffer + (s8)queue->back * 0x30, command + 0x30, 0x30);
+        tailIndex = (s8)queue->back;
+        lastSlot = (s32)queue->capacity - 1;
         wrapMask = ~(((s32)tailIndex - lastSlot) | (lastSlot - (s32)tailIndex)) >> 31;
-        cmdQueue[1] = (tailIndex + 1) & ~wrapMask;
+        queue->back = (tailIndex + 1) & ~wrapMask;
         OSRestoreInterrupts(intrState);
         enqueueOk = 1;
     }
