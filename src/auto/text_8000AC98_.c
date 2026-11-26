@@ -735,22 +735,26 @@ extern void dispatchGameLoopKey(int, int);
 extern unsigned char lbl_8055D3ED;
 #pragma push
 #pragma dont_inline on
-/* Per-frame home/menu/audio-key handler: tracks home-button state transitions,
- * handles menu open conditions, runs input/audio updates, and dispatches key events.
- */
+/* Per-frame game-loop step: mirror the Home-menu flag into the sound state,
+ * open the game-loop menu when play is idle, run input/audio updates, then
+ * dispatch key events (suppressed while the Home menu is open). */
 void GameLoop_handleHomeAndKeys(void) {
-    int state;
-    int result;
+#define gLastHomeState  lbl_8055D3ED
+#define gGameStateTable lbl_802FBC90
+#define gCurrentState   lbl_8055D3D0
+#define gLastStateTick  lbl_8055D3E4
+    int homeState;
+    int value;
     int key;
-    int code;
+    int keyCode;
 
-    state = fn_802ECC10();
-    if ((unsigned int)state != (unsigned int)lbl_8055D3ED) {
-        lbl_8055D3ED = state;
+    homeState = fn_802ECC10();
+    if ((unsigned int)homeState != (unsigned int)gLastHomeState) {
+        gLastHomeState = homeState;
         if (Sound_isActive() == 0 &&
             fn_801DF060() == 0 &&
-            lbl_8055D3D0 == (void *)lbl_802FBC90) {
-            if (state == 0) {
+            gCurrentState == (void *)gGameStateTable) {
+            if (homeState == 0) {
                 Sound_start();
                 fn_80206454();
             } else {
@@ -765,12 +769,12 @@ void GameLoop_handleHomeAndKeys(void) {
         fn_800216D0() == 0 &&
         fn_80161C70() != 0 &&
         fn_801E8838() == 0 &&
-        lbl_8055D3D0 == (void *)lbl_802FBC90) {
-        result = fn_8000D764();
-        if (result != -1) {
+        gCurrentState == (void *)gGameStateTable) {
+        value = fn_8000D764();
+        if (value != -1) {
             fn_8000D048((void *)fn_8000B42C, (void *)fn_8000B3B4, 0);
             fn_8000ADE0(1);
-            lbl_8055D3E4 = result;
+            gLastStateTick = value;
         }
     }
 
@@ -783,13 +787,13 @@ void GameLoop_handleHomeAndKeys(void) {
     if (fn_802E47B8() == 0)
         return;
     key = fn_802E46F0();
-    result = fn_802ECC10();
-    key &= ~((-result | result) >> 31);
+    value = fn_802ECC10();
+    key &= ~((-value | value) >> 31);
     if ((unsigned short)key == 0)
         return;
     if ((fn_801769A8() & 0x4000) != 0) {
-        code = key & 0xFFFF;
-        if (code != 0x58 && code != 0xD)
+        keyCode = key & 0xFFFF;
+        if (keyCode != 0x58 && keyCode != 0xD)
             goto call_key;
         if (Sound_isActive() != 0 ||
             fn_8020DE1C() != 0 ||
@@ -800,6 +804,10 @@ void GameLoop_handleHomeAndKeys(void) {
     }
 call_key:
     dispatchGameLoopKey((unsigned short)key, fn_802E4A10());
+#undef gLastStateTick
+#undef gCurrentState
+#undef gGameStateTable
+#undef gLastHomeState
 }
 #pragma pop
 extern int fn_80019BA8(void);
