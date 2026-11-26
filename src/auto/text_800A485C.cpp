@@ -575,7 +575,7 @@ extern "C" void fn_800C4BD8(s32 *, s32, u32);
 extern "C" void fn_800C4B5C(s32, s32);
 extern "C" void *fn_800C4B8C(s32);
 extern "C" u32 lbl_802EEF40[];
-extern "C" s32 fn_800AF5A0(void *, s32, s32 *);
+extern "C" s32 readFat12ClusterEntry(void *, s32, s32 *);
 extern "C" s32 fn_800AFE14(void *, s32, s32 *);
 extern "C" s32 fn_800B0258(void *, s32, s32 *);
 extern "C" s32 parseAudioStreamHeader(void *, s32, s32);
@@ -5748,7 +5748,7 @@ loop_body:
     context = *(void **)((u8 *)fileInfo + 0x34);
     switch (*(s32 *)((u8 *)context + 0x1C)) {
     case 0:
-        result = fn_800AF5A0(context, (u16)current, (s32 *)&end);
+        result = readFat12ClusterEntry(context, (u16)current, (s32 *)&end);
         break;
     case 1:
         result = fn_800AFE14(context, current, (s32 *)&end);
@@ -5889,7 +5889,7 @@ extern "C" s32 VFiPFFAT_ReadClusterNoPage(void *file, s32 cluster, s32 chainPos,
     if (*(s32 *)(fileBytes + 0x1C) == 0 || *fromCache == 0) {
         switch (VF_VOL_FAT_TYPE(*(u8 **)(fileBytes + 0x34))) {
         case VF_FAT_TYPE_12:
-            result = fn_800AF5A0(*(void **)(fileBytes + 0x34), (u16)cluster, outCluster);
+            result = readFat12ClusterEntry(*(void **)(fileBytes + 0x34), (u16)cluster, outCluster);
             break;
         case VF_FAT_TYPE_16:
             result = fn_800AFE14(*(void **)(fileBytes + 0x34), cluster, outCluster);
@@ -6789,7 +6789,7 @@ cluster_result:
     return 0;
 }
 
-extern "C" s32 fn_800AF5A0(void *, s32, s32 *);
+extern "C" s32 readFat12ClusterEntry(void *, s32, s32 *);
 extern "C" s32 fn_800AFE14(void *arg0, s32 arg1, s32 *arg2);
 extern "C" s32 fn_800B5260(void *, void *, u32, u32, s32);
 extern "C" s32 fn_800B0258(void *, s32, s32 *);
@@ -7307,12 +7307,12 @@ extern "C" void fn_800AF2B8(void *field) {
 
 extern "C" s32 VFiPFFAT_TraceClustersChain(void *volume, s32 cluster, s32 *outEntry) {
     /* Reads the FAT entry for `cluster` into `*outEntry` according to the volume's FAT type
-     * at +0x1C (0 = FAT12 via fn_800AF5A0, 1 = FAT16 via fn_800AFE14, 2 = FAT32 via fn_800B0258),
+     * at +0x1C (0 = FAT12 via readFat12ClusterEntry, 1 = FAT16 via fn_800AFE14, 2 = FAT32 via fn_800B0258),
      * or sets `*outEntry = -1` and returns error 0xF for an invalid FAT type. */
     s32 result;
     switch (*(s32 *)((u8 *)volume + 0x1C)) {
     case 0:
-        result = ((s32 (*)(void *, u16))fn_800AF5A0)(volume, (u16)cluster);
+        result = ((s32 (*)(void *, u16))readFat12ClusterEntry)(volume, (u16)cluster);
         break;
     case 1:
         result = ((s32 (*)(void *, s32, s32 *))fn_800AFE14)(volume, cluster, outEntry);
@@ -7379,7 +7379,7 @@ extern "C" s32 fn_800AF584(void *volume) {
     return *(s32 *)((char *)lbl_802EEF40 + fatType * 0x14 + 8);
 }
 
-extern "C" s32 fn_800AF5A0(void *stream, s32 sampleIndex, s32 *outSample) {
+extern "C" s32 readFat12ClusterEntry(void *stream, s32 sampleIndex, s32 *outSample) {
     /* Read a 12-bit sample from an interleaved stream buffer, spanning two blocks when needed, retrying through the feed callback on 0x1000 (needs-more-data). */
     u8 buf[2];
     u32 index;
