@@ -179,7 +179,7 @@ void fn_801E7C1C(long sceneData) {
 #pragma scheduling invalid_target
 #pragma push
 #pragma opt_propagation off
-extern "C" void fn_801E7C28(void *sceneData) {
+extern "C" void endWorldCommon(void *sceneData) {
     /* WorldEndCommon: the counterpart of fn_801E7984 (WorldBeginCommon).  Ends the
      * race.  Opens a "WorldEndCommon" progress record, stops the physics and the
      * effects, lets every object in the world object table run its first virtual
@@ -350,13 +350,13 @@ extern "C" void fn_801E7C28(void *sceneData) {
 #pragma scheduling on
 #pragma cplusplus off
 
-extern void fn_801E7C28(void *);
+extern void endWorldCommon(void *);
 /* Entry point that ends the race: tail-calls the game's own "WorldEndCommon"
  * shutdown (its progress name, lbl_80339BA0 + 0x7C) for the scene described by
  * sceneData.  Counterpart of fn_801E7C1C, which clears the "scene is owned
  * elsewhere" flag and calls WorldBeginCommon (fn_801E7984). */
 void fn_801E7DEC(void *sceneData) {
-    fn_801E7C28(sceneData);
+    endWorldCommon(sceneData);
 }
 
 long fn_801E7DF0(long slot) {

@@ -38,7 +38,7 @@ int fn_801FC8DC(void) {
  * releases the two resource handles lbl_8055AFBC / lbl_8055AFB8, clears the
  * 24-entry cached subsystem table lbl_804885E8 and frees the EB context
  * lbl_8055EBA0 (or resets the UI subsystems when there is none).  The race's
- * WorldEndCommon (fn_801E7C28) calls this while tearing the world down. */
+ * WorldEndCommon (endWorldCommon) calls this while tearing the world down. */
 void fn_801FC900(void) {
 #define ReleaseTrackGrf fn_801FC8D8
     ReleaseTrackGrf();
