@@ -217,7 +217,7 @@ extern void *fn_8002F37C(void *, void (*)(void), int, int, int);
 extern void fn_8028D49C(void);
 #pragma push
 #pragma scheduling invalid_target
-void initSkidSystemBuffers(void) {
+/* Allocates the skid system's element and record buffers and wires each skid definition to its per-slot element storage. */ void initSkidSystemBuffers(void) {
     typedef struct {
         int unk0;
         int unk4;
@@ -227,43 +227,43 @@ void initSkidSystemBuffers(void) {
         int subRecords; /* 0x14 */
         int unk18;
     } SkidDef;
-    register char *labelStrings = (char *)&lbl_80348C50;
-    register int totalElems = 0;
+    register char *allocTags = (char *)&lbl_80348C50;
+    register int totalElements = 0;
     int i = 0;
-    int slots;
-    int records;
-    void *buffer;
-    int *current;
-    int *entry;
-    int *ptr;
+    int slotCount;
+    int recordCount;
+    void *elementBuffer;
+    int *elementPtr;
+    int *definition;
+    int *recordPtr;
     int defIndex;
     int slotIndex;
 
     /* Allocate and initialize per-definition skid particle/element buffers. */
     for (; i < lbl_8055F728; i++)
-        totalElems += ((SkidDef *)&lbl_804B3400)[i].elemCount;
+        totalElements += ((SkidDef *)&lbl_804B3400)[i].elemCount;
 
-    slots = fn_80287B14() * 4;
-    totalElems *= slots;
-    lbl_8055F724 = slots;
-    records = lbl_8055F728 * slots;
-    buffer = fn_8012850C(totalElems * 0x28 + 0x10, labelStrings + 0x5C);
-    lbl_8055F718 = (int)fn_8002F37C(buffer, fn_8028D49C, 0, 0x28, totalElems);
-    lbl_8055F71C = (int)fn_8012850C(records * 0xC, labelStrings + 0x6C);
-    lbl_8055F720 = (int)fn_8012850C(*(volatile int *)&lbl_8055F724 * 8, labelStrings + 0x80);
+    slotCount = fn_80287B14() * 4;
+    totalElements *= slotCount;
+    lbl_8055F724 = slotCount;
+    recordCount = lbl_8055F728 * slotCount;
+    elementBuffer = fn_8012850C(totalElements * 0x28 + 0x10, allocTags + 0x5C);
+    lbl_8055F718 = (int)fn_8002F37C(elementBuffer, fn_8028D49C, 0, 0x28, totalElements);
+    lbl_8055F71C = (int)fn_8012850C(recordCount * 0xC, allocTags + 0x6C);
+    lbl_8055F720 = (int)fn_8012850C(*(volatile int *)&lbl_8055F724 * 8, allocTags + 0x80);
 
-    entry = &lbl_804B3400;
-    current = (int *)lbl_8055F718;
-    ptr = (int *)lbl_8055F71C;
+    definition = &lbl_804B3400;
+    elementPtr = (int *)lbl_8055F718;
+    recordPtr = (int *)lbl_8055F71C;
     for (defIndex = 0; defIndex < lbl_8055F728; defIndex++) {
-        *(int **)((char *)entry + 0x14) = ptr;
+        *(int **)((char *)definition + 0x14) = recordPtr;
         for (slotIndex = 0; slotIndex < *(volatile int *)&lbl_8055F724; slotIndex++) {
-            *ptr = (int)current;
-            ptr[2] = entry[4];
-            ptr += 3;
-            current = (int *)((char *)current + entry[4] * 0x28);
+            *recordPtr = (int)elementPtr;
+            recordPtr[2] = definition[4];
+            recordPtr += 3;
+            elementPtr = (int *)((char *)elementPtr + definition[4] * 0x28);
         }
-        entry += 7;
+        definition += 7;
     }
 }
 #pragma pop
