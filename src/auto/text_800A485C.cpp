@@ -324,7 +324,7 @@ extern "C" u32 fn_800A4C04(u8 *);
 extern "C" s32 fn_800A4D44(void *);
 extern "C" s32 fn_800A4AD0(u8 *, u8 *);
 extern "C" s32 fn_800A4D74(void *, u32);
-extern "C" s16 fn_800B4D5C(void *, u32, u32);
+extern "C" s16 parseNumericPathToken(void *, u32, u32);
 extern "C" u8 lbl_80559210, lbl_80559214, lbl_80559230, lbl_80559231;
 extern "C" u16 VFiPFPATH_readNextChar(void *, s32);
 extern "C" u32 VFiPFPATH_DoMatchFileNameWithPattern(u16, s32 *, u16, s32 *, s32);
@@ -9650,7 +9650,7 @@ extern "C" s32 VFiPFPATH_cmpName(void *name, s32 pathEntry, s32 exactMatch) {
         ((u32)fn_800A4D44((void *)(u32)pathEntry) == 2U) &&
         fn_800A4AD0(scan, &lbl_80559210) != 0 &&
         fn_800A4AD0(scan, &lbl_80559214) != 0 &&
-        ((s32 (*)(void *, u32, u32))fn_800B4D5C)((void *)(u32)pathEntry, 3, 1) == 0 &&
+        ((s32 (*)(void *, u32, u32))parseNumericPathToken)((void *)(u32)pathEntry, 3, 1) == 0 &&
         exactMatch == 0) {
         return 1;
     }
@@ -9744,7 +9744,7 @@ struct VFiPFStrPos {
  * A token may not be empty, and every character it holds has to be one the
  * file system allows in a name (PF_NAME_CHAR_TABLE), with "*" and "?" taken
  * as wildcards when allowWildcards is set.  A run of digits in front of a
- * wildcard is matched by fn_800B4D5C() instead, one character at a time.
+ * wildcard is matched by parseNumericPathToken() instead, one character at a time.
  * Returns 0 when the token is good, 2 when it is malformed.
  */
 extern "C" s32 VFiPFPATH_GetNextTokenOfPath(void *pPath, s32 allowWildcards) {
@@ -9779,7 +9779,7 @@ extern "C" s32 VFiPFPATH_GetNextTokenOfPath(void *pPath, s32 allowWildcards) {
     ((VFiPFStrPos *)pPath)->read = ((VFiPFStrPos *)pPath)->pos;
     if (PF_UNICODE_NAMES) {
         /* a name with a wildcard in it is matched as a whole instead */
-        wildcardLen = ((s32 (*)(void *, u32, u32))fn_800B4D5C)(pPath, 2, allowWildcards);
+        wildcardLen = ((s32 (*)(void *, u32, u32))parseNumericPathToken)(pPath, 2, allowWildcards);
         if (wildcardLen != 0) {
             if (code == 1U)
                 ((VFiPFStrPos *)pPath)->read += wildcardLen;
@@ -9941,7 +9941,7 @@ frame.sp10[0] += 2;
 (arg2 == 0) &&
 (VFiPFSTR_StrNCmp((s32)var_r29, &lbl_80559210, 1, 0, 1) != 0) &&
 (VFiPFSTR_StrNCmp((s32)var_r29, &lbl_80559214, 1, 0, 2) != 0) &&
-(((s32 (*)(void *, u32, u32))fn_800B4D5C)(var_r29, 1, 0) == 0)) {
+(((s32 (*)(void *, u32, u32))parseNumericPathToken)(var_r29, 1, 0) == 0)) {
 var_r31 = 0;
 }
 if (var_r31 == 1) {
@@ -10591,7 +10591,7 @@ extern "C" const u8 lbl_80560D99;
    at path separators (\\, /, space, NUL).  When allowWildcards is set, '*' and
    '?' are also accepted as valid token characters.  Returns the number of
    characters consumed, or 0 if the token was not at a valid start position. */
-extern "C" s16 fn_800B4D5C(void *arg0, u32 p1, u32 arg2) {
+extern "C" s16 parseNumericPathToken(void *arg0, u32 p1, u32 arg2) {
 u8 prefix[2];
 s16 value;
 struct { void *v; } w_p0; void *&p0 = w_p0.v;
