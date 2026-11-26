@@ -666,7 +666,7 @@ test:;
  * flag at +0x19.  Switching an entry off only clears that flag; switching it on
  * stamps the current time at +0x1C and works out where the entry's local position
  * sits in the world through its object's pose. */
-extern "C" void fn_80298DE0(void *container, void *entryIndex, int enabled) {
+extern "C" void setRaceEffectEntryEnabled(void *container, void *entryIndex, int enabled) {
 #define kActiveFlag 0x19 /* entry is emitting while set */
 #define kStartTime  0x1C /* when the entry was switched on */
     int byteOffset = (int)entryIndex << 5;
@@ -2700,7 +2700,7 @@ extern "C" int fn_8029C054(int *__restrict arg0) {
 #undef gTorchFireState
 }
 
-  extern "C" void fn_80298DE0(void*, void*, int);
+  extern "C" void setRaceEffectEntryEnabled(void*, void*, int);
     extern "C" void fn_8029BBD4(void*, void*, int);
   extern "C" void fn_8029A208(void*, int, int);
 extern "C" void fn_8029A904(void* arg0, int arg1, void* arg2, float farg0, float farg1);
@@ -2721,7 +2721,7 @@ extern "C" void fn_8029C084(void *arg0, int arg1) {
         unsigned char flag = *(unsigned char *)((char *)arg0 + 0xC);
         void *ctx = lbl_8055F7C8;
         int enabled = (flag != 0 && *(int *)((char *)data + 0x5C) == 0xB) ? 1 : 0;
-        fn_80298DE0(ctx, obj, enabled);
+        setRaceEffectEntryEnabled(ctx, obj, enabled);
         fn_8029BBD4(lbl_8055F7D8, obj, flag);
         if (lbl_8055F7D0 != 0) {
             int enabled2 = (flag != 0 && *(int *)((char *)data + 0x5C) == 0xC) ? 1 : 0;
