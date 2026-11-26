@@ -1523,7 +1523,7 @@ extern void fn_802AE0E0(void);
  * of its animation cues via fn_802AE0E0; and each of the eight overlay objects it
  * holds at +0x1C0..+0x2B4 (a scene node) is reset by setting its 0x4A byte and
  * zeroing its 0x4C byte. */
-void fn_801740D4(void *arg0) {
+void resetCrushMaster(void *arg0) {
     unsigned char *self = (unsigned char *)arg0;
     float copied = *(float *)(self + 0x1A4);
     int zero = 0;
