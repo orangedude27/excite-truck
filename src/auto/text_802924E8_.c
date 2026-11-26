@@ -1598,7 +1598,7 @@ extern float lbl_80564510, lbl_805644D4, lbl_80564500, lbl_805644FC, lbl_805644D
 extern unsigned char lbl_804B4030[];
 #pragma scheduling on
 /* Steps active particles in an emitter: integrate velocity with drag and gravity, copy template data, age, and compact the live list. */
-void stepEmitterParticles(void *emitter)
+/* Steps live particles in an emitter: applies drag and gravity, refreshes template data, ages each particle, and compacts the live list. */ void stepEmitterParticles(void *emitter)
 {
   struct WordTriple
   {
