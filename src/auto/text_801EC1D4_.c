@@ -32,7 +32,7 @@ extern char lbl_8033A0B0[];
 __declspec(section ".sdata") extern char lbl_8055AFEC[];
 __declspec(section ".sdata") extern char lbl_8055AFF4[];
 void fn_801EE974(void *, void *);
-void fn_801EEA64(void *, void *, int, int);
+void loadResourceConfig(void *, void *, int, int);
 void *fn_801E87A8(void);
 void fn_801EDD7C(void *, long);
 long fn_80179CB0(void);
@@ -381,7 +381,7 @@ done2:
     fn_801345D8(sp8, 0x40, lbl_8055AFF4, a2 + 0x44);
     fn_801EE0E0(a0, a2 + 0x44, *(int *)(a2 + 0x6C), var, sp8);
     fn_801EE974(a0, a1);
-    fn_801EEA64(a0, a1, (int)(a2 + 0x44), (int)sp8);
+    loadResourceConfig(a0, a1, (int)(a2 + 0x44), (int)sp8);
     lbl_80488648[*(int *)(a0 + 0x40)] = (long)a0;
     *(int *)(a1 + 0xE4) = *(int *)(a0 + 0x48);
     t = *(int *)((char *)fn_80016474(*(int *)(a2 + 0x68), lbl_80488648) + 0x50);
@@ -1371,7 +1371,7 @@ extern int parseHexString(void);
 extern char lbl_8033A060[];
 extern char lbl_8055B080;
 #pragma cplusplus on
-extern "C" void fn_801EEA64(void *arg0, void *arg1, int arg2, int arg3) {
+extern "C" void loadResourceConfig(void *arg0, void *arg1, int arg2, int arg3) {
  /* Loads UI/string configuration for the given index from a named resource and fills output fields. */
  char *base = lbl_8033A060;
  char pathBuf[0x100]; char nameBuf[0x100]; Unk_801EEA64Iface *resource; Unk_801EEA64Iface *obj; int objId; int value, shift;
