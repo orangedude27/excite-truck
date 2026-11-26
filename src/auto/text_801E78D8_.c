@@ -1078,7 +1078,7 @@ void fn_801E89FC(void) {
  * The zComponent index assignment and the "push + 0" at the end produce no
  * instructions; they are what the original build keeps live, and dropping them
  * rotates the float registers the two correction paths use. */
-void updateWind(void)
+/* Random-walks the global wind direction and strength each step, capping the vertical slope and renormalizing the unit direction. */ void updateWind(void)
 {
   #define gWind          lbl_804881D8 /* unit direction [0..2], strength [3] */
   #define WIND_MAX_SLOPE 0.33f        /* steepest vertical the wind may point */
