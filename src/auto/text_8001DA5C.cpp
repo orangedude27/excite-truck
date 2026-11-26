@@ -329,7 +329,7 @@ extern "C" u32 lbl_80558D00;
  * pane - together with the "score_denominator" pane while fn_800167F4()
  * reports one of the two plain score modes.
  */
-extern "C" void updateScoreOverlay(void* overlay, s32 arg1, s32 value) {
+/* Update the ScoreOverlay HUD: pick the difficulty's score art, set the star row and write the score (and denominator where shown) into the layout's panes. */ extern "C" void updateScoreOverlay(void* overlay, s32 arg1, s32 score) {
     register char *strings = lbl_802FDB68;
     register s32 colorRow;
     register s32 texHandle;
@@ -375,7 +375,7 @@ extern "C" void updateScoreOverlay(void* overlay, s32 arg1, s32 value) {
         colorRow = *(volatile s32 *)((u8 *)pane + 0x18);
         fn_801476D8(layout->select(strings + 0x1CC /* "score_star_art" */),
                     colorRow, texHandle);
-        fn_801609C4(value);
+        fn_801609C4(score);
         pane = (PaneData *)layout->getPane((const char *)&lbl_80558D00 /* "score" */);
         if (pane != 0) {
             s32 tempW8;
@@ -402,7 +402,7 @@ extern "C" void updateScoreOverlay(void* overlay, s32 arg1, s32 value) {
                 fn_801473F8(layout, strings + 0x1E8 /* "score_denominator" */,
                              lbl_80558D08 /* "%s" */, denomText);
             }
-            fn_801308F8(scoreText, 0x14, value);
+            fn_801308F8(scoreText, 0x14, score);
             fn_80147230(&paneData, lbl_80558D08 /* "%s" */, scoreText);
         }
     }
