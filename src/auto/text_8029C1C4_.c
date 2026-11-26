@@ -337,7 +337,7 @@ extern "C" void *memset(void *, int, unsigned int);
    file and makes one 0x78-byte water pool per entry -- up to the eight the
    lbl_804B5010 list holds -- from the entry's origin/right/up rectangle, its
    texture index and the default simulation values below. */
-void buildWaterPools(void) {
+/* Build the 3D water pools from water3d.val, one per value-file entry, using each entry's rectangle and texture and the shared default simulation values. */ void buildWaterPools(void) {
     typedef struct { float x, y, z; } Vec;
     typedef struct { float x, y; } Vec2;
     /* the pool's rectangle: one corner and its two edge vectors */
