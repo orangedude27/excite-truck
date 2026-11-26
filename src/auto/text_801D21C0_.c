@@ -352,6 +352,8 @@ extern void *lbl_804348E8[];
 #pragma push
 #pragma use_lmw_stmw off
 #pragma processor 750
+/* Report each armed soevent spawn once per frame until its due time passes,
+ * transforming its vehicle-relative point into world space for event 10. */
 void reportSoeventSpawns(void) {
 #define sSoeventRecords lbl_80438898 /* the 8 spawn records, one per car slot */
 #define sCarTable lbl_804348E8 /* this race's vehicles; fn_801B2F24() of them */
