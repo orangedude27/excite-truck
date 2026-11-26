@@ -1907,7 +1907,7 @@ extern "C" void fn_801590A8(void* self) {
 // sideways velocity whether it is drifting, and turns the resulting level
 // into the drift sound's volume and play/stop flags (+0x4A stop, +0x4B/0x49
 // play, +0x4D volume-changed).  Returns the new drifting flag.
-extern "C" u8 updateDriftTracker(void* tracker, const void* truck) {
+/* One frame of the drift tracker: advance the ground timer, detect drifting from speed and sideways slip, and drive the drift sound's volume/play flags. */ extern "C" u8 updateDriftTracker(void* tracker, const void* truck) {
     if (*(const s32*)((const u8*)truck + 0x2620) == 0) {
         *(f32*)((u8*)tracker + 0x270) = *(f32*)((u8*)tracker + 0x270) + FRAME_TIME;
     } else {
