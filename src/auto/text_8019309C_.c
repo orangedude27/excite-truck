@@ -1086,7 +1086,7 @@ extern float lbl_80562174, lbl_80562184, lbl_805621D8, lbl_805621DC;
 extern double lbl_805621C8;
 extern float lbl_805621E0, lbl_805621E4, lbl_805621E8, lbl_805621EC;
 #pragma cplusplus on
-/* Compute the AI driver's control output and hand it to the car's controller callback. */ extern "C" void computeAIDriverControls(char *arg0, float *arg1) {
+extern "C" void computeAIDriverControls(char *driver, float *out) {
     class OtherObj {
     public:
         virtual void d0(); virtual void d1();
@@ -1102,17 +1102,21 @@ extern float lbl_805621E0, lbl_805621E4, lbl_805621E8, lbl_805621EC;
         virtual void call(float *, float *, int *);
     };
     void *work;
-    void *owner;
-    float value;
-    int i;
+    void *ownerTruck;
+    float rateScale;
+    int slotIndex;
 
-    /* Advance the controller-tracked animation value and frame, dispatching callbacks. */
-    ((void (*)(void *, float *))fn_80194FD0)(arg0, arg1);
-    work = *(void **)(arg0 + 0x288);
-    value = *(float *)((char *)work + 0x34);
-    arg1[0] += *(float *)(arg0 + 0x58) * value;
-    arg1[1] += *(float *)(arg0 + 0x5C) * value;
-    value = fn_80134C1C();
+    /* Compute the AI driver's control output for its steering controller: base
+     * path-following values from fn_80194FD0, the global AI rate scale with an
+     * optional race-end rubber-band, a rival truck's contribution or a quaternion
+     * alignment boost, and an interpolated frame index; then dispatch to the car's
+     * controller callback and raise its drive flags. */
+    ((void (*)(void *, float *))fn_80194FD0)(driver, out);
+    work = *(void **)(driver + 0x288);
+    rateScale = *(float *)((char *)work + 0x34);
+    out[0] += *(float *)(driver + 0x58) * rateScale;
+    out[1] += *(float *)(driver + 0x5C) * rateScale;
+    rateScale = fn_80134C1C();
 
     if (fn_801769A8() & 0x400) {
         float endValue = lbl_8055E3C8;
@@ -1121,44 +1125,44 @@ extern float lbl_805621E0, lbl_805621E4, lbl_805621E8, lbl_805621EC;
         float amount = lbl_80562140;
         amount = (amount < ratio) ? amount : ratio;
         amount = (amount > lbl_80562144) ? amount : lbl_80562144;
-        value = lbl_80562144 + amount * (value - lbl_80562144);
+        rateScale = lbl_80562144 + amount * (rateScale - lbl_80562144);
     }
 
     if (*(int *)((char *)work + 0x30) == 0) {
-        arg1[2] = value;
-        i = 0;
-        while (i < fn_801B2F24()) {
-            void *other = fn_801B2EC0(i);
-            if (i != *(int *)(arg0 + 0x290)) {
+        out[2] = rateScale;
+        slotIndex = 0;
+        while (slotIndex < fn_801B2F24()) {
+            void *other = fn_801B2EC0(slotIndex);
+            if (slotIndex != *(int *)(driver + 0x290)) {
                 void *state = ((OtherObj *)other)->getState();
                 if (*(int *)((char *)state + 0x30) == 0) {
-                    owner = *(void **)(arg0 + 0x294);
+                    ownerTruck = *(void **)(driver + 0x294);
                     void *track = ((OtherObj *)other)->getTrack();
-                    void *ownerAgain = *(void * volatile *)(arg0 + 0x294);
+                    void *ownerAgain = *(void * volatile *)(driver + 0x294);
                     float (*distance)(void *, float *, float *) =
                         (float (*)(void *, float *, float *))fn_80194F70;
-                    arg1[2] += distance((char *)ownerAgain + 0x54,
+                    out[2] += distance((char *)ownerAgain + 0x54,
                                         (float *)((char *)track + 0x60),
-                                        (float *)((char *)owner + 0x60));
+                                        (float *)((char *)ownerTruck + 0x60));
                     break;
                 }
             }
-            ++i;
+            ++slotIndex;
         }
     } else {
         float threshold = lbl_805621DC + (lbl_8055A48C + fn_80139048());
         float dot = PSQUATMultiply(
             (char *)*(void **)((char *)work + 0x30) + 0x60,
-            (char *)*(void **)(arg0 + 0x294) + 0x60);
+            (char *)*(void **)(driver + 0x294) + 0x60);
         if (dot > threshold) {
             float ratio = (dot - threshold) /
                           (lbl_80562174 * threshold - threshold);
             float amount = lbl_80562140;
             amount = (amount < ratio) ? amount : ratio;
             amount = (amount > lbl_80562144) ? amount : lbl_80562144;
-            arg1[2] = value + amount * ((lbl_80562160 + value) - value);
+            out[2] = rateScale + amount * ((lbl_80562160 + rateScale) - rateScale);
         } else {
-            float base = value - lbl_80562160;
+            float base = rateScale - lbl_80562160;
             float ratio;
             float amount;
             base = (lbl_80562144 > base) ? lbl_80562144 : base;
@@ -1167,28 +1171,28 @@ extern float lbl_805621E0, lbl_805621E4, lbl_805621E8, lbl_805621EC;
             amount = lbl_80562140;
             amount = (amount < ratio) ? amount : ratio;
             amount = (amount > lbl_80562144) ? amount : lbl_80562144;
-            arg1[2] = base + amount * (value - base);
+            out[2] = base + amount * (rateScale - base);
         }
     }
 
     {
-        int index = *(int *)(arg0 + 0x290);
-        float frame = arg1[2] + fn_80194B60(
+        int index = *(int *)(driver + 0x290);
+        float frame = out[2] + fn_80194B60(
             lbl_805621E0, lbl_805621E4, lbl_80562184,
-            *(float *)(arg0 + 0x26C) +
+            *(float *)(driver + 0x26C) +
                 lbl_805621E8 * (float)index);
-        arg1[3] = lbl_805621EC;
-        arg1[2] = frame;
+        out[3] = lbl_805621EC;
+        out[2] = frame;
     }
-    if (*(int *)((char *)*(void **)(arg0 + 0x294) + 0x2610) == 0) {
-        arg1[2] = lbl_80562144;
-        *(int *)(arg0 + 0x2D0) |= 0x10;
+    if (*(int *)((char *)*(void **)(driver + 0x294) + 0x2610) == 0) {
+        out[2] = lbl_80562144;
+        *(int *)(driver + 0x2D0) |= 0x10;
     }
     {
-        void *controller = *(void **)(arg0 + 0x28C);
-        ((ControllerObj *)controller)->call(arg1, arg1 + 2, (int *)(arg0 + 0x2D0));
+        void *controller = *(void **)(driver + 0x28C);
+        ((ControllerObj *)controller)->call(out, out + 2, (int *)(driver + 0x2D0));
     }
-    *(int *)(arg0 + 0x2D0) |= 0x826;
+    *(int *)(driver + 0x2D0) |= 0x826;
 }
 #pragma cplusplus reset
 extern float lbl_8055A488, lbl_8056215C;
