@@ -2215,7 +2215,7 @@ typedef union GroundPoint {
 #define GROUND_DEPTH_FLOOR lbl_80562244 /* -0.01f: keeps the ground depth off zero */
 #define PITCH_CUTOFF lbl_805621EC /* 0.7f: nose-up wanted when off the ground */
 #define PITCH_CUTOFF_SWEEP lbl_80562248 /* -1.1f: how far that cut-off falls */
-void updateGroundedBodyTilt(void *controller) {
+/* On each grounded tick, drop the truck onto the terrain and set its pitch and roll from the surface normal (near the ground) or from a falling nose-up target (higher up). */ void updateGroundedBodyTilt(void *controller) {
     /* Body tilt tick for a truck controller in its grounded state (fn_801967A4
      * case 0).  The truck's position is dropped onto the terrain, which hands
      * back the ground point and the surface normal there (normal keeps the
