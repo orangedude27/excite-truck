@@ -2042,7 +2042,7 @@ int fn_8025BBFC(void *self, int input) {
 extern unsigned char *getAchievementLevelName(int, int);
 extern int fn_801345D8(char *, int, const char *, int);
 extern const char lbl_80344F08[];
-void setObjectLevelLabel(void *arg0) {
+/* Copy a bounded achievement-level name into the object's label buffer and format its "Level %d" string. */ void setObjectLevelLabel(void *arg0) {
     /* Copy a bounded text label into the object and format its level string. */
     typedef void (*Fmt)(char *, int, const char *, ...);
     void *request = arg0;
