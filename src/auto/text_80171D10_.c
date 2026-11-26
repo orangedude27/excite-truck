@@ -25,7 +25,10 @@ typedef struct { int zero; short mark; } Fn8017431CMark;
 typedef struct { float a, b; } Fn8017431CV2;
 typedef struct { void *pad[8]; int (*m20)(void *, int); void *pad2[3]; void (*m30)(void *, int); } Fn80176040VT;
  typedef struct { Fn80176040VT *vt; } Fn80176040Obj;
- typedef struct { Fn8017431CM9 m; Fn8017431CV3 pos; Fn8017431CV3 v; int zero; short mark; } Fn8017431CFrame2;
+    typedef struct { Fn8017431CM9 m; Fn8017431CV3 pos; Fn8017431CV3 v; int zero; short mark; } Fn8017431CFrame2;
+   /* One entry of the effect table built by fn_8017353C: a count, a name in
+      lbl_80330F48 and an owner pointer into the object. */
+   typedef struct { int n; char *a; char *b; } Ent_8017353C;
 extern float PSQUATMultiply(void *, void *);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
