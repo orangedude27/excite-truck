@@ -34,7 +34,7 @@ extern int getDifficultyProperty(void *, int, int);
 extern void fn_8001D884(void *, int);
 extern int fn_8027DED0(void);
 extern int fn_8001DA48(void *, int);
-extern float fn_8014E7DC(int, int);
+extern float getDifficultyValue(int, int);
 extern int fn_80129D18(int, int);
 extern char *lbl_80558D8C;
 extern int fn_8000DA10(void);
@@ -1103,7 +1103,7 @@ void fn_80021464(KArg *a, int arg1) {
         }
         lbl_8035BAD8.f4 = fn_8001DA48(sp, rk);
     }
-    lbl_8035BAD8.f0 = fn_8014E7DC(lbl_8055D668, arg1);
+    lbl_8035BAD8.f0 = getDifficultyValue(lbl_8055D668, arg1);
     vhh = 0;
     for (;;) {
         fn_8001FFD0(vhh, c, lbl_8035BB18, 0x40);

@@ -2327,7 +2327,7 @@ extern s32 lbl_80559F4C;
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" f32 fn_8014E7DC(s32 arg0, s32 arg1) {
+extern "C" f32 getDifficultyValue(s32 arg0, s32 arg1) {
     /* Look up a per-entry score/value: try the file's direct getter, else load a resource by formatted path and compute a rounded rate. */
     class MainInterface {
     public:
@@ -4668,7 +4668,7 @@ void fn_80154D30(char *p) {
         fn_801EA1E0(other+12,1,*(f32 *)(other+8),*(f32 *)(other+0x10));
     }
     table=__AXFXGetLfoSinTable_801769CC();
-    value=fn_8014E7DC((s32)*__AXFXGetLfoSinTable_801769CC(),*(s32 *)((char *)table+8));
+    value=getDifficultyValue((s32)*__AXFXGetLfoSinTable_801769CC(),*(s32 *)((char *)table+8));
     if(*(s32 *)((char *)__AXFXGetLfoSinTable_801769CC()+0x10)&1) value=lbl_80561724;
     *(f32 *)(p+0x8dc)=value; *(f32 *)(p+0x8e0)=value;
     if(fn_80179650()>1) *(f32 *)(p+0x8d8)=lbl_80561728;
