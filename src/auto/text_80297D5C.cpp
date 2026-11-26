@@ -1428,11 +1428,11 @@ static inline void ScaleVec3(const float *src, float *dst, float scale) {
     dst[2] = src[2] * scale;
 }
 #pragma scheduling invalid_target
-/* Transform a shadow's anchor point by the 3x3 orientation in xform and add
- * its translation, writing the result to centre (handles centre aliasing the
- * anchor at xform[12..14]); also emit 0.4x the first column into xEdge and
- * 0.75x the third column into zEdge.  x/y/z are vestigial: callers pass the
- * anchor, which is read from xform instead. */
+/* Transform a shadow's anchor point by the 3x3 orientation in xform and add its
+ * translation, writing the result to centre; the two branches differ only in
+ * that the first handles centre aliasing the anchor at xform[12..14]. Also emit
+ * 0.4x the first column into xEdge and 0.75x the third into zEdge. x/y/z are
+ * vestigial: callers pass the anchor, which is read from xform instead. */
 extern "C" void transformShadowAnchor(float *xform, float *centre, float *xEdge, float *zEdge, float x, float y, float z) {
     if ((unsigned char *)centre == (unsigned char *)xform + 0x30) {
         float ax, ay, az;
