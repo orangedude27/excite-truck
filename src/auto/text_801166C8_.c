@@ -4864,7 +4864,7 @@ void decodeHuffmanBandBlock(void* state, BitReader8011 *reader) {
  * entry's low nibble picks a slot of its 16-slot symbol table and whose high nibble
  * is the code width; the two 4-bit results are packed into one byte (first in the
  * low nibble, second in the high). */
-void fn_8011D7F8(void *arg0, void *arg1)
+void decodePackedHuffmanBandBlock(void *arg0, void *arg1)
 {
   u32 mask;
   u32 bits;
