@@ -5588,7 +5588,7 @@ block_21:
  * when a read failed.  The caller (fn_800ADA24) starts at the volume's
  * next-free-cluster hint and writes the found run into the FAT.
  */
-extern "C" s32 fn_800ACBB0(void *volume, s32 cluster, s32 last, s32 needed, u32 *outFirst, u32 *outLast) {
+extern "C" s32 findFreeFatRun(void *volume, s32 cluster, s32 last, s32 needed, u32 *outFirst, u32 *outLast) {
     s32 entry;     /* the FAT entry of the cluster just looked at; 0 = free */
     s32 pageIndex; /* which page of the cache was handed out */
     void *page;    /* the page the FAT is read through */
@@ -6252,7 +6252,7 @@ extern "C" s32 VFiPFFAT_WriteClusterPage(void *object, u32 clusterNum, u32 chain
 
 #pragma pop
 extern s32 fn_800A8D08(void *, s32, void **, s32 *);
-extern "C" s32 fn_800ACBB0(void *, s32, s32, s32, u32 *, u32 *);
+extern "C" s32 findFreeFatRun(void *, s32, s32, s32, u32 *, u32 *);
 extern "C" s32 VFiPFFAT_WriteClusterPage(void *, u32, u32, u32, s32, void *);
 extern "C" s32 fn_800AF144(void *);
 extern s32 fn_800B5618(void *, s32, s32, s32, u16);
@@ -6263,7 +6263,7 @@ extern s32 fn_800A8D08(void *, s32, void **, s32 *);
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" s32 fn_800ACDF8(void *, s32);
-extern "C" s32 fn_800ACBB0(void *, s32, s32, s32, u32 *, u32 *);
+extern "C" s32 findFreeFatRun(void *, s32, s32, s32, u32 *, u32 *);
 extern "C" s32 VFiPFFAT_WriteClusterPage(void *, u32, u32, u32, s32, void *);
 extern "C" s32 fn_800AF144(void *);
 extern s32 fn_800B5618(void *, s32, s32, s32, u16);
@@ -6344,7 +6344,7 @@ extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4,
     *arg4 = -1;
     end = -1;
     maxCluster = typeEntry[2];
-    result = fn_800ACBB0(context, *(s32 *)((u8 *)context + 0x3C), -1, arg1, &first, &end);
+    result = findFreeFatRun(context, *(s32 *)((u8 *)context + 0x3C), -1, arg1, &first, &end);
     if (result != 0) return result;
     if (first == -1) return 0;
     if (arg5 != 0) {
