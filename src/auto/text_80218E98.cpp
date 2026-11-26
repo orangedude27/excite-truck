@@ -382,7 +382,7 @@ extern "C" void fn_8021D61C(void *);
 extern "C" u8 lbl_8033EB14[];
 extern "C" char lbl_8055B87C;
 extern "C" int sprintf(char *, const char *, ...);
-extern "C" void fn_801E4BEC(s32, s32, s32, s32, s32, s32);
+extern "C" void drawFormattedText(s32, s32, s32, s32, s32, s32);
 extern "C" u8 lbl_8033F0FC[];
 extern "C" void fn_8021BE48(void *);
 #define RET_802223C4 void*
@@ -2327,7 +2327,7 @@ extern "C" void fn_8021BC20(void *widget, void *unused) {
 #pragma pop
 extern "C" void fn_8021BD48(void *widget, s32 textStyle) {
 #define SetTextStyle gxCanvasSwitch
-#define DrawFormattedText fn_801E4BEC
+#define DrawFormattedText drawFormattedText
     /* Draws this widget's label/text using its font, position, and string id/data field. */
     SetTextStyle(textStyle);
     ((void (*)(s32, ...))DrawFormattedText)(
@@ -10196,7 +10196,7 @@ extern "C" void fn_80229CB4(void *);
 extern "C" void fn_80229CD8(void *);
 
 extern "C" int sprintf(char *, const char *, ...);
-extern "C" void fn_801E4BEC(s32, s32, s32, s32, s32, s32);
+extern "C" void drawFormattedText(s32, s32, s32, s32, s32, s32);
 extern "C" void *lbl_8033E1C4[];
 class CallObj80223880 {
 public:

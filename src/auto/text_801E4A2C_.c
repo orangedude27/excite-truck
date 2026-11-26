@@ -16,7 +16,7 @@ extern s32 gxCanvasStringWidth(const char *);
 extern s32 stampGetOffsets(s32, s32 *, s32 *);
 extern s32 fn_802C501C(void);
 extern s32 stampGetHeight(s32);
-extern void fn_801E4BEC(s32, s32, s32, s32, s32, const char *, ...);
+extern void drawFormattedText(s32, s32, s32, s32, s32, const char *, ...);
 /* "%s" in .sdata, the only format the counted-string drawer fn_801E4DBC needs.
  * Declared scalar so its address folds into a single sda21 load. */
 extern s32 lbl_8055AEF0;
@@ -116,7 +116,7 @@ extern s32 lbl_8055FBFC;
 #pragma scheduling invalid_target
 /* Draws formatted text using a bitmap font, applying alignment flags to position it;
  * falls back to a plain shadowed string draw when no font is provided. */
-void fn_801E4BEC(s32 font, s32 drawFlags, s32 align, s32 x, s32 y, const char *format, ...) {
+void drawFormattedText(s32 font, s32 drawFlags, s32 align, s32 x, s32 y, const char *format, ...) {
     char text[0x1000];
     va_list args;
     s32 value;
@@ -173,12 +173,12 @@ void fn_801E4BEC(s32 font, s32 drawFlags, s32 align, s32 x, s32 y, const char *f
 #pragma scheduling invalid_target
 /* Draw one line of a counted string -- text is not NUL-terminated, length bytes
  * of it are copied into a local buffer and closed with a NUL -- through the
- * formatted bitmap-font drawer fn_801E4BEC, which takes it as the argument of
+ * formatted bitmap-font drawer drawFormattedText, which takes it as the argument of
  * its only format, "%s".  font 0 makes that drawer fall back to drawing the
  * plain string twice (shadow and foreground) instead of with glyphs. */
 void fn_801E4DBC(s32 font, s32 drawFlags, s32 align, s32 x, s32 y, const char *text, unsigned long length) {
     char buf[0x100];
     strncpy(buf, text, length);
     buf[length] = 0;
-    ((void (*)(s32, s32, s32, s32, s32, const char *, ...))fn_801E4BEC)(font, drawFlags, align, x, y, (char *)&STR_PERCENT_S, buf);
+    ((void (*)(s32, s32, s32, s32, s32, const char *, ...))drawFormattedText)(font, drawFlags, align, x, y, (char *)&STR_PERCENT_S, buf);
 }
