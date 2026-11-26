@@ -64,7 +64,7 @@ typedef struct {
     ObjVTable *vt;
 } Obj;
 extern Obj *getValueFile(void *arg);
-extern void fn_80131818(Obj *arg);
+extern void releaseValueFile(Obj *arg);
 extern void fn_80131318(int *arg);
 extern void *fn_80131234();
 extern void fn_8013072C(char *, int, int);
@@ -262,7 +262,7 @@ srcBase = 0;
         child = (Obj *) parent->vt->getChild(parent, (0, index++));
       }
 
-      fn_80131818(parent);
+      releaseValueFile(parent);
     }
   }
 }

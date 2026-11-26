@@ -802,7 +802,7 @@ void *fn_8024F17C(void *arg0, void **arg1, s32 *arg2, s32 *arg3, void *arg4, voi
     extern void *fn_8012850C(s32, void *);
     extern void fn_80130FCC(void *, s32, void *);
     extern void *getValueFile(void *);
-    extern void fn_80131818(void *);
+    extern void releaseValueFile(void *);
     extern void fn_801345D8(void *, s32, void *, ...);
     extern s32 ArtSetGet(void *);
     extern void fn_80255918(void *, s32);
@@ -905,7 +905,7 @@ loop_20:
                 }
                 var_r22 += 1; goto loop_27;
             }
-            fn_80131818(temp_r3_4);
+            releaseValueFile(temp_r3_4);
         }
         lbl_8055F2E4 = temp_r3_3;
     }
@@ -963,7 +963,7 @@ loop_43:
         M2C_FIELD(temp_r21, s32, 0x10) = 0;
         goto loop_54;
     }
-    fn_80131818(temp_r18);
+    releaseValueFile(temp_r18);
     temp_r3_13 = M2C_FIELD(this_obj, void **, 0xD0);
     M2C_FIELD(this_obj, s32, 0x2C) = var_r23_2;
     M2C_FIELD(this_obj, f32, 0x28) = (f32) var_r23_2;

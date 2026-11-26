@@ -16,11 +16,11 @@ public:
 void *fn_8013C7D0();
 
 extern int lbl_8055E188;
-void fn_80131818(int);
+void releaseValueFile(int);
 void fn_8013C748(void);
 #define CarClassManager lbl_8055E188   /* loaded "carclass.val" search manager */
 #define ClearClassCache fn_8013C748    /* clear cached objects in the class registry */
-#define ReleaseLoaded   fn_80131818    /* release a loaded resource */
+#define ReleaseLoaded   releaseValueFile    /* release a loaded resource */
 
 extern char lbl_8032C478[];
 void fn_8013C748(void) {

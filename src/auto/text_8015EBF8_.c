@@ -565,7 +565,7 @@ void fn_8015F5F4(int *slot) {
 
 extern void *fn_80178C9C(void);
 extern void **fn_80131810(const char *);
-extern void fn_80131818(void **);
+extern void releaseValueFile(void **);
 extern int fn_8015F148(void **, int);
 extern int fn_8015ED90(void **);
 extern void fn_8015F320(void **, int, void *);
@@ -624,7 +624,7 @@ extern "C" void fn_8015F670(void **arg0, s32 arg1) {
     }
 
     if (resourceHandle != 0) {
-        fn_80131818(resourceHandle);
+        releaseValueFile(resourceHandle);
     }
 }
 #pragma cplusplus reset

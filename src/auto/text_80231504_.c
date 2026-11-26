@@ -59,7 +59,7 @@ __declspec(section ".sdata") extern char lbl_8055B9C0[];
 __declspec(section ".sdata") extern char lbl_8055B9C8[];
 __declspec(section ".sdata") extern char lbl_8055B9CC[];
 extern void *fn_80131810(const char *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern void *ArtSetGet(const char *);
 extern void *RegisterTextureByName(const char *, s32);
 extern s32 fn_8002B1D8(const char *, const char *, s32);
@@ -735,7 +735,7 @@ void fn_80232230(void) {
                 record->flag = entry->vtable->getByte(entry, lbl_80340440 + 0xB0, 0);
             }
         }
-        fn_80131818(list);
+        releaseValueFile(list);
     }
 }
 #pragma pop

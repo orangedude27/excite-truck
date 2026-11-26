@@ -20,7 +20,7 @@ extern "C" void Abend_Panic(const char *, ...);
 extern const char lbl_8034A510[];
 int fn_8012C33C(void);
 int RegisterTextureByName(int, int);
-extern void fn_80131818(int);
+extern void releaseValueFile(int);
 extern void fn_802C6CF8(void);
 /* UMat ("unified material") resource lists: an array of `count` entries.
  * lbl_804BE454 holds the archives fn_802B5510 opened (umat.val and the
@@ -281,7 +281,7 @@ set_loop:
     offset = 0;
     goto archive_loop;
 archive_loop_body:
-    fn_80131818(*(int *)((char *)UMatArchives.entries + offset));
+    releaseValueFile(*(int *)((char *)UMatArchives.entries + offset));
     offset += 4;
     archiveIndex += 1;
 archive_loop:

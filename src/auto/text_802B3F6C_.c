@@ -14,7 +14,7 @@ __declspec(section ".sdata") extern int lbl_8055CE00;
 extern int lbl_804BE248[128];
 extern char lbl_8034A408[];
 extern void *fn_80131810(void *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern void *fn_801284F8(int, void *);
 extern float randFloatInRange(int, float, float);
 extern void *memset(void *, int, unsigned int);
@@ -405,7 +405,7 @@ void fn_802B40F8(void)
     }
 
   }
-  fn_80131818(obj);
+  releaseValueFile(obj);
   lbl_8055F9C8 = (void *) (-1);
 }
 #pragma pop

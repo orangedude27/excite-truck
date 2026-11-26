@@ -322,7 +322,7 @@ void fn_8029C664(void) {
 
 #pragma cplusplus on
 extern "C" void *fn_80131810(void *);
-extern "C" void fn_80131818(void *);
+extern "C" void releaseValueFile(void *);
 extern "C" void *fn_801284F8(int, void *);
 extern "C" void *fn_8029D148(void *, void *, float *, int);
 extern "C" void *fn_8029E754(void *, void *, int);
@@ -342,7 +342,7 @@ extern "C" void *memset(void *, int, unsigned int);
     typedef struct { float x, y; } Vec2;
     /* the pool's rectangle: one corner and its two edge vectors */
     typedef struct { Vec origin; Vec2 right; Vec2 up; } PoolParams;
-    /* a VALT parameter file: fn_80131810 opens one by name and fn_80131818
+    /* a VALT parameter file: fn_80131810 opens one by name and releaseValueFile
        closes it again; its entries are asked for until one comes back NULL */
     struct ValtFile { virtual void m08(); virtual void *getEntry(int i); };
     /* one entry of it, whose values are looked up by the key they are named with */
@@ -409,7 +409,7 @@ extern "C" void *memset(void *, int, unsigned int);
             lbl_804B5010[idx] = (int)pool;
             lbl_8055F7F0 = idx + 1;
         }
-        fn_80131818(valt);
+        releaseValueFile(valt);
     }
 }
 #pragma pop
@@ -436,7 +436,7 @@ void fn_8029C934(void) {
     typedef struct { float x, y; } Vec2;
     /* the area's rectangle: one corner and its two edge vectors */
     typedef struct { Vec pos; Vec2 v1; Vec2 v2; } Params;
-    /* a VALT parameter file: fn_80131810 opens one by name and fn_80131818
+    /* a VALT parameter file: fn_80131810 opens one by name and releaseValueFile
        closes it again; its entries are asked for until one comes back NULL */
     struct ValtFile { virtual void m08(); virtual void *getEntry(int i); };
     /* one entry of it, whose values are looked up by the key they are named with */
@@ -450,7 +450,7 @@ void fn_8029C934(void) {
     extern int lbl_804B5030[];        /* the shallow water areas */
     extern int lbl_8055F7F4;          /* how many shallow water areas there are */
     extern int lbl_8055CAB4, lbl_8055CABC, lbl_8055CAC4;   /* "origin", "right", "up" */
-    extern void *fn_80131810(void *); extern void fn_80131818(void *);
+    extern void *fn_80131810(void *); extern void releaseValueFile(void *);
     extern void *fn_8029E754(void *, void *, int);
     extern void Abend_Panic(const char *, ...);
     Params params; int *dest; char *base; ValtFile *valt; int i; int idx;
@@ -470,7 +470,7 @@ void fn_8029C934(void) {
             if (area != 0) area = fn_8029E754(area, &params, texture);
             idx = lbl_8055F7F4; dest[idx] = (int)area; lbl_8055F7F4 = idx + 1;
         }
-        fn_80131818(valt);
+        releaseValueFile(valt);
     }
 }
 #pragma pop

@@ -26,7 +26,7 @@ long fn_8027BA24(void *);
 long fn_8027BAB8(void *);
 void fn_8027AF94(void *);
 void fn_8027B288(void *);
-long fn_80131818(long);
+long releaseValueFile(long);
 long fn_8027D1F4(void);
 extern int fn_80204BB4(const char *);
 extern long fn_8027D0E0(long);
@@ -483,7 +483,7 @@ next_item:
         goto process_item;
     if (*(volatile long *)(self + 0xC) > 0)
         return;
-    fn_80131818(*(long *)(self + 4));
+    releaseValueFile(*(long *)(self + 4));
     *(void **)(self + 4) = 0;
 }
 
@@ -499,7 +499,7 @@ void fn_8027B60C(void *container) {
         }
         elementOffset = 0;
         *(int *)((char *)container + 0xC) = 0;
-        fn_80131818(*(int *)((char *)container + 4));
+        releaseValueFile(*(int *)((char *)container + 4));
         *(int *)((char *)container + 4) = 0;
     }
 }
@@ -1250,7 +1250,7 @@ long fn_8027C4B4(long arg0, long arg1) {
         *(long *)(arg0 + 0xAF10) = 0;
         offset = 0;
         while (i < *(long *)(arg0 + 0xB00C)) {
-            fn_80131818(*(long *)(*(long *)(arg0 + 0xB008) + offset));
+            releaseValueFile(*(long *)(*(long *)(arg0 + 0xB008) + offset));
             offset += 4;
             i++;
         }

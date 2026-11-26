@@ -22,7 +22,7 @@ extern void *memset(void *, int, unsigned int);
 extern void fn_80127C90(void *, const char *);
 extern void *fn_801284F8(s32, const char *);
 extern void *getValueFile(void);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern s32 fn_80137C74(void);
 extern void *fn_802077A4(void *, s32, void *, void *);
 extern void *fn_80207848(void *, s32);
@@ -123,7 +123,7 @@ index++;
 loop_test:
 item = ((M2CManager *)manager)->f3(index);
 if (item != 0) goto loop_body;
-fn_80131818(manager);
+releaseValueFile(manager);
 result->f150 = lbl_80563238; result->f154 = lbl_80563238;
 }
 return result;

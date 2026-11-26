@@ -27,7 +27,7 @@ extern int fn_802C6FC0(int, int, int);
 extern void fn_801E9DC4(void *);
 extern void fn_801E9E30(void *, void *);
 extern int fn_802E30C8(const char *, ...);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern int stricmp(const char *, const char *);
 extern char lbl_80349D08[];
 extern char lbl_8055CC38[8], lbl_8055CC40[8], lbl_8055CC48[8], lbl_8055CC50[4], lbl_8055CC54[4];
@@ -138,7 +138,7 @@ extern "C" void fn_802A81F0(void) {
         index++;
     }
     fn_802E30C8(cfg + 0x68, found);
-    fn_80131818(mgr);
+    releaseValueFile(mgr);
 }
 #pragma cplusplus reset
 #pragma pop
@@ -319,46 +319,65 @@ extern f64 lbl_80564960;
 #pragma processor 750
 #pragma scheduling invalid_target
 #pragma opt_common_subs off
-void fn_802A8A4C(s32 arg0, s32 arg1) {
-    f32 m[9], v[2], d[2], p[2], q[2];
-    f32 *a = (f32 *)arg0, *b = (f32 *)arg1;
-    f32 length, angle, dot, scale, t, c, s, x, y, z;
-    v[0]=a[3]; v[1]=a[5];
-    scale=lbl_8056494C/(f32)fn_8002F234(v[0]*v[0]+v[1]*v[1]);
-    v[0]*=scale; v[1]*=scale;
-    p[0]=a[0]; p[1]=a[2];
-    q[0]=b[0]; q[1]=b[2];
-    d[0]=q[0]-p[0]; d[1]=q[1]-p[1];
-    length=d[0]*d[0]+d[1]*d[1];
-    if (!((f32)__fabs(length)<=lbl_80558DC4)) {
-        scale=lbl_8056494C/(f32)fn_8002F234(length);
-        d[0]*=scale; d[1]*=scale;
-    }
-    dot=v[1]*d[1]+v[0]*d[0];
-    angle=fn_80287BC8(lbl_80564928,lbl_8056494C);
-    t=a[6]*lbl_80564958;
-    if (length>t*t && dot>(f32)cos(lbl_80564960)) angle=lbl_80564928;
-    t=a[6]/lbl_80564968;
-    t=t*t;
-    scale=(length-t)/(a[6]*a[6]-t);
-    scale=lbl_8056494C<scale?lbl_8056494C:scale;
-    scale=scale>lbl_80564928?scale:lbl_80564928;
-    angle=lbl_8055F8D4*((lbl_80564928+scale*(angle-lbl_80564928))*(lbl_8056496C*a[7]));
-    c=(f32)cos(angle); s=(f32)sin(angle);
-    m[0]=c; m[1]=lbl_80564928; m[2]=-s;
-    m[3]=lbl_80564928; m[4]=lbl_8056494C; m[5]=lbl_80564928;
-    m[6]=s; m[7]=lbl_80564928; m[8]=c;
-    transform_802A8A4C(m,a+3,(f32 *)((u8 *)a+0xC));
-    PSVECNormalize(a+3,a+3);
-    scale=(length-lbl_80564928)/(a[6]*a[6]-lbl_80564928);
-    scale=lbl_8056494C<scale?lbl_8056494C:scale;
-    scale=scale>lbl_80564928?scale:lbl_80564928;
-    t=a[8]+scale*(a[9]-a[8]);
-    x=a[3]*t; y=a[4]*t; z=a[5]*t;
-    a[3]=x; a[4]=y; a[5]=z;
-    a[0]+=x*lbl_8055F8D4;
-    a[1]+=y*lbl_8055F8D4;
-    a[2]+=z*lbl_8055F8D4;
+void fn_802A8A4C(s32 arg0, s32 arg1)
+{
+  f32 m[9];
+  f32 v[2];
+  f32 d[2];
+  f32 p[2];
+  f32 q[2];
+  f32 *a = (f32 *) arg0;
+  f32 *b = (f32 *) arg1;
+  f32 length;
+  f32 angle;
+  f32 dot;
+  f32 scale;
+  f32 t;
+  f32 c;
+  f32 s;
+  f32 x;
+  f32 y;
+  f32 z;
+  v[0] = a[3]; v[1] = a[5];
+  scale = lbl_8056494C / ((f32) fn_8002F234((v[0] * v[0]) + (v[1] * v[1])));
+  v[0] *= scale; v[1] *= scale;
+  p[0] = a[0]; p[1] = a[2];
+  q[0] = b[0]; q[1] = b[2];
+  d[0] = q[0] - p[0]; d[1] = q[1] - p[1];
+  length = (d[0] * d[0]) + (d[1] * d[1]);
+  if (!(((f32) __fabs(length)) <= lbl_80558DC4))
+  {
+    scale = lbl_8056494C / ((f32) fn_8002F234(length));
+    d[0] *= scale; d[1] *= scale;
+  }
+  dot = (v[1] * d[1]) + (v[0] * d[0]);
+  angle = fn_80287BC8(lbl_80564928, lbl_8056494C);
+  t = a[6] * lbl_80564958;
+  if ((length > (t * t)) && (dot > ((f32) cos(lbl_80564960))))
+  {
+    angle = lbl_80564928;
+  }
+  t = a[6] / ((0, lbl_80564968));
+  t = t * t;
+  scale = (length - t) / ((a[6] * a[6]) - t);
+  scale = (lbl_8056494C < scale) ? (lbl_8056494C) : (scale);
+  scale = (scale > lbl_80564928) ? (scale) : (lbl_80564928);
+  angle = lbl_8055F8D4 * ((a[7] * lbl_8056496C) * (lbl_80564928 + (scale * (angle - lbl_80564928))));
+  c = (f32) cos(angle); s = (f32) sin(angle);
+  m[0] = c; m[1] = lbl_80564928; m[2] = -s;
+  m[3] = lbl_80564928; m[4] = lbl_8056494C; m[5] = lbl_80564928;
+  m[6] = s; m[7] = lbl_80564928; m[8] = c;
+  transform_802A8A4C(m, (f32 *) (((u8 *) a) + 0xC), a + 3);
+  PSVECNormalize(a + 3, a + 3);
+  scale = (length - lbl_80564928) / ((a[6] * a[6]) - lbl_80564928);
+  scale = (lbl_8056494C < scale) ? (lbl_8056494C) : (scale);
+  scale = (scale > lbl_80564928) ? (scale) : (lbl_80564928);
+  t = a[8] + (scale * (a[9] - a[8]));
+  x = a[3] * t; y = t * a[4]; z = a[5] * t;
+  a[3] = x; a[4] = y; a[5] = z;
+  a[0] += x * lbl_8055F8D4;
+  a[1] += y * lbl_8055F8D4;
+  a[2] += lbl_8055F8D4 * z;
 }
 extern f32 PSVECDotProduct(const void *, const void *);
 extern void PSVECNormalize(const void *, void *);

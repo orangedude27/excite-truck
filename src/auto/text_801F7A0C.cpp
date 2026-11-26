@@ -135,7 +135,7 @@ extern s32 lbl_8055B388;
 extern void **lbl_8055EC54;
 extern s32 lbl_8055EC58;
 void **fn_80131810(void *);
-void fn_80131818(void *);
+void releaseValueFile(void *);
 void fn_8013A0B0(void **, void *, void *);
 void fn_8013A198(void **, s32);
 void *fn_8000AC38(void);
@@ -1393,11 +1393,11 @@ extern "C" s32 fn_801F948C(void *node) {
 
 extern u8 lbl_8033B200[];
 void *fn_80131810(char *);
-void fn_80131818(void);
+void releaseValueFile(void);
 extern "C" int vsprintf(char *, const char *, va_list);
 extern void *fn_801284F8(u32, void *);
 extern void *fn_80131810(char *);
-extern void fn_80131818(void);
+extern void releaseValueFile(void);
 /* Format a variadic resource name, turn it into a "class_file" owner with
  * fn_80131810, and prepend an 8-byte node holding that owner to the global
  * owner list lbl_8055EC44; free the node and owner if parsing produced nothing. */
@@ -1420,7 +1420,7 @@ extern "C" void fn_801F94CC(const char *format, ...) {
         sOwnerList = node;
     } else if (node != 0) {
         if (parsed != 0) {
-            fn_80131818(parsed);
+            releaseValueFile(parsed);
         }
         *(void * volatile *)node = 0;
         ((void (*)(void *))fn_80128668)(node);
@@ -1706,7 +1706,7 @@ extern "C" void fn_801F9AA4(void *arg0, s32 arg1) {
         if (resource->s10(&lbl_8055B388) != 0) {
             fn_801F9928(resource->s8(&lbl_8055B388), arg1);
         }
-        fn_80131818(resource);
+        releaseValueFile(resource);
     }
 }
 /* Configure static objects/collections on startup from named resources under the "objects" group. */
@@ -1970,14 +1970,14 @@ extern "C" void fn_801FA010(void **listHead) {
 
 extern "C" void fn_801FA0B0(void **head) {
     /* Walk a singly-linked list (next at +4), destroying and freeing each node.
-     * Each node owns an object at +0 freed via fn_80131818; the slot is cleared
+     * Each node owns an object at +0 freed via releaseValueFile; the slot is cleared
      * and the node is freed with fn_80128668, then the head is cleared. */
     void *node = *head;
     while (node != 0) {
         void *next = *(void **)((char *)node + 4);
         if (node != 0) {
             void *ownedObject = *(void **)node;
-            if (ownedObject != 0) fn_80131818(ownedObject);
+            if (ownedObject != 0) releaseValueFile(ownedObject);
             *(s32 *)node = 0;
             ((void (*)(void *))fn_80128668)(node);
         }

@@ -504,7 +504,7 @@ extern char lbl_8033A4C8[];
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" int fn_8012C33C(char *);
 extern "C" void *getValueFile(void *);
-extern "C" void fn_80131818(void *);
+extern "C" void releaseValueFile(void *);
 extern "C" void readWheelModLods(void *, void *, char *);
 extern "C" void loadWheelLodTable(void *, void *);
 extern "C" void fn_801F08AC(int, const char *);
@@ -534,7 +534,7 @@ extern "C" void fn_801F08AC(int arg0, const char *arg1) {
     } else {
         *(int *)(arg0 + 0x12C) = 0;
     }
-    fn_80131818(resource);
+    releaseValueFile(resource);
 }
 #pragma pop
 

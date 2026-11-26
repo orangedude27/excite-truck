@@ -907,14 +907,14 @@ void fn_8001C9C4(void) {
 }
 #pragma pop
 
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern int fn_80128668();
 /* Shut down the statistics subsystem: close config, release descriptor/buffer, clear and free per-slot records, then drop the stat buffer. */
 void fn_8001CAF8(void) {
     void **slotPtr;
     s32 i;
 
-    fn_80131818(lbl_8055D5D4);
+    releaseValueFile(lbl_8055D5D4);
     fn_80128668(lbl_8055D5D0);
     slotPtr = lbl_80358658;
     i = 0;

@@ -80,7 +80,7 @@ extern float lbl_8056195C;
 extern void *fn_8000AC38(void);
 extern void *fn_80204EA0(void*);
 extern void *fn_80131810(void);
-extern void fn_80131818(void*);
+extern void releaseValueFile(void*);
 extern float PSVECDotProduct(float*, float*, float);
 extern void* fn_8016AC24(void*, s32);
 extern char lbl_80330460[];
@@ -697,7 +697,7 @@ s32 fn_8016AC90(s32 unused) {
                     }
                 }
             }
-            fn_80131818(iter);
+            releaseValueFile(iter);
             return 0;
         }
         fn_802E30C8((char*)lbl_80330460 + 0x30, ((void *(*)(void*, void*))(*(void ***)obj)[5])(obj, (char*)lbl_80330460 + 0x58));

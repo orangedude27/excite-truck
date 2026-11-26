@@ -16,7 +16,7 @@ extern void Abend_Panic(const char *, ...); /* debug/log print */
 extern int fn_800167F4(void);
 void fn_80137C84(int, int);
 extern void *getValueFile(void *);       /* load a .val file */
-extern void fn_80131818(void *);        /* close a .val file */
+extern void releaseValueFile(void *);        /* close a .val file */
 extern int sprintf(char *, const char *, ...);
 extern int stricmp(const char *, const char *);
 extern char lbl_80559C18, lbl_80559C20, lbl_80559C28, lbl_80559C30; /* val path / "Info" / "car_wid" / "car_len" */
@@ -88,7 +88,7 @@ extern "C" void fn_80137A18(void) {
             *(float *)(leagueData + 4) = ((ValItem *)item)->getF((const char *)(void *)&lbl_80559C30);
         }
     }
-    fn_80131818(valList);
+    releaseValueFile(valList);
 }
 #pragma cplusplus reset
 #pragma scheduling on

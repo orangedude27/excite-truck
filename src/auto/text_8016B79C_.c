@@ -25,7 +25,7 @@ extern "C" f32 lbl_805619B0,lbl_805619B4,lbl_805619C8,lbl_805619CC,lbl_805619D0,
 #pragma cplusplus on
 extern "C" char lbl_80330A90[];
 extern "C" void fn_80128670(s32);
-extern "C" void fn_80131818(s32);
+extern "C" void releaseValueFile(s32);
 extern "C" void fn_80235380(void *, char *);
 extern "C" void fn_802C2930(void *, s32);
 extern "C" void *fn_8000AC38(void);
@@ -139,7 +139,7 @@ static inline void SetNodeF8(void *node) {
     }
 }
 #pragma cplusplus on
-extern "C" void fn_80131818(s32);
+extern "C" void releaseValueFile(s32);
 class TObj4C {
 public:
     virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
@@ -587,7 +587,7 @@ extern "C" void *fn_8016BE60(void *setup) {
             fn_80128668(list);
         }
         /* the original tests the field's address, which is never null */
-        if ((u32)object + 0x14 != 0) fn_80131818((s32)self->obstacleTable);
+        if ((u32)object + 0x14 != 0) releaseValueFile((s32)self->obstacleTable);
         fn_802C2930(object, 0); /* unlink from the dispatch list, keep the memory */
         if (freeFlag > 0) fn_80128668(object);
     }
@@ -717,7 +717,7 @@ extern "C" void fn_8016C328(void *arg0) {
 get:
                 item = list->get(i);
             } while (item);
-            fn_80131818((s32)list);
+            releaseValueFile((s32)list);
         } else {
             fn_802E30C8(base + 0x90, buf);
             return;
@@ -829,7 +829,7 @@ extern "C" s32 fn_8016C5F0(void) {
                     break;
                 }
             }
-            fn_80131818((s32)sourceList);
+            releaseValueFile((s32)sourceList);
         }
     }
     return setCount;
@@ -1395,7 +1395,7 @@ extern "C" char lbl_80330A90[];
 extern "C" s32 lbl_8055E378;
 extern "C" void fn_8016A68C(void);
 extern "C" void fn_80128670(s32);
-extern "C" void fn_80131818(s32);
+extern "C" void releaseValueFile(s32);
 extern "C" void fn_80235380(void *, char *);
 extern "C" void fn_802C2930(void *, s32);
 extern "C" void fn_802ADE60(s32, s32);
@@ -1441,7 +1441,7 @@ p = *(VObj **)((u8 *)arg0 + 0x94); if (p != 0) { if (p != 0) p->destroy(1); }
    if (p != 0) { ((s32 (*)(s32, void *))fn_8002F6AC)(*(s32 *)((u8 *)p + 0xC), fn_8016C168); if (p != 0) { *(s32 *)p = 0; *(s32 *)((u8 *)p + 4) = 0; *(s32 *)((u8 *)p + 8) = 0; fn_80128668(p); } }
    p = *(VObj **)((u8 *)arg0 + 0x4C);
    if (p != 0) { fn_80128670(*(s32 *)((u8 *)p + 0xC)); if (p != 0) { *(s32 *)p = 0; *(s32 *)((u8 *)p + 4) = 0; *(s32 *)((u8 *)p + 8) = 0; fn_80128668(p); } }
-   if ((u8 *)arg0 + 0x44 != 0) fn_80131818(*(s32 *)((u8 *)arg0 + 0x44));
+   if ((u8 *)arg0 + 0x44 != 0) releaseValueFile(*(s32 *)((u8 *)arg0 + 0x44));
    fn_802C2930((u8 *)arg0 + 0x30, 0);
   }
   if ((u8 *)arg0 + 4 != 0) { if ((u8 *)arg0 + 4 != 0) { *(s32 *)((u8 *)arg0 + 4) = 0; *(s32 *)((u8 *)arg0 + 8) = 0; *(s32 *)((u8 *)arg0 + 0xC) = 0; } }

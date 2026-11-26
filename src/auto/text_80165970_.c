@@ -67,7 +67,7 @@ extern int *__AXFXGetLfoSinTable_801769CC(void);
 extern void *fn_8001285C(int);
 extern void fn_80165FAC(void);
 extern void *getValueFile(void *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern int fn_80204EA0(const char *);
 extern void fn_802E30C8(char *, ...);
 extern void fn_80163550(int);
@@ -324,7 +324,7 @@ extern "C" void fn_80165FAC(void) {
     orbitSubtable = orbitValueFile->method(orbitSubtableId);
     ((void (*)(void))fn_80165A30)();
     fn_80165B78(orbitSubtable);
-    fn_80131818(orbitValueFile);
+    releaseValueFile(orbitValueFile);
 }
 #pragma cplusplus reset
 #pragma pop

@@ -57,7 +57,7 @@ void fn_801DF6D0(void* elem) {
 #pragma scheduling on
 extern void *fn_801284F8(int, void *);
 extern void *getValueFile(void *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern int fn_80145E70(void *);
 extern void fn_801D0DDC(void *);
 extern int fn_80207848(void *, int);
@@ -117,7 +117,7 @@ void fn_801DF6FC(void) {
                     *(float *)(q + 0x1C) = keep;
                 }
             }
-            fn_80131818(iter);
+            releaseValueFile(iter);
         }
     }
 }

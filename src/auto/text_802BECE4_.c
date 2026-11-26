@@ -46,7 +46,7 @@ extern char lbl_8055CF80;
 __declspec(section ".sdata") extern char lbl_8055CF78[];
 #pragma small_data off
 extern void *getValueFile(void *, int, int);
-extern int fn_80131818(void *);
+extern int releaseValueFile(void *);
 #pragma dont_inline fn_802BECE4
 extern int fn_802BECE4(const char *, int);
 extern float lbl_80564D7C;
@@ -129,7 +129,7 @@ extern "C" void fn_802BEDFC(void) {
             lbl_8055FAF0 = fn_802BECE4(style->setProperty(strings + 0x90, (const char *)&lbl_8055CF80), lbl_8055FAF0);
             fn_802E30C8(strings + 0xA4, lbl_8055FAE4, lbl_8055FAE8, lbl_8055FAEC, lbl_8055FAF0);
         }
-        fn_80131818(resource);
+        releaseValueFile(resource);
     }
     lbl_8055FAF4 = lbl_8055FAE0;
 }

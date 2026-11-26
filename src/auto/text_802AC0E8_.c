@@ -210,7 +210,7 @@ int fn_802AC4A8(const char *name, int table)
     extern void *fn_801284F8(int, void *, void *);
     extern void *fn_8012850C(int, void *);
     extern void *getValueFile(const char *);
-    extern void fn_80131818(void *);
+    extern void releaseValueFile(void *);
     extern void *memset(void *, int, int);
     extern int strcmp(const char *, const char *);
     extern int sscanf(const char *, const char *, ...);
@@ -547,7 +547,7 @@ copied:
         anim->length = len > last ? len : last;
     }
     fn_802AC2B4(root, (int)(str + 0x13C), &anim->length);
-    fn_80131818(set);
+    releaseValueFile(set);
     lbl_804BD7C0[(int)lbl_8055F93C] = anim;
     lbl_8055F93C = (char *)lbl_8055F93C + 1;
     return (int)anim;

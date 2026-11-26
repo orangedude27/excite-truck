@@ -261,7 +261,7 @@ extern void fn_8002F53C(void *, void *, void *, s32, s32);
 extern s32 fn_802C6FC0(s32, s32, s32);
 extern void MRModel_GetBoundingBoxArray();
 extern void *fn_80131810(void);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern void fn_80168020(void);
 extern void fn_80167EE0(s32 *);
 extern int *fn_80167E98(int *, int);
@@ -426,7 +426,7 @@ extern "C" void fn_801679F0(void) {
             item = container->getItem(i);
             if (item)
                 goto item_body;
-            fn_80131818(container);
+            releaseValueFile(container);
         }
     }
     fn_80168020();

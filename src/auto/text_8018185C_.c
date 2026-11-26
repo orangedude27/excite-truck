@@ -532,7 +532,7 @@ extern void *fn_80279874(int);
 extern int fn_8027AA48(void);
 extern void fn_801345D8(char *, long, char *, ...);
 extern void *getValueFile(void *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern void fn_80279F58(void *, void *);
 extern void *fn_8027A798(void *);
 extern void fn_8027A8B4(void *, void *);
@@ -726,7 +726,7 @@ void fn_80182074(void *arg0, void *arg1) {
     if (isPcar) *(int *)(a + 0x2580) = SquealSound_create(a); else *(int *)(a + 0x2580) = 0;
     *(int *)(a + 0x2584) = fn_8020DE74(a);
     fn_801D108C(*(int *)(a + 0x1EC));
-    fn_80131818(cfg);
+    releaseValueFile(cfg);
     flag = 0;
     if (isPcar && isDifficultySettingOn(lbl_803322B0 + 0x2D8) != 0) flag = 1;
     *(signed char *)(a + 0x25C8) = flag;

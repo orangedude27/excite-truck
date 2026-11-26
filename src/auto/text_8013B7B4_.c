@@ -14,7 +14,7 @@ extern int fn_801E87A8(void);
 extern void readCatchupParams(float*, int);
 extern void fn_8013B6C0(int*, float*, int);
 extern void *getValueFile(void *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern void Abend_Panic(const char *);
 extern int stricmp(const char *, const char *);
 extern char lbl_8032C390[];
@@ -72,7 +72,7 @@ extern "C" void readCatchupParams(float *catchupParams, int carCount) {
         }
         entryIndex++;
     }
-    fn_80131818(catchupList);
+    releaseValueFile(catchupList);
     return;
 error:
     ((void (*)(const char *, ...))Abend_Panic)("no catchup.val?");

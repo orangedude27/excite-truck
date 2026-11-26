@@ -4,7 +4,7 @@
 typedef int s32;
 typedef unsigned char u8;
 s32 fn_80128670(s32);
-s32 fn_80131818(s32);
+s32 releaseValueFile(s32);
 s32 Abend_Panic(const char *, ...);
 extern void* fn_8012850C(s32, const char*);
 extern void* getValueFile(const char*);
@@ -153,7 +153,7 @@ void fn_80018B24(void) {
 #define carStatTable  lbl_8055D578 /* CarStat records, carStatCount of them */
 #define carStatCount  lbl_8055D57C /* records in carStatTable */
 #define MemFree       fn_80128670  /* free off the heap the block came from */
-#define ParamRelease  fn_80131818  /* drop a loaded parameter directory */
+#define ParamRelease  releaseValueFile  /* drop a loaded parameter directory */
 
     carStatsInUse = 0;
     MemFree(carStatTable);

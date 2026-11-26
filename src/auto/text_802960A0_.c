@@ -281,7 +281,7 @@ extern void fn_80128668(void *);
 extern void *fn_801284F8(int, void *);
 extern void *fn_8012850C(int, void *, int);
 extern void *getValueFile(void *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern int fn_8012C33C(void *);
 extern void *fn_8002F37C(void *, void *, void *, int, int);
 extern char *strncpy(char *, const char *, unsigned int);
@@ -487,7 +487,7 @@ extern "C" void *FlipBook_create(char *name, void *config) {
                     index++;
                 }
             }
-            fn_80131818(iterator);
+            releaseValueFile(iterator);
         }
         if (valid == 0) {
             fn_80296838(book);

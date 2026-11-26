@@ -103,7 +103,7 @@ extern void *fn_8001285C(int);
 extern void *fn_80028E00(char *, const char *);
 extern int fn_8012C33C(char *);
 extern void *getValueFile(char *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern int fn_802E30C8(const char *, ...);
 extern char *strchr(const char *, int);
 extern char *strncpy(char *, const char *, unsigned int);
@@ -161,7 +161,7 @@ extern "C" void fn_8026B260(void) {
                 lbl_8055F4C8++;
             }
         } while (entry);
-        fn_80131818(it);
+        releaseValueFile(it);
         fn_802E30C8(base + 0x34, lbl_8055F4C8, name);
         return;
     }

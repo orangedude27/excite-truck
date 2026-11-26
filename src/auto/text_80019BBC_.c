@@ -40,7 +40,7 @@ extern void* ArtSetGet(void*);
 extern void fn_802A1120(void*, float*);
 extern int fn_8012C33C(void*);
 extern void* getValueFile(void*);
-extern void fn_80131818(void*);
+extern void releaseValueFile(void*);
 extern int fn_802CB128(int, int, int, int);
 extern void* RegisterTextureByName(void*, int);
 extern void DrawList_beginFrame(void);
@@ -162,7 +162,7 @@ extern "C" void* fn_80019C68(int arg0) {
  *(float*)(p+60)=((Res*)node)->def(base+76,lbl_80560438);
  *(float*)(p+64)=((Res*)node)->def(base+88,lbl_80560424);
  }
- fn_80131818(resource);
+ releaseValueFile(resource);
  *(int*)(p+4)=fn_802CB128((int)*(float*)(p+28),(int)*(float*)(p+28),0,0x21);
  *(int*)(p+12)=(int)RegisterTextureByName(base+100,0);
  *(int*)(p+8)=(int)RegisterTextureByName(base+112,0);
@@ -887,7 +887,7 @@ extern void* ArtSetGet(void*);
 extern void fn_802A1120(void*, float*);
 extern int fn_8012C33C(void*);
 extern void* getValueFile(void*);
-extern void fn_80131818(void*);
+extern void releaseValueFile(void*);
 extern int fn_802CB128(int, int, int, int);
 extern void* RegisterTextureByName(void*, int);
 extern void DrawList_beginFrame(void);

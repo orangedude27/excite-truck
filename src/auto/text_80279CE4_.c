@@ -65,7 +65,7 @@ struct File_80279F58 {
 extern unsigned char lbl_804A1968[];
 extern void *memset(void *, int, unsigned int);
 extern int getValueFile(const char *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern void fn_80279F58(void *, void *);
 extern void Abend_Panic(const char *, const char *);
 extern int sprintf(char *, const char *, ...);
@@ -292,7 +292,7 @@ void fn_8027A714(void *target, const char *carName) {
         ((void (*)(const char *, ...))Abend_Panic)(lbl_80347A1C, path);
     }
     fn_80279F58(target, resource);
-    fn_80131818(resource);
+    releaseValueFile(resource);
 }
 
 extern int strcmp(const char *, const char *);

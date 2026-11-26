@@ -327,7 +327,7 @@ void fn_80236A5C(void *arg0, int arg1) {
     extern void fn_80237A04(void);
     extern void fn_802379EC(void *);
     extern void *fn_80237968(void *, int);
-    extern void fn_80131818(void *);
+    extern void releaseValueFile(void *);
     extern void fn_802E30C8(const char *, ...);
     register int mode;
     register void *parser;
@@ -703,7 +703,7 @@ mode_done:
         }
     }
     lbl_8055F0B8 = (int)trailMgr;
-    fn_80131818(parser);
+    releaseValueFile(parser);
     lbl_80498664[0] = 0;
 }
  

@@ -653,7 +653,7 @@ extern "C" s32 fn_80157558(void* arrayHolder) {
 
 extern "C" void* fn_80131810(void*);
 extern "C" void* getValueFile(void*);
-extern "C" void fn_80131818(void*);
+extern "C" void releaseValueFile(void*);
 extern "C" void fn_801345D8(void*, s32, void*, ...);
 /* loadBonusStuntTable is handed one of the group's bonus trackers (an Unk801577F0) as
    this opaque object pointer; it casts it where it reads the tracker's fields. */
@@ -681,7 +681,7 @@ extern "C" char lbl_8055A054;   /* "%s " */
 #define STUNT_FMT_ADJ       (&lbl_8055A054) /* "%s ": the adjustment name in the record */
 
 /* One object of a parsed "*.val" value file: fn_80131810 / getValueFile open one
-   by name and fn_80131818 closes it again.  Its values are looked up by the key
+   by name and releaseValueFile closes it again.  Its values are looked up by the key
    string they are stored under, and a group hands out its entries by index
    until one comes back null. */
 struct ValueObject {
@@ -768,9 +768,9 @@ extern "C" void loadBonusStuntTable(VObj *tracker) {
         }
     }
     if (stunts != stuntDef) {
-        fn_80131818(stunts);
+        releaseValueFile(stunts);
     }
-    fn_80131818(stuntDef);
+    releaseValueFile(stuntDef);
 }
 // Return the bonus-category name string for a tracker, indexed by its GetType() category.
 extern "C" s32 fn_801577F0(Unk801577F0* tracker) {

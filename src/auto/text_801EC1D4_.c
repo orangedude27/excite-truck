@@ -1132,7 +1132,7 @@ void fn_801EE0D0(long table, long index) {
 extern void *getValueFile(void *);
 __declspec(section ".sdata") extern char lbl_8055AFFC[], lbl_8055B000[], lbl_8055B004[], lbl_8055B00C[];
 extern int fn_8012C33C(void *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern int fn_801E320C(int, int);
 extern void *fn_802C6C34(int);
 extern void fn_80297988(void *);
@@ -1242,7 +1242,7 @@ loop16:
     } else {
         *(int *)((char *)arg0 + 0x480) = 0;
     }
-    fn_80131818(table);
+    releaseValueFile(table);
     fn_801345D8(buf20, 0x20, lbl_8055B048, (int)buf120);
     if (fn_8012C33C(buf20) == 0) fn_801345D8(buf20, 0x20, lbl_8055B050, (int)buf120);
     node = arg0;
@@ -1302,7 +1302,7 @@ loop36:
         *(int *)((char *)arg0 + 0x154) = 0;
         *(int *)((char *)arg0 + 0x158) = **(int **)((char *)arg0 + 0x188);
     }
-    fn_80131818(p15);
+    releaseValueFile(p15);
 }
 
 extern char lbl_8033A1C8[];
@@ -1365,7 +1365,7 @@ extern "C" void fn_801EE974(void *car, void *vehicle) {
 #pragma cplusplus reset
 extern void fn_801345D8(void *, int, const char *, ...);
 extern void *fn_80131810(void *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern int fn_802C6FC0(void *, int, int);
 extern int parseHexString(void);
 extern char lbl_8033A060[];
@@ -1393,7 +1393,7 @@ extern char lbl_8055B080;
   *(int *)((char *)arg0+0x49C)=1<<shift;
   value=obj->m14(base+0x1D8);
   fn_801345D8((char *)arg1+0xEC,0x20,base+0x188,arg2,value);
-  fn_80131818(resource); return;
+  releaseValueFile(resource); return;
  }
  *(int *)((char *)arg0+0x488)=-1; *(int *)((char *)arg0+0x494)=0; *((char *)arg1+0xEC)=0;
 }

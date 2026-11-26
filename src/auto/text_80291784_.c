@@ -415,7 +415,7 @@ void fn_802920D0(void) {
 
 extern void *fn_801E1F44(void);
 extern void *fn_80131810(int *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern int fn_802917C0(void *, void *, void *);
 extern void fn_80291A1C(void);
 extern int lbl_80349164;
@@ -445,7 +445,7 @@ extern "C" void fn_80292114(void) {
                 int value = ((QueryObject_80292114 *)object)->f0(&lbl_8055C948);
                 ((int (*)(void *, void *))fn_802917C0)(&lbl_804B3EC0, (void *)value);
             }
-            fn_80131818(object);
+            releaseValueFile(object);
         } else {
             int *p = (int *)((char *)&lbl_804B3EC0 + 0x120);
             *p = 0;

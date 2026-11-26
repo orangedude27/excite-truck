@@ -256,7 +256,7 @@ public:
 #pragma cplusplus off
 extern u8 lbl_8032D358[];
 extern void *getValueFile(void *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern void *fn_8012850C(s32, void *);
 extern f32 lbl_8056163C, lbl_8056164C, lbl_80561670, lbl_805616C8;
 extern f64 lbl_805616A0;
@@ -2095,7 +2095,7 @@ extern "C" void *fn_8014E154(void *object, s32 shouldFree) {
         }
         if (found)
             ((void (*)(char *, ...))fn_802E30C8)((char *)(strings + 0x518));
-        fn_80131818(table);
+        releaseValueFile(table);
     }
     if (entry->items == 0) {
         ((void (*)(char *, ...))fn_802E30C8)((char *)(strings + 0x54c));
@@ -2390,7 +2390,7 @@ extern "C" f32 getDifficultyValue(s32 stageIndex, s32 difficultyType) {
             resourceEntry = ((ResourceInterface *)resource)->next((char *)&lbl_80559F4C);
             value = ((ResourceInterface *)resourceEntry)->value(
                 (char *)(strings + 0x5F4));
-            fn_80131818(resource);
+            releaseValueFile(resource);
 
             fileCountInt = *(s32 *)((u8 *)file + 0xC);
             fileCount = (f32)fileCountInt;
@@ -5419,7 +5419,7 @@ extern "C" void fn_8014FC8C(s32 arg0) {
             }
             G.idx++;
         }
-        fn_80131818(G.manager);
+        releaseValueFile(G.manager);
     } else {
         void *lfo = *(void **)((u8 *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
         G.idx = 0;
@@ -5506,7 +5506,7 @@ extern "C" void fn_8014FC8C(s32 arg0) {
             }
             G.idx++;
         }
-        fn_80131818(resource);
+        releaseValueFile(resource);
     }
 }
 

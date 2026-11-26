@@ -2858,7 +2858,7 @@ s32 fn_80164634(void *hud) {
 }
 
 extern void *fn_80131810(void *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern void fn_801345D8(char *, s32, const char *, s32);
 extern s32 fn_80146C2C(s32, s32);
 extern char lbl_8032FB90[];
@@ -2942,7 +2942,7 @@ extern "C" void fn_8016464C(void *state) {
         i++;
     }
     if (valueTable != 0)
-        fn_80131818(valueTable);
+        releaseValueFile(valueTable);
 }
 /* Destroy all owned objects in the list and reset its count. */
 extern "C" void fn_801647DC(void *list) {

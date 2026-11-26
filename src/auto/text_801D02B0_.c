@@ -23,7 +23,7 @@ typedef struct {
 struct SurfObj { SurfVT *vt; };
 extern SurfObj *getValueFile(char *);
 extern SurfObj *fn_80131810(char *);
-extern void fn_80131818(SurfObj *);
+extern void releaseValueFile(SurfObj *);
 extern int sprintf(char *, const char *, ...);
 extern char lbl_8055AB58, lbl_8055AB60, lbl_8055AB68, lbl_8055AB70, lbl_8055AB78;
 typedef struct { float f[3]; signed char b0; unsigned char b1; short pad; int i; } SurfRec;
@@ -75,9 +75,9 @@ extern "C" void fn_801D02B0(void) {
         i++;
         rec++;
     } while (i < 8);
-    fn_80131818((SurfObj *)a);
+    releaseValueFile((SurfObj *)a);
     if (b != 0)
-        fn_80131818((SurfObj *)b);
+        releaseValueFile((SurfObj *)b);
 }
 #pragma scheduling on
 #pragma opt_propagation reset

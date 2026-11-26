@@ -239,7 +239,7 @@ extern void fn_801308F4(char *, int, int);
 extern void fn_80130980(char *, int, int, float);
 extern char *fn_80131234(void *);
 extern void **getValueFile(void *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern void fn_801345D8(char *, int, const char *, ...);
 extern void *fn_80214A9C(int);
 extern void *fn_80214AF0(int);
@@ -352,7 +352,7 @@ void fn_8025C204(int arg0, int arg1) {
                 }
                 i++;
             }
-            fn_80131818(items);
+            releaseValueFile(items);
             lbl_8055F2E4 = (int)list;
         }
     }

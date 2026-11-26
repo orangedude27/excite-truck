@@ -913,7 +913,7 @@ extern "C" void fn_801D5520(char *arg0) {
     struct Manager { virtual void v0(); virtual void *get(int); };
     struct Node { virtual const char *name(); };
     struct Releasable { virtual void release(int); };
-    extern void *fn_80131810(void); extern void fn_80131818(void *); extern void *fn_801D4B34(void *); extern int ActionSequence_load(void *,void *); extern void *fn_801284F8(int,void *); extern void fn_802E30C8(const char *, const char *); extern int stricmp(const char *,const char *); extern char lbl_80338460; extern int lbl_804423A4[];
+    extern void *fn_80131810(void); extern void releaseValueFile(void *); extern void *fn_801D4B34(void *); extern int ActionSequence_load(void *,void *); extern void *fn_801284F8(int,void *); extern void fn_802E30C8(const char *, const char *); extern int stricmp(const char *,const char *); extern char lbl_80338460; extern int lbl_804423A4[];
     char *base=(char *)&lbl_80338460;
     void *obj;
     Manager *manager=(Manager *)fn_80131810();
@@ -939,7 +939,7 @@ body:
 fetch:
     node=(Node *)manager->get(i);
     if(node) goto body;
-    fn_80131818(manager);
+    releaseValueFile(manager);
 }
 #pragma cplusplus reset
 #pragma pop

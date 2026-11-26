@@ -27,14 +27,14 @@ typedef struct Node_80279254 {
 } Node_80279254;
 typedef Node_80279254 CarResourceNode;
 #define gCarResourceList     lbl_8055F5F0 /* head of loaded car resource list */
-#define ResourceFile_release fn_80131818
+#define ResourceFile_release releaseValueFile
 #define Mem_freeArray        fn_80128670
 #define Mem_freeObject       fn_80128668
 
 extern void* fn_801284F8(s32, const char*);
 extern s32 fn_8012C33C(char*);
 extern void* getValueFile(char*);
-extern void fn_80131818(void*);
+extern void releaseValueFile(void*);
 extern void fn_802E30C8(const char*, ...);
 extern void Abend_Panic(const char*, ...);
 extern void* fn_8012850C(s32, const char*);
@@ -358,8 +358,8 @@ extern "C" void* loadCarResource(s32 name, s32 arg1) {
     } else {
         fn_802E30C8(layoutStrings + 0x13C, (s32)resourceName);
     }
-    fn_80131818(boneFile);
-    if (boneModFile != NULL) fn_80131818(boneModFile);
+    releaseValueFile(boneFile);
+    if (boneModFile != NULL) releaseValueFile(boneModFile);
     *(s32*)(resource + 0x245C) = 1;
     strncpy(resource + 0x243C, resourceName, 0x20);
     *(u8*)(resource + 0x245B) = 0;
@@ -387,7 +387,7 @@ void* fn_80279254(s32 name, s32 arg1) {
     return node;
 }
 
-void fn_80131818(void*);
+void releaseValueFile(void*);
 void fn_80128670(s32);
 void fn_80128668(void*);
 #pragma dont_inline on

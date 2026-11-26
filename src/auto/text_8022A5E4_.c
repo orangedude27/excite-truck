@@ -20,7 +20,7 @@ extern int fn_8022CC8C(const char*);
 extern void readTextEffectProps(int*, void*);
 extern int stricmp(const char*, const char*);
 extern void* fn_80131810(const char*, int, int);
-extern void* fn_80131818(void*);
+extern void* releaseValueFile(void*);
 extern void fn_80131820(void*);
 extern void fn_802E30C8(void*, ...);
 extern void fn_8022A858(int);
@@ -1270,7 +1270,7 @@ void fn_8022BD40(int arg0, int i19arg, int arg2_, unsigned char i20_, float farg
             *(float*)&styleDesc.w[20] = node->getFloat(strBase + 0x1b4, *(float*)&styleDesc.w[20]);
             ((void (*)(int, void*))fn_8022A858)(styleIndex, &styleDesc);
         }
-        fn_80131818(nodeList);
+        releaseValueFile(nodeList);
     }
 }
 #pragma cplusplus reset

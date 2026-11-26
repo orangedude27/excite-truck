@@ -11,7 +11,7 @@ extern char lbl_8055CFE8;
 extern float lbl_80564E90;
 extern float lbl_80564E94;
 extern void *fn_80131810(void *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern void fn_801345D8(void *, int, void *, ...);
 extern int fn_802C6FC0(int, int, int);
 extern float randFloatInRange(int, float, float);
@@ -74,7 +74,7 @@ extern "C" void fn_802C2298(void) {
             fn_801345D8(query, 0x20, (void *)&lbl_8055CFD8, index++);
             entry = ((Iterator *)iterator)->find(query);
         }
-        fn_80131818(manager);
+        releaseValueFile(manager);
     }
 }
 #pragma cplusplus reset

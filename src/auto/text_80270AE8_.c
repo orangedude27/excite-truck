@@ -525,7 +525,7 @@ extern const char lbl_8055C5A0[];
     extern unsigned char lbl_8055F55B;
     extern int fn_8012C33C(void *);
     extern void *getValueFile(void *);
-    extern void fn_80131818(void *);
+    extern void releaseValueFile(void *);
     extern int fn_80272028(void *, void *);
     extern int fn_80272DCC(void *, void *);
     extern void fn_80277740(void);
@@ -559,7 +559,7 @@ extern const char lbl_8055C5A0[];
             }
             index += 1;
         }
-        fn_80131818(iterator);
+        releaseValueFile(iterator);
     } else if (fn_8012C33C(stringBase + 0x334) != 0) {
         register Iterator *iterator;
         register Item *node;
@@ -582,7 +582,7 @@ extern const char lbl_8055C5A0[];
             }
             index += 1;
         }
-        fn_80131818(iterator);
+        releaseValueFile(iterator);
     }
     fn_80277828();
 }

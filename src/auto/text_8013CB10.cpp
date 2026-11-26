@@ -221,7 +221,7 @@ extern "C" u8 *fn_8001285C(void *);
 extern "C" s32 fn_80171698(void);
 extern "C" s32 __AXGetStudio_8000AC2C(void);
 extern "C" void *fn_80131810(const char *);
-extern "C" void fn_80131818(void *);
+extern "C" void releaseValueFile(void *);
 extern "C" void fn_802049DC(const char *, void *, f32, f32, f32);
 extern "C" char lbl_80559D20;
 extern "C" void *fn_8013E6E4(void *arg0);
@@ -905,9 +905,9 @@ extern "C" void *fn_8013D2C4(void *arg0, void *arg1) {
         }
         *(void ***)(self + 0x64) = p64;
         if (docB != 0) {
-            fn_80131818(docB);
+            releaseValueFile(docB);
         }
-        fn_80131818(docA);
+        releaseValueFile(docA);
     } else {
         Abend_Panic(base + 0xCC, buf);
         *(s32 *)(self + 0x64) = 0;

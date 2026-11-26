@@ -386,7 +386,7 @@ extern int fn_802BC4E0(void *);
 void fn_802BCFB0(int *);
 void fn_802CAC54(int);
 int MRModel_ReleaseResource(int);
-void fn_80131818();
+void releaseValueFile();
 extern int fn_802B1DA0(void *);
 extern int fn_801D04D0(void);
 extern int fn_802C143C(void *);
@@ -519,7 +519,7 @@ extern "C" void fn_802BCF04(void) {
     flag = (char *)lbl_8055FAB4;
     *(int *)((char *)&lbl_804C00D4 + 4) = 0;
     if (flag != 0) {
-        fn_80131818(flag);
+        releaseValueFile(flag);
         lbl_8055FAB4 = 0;
     }
 }

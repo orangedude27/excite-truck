@@ -81,7 +81,7 @@ extern void **__AXFXGetLfoSinTable_801769CC(void);
 extern void *fn_8001285C(void *);
 extern void *fn_80204EA0(const char *);
 extern void *getValueFile(const char *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern void fn_802E30C8(const char *, ...);
 extern char lbl_8055A0A8;
 #pragma cplusplus on
@@ -151,7 +151,7 @@ extern "C" void fn_80160850(void) {
             } else {
                 fn_802E30C8(base + 0x28, key, name);
             }
-            fn_80131818(resource);
+            releaseValueFile(resource);
         } else {
             fn_802E30C8(base + 0x68, name);
         }

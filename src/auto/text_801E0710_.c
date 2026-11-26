@@ -255,7 +255,7 @@ static inline void List_801E0890_Remove(List_801E0890 *l, s32 idx) {
 
 extern void *fn_8001285C(s32);
 extern void *fn_80131810();
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern Poly_801E0890 *fn_801399FC(void *);
 extern Vec2_801E0890 fn_80139C5C(void *);
 extern Vec2_801E0890 fn_8014C770(Vec2_801E0890 *, Vec2_801E0890 *, f32);
@@ -459,7 +459,7 @@ void fn_801E0890(void *arg0) {
                 }
             }
         }
-        fn_80131818(it);
+        releaseValueFile(it);
     }
 }
 /* Return the larger of two ints; callers use it to clamp a value to a minimum. */

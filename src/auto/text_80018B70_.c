@@ -8,7 +8,7 @@ s32 fn_80019098(s32);
 s32 fn_80019144(s32);
 s32 fn_8027DE68(s32);
 void fn_80131234(void *);
-void fn_80131818(s32);
+void releaseValueFile(s32);
 s32 fn_80018E44(const char *, s32);
 s32 Abend_Panic(void *, void *);
 void fn_80018BA4(void);
@@ -574,7 +574,7 @@ int fn_80018FB4(s32 unused) {
 /* Releases the unlock/properties manager object and clears its global pointer. */
 void fn_80018F7C(void) {
     s32 manager = (s32)sUnlockManager;
-    fn_80131818(manager);
+    releaseValueFile(manager);
     sUnlockManager = 0;
 }
 

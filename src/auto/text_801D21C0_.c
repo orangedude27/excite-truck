@@ -11,7 +11,7 @@ extern void fn_802C6CF8(s32);
 extern s32 fn_800241DC(s32 *, u8 *, s32, s32, s32 (*)(s32 *, s32 *));
 extern void qsort(void *, s32, s32, void *);
 extern void *fn_80131810(void);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern void fn_801D25BC(void *, void *);
 extern void fn_801D26C8(void *, void *);
 extern void fn_801D2A24(void *);
@@ -746,7 +746,7 @@ extern "C" void fn_801D2AD4(void *arg0) {
         }
         index++;
     }
-    fn_80131818(list);
+    releaseValueFile(list);
 }
 #pragma scheduling on
 #pragma cplusplus reset

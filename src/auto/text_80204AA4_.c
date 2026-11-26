@@ -20,7 +20,7 @@ extern signed char lbl_8055ED58;
 extern int stricmp(const char *, const char *);
 extern void Abend_Panic(const char *, ...);
 extern void *fn_8001285C(void);
-extern void fn_80131818(int);
+extern void releaseValueFile(int);
 extern void fn_80128668(void *);
 #pragma dont_inline fn_80204B2C
 int fn_80204B2C(const char *);
@@ -378,7 +378,7 @@ void fn_80205208(void) {
         contestConfig[4] = 0;
         contestConfig[2] = 0;
         contestConfig[3] = 0;
-        fn_80131818(contestConfig[1]);
+        releaseValueFile(contestConfig[1]);
         contestConfig[1] = 0;
         fn_80128668(contestConfig);
     }
@@ -500,7 +500,7 @@ extern "C" int getDifficultyProperty(const char *propName, int typeIndex, int st
     lookup.contest = 0;
     lookup.current = 0;
     lookup.stage = 0;
-    fn_80131818((int)group);
+    releaseValueFile((int)group);
     lookup.group = 0;
     return result;
 
@@ -537,7 +537,7 @@ public:
         contest = 0;
         current = 0;
         stage = 0;
-        fn_80131818((int)g);
+        releaseValueFile((int)g);
         group = 0;
     }
     const char *Find(const char *name) {

@@ -1086,7 +1086,7 @@ extern "C" void fn_8014647C(void *entry) {
 
 extern "C" void fn_80128668(void *);
 extern "C" void fn_80128670(s32);
-extern "C" void fn_80131818(void * = 0);
+extern "C" void releaseValueFile(void * = 0);
 extern "C" void fn_80145DD8(void *);
 extern "C" void fn_80146584(void *);
 extern "C" void fn_801465C8(void *);
@@ -1122,7 +1122,7 @@ extern "C" void *fn_801464DC(void *obj, s32 shouldDelete) {
         fn_80145DD8(obj);
         member28 = *(void **)((u8 *)obj + 0x28);
         if (member28 != NULL) {
-            fn_80131818(member28);
+            releaseValueFile(member28);
             *(void **)((u8 *)obj + 0x28) = NULL;
         }
         fn_80146584((u8 *)obj + 0x4C);

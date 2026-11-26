@@ -181,7 +181,7 @@ void fn_801A9AB0(void *self, void *cfg) {
     extern void fn_801A0258(void *, void *, void *);
     extern void fn_801A0444(void *, void *);
     extern void *getValueFile(void *);
-    extern void *fn_80131818(void *);
+    extern void *releaseValueFile(void *);
     extern int strcmp(const char *, const char *);
     extern void fn_80179F94(void *, void *);
     extern void *fn_801A3190(void *, void *, void *, int, void *, void *, float, float);
@@ -624,7 +624,7 @@ void fn_801A9AB0(void *self, void *cfg) {
     case 10:
         scan = getValueFile(c + 0x58);
         while (scan != 0 && strcmp((const char *)scan, "MRJT") != 0) {
-            scan = fn_80131818(scan);
+            scan = releaseValueFile(scan);
         }
         object = fn_801284F8(0xE0, names + 0x104);
         if (object != 0) {

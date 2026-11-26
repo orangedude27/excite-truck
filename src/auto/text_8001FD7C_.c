@@ -134,7 +134,7 @@ int fn_801312EC(void*, void*);
 void fn_80131318();
 int fn_80232BA4(int, int, int, int, float, float, float, float, float);
 extern void *fn_80131810(void *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern int fn_80277960(void *, void *, void *);
 extern void fn_802E30C8(const char *, ...);
 extern void Abend_Panic(const char *, ...);
@@ -423,7 +423,7 @@ struct TipsCamera_8035B758 {
         } else {
             fn_802E30C8(TIPS_MSG_NO_SEQ);
         }
-        fn_80131818(valFile);
+        releaseValueFile(valFile);
     }
     tipsEnabled = 0;
     lbl_8055D648 = 0;

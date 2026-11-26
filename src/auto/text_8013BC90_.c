@@ -5,7 +5,7 @@ typedef struct { double a, b, c, d, e, f, g, h; } Key64;
 typedef struct CacheEntry { void *obj; unsigned char name[0x40]; int ref; } CacheEntry;
 extern int strcmp(const char *, const char *);
 extern void *fn_80131810(const char *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern void *fn_8013184C(void);
 extern void fn_802E30C8(const char *, ...);
 extern const char lbl_8032C42C[];
@@ -264,7 +264,7 @@ void fn_8013BFE4(CacheResource *resource) {
 
 extern int strcmp(const char *, const char *);
 extern void *fn_80131810(const char *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern void *fn_8013184C(void);
 extern void fn_802E30C8(const char *, ...);
 extern const char lbl_8032C42C[];
@@ -323,7 +323,7 @@ copied:
             if (h != 0) fn_802E30C8(lbl_8032C43C, name);
             else h = fn_8013184C();
             res = fn_8013BE64(h, (char *)&key);
-            fn_80131818(obj);
+            releaseValueFile(obj);
         }
         if (res == 0) res = fn_8013BF40((char *)&key);
         if (res != 0) {

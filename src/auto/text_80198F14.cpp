@@ -4896,7 +4896,7 @@ public:
     virtual TagNode *GetNth(int);             // 0x0C
 };
 extern "C" TagList *getValueFile(void *, void *);
-extern "C" void fn_80131818(TagList *);
+extern "C" void releaseValueFile(TagList *);
 #pragma scheduling invalid_target
 extern "C" void fn_801A3190(void *arg0, s32 arg1, void *arg2, s32 arg3, void *arg4, void *arg5, f32 farg0, f32 farg1) {
     *(s32*)((u8*)arg0 + 4) = 0;
@@ -5018,7 +5018,7 @@ extern "C" void *fn_801A324C(void *arg0, int arg1, void *arg2, f32 farg0, f32 fa
             *(f32 *)(rec + 0xD8) = child->GetFloat(lbl_8055A500);
         }
     }
-    fn_80131818(list);
+    releaseValueFile(list);
     return arg0;
 }
 #pragma use_lmw_stmw reset

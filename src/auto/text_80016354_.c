@@ -26,7 +26,7 @@ extern void *fn_80016BC8(void *, int);
 
 extern void *lbl_8055D54C;
 extern void fn_80128670(void *);
-extern void fn_80131818(void);
+extern void releaseValueFile(void);
 #pragma scheduling invalid_target
 void fn_80016354(void) {
     /* Initialize driver and vehicle data tables and register the vehicle-slot refresh callback. */
@@ -60,11 +60,11 @@ void fn_800163F0(void) {
     fn_80128670(lbl_8055D540);
     lbl_8055D540 = 0;
     if (lbl_8055D538) {
-        ((void (*)(void *))fn_80131818)(lbl_8055D538);
+        ((void (*)(void *))releaseValueFile)(lbl_8055D538);
         lbl_8055D538 = 0;
     }
     if (lbl_8055D53C) {
-        ((void (*)(void *))fn_80131818)(lbl_8055D53C);
+        ((void (*)(void *))releaseValueFile)(lbl_8055D53C);
         lbl_8055D53C = 0;
     }
 }

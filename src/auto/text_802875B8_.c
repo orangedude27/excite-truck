@@ -502,7 +502,7 @@ void *fn_80287C30(void *arg0) {
 void *fn_80287C80(void *object, s32 shouldFree) {
     if (object != 0) {
         if (*(s32 *)object != 0) {
-            fn_80131818(*(s32 *)object);
+            releaseValueFile(*(s32 *)object);
             *(s32 *)object = 0;
         }
         if (shouldFree > 0) {

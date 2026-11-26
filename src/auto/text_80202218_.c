@@ -3,7 +3,7 @@
 #include "revolution/MTX/vec.h"
 
 extern void *getValueFile(void *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern void *fn_8012850C(s32, const char *);
 extern void *fn_8002F37C(void *, void (*)(void), void *, s32, s32);
 extern void *fn_802CE3A4(s32, s32, s32);
@@ -202,7 +202,7 @@ void fn_802023D4(void) {
         lbl_8055ECC4 = 0;
         lbl_8055ECC8 = 0;
     }
-    fn_80131818(manager);
+    releaseValueFile(manager);
     lbl_8055ECCC = fn_80202248((int)(config + 0x34));
     if (lbl_8055ECCC != -1) fn_802E30C8(config + 0x44);
     lbl_8055ECD0 = fn_80202248((int)(config + 0x5C));

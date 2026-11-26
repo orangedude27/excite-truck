@@ -189,7 +189,7 @@ float fn_8029748C(void *collection) {
 
 extern s32 fn_8012C33C(void);
 extern void *getValueFile(void *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern void *fn_8012850C(s32, const char *, s32);
 extern void *fn_8002F37C(void *, void *, void *, s32, s32);
 extern void fn_802976D0(void *);
@@ -256,7 +256,7 @@ extern char lbl_803493B4[];
                 }
             }
         }
-        fn_80131818(iterator);
+        releaseValueFile(iterator);
     }
     return sequence;
 }

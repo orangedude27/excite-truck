@@ -27,7 +27,7 @@ extern void *lbl_8055E9F0;
 extern char lbl_804872B0[];
 extern void fn_802CAC54(void);
 extern void fn_80209110(void *);
-extern void fn_80131818(void);
+extern void releaseValueFile(void);
 extern int lbl_8055ADF0, lbl_8055ADF4, lbl_8055E9E8;
 extern float lbl_80562BF4;
 extern void *memcpy(void *, const void *, unsigned int);
@@ -357,7 +357,7 @@ extern "C" void fn_801DEE3C(void) {
        fn_802CAC54 if != -1, call fn_801DE88C(i); then shutdown lbl_8055E9EC via
        fn_80209110 and destroy singleton object lbl_8055E9F0; destroy/clear 4
        objects in table lbl_804874A8; if handle lbl_8055E9E4 nonzero close via
-       fn_80131818; clear lbl_8055E9E8 and save/clear flags lbl_8055E9DC through
+       releaseValueFile; clear lbl_8055E9E8 and save/clear flags lbl_8055E9DC through
        fn_80133348(fn_8000DA10()+0xC, &lbl_80339570 "popups_seen", lbl_8055E9DC). */
     register int sentinel = -1;
     register int zero = 0;
@@ -409,7 +409,7 @@ extern "C" void fn_801DEE3C(void) {
     }
 
     if (lbl_8055E9E4 != 0) {
-        ((void (*)(int))fn_80131818)(lbl_8055E9E4);
+        ((void (*)(int))releaseValueFile)(lbl_8055E9E4);
         lbl_8055E9E4 = 0;
     }
     sentinel = 0;

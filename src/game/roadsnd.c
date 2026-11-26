@@ -30,7 +30,7 @@ extern const char lbl_8055B628[4];
 extern f32 lbl_80563300;
 extern void* fn_801284F8(int, const char*);
 extern void* getValueFile(const char*);
-  extern void fn_80131818(void*);
+  extern void releaseValueFile(void*);
   extern void fn_80128668(void*);
 extern void* fn_802077A4(int, int, void*, void*);
 extern int fn_802E30C8(const char*, ...);
@@ -139,7 +139,7 @@ void fn_8020CA38(void) {
             }
             itemIndex++;
         }
-        fn_80131818(paramDir);
+        releaseValueFile(paramDir);
     }
     return container;
 }

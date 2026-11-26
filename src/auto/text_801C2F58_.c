@@ -508,7 +508,7 @@ s32 fn_801C3D5C(void) {
 extern s32 fn_8012C33C(void *);
 extern s32 lbl_8055E814;
 extern void *getValueFile(void *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern const char *fn_80007F90(u32);
 extern char lbl_8055A990[];
 void fn_801C3D88(void *arg0) {
@@ -552,7 +552,7 @@ void fn_801C3D88(void *arg0) {
         }
         if ((*(s32(**)(void *, s32))(*(u8 **)obj + 0x10))(obj, val) == 0) {
             fn_802E30C8(lbl_80336B00 + 0xe4, val);
-            fn_80131818(obj);
+            releaseValueFile(obj);
             Abend_Panic(lbl_80336B00 + 0x140, val, arg0);
             return;
         }

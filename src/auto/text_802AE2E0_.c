@@ -25,10 +25,11 @@ void fn_802AE2E0(void *arg) {
 #pragma push
 #pragma optimization_level 1
 void fn_802AE328(void) {
-    char *lists = lbl_80349FF0;
-    fn_802AE2E0(&lists[(int)(sizeof(char) - 1)]);
-    fn_802AE2E0(&lists[0xC]);
-    fn_802AE2E0(&lists[0x1C]);
+    typedef struct { char a[0xC]; char b[0x10]; char c[0x10]; } Lists;
+    Lists *lists = (Lists *)lbl_80349FF0;
+    fn_802AE2E0(lists->a);
+    fn_802AE2E0(lists->b);
+    fn_802AE2E0(lists->c);
     lbl_8055F958 = 1;
 }
 
@@ -43,12 +44,12 @@ void fn_802AE374(void) {
 }
 #pragma opt_common_subs reset
 void fn_802AE394(void) {
-    /* Release every object tracked in the global list (fn_80131818 drops one
+    /* Release every object tracked in the global list (releaseValueFile drops one
        reference each), then empty the list and clear the initialized/reset flags. */
     int byteOffset = 0;
     int index = 0;
     while (index < lbl_804BD8CC[1]) {
-        fn_80131818((void *)(*(int *)((char *)lbl_804BD8CC[0] + byteOffset)));
+        releaseValueFile((void *)(*(int *)((char *)lbl_804BD8CC[0] + byteOffset)));
         byteOffset += 4;
         index += 1;
     }

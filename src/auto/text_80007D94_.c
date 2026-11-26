@@ -33,7 +33,7 @@ extern const char lbl_805589A0[1];
 extern const char lbl_805589A8[1];
 void fn_80279464(void);
 void fn_80012778(void);
-void fn_80131818(void*);
+void releaseValueFile(void*);
 void Abend_Panic(const char*, ...);
 
 int stricmp(const char*, const char*);
@@ -132,7 +132,7 @@ done:
  * held at offset 0x1E4 of the global race-event table and clear the pointer. */
 void fn_80007F04(void) {
     RaceEventTable *raceTable = &lbl_8034EF38;
-    fn_80131818(raceTable->config);
+    releaseValueFile(raceTable->config);
     raceTable->config = 0;
 }
 #pragma dont_inline reset

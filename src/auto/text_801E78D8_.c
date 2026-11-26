@@ -1414,7 +1414,7 @@ void fn_801E95DC(void) {
 }
 #pragma pop
 extern void *getValueFile(void);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern int fn_8002B1D8(const char *, const char *, int);
 extern float fn_801DCF48(long, float, float);
 extern double fn_8002F234(float);
@@ -1579,7 +1579,7 @@ void fn_801E96D8(long arg0) {
             var_r23 += 1;
             var_r22 = ((void **(*)(void *, long))(*(void ***)temp_r3_3)[3])(temp_r3_3, var_r23);
         }
-        fn_80131818(temp_r3_3);
+        releaseValueFile(temp_r3_3);
     }
     tailres = (((long (*)(void *, void *, long))(*(void ***)(*(void **)((char *)temp + 0x20)))[6])((*(void **)((char *)temp + 0x20)), sbase + 0x204, 0));
     if (tailres != 0) {

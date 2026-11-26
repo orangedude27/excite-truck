@@ -228,7 +228,7 @@ extern "C" int fn_802C6FC0(void *, int, int);
 extern "C" void *getValueFile(void *);
 extern "C" int fn_801F0010(int, int);
 extern "C" float fn_801F159C(int);
-extern "C" void fn_80131818(void *, float, float, float);
+extern "C" void releaseValueFile(void *, float, float, float);
 extern "C" void fn_8027A714(void *, void *);
 extern "C" void fn_80253890(void *, void *);
 extern "C" char lbl_803447C0[];
@@ -349,7 +349,7 @@ copy_done:
     *(float *)((unsigned char *)arg0 + 0x428) = temp_f1;
     temp_f31 = *(float *)((unsigned char *)arg0 + 0x470);
     *(float *)((unsigned char *)arg0 + 0x594) = *(float *)((unsigned char *)arg0 + 0x548);
-    fn_80131818(manager, temp_f1, temp_f2, temp_f3);
+    releaseValueFile(manager, temp_f1, temp_f2, temp_f3);
     temp_f3 = lbl_80563A18;
 
     var_r4_2 = arg0;
@@ -499,7 +499,7 @@ void fn_80253890(void *arg0, void *arg1) {
                 keyRes->setKey(keys.v[i], -1);
         }
     }
-    ((void (*)(void *))fn_80131818)(manager);
+    ((void (*)(void *))releaseValueFile)(manager);
     if (path[0] != 0) *(int *)((char *)arg0 + 0x3FC) = fn_801D2008(path);
     else *(int *)((char *)arg0 + 0x3FC) = 0;
     }
@@ -1250,7 +1250,7 @@ void fn_8025539C(void *arg0, s32 arg1) {
         } else {
             fn_802E30C8(strings + 0x180, arg1, manager);
         }
-        ((void (*)(void *))fn_80131818)(obj);
+        ((void (*)(void *))releaseValueFile)(obj);
     } else {
         fn_802E30C8(strings + 0x1B8, manager);
     }

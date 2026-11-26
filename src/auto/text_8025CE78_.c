@@ -32,7 +32,7 @@ extern char lbl_8055C108[], lbl_8055C100[];
 extern char lbl_8055C0FC, lbl_8055C0F8, lbl_8055C0F4, lbl_8055C0F0, lbl_8055C0EC;
 extern char lbl_80344750, lbl_80344740, lbl_80344730, lbl_80344720;
 extern void *RegisterTextureByName(void *, int);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern int strcmp(const char *, const char *);
 extern void fn_802146BC();
 extern void fn_802CAC54(void *);
@@ -117,7 +117,7 @@ void fn_8025CE78(void) {
                     }
                 }
             }
-            fn_80131818(items);
+            releaseValueFile(items);
         }
         lbl_8055F2E4 = list;
     }

@@ -4,7 +4,7 @@
 extern int sprintf(char *, const char *, ...);
 extern int fn_802E30C8(const char *, ...);
 int fn_80128668();
-int fn_80131818();
+int releaseValueFile();
 int fn_80128658(int);
 int fn_80139B70(int, float, float);
 extern int lbl_8055E138; /* the resource table fn_80131810 opened (fn_8013A074 closes it) */
@@ -13,7 +13,7 @@ extern __declspec(section ".data") unsigned char lbl_8042F7C0; /* the path it wa
 #define gResourceTable  lbl_8055E138
 #define gResourceSource lbl_8055E13C
 #define gResourcePath   lbl_8042F7C0
-#define CloseResourceTable fn_80131818
+#define CloseResourceTable releaseValueFile
 extern const char lbl_8032BFD8[];
 extern const char lbl_8032C018[];
 extern const char lbl_80559C40[];
@@ -131,7 +131,7 @@ int fn_80139B70(int arg0, float arg1, float arg2) {
     int count;
     int result;
     int i;
-    register float th = lbl_80561410;
+    float th;
     float v0;
     float v1;
     float v2;
@@ -140,6 +140,7 @@ int fn_80139B70(int arg0, float arg1, float arg2) {
     count = *(int *)arg0;
     p = (volatile float *)(arg0 + 8);
     result = 0;
+    th = lbl_80561410;
     for (i = 0; i < count; p += 2, i++) {
         float y0 = p[1];
         int next = i + 1;
@@ -163,42 +164,44 @@ int fn_80139B70(int arg0, float arg1, float arg2) {
             v[1] = arg2 - y0b;
             v[2] = y1b - y0b;
             v[3] = -dx;
-            v0 = v[0];
             v1 = v[1];
             v2 = v[2];
             v3 = v[3];
-            if (rising == (v2 * v0 + v3 * v1 < th)) result++;
+            if (rising == (v2 * (v0 = v[0]) + v3 * v1 < th)) result++;
         }
     }
     return result & 1;
 }
 
 extern float lbl_80561414;
+#pragma scheduling invalid_target
 unsigned long long fn_80139C5C(void *arg0) {
-    int count = *(int *)arg0;
-    float *point = (float *)((char *)arg0 + 0x10);
-    float b0 = *(float *)((char *)arg0 + 8);
-    float b1 = *(float *)((char *)arg0 + 12);
-    float b2 = b0;
-    float b3 = b1;
+    register float *point = (float *)((char *)arg0 + 0x10);
+    register int count = *(int *)arg0;
+    float b[4];
     int i;
-    for (i = 0; i < count - 1; i++) {
-        float px = point[0];
-        float py = point[1];
-        b2 = (px < b2) ? px : b2;
-        b3 = (py < b3) ? py : b3;
-        b0 = (px > b0) ? px : b0;
-        b1 = (py > b1) ? py : b1;
+    b[0] = *(float *)((char *)arg0 + 8);
+    b[1] = *(float *)((char *)arg0 + 12);
+    b[2] = b[0];
+    b[3] = b[1];
+    for (i = 1; i < count; i++) {
+        { float bound = b[2]; float px = point[0]; b[2] = (px < bound) ? px : bound; }
+        { float bound = b[3]; float py = point[1]; b[3] = (py < bound) ? py : bound; }
+        { float bound = b[0]; float px = point[0]; b[0] = (px > bound) ? px : bound; }
+        { float bound = b[1]; float py = point[1]; b[1] = (py > bound) ? py : bound; }
         point += 2;
     }
     {
-        union { float f; unsigned int u; } x, y;
-        x.f = b2 + lbl_80561414 * (b0 - b2);
-        y.f = b3 + lbl_80561414 * (b1 - b3);
+        union { float f; unsigned int u; } y, x;
+        float scale = lbl_80561414;
+        float yd = b[1] - b[3];
+        float xd = b[0] - b[2];
+        y.f = b[3] + scale * yd;
+        x.f = b[2] + scale * xd;
         return ((unsigned long long)x.u << 32) | y.u;
     }
 }
-
+#pragma scheduling on
 void *fn_80131810(void); /* opens a table from a path in r3; the prototype stays arg-less because fn_80139D4C calls it with no argument, so fn_80139F5C casts at the call */
 void *fn_801284F8(int, const char *);
 void *fn_801399FC();
@@ -266,7 +269,7 @@ void fn_80139E18(void *self) {
     handle = *(int *)base;
     *(int *)((char *)base + 8) = 0;
     if (handle != 0)
-        fn_80131818();
+        releaseValueFile();
     *(int *)base = 0;
     if (base + 4 != 0) {
         if (base + 4 != 0) {

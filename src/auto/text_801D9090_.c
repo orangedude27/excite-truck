@@ -258,7 +258,7 @@ extern "C" void fn_801D9284(void) {
     extern char lbl_80339108[];        // wlDataNames: the table/model names below
     extern void *lbl_8055AD60;         // the string "oml"; only its address is passed on
     extern void *fn_80131810(void *);  // open a DTB value table by name
-    extern void fn_80131818(void *);   // release a DTB value table again
+    extern void releaseValueFile(void *);   // release a DTB value table again
     extern void fn_801D9394(void **head, void *table, const char *name, void *regionTable);
     extern void fn_801D9654(void *head, void *table, void *name, int);
     extern int fn_802C6FC0(void *name, int, int); // mrmodel: load a model
@@ -280,11 +280,11 @@ extern "C" void fn_801D9284(void) {
                 subTable = ((struct DtbTable *)modelTable)->get(base + nameOmlLists);
                 fn_801D9654(&omlList, subTable, &lbl_8055AD60, 0);
                 fn_801D91D8();
-                fn_80131818(modelTable);
+                releaseValueFile(modelTable);
             }
-            fn_80131818(morphTable);
+            releaseValueFile(morphTable);
         }
-        fn_80131818(regionTable);
+        releaseValueFile(regionTable);
     }
     wlMapModel = fn_802C6FC0(base + nameWlMapMod, 0, 0);
     morphUpdateFrozen = 0;

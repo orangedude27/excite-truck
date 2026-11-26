@@ -291,7 +291,7 @@ DECL_SECTION(".sdata") extern const char lbl_8055B5A8[];
 DECL_SECTION(".sdata") extern const char lbl_8055B5B0[];
 extern float lbl_805632B4;
 extern void *getValueFile(const char *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern void fn_802E58B8(int);
 extern int strcmp(const char *, const char *);
 #pragma push
@@ -350,7 +350,7 @@ copy_done:
             }
             ++entryIndex;
         }
-        fn_80131818(list);
+        releaseValueFile(list);
     } else {
         Abend_Panic(lbl_8033C3C0);
     }

@@ -103,7 +103,7 @@ extern int fn_8020A69C(void);
 extern void musicRequestSong(int);
 extern void fn_80265A74(void);
 extern void *fn_80131810(void *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern int fn_802ECF00(int);
 extern int fn_802ECF04(void);
 extern void Abend_Panic(const char *, ...);
@@ -167,7 +167,7 @@ extern "C" void fn_80263F30(int fadeOut, unsigned char skip, int fadeIn) {
         if (fn_802ECF04() == 0) {
             Abend_Panic(base + CREDITS_POP_FAIL_MSG);
         }
-        fn_80131818(valList);
+        releaseValueFile(valList);
         fn_80264538((int)timerObj, -1);
         fn_80264968(pageObj, -1);
     }

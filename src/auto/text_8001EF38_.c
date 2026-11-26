@@ -58,7 +58,7 @@ extern s32 lbl_8055D610;
 extern s32 fn_8000DA10(void);
 void fn_80128668(void*);
 void fn_80128670(s32);
-void fn_80131818(s32);
+void releaseValueFile(s32);
 s32 fn_8001F89C();
 s32 fn_8001F2C8();
 s32 fn_8001F388();
@@ -326,7 +326,7 @@ s32 fn_8001F2C8(void* alarm) {
             index++;
             slot++;
         } while (index < 8);
-        fn_80131818(lbl_8055D610);
+        releaseValueFile(lbl_8055D610);
         lbl_8055D610 = 0;
     }
 }

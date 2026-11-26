@@ -171,7 +171,7 @@ extern "C" void readPhobConfig(void *outConfig, void *configSource) {
 #pragma cplusplus reset
 
 extern void *fn_80131810(int);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern void readPhobConfig(void *, void *);
 extern int lbl_80562AB0;
 extern int lbl_80562AB4;
@@ -196,10 +196,10 @@ extern "C" void fn_801D3610(void *outConfig, int configName) {
             if (store->isAvailable(configName) != 0) {
                 configValue = store->getValue(configName);
                 readPhobConfig(outConfig, configValue);
-                fn_80131818(store);
+                releaseValueFile(store);
                 return;
             }
-            fn_80131818(store);
+            releaseValueFile(store);
         }
         storeIndex++;
         storeIdPtr++;

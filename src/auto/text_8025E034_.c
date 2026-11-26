@@ -979,7 +979,7 @@ struct ParamDir_8025FA18 {
 extern void *fn_801284F8(int, const char *);
 extern "C" void *fn_8012850C(int, const char *);
 extern void *getValueFile(const char *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern int RegisterTextureByName(const char *, int);
 extern int strcmp(const char *, const char *);
 extern char lbl_80344720[], lbl_80344730[], lbl_80344740[], lbl_80344750[], lbl_80344760[];
@@ -1067,7 +1067,7 @@ extern "C" void *fn_8025FA18(void) {
                     } while (index < 2);
                 }
             }
-            fn_80131818(set);
+            releaseValueFile(set);
         }
         lbl_8055F2E4 = heap;
     }

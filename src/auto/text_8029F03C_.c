@@ -40,7 +40,7 @@ extern void fn_802A02F4(void *, Unk802A0794Params *);
 extern void fn_802E30C8(const char *, ...);
 extern char lbl_803498AC[];
 extern void *fn_80131810(void *);
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern void registerNamedObject(void *);
 extern char lbl_8034989C[];
 __declspec(section ".sdata") extern char lbl_8055CB60[];
@@ -716,7 +716,7 @@ extern "C" void fn_8029FD04(void) {
                 registerNamedObject(child);
             child = group->child(childIndex++);
         }
-        fn_80131818(group);
+        releaseValueFile(group);
     }
 }
 #pragma cplusplus off

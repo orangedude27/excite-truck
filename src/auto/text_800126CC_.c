@@ -110,13 +110,13 @@ void *fn_8001285C(int index) DECOMP_DONT_INLINE {
 
 extern char lbl_80352AD0[];
 extern char lbl_802FC700[];
-extern void fn_80131818(void *);
+extern void releaseValueFile(void *);
 extern char lbl_8035183C[];
 extern char lbl_8055D500;
 extern int lbl_8055D514;
 #pragma scheduling invalid_target
 void fn_80012794(void) {
-    /* Release every registered resource handle (fn_80131818 drops one reference
+    /* Release every registered resource handle (releaseValueFile drops one reference
      * each), then empty the table, switch the game mode to 0x134 and clear the
      * resource-ready and selected-object flags. */
     HandleTable *table;
@@ -125,7 +125,7 @@ void fn_80012794(void) {
     table = slot;
     lbl_80558AD8 = 0x134;
     while (index < table->count) {
-        fn_80131818((void *)slot->handles[0]);
+        releaseValueFile((void *)slot->handles[0]);
         slot = (HandleTable *)((char *)slot + 4);
         index++;
     }
