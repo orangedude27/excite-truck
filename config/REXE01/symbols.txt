@@ -3900,7 +3900,7 @@ SetVoiceType__Q46nw4hbm3snd6detail7AxVoiceFQ56nw4hbm3snd6detail7AxVoice9VoiceTyp
 UpdateAxSrc__Q46nw4hbm3snd6detail7AxVoiceFb = .text:0x800E6750; // type:function size:0x19C
 fn_800E68EC = .text:0x800E68EC; // type:function size:0x158
 fn_800E6A44 = .text:0x800E6A44; // type:function size:0xE0
-fn_800E6B24 = .text:0x800E6B24; // type:function size:0x23C
+UpdateAxVolume__Q46nw4hbm3snd6detail7AxVoiceFv = .text:0x800E6B24; // type:function size:0x23C
 UpdateAxMix__Q46nw4hbm3snd6detail7AxVoiceFv = .text:0x800E6D60; // type:function size:0xD8
 UpdateAxLpf__Q46nw4hbm3snd6detail7AxVoiceFv = .text:0x800E6E38; // type:function size:0x144
 VoiceCallback__Q46nw4hbm3snd6detail7AxVoiceFPv = .text:0x800E6F7C; // type:function size:0x10C

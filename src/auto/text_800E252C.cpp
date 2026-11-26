@@ -1673,7 +1673,7 @@ extern "C" void InitParam__Q46nw4hbm3snd6detail7AxVoiceFiiPFPQ46nw4hbm3snd6detai
 extern "C" void UpdateAxSrc__Q46nw4hbm3snd6detail7AxVoiceFb(void *, int);
 extern "C" void UpdateAxMix__Q46nw4hbm3snd6detail7AxVoiceFv(void *);
 extern "C" void UpdateAxLpf__Q46nw4hbm3snd6detail7AxVoiceFv(char *);
-extern "C" int fn_800E6B24(void *);
+extern "C" int UpdateAxVolume__Q46nw4hbm3snd6detail7AxVoiceFv(void *);
 #pragma use_lmw_stmw off
 /* Apply one AxVoice's pending AX updates (start, pause/mute, source rate, volume, mix and low-pass filter) to its voices, clearing each flag as it is handled and reporting playback completion through the status callback. */ extern "C" void ApplyPendingAxUpdates__Q46nw4hbm3snd6detail7AxVoiceFv(void *voice_) {
 #define B(off) (*(unsigned char *)((char *)voice_ + (off)))
@@ -1755,7 +1755,7 @@ extern "C" int fn_800E6B24(void *);
                 UpdateAxSrc__Q46nw4hbm3snd6detail7AxVoiceFb(voice_, 0);
                 UPDATE_FLAGS = UPDATE_FLAGS & ~AX_UPDATE_SRC;
             }
-            if ((UPDATE_FLAGS & AX_UPDATE_VOLUME) && fn_800E6B24(voice_) == 0) {
+            if ((UPDATE_FLAGS & AX_UPDATE_VOLUME) && UpdateAxVolume__Q46nw4hbm3snd6detail7AxVoiceFv(voice_) == 0) {
                 UPDATE_FLAGS = UPDATE_FLAGS & ~AX_UPDATE_VOLUME;
             }
             if (UPDATE_FLAGS & AX_UPDATE_MIX) {
@@ -2013,7 +2013,7 @@ enum AxVoiceUpdateFlag {
     AX_UPDATE_START = 0x01,   /* start playing: apply the source rate, then set the AX voices playing */
     AX_UPDATE_PAUSE = 0x02,   /* re-apply the pause/mute state to the AX voices */
     AX_UPDATE_SRC = 0x08,     /* refresh the AX source rate */
-    AX_UPDATE_VOLUME = 0x10,  /* ramp the AX volumes to their target (fn_800E6B24) */
+    AX_UPDATE_VOLUME = 0x10,  /* ramp the AX volumes to their target (UpdateAxVolume__Q46nw4hbm3snd6detail7AxVoiceFv) */
     AX_UPDATE_MIX = 0x20,     /* refresh the mix levels (UpdateAxMix) */
     AX_UPDATE_LPF = 0x40      /* refresh the low-pass filter (UpdateAxLpf) */
 };
@@ -3253,7 +3253,7 @@ extern float lbl_80560F5C;
    mix frames; the ramp starts from the column's previous volume (self+0x18C[]) once
    the first AX voice is playing, and from the stored start volume (self+0x19C)
    before that.  Returns 1 while any voice is still ramping, 0 when they all match. */
-extern "C" int fn_800E6B24(void *self) {
+extern "C" int UpdateAxVolume__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
     float *prevColumnVolume;
     unsigned char *columnVolume;
     int columnOffset;
