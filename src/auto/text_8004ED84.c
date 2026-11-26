@@ -605,6 +605,7 @@ extern u16 lbl_80560CBE;
 #pragma use_lmw_stmw off
 int ReadFont(int dst, int encode, int font) {
     u8* tex;
+    int i;
     u32 code;
     u32 size;
     s32 sheet;
@@ -612,12 +613,6 @@ int ReadFont(int dst, int encode, int font) {
     s32 row;
     s32 col;
     u8* tmp;
-    int i;
-    int k;
-    int m;
-    int n;
-    int o;
-    int p;
     OSFontHeader* f = (OSFontHeader*)font;
 
     if ((u32)encode == 1) {
@@ -634,14 +629,11 @@ int ReadFont(int dst, int encode, int font) {
     Decode((void*)dst, (void*)font);
 
     if ((u32)encode == 1) {
-        u16 c0 = lbl_80560CB8;
-        u16 c1 = lbl_80560CBA;
-        u16 c2 = lbl_80560CBC;
-        u16 c3 = lbl_80560CBE;
+        u16 sp28[] = {0x2ABE, 0x003D, 0x003D, 0x003D};
 
         code = ((u32 (*)(int, u16))GetFontCode)(encode, 'T');
         sheet = (s32)code / (f->sheetNumCol * f->sheetNumRow);
-        numRestTex = code - (sheet * (f->sheetNumCol * f->sheetNumRow));
+        numRestTex = (s32)code - (sheet * (f->sheetNumCol * f->sheetNumRow));
         row = numRestTex / f->sheetNumCol;
         col = numRestTex - row * f->sheetNumCol;
         row *= f->cellHeight;
@@ -649,29 +641,13 @@ int ReadFont(int dst, int encode, int font) {
         tex = (u8*)font + f->sheetImageOfs;
         tex += sheet * f->sheetSize / 2;
 
-        tmp = tex + (((f->sheetWidth / 8) * 32) / 2) * ((row + 4) / 8);
-        tmp += (col / 8) * 16;
-        tmp += ((row + 4) % 8) * 2;
-        tmp += (col % 8) / 4;
-        *(u16*)tmp = c0;
-
-        tmp = tex + (((f->sheetWidth / 8) * 32) / 2) * ((row + 5) / 8);
-        tmp += (col / 8) * 16;
-        tmp += ((row + 5) % 8) * 2;
-        tmp += (col % 8) / 4;
-        *(u16*)tmp = c1;
-
-        tmp = tex + (((f->sheetWidth / 8) * 32) / 2) * ((row + 6) / 8);
-        tmp += (col / 8) * 16;
-        tmp += ((row + 6) % 8) * 2;
-        tmp += (col % 8) / 4;
-        *(u16*)tmp = c2;
-
-        tmp = tex + (((f->sheetWidth / 8) * 32) / 2) * ((row + 7) / 8);
-        tmp += (col / 8) * 16;
-        tmp += ((row + 7) % 8) * 2;
-        tmp += (col % 8) / 4;
-        *(u16*)tmp = c3;
+        for (i = 4; i < 8; i++) {
+            tmp = tex + (((f->sheetWidth / 8) * 32) / 2) * ((row + i) / 8);
+            tmp += (col / 8) * 16;
+            tmp += ((row + i) % 8) * 2;
+            tmp += (col % 8) / 4;
+            *(u16*)tmp = sp28[i - 4];
+        }
     }
 
     return size;
@@ -844,56 +820,66 @@ void *ParseStringW(int encode, void *str, int *fontOut, int *codeOut, int unused
     return str;
 }
 #pragma processor 750
-void OSGetFontTexel(char *arg0, unsigned char *arg1, int arg2, int arg3, int *arg4) {
-    unsigned char *spC;
-    int sp8;
-    unsigned short mode = lbl_80558F58;
-    register int perSheet, tileRowBytes, sheetNo, cell, row, col;
-    register int xOff, yOff;
-    register int i, j;
-    register unsigned char *data;
-    register unsigned char *table;
+void OSGetFontTexel(char *arg0, unsigned char *arg1, int arg2, int arg3, int *arg4)
+{
+  unsigned char *spC;
+  int sp8;
+  unsigned short mode;
+  int perSheet;
+  int tileRowBytes;
+  int sheetNo;
+  int cell;
+  int row_1;
+  int row_2;
+  int i;
+  int col;
+  int xOff;
+  int yOff;
+  unsigned char *data;
+  unsigned char *table;
+  mode = OSGetFontEncode();
+  ((char *(*)(int, char *, int **, int *)) lbl_8055DA48)(mode, arg0, (int **) (&spC), &sp8);
+  perSheet = (0, (*((unsigned short *) (spC + 0x1A))) * (*((unsigned short *) (spC + 0x1C))));
+  data = (void *) ((*((int *) (spC + 0x24))) + ((s32) spC));
+  tileRowBytes = 32 * ((arg3 * 4) / 8);
+  table = (void *) (0x2C + ((s32) spC));
+  i = sp8 / perSheet;
+  cell = sp8 - (i * perSheet);
+  row_1 = cell / (*((unsigned short *) (spC + 0x1A)));
+  row_2 = row_1 * (*((unsigned short *) (spC + 0x12)));
+  data += ((unsigned int) (i * (*((int *) (spC + 0x14))))) >> 1;
+  col = cell - (row_1 * (*((unsigned short *) (spC + 0x1A))));
+  col = col * (*((unsigned short *) (spC + 0x10)));
+  for (i = 0; i < (*((unsigned short *) (spC + 0x12))); i++)
+  {
+    int j;
+    int srcY = row_2 + i;
+    for (j = 0; j < (*((unsigned short *) (spC + 0x10))); j++)
+    {
+      int srcX = col + j;
+      unsigned int dx = (arg2 + j) & 0xFFFF;
+      unsigned char byte;
+      s32 val;
+      unsigned char old;
+      unsigned char *p;
+      int mask = 0xF0;
+      byte = data[((((srcY / 8) * ((((*((unsigned short *) (spC + 0x1E))) / 8) * 32) / 2)) + ((srcX / 8) * 16)) + ((srcY % 8) * 2)) + ((srcX % 8) / 4)];
+      val = table[(byte >> (6 - ((srcX % 4) * 2))) & 3];
+      p = (((arg1 + ((i / 8) * (32 * ((arg3 * 4) / 8)))) - (-((dx / 8) * 32))) + ((i % 8) * 4)) + ((dx % 8) / 2);
+      old = *p;
+      if ((dx % 2) != 0)
+      {
+        mask = 0xF;
+      }
+      *((((arg1 + ((i / 8) * (32 * ((arg3 * 4) / 8)))) - (-((dx / 8) * 32))) + ((i % 8) * 4)) + ((dx % 8) / 2)) = old | ((unsigned char) (val & mask));
+    }
 
-    if (mode == 0xFFFF) {
-        int console = *(volatile int *)0x800000CC;
-        if (console == 0) {
-            mode = (*(volatile unsigned short *)0xCC00206E >> 1) & 1;
-            lbl_80558F58 = mode;
-        } else {
-            mode = 0;
-            lbl_80558F58 = 0;
-        }
-        lbl_8055DA48 = ParseStringS;
-    }
-    ((char *(*)(int, char *, int **, int *))lbl_8055DA48)(mode, arg0, (int **)&spC, &sp8);
-    perSheet = *(unsigned short *)(spC + 0x1A) * *(unsigned short *)(spC + 0x1C);
-    tileRowBytes = ((arg3 * 4) / 8) * 32;
-    data = spC + *(int *)(spC + 0x24);
-    table = spC + 0x2C;
-    sheetNo = sp8 / perSheet;
-    cell = sp8 - sheetNo * perSheet;
-    data += ((unsigned int)(sheetNo * *(int *)(spC + 0x14))) >> 1;
-    row = cell / *(unsigned short *)(spC + 0x1A);
-    col = cell - row * *(unsigned short *)(spC + 0x1A);
-    yOff = row * *(unsigned short *)(spC + 0x12);
-    xOff = col * *(unsigned short *)(spC + 0x10);
-    for (i = 0; i < *(unsigned short *)(spC + 0x12); i++) {
-        int srcY = yOff + i;
-        for (j = 0; j < *(unsigned short *)(spC + 0x10); j++) {
-            int srcX = xOff + j;
-            int dx = arg2 + j;
-            unsigned char byte, val, old, *p;
-            int mask = 0xF0;
-            byte = data[(srcY / 8) * (((*(unsigned short *)(spC + 0x1E)) / 8 * 32) / 2) + (srcX / 8) * 16 + (srcY % 8) * 2 + (srcX % 8) / 4];
-            val = table[(byte >> (6 - (srcX % 4) * 2)) & 3];
-            p = arg1 + (i / 8) * tileRowBytes + (dx / 8) * 32 + (i % 8) * 4 + (dx % 8) / 2;
-            old = *p;
-            if ((dx % 2) != 0) mask = 0xF;
-            *p = old | (unsigned char)(val & mask);
-        }
-    }
-    if (arg4 != 0)
-        *arg4 = *(unsigned char *)(spC + *(unsigned short *)(spC + 0x22) + sp8);
+  }
+
+  if (arg4 != 0)
+  {
+    *arg4 = *((unsigned char *) ((spC + (*((unsigned short *) (spC + 0x22)))) + sp8));
+  }
 }
 extern void DCStoreRange(void *, unsigned int);
 int ExpandFontSheet(void *font0, void *src0, void *dst0) {
