@@ -923,7 +923,7 @@ int fn_8027F958(int *selection, void *collection) {
     extern int fn_80131234(int);
     extern int fn_802808D0(void), goBackToListEntry(void), returnToPageEntry(void), fn_80280F7C(void);
     extern FN81138_RET fn_80281138(void);
-    extern int fn_80280DC8(void), fn_80280898(void);
+    extern int nextEntryOnPage(void), fn_80280898(void);
     typedef void *(*GetItem)(void *, int);
     typedef int (*GetInt)(void *);
     typedef unsigned char (*GetByte)(void *);
@@ -1211,7 +1211,7 @@ int fn_8027F958(int *selection, void *collection) {
     stack.menu.entries[25].id = (int)(0x125);
     stack.menu.entries[26].label = (void *)(&lbl_8055B860);
     stack.menu.entries[26].type = (int)(6);
-    stack.menu.entries[26].value = (void *)(&fn_80280DC8);
+    stack.menu.entries[26].value = (void *)(&nextEntryOnPage);
     stack.menu.entries[26].flags = (int)(0);
     stack.menu.entries[26].id = (int)(0x127);
     stack.menu.entries[27].label = (void *)(&lbl_8055B860);
@@ -1662,7 +1662,7 @@ done:
 extern unsigned char lbl_804B3068[];
 typedef unsigned int (*GetKeyFn)(void *);
 typedef char *(*GetTextFn)(void *);
-extern "C" int fn_80280DC8(void) {
+extern "C" int nextEntryOnPage(void) {
     /* Menu action: step the selection forward to the next entry on the same page
      * (same getKey) as the current one, show that entry's text in the selection
      * buffer, and reset the menu when nothing is selected. */
