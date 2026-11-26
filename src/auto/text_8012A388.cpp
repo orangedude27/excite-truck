@@ -2974,7 +2974,7 @@ extern "C" s32 fn_8012E674(void *list) {
 /* Waits for the pending resource request named `name` on loader `loader` to
  * finish loading (state 2), draining the loader's request queue meanwhile, then
  * clears the resource entry's "pending" flag (+0xAD). */
-extern "C" void waitForResourceLoad(s32 loader, s32 name) {
+/* Waits for a named pending resource request to finish loading, draining the loader's request queue as completions arrive, then clears the resource entry's pending flag. */ extern "C" void waitForResourceLoad(s32 loader, s32 name) {
     u8 *self = (u8 *)loader;
     s32 start, deadline, now, done;
     void *entry;
