@@ -3130,7 +3130,7 @@ int fn_801D7F5C(int object, int deleteFlag) {
 }
 
 /* One "PhysPath_ASE" action-sequence element (its name table is lbl_80338928 and
- * its vtable lbl_80338CB0): fn_801D7F9C reads its parameters out of the
+ * its vtable lbl_80338CB0): PhysPathAse_initFromTable reads its parameters out of the
  * action-sequence value table, fn_801D825C resolves its two names to the object
  * it drives, fn_801D815C starts it and fn_801D82A0 fires the target once its
  * delay has run out. */
@@ -3157,7 +3157,7 @@ struct PhysPathAse {
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" int fn_801D7F9C(void *arg0, void *arg1) {
+extern "C" int PhysPathAse_initFromTable(void *arg0, void *arg1) {
     /* The action-sequence value table (actseq.val) an element reads itself
      * from; the two leading vtable entries are the destructor pair, so the
      * first method declared here sits at +0x8. */
