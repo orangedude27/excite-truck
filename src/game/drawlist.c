@@ -829,7 +829,7 @@ extern float __fabsf(float);
 extern float lbl_80564F20, lbl_8055FC50, lbl_8055FC54, lbl_8055FC58;
 #pragma scheduling invalid_target
 /* Test whether a 3D point lies inside the current view volume, optionally reporting a status byte and the point's view-space depth. */
-int isPointInViewVolume(const float *position, unsigned char *status, float *depth, float tolerance) {
+/* Test whether a 3D point lies inside the current view volume, optionally reporting a status byte and the point's view-space depth. */ int isPointInViewVolume(const float *position, unsigned char *status, float *depth, float tolerance) {
 #define gViewMatrix        lbl_804C1410
 #define gNearClip          lbl_8055FC38
 #define gFarClip           lbl_8055FC3C
