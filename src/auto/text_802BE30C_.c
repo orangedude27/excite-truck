@@ -82,26 +82,26 @@ s32 fn_802BE378(s32 cellSize) {
 /* Load faninfo.fnf (magic FINF, version 2), byte-swap its words when asked and
    patch the fan-cell grids in lbl_804C06E0 with the per-cell field bits. */
 void loadFanInfo(void) {
-    void *finfo;
-    u32 params[3];
-    u32 fileName;
+    void *fileData;
+    u32 loadInfo[3];
+    u32 path;
     u32 *cursor;
-    u32 cellSize;
-    u32 count;
+    u32 gridIndex;
+    u32 cellCount;
     u8 *bytes;
     u32 wordIndex;
     s32 cellIndex;
 
-    fileName = (u32)lbl_8034AC68;
-    fn_8012E96C(fileName);
+    path = (u32)lbl_8034AC68;
+    fn_8012E96C(path);
     lbl_8055FACC = 0;
-    finfo = (void *)fn_8012C370(fileName, 0x46494E46, (s32)&params[2], (s32)&params[1], 0, (s32)&params[0]);
-    if (finfo != NULL) {
-        if (params[2] == 2) {
-            cursor = (u32 *)finfo;
-            if (*(u8 *)&params[0] != 0) {
-                bytes = (u8 *)finfo;
-                for (wordIndex = 0; wordIndex < (params[1] >> 2); wordIndex++) {
+    fileData = (void *)fn_8012C370(path, 0x46494E46, (s32)&loadInfo[2], (s32)&loadInfo[1], 0, (s32)&loadInfo[0]);
+    if (fileData != NULL) {
+        if (loadInfo[2] == 2) {
+            cursor = (u32 *)fileData;
+            if (*(u8 *)&loadInfo[0] != 0) {
+                bytes = (u8 *)fileData;
+                for (wordIndex = 0; wordIndex < (loadInfo[1] >> 2); wordIndex++) {
                     u8 t = bytes[0];
                     bytes[0] = bytes[3];
                     bytes[3] = t;
@@ -112,21 +112,21 @@ void loadFanInfo(void) {
                 }
             }
             while (((FanHeader *)cursor)->index != 0) {
-                FanHeader *h = (FanHeader *)cursor;
-                count = h->count;
-                cellSize = h->index;
+                FanHeader *header = (FanHeader *)cursor;
+                cellCount = header->count;
+                gridIndex = header->index;
                 cursor += 2;
-                for (cellIndex = 0; cellIndex < (s32)count; cellIndex++) {
-                    FanEntry *e = (FanEntry *)lbl_804C06E0[cellSize] + cellIndex;
-                    e->field = (e->field & 0xFF800200) | (*cursor & 0x7FFDFF);
+                for (cellIndex = 0; cellIndex < (s32)cellCount; cellIndex++) {
+                    FanEntry *entry = (FanEntry *)lbl_804C06E0[gridIndex] + cellIndex;
+                    entry->field = (entry->field & 0xFF800200) | (*cursor & 0x7FFDFF);
                     cursor++;
                 }
             }
             lbl_8055FACC = 1;
         } else {
-            Abend_Panic(lbl_8034AC74, params[2]);
+            Abend_Panic(lbl_8034AC74, loadInfo[2]);
         }
-        fn_8012C4D8(finfo);
+        fn_8012C4D8(fileData);
     }
 }
 #pragma scheduling on
