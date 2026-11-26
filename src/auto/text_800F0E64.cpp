@@ -3468,7 +3468,8 @@ extern "C" void fn_800E9BA4(void *, s32);
 extern "C" void *allocSeqSound(s32, s32, s32, s32, s32, s32, void *);
 #define allocStreamSound fn_800F9200
 extern "C" void *allocStreamSound(s32, s32, s32, s32, s32, s32, void *);
-extern "C" void *fn_800F975C(s32, s32, s32, s32, s32, s32, void *);
+#define allocWaveSound fn_800F975C
+extern "C" void *allocWaveSound(s32, s32, s32, s32, s32, s32, void *);
 extern "C" const char lbl_80325870[];
 extern "C" const char lbl_80325894[];
 extern "C" const char lbl_803258A0[];
