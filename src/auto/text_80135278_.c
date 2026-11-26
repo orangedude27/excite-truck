@@ -196,7 +196,7 @@ void fn_801353C8(Unk_80135278 *follower, s32 point, s32 hint, s32 startNode) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-/* Find the stretch of the path a point lies beside, or 0.
+/* Find the stretch of the path a point lies beside, or 0 if none qualifies.
  *
  * The stretches form a circular list whose first entry sits at list + 0x1C;
  * one runs from its own (x, y) in its (dirX, dirY) direction, so
@@ -215,10 +215,10 @@ void *findPathStretch(float *point, void *unused, void *list) {
     extern float lbl_80561328, lbl_8056132C;
     float startSide;
     float bestAcross = PAIR_ACROSS_LIMIT;
-    PathNode *best;
+    PathNode *bestNode;
     PathNode *node = PATH_FIRST(list);
     startSide = PATH_ZERO;
-    best = 0;
+    bestNode = 0;
     do {
         if (fn_80135278(&node->dirX, point, (float *)node) > startSide) {
             PathNode *next = node->next;
@@ -239,14 +239,14 @@ void *findPathStretch(float *point, void *unused, void *list) {
                 negativeNormalY = -normalY;
                 across = (float)__fabs((double)(normalX * dx + negativeNormalY * dy));
                 if (across < bestAcross) {
-                    best = node;
+                    bestNode = node;
                     bestAcross = across;
                 }
             }
         }
         node = node->next;
     } while (node != PATH_FIRST(list));
-    if (best == 0) {
+    if (bestNode == 0) {
         float nearestLimit = NEAREST_LIMIT;
         node = PATH_FIRST(list);
         do {
@@ -271,17 +271,17 @@ void *findPathStretch(float *point, void *unused, void *list) {
             dist = along * along;
             dist += acrossSquared;
             if (dist < nearestLimit) {
-                best = node;
+                bestNode = node;
                 nearestLimit = dist;
             }
             node = node->next;
         } while (node != PATH_FIRST(list));
     }
-    if (best == 0) {
+    if (bestNode == 0) {
         fn_802E30C8(MSG_NO_PAIR, point[0], point[1]);
         fn_802E30C8(MSG_UPSET);
     }
-    return best;
+    return bestNode;
 }
 #pragma pop
 /* Thin alias for fn_801357A4: tail-calls the path-follower step routine that advances a path
