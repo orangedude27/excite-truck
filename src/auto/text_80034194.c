@@ -1913,20 +1913,19 @@ void fn_8003684C(void) {
 
 #pragma push
 #pragma dont_inline on
-/* Handles a DVD drive status value: records it in __ErrorInfo, then starts an
- * error-report/reset flow for 0x10, 0x20 or an odd code, else issues a
- * stop-motor/reset command sequence. */
+/* DVD low-level command callback: log the status into the error-info ring, then
+ * start the matching NAND error report, recovery command, or motor reset. */
 void __DVDHandleCommandStatus(u32 status) {
-    s32 interrupts;
+    s32 enabled;
 
-    interrupts = OSDisableInterrupts();
+    enabled = OSDisableInterrupts();
     if (*(volatile u32 *)&lbl_8055D848 == 0) {
         *(u32 *)(__ErrorInfo + 0x78) = status;
     } else {
         *(u32 *)(__ErrorInfo + 0x28 +
                  (*(volatile u32 *)&lbl_8055D848 - 1) * 0x14) = status;
     }
-    OSRestoreInterrupts(interrupts);
+    OSRestoreInterrupts(enabled);
 
     if (status == 0x10) {
         fn_8003A1A0(0x1234568, fn_80035C78);
@@ -1937,23 +1936,23 @@ void __DVDHandleCommandStatus(u32 status) {
         return;
     }
     if (status & 1) {
-        u8 *info;
-        s32 state;
+        u8 *errorInfo;
+        s32 savedIrq;
 
         lbl_8055D860 = 0;
         lbl_8055D89C = (u32 *)lbl_80376B20;
         fn_8003BCDC(0);
 
-        state = OSDisableInterrupts();
+        savedIrq = OSDisableInterrupts();
         if (*(volatile u32 *)&lbl_8055D848 >= 5)
             *(volatile u32 *)&lbl_8055D848 = 0;
-        info = (u8 *)__ErrorInfo;
-        *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x21;
-        *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0x10008;
-        *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0x20;
-        *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
+        errorInfo = (u8 *)__ErrorInfo;
+        *(s32 *)(errorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x21;
+        *(s32 *)(errorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0x10008;
+        *(s32 *)(errorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0x20;
+        *(s32 *)(errorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
         *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
-        OSRestoreInterrupts(state);
+        OSRestoreInterrupts(savedIrq);
         fn_8003AD88(lbl_80376B40, 0x20, 0x10008, (u32)fn_80036D24);
         return;
     }
