@@ -10,7 +10,7 @@
 
 /* One loaded action sequence: a table of the "action_sequence_file" value
  * file (actseq.val), built by fn_801D4B34/ActionSequence_load and updated every frame
- * by fn_801D50B8.  Its *_ASE elements are the events it hands out. */
+ * by updateActionSequence.  Its *_ASE elements are the events it hands out. */
 enum ActionSequenceState {
     ACTION_SEQ_UNLOADED = 0, /* no table loaded yet */
     ACTION_SEQ_READY = 1,    /* idle, may be started */
@@ -89,7 +89,7 @@ struct TimedEffect {
  * "delay", +0x2C a float kept at 0, +0x30 "length", +0x34 a flag byte and
  * +0x38 the "ringon.sfx" Sound fn_80207848 made. */
 
-  extern void fn_801D50B8(int);
+  extern void updateActionSequence(int);
 
 extern int fn_8017960C(int);
 extern void *fn_801B2EC0(int);
@@ -644,7 +644,7 @@ void fn_801D50B0(int sequence) {
  * (auto_reset) or ends.  In every other state it follows the lap of the race
  * leader and keeps the sequence ready only while that lap lies between
  * first_active_lap and last_active_lap. */
-void fn_801D50B8(int arg0) {
+void updateActionSequence(int arg0) {
     /* One *_ASE element: state() is vtable+0x18, update() +0x2C and reset()
      * +0x30; the two leading slots are this ABI's destructor pair. */
     struct Element {
@@ -954,7 +954,7 @@ fetch:
     offset = 0;
     i = 0;
     while (i < lbl_804423A4[1]) {
-        fn_801D50B8(*(int *)((char *)lbl_804423A4[0] + offset));
+        updateActionSequence(*(int *)((char *)lbl_804423A4[0] + offset));
         offset += 4;
         i += 1;
     }
