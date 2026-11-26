@@ -1681,7 +1681,7 @@ typedef struct AchievementRow {
 
 extern char lbl_80344E20[];
 #pragma cplusplus on
-extern "C" void resetAchievementRow(void *arg0) {
+/* Reset an achievements-display row to its start value: refresh the progress, goal and rank text, clear counting state, restart the tally banner and hide the result HUD groups. */ extern "C" void resetAchievementRow(void *arg0) {
     // The "achieve tally" banner of the results/pause screen (lbl_8055F394);
     // slots 12 and 14 are the ones updateAchievementRow uses as show() and setProgress().
     class AchievementBanner {
