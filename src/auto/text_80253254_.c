@@ -2016,7 +2016,7 @@ void fn_802569DC(void *arg0, int arg1, float scale) {
  * from level, or stretched 1% in Y, and every piece of renderer state is put
  * back before returning.
  */
-void drawCarPreview(struct CarUIModelRec *model) {
+/* Draw the car preview (caruimod) for one frame: save renderer state, set up the camera, projection and lights, place the model and wheels, apply tint/stretch, then restore all state. */ void drawCarPreview(struct CarUIModelRec *model) {
 
 extern void *DrawList_getCurrentMatrix(void);          /* the current 4x3 model matrix */
 extern void fn_80253004(s32, void *);    /* copy a camera record by index */
