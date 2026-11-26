@@ -14961,7 +14961,7 @@ extern "C" s32 fn_800BACC4(void *, s32, s32 *, s32);
 /* SD host helper: configure card mode (select flag from arg1==4), read/modify/write
  * a register field via SD ioctls, reporting errors through OSReport.
  */
-extern "C" s32 SDCard_SetBusWidth(void *sdCtx, s32 mode, s32 unused) {
+/* Select 1- or 4-bit SD card bus width via CMD55/CMD6 and a read-modify-write of host register 0x28. */ extern "C" s32 SDCard_SetBusWidth(void *sdCtx, s32 mode, s32 unused) {
     const char *sdMsgBase = lbl_8031B838;
     s32 regValue;
     s32 responseBuf[6];
