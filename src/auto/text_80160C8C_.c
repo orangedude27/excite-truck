@@ -2528,7 +2528,7 @@ extern "C" s32 fn_80163C38(void *arg0) {
 #pragma cplusplus on
 // Draws the tutorial/progress HUD: the top and bottom bar graphics, a status
 // text line and the bar fill, picking the message from the object's state.
-extern "C" s32 drawTutorialHud(void *arg0) {
+/* Draw the tutorial/progress HUD: top and bottom bars, a status line and bar fill whose message depends on whether the tracked objective is on, over the limit, or flagged. */ extern "C" s32 drawTutorialHud(void *hud) {
     class HudObject {
     public:
         virtual void m08(); virtual void m0C(); virtual void m10(); virtual void m14();
@@ -2541,32 +2541,32 @@ extern "C" s32 drawTutorialHud(void *arg0) {
         virtual void *getText(const char *); // vtable slot 0xC: named text element
         virtual void *getBar(const char *);  // vtable slot 0x10: named bar element
     };
-    char *names = (char *)lbl_8032F588; // table of UI element names
-    s32 text;
+    char *uiNames = (char *)lbl_8032F588; // table of UI element names
+    s32 msgId;
     f32 screenX, screenY;
     u8 *textElem;
     u8 *barElem;
-    s32 overLimit;
+    s32 pastTarget;
     fn_801476D8((s32)((UiManager *)lbl_8055E2E0)->getBar((const char *)&lbl_8055A0F8), -1, lbl_8055E2E8);
     fn_801476D8((s32)((UiManager *)lbl_8055E2E0)->getBar((const char *)&lbl_8055A100), -1, lbl_8055E2EC);
-    if (((HudObject *)arg0)->isOn() != 0) {
-        fn_801476D8((s32)((UiManager *)lbl_8055E2E0)->getBar(names + 0x4C8), -1, lbl_8055E2F0);
-        fn_801473F8(lbl_8055E2E0, names + 0x4D4, fn_80131234(names + 0x4E0));
-        text = fn_80131234(names + 0x4F8);
+    if (((HudObject *)hud)->isOn() != 0) {
+        fn_801476D8((s32)((UiManager *)lbl_8055E2E0)->getBar(uiNames + 0x4C8), -1, lbl_8055E2F0);
+        fn_801473F8(lbl_8055E2E0, uiNames + 0x4D4, fn_80131234(uiNames + 0x4E0));
+        msgId = fn_80131234(uiNames + 0x4F8);
     } else {
-        fn_801476D8((s32)((UiManager *)lbl_8055E2E0)->getBar(names + 0x4C8), -1, lbl_8055E2F4);
-        fn_801473F8(lbl_8055E2E0, names + 0x4D4, fn_80131234(names + 0x510));
-        overLimit = *(f32 *)((u8 *)arg0 + 0x98) > *(f32 *)((u8 *)arg0 + 0x84);
-        if (overLimit) {
-            text = fn_80131234(names + 0x560);
-        } else if (*((u8 *)arg0 + 0x91) != 0) {
-            text = fn_80131234(names + 0x544);
+        fn_801476D8((s32)((UiManager *)lbl_8055E2E0)->getBar(uiNames + 0x4C8), -1, lbl_8055E2F4);
+        fn_801473F8(lbl_8055E2E0, uiNames + 0x4D4, fn_80131234(uiNames + 0x510));
+        pastTarget = *(f32 *)((u8 *)hud + 0x98) > *(f32 *)((u8 *)hud + 0x84);
+        if (pastTarget) {
+            msgId = fn_80131234(uiNames + 0x560);
+        } else if (*((u8 *)hud + 0x91) != 0) {
+            msgId = fn_80131234(uiNames + 0x544);
         } else {
-            text = fn_80131234(names + 0x528);
+            msgId = fn_80131234(uiNames + 0x528);
         }
     }
-    textElem = (u8 *)((UiManager *)lbl_8055E2E0)->getText(names + 0x57C);
-    barElem = (u8 *)((UiManager *)lbl_8055E2E0)->getBar(names + 0x4C8);
+    textElem = (u8 *)((UiManager *)lbl_8055E2E0)->getText(uiNames + 0x57C);
+    barElem = (u8 *)((UiManager *)lbl_8055E2E0)->getBar(uiNames + 0x4C8);
     if (textElem != 0 && barElem != 0) {
         f32 x = *(f32 *)(textElem + 4);
         f32 y = *(f32 *)(textElem + 8);
@@ -2576,10 +2576,10 @@ extern "C" s32 drawTutorialHud(void *arg0) {
         fn_80148134(&screenX, &screenY, mode, x, y);
         fill = *(f32 *)(barElem + 0x10) - lbl_80561860;
         scale = *(f32 *)(textElem + 0x10);
-        fn_800103B8(*(s32 *)(textElem + 0x18), *(s32 *)(textElem + 0x14), (s32 *)&lbl_8055A0DC, text, scale, screenX, screenY, fill);
+        fn_800103B8(*(s32 *)(textElem + 0x18), *(s32 *)(textElem + 0x14), (s32 *)&lbl_8055A0DC, msgId, scale, screenX, screenY, fill);
     }
-    if (*(f32 *)((u8 *)arg0 + 0x8C) > lbl_8056185C) {
-        ((UiManager *)lbl_8055E2E0)->getText(names + 0x110);
+    if (*(f32 *)((u8 *)hud + 0x8C) > lbl_8056185C) {
+        ((UiManager *)lbl_8055E2E0)->getText(uiNames + 0x110);
         fn_801476C4();
     }
     return 1;
