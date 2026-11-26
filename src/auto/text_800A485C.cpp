@@ -11792,7 +11792,7 @@ extern "C" s32 fn_800B5B94(void *, s32);
  * forces them away.  Returns 0, the error, or 1 when an error happened while
  * forcing; the instance and the volume both keep the last error.
  */
-extern "C" s32 unmountDriveByLetter(s8 arg0, s32 arg1) {
+/* Unmount the VF volume for a drive letter, first carrying out any pending mount/unmount from media-change callbacks and then closing the mounted file system (forcing open files and dirs away when arg1 bit 0 is set). */ extern "C" s32 unmountDriveByLetter(s8 driveLetter, s32 force) {
     u8 *vol;
     u32 slot_address;
     s32 result;
@@ -11801,7 +11801,7 @@ extern "C" s32 unmountDriveByLetter(s8 arg0, s32 arg1) {
     s32 mount_result;
     s32 unmount_result;
     result = 0;
-    index = fn_800A485C((s32)arg0) - 0x41;
+    index = fn_800A485C((s32)driveLetter) - 0x41;
     vol = (u8 *)lbl_803D2140;
     fn_800B77C0(vol + 0x64);
     if ((index < 0) || (index >= 0x1A)) {
@@ -11893,17 +11893,17 @@ done:
         result = 1;
         VF_LAST_ERROR = VF_ERR_IN_USE;
         VF_VOLUME(vol)->error = VF_ERR_IN_USE;
-        if (!(arg1 & 1)) {
+        if (!(force & 1)) {
             fn_800B783C(vol + 0x1F90);
             return VF_ERR_IN_USE;
         }
     }
-    unmount_result = fn_800B5B94(vol, arg1);
+    unmount_result = fn_800B5B94(vol, force);
     if ((unmount_result != 0) && (result == 0)) {
         result = 1;
         VF_LAST_ERROR = unmount_result;
         VF_VOLUME(vol)->error = unmount_result;
-        if (!(arg1 & 1))
+        if (!(force & 1))
             result = unmount_result;
     }
     fn_800B783C(vol + 0x1F90);
