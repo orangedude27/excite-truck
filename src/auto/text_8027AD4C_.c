@@ -41,7 +41,7 @@ extern long lbl_8055F658;
 extern char lbl_80347AB0[];
 long fn_8001D884(void *, long);
 long fn_8001DA48(void *, long);
-long fn_80205268(char *, long, long);
+long getDifficultyProperty(char *, long, long);
 extern char lbl_80347B68[];
 extern char lbl_80347BD0[];
 
@@ -135,7 +135,7 @@ extern "C" unsigned char fn_8027AD4C(char *a0, void *arg1) {
                         key = *(long *)p;
                         found = 1;
                         *(long *)(a0 + 0xC) = key;
-                        id = fn_80205268(base + 0x60, *(long *)(a0 + 0x30), key);
+                        id = getDifficultyProperty(base + 0x60, *(long *)(a0 + 0x30), key);
                         r = (*(Second **)(p + 0x20))->m21(id);
                         if ((((unsigned long)(-r | r)) >> 31) != 0) {
                             fn_8001D8B4(a0 + 0x14, (*(Second **)(p + 0x20))->m21(id));
@@ -1337,7 +1337,7 @@ extern "C" long fn_8027C650(void *contest) {
     /* Check whether the contest's current grade meets the grade-table requirement. */
     resource = fn_8001BB58(fn_8000DA10(), *(long *)((char *)contest + 4), contextValue, 0);
     if (resource != 0) {
-        gradeId = fn_80205268(lbl_80347AB0,
+        gradeId = getDifficultyProperty(lbl_80347AB0,
                               *(long *)((char *)(long)lbl_8055F654 + 0xB01C), -1);
         courseManager = fn_8001285C(*(long *)((char *)contest + 4));
         gradeTable = *(GradeTableList **)((char *)courseManager + 0x20);
@@ -1757,7 +1757,7 @@ extern "C" long fn_8027CFB4(long arg0) {
     /* Looks up the grade-table entry for the current context and returns the
        first non-negative value (index 0..4) from its result, or 0 if none. */
     long *entry = fn_8027C120(lbl_8055F654, arg0);
-    long gradeId = fn_80205268(lbl_80347AB0,
+    long gradeId = getDifficultyProperty(lbl_80347AB0,
                                *(long *)((char *)(long)lbl_8055F654 + 0xB01C), -1);
     void *courseManager = fn_8001285C(*(long *)((char *)entry + 4));
     Fn8027CFB4List *gradeTable = *(Fn8027CFB4List **)((char *)courseManager + 0x20);

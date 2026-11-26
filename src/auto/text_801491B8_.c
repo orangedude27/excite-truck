@@ -2316,7 +2316,7 @@ void fn_8014E7D8(void) {
 #pragma processor 750
 extern void fn_8012E81C(void *);
 extern char *fn_80012820(s32);
-extern void *fn_80205268(void *, s32, s32);
+extern void *getDifficultyProperty(void *, s32, s32);
 extern s32 fn_8012C33C(void *);
 extern void *fn_80131810(const char *);
 extern double ceil(double);
@@ -2368,7 +2368,7 @@ extern "C" f32 fn_8014E7DC(s32 arg0, s32 arg1) {
     fn_8012E81C(lbl_8032D358 + 0x5A4);
     file = fn_8001285C((void *)arg0);
     fileText = fn_80012820(*(s32 *)((u8 *)file + 4));
-    entryName = fn_80205268(lbl_8032D358 + 0x5B8, arg1, arg0);
+    entryName = getDifficultyProperty(lbl_8032D358 + 0x5B8, arg1, arg0);
     register u8 *strings = lbl_8032D358;
 
     if (((MainInterface *)*(void **)((u8 *)file + 0x20))->check(entryName) == 0) {

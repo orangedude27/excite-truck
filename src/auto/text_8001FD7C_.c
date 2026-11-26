@@ -30,7 +30,7 @@ typedef struct KArg {
 extern KArg *fn_8001285C(int);
 extern int fn_80131234(void *);
 extern int fn_80131264(void *);
-extern int fn_80205268(void *, int, int);
+extern int getDifficultyProperty(void *, int, int);
 extern void fn_8001D884(void *, int);
 extern int fn_8027DED0(void);
 extern int fn_8001DA48(void *, int);
@@ -1094,7 +1094,7 @@ void fn_80021464(KArg *a, int arg1) {
     }
     fn_80012820(p->f4);
     lbl_8035BAD8.f8 = p->fC;
-    vhh = p->obj->vt->f5C(p->obj, fn_80205268(base + 0x2B4, lbl_8055D66C, lbl_8055D668));
+    vhh = p->obj->vt->f5C(p->obj, getDifficultyProperty(base + 0x2B4, lbl_8055D66C, lbl_8055D668));
     if (vhh != 0) {
         fn_8001D884(sp, vhh);
         rk = fn_8027DED0();

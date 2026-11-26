@@ -391,7 +391,7 @@ extern int fn_80012854(void);
 #pragma dont_inline on
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" int fn_80205268(const char *propName, int typeIndex, int stageIndex) {
+extern "C" int getDifficultyProperty(const char *propName, int typeIndex, int stageIndex) {
     /* Look up a difficulty property string.
      *
      * Opens the "difficulty.val" value group and takes the property set it holds
