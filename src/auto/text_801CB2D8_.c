@@ -1725,42 +1725,46 @@ extern f32 lbl_805629FC;
  * award playback. lbl_80337D90 warns when a time was already cached. */
 extern "C" void pushAwardsRaceTime(int playerIndex, int pushEnabled, f32 raceTime) {
     #pragma opt_propagation off
-    register u8 *awards;
+    register StatHandler *awards;
     register s32 statTypeBase;
     register s32 statType;
     register s32 slotIndex;
     register s32 slotOffset;
     s32 playerSlot;
-    u8 *object;
+    u8 *carRecord;
     s32 playerStatus;
     s32 score;
     s32 current;
+
+    /* Awards: push a player's race time into the stat handler's race-time stat
+     * (type 0x20507), cache it and start award playback; warn if a time is cached
+     * already or the stat slot cannot be found. */
     if (fn_801CE898() != 0)
         goto done;
-    awards = (u8 *)lbl_8055E884;
-    if (awards[0x10] != 0)
+    awards = (StatHandler *)lbl_8055E884;
+    if (awards->paused != 0)
         goto done;
-    object = ((u8 *(*)(s32))fn_801EA9A0)(playerIndex);
-    if (object[0] != 0)
-        playerSlot = object[0xB4] & 3;
+    carRecord = ((u8 *(*)(s32))fn_801EA9A0)(playerIndex);
+    if (carRecord[0] != 0)
+        playerSlot = carRecord[0xB4] & 3;
     else
         playerSlot = -1;
     if (playerSlot >= 0)
-        playerStatus = awards[playerSlot + 0x11];
+        playerStatus = (u8)awards->player[playerSlot];
     else
         playerStatus = 1;
     if (playerStatus != 0)
         goto done;
-    object = ((u8 *(*)(s32))fn_801EA9A0)(playerIndex);
-    if (object[0] == 0 || pushEnabled == 0)
+    carRecord = ((u8 *(*)(s32))fn_801EA9A0)(playerIndex);
+    if (carRecord[0] == 0 || pushEnabled == 0)
         goto done;
-    if (*(f32 *)(awards + 0x2B8) < lbl_805629FC) {
+    if (awards->value < lbl_805629FC) {
         statTypeBase = 0x20000;
         statType = statTypeBase + 0x507;
         slotIndex = 0;
         slotOffset = 0;
-        while (slotIndex < *(s32 *)(awards + 0x1C)) {
-            switch (fn_801CB900(*(int **)((u8 *)*(s32 **)(awards + 0x18) + slotOffset), statTypeBase + 0x507)) {
+        while (slotIndex < awards->entryCount) {
+            switch (fn_801CB900(*(int **)((u8 *)awards->entries + slotOffset), statTypeBase + 0x507)) {
             case 0:
                 slotOffset += 4;
                 slotIndex++;
@@ -1773,20 +1777,20 @@ extern "C" void pushAwardsRaceTime(int playerIndex, int pushEnabled, f32 raceTim
 found:
         if (slotIndex < 0)
             ((void (*)(const char *, ...))Abend_Panic)(lbl_80337CA0, statType);
-        ((Dummy_801CCDAC *)*(void **)((u8 *)*(s32 **)(awards + 0x18) + slotIndex * 4))->v2(raceTime);
-        *(f32 *)(awards + 0x2B8) = raceTime;
-        *(u8 *)(awards + 0x2BC) = 1;
-        if (*(s32 *)(awards + 0x2B4) < 0 && *(u8 *)(awards + 0x2BC) != 0) {
-            score = *(s32 *)(awards + 0x2AC);
+        ((Dummy_801CCDAC *)*(void **)((u8 *)awards->entries + slotIndex * 4))->v2(raceTime);
+        awards->value = raceTime;
+        awards->hasValue = 1;
+        if (awards->unknown2B4 < 0 && awards->hasValue != 0) {
+            score = awards->newCount;
             if (score >= 0) {
                 current = fn_8000DA10();
-                *(s32 *)(awards + 0x2B4) = ((s32 (*)(s32, s32, s32, s32, f32))fn_8001BBB8)(
-                    current, *(s32 *)awards, *(s32 *)(awards + 4), score, *(f32 *)(awards + 0x2B8));
+                awards->unknown2B4 = ((s32 (*)(s32, s32, s32, s32, f32))fn_8001BBB8)(
+                    current, awards->unknown0[0], awards->unknown0[1], score, awards->value);
             }
         }
     } else {
         ((void (*)(const char *, f32, ...))Abend_Panic)(
-            lbl_80337D90, *(f32 *)(awards + 0x2B8), (double)raceTime);
+            lbl_80337D90, awards->value, (double)raceTime);
     }
 done:
     return;
