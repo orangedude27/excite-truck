@@ -67,7 +67,7 @@ extern float lbl_80564C98;
 #define FRAME_STEP lbl_80564C98 /* 0.05: step added per frame (max clamp is 10) */
 extern void formatDebugTextEntry(void *, const char *, ...);
 extern s32 fn_802B05E4(void);
-extern s32 fn_802B7B08(void);
+extern s32 rebuildDebugWaterLayerList(void);
 
 extern char lbl_8055FA31;
 extern s32 lbl_8055FA3C;
@@ -1621,7 +1621,7 @@ __declspec(section ".sdata") extern const char lbl_8055CEB0[];
  * fn_802B1C1C() answers), each pushed down one more row step -- or "No Layers"
  * when the entry has none.  Past that window only the selected layer
  * (lbl_8055FA28) is shown. */
-s32 fn_802B7B08(void) {
+s32 rebuildDebugWaterLayerList(void) {
     class DebugUi {
     public:
         virtual void v0();
@@ -1739,7 +1739,7 @@ void fn_802B7D1C(void) {
     /* Build the "tedash.val" debug panel: wire the Save-Material-Maps control, then set up the brush and layer columns. */
     fn_802B7884(lbl_8034A8B0);
     setupBrushColumn();
-    fn_802B7B08();
+    rebuildDebugWaterLayerList();
 }
 
 #pragma cplusplus on
