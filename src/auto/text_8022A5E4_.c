@@ -1445,12 +1445,12 @@ int parseStyleColor(char *arg0) {
     return result;
 }
 
-__declspec(section ".sdata") extern char lbl_8055B930[];
+__declspec(section ".sdata") extern char textEffectNormal[];
 __declspec(section ".sdata") extern char lbl_8055B938[];
 __declspec(section ".sdata") extern char lbl_8055B940[];
 __declspec(section ".sdata") extern char lbl_8055B948[];
 __declspec(section ".sdata") extern char lbl_8055B950[];
-extern char lbl_8033FBE8[], lbl_8055B930[], lbl_8055B938[], lbl_8055B940[], lbl_8055B948[], lbl_8055B950[];
+extern char lbl_8033FBE8[], textEffectNormal[], lbl_8055B938[], lbl_8055B940[], lbl_8055B948[], lbl_8055B950[];
 #pragma cplusplus on
 void fn_8022CDE4(int *d, void *o) {
     /* Reads a record of seven int attributes out of an XML node into d[0..6]:
@@ -1479,7 +1479,7 @@ void fn_8022CDE4(int *d, void *o) {
         d[3] = parseStyleColor(xo->get(base + 0x4C8));
     if (xo->has(base + 0x4E0)) {
         s = xo->get(base + 0x4E0);
-        if (stricmp(s, lbl_8055B930) == 0)
+        if (stricmp(s, textEffectNormal) == 0)
             d[4] = 0;
         else if (stricmp(s, lbl_8055B938) == 0)
             d[4] = 4;
