@@ -1046,7 +1046,7 @@ void fn_8029D644(void *arg0) {
 
 extern void fn_8029E49C(int, void *, int);
 extern void fn_8029E130(void *, float *, float *, float);
-void WaterPool_VehicleSplash(int pool, void **__restrict nearRecord) {
+/* For a vehicle inside a 3D water pool, emit wheel splashes and place an effect at its transformed position when it is within the pool radius. */ void WaterPool_VehicleSplash(int pool, void **__restrict nearRecord) {
     extern void fn_801EE0C8(int);
     extern void *fn_802C6C34(void);
     extern int lbl_80488648[];
