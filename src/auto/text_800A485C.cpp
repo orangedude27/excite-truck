@@ -5867,7 +5867,7 @@ done:
     return 0;
 }
 
-extern "C" s32 fn_800AD24C(void *context, s32 index, s32 position, s32 *outCluster, s32 *ioState) {
+extern "C" s32 VFiPFFAT_ReadClusterNoPage(void *context, s32 index, s32 position, s32 *outCluster, s32 *ioState) {
     s32 result;
     s32 cluster;
     u8 *ctxBytes = (u8 *)context;
@@ -6597,7 +6597,7 @@ extern "C" s32 VFiPFFreeClusters(void *, s32, s32, s32);
     return 0;
 }
 
-extern "C" s32 fn_800AD24C(void *, s32, s32, s32 *, s32 *);
+extern "C" s32 VFiPFFAT_ReadClusterNoPage(void *, s32, s32, s32 *, s32 *);
 extern "C" s32 fn_800AE108(void *file, s32 cluster, s32 pageIndex, u32 limit, s32 *outBytes, s32 unused) {
     void *context = *(void **)((u8 *)file + 0x34);
     s32 endCluster = -1;
@@ -6607,7 +6607,7 @@ extern "C" s32 fn_800AE108(void *file, s32 cluster, s32 pageIndex, u32 limit, s3
 
     /* Walk cluster pages, reading each page and accumulating size until limit/end-of-chain is reached. */
     while (endCluster != 0) {
-        s32 result = fn_800AD24C(fileObj, currentCluster, pageIndex, &endCluster, &one);
+        s32 result = VFiPFFAT_ReadClusterNoPage(fileObj, currentCluster, pageIndex, &endCluster, &one);
         if (result != 0) return result;
         if ((u32)(currentCluster + 1) != (u32)endCluster) {
             u32 index = *(u32 *)((u8 *)context + 0x1C);
@@ -7278,7 +7278,7 @@ extern "C" s32 fn_800AF2CC(void *fatFile, u32 startCluster, s32 length, s32 *clu
     one = 1;
     i = 0;
     while (i < clusterCount) {
-        result = fn_800AD24C(fatFile, startCluster, page, (s32 *)&nextCluster, &one);
+        result = VFiPFFAT_ReadClusterNoPage(fatFile, startCluster, page, (s32 *)&nextCluster, &one);
         if (result != 0)
             return result;
         lastCluster = startCluster;
