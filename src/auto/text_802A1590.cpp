@@ -1864,7 +1864,7 @@ extern "C" void fn_802A4658(s32 arg0) {
 /* Draw a particle system's live particles: set the draw state, then for each
  * 0x20-byte particle turn its age into two ramped factors that drive its alpha
  * and size, and submit it to the billboard renderer. */
-extern "C" s32 drawParticleSystem(void *arg0) {
+/* Draw every live particle in a system, ramping each particle's alpha and size from its age and submitting it as a billboard. */ extern "C" s32 drawParticleSystem(void *arg0) {
     char *system = (char *)arg0;
     s32 offset, i, rawAlpha, clampedAlpha;
     struct { f32 value; } limitStorage;
