@@ -20,7 +20,7 @@ void VisitGroupIds(void *, void *);
 extern int lbl_8055D008;
 void* MRModel_GetInstance(int);
 int fn_802C94A0(void*, unsigned char*, float*, float);
-void fn_802C57B4(int, int, int, unsigned char, float);
+void MRModel_SubmitInstance(int, int, int, unsigned char, float);
 
 extern int gModelMode;
 extern void fn_802DB2B4(void);
@@ -279,7 +279,7 @@ extern int lbl_804C1390[];
 #pragma dont_inline reset
 
 /* No-op default lookup hook for model-element display data, called through a
- * (void *(*)(void *)) cast with a group entry's id at the fn_802C57B4 /
+ * (void *(*)(void *)) cast with a group entry's id at the MRModel_SubmitInstance /
  * fn_802C58FC submit paths. It returns without touching any register, so the id
  * passes straight through as the data pointer handed to fn_802CC550. */
 void fn_802C57B0(void) { }
@@ -298,7 +298,7 @@ void fn_802C57B0(void) { }
  * (gModelBatchActive), the entry list is emptied first and sorted and submitted
  * afterwards.  Elements of type 4, 6, 9 and 11, and every type from 13 up, are
  * left to the other passes (MRModel_SubmitType2Groups and fn_802C74D8 pick those up). */
-void fn_802C57B4(int instanceId, int transformId, int entryId, unsigned char status, float distance) {
+void MRModel_SubmitInstance(int instanceId, int transformId, int entryId, unsigned char status, float distance) {
     extern int lbl_8055D008;
     extern s8 gModelBatchActive;
     extern void mrModelResetDisplayEntries(void);
@@ -1284,7 +1284,7 @@ int MRModel_ReleaseResource(int);
 int fn_802C6B44(int);
 extern const char lbl_8034B3DC[];
 int fn_802C94A0(void*, unsigned char*, float*, float);
-void fn_802C57B4(int, int, int, unsigned char, float);
+void MRModel_SubmitInstance(int, int, int, unsigned char, float);
 void DrawModelInstance(int instanceId) {
     /* Draw one model instance if its stored world position passes the view-volume test. */
     float depth;
@@ -1294,7 +1294,7 @@ void DrawModelInstance(int instanceId) {
     if (instanceId != -1) {
         instanceHeader = *(void **)((char *)MRModel_GetInstance(instanceId) + 4);
         if (fn_802C94A0((char *)instanceHeader + 0x20, &status, &depth, *(float *)((char *)instanceHeader + 0x1C))) {
-            fn_802C57B4(instanceId, 0, -1, status, depth);
+            MRModel_SubmitInstance(instanceId, 0, -1, status, depth);
         }
     }
 }
@@ -1371,7 +1371,7 @@ void fn_802C70AC(int arg0, void *arg1, int arg2, int arg3) {
     }
     ok = fn_802C94A0(out, &local.status, &local.scalar, *(float *)((char *)groupHeader + 0x1C));
     if (ok != 0)
-        fn_802C57B4(arg0, fn_802D0514(arg1), arg2, local.status, local.scalar);
+        MRModel_SubmitInstance(arg0, fn_802D0514(arg1), arg2, local.status, local.scalar);
     lbl_8055D008 = previousMask;
 }
 extern unsigned char gModelDrawContext[];
@@ -1485,7 +1485,7 @@ void MRModel_SetInstanceTransform(int instanceId, void *transform) {
         lbl_8055D008 = groupMask;
         groupHeader = *(void **)((char *)MRModel_GetInstance(instanceId) + 4);
         if (fn_802C94A0((char *)groupHeader + 0x20, &visibilityStatus, &distance, *(float *)((char *)groupHeader + 0x1C))) {
-            fn_802C57B4(instanceId, 0, -1, visibilityStatus, distance);
+            MRModel_SubmitInstance(instanceId, 0, -1, visibilityStatus, distance);
         }
         lbl_8055D008 = savedGroupMask;
     }
