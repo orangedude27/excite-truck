@@ -558,67 +558,67 @@ extern "C" void* BonusGroup_create(s32 configPtr, s32 courseIndex, s32 initValue
     u8* group = (u8*)fn_801284F8(0x5C, (void*)(lbl_8032E4E0 + 0x53C));
     if (group != 0) {
         initValueCopy = initValue;
-        char* tagTable = lbl_8032E4E0;
+        char* allocLabels = lbl_8032E4E0;
         fn_801584C4((void**)group);
         *(void**)group = (void*)lbl_8032EB0C;
         fn_801584A8(group + 4);
         fn_801584A4(&initValueCopy);
-        void* counterSound = fn_801284F8(0x10, (void*)(tagTable + 0x54C));
-        if (counterSound != 0) {
-            counterSound = fn_80158374(counterSound, (s32)(tagTable + 0x558), (s32)(tagTable + 0x564), courseIndex);
+        void* counterSoundHolder = fn_801284F8(0x10, (void*)(allocLabels + 0x54C));
+        if (counterSoundHolder != 0) {
+            counterSoundHolder = fn_80158374(counterSoundHolder, (s32)(allocLabels + 0x558), (s32)(allocLabels + 0x564), courseIndex);
         }
-        *(void**)(group + 0x50) = counterSound;
+        *(void**)(group + 0x50) = counterSoundHolder;
         void *ringTracker, *crashTracker, *carHitTracker, *jumpComboTracker, *throwTracker, *spinTracker, *closeCallTracker, *driftTracker, *airTracker;
         void* tracker;
-        tracker = fn_801284F8(0x27C, (void*)(tagTable + 0x570));
+        tracker = fn_801284F8(0x27C, (void*)(allocLabels + 0x570));
         if (tracker != 0) {
             tracker = fn_801582A4(tracker, configPtr, courseIndex, *(void**)(group + 0x50));
         }
         airTracker = tracker;
         TrackerArray_push(group + 4, (s32*)&airTracker);
-        tracker = fn_801284F8(0x27C, (void*)(tagTable + 0x57C));
+        tracker = fn_801284F8(0x27C, (void*)(allocLabels + 0x57C));
         if (tracker != 0) {
             tracker = fn_8015812C(tracker, configPtr, courseIndex, *(void**)(group + 0x50));
         }
         driftTracker = tracker;
         TrackerArray_push(group + 4, (s32*)&driftTracker);
-        tracker = fn_801284F8(0x2DC, (void*)(tagTable + 0x58C));
+        tracker = fn_801284F8(0x2DC, (void*)(allocLabels + 0x58C));
         if (tracker != 0) {
             tracker = fn_80158054(tracker, configPtr, courseIndex, *(void**)(group + 0x50));
         }
         closeCallTracker = tracker;
         TrackerArray_push(group + 4, (s32*)&closeCallTracker);
-        tracker = fn_801284F8(0x280, (void*)(tagTable + 0x59C));
+        tracker = fn_801284F8(0x280, (void*)(allocLabels + 0x59C));
         if (tracker != 0) {
             tracker = fn_80157F98(tracker, configPtr, courseIndex);
         }
         spinTracker = tracker;
         TrackerArray_push(group + 4, (s32*)&spinTracker);
-        tracker = fn_801284F8(0x2F4, (void*)(tagTable + 0x5A8));
+        tracker = fn_801284F8(0x2F4, (void*)(allocLabels + 0x5A8));
         if (tracker != 0) {
             tracker = fn_80157DA0(tracker, configPtr, courseIndex);
         }
         throwTracker = tracker;
         TrackerArray_push(group + 4, (s32*)&throwTracker);
-        tracker = fn_801284F8(0x27C, (void*)(tagTable + 0x5B8));
+        tracker = fn_801284F8(0x27C, (void*)(allocLabels + 0x5B8));
         if (tracker != 0) {
             tracker = fn_80157CF0(tracker, configPtr, courseIndex);
         }
         jumpComboTracker = tracker;
         TrackerArray_push(group + 4, (s32*)&jumpComboTracker);
-        tracker = fn_801284F8(0x29C, (void*)(tagTable + 0x5C8));
+        tracker = fn_801284F8(0x29C, (void*)(allocLabels + 0x5C8));
         if (tracker != 0) {
             tracker = fn_80157B00(tracker, configPtr, courseIndex);
         }
         carHitTracker = tracker;
         TrackerArray_push(group + 4, (s32*)&carHitTracker);
-        tracker = fn_801284F8(0x254, (void*)(tagTable + 0x5D8));
+        tracker = fn_801284F8(0x254, (void*)(allocLabels + 0x5D8));
         if (tracker != 0) {
             tracker = fn_801579F4(tracker, configPtr, courseIndex);
         }
         crashTracker = tracker;
         TrackerArray_push(group + 4, (s32*)&crashTracker);
-        tracker = fn_801284F8(0x27C, (void*)(tagTable + 0x5E8));
+        tracker = fn_801284F8(0x27C, (void*)(allocLabels + 0x5E8));
         if (tracker != 0) {
             tracker = fn_8015783C(tracker, configPtr, courseIndex);
         }
