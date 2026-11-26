@@ -9194,31 +9194,33 @@ extern "C" s32 fn_800B1EB8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4) {
 }
 
 extern "C" void *VFiPFFILE_GetFileInfo(void *fileObj, void *info) {
-    /* Retrieves file info under the volume lock, preserving/restoring cursor state and propagating errors. */
+    /* Retrieve file info under the volume lock: refresh the mount state, require
+     * an open stream, save/restore the FAT cursor around the info call, and record
+     * any failure as the last, volume and handle error. */
     s32 result;
     FatCopyA savedCursorA;
     FatCopyB savedCursorB;
     void *volume;
-    void *fs;
+    void *stream;
     s32 flags;
 
-    volume = fileObj == 0 ? 0 : *(void **)((u8 *)*(void **)((u8 *)fileObj + 8) + 0x268);
-    fn_800B77C0((u8 *)volume + 0x1F90);
+    volume = fileObj == 0 ? 0 : VF_STREAM_VOLUME(VF_HANDLE_STREAM(fileObj));
+    VFiPFLOCK_Acquire((u8 *)volume + 0x1F90);
     result = VFiPFVOL_UpdateMountState(volume);
     if (result != 0) {
-        fn_800B783C((void *)((volatile u8 *)volume + 0x1F90));
-        lbl_803D2140[16] = result;
-        *(s32 *)(*(u8 **)((u8 *)*(u8 **)((u8 *)fileObj + 8) + 0x38) + 0x1F80) = result;
-        *(s32 *)((u8 *)fileObj + 0x18) = result;
+        VFiPFLOCK_Release((void *)((volatile u8 *)volume + 0x1F90));
+        VF_LAST_ERROR = result;
+        VF_VOL_ERROR(VF_STREAM_ENTRY_VOLUME(VF_HANDLE_STREAM(fileObj))) = result;
+        VF_HANDLE_ERROR(fileObj) = result;
         return (void *)result;
     }
-    fs = *(void **)((u8 *)fileObj + 8);
-    flags = *(s32 *)fs;
+    stream = VF_HANDLE_STREAM(fileObj);
+    flags = *(s32 *)stream;
     if ((flags & 1) == 0 || (flags & 2) == 0) {
-        fn_800B783C((void *)((volatile u8 *)volume + 0x1F90));
-        lbl_803D2140[16] = 0x26;
-        *(s32 *)((u8 *)volume + 0x1F80) = 0x26;
-        return (void *)0x26;
+        VFiPFLOCK_Release((void *)((volatile u8 *)volume + 0x1F90));
+        VF_LAST_ERROR = VF_ERR_NOT_OPEN;
+        VF_VOL_ERROR(volume) = VF_ERR_NOT_OPEN;
+        return (void *)VF_ERR_NOT_OPEN;
     }
     *(void **)((u8 *)volume + 0x1644) = fileObj;
     savedCursorA = *(FatCopyA *)((u8 *)fileObj + 0x1C);
@@ -9228,13 +9230,13 @@ extern "C" void *VFiPFFILE_GetFileInfo(void *fileObj, void *info) {
     *(FatCopyB *)((u8 *)fileObj + 0xC) = savedCursorB;
     *(s32 *)((u8 *)volume + 0x1644) = 0;
     if (result != 0) {
-        lbl_803D2140[16] = result;
-        *(s32 *)(*(u8 **)((u8 *)*(u8 **)((u8 *)fileObj + 8) + 0x38) + 0x1F80) = result;
-        *(s32 *)((u8 *)fileObj + 0x18) = result;
-        fn_800B783C((void *)((volatile u8 *)volume + 0x1F90));
+        VF_LAST_ERROR = result;
+        VF_VOL_ERROR(VF_STREAM_ENTRY_VOLUME(VF_HANDLE_STREAM(fileObj))) = result;
+        VF_HANDLE_ERROR(fileObj) = result;
+        VFiPFLOCK_Release((void *)((volatile u8 *)volume + 0x1F90));
         return (void *)result;
     }
-    fn_800B783C((void *)((volatile u8 *)volume + 0x1F90));
+    VFiPFLOCK_Release((void *)((volatile u8 *)volume + 0x1F90));
     return 0;
 }
 
