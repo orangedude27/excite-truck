@@ -3479,7 +3479,7 @@ extern "C" void VFiPFCLUSTER_UpdateLastAccessCluster(void *handle, s32 diskSecto
 
 extern "C" s32 VFiPFFAT_TraceClustersChain(void *, s32, s32 *);
 extern "C" s32 fn_800AF584(void *);
-extern "C" s32 fn_800AF2CC(void *, u32, s32, s32 *, u32 *, s32);
+extern "C" s32 VFiPFFAT_SeekCluster(void *, u32, s32, s32 *, u32 *, s32);
 #pragma push
 #pragma use_lmw_stmw off
 /* Compute the byte length of a file's FAT cluster-chain tail for VFiPFFILE_p_finfo
@@ -3526,7 +3526,7 @@ extern "C" s32 fn_800A9470(void *handle, void *out) {
         }
 
         if (fileSize != 0) {
-            error = fn_800AF2CC(stream + 4, firstCluster, fileSize,
+            error = VFiPFFAT_SeekCluster(stream + 4, firstCluster, fileSize,
                                 (s32 *)&scratch.foundCluster, &scratch.walkCluster, (s32)stream);
             if (error != 0)
                 return error;
@@ -7239,7 +7239,7 @@ extern "C" void fn_800AF2B8(void *field) {
     ((s32 *)field)[2] = 0;
 }
 
-extern "C" s32 fn_800AF2CC(void *fatFile, u32 startCluster, s32 length, s32 *clusterOut, u32 *nextClusterOut, s32 flags) {
+extern "C" s32 VFiPFFAT_SeekCluster(void *fatFile, u32 startCluster, s32 length, s32 *clusterOut, u32 *nextClusterOut, s32 flags) {
     /* Walks the FAT chain for a length to find the resulting cluster and next-cluster value, updating cached end state. */
     u32 nextCluster;
     s32 one;
