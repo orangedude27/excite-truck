@@ -300,7 +300,7 @@ void fn_802DB9DC(int replaceFramebuffer) {
  * set that includes the two extra textures, installs
  * GXSetupFiveStageTevPipelineB and turns the Z test off, because that mode
  * replays the batch a second time with colour writes off to fill the Z buffer. */
-void fn_802DBA1C(unsigned char secondMode) {
+void setupCpuLightPass(unsigned char secondMode) {
     extern unsigned char lbl_802FAD18[];   /* the light pass's 2x4 matrix, GX_TEXMTX2 */
     extern unsigned char lbl_802FAD38[];   /* the light pass's 2x4 matrix, GX_TEXMTX3 */
     extern void *gCpuLightTextures[];           /* the light pass's textures: GXTexObj at +0x24, a second at +0x78 */
@@ -486,7 +486,7 @@ extern signed char gCpuLightTexDirty;
 extern int lbl_8055FEA0;
 extern void *gCpuLightCachedPositionArray, *gCpuLightCachedVertexCount;
 extern void *fn_802D94DC(void);
-extern void fn_802DBA1C(unsigned char);
+extern void setupCpuLightPass(unsigned char);
 extern void fn_802DB9DC(int);
 extern void fn_802DBBE4(int,int);
 extern void fn_802DBF54(unsigned short *__restrict, int);
@@ -533,7 +533,7 @@ extern void GXBegin(int, int, unsigned short);
  * buffer it was blended over. */
 /* DrawLitBillboardBatch: apply the lighting pipeline, blend mode and position array for one batch, then replay its triangle-fan list; in the second mode replay it again with color writes off to fill the Z buffer. */ void fn_802DC078(void* positions, s32 posCount, u16* list, s32 size, s32 first,
                  s32 light) {
-    fn_802DBA1C(lbl_8055FEBA);
+    setupCpuLightPass(lbl_8055FEBA);
     fn_802DB9DC(first);
     fn_802DBBE4((int)positions, posCount);
     fn_802DBF54(list, size);
