@@ -5553,54 +5553,54 @@ void fn_801254E4(s32, f32 *, s32, f32 *);
  * fn_80120CA4/fn_80120E14 are the complex-FFT stages, and fn_801250CC/
  * fn_801252D8/fn_801254E4 are the real-FFT folds; the two-point passes apply
  * the DCT symmetry. */
-void fftDct(s32 count, s32 sign, f32 *data, s32 info, s32 work) {
+/* Ooura in-place real FFT/DCT: size twiddle/cosine tables in info/work, then apply sign-selected DCT symmetry passes over data. */ void fftDct(s32 count, s32 sign, f32 *samples, s32 params, s32 tables) {
     s32 twiddleLen;
     s32 cosLen;
     s32 i;
     f32 endValue;
     f32 first;
 
-    twiddleLen = *(s32 *)info;
+    twiddleLen = *(s32 *)params;
     if (count > twiddleLen * 4) {
         twiddleLen = count >> 2;
-        fn_80120834(twiddleLen, (s32 *)info, (f32 *)work);
+        fn_80120834(twiddleLen, (s32 *)params, (f32 *)tables);
     }
-    cosLen = *(s32 *)(info + 4);
+    cosLen = *(s32 *)(params + 4);
     if (count > cosLen) {
         cosLen = count;
-        fn_80120B6C(count, (s32 *)info, (f32 *)work + twiddleLen);
+        fn_80120B6C(count, (s32 *)params, (f32 *)tables + twiddleLen);
     }
     if (sign < 0) {
-        endValue = *(f32 *)((u8 *)data + (count - 1) * 4);
+        endValue = *(f32 *)((u8 *)samples + (count - 1) * 4);
         for (i = count - 2; i >= 2; i -= 2) {
-            data[i + 1] = data[i] - data[i - 1];
-            data[i] = data[i] + data[i - 1];
+            samples[i + 1] = samples[i] - samples[i - 1];
+            samples[i] = samples[i] + samples[i - 1];
         }
-        first = data[0];
-        data[1] = first - endValue;
-        data[0] = first + endValue;
+        first = samples[0];
+        samples[1] = first - endValue;
+        samples[0] = first + endValue;
         if (count > 4) {
-            fn_801252D8(count, data, cosLen, (f32 *)work + twiddleLen);
-            fn_80120E14(count, data, info + 8, twiddleLen, (void *)work);
+            fn_801252D8(count, samples, cosLen, (f32 *)tables + twiddleLen);
+            fn_80120E14(count, samples, params + 8, twiddleLen, (void *)tables);
         } else if (count == 4) {
-            fn_80120E14(count, data, info + 8, twiddleLen, (void *)work);
+            fn_80120E14(count, samples, params + 8, twiddleLen, (void *)tables);
         }
     }
-    fn_801254E4(count, data, cosLen, (f32 *)work + twiddleLen);
+    fn_801254E4(count, samples, cosLen, (f32 *)tables + twiddleLen);
     if (sign >= 0) {
         if (count > 4) {
-            fn_80120CA4(count, data, info + 8, twiddleLen, (void *)work);
-            fn_801250CC(count, (s32)data, cosLen, (s32)((f32 *)work + twiddleLen));
+            fn_80120CA4(count, samples, params + 8, twiddleLen, (void *)tables);
+            fn_801250CC(count, (s32)samples, cosLen, (s32)((f32 *)tables + twiddleLen));
         } else if (count == 4) {
-            fn_80120CA4(count, data, info + 8, twiddleLen, (void *)work);
+            fn_80120CA4(count, samples, params + 8, twiddleLen, (void *)tables);
         }
-        endValue = data[0] - data[1];
-        data[0] = data[0] + data[1];
+        endValue = samples[0] - samples[1];
+        samples[0] = samples[0] + samples[1];
         for (i = 2; i < count; i += 2) {
-            data[i - 1] = data[i] - data[i + 1];
-            data[i] = data[i] + data[i + 1];
+            samples[i - 1] = samples[i] - samples[i + 1];
+            samples[i] = samples[i] + samples[i + 1];
         }
-        *(f32 *)((u8 *)data + (count - 1) * 4) = endValue;
+        *(f32 *)((u8 *)samples + (count - 1) * 4) = endValue;
     }
 }
 
