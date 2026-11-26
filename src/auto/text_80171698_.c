@@ -144,7 +144,7 @@ void fn_8017188C(char *arg0) {
 void fn_80171930(void) {
 }
 
-extern s32 fn_801B2F24(void);
+extern s32 getDeitySlotCount(void);
 extern s32 fn_801B2F54(s32);
 extern void getRegisteredObject(s32);
 extern s32 fn_80139B5C(s32);
@@ -162,7 +162,7 @@ void fn_80171934(void *triggerMaster) {
     s32 deity;
     s32 triggerIndex;
     f32 scale;
-    deityCount = fn_801B2F24();
+    deityCount = getDeitySlotCount();
     scale = lbl_80561A30;
     deity = 0;
     while (deity < deityCount) {

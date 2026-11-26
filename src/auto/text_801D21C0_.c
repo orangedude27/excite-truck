@@ -347,7 +347,7 @@ typedef struct SoeventSpawnInfo {
     /* 0x1C */ s32 classId;  /* SoeventClass being spawned */
 } SoeventSpawnInfo; /* size 0x20, which is what the event carries */
 
-extern s32 fn_801B2F24(void);
+extern s32 getDeitySlotCount(void);
 extern void *lbl_804348E8[];
 #pragma push
 #pragma use_lmw_stmw off
@@ -356,7 +356,7 @@ extern void *lbl_804348E8[];
  * transforming its vehicle-relative point into world space for event 10. */
 void reportSoeventSpawns(void) {
 #define sSoeventRecords lbl_80438898 /* the 8 spawn records, one per car slot */
-#define sCarTable lbl_804348E8 /* this race's vehicles; fn_801B2F24() of them */
+#define sCarTable lbl_804348E8 /* this race's vehicles; getDeitySlotCount() of them */
 #define sGameTime lbl_8055E3C8 /* current game time, in seconds */
     SoeventSpawnInfo event;
     f32 now;
@@ -367,7 +367,7 @@ void reportSoeventSpawns(void) {
     s32 zero;
     /* Once the clock passes a record's due time it is done; until then the
      * spawn is reported again every frame, tracking the vehicle it follows. */
-    carCount = fn_801B2F24();
+    carCount = getDeitySlotCount();
     now = sGameTime;
     record = (SoeventRecord *)sSoeventRecords;
     carSlot = sCarTable;

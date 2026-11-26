@@ -36,7 +36,7 @@ struct ActionSequence {
     void *inlineElements[16];    /* 0x3C what elements points at */
 };
 /* The AI truck (racer) table: getDeitySlot gives the 0x80-byte slot of a racer
- * and fn_801B2F24 the number of racers.  vtable+0x10 of a slot hands back the
+ * and getDeitySlotCount the number of racers.  vtable+0x10 of a slot hands back the
  * racer state block that starts at slot+4. */
 struct RacerState {
     char pad0[0x10];
@@ -93,7 +93,7 @@ struct TimedEffect {
 
 extern int getRegisteredObject(int);
 extern void *getDeitySlot(int);
-extern int fn_801B2F24(void);
+extern int getDeitySlotCount(void);
   extern char lbl_80338C78[];
 extern char lbl_80338BD0[];
 /* The delete entry point: fn_80128584(object, 3), i.e. MemFree on the object's
@@ -668,7 +668,7 @@ void updateActionSequence(int sequence) {
     };
     extern int getRegisteredObject(int);
     extern void *getDeitySlot(int);
-    extern int fn_801B2F24(void);
+    extern int getDeitySlotCount(void);
     ActionSequence *seq = (ActionSequence *)sequence;
     if (seq->state == ACTION_SEQ_PLAYING) {
         int offset;
@@ -730,7 +730,7 @@ loop3:
             racer++;
         }
 test3:
-        if (racer < fn_801B2F24()) goto loop3;
+        if (racer < getDeitySlotCount()) goto loop3;
         if (leaderLap >= 0) {
             if (seq->state == ACTION_SEQ_READY) {
                 if ((seq->firstActiveLap >= 0 && leaderLap < seq->firstActiveLap) ||

@@ -708,7 +708,7 @@ void fn_801942F0(void *driver, int forceOn) {
     }
 }
 
-extern int fn_801B2F24(void);
+extern int getDeitySlotCount(void);
 extern float lbl_80562198, lbl_805621B8, lbl_805621BC, lbl_805621C0, lbl_805621C4;
 static inline float Cross2D_80194324(float ax, float ay, float bx, float by) {
     float n = -ay;
@@ -1131,7 +1131,7 @@ extern "C" void computeAIDriverControls(char *driver, float *out) {
     if (*(int *)((char *)work + 0x30) == 0) {
         out[2] = rateScale;
         slotIndex = 0;
-        while (slotIndex < fn_801B2F24()) {
+        while (slotIndex < getDeitySlotCount()) {
             void *other = getDeitySlot(slotIndex);
             if (slotIndex != *(int *)(driver + 0x290)) {
                 void *state = ((OtherObj *)other)->getState();
@@ -2060,7 +2060,7 @@ void fn_80196328(void *controller) {
     fn_80136EA4(lbl_8055E0D0, *(int *)((char *)controller + 0x290));
     fn_80136E8C(lbl_8055E0D0, *(int *)((char *)controller + 0x290), 0);
 }
-      extern int fn_801B2F24(void);
+      extern int getDeitySlotCount(void);
     extern void fn_801B2F40(int);
           extern int fn_8019643C();
       void fn_80194844();
@@ -2118,12 +2118,12 @@ int fn_8019643C(int carIndex) {
 }
 
 #pragma dont_inline reset
-      extern int fn_801B2F24(void);
+      extern int getDeitySlotCount(void);
     extern void fn_801B2F40(int);
     extern int fn_8019643C();
 /* Iterate entries from startIndex to end and return 1 if any checked entry matches the target type. */
 int fn_80196468(int startIndex) {
-      int end = fn_801B2F24();
+      int end = getDeitySlotCount();
       int i = startIndex;
       while (i <= end) {
           fn_801B2F40(i - 1);

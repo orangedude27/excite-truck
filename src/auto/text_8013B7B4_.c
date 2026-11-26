@@ -81,7 +81,7 @@ error:
 
 #pragma cplusplus on
 extern "C" int fn_80179630(int);
-extern "C" int fn_801B2F24(void);
+extern "C" int getDeitySlotCount(void);
 extern "C" int fn_801B2F40(int);
 extern "C" void *fn_801B2ED0(int);
 extern "C" double fn_801B2F90(int, int);
@@ -110,7 +110,7 @@ void fn_8013B950(void) {
         remaining = lbl_8055E170;
         bestItem = 0;
         bestIndex = -1;
-        index = fn_801B2F24() - 1;
+        index = getDeitySlotCount() - 1;
         while (index >= 0) {
             bestIndex = fn_801B2F40(index);
             bestItem = ((struct Dummy *)fn_801B2ED0(bestIndex))->get();

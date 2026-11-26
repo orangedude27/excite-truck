@@ -123,7 +123,7 @@ extern s32 lbl_8055A0E8;
 
 extern int fn_801C5B60(void);
 extern void fn_801DF074(int, int);
-extern int fn_801B2F24(void);
+extern int getDeitySlotCount(void);
 extern void fn_80276DC8(int);
 extern void fn_80176734(void);
 extern s32 fn_80161C38(void);
@@ -1535,7 +1535,7 @@ extern "C" void GateChallenge_update(void *challengeMgr) {
     if (fn_801C5B60()==0) fn_801DF074(8,0);
     if (((Dummy_801638A0 *)mgr)->f7()==0) {
         one=lbl_80561840; minAlignment=lbl_80561854; minSpeedSq=lbl_80561850;
-        for (carIndex=0,carTable=lbl_804348E8;carIndex<fn_801B2F24();carTable++,carIndex++) {
+        for (carIndex=0,carTable=lbl_804348E8;carIndex<getDeitySlotCount();carTable++,carIndex++) {
             car=(u8 *)*carTable;
             if (*(u32 *)(car+0x10)!=CAR_TAG_PLAYER_CAR) continue;
             for (gateIndex=0,gateOffset=0;gateIndex<*(s32 *)(mgr+0xE4);gateOffset+=0x48,gateIndex++) {
@@ -1584,7 +1584,7 @@ extern "C" void GateChallenge_update(void *challengeMgr) {
     } else {
         if ((f32)__fabs(*(f32 *)(mgr+0x8C))<=lbl_80558DC4[0]) {
             fn_80276DC8(0);
-            for (resetCarIndex=0,resetCarTable=lbl_804348E8;resetCarIndex<fn_801B2F24();resetCarTable++,resetCarIndex++) {
+            for (resetCarIndex=0,resetCarTable=lbl_804348E8;resetCarIndex<getDeitySlotCount();resetCarTable++,resetCarIndex++) {
                 Dummy_801638A0 *manager=(Dummy_801638A0 *)fn_801B83A0();
                 manager->f35((void *)*resetCarTable,resetCarIndex);
             }
@@ -1950,7 +1950,7 @@ done:
     if (fn_801C5B60() == 0) fn_801DF074(8, 0);
     if (((State_80162BA8 *)mgr)->f9() == 0) {
         one = lbl_80561840; minAlignment = lbl_80561854; minSpeedSq = lbl_80561850;
-        for (carIndex = 0, carTable = lbl_804348E8; carIndex < fn_801B2F24(); carTable++, carIndex++) {
+        for (carIndex = 0, carTable = lbl_804348E8; carIndex < getDeitySlotCount(); carTable++, carIndex++) {
             car = (u8 *)*carTable;
             if (*(u32 *)(car + 0x10) != 0x50434152) continue;
             for (gateIndex = 0, gateOffset = 0; gateIndex < *(s32 *)(mgr + 0xE4); gateOffset += 0x48, gateIndex++) {
@@ -2000,7 +2000,7 @@ done:
     } else {
         if ((f32)__fabs(*(f32 *)(mgr + 0x8C)) <= *(f32 *)&lbl_80558DC4) {
             fn_80276DC8(0);
-            for (index = 0, introCarTable = lbl_804348E8; index < fn_801B2F24(); introCarTable++, index++) {
+            for (index = 0, introCarTable = lbl_804348E8; index < getDeitySlotCount(); introCarTable++, index++) {
                 void *manager = fn_801B83A0();
                 ((State_80162BA8 *)manager)->f37(*introCarTable, index);
             }
@@ -2413,7 +2413,7 @@ extern "C" void GateChallenge_updateWithTimeout(void *challengeMgr) {
     if (fn_801C5B60()==0) fn_801DF074(8,0);
     if (((Dummy_801638A0 *)mgr)->f7()==0) {
         one=lbl_80561840; minAlignment=lbl_80561854; minSpeedSq=lbl_80561850;
-        for (carIndex=0,carTable=lbl_804348E8;carIndex<fn_801B2F24();carTable++,carIndex++) {
+        for (carIndex=0,carTable=lbl_804348E8;carIndex<getDeitySlotCount();carTable++,carIndex++) {
             car=(u8 *)*carTable;
             if (*(u32 *)(car+0x10)!=CAR_TAG_PLAYER_CAR) continue;
             for (gateIndex=0,gateOffset=0;gateIndex<*(s32 *)(mgr+0xE4);gateOffset+=0x48,gateIndex++) {
@@ -2462,7 +2462,7 @@ extern "C" void GateChallenge_updateWithTimeout(void *challengeMgr) {
     } else {
         if ((f32)__fabs(*(f32 *)(mgr+0x8C))<=lbl_80558DC4[0]) {
             fn_80276DC8(0);
-            for (carIndex=0,resetCarTable=lbl_804348E8;carIndex<fn_801B2F24();resetCarTable++,carIndex++) {
+            for (carIndex=0,resetCarTable=lbl_804348E8;carIndex<getDeitySlotCount();resetCarTable++,carIndex++) {
                 Dummy_801638A0 *manager=(Dummy_801638A0 *)fn_801B83A0();
                 manager->f35((void *)*resetCarTable,carIndex);
             }

@@ -256,7 +256,7 @@ void fn_801B4820(int unused, int *arg0, int *arg1, unsigned int arg2) {
     unsigned int value;
     unsigned int limit;
 
-    value = arg2 / ((fn_801B2F24() + 1) * 0x44 + 0xC);
+    value = arg2 / ((getDeitySlotCount() + 1) * 0x44 + 0xC);
     limit = 0x7E90;
     if ((int)value < 0x7E90) {
         limit = value;
@@ -438,40 +438,48 @@ float fn_801B4D10(int queue, int tick) {
 
 extern float lbl_80562668, lbl_8056266C, lbl_80562670, lbl_80562674, lbl_80562678, lbl_8056267C, lbl_80562680;
 extern const double lbl_80562688;
-int fn_801B4D80(void *arg0, int p1, int p2, float arg3) {
-    void *arg1=(void *)p1, *arg2=(void *)p2;
-    float a,b,c,d,e,f,t;
-    unsigned short x;
-    x=*(unsigned short *)((char *)arg2+6);
-    *(int *)arg0=*(int *)arg1;
-    *(int *)((char *)arg0+4)=*((unsigned char *)arg1+4);
-    a=lbl_80562668 < ((float)x-lbl_80562674)/lbl_80562678 ? lbl_80562668 : ((float)x-lbl_80562674)/lbl_80562678;
-    a=a>lbl_80562674 ? a : lbl_80562674;
-    t=lbl_8056266C+a*lbl_80562670;
-    x=*(unsigned short *)((char *)arg1+6);
-    b=lbl_80562668 < ((float)x-lbl_80562674)/lbl_80562678 ? lbl_80562668 : ((float)x-lbl_80562674)/lbl_80562678;
-    b=b>lbl_80562674 ? b : lbl_80562674;
-    c=lbl_8056266C+b*lbl_80562670;
-    x=*(unsigned short *)((char *)arg2+8);
-    *(float *)((char *)arg0+8)=c+arg3*(t-c);
-    d=lbl_80562668 < ((float)x-lbl_80562674)/lbl_80562678 ? lbl_80562668 : ((float)x-lbl_80562674)/lbl_80562678;
-    d=d>lbl_80562674 ? d : lbl_80562674;
-    t=lbl_8056267C+d*lbl_80562680;
-    x=*(unsigned short *)((char *)arg1+8);
-    e=lbl_80562668 < ((float)x-lbl_80562674)/lbl_80562678 ? lbl_80562668 : ((float)x-lbl_80562674)/lbl_80562678;
-    e=e>lbl_80562674 ? e : lbl_80562674;
-    c=lbl_8056267C+e*lbl_80562680;
-    x=*(unsigned short *)((char *)arg2+10);
-    *(float *)((char *)arg0+12)=c+arg3*(t-c);
-    d=lbl_80562668 < ((float)x-lbl_80562674)/lbl_80562678 ? lbl_80562668 : ((float)x-lbl_80562674)/lbl_80562678;
-    d=d>lbl_80562674 ? d : lbl_80562674;
-    t=lbl_8056267C+d*lbl_80562680;
-    x=*(unsigned short *)((char *)arg1+10);
-    f=lbl_80562668 < ((float)x-lbl_80562674)/lbl_80562678 ? lbl_80562668 : ((float)x-lbl_80562674)/lbl_80562678;
-    f=f>lbl_80562674 ? f : lbl_80562674;
-    c=lbl_8056267C+f*lbl_80562680;
-    *(float *)((char *)arg0+16)=c+arg3*(t-c);
-    return (int)arg0;
+int fn_801B4D80(void *arg0, int p1, int p2, float arg3)
+{
+  void *arg1 = (void *) p1;
+  void *arg2 = (void *) p2;
+  float a;
+  float b;
+  float c;
+  float d;
+  float f;
+  float t;
+  float e;
+  unsigned short x;
+  x = *((unsigned short *) (((char *) arg2) + 6));
+  *((int *) arg0) = *((int *) arg1);
+  *((int *) (((char *) arg0) + 4)) = *(((unsigned char *) arg1) + 4);
+  a = (lbl_80562668 < ((((float) x) - lbl_80562674) / lbl_80562678)) ? (lbl_80562668) : ((((float) x) - lbl_80562674) / lbl_80562678);
+  a = (a > lbl_80562674) ? (a) : (lbl_80562674);
+  t = lbl_8056266C + (a * lbl_80562670);
+  x = *((unsigned short *) (((char *) arg1) + 6));
+  b = (lbl_80562668 < ((((float) x) - lbl_80562674) / lbl_80562678)) ? (lbl_80562668) : ((((float) x) - lbl_80562674) / lbl_80562678);
+  x = *((unsigned short *) (((char *) arg2) + 8));
+  b = (b > lbl_80562674) ? (b) : (lbl_80562674);
+  c = lbl_8056266C + (b * lbl_80562670);
+  *((float *) (((char *) arg0) + 8)) = c + (arg3 * (t - c));
+  d = (lbl_80562668 < ((((float) x) - lbl_80562674) / lbl_80562678)) ? (lbl_80562668) : ((((float) x) - lbl_80562674) / lbl_80562678);
+  d = (d > lbl_80562674) ? (d) : (lbl_80562674);
+  t = lbl_8056267C + (d * lbl_80562680);
+  x = *((unsigned short *) (((char *) arg1) + 8));
+  e = (lbl_80562668 < ((((float) x) - lbl_80562674) / lbl_80562678)) ? (lbl_80562668) : ((((float) x) - lbl_80562674) / lbl_80562678);
+  e = (e > lbl_80562674) ? (e) : (lbl_80562674);
+  c = lbl_8056267C + (e * lbl_80562680);
+  x = *((unsigned short *) (((char *) arg2) + 10));
+  *((float *) (((char *) arg0) + 12)) = c + (arg3 * (t - c));
+  d = ((lbl_80562668 < ((((float) x) - lbl_80562674) / lbl_80562678)) & 0xFFu) ? (lbl_80562668) : ((((float) x) - lbl_80562674) / lbl_80562678);
+  d = (d > ((float) lbl_80562674)) ? (d) : (lbl_80562674);
+  t = lbl_8056267C + (d * lbl_80562680);
+  x = *((unsigned short *) (((char *) arg1) + 10));
+  f = (lbl_80562668 < ((((float) x) - lbl_80562674) / lbl_80562678)) ? (lbl_80562668) : ((((float) x) - lbl_80562674) / lbl_80562678);
+  f = (f > lbl_80562674) ? (f) : (lbl_80562674);
+  c = lbl_8056267C + (f * lbl_80562680);
+  *((float *) (((char *) arg0) + 16)) = c + (arg3 * (t - c));
+  return (int) arg0;
 }
 void *__AXGetStudio_80178C90(void);
 int fn_801B4D80(void *, int, int, float);

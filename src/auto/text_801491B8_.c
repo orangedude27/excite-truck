@@ -190,7 +190,7 @@ typedef struct {
 
 extern s32 fn_80161C94(void);
 extern void fn_801B8A84(s32);
-extern s32 fn_801B2F24(void);
+extern s32 getDeitySlotCount(void);
 extern s32 fn_801B8514(void);
 extern s32 lbl_804348E8[];
 extern void fn_801B8A7C(void);
@@ -4207,7 +4207,7 @@ extern "C" s32 fn_80154618(void *arg0) {
     s32 anyMatched = 0;
     s32 index = 0;
     /* Returns 1 if no player in state 0x50 matched arg0's vf6 check but fn_801B8514() is set; otherwise returns whether any such match occurred. */
-    while (index < fn_801B2F24()) {
+    while (index < getDeitySlotCount()) {
         if (*(s32 *)((u8 *)*playerIter + 0x1F0) == 0x50) {
             if (((TObj80154618 *)arg0)->f6(index) != 0) {
                 anyMatched = 1;

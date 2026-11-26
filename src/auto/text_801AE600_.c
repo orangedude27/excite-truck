@@ -417,7 +417,7 @@ void fn_801AED68(void) {
 }
 
 extern void *lbl_8055E620;
-extern int fn_801B2F24(void);
+extern int getDeitySlotCount(void);
 extern int fn_801B3050(int);
 extern int fn_801B2ED4(void);
 extern void *memset(void *, int, unsigned int);
@@ -450,7 +450,7 @@ void fn_801AED74(void)
       *((float *) (((char *) data) + 8)) = value;
       count = -100;
       *((short *) (((char *) data) + 0xC)) = count;
-      if (i < fn_801B2F24())
+      if (i < getDeitySlotCount())
       {
         selected = fn_801B3050(i);
       }
@@ -588,7 +588,7 @@ void fn_801AEF28(Src *arg0) {
             memset(d, 0, 0x1C);
             *(float *)(d + 8) = v;
             *(short *)(d + 0xC) = -100;
-            sel = (i < fn_801B2F24()) ? fn_801B3050(i) : -1;
+            sel = (i < getDeitySlotCount()) ? fn_801B3050(i) : -1;
             *(short *)(d + 0x1A) = sel;
         }
     }

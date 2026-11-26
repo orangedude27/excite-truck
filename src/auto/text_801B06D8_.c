@@ -2005,7 +2005,7 @@ s32 fn_801B2EDC(s32 arg0, s32 arg1) {
     return (s32)var_r31;
 }
 
-void* fn_801B2F24(void) {
+void* getDeitySlotCount(void) {
 #define deitySlotCount lbl_8055E678
     /* Return the number of deity slot indices held in the order table lbl_80435C30. */
     return deitySlotCount;

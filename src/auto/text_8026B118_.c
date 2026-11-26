@@ -290,7 +290,7 @@ extern unsigned char lbl_8049A0E8[];
 extern int lbl_8055F4C8;
 extern int lbl_8055F4CC, lbl_8055F4D0;
 extern void *memset(void *, int, unsigned int);
-extern int fn_801B2F24(void);
+extern int getDeitySlotCount(void);
 extern void updateJumpCamSlot(int);
 extern void deleteThreads__6SystemFv_8026B178(void *);
 #pragma scheduling invalid_target
@@ -301,10 +301,10 @@ void fn_8026B6D0(void) {
 }
 #pragma scheduling on
 /* For each player/slot, refresh its per-frame state when this subsystem is active.
- * RealName: unknown (rename_symbol disabled). lbl_8055F4C8 = active slot/player count (or >0 flag), fn_801B2F24() = player count, updateJumpCamSlot(i) = update slot i. */
+ * RealName: unknown (rename_symbol disabled). lbl_8055F4C8 = active slot/player count (or >0 flag), getDeitySlotCount() = player count, updateJumpCamSlot(i) = update slot i. */
 void fn_8026B6E4(void) {
 #define activeCount lbl_8055F4C8
-#define getPlayerCount fn_801B2F24
+#define getPlayerCount getDeitySlotCount
 #define updateSlot updateJumpCamSlot
     int i;
     if (activeCount > 0) {

@@ -812,7 +812,7 @@ extern "C" void fn_80156E74(void *arg0, s32 arg1, void *arg2) {
 }
 #pragma pop
 
-extern "C" s32 fn_801B2F24(void);
+extern "C" s32 getDeitySlotCount(void);
 extern "C" void *fn_801B2ED0(s32);
 extern "C" f32 lbl_8055E3C8;
 #pragma push
@@ -829,7 +829,7 @@ extern "C" void fn_80156F6C(void *arg0) {
     u8 *out;
     s32 i;
     u8 *base = (u8 *)arg0;
-    s32 total = fn_801B2F24();
+    s32 total = getDeitySlotCount();
     f32 threshold;
     f32 addValue;
     addValue = lbl_8055E3C8;
