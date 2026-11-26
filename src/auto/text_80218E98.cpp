@@ -4967,7 +4967,7 @@ extern "C" void *lbl_8033E668[];
 extern "C" void *fn_80220874(void *self, s32 deletingFlag) {
     /* The slider bar fn_80220778 builds into a 0x264-byte UI node: the groove
        (slider1.img) drawn full size with a fill (slider2.img) scaled to
-       *value between minValue and maxValue (fn_80220C54). */
+       *value between minValue and maxValue (drawSliderBar). */
     struct SliderBarWidget {
         void *vtable;     /* +0x000 */
         u8 widget[0x240]; /* +0x004 base Widget state */
@@ -5128,7 +5128,7 @@ extern "C" void fn_80220B5C(void *widget, s32 canvas) {
 
 #pragma push
 #pragma processor 750
-extern "C" void fn_80220C54(void *arg0)
+extern "C" void drawSliderBar(void *arg0)
 {
   /* Draw the slider bar fn_80220778 builds: the groove (slider1.img, +0x248) at
    * full widget width, then the fill (slider2.img, +0x24C) inset by 5px and
