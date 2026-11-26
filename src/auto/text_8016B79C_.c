@@ -511,7 +511,7 @@ extern "C" void *fn_8016BE60(void *setup) {
 #pragma cplusplus reset
 #pragma scheduling on
 #pragma cplusplus on
-extern "C" void *destroyRingChallengeController(void *arg0, s32 arg1) {
+/* Destroys the ring-challenge controller, releasing its sounds, lists, art set and obstacle table, then unlinking and optionally freeing it. */ extern "C" void *destroyRingChallengeController(void *controller, s32 shouldFree) {
     /* The seven sounds the controller owns all answer to this: destroy(flag),
      * their vtable's first slot (+8), frees the sound when flag > 0. */
     class Sound { public: virtual void destroy(int); };
@@ -536,8 +536,8 @@ extern "C" void *destroyRingChallengeController(void *arg0, s32 arg1) {
     };
     Sound *sound;
     void *list;
-    register void *object = arg0;
-    register s32 freeFlag = arg1;
+    register void *object = controller;
+    register s32 freeFlag = shouldFree;
     Controller *self = (Controller *)object;
 
     /* Destructor of the ring-challenge controller (vtable lbl_80330A90, third
