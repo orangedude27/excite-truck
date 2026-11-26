@@ -679,23 +679,23 @@ int fn_8003AC24(void *arg0) {
  * length and input) in the next command-buffer slot and submit it through
  * IOS_IoctlAsync using buffer/length as the transfer. Frees the claimed context
  * if dispatch fails; returns 0 on failure, else 1. */
-int DVDLowUnencryptedReadAsync(void *buffer, int length, int input, void *callback) {
-    const char *msg = lbl_80302848;
+/* Queue an asynchronous DVD low-level unencrypted read (ioctl 0x8D): build the command block in the next buffer slot with the transfer length and disc offset, submit it with buffer/length as the data transfer, and release the claimed context slot if dispatch fails. Returns 0 on failure, 1 on success. */ int DVDLowUnencryptedReadAsync(void *buffer, int length, int offset, void *callback) {
+    const char *msgBase = lbl_80302848;
     unsigned int one = 1;
-    unsigned char *context;
-    int result;
+    unsigned char *callbackContext;
+    int ioResult;
 
     lbl_8055D8E0 = one;
-    context = (unsigned char *)newContext(callback, one, msg);
+    callbackContext = (unsigned char *)newContext(callback, one, msgBase);
     lbl_8055D8F4 = length;
     nextCommandBuf();
     *(unsigned char *)(lbl_8055D8FC + lbl_8055D8E4 * 0x20) = 0x8D;
     *(unsigned int *)(lbl_8055D8FC + lbl_8055D8E4 * 0x20 + 4) = length;
-    *(unsigned int *)(lbl_8055D8FC + lbl_8055D8E4 * 0x20 + 8) = input;
-    if ((result = IOS_IoctlAsync(lbl_80558E18, 0x8D, lbl_8055D8FC + lbl_8055D8E4 * 0x20,
-                              0x20, buffer, length, (void (*)(int, void *))doTransactionCallback, context)) != 0) {
-        OSReport(msg + 0x428, result);
-        context[8] = 0;
+    *(unsigned int *)(lbl_8055D8FC + lbl_8055D8E4 * 0x20 + 8) = offset;
+    if ((ioResult = IOS_IoctlAsync(lbl_80558E18, 0x8D, lbl_8055D8FC + lbl_8055D8E4 * 0x20,
+                              0x20, buffer, length, (void (*)(int, void *))doTransactionCallback, callbackContext)) != 0) {
+        OSReport(msgBase + 0x428, ioResult);
+        callbackContext[8] = 0;
         return 0;
     }
     return 1;
