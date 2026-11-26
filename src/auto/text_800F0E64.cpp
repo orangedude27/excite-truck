@@ -3634,7 +3634,7 @@ extern "C" s32 fn_800F65F0(void *arg0, void **arg1, u32 arg2, s32 arg3, s32 arg4
         if (((s32 (*)(void *, u32, void *))fn_800F2804)(*(void **)((u8 *)arg0 + 0x10), arg2, stack.local.waveInfo) == 0) {
             return 3;
         }
-        sound = fn_800F975C((s32)sound, soundCount, loop, arg3, arg4, arg2, (u8 *)arg0 + 0x98);
+        sound = allocWaveSound((s32)sound, soundCount, loop, arg3, arg4, arg2, (u8 *)arg0 + 0x98);
         if (!sound) {
             return 1;
         }
