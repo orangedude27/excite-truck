@@ -913,7 +913,7 @@ typedef struct FireText {
  * pixels for a whole character) and at the vertical middle of the text.
  * Nothing happens at all until startTime comes up.
  */
-void FireTextDraw(void *arg0) {
+/* Draw one "firetext" credits line: type it out at 30 chars/s from startTime, draw the shown part at the anchor shifted back by the hidden width, and throw sparks at the character being typed. */ void FireTextDraw(void *arg0) {
     FireText *item = (FireText *)arg0;
     char *cut;
     float box[8];              /* [0..3] the shown part, [4..7] the whole line: minX, minY, maxX, maxY */
