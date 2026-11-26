@@ -1239,7 +1239,7 @@ extern "C" s32 fn_800A5AE4(register void *arg0, void *arg1)
 #define VF_FAT_FIRST_CLUSTER    2                            /* first cluster a file may hold */
 
 /* VFiPFFSInfo_ReadFreeClusters: take a FAT32 volume's free-cluster counts out of
- * the FSInfo sector the mount (fn_800A5530) has just read into `fsInfo`.
+ * the FSInfo sector the mount (VFiPFMountVolume) has just read into `fsInfo`.
  *
  * All three signatures of the sector have to be there.  Even then the two
  * counts stay -1 - the "unknown" the mount starts from - unless they are
@@ -10867,7 +10867,7 @@ struct VFiPFVolume {
 /* VFiPFVolume.flags; the last four are driven by the media-change callbacks
  * fn_800A535C (media present: sets 0x4|0x10) and fn_800A52DC (media gone:
  * sets 0x20 when mounted, clears 0x4|0x8).  0x2, 0x40 and 0x80 are taken over
- * from the device's own info flags by the mount, fn_800A5530. */
+ * from the device's own info flags by the mount, VFiPFMountVolume. */
 #define VF_VOL_IN_USE          0x0001 /* the slot holds an attached device */
 #define VF_VOL_WRITE_PROTECTED 0x0002 /* the device refuses writes */
 #define VF_VOL_MEDIA_PRESENT   0x0004 /* media is in the drive */
@@ -11055,7 +11055,7 @@ extern "C" s32 readVolumeData(void *vol, u8 *dest, u32 sector, u32 offset, u32 l
     return 0;
 }
 
-extern "C" s32 fn_800A5530(void *);
+extern "C" s32 VFiPFMountVolume(void *);
 extern "C" s32 fn_800AED1C(void *);
 extern "C" s32 fn_800A5800(void *, s32);
 #pragma opt_strength_reduction off
@@ -11068,7 +11068,7 @@ extern "C" s32 fn_800B5988(void *arg0) {
     s32 n;
     *(s32 *)((u8 *)arg0 + 0x1F80) = 0;
     *(s32 *)((u8 *)arg0 + 0x1F84) = 0;
-    r = fn_800A5530(arg0);
+    r = VFiPFMountVolume(arg0);
     if (r != 0) return r;
     hdr = *(u16 *)arg0;
     if (hdr == 0 || (hdr & 0x1FF)) return 0xF;
@@ -26955,7 +26955,7 @@ struct VFiPFDeviceInfo {
  * VF_ERR_DEVICE_RETRY so the caller can run the volume's retry handler; a boot
  * sector that is not a FAT one is 7.
  */
-extern "C" s32 fn_800A5530(void *object) {
+extern "C" s32 VFiPFMountVolume(void *object) {
     u8 *p = (u8 *)object;
     VFiPFDeviceInfo info; /* flags: the device's own, value: handed back to it */
     s32 pageNo;
