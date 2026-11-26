@@ -36,14 +36,14 @@ extern int fn_80129AE8(void *, int); /* copy controller config at index into a 0
 extern void *memset(void *, int, unsigned int);
 extern int fn_801A8E38();
 
-/* Input binding table (built by fn_801A7628): 0x18-byte entries mapping a
+/* Input binding table (built by initInputBindings): 0x18-byte entries mapping a
  * control's display name to the key/action bound to it. */
 typedef struct InputBinding {
     const char *name;      /* +0x00 display name, e.g. "Joy AX+" */
     const char *id;        /* +0x04 internal id, e.g. "JoyAXPlus" */
     int type;              /* +0x08 binding type (1..6) */
     int value;             /* +0x0C bound key code */
-    unsigned char keyFlag; /* +0x10 per-key byte filled in by fn_801A7628; never read back */
+    unsigned char keyFlag; /* +0x10 per-key byte filled in by initInputBindings; never read back */
     char pad11[3];         /* +0x11 */
     unsigned char enabled; /* +0x14 enabled flag (0 = active) */
     char pad15[3];         /* +0x15 */
@@ -113,7 +113,7 @@ extern char lbl_8055E5D4;
  * gInputBindingCount; callers use it as "make sure the table is ready". */
 #pragma push
 #pragma scheduling invalid_target
-void fn_801A7628(void) {
+void initInputBindings(void) {
     extern const char **gInputBindingTable;
     extern int gInputBindingCount;
 #define gBindings ((InputBinding *)lbl_803342D0)
@@ -498,7 +498,7 @@ int fn_801A7C8C(void *arg0) {
     extern int lbl_8055E5D0;
     extern const double lbl_80562460;
     extern const float lbl_80562468;
-    extern void fn_801A7628(void);
+    extern void initInputBindings(void);
     extern void fn_801A91B0(void *, const void *);
     extern int fn_801A8EE4(unsigned int *);
     extern int fn_801A8A10(void *);
@@ -514,7 +514,7 @@ int fn_801A7C8C(void *arg0) {
     int i;
     float value;
 
-    fn_801A7628();
+    initInputBindings();
     for (i = 0, offset = 0; i < lbl_8055E5D0; offset += 0x18, i++) {
         if (*(unsigned char *)((char *)lbl_8055E5CC + offset + 0x14) == 0) {
             local.unk4 = 0;
@@ -1278,7 +1278,7 @@ int fn_801A8F10(int *__restrict control) {
 #undef sUnhandledAxisMsg
 #undef Panic
 }
-extern void fn_801A7628(void);
+extern void initInputBindings(void);
 extern void fn_801A9110(void *, const char *);
 extern void *fn_801A9234(const char *);
 extern void fn_801A91B0(void *, const void *);
@@ -1290,8 +1290,8 @@ extern char *strncpy(char *, const char *, unsigned int);
 #define INPUT_BINDING_MAX_INDEX 0x15 /* highest valid index into the 22-entry input binding name table */
 
 int fn_801A902C(void) {
-    /* Lazily build the input-binding name table (fn_801A7628) and return the highest valid binding index. */
-    fn_801A7628();
+    /* Lazily build the input-binding name table (initInputBindings) and return the highest valid binding index. */
+    initInputBindings();
     return INPUT_BINDING_MAX_INDEX;
 }
 
@@ -1319,13 +1319,13 @@ void fn_801A90A4(char *outName, int maxLen, const char *keySpec) {
 #pragma push
 #pragma scheduling invalid_target
 /* Finds the input binding whose display name matches `name` in the table built
- * by fn_801A7628 and copies its type/value into `out` (via fn_801A91B0); if no
+ * by initInputBindings and copies its type/value into `out` (via fn_801A91B0); if no
  * entry matches, clears out's type field to 0. */
 void fn_801A9110(void *out, const char *name) {
     int entryOffset;
     int index;
 
-    fn_801A7628();
+    initInputBindings();
     index = 0;
     entryOffset = 0;
     for (; index < gInputBindingCount; index++) {
@@ -1376,7 +1376,7 @@ void *fn_801A9234(const char *arg0) {
     int count;
     int type;
 
-    fn_801A7628();
+    initInputBindings();
     count = *(volatile int *)&lbl_8055E5D0;
     i = 0;
     entry = (const char *)(base = *(const char **volatile *)&lbl_8055E5CC);
