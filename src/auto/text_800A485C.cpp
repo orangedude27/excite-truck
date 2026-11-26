@@ -5792,7 +5792,10 @@ done:
 
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" s32 VFiPFFAT_GetClusterAtOffset(void *arg0, u32 offset, u32 *outCluster, u32 *outFound, void *userData)
+/* Walk the FAT chain to the cluster covering a byte offset: *outCluster gets that
+ * cluster and *outFound reports an exact cluster boundary. Returns an error code
+ * on a broken chain, or 0. */
+extern "C" s32 VFiPFFAT_GetClusterAtOffset(void *file, u32 offset, u32 *outCluster, u32 *outFound, void *userData)
 {
     volatile s32 end = -1;
     s32 result;
@@ -5804,26 +5807,26 @@ extern "C" s32 VFiPFFAT_GetClusterAtOffset(void *arg0, u32 offset, u32 *outClust
     void *context;
 
     *outFound = 0;
-    if (*(u32 *)((u8 *)arg0 + 0x24) == 0) {
+    if (*(u32 *)((u8 *)file + 0x24) == 0) {
         return 0;
     }
-    if (*(u32 *)((u8 *)arg0 + 0x2C) < offset) {
+    if (*(u32 *)((u8 *)file + 0x2C) < offset) {
         goto return_zero;
     }
 
-    chunkSize = *(u16 *)((u8 *)arg0 + 0x20) + 1;
+    chunkSize = *(u16 *)((u8 *)file + 0x20) + 1;
     quotient = offset / chunkSize;
     remaining = offset - quotient * chunkSize;
     if (remaining == 0) {
-        *outCluster = *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 0x1C) + quotient * 4);
+        *outCluster = *(u32 *)((u8 *)*(void **)((u8 *)file + 0x1C) + quotient * 4);
         *outFound = 1;
         goto done;
     }
 
-    current = *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 0x1C) + quotient * 4);
+    current = *(u32 *)((u8 *)*(void **)((u8 *)file + 0x1C) + quotient * 4);
     goto check_remaining;
 loop_body:
-    context = *(void **)((u8 *)arg0 + 0x34);
+    context = *(void **)((u8 *)file + 0x34);
     switch (*(s32 *)((u8 *)context + 0x1C)) {
     case 0:
         result = ((s32 (*)(void *, u16, s32 *, void *))fn_800AFBA8)(context, (u16)current, (s32 *)&end, userData);
@@ -5855,7 +5858,7 @@ check_remaining:
     if (finalValue == 0) {
         return 0xD;
     }
-    if (finalValue == lbl_802EEF40[*(s32 *)(*(u8 **)((u8 *)arg0 + 0x34) + 0x1C) * 5 + 2]) {
+    if (finalValue == lbl_802EEF40[*(s32 *)(*(u8 **)((u8 *)file + 0x34) + 0x1C) * 5 + 2]) {
         return 0;
     }
     *outCluster = finalValue;
