@@ -497,7 +497,7 @@ extern u8 lbl_80558B88, lbl_80558B90, lbl_80558B98;
 extern f32 lbl_805603B0;
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_800148A0(void *arg0) {
+void buildLapInfoHudLine(void *arg0) {
     /* Build the lap-info line of the race HUD (the HUD_LAPINFO block): which
      * title to show, the two labels beside it and the two times to fill in.
      *
@@ -657,7 +657,7 @@ s32 fn_80014AE4(void) {
 
 extern void fn_80013C98(f32 *);
 extern void fn_80013CFC(f32 *);
-extern void fn_800148A0(void *);
+extern void buildLapInfoHudLine(void *);
 extern void fn_80014A98(void *);
 extern s32 fn_80014ADC(void);
 #pragma push
@@ -682,7 +682,7 @@ void fn_80014B9C(void *arg0) {
             s32 newState;
             fn_80013CFC(&obj->value);
             if (reverse != 0) fn_80014A98(obj);
-            else fn_800148A0(obj);
+            else buildLapInfoHudLine(obj);
             if (lbl_80560360 == obj->value) {
                 newState = 1;
                 if (reverse != 0) newState = 2;
@@ -703,10 +703,10 @@ void fn_80014B9C(void *arg0) {
     } else {
         if (result != 0) {
             if (obj->value > lbl_80560360) fn_80013CFC(&obj->value);
-            fn_800148A0(obj);
+            buildLapInfoHudLine(obj);
         } else {
             fn_80013C98(&obj->value);
-            fn_800148A0(obj);
+            buildLapInfoHudLine(obj);
             if (lbl_80560368 == obj->value) obj->state = 0;
         }
     }
