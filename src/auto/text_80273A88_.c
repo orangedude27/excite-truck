@@ -278,7 +278,7 @@ void fn_80273BD0(void *arg0) {
 #pragma pop
 
 #pragma dont_inline fn_80273B4C
-void fn_80274268(void *cam) {
+void placeCameraMode2(void *cam) {
     extern void applyFlippedTransform(void *);
     extern void fn_80273B4C(void *);
     extern const float lbl_80563FE8, lbl_80563FE4, lbl_80563FEC;
@@ -353,9 +353,9 @@ void fn_80274268(void *cam) {
     fn_80273B4C(cam);
 }
 void fn_8027445C(void) {
-    extern void fn_80274268();
+    extern void placeCameraMode2();
     /* Vtable thunk: tail-forward to the camera placement (mode 2) helper. */
-    fn_80274268();
+    placeCameraMode2();
 }
 
 #pragma push

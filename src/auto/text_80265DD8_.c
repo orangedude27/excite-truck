@@ -28,7 +28,7 @@ typedef struct {
 extern void fn_8027445C(void *);
 extern void fn_80273BD0(void *);
 extern void fn_802704D4(int, void *);
-extern void fn_80274268(void *);
+extern void placeCameraMode2(void *);
 extern void fn_802E30C8(const char *, ...);
 extern char lbl_803468F8[];
 typedef struct { float x, y, z; } V3_80267EF8;
@@ -1976,7 +1976,7 @@ void fn_802693F4(char *p, unsigned char *flag, int arg) {
         switch (mode) {
         case 0: fn_80273BD0(p); break;
         case 1: fn_8027445C(p); break;
-        case 2: fn_80274268(p); break;
+        case 2: placeCameraMode2(p); break;
         case 3: applyFlippedTransform(p); break;
         case 24: fn_8027847C(p); break;
         case 4: case 5: case 6: case 7: case 8: case 23:
@@ -2118,7 +2118,7 @@ void fn_80269BB0(int idx, unsigned int sel, int *out, float *outf) {
     switch (sel) {
     case 0: fn_80273BD0(&r); break;
     case 1: fn_8027445C(&r); break;
-    case 2: fn_80274268(&r); break;
+    case 2: placeCameraMode2(&r); break;
     case 4:
     case 5: fn_802704D4(sel, &r); break;
     case 11:

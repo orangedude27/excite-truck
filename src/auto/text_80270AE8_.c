@@ -1796,7 +1796,7 @@ void fn_80273604(void *arg0, s32 arg1) {
     extern void fn_802704D4(s32, void *);
     extern s32 fn_80273494(s32);
     extern void fn_80273BD0(void);
-    extern void fn_80274268(void);
+    extern void placeCameraMode2(void);
     extern void fn_802E30C8(const char *, ...);
     extern unsigned char lbl_8049A258[];
     extern u8 lbl_80346BA0[];
@@ -1865,7 +1865,7 @@ void fn_80273604(void *arg0, s32 arg1) {
         fn_80273BD0();
         return;
     case 2:
-        fn_80274268();
+        placeCameraMode2();
         return;
     case 4:
     case 5:
