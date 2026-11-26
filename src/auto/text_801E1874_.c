@@ -114,7 +114,7 @@ typedef struct WeatherSound {
  * flashes with it, whether it is night, and the "fog" group's colour, start,
  * stop and density.  fn_801E1F44 calls it the first time the weather is asked
  * for, and fn_801E1D20/fn_801E1D2C clear gWeatherLoaded to make it run again. */
-extern "C" int loadWeatherState(void) {
+/* Load the level's weather settings from the parameter archive into the weather state: precipitation type, lightning, night flag, and fog color/start/stop/density. */ extern "C" int loadWeatherState(void) {
  struct Vec3 { float x,y,z; };
  /* A named group of values inside the parameter object.  This ABI keeps the
   * two destructor slots first, so the first method declared here is the one at
