@@ -2624,7 +2624,7 @@ extern u32 lbl_8055DC3C;
 extern u32 lbl_8055DC40;
 extern u32 lbl_8055DC44;
 extern u8 lbl_803135C0[];
-extern void fn_8006B044(tBTM_VSC_CMPL *);
+extern void WUDiDownloadPatchCallback(tBTM_VSC_CMPL *);
 #pragma unroll 8
 void fn_8006AED4(s32 arg0) {
     u8 packet[0x100];
@@ -2643,9 +2643,9 @@ void fn_8006AED4(s32 arg0) {
     for (L.i = 0; L.i < L.length; L.i++)
         packet[L.i + 4] = *(volatile u8 *)&lbl_803135C0[L.i + 8];
     lbl_8055DC40 = L.length;
-    BTM_VendorSpecificCommand(0xFC4C, (u8)(L.length + 4), packet, fn_8006B044);
+    BTM_VendorSpecificCommand(0xFC4C, (u8)(L.length + 4), packet, WUDiDownloadPatchCallback);
 }
-void fn_8006B044(tBTM_VSC_CMPL *arg0) {
+void WUDiDownloadPatchCallback(tBTM_VSC_CMPL *arg0) {
     /* Continuation callback for the 0xFC4C patch-download VSC: send the next chunk
      * of download data, and once it is all sent start the 0xFC4F install-patch VSC
      * (whose chunks are sent by fn_8006B26C). */
@@ -2692,7 +2692,7 @@ void fn_8006B044(tBTM_VSC_CMPL *arg0) {
         for (chunk.i = 0; chunk.i < chunk.length; chunk.i++)
             downloadPacket[chunk.i + 4] = DownloadData[DownloadOffset + chunk.i + 8];
         DownloadOffset += chunk.length;
-        BTM_VendorSpecificCommand(0xFC4C, (u8)(chunk.length + 4), downloadPacket, (tBTM_VSC_CMPL_CB *)fn_8006B044);
+        BTM_VendorSpecificCommand(0xFC4C, (u8)(chunk.length + 4), downloadPacket, (tBTM_VSC_CMPL_CB *)WUDiDownloadPatchCallback);
         return;
     }
     fn_8006B330();
@@ -12731,17 +12731,10 @@ void bta_sys_disable(void) {
 }
 
 tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) {
-    struct EscoSetup {
-        u32 tx_bw;
-        u32 rx_bw;
-        u16 pad0;
-        u16 max_latency;
-        u16 packet_types;
-    };
     u8 *strBase = lbl_80316570;
     u8 *pp = (u8 *)p_parms;
     u8 *p_sco;
-    struct EscoSetup *p_setup;
+    u8 *p_setup;
     u16 temp_pkt;
     u16 req;
     if (sco_inx >= 3) {
@@ -12751,19 +12744,18 @@ tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) 
     if (*(u16 *)(p_sco + 0x185C) != 4) {
         return BTM_WRONG_MODE;
     }
-    p_setup = (struct EscoSetup *)(p_sco + 0x1868);
+    p_setup = lbl_803C0F78 + 0x1868 + sco_inx * 0x34;
     if (*(u8 *)(p_sco + 0x1882) == 0 || lbl_803C0F78[0x1908] == 0) {
-        p_setup->packet_types = (*(u16 *)(pp + 2) & (*(u16 *)(lbl_803C0F78 + 0x656) & 7));
+        *(u16 *)(p_setup + 0xC) = (*(u16 *)(pp + 2) & (*(u16 *)(lbl_803C0F78 + 0x656) & 7));
         if (lbl_803C0F78[0x27C0] >= 3) {
-            fn_8007096C(0xD0002, strBase + 0x248, *(u16 *)(p_sco + 0x185E), p_setup->packet_types);
+            fn_8007096C(0xD0002, strBase + 0x248, *(u16 *)(p_sco + 0x185E), *(u16 *)(p_setup + 0xC));
         }
-        if (btsnd_hcic_change_conn_type(*(u16 *)(p_sco + 0x185E), (p_setup->packet_types << 5) & 0xE0) == 0) {
+        if (btsnd_hcic_change_conn_type(*(u16 *)(p_sco + 0x185E), (*(u16 *)(p_setup + 0xC) << 5) & 0xE0) == 0) {
             return BTM_NO_RESOURCES;
         }
         return BTM_CMD_STARTED;
     }
-    req = *(u16 *)(pp + 2);
-    temp_pkt = ((req & *(u16 *)(lbl_803C0F78 + 0x656)) & 0x3F);
+    temp_pkt = (((req = *(u16 *)(pp + 2)) & *(u16 *)(lbl_803C0F78 + 0x656)) & 0x3F);
     if (lbl_803C0F78[0x636] >= 3) {
         temp_pkt |= ((req | *(u16 *)(lbl_803C0F78 + 0x656)) & 0x3C0);
     }
@@ -12771,9 +12763,9 @@ tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) 
         fn_80070954(0xD0002, strBase + 0x28C, *(u16 *)(p_sco + 0x185E));
     }
     if (lbl_803C0F78[0x27C0] >= 3) {
-        fn_800709CC(0xD0002, strBase + 0x8C, p_setup->tx_bw, p_setup->rx_bw, *(u16 *)(pp + 0), p_setup->max_latency, *(pp + 4), temp_pkt);
+        fn_800709CC(0xD0002, lbl_80316570 + 0x8C, *(u32 *)(p_sco + 0x1868), *(u32 *)(p_setup + 4), *(u16 *)(pp + 0), *(u16 *)(p_setup + 0xA), *(pp + 4), temp_pkt);
     }
-    if (btsnd_hcic_setup_esco_conn(*(u16 *)(p_sco + 0x185E), p_setup->tx_bw, p_setup->rx_bw, *(u16 *)(pp + 0), p_setup->max_latency, *(pp + 4), temp_pkt) == 0) {
+    if (btsnd_hcic_setup_esco_conn(*(u16 *)(p_sco + 0x185E), *(u32 *)(p_sco + 0x1868), *(u32 *)(p_setup + 4), *(u16 *)(pp + 0), *(u16 *)(p_setup + 0xA), *(pp + 4), temp_pkt) == 0) {
         return BTM_NO_RESOURCES;
     }
     *(u16 *)(pp + 2) = temp_pkt;
