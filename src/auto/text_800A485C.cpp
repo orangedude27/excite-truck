@@ -14694,7 +14694,7 @@ return result;
  * lines are flushed before the card reads them, and a card a raw command left
  * unconfigured (state 2) is set up first, exactly as the read path does it.
  *
- * This is the write twin of readSdCardBlocks: same IosDevice block, same SD library
+ * This is the write twin of fn_800BB4E0: same IosDevice block, same SD library
  * mutex lbl_80407560 and "one request at a time" flag lbl_8055DD6C, same
  * message strings lbl_8031B838 - only the MMC command (0x19
  * WRITE_MULTIPLE_BLOCK), the cache operation and the name the reports print
