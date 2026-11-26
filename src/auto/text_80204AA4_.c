@@ -12,7 +12,7 @@ extern char lbl_802F9D68[];
 #define sTypeEntries   lbl_802F9D68 /* 0xC-byte descriptors: {name, display name, property key} */
 #define TYPE_ENTRY_SIZE 0xC
 extern char lbl_8033BBA0[];
-extern int *lbl_8055ED5C;
+extern int *sDifficultyInfo;
 extern int lbl_8055B468;
 extern int lbl_8055B470;
 extern int lbl_8055B478;
@@ -78,11 +78,11 @@ int fn_80204BB4(const char *name) {
 #pragma dont_inline on
 /* Build the 0x14-byte "difficulty" info block for the current scene (scene type,
  * property group, current difficulty value, stage value and contest name) and
- * publish it through lbl_8055ED5C. */
+ * publish it through sDifficultyInfo. */
 extern "C" void fn_80204BB8(void)
 {
     #define DIFFICULTY_READY  lbl_8055ED58   /* info block is valid */
-    #define DIFFICULTY_INFO   lbl_8055ED5C   /* published info block */
+    #define DIFFICULTY_INFO   sDifficultyInfo   /* published info block */
     #define DIFFICULTY_TAG    lbl_8033BBD8   /* "difficulty" allocation tag */
     #define DIFFICULTY_VAL    lbl_8033BBE4   /* "difficulty.val" property group */
     #define INFO_SIZE         0x14
@@ -159,10 +159,10 @@ done:
 #pragma dont_inline reset
 #pragma cplusplus reset
 
-extern int *lbl_8055ED5C;
+extern int *sDifficultyInfo;
 /* Return the current scene type (field +0 of the published difficulty info block). */
 int fn_80204CF0(void) {
-#define DIFFICULTY_INFO lbl_8055ED5C
+#define DIFFICULTY_INFO sDifficultyInfo
     return *DIFFICULTY_INFO;
 #undef DIFFICULTY_INFO
 }
@@ -177,7 +177,7 @@ extern "C" void Abend_Panic(const char *, ...);
 #pragma push
 #pragma scheduling invalid_target
 /* Read one difficulty setting of the current scene as a number.  The setting is
- * looked up in the difficulty info block fn_80204BB8 published in lbl_8055ED5C:
+ * looked up in the difficulty info block fn_80204BB8 published in sDifficultyInfo:
  * first as "<contest>_<name>" in the stage's difficulty set, then in the
  * scene's, and if neither has it as the plain "<name>" in both.  A setting none
  * of them has is reported with the 'Difficulty: "%s" was not found' message and
@@ -191,7 +191,7 @@ extern "C" void Abend_Panic(const char *, ...);
         virtual void unused2();
         virtual int get(void *);
     };
-    /* The 0x14-byte block fn_80204BB8 publishes in lbl_8055ED5C. */
+    /* The 0x14-byte block fn_80204BB8 publishes in sDifficultyInfo. */
     struct DifficultyInfo {
         int sceneType;           /* +0x00 */
         void *propertyGroup;     /* +0x04 the "difficulty.val" group */
@@ -204,7 +204,7 @@ extern "C" void Abend_Panic(const char *, ...);
     int setting = 0;
     int valueString;
     int foundString;
-    info = (DifficultyInfo *)lbl_8055ED5C;
+    info = (DifficultyInfo *)sDifficultyInfo;
     if (info->contestName != 0) {
         fn_801345D8(key, 0x64, lbl_8055B4AC, info->contestName, name);
         if (info->stageSet != 0 && info->stageSet->has(key)) {
@@ -233,7 +233,7 @@ extern "C" void Abend_Panic(const char *, ...);
 #pragma pop
 /* Read one difficulty setting of the current scene as its value string.  The
  * setting is looked up in the difficulty info block fn_80204BB8 published in
- * lbl_8055ED5C: first as "<contest>_<name>" in the stage's difficulty set, then
+ * sDifficultyInfo: first as "<contest>_<name>" in the stage's difficulty set, then
  * in the scene's, and if neither has it as the plain "<name>" in both.  A
  * setting none of them has is reported with the 'Difficulty: "%s" was not
  * found' message and reads as 0.  getDifficultySettingFloat is the same lookup with the
@@ -249,7 +249,7 @@ extern "C" int getDifficultySettingString(const char *name) {
         virtual void unused2();
         virtual int get(void *);
     };
-    /* The 0x14-byte block fn_80204BB8 publishes in lbl_8055ED5C. */
+    /* The 0x14-byte block fn_80204BB8 publishes in sDifficultyInfo. */
     struct DifficultyInfo {
         int sceneType;           /* +0x00 */
         void *propertyGroup;     /* +0x04 the "difficulty.val" group */
@@ -261,7 +261,7 @@ extern "C" int getDifficultySettingString(const char *name) {
     DifficultyInfo *info;
     int setting = 0;
     int found;
-    info = (DifficultyInfo *)lbl_8055ED5C;
+    info = (DifficultyInfo *)sDifficultyInfo;
     if (info->contestName != 0) {
         fn_801345D8(key, 0x64, lbl_8055B4AC, info->contestName, name);
         if (info->stageSet != 0 && info->stageSet->has(key)) {
@@ -292,13 +292,13 @@ __declspec(section ".sdata") extern const char lbl_8055B4B4[];
 __declspec(section ".sdata") extern const char lbl_8055B4B8[];
 #pragma cplusplus on
 /* Is the current scene's difficulty setting `name` switched on?  The setting is
- * looked up in the difficulty info block fn_80204BB8 published in lbl_8055ED5C:
+ * looked up in the difficulty info block fn_80204BB8 published in sDifficultyInfo:
  * first as "<contest>_<name>" in the stage's difficulty set, then in the scene's,
  * and if neither has it as the plain "<name>" in both.  A setting none of them
  * has is reported with the 'Difficulty: "%s" was not found' message and reads as
  * off.  The string the lookup returns is the flag: only "yes" and "true" are on. */
 /* Report whether the current scene's difficulty setting `name` is on (via the stage/scene difficulty sets, then the plain name). */ extern "C" int isDifficultySettingOn(const char *settingName) {
-    #define DIFFICULTY_INFO lbl_8055ED5C  /* the published difficulty info block */
+    #define DIFFICULTY_INFO sDifficultyInfo  /* the published difficulty info block */
     #define KEY_FORMAT      lbl_8055B4AC  /* "%s_%s" */
     #define NOT_FOUND_MSG   lbl_8033BBF4  /* Difficulty: "%s" was not found */
     #define YES_STRING      lbl_8055B4B4  /* "yes" */
@@ -372,7 +372,7 @@ __declspec(section ".sdata") extern const char lbl_8055B4B8[];
 #pragma cplusplus reset
 /* Clear the active contest configuration and release its resources. */
 void fn_80205208(void) {
-    int *contestConfig = lbl_8055ED5C;
+    int *contestConfig = sDifficultyInfo;
     lbl_8055ED58 = 0;
     if (contestConfig != 0) {
         contestConfig[4] = 0;
