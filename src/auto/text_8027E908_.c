@@ -921,7 +921,7 @@ int fn_8027F958(int *selection, void *collection) {
     extern unsigned char lbl_8055F6A0;
     extern float lbl_805641F8, lbl_805641FC, lbl_80564200;
     extern int fn_80131234(int);
-    extern int fn_802808D0(void), fn_80280A38(void), fn_80280C00(void), fn_80280F7C(void);
+    extern int fn_802808D0(void), goBackToListEntry(void), fn_80280C00(void), fn_80280F7C(void);
     extern FN81138_RET fn_80281138(void);
     extern int fn_80280DC8(void), fn_80280898(void);
     typedef void *(*GetItem)(void *, int);
@@ -1221,7 +1221,7 @@ int fn_8027F958(int *selection, void *collection) {
     stack.menu.entries[27].id = (int)(0x128);
     stack.menu.entries[28].label = (void *)(&lbl_8055B860);
     stack.menu.entries[28].type = (int)(6);
-    stack.menu.entries[28].value = (void *)(&fn_80280A38);
+    stack.menu.entries[28].value = (void *)(&goBackToListEntry);
     stack.menu.entries[28].flags = (int)(0);
     stack.menu.entries[28].id = (int)(0x126);
     stack.menu.entries[29].label = (void *)(&lbl_8055B860);
@@ -1498,7 +1498,7 @@ extern "C" int fn_802808D0(void) {
    whose key is 0 - and kept, as is this one; the entry then becomes the
    selection and its text is copied to the buffer the menu shows.  Doing nothing
    but returning 0 leaves the selection as it was; fn_80280C00 is the reverse. */
-extern "C" int fn_80280A38(void) {
+extern "C" int goBackToListEntry(void) {
     /* What the menu keeps at +0x60 of an entry: the page the entry belongs to
        (getKey, 0 for the list itself) and the text to show for it. */
     class Object {
