@@ -5,7 +5,7 @@ static inline s32 F2I_80159708(f32 f) { return (s32)f; }
 extern "C" void fn_8014AEC8(void*);
 extern "C" s32 fn_80141F7C(f32);
 extern "C" s32 getBonusTrackerRecordCount(void*);
-extern "C" void fn_80158D0C(void*);
+extern "C" void stepBonusTrackerAward(void*);
 extern "C" f32 emitBonusTrackerValue(void*, void*);
 extern "C" void fn_80158E74(void*);
 extern "C" f32 fn_80158E80(void*);
@@ -1727,7 +1727,7 @@ extern "C" f32 BonusTracker_updateFromPlayer(void* tracker, void* player) {
         self->onIdleFrame();
         f32 previousTime = playerTime;
         playerTime = previousTime + lbl_8056177C;
-        fn_80158D0C(tracker);
+        stepBonusTrackerAward(tracker);
     }
     if (self->recordIndex() == getBonusTrackerRecordCount(tracker) - 1) {
         emitted = emitBonusTrackerValue(tracker, player);
@@ -1758,7 +1758,7 @@ extern "C" s32 getBonusTrackerRecordCount(void* tracker) {
  * counted for the award type at 0x268 (held in 0x260) has passed the level at
  * 0x24C, that award is given to this tracker's player through fn_801CB750 and
  * the progress is cleared.  fn_801590A8 takes the same step at a frame end. */
-extern "C" void fn_80158D0C(void* arg0) {
+extern "C" void stepBonusTrackerAward(void* arg0) {
     if (((Fn8015889C*)arg0)->mProgress260 > ((Fn8015889C*)arg0)->mLevel24C) {
         s32 instance = ((Fn8015889C*)arg0)->mInstance268;
         if (instance != 0) {
@@ -1882,7 +1882,7 @@ extern "C" s32 fn_80158F98(const void *obj, f32 *out) {
    and moves the time (0x258) on by one frame.  Once the progress counted for
    the instance at 0x268 (0x260) has passed the level at 0x24C, that instance is
    told about this tracker through fn_801CB750 and its progress is cleared -
-   the step fn_80158D0C takes on its own, plus the counters emitBonusTrackerValue would
+   the step stepBonusTrackerAward takes on its own, plus the counters emitBonusTrackerValue would
    have reset after emitting. */
 extern "C" void fn_801590A8(void* self) {
     f32 frameTime;
