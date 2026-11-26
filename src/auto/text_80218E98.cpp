@@ -610,7 +610,7 @@ extern f32 lbl_805634AC;
 extern f32 lbl_805634A4;
 extern f32 lbl_805634B0;
 extern f32 lbl_805634B4;
-extern s32 lbl_8055FB9C;
+extern s32 screenWidthPx;
 extern s32 lbl_8055FBA0;
 extern "C" s32 lbl_8055FBDC;
 extern f32 lbl_80563500;
@@ -1785,7 +1785,7 @@ extern "C" void fn_8021AD10(void *arg0) {
         value %= gxGetImageFrameCount(*(s32 *)((u8 *)arg0 + 0x250));
     }
 
-    screenX = *(s32 *)((u8 *)arg0 + 4) - lbl_8055FB9C / 2;
+    screenX = *(s32 *)((u8 *)arg0 + 4) - screenWidthPx / 2;
     screenY = lbl_8055FBA0 / 2 - *(s32 *)((u8 *)arg0 + 8);
 
     gxDrawPictureAt(*(s32 *)((u8 *)arg0 + 0x250), value,
@@ -2976,7 +2976,7 @@ extern "C" void fn_8021CBBC(void *widget) {
     f32 drawX;
     f32 drawY;
     register f32 scrollRate;
-    screenX = *(s32 *)((u8 *)widget + 4) - lbl_8055FB9C / 2;
+    screenX = *(s32 *)((u8 *)widget + 4) - screenWidthPx / 2;
     drawX = (f32)screenX;
     screenY = lbl_8055FBA0 / 2 - *(s32 *)((u8 *)widget + 8);
     drawY = (f32)screenY;
@@ -4174,7 +4174,7 @@ extern "C" void drawTextBox(void *self) {
     char caretText[256]; /* the box' text, cut where the caret stands */
     if (box->sliderArt) {
         f32 height, x, y;
-        x = (f32)(box->x - lbl_8055FB9C / 2);
+        x = (f32)(box->x - screenWidthPx / 2);
         y = (f32)(lbl_8055FBA0 / 2 - box->y);
         height = (f32)gxGetImageHeight(box->sliderArt);
         f32 width = (f32)((Vf78 *)self)->get();
@@ -4186,7 +4186,7 @@ extern "C" void drawTextBox(void *self) {
         0, 0, 0, (s32)box->text, box->showCaret != 0,
         zero, 1.0f);
     if (box->showCaret) {
-        f32 x = (f32)(box->x - lbl_8055FB9C / 2);
+        f32 x = (f32)(box->x - screenWidthPx / 2);
         f32 y = (f32)(lbl_8055FBA0 / 2 - box->y);
         strcpy(caretText, box->text);
         if (box->caretIndex >= 0) caretText[box->caretIndex] = zero;
@@ -4688,7 +4688,7 @@ extern "C" void fn_8021FD68(void *arg0, s32 arg1) {
     progress = (s32)(((f32)step * (**(f32 **)((u8 *)arg0 + 0x250) - *(f32 *)((u8 *)arg0 + 0x248))) / (*(f32 *)((u8 *)arg0 + 0x24C) - *(f32 *)((u8 *)arg0 + 0x248)));
     if (mode != 0 && *mode == *(s32 *)((u8 *)arg0 + 0x278)) {
         s32 range = obj->vf28();
-        s32 centerX = ((s32)(lbl_8055FB9C + ((u32)lbl_8055FB9C >> 31)) >> 1);
+        s32 centerX = ((s32)(screenWidthPx + ((u32)screenWidthPx >> 31)) >> 1);
         s32 centerY = ((s32)(lbl_8055FBA0 + ((u32)lbl_8055FBA0 >> 31)) >> 1);
         f32 x = (f32)(*(s32 *)((u8 *)arg0 + 4) - centerX);
         f32 y = (f32)(centerY - *(s32 *)((u8 *)arg0 + 8));
@@ -5150,7 +5150,7 @@ extern "C" void fn_80220C54(void *arg0)
     highlighted = 1;
   }
   f32 trackHeight, x, y;
-  x = (f32)((*(s32 *) (((u8 *) self) + 4)) - lbl_8055FB9C / 2);
+  x = (f32)((*(s32 *) (((u8 *) self) + 4)) - screenWidthPx / 2);
   y = (f32)(lbl_8055FBA0 / 2 - (*(s32 *) (((u8 *) self) + 8)));
   trackHeight = (f32)gxGetImageHeight(*(s32 *) (((u8 *) self) + 0x248));
   f32 width = (f32)((Vf78 *) self)->get();
@@ -5494,7 +5494,7 @@ extern "C" void fn_80221970(void *arg0)
   f32 scale;
   f32 spC;
   f32 sp8;
-  spC = (f32) (self->x - (lbl_8055FB9C / 2));
+  spC = (f32) (self->x - (screenWidthPx / 2));
   sp8 = (f32) ((lbl_8055FBA0 / 2) - self->y);
   gxDrawPicture(((Object *) arg0)->texture, 0, spC, sp8, lbl_805634A8, (f32) ((Vf78 *) arg0)->get(), (f32) (((Object *) arg0)->end - ((Object *) arg0)->y));
   child = self->child;
@@ -6434,7 +6434,7 @@ loop_test:
     if (var_r28 < temp_r4) goto loop_body;
     var_r28 = **(s32 **)((u8 *)arg0 + 0x2CC);
     temp_r29 = var_r28 * 4;
-    scratch[3] = lbl_8055FB9C ^ 0x80000000;
+    scratch[3] = screenWidthPx ^ 0x80000000;
     temp_r30_2 = (char *)arg0 + temp_r29;
     scratch[1] = lbl_8055FBA0 ^ 0x80000000;
     temp_f2 = temp_f29 - (*(f32 *)(temp_r30_2 + 0x2F4) * lbl_805634C4);
@@ -7471,7 +7471,7 @@ extern "C" void fn_80224E74(void *this_) {
         for (s32 i = 0; i < n; i++) {
             if (buf2[i] == 0x5E) buf2[i] = 0x20;
         }
-        s32 W = lbl_8055FB9C;
+        s32 W = screenWidthPx;
         s32 H = lbl_8055FBA0;
         f32 x = (f32)W / inv + xx;
         f32 y = (f32)H * half - ((f32)f31 + (f32)row * (TB(0x254, f32) * (f32)fn_80232B70(TB(0x248, s32))));
@@ -7525,7 +7525,7 @@ extern "C" void *fn_8022553C(void *arg0, void *arg1, void *arg2)
   }
   count = (count < 3) ? (count) : (3);
   *((s32 *) (obj + 0x24C)) = count;
-  temp_f4 = (f32) lbl_8055FB9C;
+  temp_f4 = (f32) screenWidthPx;
   temp_f3 = temp_f4 / (-2.0f);
   *((f32 *) (obj + 0x254)) = temp_f3 + ((f32) (*((s32 *) (obj + 4))));
   temp_f2 = (f32) lbl_8055FBA0;
@@ -8341,7 +8341,7 @@ extern "C" void fn_802272D4(void *arg0) {
         f32 *m = *(f32 **)(p + 0x260);
         m[0] = 1.0f; m[1] = 0.0f; m[2] = 0.0f; m[3] = 0.0f; m[4] = 1.0f; m[5] = 0.0f; m[6] = 0.0f; m[7] = 0.0f; m[8] = 1.0f; m[9] = 0.0f; m[10] = 0.0f; m[11] = 0.0f;
         v.z = 0.0f;
-        v.x = (f32)-lbl_8055FB9C * lbl_805634C4;
+        v.x = (f32)-screenWidthPx * lbl_805634C4;
         v.y = (f32)-lbl_8055FBA0 * lbl_805634C4;
         m = *(f32 **)(p + 0x260);
         Rot3Vec(m, (RotV3 *)(u32)&v, (RotV3 *)(u32)&r);
@@ -8356,7 +8356,7 @@ extern "C" void fn_802272D4(void *arg0) {
         ((void (*)(void *, f32 *))fn_80015A20)(sp2C, &v.x);
         fn_80015B20(h, sp2C, h);
         v.z = 0.0f;
-        v.x = (f32)lbl_8055FB9C * lbl_805634C4;
+        v.x = (f32)screenWidthPx * lbl_805634C4;
         v.y = (f32)lbl_8055FBA0 * lbl_805634C4;
         m = *(f32 **)(p + 0x260);
         Rot3Vec(m, (RotV3 *)(u32)&v, (RotV3 *)(u32)&t);
@@ -8364,9 +8364,9 @@ extern "C" void fn_802272D4(void *arg0) {
         *(f32 *)(*(u8 **)(p + 0x260) + 0x30) = lbl_805634E8 + lbl_80563560 * *(f32 *)(p + 0x268);
         fn_8022ED00(*(void **)(p + 0x260));
         fn_80231220(*(s32 *)(p + 0x254), -1, *(f32 *)(p + 0x244), *(f32 *)(p + 0x248), *(f32 *)(p + 0x24C), *(f32 *)(p + 0x250), 0.0f, 0.0f, 1.0f, 1.0f);
-        fn_80231220(*(s32 *)(p + 0x254), -1, *(f32 *)(p + 0x244) - (f32)lbl_8055FB9C, *(f32 *)(p + 0x248), *(f32 *)(p + 0x24C), *(f32 *)(p + 0x250), 0.0f, 0.0f, 1.0f, 1.0f);
+        fn_80231220(*(s32 *)(p + 0x254), -1, *(f32 *)(p + 0x244) - (f32)screenWidthPx, *(f32 *)(p + 0x248), *(f32 *)(p + 0x24C), *(f32 *)(p + 0x250), 0.0f, 0.0f, 1.0f, 1.0f);
         fn_80231220(*(s32 *)(p + 0x254), -1, *(f32 *)(p + 0x244), *(f32 *)(p + 0x248) - (lbl_805634E4 + (f32)lbl_8055FBA0), *(f32 *)(p + 0x24C), *(f32 *)(p + 0x250), 0.0f, 0.0f, 1.0f, 1.0f);
-        fn_80231220(*(s32 *)(p + 0x254), -1, *(f32 *)(p + 0x244) - (f32)lbl_8055FB9C, *(f32 *)(p + 0x248) - (lbl_805634E4 + (f32)lbl_8055FBA0), *(f32 *)(p + 0x24C), *(f32 *)(p + 0x250), 0.0f, 0.0f, 1.0f, 1.0f);
+        fn_80231220(*(s32 *)(p + 0x254), -1, *(f32 *)(p + 0x244) - (f32)screenWidthPx, *(f32 *)(p + 0x248) - (lbl_805634E4 + (f32)lbl_8055FBA0), *(f32 *)(p + 0x24C), *(f32 *)(p + 0x250), 0.0f, 0.0f, 1.0f, 1.0f);
         fn_8022EDB8();
     }
     *(f32 *)(p + 0x25C) = now;
