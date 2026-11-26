@@ -94,7 +94,7 @@ static s32 abs_val(s32 x) {
 extern "C" void fn_8021C12C(void *);
 extern "C" void fn_8021E7D4(void *);
 
-extern "C" s32 fn_8021E620(void *, s32);
+extern "C" s32 OptionList_handleKey(void *, s32);
 extern "C" void fn_8021E684(void *arg0);
 extern "C" void fn_8021E6D4(void *arg0);
 extern "C" void fn_8021E724(void *arg0);
@@ -3894,7 +3894,7 @@ extern "C" void fn_8021E7D4(void *);
 #pragma push
 #pragma optimization_level 4
 // Match jump table dispatch structure from target
-extern "C" s32 fn_8021E620(void *arg0, s32 arg1) {
+extern "C" s32 OptionList_handleKey(void *arg0, s32 arg1) {
     /* Key handler of the option list fn_8021E0C0 builds (vtable lbl_8033EA90):
      * steps the selection (*indexPtr, +0x25C) and the visible window in
      * valueRange (+0x248: {base, rowsVisible, firstRowShown}) on its page keys,
