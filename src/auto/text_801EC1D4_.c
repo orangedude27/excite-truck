@@ -13,7 +13,7 @@ extern float *DrawList_getCurrentMatrix();
 extern float lbl_80562E98;
 extern float lbl_80562E90;
 void fn_801ECF58(void *);
-void fn_801ECFE0(void *);
+void drawVehicleParts(void *);
 void fn_801ED2D0(void *);
 void fn_801ED354(void *);
 #pragma cplusplus on
@@ -567,7 +567,7 @@ void fn_801ECCE0(long renderObj, long pass) {
             objectGroup = fn_801ECC8C((long)vehicle);
             if (objectGroup != (unsigned)pass) {
                 if (objectGroup != 0) fn_802AB770(*(int *)((char *)vehicle + 0x40));
-                fn_801ECFE0(vehicle);
+                drawVehicleParts(vehicle);
                 if (objectGroup != 0) fn_802AB994();
             }
         }
@@ -620,7 +620,7 @@ void fn_801ECF58(void *arg0) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_801ECFE0(void *vehicleRender) {
+void drawVehicleParts(void *vehicleRender) {
     /* Draw the parts of one vehicle.  Nothing is drawn while the model this
      * object renders (vehicleRender+0x3C) is scaled below ModelDrawMin.  The
      * object keeps a list of part entries at +0x154, *(+0x150) of them, three
@@ -766,7 +766,7 @@ void fn_801ED354(void *vehicleRender) {
     if (fn_801E8954(-1) != 0) {
         /* The player's vehicle: hand its parts in, then submit them. */
         fn_801ECF58(vehicleRender);
-        fn_801ECFE0(vehicleRender);
+        drawVehicleParts(vehicleRender);
         /* Byte 4 of the player's 8-byte entry (table +0x170, index +0x3F8): the
          * wheels are to stay on the nearest level of detail. */
         if (*(unsigned char *)((char *)*(void **)((char *)vehicleRender + 0x170) + *(int *)((char *)vehicleRender + 0x3F8) * 8 + 4) != 0) {
