@@ -255,7 +255,7 @@ typedef struct MatrixPair {
  * flag word said 'y'.  The record gets the number of entries it found; a malformed
  * entry is fatal (Abend_Panic reports it and exits), and the first missing lod ends
  * the table. */
-extern "C" void readWheelModLods(void *arg0, void *arg1, char *modName) {
+/* Parse the wheel mod's lod0..lod7 entries into the WheelMod LOD table, recording each squared switch distance and flag, stopping at the first missing entry. */ extern "C" void readWheelModLods(void *arg0, void *arg1, char *modName) {
     class ModResource {
     public:
         virtual void v0();
