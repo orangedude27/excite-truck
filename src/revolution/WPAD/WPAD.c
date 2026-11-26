@@ -4158,8 +4158,8 @@ s32 fn_800604E8(s32 chan, s32 format, void* data) {
     s8 usedCount, tailIndex;
     s32 lastSlot, wrapMask;
     intrState = OSDisableInterrupts();
-    devStatus = *(s32*)((u8*)cb + 0x81C);
-    result = *(s32*)((u8*)cb + 0x7FC);
+    devStatus = cb->handshakeDone;
+    result = cb->readStatus;
     OSRestoreInterrupts(intrState);
     if (result != -1) {
         if (devStatus == 0) result = -2;
