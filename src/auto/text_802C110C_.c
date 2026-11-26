@@ -445,60 +445,60 @@ extern "C" void updateTreeHitSwings(float time)
     char padding[0x18];
     struct Pose pose;
   };
-  // Tree-hit swing: store `time` as the hit time, then walk the 8 queued
-  // TreeHitRecords. While a hit is young (lower <= age < upper) it swings the
-  // tree about its hit axis by a damped, sine-shaped angle; once it ages out
-  // the cached pose is handed back to the tree (fn_802C1180).
-  register f32 scaleBase;
-  register f32 base;
-  register f32 slope;
-  register f32 angle;
-  register f32 min;
-  register f32 upper;
-  register f32 lower;
-  struct TreeHitRecord *record;
-  int i;
+  /* Tree-hit swing: store `time` as the hit time, then walk the 8 queued
+   * TreeHitRecords. While a hit is young (lower <= age < upper) it swings the
+   * tree about its hit axis by a damped, sine-shaped angle; once it ages out
+   * the cached pose is handed back to the tree (fn_802C1180). */
+  register f32 scale;
+  register f32 baseAmplitude;
+  register f32 decaySlope;
+  register f32 swingFrequency;
+  register f32 minAge;
+  register f32 ageUpper;
+  register f32 ageLower;
+  struct TreeHitRecord *hit;
+  int hitIndex;
   lbl_8055FB38 = time;
-  min = lbl_80564E50;
-  angle = lbl_80564E64;
-  slope = lbl_80564E68;
-  base = lbl_80564E54;
-  scaleBase = lbl_80564E6C;
-  upper = lbl_80564E60;
-  lower = lbl_80564E5C;
-  record = (struct TreeHitRecord *)lbl_804C0E10;
-  i = 0;
+  minAge = lbl_80564E50;
+  swingFrequency = lbl_80564E64;
+  decaySlope = lbl_80564E68;
+  baseAmplitude = lbl_80564E54;
+  scale = lbl_80564E6C;
+  ageUpper = lbl_80564E60;
+  ageLower = lbl_80564E5C;
+  hit = (struct TreeHitRecord *)lbl_804C0E10;
+  hitIndex = 0;
   do
   {
-    if (record->tree != 0)
+    if (hit->tree != 0)
     {
-      f32 age = lbl_8055FB38 - record->time;
-      if ((age >= lower) && (age < upper))
+      f32 age = lbl_8055FB38 - hit->time;
+      if ((age >= ageLower) && (age < ageUpper))
       {
         struct Scratch s;
-        f32 delta;
-        f32 sn;
-        f32 factor;
-        s.pose = *(struct Pose *)record->matrix;
-        sn = (f32)sin(angle * ((age > min) ? age : min));
-        delta = base - age * slope;
-        factor = delta * (scaleBase * sn);
-        s.vec[0] = record->axis[0] * factor;
-        s.vec[1] = record->axis[1] * factor;
-        s.vec[2] = record->axis[2] * factor;
+        f32 amplitude;
+        f32 sine;
+        f32 swingAngle;
+        s.pose = *(struct Pose *)hit->matrix;
+        sine = (f32)sin(swingFrequency * ((age > minAge) ? age : minAge));
+        amplitude = baseAmplitude - age * decaySlope;
+        swingAngle = amplitude * (scale * sine);
+        s.vec[0] = hit->axis[0] * swingAngle;
+        s.vec[1] = hit->axis[1] * swingAngle;
+        s.vec[2] = hit->axis[2] * swingAngle;
         fn_8022FF10(s.rot, s.vec);
         fn_80015B20(&s.pose, &s.pose, s.rot);
-        *(struct Pose *)record->tree = s.pose;
+        *(struct Pose *)hit->tree = s.pose;
       }
       else
       {
-        fn_802C1180(record);
+        fn_802C1180(hit);
       }
     }
-    i = i + 1;
-    record = record + 1;
+    hitIndex = hitIndex + 1;
+    hit = hit + 1;
   }
-  while (i < 8);
+  while (hitIndex < 8);
 }
 #pragma pop
 extern f32 lbl_804C1050[16];
