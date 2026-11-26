@@ -422,7 +422,7 @@ extern void fn_80130980(void *arg0, s32 arg1, s32 arg2);
 extern void fn_801474EC(s32 arg0, s32 *arg1, void *arg2);
 extern s32 lbl_80559EC4;
 extern void *getRegisteredObject(s32 arg0);
-extern void fn_80149D64(void *arg0, void *arg1, s32 arg2);
+extern void updateSoundDebugReadout(void *arg0, void *arg1, s32 arg2);
 extern f32 lbl_80561648;
 // Getter returning a pointer to the "Resize" name string (lbl_80559E9C).
 unsigned long *fn_80149528(void) { return &lbl_80559E9C; }
@@ -624,7 +624,7 @@ extern "C" void fn_80149CEC(void *state, const void *owner) {
     /* Refresh a betarace debug-state sub-object from its owner: copy the timing
      * base from the owner's +0x68 state, obtain a count via a virtual call on the
      * racer's +0x270 manager, cache it as the current/maximum entry, then hand
-     * both objects to fn_80149D64. */
+     * both objects to updateSoundDebugReadout. */
     struct CountProvider {
         virtual void d0();
         virtual void d1();
@@ -639,13 +639,13 @@ extern "C" void fn_80149CEC(void *state, const void *owner) {
     count = *(s32 *)((u8 *)provider + 4);
     *(s32 *)((u8 *)state + 4) = count;
     *(s32 *)((u8 *)state + 0x10) = count - 1;
-    fn_80149D64(state, (void *)owner, count);
+    updateSoundDebugReadout(state, (void *)owner, count);
 }
 #pragma pop
 #pragma dont_inline reset
 extern f32 fn_80149F00(void *, void *);
 extern s32 fn_801609C4(s32);
-void fn_80149D64(void *state, void *sound, s32 arg2) {
+void updateSoundDebugReadout(void *state, void *sound, s32 arg2) {
     /* Update a sound-debug readout: derive a phase index from the sound's frame, pick the
        frame/voice value (live rate when more than one player, otherwise a table lookup),
        flag a voice sub-object when that value changes, and store the extent and its band. */
