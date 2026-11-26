@@ -4864,126 +4864,126 @@ void decodeHuffmanBandBlock(void* state, BitReader8011 *reader) {
  * entry's low nibble picks a slot of its 16-slot symbol table and whose high nibble
  * is the code width; the two 4-bit results are packed into one byte (first in the
  * low nibble, second in the high). */
-void decodePackedHuffmanBandBlock(void *arg0, void *arg1)
+/* Decodes one band block from the bit reader: reads the value count, then packs two back-to-back Huffman-decoded 4-bit symbols (low and high nibble) into each output byte, publishing the decoded range. */ void decodePackedHuffmanBandBlock(void *state, void *reader)
 {
-  u32 mask;
-  u32 bits;
-  u32 *in;
-  u32 sh;
-  u32 cnt;
-  u32 width;
-  s8 *out;
-  u32 idx;
-  u32 lo;
-  u32 e;
-  u32 sym;
-  u32 e1;
-  void *tab;
-  void *ntab;
-  u32 next;
-  u32 next2;
-  if ((*((s8 **) (((u8 *) arg0) + 0))) == (*((s8 **) (((u8 *) arg0) + 4))))
+  u32 outCount;
+  u32 value;
+  u32 *src;
+  u32 fieldMask;
+  u32 bitCount;
+  u32 indexBits;
+  s8 *dst;
+  u32 symbolIndex;
+  u32 lowNibble;
+  u32 entry;
+  u32 highNibble;
+  u32 firstEntry;
+  void *lookup;
+  void *symbolTable;
+  u32 nextWord;
+  u32 nextWord2;
+  if ((*((s8 **) (((u8 *) state) + 0))) == (*((s8 **) (((u8 *) state) + 4))))
   {
-    cnt = *((u32 *) (((u8 *) arg1) + 8));
-    sh = *((u32 *) (((u8 *) arg0) + 0x28));
-    in = *((u32 **) (((u8 *) arg1) + 4));
-    bits = *((u32 *) (((u8 *) arg1) + 0));
-    if (cnt < sh)
+    bitCount = *((u32 *) (((u8 *) reader) + 8));
+    fieldMask = *((u32 *) (((u8 *) state) + 0x28));
+    src = *((u32 **) (((u8 *) reader) + 4));
+    value = *((u32 *) (((u8 *) reader) + 0));
+    if (bitCount < fieldMask)
     {
-      u32 first = *in;
-      mask = ((-1U) >> (0x20 - sh)) & (bits | (first << cnt));
-      in++;
-      bits = first >> (sh - cnt);
-      cnt = (cnt + 0x20) - sh;
+      u32 word = *src;
+      outCount = ((-1U) >> (0x20 - fieldMask)) & (value | (word << bitCount));
+      src++;
+      value = word >> (fieldMask - bitCount);
+      bitCount = (bitCount + 0x20) - fieldMask;
     }
     else
     {
-      cnt = cnt - sh;
-      mask = bits & ((-1U) >> (0x20 - sh));
-      bits = bits >> sh;
+      bitCount = bitCount - fieldMask;
+      outCount = value & ((-1U) >> (0x20 - fieldMask));
+      value = value >> fieldMask;
     }
-    if (mask != 0)
+    if (outCount != 0)
     {
-      out = *((s8 **) (((u8 *) arg0) + 0x2C));
-      *((s8 **) (((u8 *) arg0) + 0)) = out;
-      *((s8 **) (((u8 *) arg0) + 4)) = (s8 *) (out + mask);
-      tab = *((void **) (((u8 *) arg0) + 0x24));
-      ntab = ((u8 *) arg0) + 0x10;
-      width = *((u32 *) (((u8 *) arg0) + 0x20));
-      sh = (-1U) >> (0x20 - width);
+      dst = *((s8 **) (((u8 *) state) + 0x2C));
+      *((s8 **) (((u8 *) state) + 0)) = dst;
+      *((s8 **) (((u8 *) state) + 4)) = (s8 *) (dst + outCount);
+      lookup = *((void **) (((u8 *) state) + 0x24));
+      symbolTable = ((u8 *) state) + 0x10;
+      indexBits = *((u32 *) (((u8 *) state) + 0x20));
+      fieldMask = (-1U) >> (0x20 - indexBits);
       do
       {
-        mask -= 1;
-        if (cnt >= width)
+        outCount -= 1;
+        if (bitCount >= indexBits)
         {
-          e1 = *((u8 *) (((u8 *) tab) + (bits & sh)));
-          idx = e1 & 0xF;
-          e1 >>= 4U;
-          lo = *((u8 *) (((u8 *) ntab) + idx));
-          bits = bits >> e1;
-          cnt = cnt - e1;
+          firstEntry = *((u8 *) (((u8 *) lookup) + (value & fieldMask)));
+          symbolIndex = firstEntry & 0xF;
+          firstEntry >>= 4U;
+          lowNibble = *((u8 *) (((u8 *) symbolTable) + symbolIndex));
+          value = value >> firstEntry;
+          bitCount = bitCount - firstEntry;
         }
         else
         {
-          next = *in;
-          e = *((u8 *) (((u8 *) tab) + (sh & (bits | (next << cnt)))));
-          idx = e & 0xF;
-          e >>= 4U;
-          lo = *((u8 *) (((u8 *) ntab) + idx));
-          if (cnt >= e)
+          nextWord = *src;
+          entry = *((u8 *) (((u8 *) lookup) + (fieldMask & (value | (nextWord << bitCount)))));
+          symbolIndex = entry & 0xF;
+          entry >>= 4U;
+          lowNibble = *((u8 *) (((u8 *) symbolTable) + symbolIndex));
+          if (bitCount >= entry)
           {
-            bits = bits >> e;
-            cnt = cnt - e;
+            value = value >> entry;
+            bitCount = bitCount - entry;
           }
           else
           {
-            bits = next >> (e - cnt);
-            in++;
-            cnt = (cnt + 0x20) - e;
+            value = nextWord >> (entry - bitCount);
+            src++;
+            bitCount = (bitCount + 0x20) - entry;
           }
         }
-        if (cnt >= width)
+        if (bitCount >= indexBits)
         {
-          e = *((u8 *) (((u8 *) tab) + (bits & sh)));
-          idx = e & 0xF;
-          e >>= 4U;
-          sym = *((u8 *) (((u8 *) ntab) + idx));
-          bits = bits >> e;
-          cnt = cnt - e;
+          entry = *((u8 *) (((u8 *) lookup) + (value & fieldMask)));
+          symbolIndex = entry & 0xF;
+          entry >>= 4U;
+          highNibble = *((u8 *) (((u8 *) symbolTable) + symbolIndex));
+          value = value >> entry;
+          bitCount = bitCount - entry;
         }
         else
         {
-          next2 = *in;
-          e = *((u8 *) (((u8 *) tab) + (sh & (bits | (next2 << cnt)))));
-          idx = e & 0xF;
-          e >>= 4U;
-          sym = *((u8 *) (((u8 *) ntab) + idx));
-          if (cnt >= e)
+          nextWord2 = *src;
+          entry = *((u8 *) (((u8 *) lookup) + (fieldMask & (value | (nextWord2 << bitCount)))));
+          symbolIndex = entry & 0xF;
+          entry >>= 4U;
+          highNibble = *((u8 *) (((u8 *) symbolTable) + symbolIndex));
+          if (bitCount >= entry)
           {
-            bits = bits >> e;
-            cnt = cnt - e;
+            value = value >> entry;
+            bitCount = bitCount - entry;
           }
           else
           {
-            bits = next2 >> (e - cnt);
-            in++;
-            cnt = (cnt + 0x20) - e;
+            value = nextWord2 >> (entry - bitCount);
+            src++;
+            bitCount = (bitCount + 0x20) - entry;
           }
         }
-        *out = lo | (sym * 0x10);
-        out += 1;
+        *dst = lowNibble | (highNibble * 0x10);
+        dst += 1;
       }
-      while (mask != 0);
+      while (outCount != 0);
     }
     else
     {
-      out = *((s8 **) (((u8 *) arg0) + 0x2C));
-      *((s8 **) (((u8 *) arg0) + 4)) = out;
-      *((s8 **) (((u8 *) arg0) + 0)) = out + 4;
+      dst = *((s8 **) (((u8 *) state) + 0x2C));
+      *((s8 **) (((u8 *) state) + 4)) = dst;
+      *((s8 **) (((u8 *) state) + 0)) = dst + 4;
     }
-    *((u32 **) (((u8 *) arg1) + 4)) = in;
-    *((u32 *) (((u8 *) arg1) + 0)) = bits;
-    *((u32 *) (((u8 *) arg1) + 8)) = cnt;
+    *((u32 **) (((u8 *) reader) + 4)) = src;
+    *((u32 *) (((u8 *) reader) + 0)) = value;
+    *((u32 *) (((u8 *) reader) + 8)) = bitCount;
   }
 }
 
