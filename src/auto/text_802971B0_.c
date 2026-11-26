@@ -16,11 +16,11 @@ extern char lbl_803493C0[];
  * scene node (that string is its allocation tag).  Its vtable lbl_803493C0:
  *   0x08 fn_80297814 destructor   0x0C fn_8029788C isValid
  *   0x10 fn_802978A8 duration     0x14 fn_802978A0 play(position, time)
- * Its only member is the named "FlipBook" keyframe collection fn_80296B10
+ * Its only member is the named "FlipBook" keyframe collection FlipBook_create
  * hands out (refcount at +0x28, next link at +0x20, entries at +0x24). */
 typedef struct {
     void *vtable; /* 0x00 lbl_803493C0 */
-    s32 book;     /* 0x04 FlipBook *collection, from fn_80296B10 */
+    s32 book;     /* 0x04 FlipBook *collection, from FlipBook_create */
 } FlipBookElem;
 #define FlipBookElem_vtable lbl_803493C0
 #define FlipBook_release    fn_80296D28
@@ -28,7 +28,7 @@ typedef struct {
 extern float lbl_80564578;
 
 extern void *fn_801284F8(s32, const char *);
-extern s32 fn_80296B10(s32, s32);
+extern s32 FlipBook_create(s32, s32);
 typedef struct { void *pad[5]; s32 (*method)(void *, char *); } Vtbl14;
 typedef struct { void *pad[23]; s32 (*method)(void *, char *); } Vtbl5C;
 typedef struct { void *pad[3]; s32 (*method)(void *); } VtblC;
@@ -70,7 +70,7 @@ extern "C" void *fn_802971B0(void *arg0) {
     if (obj != 0) {
         *(void **)obj = &lbl_803493C0;
         value = ((Dummy *)arg0)->v3(lbl_80349378);
-        *(s32 *)((char *)obj + 4) = fn_80296B10(value, ((Dummy *)arg0)->v21(lbl_8055CA30));
+        *(s32 *)((char *)obj + 4) = FlipBook_create(value, ((Dummy *)arg0)->v21(lbl_8055CA30));
     }
     if (obj != 0 && ((Dummy *)obj)->v1() == 0) {
         if (obj != 0)

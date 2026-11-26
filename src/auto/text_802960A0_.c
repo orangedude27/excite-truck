@@ -422,7 +422,7 @@ void fn_80296AAC(void *arg0) {
 #pragma cplusplus on
 /* Looks up or builds a 0x30-byte-entry table from a named collection iterator,
  * filtering/copying entries into a newly allocated result buffer. */
-extern "C" void *fn_80296B10(char *arg0, void *arg1) {
+extern "C" void *FlipBook_create(char *arg0, void *arg1) {
     class Iterator {
     public:
         virtual void v0();
@@ -501,7 +501,7 @@ extern "C" void *fn_80296B10(char *arg0, void *arg1) {
 }
 #pragma pop
 /* No-op element constructor for the 0x30-byte open-entry records that
- * fn_8002F37C allocates at result+0x24 in fn_80296B10; the records are filled
+ * fn_8002F37C allocates at result+0x24 in FlipBook_create; the records are filled
  * in afterwards by fn_802964EC, so each element needs no setup here. */
 void fn_80296D24(void) {}
 
@@ -580,7 +580,7 @@ ret0:
 }
 #pragma pop
 
-/* FlipBook: the named keyframe collection fn_80296B10 hands out and
+/* FlipBook: the named keyframe collection FlipBook_create hands out and
  * FlipBook_release (fn_80296D28) refcounts.  Its 0x30-byte keyframe records
  * (struct KF above) start at +0x24; +0x2C counts them. */
 typedef struct FlipBook {
