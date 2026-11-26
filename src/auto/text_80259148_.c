@@ -1518,7 +1518,7 @@ typedef struct LevelDialog {
 } LevelDialog;
 
 // The "previous/next level" button of that dialog (fn_801284F8 makes it and
-// fn_80259224 fills these in); fn_8025B2BC is its message handler.
+// fn_80259224 fills these in); handleLevelButtonMessage is its message handler.
 typedef struct LevelButton {
     /* 0x00 */ void *vtable;             // lbl_803450F8
     /* 0x04 */ char pad04[0x10];
@@ -1535,7 +1535,7 @@ typedef struct LevelButton {
 // thresholds and refresh the dialog's texts with the name and value of the
 // threshold now shown; a button already at the first or last level plays the
 // "cannot go any further" cue instead.
-int fn_8025B2BC(void *arg0, int arg1) {
+int handleLevelButtonMessage(void *arg0, int arg1) {
     typedef void (*Fmt)(char *, int, const char *, ...);
     LevelButton *button = (LevelButton *)arg0;
     LevelDialog *dialog;
