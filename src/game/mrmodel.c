@@ -1375,7 +1375,7 @@ void fn_802C70AC(int arg0, void *arg1, int arg2, int arg3) {
     lbl_8055D008 = previousMask;
 }
 extern unsigned char gModelDrawContext[];
-extern float lbl_80564EF0;
+extern float gModelBaseRadius;
 extern float PSVECSquareDistance(const float *, const float *);
 /* For each type-2 group of the model, cull it by SPHL sphere distance and submit
  * its eligible elements through fn_802C53C4 / fn_802CC550 using the global context. */
@@ -1403,7 +1403,7 @@ extern float PSVECSquareDistance(const float *, const float *);
     if (*groupList <= 0)
         return;
 
-    baseRadius = lbl_80564EF0;
+    baseRadius = gModelBaseRadius;
     modelVectors = (void *)fn_802C5E7C(groupList);
     distanceVector = modelVectors;
     heightVector = modelVectors;
