@@ -9,7 +9,7 @@ extern void fn_8019416C(void);
 extern void fn_801945F8(void *);
 extern void fn_80196DC4(void *);
 extern void fn_80195F6C(void *, void *);
-extern void fn_80194624(void *);
+extern void updateAiTuningBlend(void *);
 extern void fn_80195654(void *, void *);
 extern void fn_801933FC(void *, void *);
     extern double fn_8002F234(float);
@@ -846,7 +846,7 @@ void fn_801945F8(void *driver) {
 }
 
 extern float *fn_8013A604(void *aiExceptionConfig, float lon); /* AI params covering lon, or the defaults */
-void fn_80194624(void *driver) {
+void updateAiTuningBlend(void *driver) {
     /* Selects the AI driving params covering the driver's current track position; when the
        active set changes it saves the old set and blend start time, then eases five tuning
        values from the old set toward the new one over on_t. */
@@ -903,7 +903,7 @@ void fn_80194624(void *driver) {
 void fn_80194844(void *obj) {
     extern void fn_801958D8();
     extern void fn_80195F6C(void *, void *);
-    extern void fn_80194624(void *);
+    extern void updateAiTuningBlend(void *);
     extern float lbl_8055E3C8;
     extern float lbl_80562144;
     void *context;
@@ -915,7 +915,7 @@ void fn_80194844(void *obj) {
     *(float *)((char *)obj + 0x270) = *(float *)((char *)context + 0x25D4);
     *(float *)((char *)obj + 0x26C) = lbl_8055E3C8;
     fn_80195F6C(obj, context);
-    fn_80194624(obj);
+    updateAiTuningBlend(obj);
     zero = lbl_80562144;
     *(unsigned char *)((char *)obj + 0x14) = 0;
     *(float *)((char *)obj + 8) = zero;
@@ -1535,7 +1535,7 @@ void fn_80195830(void *arg0) {
 
 extern void fn_801958D8();
 extern void fn_80195F6C(void *, void *);
-extern void fn_80194624(void *);
+extern void updateAiTuningBlend(void *);
 extern float lbl_8055E3C8;
 extern float lbl_80562144;
 extern void fn_80195654(void *, void *);
@@ -3739,7 +3739,7 @@ void fn_80198EA0(int slotIndex) {
 int fn_80198EA4(void) { return 0; }
 extern void fn_801958D8();
 extern void fn_80195F6C(void *, void *);
-extern void fn_80194624(void *);
+extern void updateAiTuningBlend(void *);
 extern void fn_80195654(void *, void *);
 extern void fn_801933FC(void *, void *);
 extern double fn_8002F234(float);
