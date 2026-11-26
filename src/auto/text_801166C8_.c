@@ -554,8 +554,8 @@ u32 fn_80116F8C(void *arg0)
 // that many bytes out of the stream's circular source buffer, wrapping at its
 // end; when the stream's format flag (+0x44) is set the 16-bit source samples
 // are narrowed to 8-bit with fn_80116EE4, otherwise they are copied verbatim.
-void BinkMgr_RefillStreams(void *mgr) {
-    u8 *base = (u8 *)mgr;
+/* Refill each active Bink stream's output buffer from its circular source buffer, narrowing 16-bit samples to 8-bit when the stream's format flag is set. */ void BinkMgr_RefillStreams(void *bink) {
+    u8 *base = (u8 *)bink;
     s32 entryOff;
     u32 i;
     s32 dstPtr;
