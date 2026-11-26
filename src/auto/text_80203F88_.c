@@ -30,7 +30,7 @@ void fn_80203FE8(void) {
 
 }
 
-/* Empty end-of-pass hook: fn_801FA2C4 calls this after walking the nearby-object
+/* Empty end-of-pass hook: updateStageDistanceAnims calls this after walking the nearby-object
  * lists (switching each object's animation on/off by distance).  Like the other
  * stubs of this unit it is linked in but does nothing in this build. */
 void fn_80203FF8(void) {

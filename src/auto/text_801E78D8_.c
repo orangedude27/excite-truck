@@ -402,7 +402,7 @@ extern void fn_80287974(void);
 extern void fn_8028797C(void);
 extern void fn_801EA400(void);
 extern void fn_801EF0AC(void *);
-extern void fn_801FA2C4(void);
+extern void updateStageDistanceAnims(void);
 extern void fn_801F4DC4(void);
 extern void fn_80202924(void);
 extern void fn_80134994(void);
@@ -487,7 +487,7 @@ void fn_801E7E48(void) {
     fn_801EF0AC((char *)obj + 0xee0);
     fn_801EF0AC((char *)obj + 0x1ee4);
     fn_801E8A84();
-    fn_801FA2C4();
+    updateStageDistanceAnims();
     fn_801F4DC4();
     for (i = 0, j = 0; i < lbl_8055EB34; i++, j += 4) {
         void *v = *(void **)((char *)lbl_8055EB3C + j);

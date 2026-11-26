@@ -2103,7 +2103,7 @@ extern "C" void fn_80203FF8(void);
 #pragma push
 #pragma opt_propagation off
 #pragma processor 750
-extern "C" void fn_801FA2C4(void) {
+extern "C" void updateStageDistanceAnims(void) {
     extern unsigned char lbl_8055EC40;
     u8 *passTag;
     u8 *node;
