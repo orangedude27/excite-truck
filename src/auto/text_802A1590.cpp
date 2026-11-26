@@ -66,7 +66,7 @@ extern "C" int lbl_8055CBB0;
 extern "C" void fn_802A3500(void*, s32);
 extern "C" void fn_802A30BC(void*, s32);
 extern "C" void fn_802A31DC(void*, s32);
-extern "C" s32 fn_802A47A8(void*);
+extern "C" s32 drawParticleSystem(void*);
 extern "C" void fn_802A2AE8(void*, s32);
 extern "C" void fn_802A2BF4(void*, s32);
 extern "C" void fn_802A2D04(void*, s32);
@@ -692,7 +692,7 @@ loop_test:
 #pragma pop
 extern "C" void fn_802A2118(void *owner) {
     // Render the particle system held at offset 0x10 of the owner object (tail call).
-    fn_802A47A8((void*)*(void**)((char*)owner + 0x10));
+    drawParticleSystem((void*)*(void**)((char*)owner + 0x10));
 }
 
 extern "C" float lbl_80564730;
@@ -1864,7 +1864,7 @@ extern "C" void fn_802A4658(s32 arg0) {
 /* Draw a particle system's live particles: set the draw state, then for each
  * 0x20-byte particle turn its age into two ramped factors that drive its alpha
  * and size, and submit it to the billboard renderer. */
-extern "C" s32 fn_802A47A8(void *arg0) {
+extern "C" s32 drawParticleSystem(void *arg0) {
     char *system = (char *)arg0;
     s32 offset, i, rawAlpha, clampedAlpha;
     struct { f32 value; } limitStorage;
