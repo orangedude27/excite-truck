@@ -18,7 +18,7 @@ extern float lbl_80562CC8;
 extern float lbl_80562CCC;
 extern float lbl_80562CD0;
 extern float lbl_80562CD4;
-void fn_801E1B30(void);
+void stepWeatherSounds(void);
 extern const char lbl_80339878[];
 extern const char lbl_80339884[];
 int *fn_801E1F44(void);
@@ -92,7 +92,7 @@ typedef struct Sound {
 
 /* The level's rain-and-thunder sound state.  fn_801E1E30 starts it from the
  * weather's lightning flag, fn_801E1D38 loads the two sounds and fn_801E1D9C
- * hands them back; fn_801E1B30 steps it once a frame while `mode` is up, and
+ * hands them back; stepWeatherSounds steps it once a frame while `mode` is up, and
  * fn_801E1EA4 hands the rained-off loudness at +0x04 to the tracks. */
 typedef struct WeatherSound {
     int mode;             /* 0x00: 0 off, 1 quiet, 2 rain spell, 3 a clap is due */
@@ -173,7 +173,7 @@ extern double __fabs(double);
 /* Steps the rain/thunder sound state each frame: picks a new rain spell or thunderclap
  * time, eases the volume toward its target, and asks the thunder sound to play at the
  * scheduled instant. The force flag makes the change happen immediately. */
-void fn_801E1B30(void) {
+void stepWeatherSounds(void) {
     float currentTime = lbl_8055E3C8;
     char *sound = gWeatherSound;
     int zero = 0;
@@ -286,7 +286,7 @@ extern int loadWeatherState(void);
 extern float lbl_80562CCC;
 extern float lbl_80562CD0;
 extern float lbl_80562CD4;
-extern void fn_801E1B30(void);
+extern void stepWeatherSounds(void);
 /* Once per frame of play: ask the level's rain loop to keep running (the
  * weather's own loudness is applied to it elsewhere), and, on a level whose
  * weather has lightning, step the rain/thunder volume machine. */
@@ -298,7 +298,7 @@ void fn_801E1E64(void) {
         rain->playPending = 1;
     }
     if (((WeatherSound *)gWeatherSound)->mode != 0)
-        fn_801E1B30();
+        stepWeatherSounds();
 }
 
 #pragma push
@@ -353,7 +353,7 @@ extern float lbl_80558DC4;
 extern float lbl_80562CB0, lbl_80562CB4, lbl_80562CB8, lbl_80562CBC, lbl_80562CC0, lbl_80562CC4;
 extern int fn_80129D18(int, int);
 extern float randFloatInRange(int, float, float);
-/* Request an immediate weather change: fn_801E1B30 clears this flag on its next
+/* Request an immediate weather change: stepWeatherSounds clears this flag on its next
  * update and picks a new weather mode without waiting for the usual conditions. */
 void fn_801E1F78(void) {
     gForceWeather = 1;
