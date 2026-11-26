@@ -431,7 +431,7 @@ struct ConsoleHead {
 extern "C" void OSLockMutex(void*);
 extern "C" void OSUnlockMutex(void*);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...) __attribute__((noreturn));
-extern "C" const char lbl_8031EA80[];
+extern "C" const char sConsoleSourceFile[];
 extern "C" const char lbl_8031EA90[];
 extern "C" char lbl_804077C0[];
 extern "C" s32 VFiPFVOL_IsMediaPresent(void *);
@@ -21712,7 +21712,7 @@ void DCStoreRange(const void *, u32);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...) __attribute__((noreturn));
 extern "C" void OSLockMutex(void*);
 extern "C" void OSUnlockMutex(void*);
-extern "C" const char lbl_8031EA80[];
+extern "C" const char sConsoleSourceFile[];
 extern "C" const char lbl_8031EA90[];
 extern "C" const char lbl_8031EA40[];
 extern "C" const char lbl_8031EA4C[];
@@ -27122,7 +27122,7 @@ zero: return 0;
 /* Draws an nw4hbm debug console directly (background + contents) if initialized and visible. */
 extern "C" void Console_DrawDirect__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHead(void *consoleHead) {
     if (consoleHead == NULL) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x26D, lbl_8031EA90);
+        Panic__Q26nw4hbm2dbFPCciPCce(sConsoleSourceFile, 0x26D, lbl_8031EA90);
     }
     void *head = consoleHead;
     if (fn_800D2E14() != 0) {
@@ -27148,8 +27148,8 @@ extern "C" void fn_800D272C(void *arg0, void *arg1) {
     u8 temp_r11, temp_r7_3, temp_r7_4, temp_r9_3;
 
     var_r31 = (u8 *)arg1;
-    var_r29 = (u8 *)lbl_8031EA80;
-    panicFile = lbl_8031EA80;
+    var_r29 = (u8 *)sConsoleSourceFile;
+    panicFile = sConsoleSourceFile;
     if (arg0 == NULL) {
         Panic__Q26nw4hbm2dbFPCciPCce(panicFile, 0x2EB, panicFile + 0x10);
     }
@@ -27325,12 +27325,12 @@ extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597E4[]; }
 // Formats a message into the shared debug console buffer and outputs it to the selected console targets.
 extern "C" void Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ46nw4hbm2db6detail11ConsoleHeadPCcP16__va_list_struct(void *outputType, void *console, const char *format, void *args) {
     if (console == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x368, lbl_8031EA90);
+        Panic__Q26nw4hbm2dbFPCciPCce(sConsoleSourceFile, 0x368, lbl_8031EA90);
     }
     OSLockMutex(&lbl_804077C0);
     vsnprintf(lbl_804077D8, 0x400, format, (VaList1 *)args);
     if (console == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x34B, lbl_8031EA90);
+        Panic__Q26nw4hbm2dbFPCciPCce(sConsoleSourceFile, 0x34B, lbl_8031EA90);
     }
     if (((u32)outputType & 2) != 0) {
         OSReport(lbl_805597E4, lbl_804077D8);
@@ -27347,12 +27347,12 @@ extern "C" void Console_Printf__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHeadPC
     va_list args;
     va_start(args, format);
     if (consoleHead == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x368, lbl_8031EA90);
+        Panic__Q26nw4hbm2dbFPCciPCce(sConsoleSourceFile, 0x368, lbl_8031EA90);
     }
     OSLockMutex(&lbl_804077C0);
     vsnprintf(lbl_804077D8, 0x400, format, args);
     if (consoleHead == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x34B, lbl_8031EA90);
+        Panic__Q26nw4hbm2dbFPCciPCce(sConsoleSourceFile, 0x34B, lbl_8031EA90);
     }
     OSReport(lbl_805597E4, lbl_804077D8);
     fn_800D272C(consoleHead, lbl_804077D8);
@@ -27363,11 +27363,11 @@ extern "C" void Console_Printf__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHeadPC
 s32 nw4hbm::db::Console_GetTotalLines(nw4hbm::db::detail::ConsoleHead *console) {
     /* Returns the total number of lines currently stored in the debug console (ring buffer count plus printed lines), with the console mutex held. */
     if (console == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x41A, lbl_8031EA90);
+        Panic__Q26nw4hbm2dbFPCciPCce(sConsoleSourceFile, 0x41A, lbl_8031EA90);
     }
     OSLockMutex(&lbl_804077C0);
     if (console == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x70, lbl_8031EA90);
+        Panic__Q26nw4hbm2dbFPCciPCce(sConsoleSourceFile, 0x70, lbl_8031EA90);
     }
     s32 lines = (s32)M2C_FIELD(console, u16 *, 0x0C) - (s32)M2C_FIELD(console, u16 *, 0x12);
     if (lines < 0) lines += M2C_FIELD(console, u16 *, 0x06);
@@ -27413,7 +27413,7 @@ extern "C" void Console_DrawDirectLines(void *consoleHead, s32 charWriter)
         skip = 0;
     } else {
         if (consoleHead == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x70, lbl_8031EA90);
+            Panic__Q26nw4hbm2dbFPCciPCce(sConsoleSourceFile, 0x70, lbl_8031EA90);
         }
         /* Lines in the ring, plus the unterminated one being written. */
         stored = console->writeLine - console->readLine;
@@ -27566,7 +27566,7 @@ namespace nw4hbm { namespace db { namespace detail { struct ConsoleHead; } s32 C
 extern "C" void OSLockMutex(void*);
 extern "C" void OSUnlockMutex(void*);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...) __attribute__((noreturn));
-extern "C" const char lbl_8031EA80[];
+extern "C" const char sConsoleSourceFile[];
 extern "C" const char lbl_8031EA90[];
 extern "C" void fn_800A71D0(void *, s32);
 
