@@ -300,26 +300,26 @@ void fn_802DB9DC(int replaceFramebuffer) {
  * set that includes the two extra textures, installs
  * GXSetupFiveStageTevPipelineB and turns the Z test off, because that mode
  * replays the batch a second time with colour writes off to fill the Z buffer. */
-void setupCpuLightPass(unsigned char secondMode) {
+/* Set up GX for one CPU-lit billboard batch: load the two light-pass 2x4 matrices into TEXMTX2/3, set alpha compare, then bind the chosen gCpuLightTextures set and install TEV pipeline A or B (the second mode disables Z testing for a depth-fill replay). */ void setupCpuLightPass(unsigned char secondMode) {
     extern unsigned char lbl_802FAD18[];   /* the light pass's 2x4 matrix, GX_TEXMTX2 */
     extern unsigned char lbl_802FAD38[];   /* the light pass's 2x4 matrix, GX_TEXMTX3 */
     extern void *gCpuLightTextures[];           /* the light pass's textures: GXTexObj at +0x24, a second at +0x78 */
     extern void GXSetupFiveStageTevPipelineA(void);
     extern void GXSetupFiveStageTevPipelineB(void);
-    int texMtx2[8];
-    int texMtx3[8];
-    int *mtxSrc;
-    int i;
+    int lightMatrix2[8];
+    int lightMatrix3[8];
+    int *matrixSource;
+    int matrixIndex;
 
-    mtxSrc = (int *)lbl_802FAD18;
-    for (i = 0; i < 8; i++)
-        texMtx2[i] = mtxSrc[i];
-    GXLoadTexMtxImm((float *)texMtx2, GX_TEXMTX2, 1 /* GX_MTX2x4_TB */);
+    matrixSource = (int *)lbl_802FAD18;
+    for (matrixIndex = 0; matrixIndex < 8; matrixIndex++)
+        lightMatrix2[matrixIndex] = matrixSource[matrixIndex];
+    GXLoadTexMtxImm((float *)lightMatrix2, GX_TEXMTX2, 1 /* GX_MTX2x4_TB */);
 
-    mtxSrc = (int *)lbl_802FAD38;
-    for (i = 0; i < 8; i++)
-        texMtx3[i] = mtxSrc[i];
-    GXLoadTexMtxImm((float *)texMtx3, GX_TEXMTX3, 1 /* GX_MTX2x4_TB */);
+    matrixSource = (int *)lbl_802FAD38;
+    for (matrixIndex = 0; matrixIndex < 8; matrixIndex++)
+        lightMatrix3[matrixIndex] = matrixSource[matrixIndex];
+    GXLoadTexMtxImm((float *)lightMatrix3, GX_TEXMTX3, 1 /* GX_MTX2x4_TB */);
 
     GXSetAlphaCompare(GX_ALWAYS, 0, GX_AOP_OR, GX_ALWAYS, 0);
     fn_802DB4E4();
