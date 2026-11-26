@@ -366,7 +366,7 @@ void *arg0;
 
 /* Find a node in the lbl_8055F788 linked list whose name (at offset 0)
  * matches the given string case-insensitively; return NULL if not found. */
-void *fn_80296950(const char *name) {
+void *FlipBook_findByName(const char *name) {
     void *node = lbl_8055F788;
     while (node != 0) {
         if (stricmp(name, (const char *)node) == 0) return node;
@@ -436,7 +436,7 @@ extern "C" void *FlipBook_create(char *name, void *config) {
     int index, dstOffset, skipped;
     char defaultFrame[0x30];
 
-    book = fn_80296950(name);
+    book = FlipBook_findByName(name);
     if (book == 0) {
         valid = 0;
         if (fn_8012C33C(name) != 0) {
