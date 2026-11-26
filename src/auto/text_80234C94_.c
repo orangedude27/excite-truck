@@ -380,7 +380,7 @@ void drawPicture(int artSet, int pictureIndex, float x, float y, float z) {
 
 #pragma push
 #pragma processor 750
-/* Draw one picture from an art set as a screen-aligned textured quad: look up the picture, apply the object's draw list and scale the quad when the object scale differs from one, build the four textured vertices, then queue them and restore the render mode. */ void drawPictureScaled(int artSet, int pictureIndex, int colorIndex, float x, float y, float z, float width, float height)
+/* Draw one picture from an art set as a screen-aligned textured quad: look up the picture, apply the current render context's draw list, scale and centre the quad when the context scale differs from one, build the four textured vertices, then queue them and restore the render mode. */ /* Draw one picture from an art set as a screen-aligned textured quad: look up the picture, apply the object's draw list and scale the quad when the object scale differs from one, build the four textured vertices, then queue them and restore the render mode. */ void drawPictureScaled(int artSet, int pictureIndex, int colorIndex, float x, float y, float z, float width, float height)
 {
   Idx_80235CBC ids;
   Vtx_80235CBC v3;
@@ -394,14 +394,14 @@ void drawPicture(int artSet, int pictureIndex, float x, float y, float z) {
   void *picture;
   float spanX;
   float spanY;
-  float n0;
-  float n1;
-  float n2;
-  float n3;
+  float s0;
+  float t0;
+  float s1;
+  float t1;
   int drawHandle;
   void *drawObj;
   int color;
-  float one;
+  float unitScale;
   float objScale;
   float scaleDiff;
   char scaleMatches;
@@ -416,18 +416,18 @@ void drawPicture(int artSet, int pictureIndex, float x, float y, float z) {
     return;
   }
   spanY = height;
-  n3 = *(((float *) picture) + 3);
+  t1 = *(((float *) picture) + 3);
   spanX = width;
-  n2 = *(((float *) picture) + 2);
-  n1 = *(((float *) picture) + 1);
-  n0 = *((float *) picture);
+  s1 = *(((float *) picture) + 2);
+  t0 = *(((float *) picture) + 1);
+  s0 = *((float *) picture);
   drawHandle = *((int *) (((char *) artSet) + 0x84));
   drawObj = fn_8022EDC4();
   fn_802C8B98(drawHandle, (int) drawObj);
   color = fn_80230B9C(colorIndex);
   objScale = *((float *) (((char *) drawObj) + 0x38));
-  one = lbl_805636B0;
-  scaleDiff = objScale - one;
+  unitScale = lbl_805636B0;
+  scaleDiff = objScale - unitScale;
   if (((float) __fabs(scaleDiff)) <= lbl_80558DC4)
   {
     scaleMatches = 1;
@@ -443,19 +443,19 @@ void drawPicture(int artSet, int pictureIndex, float x, float y, float z) {
   }
   if (scaleMatches == 0)
   {
-    float s = *((float *) (((char *) drawObj) + 0x38));
-    spanX = width * s;
-    spanY = height * s;
-    x += lbl_805636B4 * (width * (lbl_805636B0 - s));
-    y -= lbl_805636B4 * (height * (lbl_805636B0 - s));
+    float scale = *((float *) (((char *) drawObj) + 0x38));
+    spanX = width * scale;
+    spanY = height * scale;
+    x += lbl_805636B4 * (width * (lbl_805636B0 - scale));
+    y -= lbl_805636B4 * (height * (lbl_805636B0 - scale));
   }
-  v0 = fn_80230A68(color, x, y, z, n0, n1);
+  v0 = fn_80230A68(color, x, y, z, s0, t0);
   frame.v[0].a = v0.a; frame.v[0].b = v0.b; frame.v[0].c = v0.c; frame.v[0].d = v0.d; frame.v[0].e = v0.e;
-  v1 = fn_80230A68(color, x + spanX, y, z, n2, n1);
+  v1 = fn_80230A68(color, x + spanX, y, z, s1, t0);
   frame.v[1].a = v1.a; frame.v[1].b = v1.b; frame.v[1].c = v1.c; frame.v[1].d = v1.d; frame.v[1].e = v1.e;
-  v2 = fn_80230A68(color, x, y - spanY, z, n0, n3);
+  v2 = fn_80230A68(color, x, y - spanY, z, s0, t1);
   frame.v[2].a = v2.a; frame.v[2].b = v2.b; frame.v[2].c = v2.c; frame.v[2].d = v2.d; frame.v[2].e = v2.e;
-  v3 = fn_80230A68(color, x + spanX, y - spanY, z, n2, n3);
+  v3 = fn_80230A68(color, x + spanX, y - spanY, z, s1, t1);
   frame.v[3].a = v3.a; frame.v[3].b = v3.b; frame.v[3].c = v3.c; frame.v[3].d = v3.d; frame.v[3].e = v3.e;
   ids = *((Idx_80235CBC *) lbl_802FA008);
   fn_802C8DB8(frame.v, 4, ids.i, 6);
