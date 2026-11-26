@@ -2432,8 +2432,9 @@ void fn_80037A8C(void) {
 
 #pragma push
 #pragma dont_inline on
-/* Record a DVD/error status event and dispatch the matching follow-up action
- * (direct callback, async read request, or generic error path). */
+/* Record a DVD/error status event in the error-info table and dispatch the
+ * matching follow-up action: a direct callback for the two special codes, an
+ * async error-info read for the low-bit case, or the generic error path. */
 void __DVDRecordStatusEvent(u32 status_code) {
     register s32 saved_interrupts_async;
     s32 saved_interrupts;
