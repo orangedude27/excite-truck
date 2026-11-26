@@ -4125,7 +4125,7 @@ extern "C" char lbl_8032F39C[];
 extern "C" f32 lbl_8042FD08[];
 #pragma push
 #pragma processor 750
-extern "C" void scoreBonusValueBase(Unk801577F0* arg0, f32* arg1) {
+/* Score one bonus value into the current record and popup, then notify listeners; unlike sibling scorers it leaves the popup count line alone. */ extern "C" void scoreBonusValueBase(Unk801577F0* arg0, f32* arg1) {
     // Scores one bonus value for this tracker's category: scale it by the
     // "score_scale" config value and by this category's multiplier, show it on
     // the bonus popup while one is up, add it to the record being filled and
