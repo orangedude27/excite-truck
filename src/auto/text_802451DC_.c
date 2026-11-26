@@ -904,7 +904,7 @@ extern void fn_80235758(int, int, int, float, float, float, float, float, float,
  * (fn_80235758's u1 argument is the fraction to show).  The frame row is then
  * drawn over the whole bar at its natural size.  Without an image the fill is
  * just a plain rectangle of the widget's own box. */
-void drawBarWidget(struct BarWidget *widget) {
+/* Draw the gauge: center the bar in the widget box and draw the fill fraction using the image's left cap, stretchable middle and right cap, then overlay the frame; without an image, draw a plain filled rectangle. */ void drawBarWidget(struct BarWidget *widget) {
     float x, y, midX;
     float width, height, leftWidth, rightWidth, midWidth, totalWidth, barHeight, fillWidth, partWidth;
     int image;
