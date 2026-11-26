@@ -8276,7 +8276,7 @@ extern "C" s32 fn_800B0DEC(void *arg0, s32 arg1, u32 arg2, s32 *arg3, s32 arg4) 
 #define VF_ENTRY_SIZE(e)            (*(u32 *)((u8 *)(e) + 0x228))    /* 0x228 the file's size */
 #define VF_ENTRY_FIRST_CLUSTER(e)   (*(u32 *)((u8 *)(e) + 0x234))    /* 0x234 the cluster its chain starts at */
 
-extern "C" void *fn_800B0F1C(void *volumeObject, void *entryObject, s32 unused) {
+extern "C" void *VFiPFStream_Open(void *volumeObject, void *entryObject, s32 unused) {
     /* Open a stream on the volume for the file `entryObject` describes.  Of the
      * volume's five streams it takes the one already open on that very directory
      * entry (same volume, sector and offset in it), or else the first free slot,
@@ -8623,7 +8623,7 @@ extern "C" void fn_800B36C4(s32, s32, s32);
     }
 
     volume = frame.volumeCtx50C;
-    openedStream = ((void *(*)(void *, void *))fn_800B0F1C)(volume, frame.entryState);
+    openedStream = ((void *(*)(void *, void *))VFiPFStream_Open)(volume, frame.entryState);
     if (openedStream == 0)
         return 0x15;
     entry = (u8 *)volume;
