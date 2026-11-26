@@ -619,7 +619,7 @@ void fn_80235AFC(void *arg0, int texNodeIndex, int vertexFlags,
  * (x, y, z): the picture gives the texture rectangle, rgba gives the colour
  * with its alpha scaled by the current fade.  Logs and draws nothing when the
  * index is not in the set. */
-void fn_80235CBC(ArtSet *artSet, int pictureIndex, int rgba, float x, float y, float z, float width, float height) {
+void drawArtPicture(ArtSet *artSet, int pictureIndex, int rgba, float x, float y, float z, float width, float height) {
     ArtPicture *picture;
     int color;
     float u0, v0, u1, v1;

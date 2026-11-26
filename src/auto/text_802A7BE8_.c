@@ -66,7 +66,7 @@ void fn_802A7C68(void) {
 extern void *fn_801EA9A0(void);
 extern void fn_802C8E70(float *, float *);
 extern int fn_802C8FF4(float *, float);
-extern void fn_80235CBC(void *, int, float, float, float, float, float);
+extern void drawArtPicture(void *, int, float, float, float, float, float);
 extern float lbl_805648F0;
 extern float lbl_805648F4;
 extern float lbl_805648F8;
@@ -115,7 +115,7 @@ void fn_802A7CA8(void *unused, float distance, int arg1)
   size = lbl_80564904 + (sizeFactor * lbl_80564908);
   if (fn_802C8FF4(screen, lbl_805648FC))
   {
-    ((void (*)(void *, int, unsigned int, float, float, float, float, float)) fn_80235CBC)((void *) lbl_8055F8C0, arg1, colorMask, screen[0] - (lbl_8056490C * size), screen[1] - (lbl_8056490C * size), lbl_805648FC, size, size);
+    ((void (*)(void *, int, unsigned int, float, float, float, float, float)) drawArtPicture)((void *) lbl_8055F8C0, arg1, colorMask, screen[0] - (lbl_8056490C * size), screen[1] - (lbl_8056490C * size), lbl_805648FC, size, size);
   }
 }
 extern void fn_801E85B4(void);
