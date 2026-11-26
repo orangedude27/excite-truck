@@ -34,7 +34,7 @@ void fn_80129400(void) {
     snapshot = lbl_80422180;
     controllerIndex = 0;
     do {
-        fn_802E8364(snapshot + 0x1C, controllerIndex);
+        copyControllerInputSnapshot(snapshot + 0x1C, controllerIndex);
         controllerIndex += 1;
         snapshot += 0x80;
     } while (controllerIndex < 4);
