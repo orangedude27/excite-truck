@@ -2616,7 +2616,7 @@ extern "C" s32 VFiPFCACHE_DoReadPage(void *volume, s32 listAddr, s32 sector, s32
  * a page the list already had is handed out untouched, and only a page it had
  * to read in itself gets cleared of CHANGED and claimed (or unclaimed).
  */
-extern "C" s32 fn_800A8050(void *volume, s32 listAddr, s32 sector, s32 outPageAddr, s32 claim) {
+extern "C" s32 VFiPFCACHE_DoReadPageWithWriteBack(void *volume, s32 listAddr, s32 sector, s32 outPageAddr, s32 claim) {
     u32 sectorsRead;
     s32 cached;
     s32 result;
@@ -3232,11 +3232,11 @@ extern "C" s32 fn_800A8EE0(void *cache, s32 sector, s32 pageOut, s32 claimPage, 
     return result & ((s32)(-result | result) >> 31);
 }
 
-extern "C" s32 fn_800A8050(void *, s32, s32, s32, s32);
+extern "C" s32 VFiPFCACHE_DoReadPageWithWriteBack(void *, s32, s32, s32, s32);
 extern "C" s32 fn_800A8F28(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     /* Read/cache a page via the secondary list (offset 0x1634); return result if nonzero, else 0. */
 #define pageList ((s32)((u8 *)arg0 + 0x1634))
-    s32 temp_r3 = fn_800A8050(arg0, pageList, arg1, arg2, arg3);
+    s32 temp_r3 = VFiPFCACHE_DoReadPageWithWriteBack(arg0, pageList, arg1, arg2, arg3);
     return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
 #undef pageList
 }
