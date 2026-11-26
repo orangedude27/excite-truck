@@ -1916,7 +1916,7 @@ extern "C" void fn_80162A14(void *arg0) {
  * scores player trucks against each active gate (velocity alignment or proximity),
  * advances the completion timers and changes step once the goal is met; otherwise it
  * resets the trucks and advances the intro step. */
-extern "C" void fn_80162BA8(void *challengeMgr) {
+extern "C" void updateCheckpointChallenge(void *challengeMgr) {
     s32 allCheckpointsPassed, index, carIndex, gateIndex;
     int *carTable;
     u8 *gate;
