@@ -4176,7 +4176,7 @@ s32 fn_800604E8(s32 chan, s32 format, void* data) {
             *(double*)&command[0x48] = *(double*)&command[0x18];
             *(double*)&command[0x50] = *(double*)&command[0x20];
             *(double*)&command[0x58] = *(double*)&command[0x28];
-            cmdQueue = (u8*)cb + 0x160;
+            cmdQueue = (u8*)&cb->stdCmdQueue;
             intrState = OSDisableInterrupts();
             nestedIntrState = OSDisableInterrupts();
             enqueueOk = cmdQueue[0];
