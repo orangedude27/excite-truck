@@ -3258,7 +3258,7 @@ struct LevelSelectMenu {
  * done, hands the picked entry to the manager (selected_subtask_index) and
  * starts the fade out: a mode-2 switch with the fade flag for an entry of the
  * sub-task list, the plain fade for the last one. */
-void updateChallengeLevelSelectMenu(void *menu, s32 unused) {
+/* One update of the challenge level-select menu: park the vehicles, ask for help popup 8 once, and on confirmation record the choice and start the fade out. */ void updateChallengeLevelSelectMenu(void *menu, s32 unused) {
     struct MtxHead { u32 word[8]; };
     /* the transform block of +0x3C..+0x68 split where the source split it: the
      * first eight words, then the ninth word and the three anchor floats */
