@@ -805,7 +805,7 @@ struct UIStyle {
 /* Draws a UI style's picture/text at (x, y): renders the picture or animation, then draws the bitmap-font text lines with alignment and offsets unless a vector font is active. */
 void fn_8022B91C(void *unused, int x, int y, char *text, unsigned int flagsArg) {
     extern int stampGetFrameCount(int);
-    extern int fn_802C4C90(int, int, int, int, int);
+    extern int gxCanvasDrawStamp(int, int, int, int, int);
     extern int gxGetImageFrameCount(void);
     extern int Abend_Panic(const char *, ...);
     extern void fn_801E4DBC(int, int, int, int, int, const char *, unsigned long);
@@ -819,7 +819,7 @@ void fn_8022B91C(void *unused, int x, int y, char *text, unsigned int flagsArg) 
     ctx = fn_8022CA2C();
     mode = flagsArg & 1;
     if (*(int *)((char *)ctx + 0x64) != 0) {
-        fn_802C4C90(*(int *)((char *)ctx + 0x64), x, y,
+        gxCanvasDrawStamp(*(int *)((char *)ctx + 0x64), x, y,
                     flagsArg % stampGetFrameCount(*(int *)((char *)ctx + 0x64)), 0);
     } else if ((state = *(int *)((char *)ctx + 0x68)) != 0) {
         ((int (*)(int))gxGetImageFrameCount)(state);

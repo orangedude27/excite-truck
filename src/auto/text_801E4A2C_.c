@@ -102,7 +102,7 @@ s32 fn_801E4BA8(s32 *fontObject) {
     lineHeight += baseline;
     return lineHeight;
 }
-extern s32 fn_802C4C90(s32, s32, s32, s32, s32);
+extern s32 gxCanvasDrawStamp(s32, s32, s32, s32, s32);
 extern void fn_802C4F58(s32, s32, const char *, s32);
 extern int vsprintf(char *, const char *, va_list);
 /* Default text colours from the UI palette (see fn_802C5028): an offset black
@@ -154,7 +154,7 @@ void fn_801E4BEC(s32 font, s32 drawFlags, s32 align, s32 x, s32 y, const char *f
             register u8 *glyph;
             glyph = (u8 *)font + ((unsigned int)*p << 1);
             if (*(s16 *)(glyph + 4) >= 0) {
-                fn_802C4C90(*(s32 *)font,
+                gxCanvasDrawStamp(*(s32 *)font,
                     x + *(s16 *)(glyph + 0x404),
                     y,
                     *(s16 *)(glyph + 4),

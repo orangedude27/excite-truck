@@ -1168,7 +1168,7 @@ typedef void *(*LoadResource)(const char *name, u32 tag, u32 *version,
 extern const char lbl_8034B144[]; /* "Wrong stamp version in \"%s\": %x (expecting %x)" */
 
 /* --- STMP: a stamp, the game's run-length encoded sprite image ---------- */
-/* loadStamp loads one by name, fn_802C4C80 releases it and fn_802C4C90
+/* loadStamp loads one by name, fn_802C4C80 releases it and gxCanvasDrawStamp
    draws one of its frames onto a canvas: it walks the frame's rows through
    the row table, decodes each row's 8-bit colour indices with one of the
    two palettes and writes them out.  The file is stored little-endian and
@@ -1187,7 +1187,7 @@ extern const char lbl_8034B144[]; /* "Wrong stamp version in \"%s\": %x (expecti
     s32 y_off;                    /* 0x00C */
     s32 frames;                   /* 0x010 frames in the stamp */
           StampPalette palette;         /* 0x014 colours: [0] on a mode 3 canvas,
-                                       [1] on any other (fn_802C4C90) */
+                                       [1] on any other (gxCanvasDrawStamp) */
     u32 unknown_414[256];         /* 0x414 swapped with the header; no
                                      matched code reads it */
     u32 *rows;                    /* 0x814 -> the row table below */
@@ -1282,7 +1282,7 @@ ret0:
  * bytes index the palette (the stamp's, or the caller's override pair).
  * Clipped rows and columns are stepped over; a NO_DRAW canvas, a null stamp or
  * an out-of-range frame leaves the canvas untouched. */
-void fn_802C4C90(Stamp *stamp, s32 x, s32 y, s32 frame, StampPalette *override) {
+void gxCanvasDrawStamp(Stamp *stamp, s32 x, s32 y, s32 frame, StampPalette *override) {
     GxCanvas *canvas = (GxCanvas *)sCurrentCanvas;
     if (!(canvas->flags & CANVAS_FLAG_NO_DRAW) && stamp != 0 && frame < stamp->frames) {
         s32 endRow, endCol, left, top, firstCol;

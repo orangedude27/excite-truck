@@ -132,7 +132,7 @@ extern "C" __declspec(section ".sdata") const char lbl_8055B724[], lbl_8055B728[
 extern "C" __declspec(section ".sdata") const char lbl_8055B738[], lbl_8055B73C[], lbl_8055B744[], lbl_8055B748[];
 #pragma small_data off
 extern "C" s32 stampGetFrameCount(s32);
-extern "C" s32 fn_802C4C90(s32, s32, s32, s32, s32);
+extern "C" s32 gxCanvasDrawStamp(s32, s32, s32, s32, s32);
 extern "C" s32 fn_8021481C(void *);
 extern "C" char lbl_8033D388[];
 extern "C" char lbl_8033D268[];
@@ -2616,11 +2616,11 @@ extern "C" s32 fn_80029004(const char *, s32);
 extern "C" s32 fn_801345D8(void *, s32, const char *, s32, s32, const char *);
 extern "C" unsigned long strlen(const char *);
 extern "C" s32 stampGetFrameCount(s32);
-extern "C" s32 fn_802C4C90(s32, s32, s32, s32, s32);
-/* Wraps a modulo by the count from stampGetFrameCount(self+4) and forwards (arg1,arg2,rem,0) to fn_802C4C90. */
+extern "C" s32 gxCanvasDrawStamp(s32, s32, s32, s32, s32);
+/* Wraps a modulo by the count from stampGetFrameCount(self+4) and forwards (arg1,arg2,rem,0) to gxCanvasDrawStamp. */
 extern "C" void fn_80215618(void *self, s32 arg1, s32 arg2, s32 value) {
     s32 rem = value % stampGetFrameCount(*(s32 *)((char *)self + 4));
-    fn_802C4C90(*(s32 *)((char *)self + 4), arg1, arg2, rem, 0);
+    gxCanvasDrawStamp(*(s32 *)((char *)self + 4), arg1, arg2, rem, 0);
 }
 
 extern "C" void stampGetOffsets(s32, s32 *, s32 *);
