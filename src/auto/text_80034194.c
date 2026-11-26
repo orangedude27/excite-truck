@@ -2184,7 +2184,7 @@ void fn_8003727C(u32 status) {
 
 /* DVD motor/error callback: records error state, handles special/reset cases, and either
  * cancels the executing command or schedules periodic motor-off via alarm. */
-void __DVDHandleMotorError(u32 arg0) {
+/* DVD motor/error callback: record the error state, handle special/reset codes, cancel the executing command with its completion callbacks when resetting, or schedule a periodic alarm to stop the motor when idle. */ void __DVDHandleMotorError(u32 arg0) {
     register u32 value = arg0;
     s32 interrupts;
     s32 resetDone;
