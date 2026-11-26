@@ -191,7 +191,7 @@ extern void *lbl_8055D274;
 extern char lbl_8055D2A4;
 extern int fn_800B7E5C(signed char, int);
 extern int fn_800B7B34(signed char);
-extern int fn_802EA5D4(void *, int);
+extern int scanSongDirectory(void *, int);
 #pragma push
 #pragma scheduling invalid_target
 /* RealName: Mp3SdCardRemovedCallback_802E9CAC */
@@ -378,7 +378,7 @@ void fn_802E9EB8(void) {
 // appending each one to the song table lbl_80508818 -- 100 entries of 0x610:
 // the directory it was found in (0x200), its file name (0x208) and that name
 // with every non-ASCII byte replaced by '?' (0x208). lbl_8056007C counts them.
-int fn_802EA5D4(void *dirPath, int maxDepth) {
+int scanSongDirectory(void *dirPath, int maxDepth) {
     extern void fn_801345D8(char *, long, const char *, ...);
     extern int fn_800B7C90(char *, int, char *);
     extern int fn_800B7CBC(char *);
@@ -411,7 +411,7 @@ int fn_802EA5D4(void *dirPath, int maxDepth) {
                     if (*entryName != 0 && strcmp(entryName, &lbl_8055D28C) != 0 && strcmp(entryName, &lbl_8055D290) != 0) {
                         if (strlen(baseName) + strlen((char *)dirPath) + 1 < 0x200) {
                             fn_801345D8(childPath, 0x200, &lbl_8055D294, (char *)dirPath, baseName);
-                            fn_802EA5D4(childPath, maxDepth - 1);
+                            scanSongDirectory(childPath, maxDepth - 1);
                         } else {
                             ((long (*)(char *, ...))fn_802E30C8)(strings + 0x230);
                         }
@@ -444,7 +444,7 @@ void fn_802EA7E0(void) {
     #define sdCardPresent     lbl_80560061 /* set by the SD mount/attach callbacks */
     #define musicDirPath      lbl_8055D274 /* directory to look in first */
     #define defaultMusicDir   lbl_8055D2A4 /* 0x20-byte path, searched recursively */
-    #define ScanSongDirectory fn_802EA5D4
+    #define ScanSongDirectory scanSongDirectory
 
     songCount = 0;
     if ((unsigned char)sdCardPresent != 0) {
