@@ -2392,21 +2392,23 @@ void fn_8016386C(void *obj, s32 eventType, s32 carIndex, s32 progressValue) {
 #pragma cplusplus on
 #pragma push
 #pragma processor 750
-// Per-frame update for the gate challenge: in its scoring phase (f7()==0) it tests each
-// player truck ("PCAR") against every active gate, scoring a pass when the truck's velocity
-// aligns with the gate direction or it comes within range, and finishes once the met count
-// reaches its target. The alternate phase resets the trucks and advances the challenge step.
+// Per-frame update of the gate-challenge subtask.  In its scoring phase (f7()==0)
+// it walks the player trucks and the active gates, scoring a pass when a truck
+// crosses a gate with enough speed in the gate's direction or comes within range;
+// once the elapsed clock (+0x98) passes the limit (+0x84) it raises the stop flag
+// (+0x56D).  The other phase resets the trucks and advances the challenge step.
 extern "C" void GateChallenge_updateWithTimeout(void *challengeMgr) {
     s32 carIndex,gateIndex;
     int *carTable;
     u8 *mgr=(u8 *)challengeMgr;
     u8 *gate;
-    int *carTable2;
+    int *resetCarTable;
     s32 gateOffset;
-    u8 *car,*gateFlags,*uiState;
+    u8 *car,*carGateFlags,*uiState;
     f32 velocity[2],length,scale;
     f32 minAlignment,one,minSpeedSq;
     f32 dirX,dirY;
+    /* The time limit was reached: stop the challenge before anything else. */
     if (((*(f32 *)(mgr+0x98)>*(f32 *)(mgr+0x84))&1)!=0) mgr[0x56D]=1;
     if (fn_801C5B60()==0) fn_801DF074(8,0);
     if (((Dummy_801638A0 *)mgr)->f7()==0) {
@@ -2419,8 +2421,8 @@ extern "C" void GateChallenge_updateWithTimeout(void *challengeMgr) {
                 if (!gate[0x3C]) continue;
                 if (*(s32 *)(gate+0x34)) {
                     if (fn_80139B5C(car,*(s32 *)(gate+0x34))) {
-                        gateFlags=gate+carIndex;
-                        if (!gateFlags[0x3D]) {
+                        carGateFlags=gate+carIndex;
+                        if (!carGateFlags[0x3D]) {
                             velocity[0]=*(f32 *)(car+0x118);
                             velocity[1]=*(f32 *)(car+0x120);
                             length=velocity[0]*velocity[0]+velocity[1]*velocity[1];
@@ -2439,7 +2441,7 @@ extern "C" void GateChallenge_updateWithTimeout(void *challengeMgr) {
                                 }
                             }
                         }
-                        gateFlags[0x3D]=1;
+                        carGateFlags[0x3D]=1;
                         break;
                     } else if (gate[0x3C]) (gate+carIndex)[0x3D]=0;
                 } else if (PSVECSquareDistance(gate,car+0x60)<*(f32 *)(mgr+0xCC)**(f32 *)(mgr+0xCC)) {
@@ -2460,9 +2462,9 @@ extern "C" void GateChallenge_updateWithTimeout(void *challengeMgr) {
     } else {
         if ((f32)__fabs(*(f32 *)(mgr+0x8C))<=lbl_80558DC4[0]) {
             fn_80276DC8(0);
-            for (carIndex=0,carTable2=lbl_804348E8;carIndex<fn_801B2F24();carTable2++,carIndex++) {
+            for (carIndex=0,resetCarTable=lbl_804348E8;carIndex<fn_801B2F24();resetCarTable++,carIndex++) {
                 Dummy_801638A0 *manager=(Dummy_801638A0 *)fn_801B83A0();
-                manager->f35((void *)*carTable2,carIndex);
+                manager->f35((void *)*resetCarTable,carIndex);
             }
         }
         *(f32 *)(mgr+0x8C)+=lbl_80561858;
