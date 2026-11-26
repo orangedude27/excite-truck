@@ -1232,37 +1232,62 @@ extern float lbl_80564F18, lbl_80564F28;
  * left/right and/or top/bottom black bars based on scaled view dimensions.
  */
 void DrawList_drawLetterboxBars(int drawBars) {
+    #define gViewMode lbl_8055FC74
+    #define sWidescreenMode lbl_8055FC8C
+    #define sLetterboxMode lbl_8055FC8D
+    #define screenWidth lbl_8055CFF0
+    #define screenHeight lbl_8055CFF4
+    #define gRoundBias lbl_80564F18
+    #define sScaleX lbl_8055D020
+    #define sScaleY lbl_8055D024
+    #define gNearClip lbl_8055FC38
+    #define gFarClip lbl_8055FC3C
+    #define gHalfPi lbl_80564F28
     int sideBarWidth;
     int topBarHeight;
     int horizontalDelta;
     int verticalDelta;
-    lbl_8055FC74 = 1;
-    if ((unsigned char)lbl_8055FC8D != 0) {
-        DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
+
+    /* Draw letterbox/pillarbox bars for scaled viewports: refresh the viewport and
+     * projection in letterbox mode, then draw black side and/or top-bottom bars. */
+    gViewMode = 1;
+    if ((unsigned char)sLetterboxMode != 0) {
+        DrawList_setViewport(0, 0, screenWidth, screenHeight);
         HomeMenu_applySavedFade(2);
-        fn_802C974C(lbl_8055FC38, lbl_8055FC3C, lbl_80564F28);
+        fn_802C974C(gNearClip, gFarClip, gHalfPi);
     }
-    if (((unsigned char)lbl_8055FC8C != 0 || (unsigned char)lbl_8055FC8D != 0) && drawBars != 0) {
-        horizontalDelta = lbl_8055CFF0 - (int)(lbl_80564F18 + ((float)lbl_8055CFF0 * lbl_8055D020));
+    if (((unsigned char)sWidescreenMode != 0 || (unsigned char)sLetterboxMode != 0) && drawBars != 0) {
+        horizontalDelta = screenWidth - (int)(gRoundBias + ((float)screenWidth * sScaleX));
         sideBarWidth = horizontalDelta / 2;
         if (sideBarWidth > 1) {
             fn_802C92D0();
-            fn_802C92DC(0, 0, sideBarWidth, lbl_8055CFF4, 0xFF000000);
-            fn_802C92DC(lbl_8055CFF0 - sideBarWidth, 0, lbl_8055CFF0, lbl_8055CFF4, 0xFF000000);
+            fn_802C92DC(0, 0, sideBarWidth, screenHeight, 0xFF000000);
+            fn_802C92DC(screenWidth - sideBarWidth, 0, screenWidth, screenHeight, 0xFF000000);
             fn_802C92D8();
         }
     }
-    if ((unsigned char)lbl_8055FC8D != 0) {
-        verticalDelta = lbl_8055CFF4 - (int)(lbl_80564F18 + ((float)lbl_8055CFF4 * lbl_8055D024));
+    if ((unsigned char)sLetterboxMode != 0) {
+        verticalDelta = screenHeight - (int)(gRoundBias + ((float)screenHeight * sScaleY));
         topBarHeight = verticalDelta / 2;
         if (topBarHeight > 1) {
             fn_802C92D0();
-            fn_802C92DC(0, 0, lbl_8055CFF0, topBarHeight, 0xFF000000);
-            fn_802C92DC(0, lbl_8055CFF4 - topBarHeight, lbl_8055CFF0, lbl_8055CFF4, 0xFF000000);
+            fn_802C92DC(0, 0, screenWidth, topBarHeight, 0xFF000000);
+            fn_802C92DC(0, screenHeight - topBarHeight, screenWidth, screenHeight, 0xFF000000);
             fn_802C92D8();
         }
     }
-    lbl_8055FC74 = 0;
+    gViewMode = 0;
+    #undef gViewMode
+    #undef sWidescreenMode
+    #undef sLetterboxMode
+    #undef screenWidth
+    #undef screenHeight
+    #undef gRoundBias
+    #undef sScaleX
+    #undef sScaleY
+    #undef gNearClip
+    #undef gFarClip
+    #undef gHalfPi
 }
 #pragma dont_inline reset
 /* Return the name string of a resource-list entry: follow entry->node (+8), then node->nameHolder (+4), and return the string pointer at nameHolder+4. */
