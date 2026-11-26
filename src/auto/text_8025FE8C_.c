@@ -814,7 +814,7 @@ struct SelectorWidget {
  * repainted the way fn_80261178 does it, now with the cursor outside: the whole
  * item list dims and loses its cursor, the group the cursor stands on gets
  * setCursor() and every other group comes out of the dim state. */
-extern "C" s32 selectorCloseGroup(void) {
+/* Close the selector's open group on a leave press: move the cursor back to the group list and repaint both widget lists; return 1 if there was no open group. */ extern "C" s32 selectorCloseGroup(void) {
     s32 offset;
     s32 i;
 
