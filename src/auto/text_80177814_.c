@@ -166,11 +166,10 @@ void fn_80177A54(void) {
     lbl_8055E3C0 = 0;
 }
 
-void expireReplayHistory(int forceShift, int arg1) {
-    /* Expire the oldest record of the 8-slot timed history buffer (256-byte
-     * payload, timestamp, value): shift records down when the oldest is more
-     * than 5 s old, timestamped in the future, or forceShift is set while the
-     * last slot is still in use. */
+void expireReplayHistory(int forceShift, int mode) {
+    /* Drop the oldest record of the 8-slot timed replay history when it has
+     * aged out, is timestamped in the future, or a forced shift is requested
+     * while the last slot is still occupied. */
     typedef struct { unsigned char b[0x100]; } Bytes;
     typedef struct { Bytes data; float time; int value; } Entry;
     extern Entry lbl_80433880[8];
