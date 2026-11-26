@@ -31,7 +31,7 @@ enum IdealResExtType {
  * first the four bytes of each 32-bit word are reversed (0x00..0x2F), then the
  * 0x10..0x33 region is byte-swapped with its mirrored counterpart in a fixed
  * pattern (0x10<->0x29, 0x11<->0x2C, ... 0x28<->0x2B). */
-extern "C" void fn_80137D58(void *arg0, int arg_sp0) {
+extern "C" void byteSwapLoadedNode(void *arg0, int arg_sp0) {
     volatile int sp18, sp14, sp10, spC, sp8;
     volatile unsigned char *p = (volatile unsigned char *)arg0;
     register unsigned int temp_r0, temp_r0_2, temp_r0_4, temp_r0_5, temp_r0_3;
@@ -308,14 +308,14 @@ void fn_801381B4(void *arg0) {
     }
     fn_80138434(base + 0x1C);
     fn_80138434(base + 0x20);
-    fn_80137D58(*(void **)(base + 0x1C), (int)base);
+    byteSwapLoadedNode(*(void **)(base + 0x1C), (int)base);
     for (mode = 0; mode < 3; mode++) {
         found = 0;
         node = *(unsigned char **)(*(unsigned char **)(base + 0x1C) + 0x14);
         while (node != *(unsigned char **)(base + 0x1C)) {
             if (node[0x34] == mode) {
                 found = 1;
-                fn_80137D58(node, (int)base);
+                byteSwapLoadedNode(node, (int)base);
             } else if (found != 0) {
                 break;
             }
@@ -325,7 +325,7 @@ void fn_801381B4(void *arg0) {
     node = *(unsigned char **)(base + 0x20);
     if (node != 0) {
         while (node[0x34] == 3) {
-            fn_80137D58(node, (int)base);
+            byteSwapLoadedNode(node, (int)base);
             node = *(unsigned char **)(node + 0x14);
         }
     }
