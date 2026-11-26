@@ -108,7 +108,7 @@ void fn_8022A5E4(void) {
 #pragma scheduling invalid_target
     extern unsigned char lbl_80497D68[];
     extern void *memset(void *, int, unsigned int);
-    extern void fn_8022C520(void);
+    extern void loadTextStyleOverrides(void);
     struct Record74 *out;
     unsigned char b0;
     volatile int s1C, s18, s14, s10, sC, s30, s2C, s28, s24, s20;
@@ -162,7 +162,7 @@ void fn_8022A5E4(void) {
         out[1].w64 = v64; out[1].w68 = v68; out[1].w6C = v6C; out[1].w70 = v70;
         out += 2;
     }
-    fn_8022C520();
+    loadTextStyleOverrides();
 }
 
 /* Shut down the style/config subsystem started by fn_8022A5E4: tail-call the sweep
@@ -1150,7 +1150,7 @@ void fn_8022BD40(int arg0, int i19arg, int arg2_, unsigned char i20_, float farg
     }
 }
 #pragma cplusplus on
-void fn_8022C520(void) {
+void loadTextStyleOverrides(void) {
     /* Load UI text style overrides from the style config: for each "style" node,
      * fill a 0x58-byte descriptor from the lbl_802F9F58 defaults plus the node's
      * properties and install it in the 0x100-entry style table via fn_8022A858. */
