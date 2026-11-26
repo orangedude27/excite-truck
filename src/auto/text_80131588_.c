@@ -11,7 +11,7 @@ extern int sscanf(const char*, ...);
 
 extern s32 fn_80128668(void);
 extern int stricmp(const char*, const char*);
-extern s32 fn_80131C88(void *, const char *);
+extern s32 findValueTableEntry(void *, const char *);
 extern int sprintf(char *, const char *, ...);
 __declspec(section ".sdata") extern char lbl_80559B50[4];
 typedef struct {
@@ -349,7 +349,7 @@ s32 fn_80131B50(void *arg0)
 
 #pragma push
 #pragma use_lmw_stmw off
-extern s32 fn_80131C88(void*, const char*);
+extern s32 findValueTableEntry(void*, const char*);
 /* Return nonzero if `name` exists in this table's entries or, if not found, in its child table. */
 s32 fn_80131BD0(void* table, const char* name) {
     volatile struct { const char *n; s32 v; } key;
@@ -370,7 +370,7 @@ s32 fn_80131BD0(void* table, const char* name) {
         index++;
     }
     if (found == 0 && *(void**)((char*)table + 0x14) != 0) {
-        found = (char*)fn_80131C88(*(void**)((char*)table + 0x14), name);
+        found = (char*)findValueTableEntry(*(void**)((char*)table + 0x14), name);
     }
     return found != 0;
 }
@@ -380,7 +380,7 @@ s32 fn_80131BD0(void* table, const char* name) {
 // Search a chain of value tables for the entry whose name matches (case-insensitive).
 // Each table holds {name, value} pairs (8 bytes each) and links to a child table at +0x14.
 // Returns a pointer to the matching entry, or NULL if no table in the chain has it.
-s32 fn_80131C88(void *table, const char *name) {
+s32 findValueTableEntry(void *table, const char *name) {
     char *found;
     s32 index;
     s32 offset;
@@ -538,7 +538,7 @@ s32 fn_80131C88(void *table, const char *name) {
             if (found == 0) {
                 child = *(void **)((char *)child + 0x14);
                 if (child != 0)
-                    found = (char *)fn_80131C88(child, name);
+                    found = (char *)findValueTableEntry(child, name);
             }
                 }
             }
@@ -603,7 +603,7 @@ extern "C" s32 fn_801320D8(void *table, const char *name) {
         index++;
     }
     if (found == NULL && *(void **)((char *)table + 0x14) != NULL)
-        found = ((char *(*)(void *, const char *))fn_80131C88)(*(void **)((char *)table + 0x14), name);
+        found = ((char *(*)(void *, const char *))findValueTableEntry)(*(void **)((char *)table + 0x14), name);
     if (found == NULL)
         Abend_Panic(lbl_8032B764, name, ((Dummy *)table)->v0());
     return *(s32 *)(found + 4);
