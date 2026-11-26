@@ -17,7 +17,7 @@ __declspec(section ".sdata2") extern char lbl_8055B900[];
 __declspec(section ".sdata2") extern char lbl_8055B908[];
 __declspec(section ".sdata2") extern char lbl_8055B910[];
 extern int fn_8022CC8C(const char*);
-extern void fn_8022CDE4(int*, void*);
+extern void readTextEffectProps(int*, void*);
 extern int stricmp(const char*, const char*);
 extern void* fn_80131810(const char*, int, int);
 extern void* fn_80131818(void*);
@@ -1258,8 +1258,8 @@ void fn_8022BD40(int arg0, int i19arg, int arg2_, unsigned char i20_, float farg
                 }
             }
             styleDesc.w[2] = hAlign | vAlign;
-            fn_8022CDE4((int*)&styleDesc.w[3], node->getPtr(ShadowOff));
-            fn_8022CDE4((int*)&styleDesc.w[10], node->getPtr(ShadowOn));
+            readTextEffectProps((int*)&styleDesc.w[3], node->getPtr(ShadowOff));
+            readTextEffectProps((int*)&styleDesc.w[10], node->getPtr(ShadowOn));
             if (node->has(StampProp) != 0) {
                 styleDesc.w[17] = (int)node->getStr(StampProp);
             }
@@ -1452,7 +1452,7 @@ __declspec(section ".sdata") extern char lbl_8055B948[];
 __declspec(section ".sdata") extern char lbl_8055B950[];
 extern char lbl_8033FBE8[], textEffectNormal[], lbl_8055B938[], lbl_8055B940[], lbl_8055B948[], lbl_8055B950[];
 #pragma cplusplus on
-void fn_8022CDE4(int *d, void *o) {
+void readTextEffectProps(int *d, void *o) {
     /* Reads a record of seven int attributes out of an XML node into d[0..6]:
      * four numeric attributes (d[0..3]) via parseStyleColor, a named enum attribute
      * mapped by name (d[4]), and a "%d %d" pair (d[5..6]).  Attribute keys come
