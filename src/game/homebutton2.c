@@ -107,11 +107,6 @@ extern void closeFileHandle(s32 *);
 
 #pragma scheduling invalid_target
 /* Initializes home-button channel 2: clears the menu flags, sets up fast casts and WPAD info, loads the language archive and UI resources, then marks the module ready. */ void initHomeButtonChannel2(void) {
-    // Home-button channel 2 start-up: clear the menu mode/request flags, init the
-    // fast-cast table, seed the WPAD info config, fill the HomeBtn2Resources block
-    // (per-language homeBtn_*.arc + three files, a 0x80000-byte archive buffer and
-    // the console language), load the 0x19000-byte home-button UI, hand the block to
-    // the home-button driver and raise the ready flag.
 #define gHomeBtn2Strings   lbl_8034E9E0
 #define gHomeBtn2Resources lbl_80558860
 #define gWpadInfo          lbl_80558898
