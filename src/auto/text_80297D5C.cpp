@@ -72,7 +72,7 @@ extern "C" int fn_8029C190(void*);
     extern "C" unsigned int fn_80299A04(void*, unsigned int, float);
           extern "C" void fn_8028E584(void*, void*, float*, float);
       extern "C" void* fn_80288208(int);
-extern "C" void fn_8029AAE0(int, int, void*);
+extern "C" void transformTwoPoints(int, int, void*);
   extern "C" void fn_80288A40(void*, float*);
       extern "C" void fn_8028E398(void*);
     extern "C" void* fn_8029A820(void*, int);
@@ -1698,7 +1698,7 @@ extern "C" void fn_8029A904(void* arg0, int arg1, void* arg2, float farg0, float
     }
     if (entry[0x28] != 0 || *(float*)(entry + 0x24) > lbl_8056459C) {
         if (farg1 < lbl_80564610) {
-            fn_8029AAE0((int)arg0, arg1, arg2);
+            transformTwoPoints((int)arg0, arg1, arg2);
             velocity = (float*)((char*)arg2 + 0x34);
             int count = 1;
             int samples = (int)(farg0 * *(float*)((char*)arg2 + 0x50));
@@ -1730,7 +1730,7 @@ extern "C" void fn_8029A904(void* arg0, int arg1, void* arg2, float farg0, float
     }
 }
  #pragma pop
- extern "C" void fn_8029AAE0(int arg0, int arg1, void *arg2)
+ extern "C" void transformTwoPoints(int arg0, int arg1, void *arg2)
 {
   /* Transform two 3D points by a 3x3 matrix/translation from XformData, apply a fixed Y offset, and store them into the arg0+arg1*0x2C slot. */
   float *out = (float *) (((char *) arg0) + (arg1 * 0x2C));
@@ -2061,42 +2061,65 @@ extern "C" void fn_8029B138(void* arg0, int arg1, float* arg2, float* arg3, floa
 extern "C" void fn_802C8E00(int, int, float, float, float, float, float);
 #pragma push
 #pragma processor 750
-extern "C" void fn_8029B274(void *arg0, float *c, unsigned char arg2, void *arg3, void *arg4, float f, float arg6) {
-    struct V3 { float x, y, z; };
-    V3 *a = (V3 *)arg3;
-    V3 *b = (V3 *)arg4;
-    V3 t, s, r, q;
-    float sp14, sp10, spC, sp8;
-    float neg, h1, h2, px, py, pz, cz, cx, cy;
-
-    fn_8029B138(arg0, arg2, &sp14, &sp10, &spC, &sp8);
-    neg = -f;
-    cx = c[0];
-    cy = c[1];
-    cz = c[2];
-    px = cx + a->x * neg;
-    py = cy + a->y * neg;
-    q.x = px;
-    q.y = py;
-    h1 = lbl_8056460C * f;
-    h2 = lbl_805645D8 * f;
-    pz = cz + a->z * neg;
-    q.x = px + b->x * f;
-    q.y = py + b->y * f;
-    q.z = pz + b->z * f;
-    r.x = q.x + a->x * h1;
-    r.y = q.y + a->y * h1;
-    r.z = q.z + a->z * h1;
-    s.x = q.x + b->x * h2;
-    s.y = q.y + b->y * h2;
-    s.z = q.z + b->z * h2;
-    t.x = r.x + b->x * h2;
-    t.y = r.y + b->y * h2;
-    t.z = r.z + b->z * h2;
-    fn_802C8E00(0xC0FFFFFF, 0, q.x, q.y, q.z, sp14, spC);
-    fn_802C8E00(0xC0FFFFFF, 0, r.x, r.y, r.z, sp10, spC);
-    fn_802C8E00(0xC0FFFFFF, 1, s.x, s.y, s.z, sp14, sp8);
-    fn_802C8E00(0xC0FFFFFF, 1, t.x, t.y, t.z, sp10, sp8);
+extern "C" void fn_8029B274(void *arg0, float *c, unsigned char arg2, void *arg3, void *arg4, float f, float arg6)
+{
+  struct V3
+  {
+    float x;
+    float y;
+    float z;
+  };
+  V3 *a = (V3 *) arg3;
+  V3 *b = (V3 *) arg4;
+  V3 t;
+  V3 s;
+  V3 r;
+  V3 q;
+  float sp14;
+  float sp10;
+  float spC;
+  float sp8;
+  float neg;
+  float h1;
+  float h2;
+  float px;
+  volatile short pad;
+  float py;
+  float pz;
+  float cz;
+  float cx;
+  float temp;
+  fn_8029B138(arg0, arg2, &sp14, &sp10, &spC, &sp8);
+  temp = -f;
+  neg = temp;
+  cx = c[0];
+  cz = c[2];
+  px = cx + (a->x * neg);
+  py = c[1] + (a->y * neg);
+  q.x = px;
+  q.y = py;
+  h1 = lbl_8056460C * f;
+  h2 = lbl_805645D8 * f;
+  pz = cz + (a->z * neg);
+  q.x = px + (((V3 *) arg4)->x * f);
+  q.y = py + (((V3 *) arg4)->y * f);
+  q.z = pz + (b->z * f);
+  r.x = q.x + (a->x * h1);
+  r.y = (0, q.y + (a->y * h1));
+  if (1)
+  {
+    r.z = q.z + (h1 * a->z);
+    s.x = q.x + (b->x * h2);
+    s.y = q.y + (b->y * h2);
+    s.z = q.z + (b->z * h2);
+    t.x = r.x + (b->x * h2);
+    t.y = r.y + (((V3 *) arg4)->y * h2);
+  }
+  t.z = (0, r.z + (((V3 *) arg4)->z * h2));
+  fn_802C8E00(0xC0FFFFFF, 0, q.x, q.y, q.z, sp14, spC);
+  fn_802C8E00(0xC0FFFFFF, 0, r.x, r.y, r.z, sp10, spC);
+  fn_802C8E00(0xC0FFFFFF, 1, s.x, s.y, s.z, (0, sp14), (0, sp8));
+  fn_802C8E00(0xC0FFFFFF, 1, t.x, t.y, t.z, sp10, (0, sp8));
 }
 #pragma pop
 
