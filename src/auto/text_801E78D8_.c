@@ -541,49 +541,49 @@ extern "C" void fn_801E8148(void) {
 
 #pragma push
 #pragma scheduling invalid_target
-extern "C" void updateGameFrame(int arg0, void (*callback)(void)) {
+/* Core per-frame game step: advances frame state, runs two update passes over all players, handles single/multi-player viewports, then invokes the optional per-frame callback. */ extern "C" void updateGameFrame(int unused, void (*callback)(void)) {
     extern void *lbl_8055AF0C;
     extern float *lbl_8055EB04;
-    unsigned long index;
-    void *entry;
-    long i;
+    unsigned long carSlot;
+    void *carEntry;
+    long playerIndex;
     long values[4];
     float value;
 
     /* Per-frame/step update: advances frame state, runs per-player update passes, and
      * performs single/multi-player follow-up logic before invoking an optional callback. */
-    (void)arg0;
+    (void)unused;
     KERNEL_GetTimeUs();
     lbl_8055EB1C = lbl_8055EB1C + 1;
     fn_802A4CA8();
     fn_802C276C();
-    index = (unsigned long)fn_801E866C(0);
-    if (index < 8)
-        entry = lbl_80488648[index];
+    carSlot = (unsigned long)fn_801E866C(0);
+    if (carSlot < 8)
+        carEntry = lbl_80488648[carSlot];
     else
-        entry = 0;
-    fn_80203E88(lbl_80487D00, (long)((unsigned char *)entry + 0x28),
+        carEntry = 0;
+    fn_80203E88(lbl_80487D00, (long)((unsigned char *)carEntry + 0x28),
                 ((long)lbl_8055EB2C - 1) == 0);
     fn_8001A1F0();
     fn_801EA394();
     DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
     fn_802CC73C((int)((long)lbl_8055EB2C <= 2));
-    i = 0;
+    playerIndex = 0;
     goto first_check;
 first_loop:
-    lbl_8055AF0C = (void *)i;
+    lbl_8055AF0C = (void *)playerIndex;
     fn_801E83D4();
-    i++;
+    playerIndex++;
 first_check:
-    if (i < (long)lbl_8055EB2C) goto first_loop;
-    i = 0;
+    if (playerIndex < (long)lbl_8055EB2C) goto first_loop;
+    playerIndex = 0;
     goto second_check;
 second_loop:
-    lbl_8055AF0C = (void *)i;
+    lbl_8055AF0C = (void *)playerIndex;
     fn_801E8410();
-    i++;
+    playerIndex++;
 second_check:
-    if (i < (long)lbl_8055EB2C) goto second_loop;
+    if (playerIndex < (long)lbl_8055EB2C) goto second_loop;
     fn_802CC73C(1);
     lbl_8055AF0C = (void *)-1;
     if (fn_801B89F8() == 0 && (long)lbl_8055EB2C > 1) {
