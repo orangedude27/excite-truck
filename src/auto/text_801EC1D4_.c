@@ -1371,12 +1371,12 @@ extern int parseHexString(void);
 extern char lbl_8033A060[];
 extern char lbl_8055B080;
 #pragma cplusplus on
-extern "C" void loadResourceConfig(void *arg0, void *arg1, int arg2, int arg3) {
+/* Loads UI/string configuration for the given index from a named resource and fills output fields in output (model handle at +0x488, flags at +0x48C/+0x490/+0x494, hex string at +0x498, 1<<shift at +0x49C) and a name at nameOut+0xEC. */ extern "C" void loadResourceConfig(void *arg0, void *arg1, int arg2, int arg3) {
  /* Loads UI/string configuration for the given index from a named resource and fills output fields. */
  char *base = lbl_8033A060;
- char pathBuf[0x100]; char nameBuf[0x100]; Unk_801EEA64Iface *resource; Unk_801EEA64Iface *obj; int objId; int value, shift;
- fn_801345D8(pathBuf,0x100,base+0x174,arg2);
- resource=(Unk_801EEA64Iface *)fn_80131810(pathBuf);
+ char pathBuffer[0x100]; char nameBuf[0x100]; Unk_801EEA64Iface *resource; Unk_801EEA64Iface *obj; int objId; int value, shift;
+ fn_801345D8(pathBuffer,0x100,base+0x174,arg2);
+ resource=(Unk_801EEA64Iface *)fn_80131810(pathBuffer);
  if(resource != 0 && resource->m10(&lbl_8055B080) != 0) {
   obj=resource->m8(&lbl_8055B080);
   objId=obj->m14(base+0x194);
