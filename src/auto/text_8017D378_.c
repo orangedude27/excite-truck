@@ -459,7 +459,7 @@ done:
    placed yet it is dropped on a random spot beside a live target, upright and lifted off
    that target's height.  Afterwards the ground under it is looked up: with none below the
    body asks to be repositioned, and the rigid-body step runs. */
-void fn_8017DCB4(void *arg0) {
+void stepBallBody(void *arg0) {
     BallBody *body = (BallBody *)arg0;
     struct BodyTransform { f32 rotation[9]; f32 translation[3]; } xf; /* one 12-float transform */
     f32 idlePos[3], spawnPos[3];
@@ -712,7 +712,7 @@ void fn_8017DEE0(void *arg0, long arg1, long arg2, short arg3, float farg0)
 #pragma scheduling on
 #pragma pop
 /* Returns the constant 60.0f in lbl_80561C2C, the fixed height a body floats
- * above its target (added to the target's height in fn_8017DCB4). */
+ * above its target (added to the target's height in stepBallBody). */
 float fn_8017E380(void) { extern float lbl_80561C2C; return lbl_80561C2C; }
 
 /* Initialize a 3x4 transform matrix (12 floats) to the identity: 1.0f on the
