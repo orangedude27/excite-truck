@@ -3258,7 +3258,7 @@ struct LevelSelectMenu {
  * done, hands the picked entry to the manager (selected_subtask_index) and
  * starts the fade out: a mode-2 switch with the fade flag for an entry of the
  * sub-task list, the plain fade for the last one. */
-void fn_80164D64(void *menu, s32 unused) {
+void updateChallengeLevelSelectMenu(void *menu, s32 unused) {
     struct MtxHead { u32 word[8]; };
     /* the transform block of +0x3C..+0x68 split where the source split it: the
      * first eight words, then the ninth word and the three anchor floats */
@@ -3373,7 +3373,7 @@ typedef struct Work_80164D64 {
     f32 vectorB[3];
     u32 data[12];
 } Work_80164D64;
-/* Level-select menu vtable getter (slot 0x24): reports the `done` flag set by fn_80164D64; siblings fn_80165048/0x50 are identical. */
+/* Level-select menu vtable getter (slot 0x24): reports the `done` flag set by updateChallengeLevelSelectMenu; siblings fn_80165048/0x50 are identical. */
 unsigned char fn_80165040(void *menu) {
     return ((struct LevelSelectMenu *)menu)->done;
 }
