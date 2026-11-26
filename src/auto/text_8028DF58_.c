@@ -1324,9 +1324,9 @@ extern double lbl_80564440;
  * power-of-4 count at +0x84 into its square root at +0xA8 with 1.0f/it at
  * +0xAC.  The timed playback cursor is reset last (fn_8028F8C4).  Called by
  * fn_8028F7AC, which allocates the particle array right afterwards. */
-void initEffectFromArgs(void *effectArg, void *argsArg, int arg2) {
-    volatile EfEffect *args = (volatile EfEffect *)argsArg;
-    EfEffect *effect = (EfEffect *)effectArg;
+void initEffectFromArgs(void *effectOut, void *createArgs, int unused) {
+    volatile EfEffect *args = (volatile EfEffect *)createArgs;
+    EfEffect *effect = (EfEffect *)effectOut;
     unsigned char f89;
     unsigned char en88;
     int powerOf4;
@@ -1367,7 +1367,7 @@ void initEffectFromArgs(void *effectArg, void *argsArg, int arg2) {
     int sqrtCount;
 
     period = args->period;
-    effect = (EfEffect *)effectArg;
+    effect = (EfEffect *)effectOut;
     invPeriod = lbl_80564424;
     mode = args->mode;
     invPeriod = invPeriod / period;
@@ -1457,7 +1457,7 @@ void initEffectFromArgs(void *effectArg, void *argsArg, int arg2) {
         clamped = (clamped > lbl_80564420) ? clamped : lbl_80564420;
         effect->blend = clamped;
     }
-    fn_8028F8C4((int)effectArg);
+    fn_8028F8C4((int)effectOut);
 }
 
 extern int fn_80287B5C(int);
