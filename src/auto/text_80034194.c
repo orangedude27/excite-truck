@@ -123,7 +123,7 @@ extern char DummyCommandBlock_80376AA0[];
 extern void __DVDFSInit(void);
 extern void __DSP_boot_task(void *);
 extern void __DSP_insert_task(void *);
-extern void fn_80038040(void);
+extern void __DVDStateReady(void);
 extern s32 OSGetTick(void);
 extern s32 fn_8003BCDC(s32);
 extern void DCInvalidateRange(void *, u32);
@@ -182,7 +182,7 @@ extern char DummyCommandBlock_80376AA0[32];
 extern s32 OSDisableInterrupts(void);
 extern s32 OSRestoreInterrupts(s32);
 extern void OSWakeupThread(void *queue);
-extern void fn_80038040(void);
+extern void __DVDStateReady(void);
 extern s32 DVDGetCommandBlockStatus(void *block);
 
 #define DVD_DRIVER_TYPES
@@ -278,7 +278,7 @@ enum { MOTOR_STATE_WORKING, MOTOR_STATE_PENDING_STOP, MOTOR_STATE_STOPPED };
 
 // The cancel helpers below, under the names the RVL SDK's DVD.cpp gives them.
 #define DVDCancelAsync DVDCancelAsyncCore   // cancel one command block, answer when done
-#define stateReady     fn_80038040   // start the next command on the waiting queue
+#define stateReady     __DVDStateReady   // start the next command on the waiting queue
 #define stateCoverClosed     fn_8003773C // the drive's cover-closed state
 #define stateBusy            fn_80038368 // the drive's busy state: run the block's command
 #define CoverAlarmHandler    fn_8003801C // the alarm that polls the cover register
@@ -1350,7 +1350,7 @@ void fn_80035A04(u32 result) {
         callback = *(void (**)(s32))((u8 *)block + 0x28); /* block->callback */
         if (callback != 0)
             callback(0);                    /* DVD_RESULT_GOOD */
-        fn_80038040();                      /* start the next queued command */
+        __DVDStateReady();                      /* start the next queued command */
         return;
     }
 
@@ -1399,7 +1399,7 @@ void fn_80035B88(u32 dvdStatus) {
         if (completionCb != 0)
             completionCb(0, currentBlock);
     }
-    fn_80038040();
+    __DVDStateReady();
 }
 
 /* After a DVD error code is stored, re-arm the drive with a low-level command,
@@ -1522,7 +1522,7 @@ static inline BOOL CheckCancel(u32 resume) {
             callback(-3, finished);
         if (lbl_8055D8B8 != 0)
             lbl_8055D8B8(0, finished);
-        fn_80038040();
+        __DVDStateReady();
         return TRUE;
     }
     return FALSE;
@@ -1831,7 +1831,7 @@ void fn_80036624(s32 errorCode) {
             callback(DVD_RESULT_CANCELED, block);
         if (CancelCallback != 0)
             CancelCallback(DVD_RESULT_GOOD, block);
-        fn_80038040();
+        __DVDStateReady();
         complete = 1;
     } else {
         complete = 0;
@@ -2068,7 +2068,7 @@ void fn_80036D24(u32 arg0) {
             }
             if (lbl_8055D8B8 != 0)
                 lbl_8055D8B8(0, (void *)oldBlock);
-            fn_80038040();
+            __DVDStateReady();
             result = 1;
         } else {
             result = 0;
@@ -2167,7 +2167,7 @@ void fn_8003727C(u32 status) {
                 callback(-3, commandBlock);
             if (lbl_8055D8B8 != 0)
                 lbl_8055D8B8(0, commandBlock);
-            fn_80038040();
+            __DVDStateReady();
             resetHandled = 1;
         } else {
             resetHandled = 0;
@@ -2227,7 +2227,7 @@ void fn_800373E0(u32 arg0) {
             callback(-3, block);
         if (lbl_8055D8B8 != 0)
             lbl_8055D8B8(0, block);
-        fn_80038040();
+        __DVDStateReady();
         resetDone = 1;
     } else {
         resetDone = 0;
@@ -2315,7 +2315,7 @@ void fn_8003773C(void) {
         callback = *(void (**)(s32, void *))((char *)block + 0x28);
         if (callback != 0)
             callback(-4, block);
-        fn_80038040();
+        __DVDStateReady();
         break;
     }
     case 32:
@@ -2617,7 +2617,7 @@ extern s32 lbl_8055D8B4, lbl_8055D878;
  * every block is failed where it stands and the next one is taken in turn.
  * (The file calls this state stateReady.)
  */
-void fn_80038040(void) {
+void __DVDStateReady(void) {
     void *block;
     void *failedBlock;
     void (*callback)(s32, void *);
@@ -2790,7 +2790,7 @@ void fn_80038368(void *block) {
      executing_8055D8C8 = (int)DummyCommandBlock_80376AA0;
      *(int *)(previousBlock+0xc) = 0; /* state = DVD_STATE_IDLE */
      if (*(void (**)(int))(previousBlock+0x28)) (*(void (**)(int))(previousBlock+0x28))(0);
-     fn_80038040();                   /* stateReady() */
+     __DVDStateReady();                   /* stateReady() */
      break;
    }
    fn_8003BCDC(0);                   /* DVDLowClearCoverInterrupt(NULL) */
@@ -2829,7 +2829,7 @@ void fn_80038368(void *block) {
      executing_8055D8C8 = (int)DummyCommandBlock_80376AA0;
      *(int *)(previousBlock+0xc) = 0;
      if (*(void (**)(int))(previousBlock+0x28)) (*(void (**)(int))(previousBlock+0x28))(0);
-     fn_80038040(); break;
+     __DVDStateReady(); break;
    }
    fn_8003BCDC(0);
    {
@@ -2906,7 +2906,7 @@ void fn_80038870(u32 arg0) {
             cbp = *(void **)(block + 0x28);
             if (cbp != 0) ((void (*)(s32, void *))cbp)(-3, block);
             if (lbl_8055D8B8 != 0) lbl_8055D8B8(0, block);
-            fn_80038040();
+            __DVDStateReady();
             flag = 1;
         } else flag = 0;
         if (flag == 0 && MotorState_8055D8A8 != 2U) {
@@ -2939,7 +2939,7 @@ void fn_80038870(u32 arg0) {
             cbp = *(void **)(block + 0x28);
             if (cbp != 0) ((void (*)(s32, void *))cbp)(-3, block);
             if (lbl_8055D8B8 != 0) lbl_8055D8B8(0, block);
-            fn_80038040();
+            __DVDStateReady();
             return;
         }
         if (arg0 & 1) {
@@ -2951,7 +2951,7 @@ void fn_80038870(u32 arg0) {
                 *(s32 *)(block + 0xC) = 0;
                 cbp = *(void **)(block + 0x28);
                 if (cbp != 0) ((void (*)(s32, void *))cbp)(0, block);
-                fn_80038040();
+                __DVDStateReady();
                 return;
             }
             if (CMD == 0x20) {
@@ -2965,7 +2965,7 @@ void fn_80038870(u32 arg0) {
                 *(s32 *)(block + 0xC) = 0;
                 cbp = *(void **)(block + 0x28);
                 if (cbp != 0) ((void (*)(s32, void *))cbp)(0, block);
-                fn_80038040();
+                __DVDStateReady();
                 return;
             }
             if (lbl_8055D858 != 0) {
@@ -2977,7 +2977,7 @@ void fn_80038870(u32 arg0) {
                 cbp = *(void **)(block + 0x28);
                 if (cbp != 0) ((void (*)(s32, void *))cbp)(-3, block);
                 if (lbl_8055D8B8 != 0) lbl_8055D8B8(0, block);
-                fn_80038040();
+                __DVDStateReady();
                 flag = 1;
             } else flag = 0;
             if (flag == 0) {
@@ -2994,7 +2994,7 @@ void fn_80038870(u32 arg0) {
                     *(s32 *)(block + 0x10) = flag;
                     cbp = *(void **)(block + 0x28);
                     if (cbp != 0) ((void (*)(void))cbp)();
-                    fn_80038040();
+                    __DVDStateReady();
                     return;
                 }
                 if (CMD == 0x24) {
@@ -3007,7 +3007,7 @@ void fn_80038870(u32 arg0) {
                     *(s32 *)(block + 0x10) = flag;
                     cbp = *(void **)(block + 0x28);
                     if (cbp != 0) ((void (*)(void))cbp)();
-                    fn_80038040();
+                    __DVDStateReady();
                     return;
                 }
                 if (CMDN == 1 || CMDN == 4 || CMDN == 5 || CMDN == 0x21 || CMDN == 0xE) cmd_valid = 1;
@@ -3023,7 +3023,7 @@ void fn_80038870(u32 arg0) {
                     *(s32 *)(block + 0xC) = 0;
                     cbp = *(void **)(block + 0x28);
                     if (cbp != 0) ((void (*)(s32, void *))cbp)(*(s32 *)(block + 0x20), block);
-                    fn_80038040();
+                    __DVDStateReady();
                     return;
                 }
                 if ((u32)(CMDN - 9) <= 3) cmd_valid = 1;
@@ -3040,7 +3040,7 @@ void fn_80038870(u32 arg0) {
                     *(s32 *)(block + 0xC) = 0;
                     cbp = *(void **)(block + 0x28);
                     if (cbp != 0) ((void (*)(u32, void *))cbp)(arg, block);
-                    fn_80038040();
+                    __DVDStateReady();
                     return;
                 }
                 block = (char *)executing_8055D8C8;
@@ -3048,7 +3048,7 @@ void fn_80038870(u32 arg0) {
                 *(s32 *)(block + 0xC) = 0;
                 cbp = *(void **)(block + 0x28);
                 if (cbp != 0) ((void (*)(s32, void *))cbp)(0, block);
-                fn_80038040();
+                __DVDStateReady();
             }
         } else {
             if (CMD == 0xE) {
@@ -3066,7 +3066,7 @@ void fn_80038870(u32 arg0) {
                     cbp = *(void **)(block + 0x28);
                     if (cbp != 0) ((void (*)(s32, void *))cbp)(-3, block);
                     if (lbl_8055D8B8 != 0) lbl_8055D8B8(0, block);
-                    fn_80038040();
+                    __DVDStateReady();
                     flag = 1;
                 } else flag = 0;
                 if (flag == 0) {
@@ -3075,7 +3075,7 @@ void fn_80038870(u32 arg0) {
                     *(s32 *)(block + 0xC) = 0;
                     cbp = *(void **)(block + 0x28);
                     if (cbp != 0) ((void (*)(s32))cbp)(*(s32 *)(block + 0x20));
-                    fn_80038040();
+                    __DVDStateReady();
                 }
             } else {
                 fn_800356F4(0x27, 0, 0);
@@ -3117,7 +3117,7 @@ s32 DVDReadAbsAsyncPrio(void *block, void *addr, s32 length, s32 offset, void *c
     *(u32 *)((u8 *)block + 0xC) = 2;
     result = __DVDPushWaitingQueue(prio, block);
     if (executing_8055D8C8 == 0 && lbl_8055D84C == 0) {
-        fn_80038040();
+        __DVDStateReady();
     }
     OSRestoreInterrupts(savedInterrupts);
     return result;
@@ -3143,7 +3143,7 @@ s32 DVDInquiryAsync(void *block, void *addr, void *callback) {
     *(u32 *)((u8 *)block + 0xC) = 2;
     result = __DVDPushWaitingQueue(2, block);
     if (executing_8055D8C8 == 0 && lbl_8055D84C == 0) {
-        fn_80038040();
+        __DVDStateReady();
     }
     OSRestoreInterrupts(enabled);
     return result;
@@ -3280,7 +3280,7 @@ extern s32 __DVDDequeueWaitingQueue(void *);
                 block->state = DVD_STATE_CANCELED;
                 if (block->callback) block->callback(DVD_RESULT_CANCELED, block);
                 if (callback) callback(DVD_RESULT_GOOD, block);
-                fn_80038040();
+                __DVDStateReady();
                 break;
             }
             // Otherwise the drive has to stop first, like the states below.
@@ -3305,14 +3305,14 @@ extern s32 __DVDDequeueWaitingQueue(void *);
         block->state = DVD_STATE_CANCELED;
         if (block->callback) block->callback(DVD_RESULT_CANCELED, block);
         if (callback) callback(DVD_RESULT_GOOD, block);
-        fn_80038040();
+        __DVDStateReady();
         break;
     case DVD_STATE_MOTOR_STOPPED:
         ExecutingBlock = (s32)DummyBlock;
         block->state = DVD_STATE_CANCELED;
         if (block->callback) block->callback(DVD_RESULT_CANCELED, block);
         if (callback) callback(DVD_RESULT_GOOD, block);
-        fn_80038040();
+        __DVDStateReady();
         break;
     }
     OSRestoreInterrupts(enabled);
