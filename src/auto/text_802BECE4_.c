@@ -461,7 +461,7 @@ extern "C" void fn_802BF600(void *arg0, void *dst, void *src)
   *((float *) (((char *) dst) + 0x28)) += lbl_80564DB0 * lbl_8055FAE0;
 }
 #pragma scheduling reset
-extern "C" void *fn_802BF780(void *);
+extern "C" void *initWaterEnvMap(void *);
 #pragma dont_inline on
 extern "C" int fn_802BF6AC(void) {
     /* Allocate and construct a water-env-map object; if initialization fails (f2() == 0), delete it and return NULL. */
@@ -475,7 +475,7 @@ extern "C" int fn_802BF6AC(void) {
     extern const char lbl_8034AD90[];
     Dummy *obj = (Dummy *)fn_801284F8(0x18, lbl_8034AD90);
     if (obj != 0) {
-        obj = (Dummy *)fn_802BF780(obj);
+        obj = (Dummy *)initWaterEnvMap(obj);
     }
     if (obj != 0) {
         if (obj->f2() == 0) {
@@ -542,7 +542,7 @@ struct WaterEnvMap {
  * matrices except the rotations each face needs, the "env_sun.tex" sun
  * billboard texture, a unit quad with colour and texture corners, and its
  * index list -- then hand the table to the object. */
-void *fn_802BF780(void *self) {
+void *initWaterEnvMap(void *self) {
     char *strings = lbl_8034ACA0; /* the file names this object loads */
     register float one, neg, zero;
     float zeroConst;
