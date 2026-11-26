@@ -66,7 +66,7 @@ extern int Block_subBlock(void*, unsigned int, int*);
 // free space (Block_alloc), and links in a fresh block if none fits.
 // Returns the data pointer (8 bytes past the subblock header), or 0 on failure;
 // *outMax receives the largest size the chosen block could serve.
-int fn_80021D48(Block** list, int size, int* outMax) {
+int memAlloc(Block** list, int size, int* outMax) {
     Block* block;
     int ptr;
     if (outMax) *outMax = 0;
