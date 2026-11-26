@@ -5554,6 +5554,8 @@ void fn_801254E4(s32, f32 *, s32, f32 *);
    inverse complex-FFT stages, and fn_801250CC/fn_801252D8/fn_801254E4 are the
    real-FFT folds; the surrounding two-point passes apply the DCT symmetry. */
 void oouraDct(s32 n, s32 isgn, f32 *a, s32 ip, s32 w) {
+    /* Ooura DCT/FFT driver: size the twiddle and cosine tables in the work
+       buffers, then run the sign-selected butterfly and stage transforms in place. */
     s32 twiddleLen;
     s32 cosLen;
     s32 i;
