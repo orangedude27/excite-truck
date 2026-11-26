@@ -31,7 +31,7 @@ typedef struct OverlayQuad {
     s32 texScale;     /* 0x80: S/T of the far corner; the near one is (0, 0) */
     s32 width;        /* 0x84: corners span -width..width (0x2D0 = 720 on NTSC) */
     s32 height;       /* 0x88: corners span -height..height (0x1E0 = 480) */
-    /* 0x8C..0xB0: scroll/drift state, walked every frame by fn_8022FB6C and
+    /* 0x8C..0xB0: scroll/drift state, walked every frame by updateOverlayQuadWander and
      * applied by fn_8022FD9C; the defaults come from .sdata2 in fn_8022F638. */
     f32 scrollOffset; /* 0x8C: random-walk offset, kept inside +-scrollLimit;
                        * fn_8022FD9C turns the quad about Z by scrollOffset * dt */
@@ -70,7 +70,7 @@ typedef struct QuadVtx {
 #define QUAD_INDEXES lbl_802F9FB0 /* {0, 1, 3, 0, 3, 2}: the quad's two triangles */
 #define FLOAT_ZERO lbl_805635FC   /* 0.0f, this unit's float zero in .sdata2 */
 #define RAND_SCALE lbl_80563608   /* 1.0e7f: fixed-point scale of the random
-                                    * steps fn_8022FB6C adds to a quad */
+                                    * steps updateOverlayQuadWander adds to a quad */
 #define gBackQuadList lbl_8055F014 /* head of the OverlayQuad list (QuadNode) */
 #define gBackLeakMsg lbl_80340394  /* "gBack: Some backgrounds still set, deallocating now:" */
 
@@ -84,7 +84,7 @@ void fn_802E30C8(void *);
 extern void *lbl_8055F014;
 extern float lbl_805635FC;
 extern float lbl_8056360C;
-void fn_8022FB6C();
+void updateOverlayQuadWander();
 float fn_80214D48(void);
 void fn_80015EB0();
 void fn_80015E30(void *, float);
@@ -448,7 +448,7 @@ int fn_80129D90(int, int, int);
  * clamped to +-scrollLimit.  With driftOn, each drift velocity is first pushed
  * back by one driftStep once the quad's translation has left +-driftRange,
  * then takes a random step of +-driftStep and is clamped to +-driftLimit. */
-void fn_8022FB6C(OverlayQuad *quad) {
+void updateOverlayQuadWander(OverlayQuad *quad) {
     float scale, value;
     int range;
 
@@ -500,7 +500,7 @@ extern void PSVECNormalize(float *, float *);
 extern void fn_8022FF10(void *, void *);
 extern void fn_80015B20(void *, void *, void *);
 /* One frame of a quad's scroll and drift, run by fn_8022FFE8 right after
- * fn_8022FB6C has wandered the two values: the scroll offset becomes a turn
+ * updateOverlayQuadWander has wandered the two values: the scroll offset becomes a turn
  * about Z of scrollOffset * dt composed into the quad's transform, and the
  * drift velocity moves the transform's translation row by driftVel * dt.
  * Multiplying basis rows around like that lets them drift out of true, so the
@@ -597,7 +597,7 @@ void fn_8022FF90(void *quad) {
 }
 
 void fn_8022FFE8(int quad) {
-#define wanderScrollDrift fn_8022FB6C
+#define wanderScrollDrift updateOverlayQuadWander
 #define frameScale fn_80214D48
 #define applyScrollDrift fn_8022FD9C
     /* Update one OverlayQuad for a frame: wander its scroll/drift values, then apply them with the global frame scale and re-orthonormalize its basis. */
