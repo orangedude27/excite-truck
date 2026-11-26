@@ -548,7 +548,7 @@ extern "C" void fn_801584A8(void*);
 extern "C" void fn_801584C4(void**);
 extern "C" void* fn_801284F8(u32, void*);
 extern "C" char lbl_8032EB0C[];
-extern "C" void* fn_801572A4(s32 configPtr, s32 courseIndex, s32 initValue) {
+extern "C" void* BonusGroup_create(s32 configPtr, s32 courseIndex, s32 initValue) {
     #pragma scheduling invalid_target
     /* Build the per-course group of bonus trackers (ArrayTracker): reset this
        course's score multiplier, allocate the group, attach the counter-sound
@@ -1388,7 +1388,7 @@ extern "C" void *fn_80158374(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 
 /* No-op reset hook: called with a pointer to the initial score-multiplier value
- * while building a per-course bonus-tracker group (fn_801572A4), but the base
+ * while building a per-course bonus-tracker group (BonusGroup_create), but the base
  * implementation ignores it.  Compiles to a bare 'blr'. */
 extern "C" void fn_801584A4(void* initValue) {
 }
@@ -3066,7 +3066,7 @@ extern "C" void fn_8015B864(void *arg0) {
 // "turbo_close_call", "high_speed", "360", "roll", "car_throw", "jump_combo",
 // "car_hit_car", "crash", "ring") are in the table at lbl_8032E540, indexed by
 // the tracker's GetType().  A tracker owns mCount (tracker+0xC) records of
-// 0x38 bytes at tracker+0x8, filled in by fn_801572A4 from the bonus config
+// 0x38 bytes at tracker+0x8, filled in by BonusGroup_create from the bonus config
 // ("rank", "adj", "thresh" and a value):
 //
 //     s32 count;        // 0x00 times a value was scored here
@@ -3151,7 +3151,7 @@ struct BonusDisplay {
 };
 
 // The per-course group of bonus trackers (allocation tag "arraytracker", built by
-// fn_801572A4 and kept at contest-entry+0x9F4).  It owns one tracker per bonus
+// BonusGroup_create and kept at contest-entry+0x9F4).  It owns one tracker per bonus
 // category -- "air", "drift", "ccall", "360", "throw", "jmpcmb", "carhit",
 // "crash" and "ring" -- and implements the tracker interface itself by handing
 // every call to the trackers in its array (fn_8015E2C8, fn_8015E4CC, fn_8015E568,

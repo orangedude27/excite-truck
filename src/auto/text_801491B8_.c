@@ -4573,7 +4573,7 @@ extern void fn_801552C8(void **), fn_80155318(void *);
 extern s32 fn_8014F088(s32,s32);
 extern void *fn_802076A0(void *,s32,s32,s32);
 extern s32 RegisterTextureByName(void *,s32);
-extern s32 fn_801572A4(void *,s32,void *);
+extern s32 BonusGroup_create(void *,s32,void *);
 extern void fn_801EA1E0(void *,s32,f32,f32);
 extern void *fn_8000DA10(void);
 extern void LoadIntOptionValue(void *,void *,s32 *);
@@ -4649,7 +4649,7 @@ void fn_80154D30(char *p) {
             if(fn_8012C33C(path2)) *(s32 *)(entry+0xaa0)=RegisterTextureByName(path2,0);
             else { ((void (*)(char *,...))fn_802E30C8)((char *)strings+0xd90,path2); *(s32 *)(entry+0xaa0)=RegisterTextureByName(fallback,0); }
         }
-        *(s32 *)(entry+0x9f4)=fn_801572A4(*(void **)(entry+0x9ec),*(s32 *)(entry+0x9e4),&lbl_8055E24C);
+        *(s32 *)(entry+0x9f4)=BonusGroup_create(*(void **)(entry+0x9ec),*(s32 *)(entry+0x9e4),&lbl_8055E24C);
         *(void **)(entry+0xa94)=0; *(void **)(entry+0xa90)=0;
         if(!iscar) {
             sound=fn_802076A0(strings+0xdb4,1,*(s32 *)(entry+0x9e4),2);
