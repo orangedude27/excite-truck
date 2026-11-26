@@ -7366,7 +7366,7 @@ void fn_8005E8C0(OSAlarm* pAlarm, OSContext* pContext)
  * stamps the two activity timers with the current system time and zeroes the
  * channel's entry in the connection table.
  */
-void WPADiResetChannel_8005E8E0(s32 chan)
+/* Reset one WPAD channel control block to its just-connected state: clear read/extension/status/auto-sampling fields and both command queues, mark the handshake pending, stamp the activity timers, and clear the channel's connection-table entry. */ void WPADiResetChannel_8005E8E0(s32 chan)
 {
     WPADCB* pCB = lbl_8038F4F0[chan];
     u8* p = (u8*)pCB;
