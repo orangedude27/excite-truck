@@ -1817,7 +1817,7 @@ void fn_801AD28C(void *arg0, void *arg1, void *arg2, Vec *arg3, f32 farg1, f32 f
    force and pushed into the body at the anchor - and, for a spring between two
    bodies, into the other body the other way round. */
 #pragma scheduling invalid_target
-void applySpringForce(Spring *spring) {
+/* Measure a spring between a body anchor and its target, store its stretch/flat distance, and apply the damping plus stretch force to both connected bodies. */ void applySpringForce(Spring *spring) {
     extern double fn_8002F234(float);              /* sqrt */
     extern float lbl_8056247C;                     /* 0.0f */
     extern float lbl_805624A4;                     /* -1.0f */
