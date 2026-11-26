@@ -855,7 +855,7 @@ done:
     return 1;
 }
 
-/* Gauge widget: a horizontal progress bar whose Draw method is fn_802465A4
+/* Gauge widget: a horizontal progress bar whose Draw method is drawBarWidget
  * (vtable lbl_803430E8, dtor fn_80246428).  Only the fields the draw uses are
  * named here. */
 struct BarWidget {
@@ -904,7 +904,7 @@ extern void fn_80235758(int, int, int, float, float, float, float, float, float,
  * (fn_80235758's u1 argument is the fraction to show).  The frame row is then
  * drawn over the whole bar at its natural size.  Without an image the fill is
  * just a plain rectangle of the widget's own box. */
-void fn_802465A4(struct BarWidget *widget) {
+void drawBarWidget(struct BarWidget *widget) {
     float x, y, midX;
     float width, height, leftWidth, rightWidth, midWidth, totalWidth, barHeight, fillWidth, partWidth;
     int image;
