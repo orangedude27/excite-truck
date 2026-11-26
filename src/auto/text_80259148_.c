@@ -1425,7 +1425,7 @@ f32 fn_8025B0C4(f32 radians) {
 }
 
 /* Copy 36 bytes (9 words) from src to dst. */
-void copyNineWords(void *dst, const void *src) {
+/* Copy a fixed 36-byte (nine-word) block from src to dst. */ void copyNineWords(void *dst, const void *src) {
     struct Copy {
         u32 words[9];
     };
