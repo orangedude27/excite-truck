@@ -30,8 +30,8 @@ extern void *memcpy(void *, const void *, u32);
 
 extern void fn_8011AF94(f32 *, s32, void *, f32 *, s32);
 extern void fn_801200BC(s32, s32, f32 *, s32, s32);
-/* Ooura's real-sequence DCT; the linked symbol stays fn_8012023C. */
-#define oouraDct fn_8012023C
+/* Ooura's real-sequence DCT; the linked symbol stays fftDct. */
+#define oouraDct fftDct
 extern void oouraDct(s32, s32, f32 *, s32, s32);
 typedef struct {
     u32 value;
