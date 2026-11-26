@@ -1150,7 +1150,7 @@ void fn_8022BD40(int arg0, int i19arg, int arg2_, unsigned char i20_, float farg
     }
 }
 #pragma cplusplus on
-void loadTextStyleOverrides(void) {
+/* Load UI text style overrides from the style config: for each "style" node, build a 0x58-byte descriptor from the lbl_802F9F58 defaults plus the node's properties and install it in the 0x100-entry style table. */ void loadTextStyleOverrides(void) {
     /* Load UI text style overrides from the style config: for each "style" node,
      * fill a 0x58-byte descriptor from the lbl_802F9F58 defaults plus the node's
      * properties and install it in the 0x100-entry style table via fn_8022A858. */
