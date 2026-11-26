@@ -1084,7 +1084,7 @@ void *fn_80248140(void *object, int shouldDelete) {
 
 /* "logo_mover" (fn_802483E0): the animation of the "thankyou.lyt" text.  While
  * it runs it installs warpTextPosition as the text drawer's position-warp hook. */
-extern s32 lbl_8055F274;                /* ms stamp of when the animation started */
+extern s32 animationStartMs;                /* ms stamp of when the animation started */
 extern float lbl_805638AC, lbl_805638B0, lbl_805638B4, lbl_805638B8;
 extern double sin(double);
 /* The hook's curve: nine (screen x, vertical offset) control points, the x
@@ -1106,7 +1106,7 @@ extern float lbl_80563898, lbl_805638AC, lbl_805638B0, lbl_805638B4, lbl_805638B
  * settles onto the position it was given; outside that one-second window the
  * clamps leave `remaining` at 0 and the glyph passes through untouched. */
 void warpTextPosition(float *outX, float *outY, float x, float y) {
-#define startTime   lbl_8055F274 /* ms stamp fn_802483E0 took at the start */
+#define startTime   animationStartMs /* ms stamp fn_802483E0 took at the start */
 #define one         lbl_80563898 /* 1.0f */
 #define msPerSecond lbl_805638AC /* 1000.0f */
 #define zero        lbl_805638B0 /* 0.0f */
@@ -1259,7 +1259,7 @@ void fn_802483E0(void)
   frame.item[17] = lbl_804988F0[2];
   frame.item[18] = lbl_804988F0[3];
   frame.item[19] = lbl_804988F0[4];
-  lbl_8055F274 = KERNEL_GetTimeMs();
+  animationStartMs = KERNEL_GetTimeMs();
   frame.args[1] = lbl_802FA478[1];
   frame.args[2] = lbl_802FA478[2];
   frame.item[8] = zero;
