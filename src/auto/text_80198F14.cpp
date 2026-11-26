@@ -1660,7 +1660,7 @@ extern f32 lbl_8056232C;
    (+0x58).  Sides closer than 0.1 (squared) simply get the larger of the two.
    Both radii are stored at +0x24, which fn_8019B068 then runs the collision
    between the two positions with. */
-extern "C" void fn_8019D19C(void *object, void *shape) {
+extern "C" void applyFloorInfluence(void *object, void *shape) {
     CollisionObject *obj = (CollisionObject *)object;
     CollisionObject *floorShape = (CollisionObject *)shape;
     {
@@ -2719,7 +2719,7 @@ extern "C" void fn_8019F26C(s32 context, void *shape) {
     u32 shapeType = *(u32 *)((u8 *)shape + 0x18);
     switch (shapeType) {
     case 'FLSR':
-        fn_8019D19C((void *)context, shape);
+        applyFloorInfluence((void *)context, shape);
         return;
     case 'SPHR':
         fn_8019CE4C(shape, (void *)context);
