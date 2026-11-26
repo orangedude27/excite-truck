@@ -807,21 +807,21 @@ void uiAnime_scriptGetSetValue(int channel, float *valuesOut, float valueIn)
      * channel/direction pair calls for it) to the matching manager and always
      * to the third manager at +0x30. */
     float value = valueIn;
-    float firstValue, var_f2;
-    void *p;
+    float firstValue, secondValue;
+    void *manager;
     if (channel == 0) {
-        p = *(void **)(lbl_8055F0C0 + 0x28);
-        if (p) firstValue = call_get_37AA0(p);
+        manager = *(void **)(lbl_8055F0C0 + 0x28);
+        if (manager) firstValue = call_get_37AA0(manager);
         else firstValue = lbl_805636E0;
         valuesOut[0] = firstValue;
-        p = *(void **)(lbl_8055F0C0 + 0x2C);
-        if (p) var_f2 = call_get_37AA0(p);
-        else var_f2 = lbl_805636E0;
-        valuesOut[1] = var_f2;
+        manager = *(void **)(lbl_8055F0C0 + 0x2C);
+        if (manager) secondValue = call_get_37AA0(manager);
+        else secondValue = lbl_805636E0;
+        valuesOut[1] = secondValue;
         if ((unsigned char)lbl_8055F0C0[0x21] == 0) {
-            double tmp = var_f2;
+            double swapTemp = secondValue;
             valuesOut[1] = valuesOut[0];
-            valuesOut[0] = tmp;
+            valuesOut[0] = swapTemp;
         }
         if ((unsigned char)lbl_8055F0C0[0x1F] != 0) valuesOut[0] = lbl_805636E0;
         if ((unsigned char)lbl_8055F0C0[0x20] != 0) valuesOut[1] = lbl_805636E0;
@@ -832,14 +832,14 @@ void uiAnime_scriptGetSetValue(int channel, float *valuesOut, float valueIn)
             if ((unsigned char)lbl_8055F0C0[0x21] == 0) value = lbl_805636E4 - valueIn;
         }
         if ((unsigned int)(channel == 3) == (unsigned char)lbl_8055F0C0[0x21]) {
-            p = *(void **)(lbl_8055F0C0 + 0x2C);
-            if (p) call_set_37AA0(p, value);
+            manager = *(void **)(lbl_8055F0C0 + 0x2C);
+            if (manager) call_set_37AA0(manager, value);
         } else {
-            p = *(void **)(lbl_8055F0C0 + 0x28);
-            if (p) call_set_37AA0(p, value);
+            manager = *(void **)(lbl_8055F0C0 + 0x28);
+            if (manager) call_set_37AA0(manager, value);
         }
-        p = *(void **)(lbl_8055F0C0 + 0x30);
-        if (p) call_set_37AA0(p, value);
+        manager = *(void **)(lbl_8055F0C0 + 0x30);
+        if (manager) call_set_37AA0(manager, value);
     }
 }
 #pragma pop
