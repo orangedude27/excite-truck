@@ -107,7 +107,7 @@ u8 VFiPFENT_CalcCheckSum(u8* p_ent) {
 }
 
 /* ---- VFiPFFAT_TraceClustersChain@0x800AF474 ---- */
-extern s32 fn_800AF5A0(void* p_ffd, u16 start_clst);
+extern s32 readFat12Entry(void* p_ffd, u16 start_clst);
 extern s32 fn_800AFE14(void* p_ffd);
 extern s32 fn_800B0258(void* p_ffd);
 
@@ -117,7 +117,7 @@ s32 VFiPFFAT_TraceClustersChain(void* p_ffd, u32 start_clst, u32 size,
 
     switch (*(u32*)&((u8*)p_ffd)[0x1C]) {
     case 0:
-        err = fn_800AF5A0(p_ffd, (u16)start_clst);
+        err = readFat12Entry(p_ffd, (u16)start_clst);
         break;
     case 1:
         err = fn_800AFE14(p_ffd);
