@@ -1988,7 +1988,7 @@ extern void MlistSetObjectDraw(int, int, float *);
  * append the entry's position and submit the 3x4 transform as that object's
  * draw transform (MlistSetObjectDraw -> fn_802D0514). */
 #pragma scheduling invalid_target
-void submitSpinTransforms(register void *spinList, register int drawContext) {
+/* For each spin-list entry, build a Y-axis rotation by spinRate * game-time, combine it with the entry's base matrix and position, and submit the 3x4 transform as that object's draw transform. */ void submitSpinTransforms(register void *spinList, register int drawContext) {
     struct SpinEntry {
         int objectIndex;      /* object the finished transform is submitted for */
         float x, y, z;        /* position */
