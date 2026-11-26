@@ -1363,7 +1363,7 @@ extern "C" char lbl_8055A1A8, lbl_8055A1B0;
 extern "C" char lbl_803303EC[], lbl_80330420[];
 /* Read a SinglesPickupMaker table ("coin%d"/"star%d") and add its pickups to
    the manager: one group entry for the table plus one record per placement. */
-extern "C" s32 fn_801699E4(void *checker, DummyArg1 *table, DummyManager *manager) {
+extern "C" s32 addSinglesPickupsFromTable(void *checker, DummyArg1 *table, DummyManager *manager) {
     class NameChecker {
     public:
         virtual void v0();
