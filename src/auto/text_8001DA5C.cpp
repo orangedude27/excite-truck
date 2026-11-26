@@ -574,7 +574,7 @@ extern f32 lbl_805604A4;
 extern u32 lbl_80558D0C;
 #pragma use_lmw_stmw off
 #pragma processor 603
-extern "C" void fn_8001E634(void *arg0v, s32 arg1, s32 arg2) {
+extern "C" void updatePlayerHudSlot(void *arg0v, s32 arg1, s32 arg2) {
     /* Per-player HUD slot update.  arg0v is the overlay's slot array, arg1 the
      * player index (each slot is 4 floats: [0]=start time, [1]=last level,
      * [2]=progress, [3]=last warn level) and arg2 the slot's id.  It picks the
