@@ -81,7 +81,7 @@ s32 fn_802BE378(s32 cellSize) {
 #pragma scheduling invalid_target
 /* Load faninfo.fnf (magic FINF, version 2), byte-swap its words when asked and
    patch the fan-cell grids in lbl_804C06E0 with the per-cell field bits. */
-void fn_802BE38C(void) {
+void loadFanInfo(void) {
     void *finfo;
     u32 params[3];
     u32 fileName;
@@ -138,7 +138,7 @@ extern char lbl_8034AC90[];
 #pragma scheduling invalid_target
 #pragma dont_inline on
 #pragma use_lmw_stmw off
-/* Allocate and clear the FanInfo cell grids for each supported cell size (lbl_804C06E0, indexed by cell size 4..64), then load faninfo.fnf via fn_802BE38C. */
+/* Allocate and clear the FanInfo cell grids for each supported cell size (lbl_804C06E0, indexed by cell size 4..64), then load faninfo.fnf via loadFanInfo. */
 void fn_802BE694(void) {
     s32 cellCount;
     u32 cellSize;
@@ -150,7 +150,7 @@ void fn_802BE694(void) {
             fn_802BE364((char *)lbl_804C06E0[cellSize] + cellIndex * 0xC);
         }
     }
-    fn_802BE38C();
+    loadFanInfo();
 }
 #pragma use_lmw_stmw on
 #pragma scheduling on
