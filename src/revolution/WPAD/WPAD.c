@@ -4146,12 +4146,11 @@ void fn_8006022C(s32 chan)
 /* Requests a controller status report on a ready channel: builds a RPTID_REQUEST_STATUS command with format as its WPADInfo output buffer and data as its completion callback, then pushes it onto the channel's command queue. Returns 0 on success, -2 if not ready or the queue is full, or the channel's prior error status. */
 #pragma push
 #pragma opt_propagation off
-s32 fn_800604E8(s32 chan, s32 format, void* data) {
-    /* Queue a WPAD command for the given channel if the device is ready; returns 0 on success, -2 if busy/not ready, or prior error. */
+s32 fn_800604E8(s32 chan, s32 statusOut, void* callback) {
+    /* Queue a RPTID_REQUEST_STATUS report on a ready channel: check status and handshake, copy the command into a free standard-queue slot and advance its tail. Returns WPAD_ERR_OK, WPAD_ERR_COMMUNICATION_ERROR if unready or full, or the channel's prior error. */
     WPADCB* cb = lbl_8038F4F0[chan];
-    s32 intrState, nestedIntrState, result, devStatus;
+    s32 intrState, nestedIntrState, result, handshakeDone;
     s32 enqueueOk;
-    s32 head;
     s32 negTwo;
     s32 resultMask;
     u8 command[0x60] ALIGN(8);
@@ -4159,17 +4158,17 @@ s32 fn_800604E8(s32 chan, s32 format, void* data) {
     s8 usedCount, tailIndex;
     s32 lastSlot, wrapMask;
     intrState = OSDisableInterrupts();
-    devStatus = cb->handshakeDone;
+    handshakeDone = cb->handshakeDone;
     result = cb->readStatus;
     OSRestoreInterrupts(intrState);
-    if (result != -1) {
-        if (devStatus == 0) result = -2;
+    if (result != WPAD_ERR_NO_CONTROLLER) {
+        if (handshakeDone == 0) result = WPAD_ERR_COMMUNICATION_ERROR;
         else {
-            *(u32*)&command[0] = 0x15;
+            *(u32*)&command[0] = RPTID_REQUEST_STATUS;
             *(u16*)&command[0x1A] = 1;
             command[4] = 0;
-            *(void**)&command[0x2C] = data;
-            *(u32*)&command[0x28] = format;
+            *(void**)&command[0x2C] = callback;
+            *(u32*)&command[0x28] = statusOut;
             *(double*)&command[0x30] = *(double*)&command[0];
             *(double*)&command[0x38] = *(double*)&command[8];
             *(double*)&command[0x40] = *(double*)&command[0x10];
@@ -4202,7 +4201,7 @@ s32 fn_800604E8(s32 chan, s32 format, void* data) {
             resultMask = -resultMask;
             resultMask |= enqueueOk;
             resultMask >>= 31;
-            negTwo = -2;
+            negTwo = WPAD_ERR_COMMUNICATION_ERROR;
             result = negTwo & ~resultMask;
         }
     }
