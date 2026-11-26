@@ -49,7 +49,7 @@ extern void fn_80144504(void **);
 extern void *fn_8016CEC0(void *, s32);
 extern void fn_8016CEFC(void *);
 extern void *fn_8016CF08(void *);
-extern void *fn_8016D024(void *);
+extern void *constructRingSetController(void *);
 extern void fn_8016D278(void *);
 extern void **fn_8016CE9C(void *, void **);
 extern void fn_8016A0B0(void);
@@ -486,7 +486,7 @@ extern "C" void *fn_8016BE60(void *setup) {
         fn_80144504((void **)master);
         *(void **)master = lbl_80330990;
         fn_8016D278(master + 4);
-        fn_8016D024(master + 0x30);
+        constructRingSetController(master + 0x30);
         fn_8016CF08(master + 0xAC);
         lbl_8055E378 = (s32)master;
         fn_8016CEFC(master + 4);
@@ -515,7 +515,7 @@ extern "C" void *fn_8016BF74(void *arg0, s32 arg1) {
     /* The seven sounds the controller owns all answer to this: destroy(flag),
      * their vtable's first slot (+8), frees the sound when flag > 0. */
     class Sound { public: virtual void destroy(int); };
-    /* The ring-challenge controller fn_8016D024 builds at +0x30 of the
+    /* The ring-challenge controller constructRingSetController builds at +0x30 of the
      * RingChallengeMaster (lbl_8055E378); only the fields used here. */
     struct Controller {
         /* 0x00 */ void *unk_00;
@@ -1109,7 +1109,7 @@ extern void *fn_802076A0(void *, s32, s32, s32);
 extern s32 fn_80204CF0(void);
 #pragma push
 #pragma optimization_level 4
-void *fn_8016D024(void *controller) {
+void *constructRingSetController(void *controller) {
     /* Construct the ring-set controller the RingChallengeMaster (lbl_8055E378)
        carries at +0x30: link it as the current object of its kind, install its
        vtable, load the obstacle table, the gem art set and the seven sound
@@ -1162,7 +1162,7 @@ void fn_8016D278(void *list) {
 /* --- RingChallengeMaster (lbl_8055E378) -------------------------------------
  * 0x1B4-byte singleton built by fn_8016BE60 under the heap name "ringchalmaster"
  * (lbl_803306D0 + 0x20).  Its ring-set controller sub-object starts at +0x30
- * (constructed by fn_8016D024), so the fields below are that sub-object's
+ * (constructed by constructRingSetController), so the fields below are that sub-object's
  * +0x18 .. +0x44; the same sub-object is what fn_8016DE20 / fn_8016DFB8 /
  * fn_8016E06C / fn_8016E1B4 are handed directly.
  *   +0x48  ring-set list: pointer to the array of 0x14-byte ring-set entries
