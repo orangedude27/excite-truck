@@ -545,7 +545,7 @@ extern void fn_80261688(void *, s32, s32, s32);
 extern void fn_80260E04(s32 *, s32 *);
 extern void fn_80261AA0(void);
 extern void fn_80261A40(s32);
-extern s32 fn_802616A8(void);
+extern s32 selectorMoveCursorUp(void);
 extern s32 selectorMoveCursorDown(void);
 extern s32 fn_80261178(void *);
 extern s32 fn_802610C8(void);
@@ -651,7 +651,7 @@ extern "C" void fn_80260954(s32 arg0) {
                       fn_802619A0(&sp8), 0);
           fn_80261980(&frame.objects[12], (s32)(stringBase + 0x258),
                       fn_80261948(&sp8), 0);
-          fn_80261688(&frame.objects[13], 0x126, 0, (s32)fn_802616A8);
+          fn_80261688(&frame.objects[13], 0x126, 0, (s32)selectorMoveCursorUp);
           fn_80261688(&frame.objects[14], 0x128, 0, (s32)selectorMoveCursorDown);
           fn_80261688(&frame.objects[15], 0xD, -2, (s32)fn_80261178);
           fn_80261688(&frame.objects[16], 0x121, 0, (s32)fn_802610C8);
@@ -919,7 +919,7 @@ extern "C" s32 fn_802610C8(void) {
    groups (the difficulties, from the data source lbl_8055F3E4) and, inside
    each group, its items.  Selector_buildWidgetLists creates the two widget arrays and
    stores them at 0x18 and 0x3C; the input callbacks fn_80261178 (enter),
-   fn_802616A8 (up), selectorMoveCursorDown (down) and fn_80260E30 (leave) move the
+   selectorMoveCursorUp (up), selectorMoveCursorDown (down) and fn_80260E30 (leave) move the
    cursor and repaint both lists, and lbl_8055F3EB says which list the
    cursor is in. */
 typedef struct {
@@ -1052,7 +1052,7 @@ extern "C" s32 fn_80261178(void *unused) {
  * its group once it is inside; either way it stops at the last entry.  Both
  * widget lists are then repainted: the widget the cursor is on gets
  * setCursor(), the items of the group the cursor belongs to are taken out of
- * the dim state, and everything else is dimmed and cleared.  fn_802616A8 is
+ * the dim state, and everything else is dimmed and cleared.  selectorMoveCursorUp is
  * the same walk upwards.
  */
 /* Challenge-selector down input: advance the cursor within the group list or its items, then repaint both widget lists so the active cursor/group items are bright and everything else is dimmed. */ extern "C" s32 selectorMoveCursorDown(void) {
@@ -1146,7 +1146,7 @@ void fn_80261688(void *item, s32 keyCode, s32 delta, s32 handler) {
  * the cursor gets setCursor(), the items of the cursor's group come out of the
  * dim state and everything else is dimmed and cleared.
  */
-extern "C" s32 fn_802616A8(void) {
+extern "C" s32 selectorMoveCursorUp(void) {
     s32 offset;
     s32 i;
 
