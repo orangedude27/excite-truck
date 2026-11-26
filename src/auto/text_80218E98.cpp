@@ -2785,7 +2785,7 @@ extern "C" f32 fabsf(f32);
    neighbouring item.  A step that leaves the value where it was (it is already
    at its limit) asks for the screen's key sound to be skipped.  Returns
    whether the key was used. */
-extern "C" s32 fn_8021C730(MenuValueItem *item, s32 keyCode) {
+extern "C" s32 handleMenuValueKey(MenuValueItem *item, s32 keyCode) {
     s32 *selectedKey = item->selectedKey;
     if (!selectedKey) return 0;
     if (item->key != *selectedKey) return 0;
