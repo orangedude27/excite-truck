@@ -1827,7 +1827,7 @@ static inline float HudEase(float t) {
    "ring challenge master" and "player data" info boxes fade in and out on a
    fixed timeline relative to the round's start.  Skipped entirely while a
    challenge sub-task is still active. */
-extern "C" int fn_8016E328(void *master, int playerIndex) {
+extern "C" int drawCrushHudInfoPanels(void *master, int playerIndex) {
 #define getRoundClock fn_801E7E3C
 #define showCountdown fn_8000FBE4
 #define challengeSubtaskActive fn_80161C38
