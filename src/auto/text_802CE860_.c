@@ -8,7 +8,7 @@ void fn_802CE860(int index) { beginMeshPass(index * 4); }
 
 /* Finish the particle system's dynamic mesh pass: flush the accumulated
  * vertex/index buffers and drop the mesh mode back to idle (endMeshPass). */
-void fn_802CE868(void) { endMeshPass(); }
+void endParticleDraw(void) { endMeshPass(); }
 
 extern void *DrawList_getCurrentMatrix(void);
 extern int fn_801E4F3C(int, int, float, float, float, float, float);

@@ -16,7 +16,7 @@ extern f32 fn_80287BC8(f32, f32);
 extern s32 fn_8028E584(s32, f32 *, f32 *, f32, f32);
 extern void fn_802C8BD0(s32);
 extern s32 fn_802CE860(s32);
-extern void fn_802CE868(void);
+extern void endParticleDraw(void);
 extern void drawBillboardParticle(void *, s32, f32, double, double, double);
 extern f32 lbl_805648D8;
 extern f32 lbl_80564860;
@@ -1982,7 +1982,7 @@ s32 fn_802A79CC(s32 arg0) {
         check:
             if (i < *(s32 *)(object + 4))
                 goto loop;
-            fn_802CE868();
+            endParticleDraw();
         }
 
         DrawList_RestoreNormalMode();
