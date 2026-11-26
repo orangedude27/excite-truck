@@ -451,7 +451,7 @@ extern "C" void fn_80211690(s32 arg0) {
  * all twelve loaded art sets and the "uiaction.res" resource; mode 0 only drops the two
  * blinker art sets that mode had loaded. Finally logs the heap still in use when that
  * changed while the UI was up, and destroys the heap itself. */
-extern "C" void fn_80211D24(int mode) {
+extern "C" void shutdownUISubsystem(int mode) {
 #pragma scheduling invalid_target
     struct Obj { virtual ~Obj(); };
     struct SoundSlot { char pad[8]; Obj *sounds[4]; }; /* the Ent18 fn_80211690 fills */
@@ -513,7 +513,7 @@ extern "C" void fn_80211D24(int mode) {
 }
 #pragma use_lmw_stmw reset
 extern "C" void fn_80211690(s32);
-extern "C" void fn_80211D24(int);
+extern "C" void shutdownUISubsystem(int);
 extern "C" int KERNEL_GetTimeMs(void);
 extern "C" int fn_802ECC10(void);
 extern "C" int lbl_8055EF14;
@@ -527,10 +527,10 @@ extern "C" double lbl_80563448;
 extern "C" void fn_80211F44(void) { fn_80211690(1); }
 
 /* Shuts the UI subsystem down for good: the counterpart of the fn_80211F44
- * bootstrap. The non-zero argument takes fn_80211D24's full-release path,
+ * bootstrap. The non-zero argument takes shutdownUISubsystem's full-release path,
  * which also frees the two menu-arrow art sets and the 3x4 table of loaded
  * fonts (a zero argument there only drops two entries of that table). */
-extern "C" void fn_80211F4C(void) { fn_80211D24(1); }
+extern "C" void fn_80211F4C(void) { shutdownUISubsystem(1); }
 
 extern "C" int fn_80211F54(void) {
     /* True while the UI subsystem set up by fn_80211690 has no mode active (its mode flag is still 0). */
