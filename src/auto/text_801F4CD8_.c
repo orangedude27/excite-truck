@@ -329,10 +329,10 @@ extern "C" int fn_801F52BC(void *self, int sourceId, int outBuf, int outMax) {
 }
 #pragma cplusplus on
 #pragma scheduling on
-extern "C" void snapshotClothSetup(void *out, void *arg1, void *arg2) {
+/* Snapshots cloth/fabric setup: reads four required getter values into 0x18-byte slots of the output, then decodes two optional settings into floats with default fallbacks. */ extern "C" void snapshotClothSetup(void *setupOut, void *getterObject, void *context) {
     char *base = lbl_8033AC68;
-    Getter_801F5344 *object = (Getter_801F5344 *)arg1;
-    volatile float *outFloats = (volatile float *)out;
+    Getter_801F5344 *object = (Getter_801F5344 *)getterObject;
+    volatile float *outFloats = (volatile float *)setupOut;
 
     /* Loads four getter results into 0x18-byte slots of out, logging an error if
      * any is missing, then fills out+0x60/0x64 via fn_801F52BC or defaults. */
@@ -343,17 +343,17 @@ extern "C" void snapshotClothSetup(void *out, void *arg1, void *arg2) {
         Abend_Panic(base + 0xE8);
     }
 
-    fn_801F4F9C(out, object->get(lbl_8055B18C), arg2);
-    fn_801F4F9C((char *)out + 0x18, object->get(lbl_8055B190), arg2);
-    fn_801F4F9C((char *)out + 0x30, object->get(lbl_8055B194), arg2);
-    fn_801F4F9C((char *)out + 0x48, object->get(lbl_8055B198), arg2);
+    fn_801F4F9C(setupOut, object->get(lbl_8055B18C), context);
+    fn_801F4F9C((char *)setupOut + 0x18, object->get(lbl_8055B190), context);
+    fn_801F4F9C((char *)setupOut + 0x30, object->get(lbl_8055B194), context);
+    fn_801F4F9C((char *)setupOut + 0x48, object->get(lbl_8055B198), context);
 
     if (((int (*)(void *, int, void *, int))fn_801F52BC)(
-            arg1, (int)(base + 0x114), (char *)out + 0x60, 4) == 0) {
+            getterObject, (int)(base + 0x114), (char *)setupOut + 0x60, 4) == 0) {
         outFloats[24] = lbl_80562FB8;
     }
     if (((int (*)(void *, int, void *, int))fn_801F52BC)(
-            arg1, (int)(base + 0x120), (char *)out + 0x64, 4) == 0) {
+            getterObject, (int)(base + 0x120), (char *)setupOut + 0x64, 4) == 0) {
         outFloats[25] = lbl_80562FB8;
     }
 }
