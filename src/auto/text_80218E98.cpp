@@ -975,7 +975,7 @@ extern void fn_80218198(s32, s32);
 #pragma dont_inline on
 // Tab handler: advance the focus of the menu group this widget belongs to
 // (its pointer is held at +0x2C) to the next selectable widget.
-extern "C" void fn_802194F4(void* widget) {
+extern "C" void focusNextWidget(void* widget) {
     fn_802179A0(*(s32*)((u8*)widget + 0x2C));
 }
 #pragma dont_inline reset
@@ -4286,7 +4286,7 @@ extern "C" s32 handleTextFieldKey(void *widget, s32 keyCode) {
     case TEXT_KEY_RIGHT: { s32 length=strlen(field->text);s32 cursor=field->cursor;if((u32)cursor<(u32)length){cursor++;field->cursor=cursor;if(field->active!=0)field->dirty=1;}goto handled; }
     case TEXT_KEY_DELETE: { s32 index;char *base;char *current;char next;char *deleteText=field->text;if(strlen(deleteText)!=0){index=field->cursor;if((u32)index<(u32)strlen(deleteText)){goto delete_check;delete_copy:next=current[1];index++;*current=next;delete_check:base=field->text;current=base+index;if((s8)base[index]!=0)goto delete_copy;}}if(field->active!=0)field->dirty=1;goto handled; }
     case TEXT_KEY_BACKSPACE: { s32 index;char *base;char *current;char next;if(strlen(field->text)!=0){index=field->cursor;if(index>0){index--;field->cursor=index;goto backspace_check;backspace_copy:next=current[1];index++;*current=next;backspace_check:base=field->text;current=base+index;if((s8)base[index]!=0)goto backspace_copy;}}if(field->active!=0)field->dirty=1;goto handled; }
-    case TEXT_KEY_TAB: if(isKeyPressed(0xFD)==0)fn_802194F4(widget);else fn_80219508(widget);goto handled;
+    case TEXT_KEY_TAB: if(isKeyPressed(0xFD)==0)focusNextWidget(widget);else fn_80219508(widget);goto handled;
     default:
         if(((u32)key&0x100)==0&&(u32)key>0x1F){
             text=field->text;
