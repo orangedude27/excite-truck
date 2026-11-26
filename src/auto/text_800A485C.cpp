@@ -8045,7 +8045,7 @@ extern "C" s32 VFiPFFILE_Cursor_AdvanceToRead(void *cursor, s32 byteCount, s32 s
     return ok;
 }
 
-extern "C" s32 VFiPFFILE_ReadSectorHead(VFiPFCursor *cur, s32 dest, u32 length, u32 *readOut) {
+/* Read the unaligned head of a three-part file read: bytes from the cursor offset to the end of its current sector. */ extern "C" s32 VFiPFFILE_ReadSectorHead(VFiPFCursor *cur, s32 dest, u32 length, u32 *readOut) {
     /* Read the part of a file read that lies in the rest of the sector the cursor
      * is in - the unaligned head of fn_800B0DEC's three-part read (this part, then
      * fn_800B0A60's whole sectors, then fn_800B0C10's tail).  A cursor already on
