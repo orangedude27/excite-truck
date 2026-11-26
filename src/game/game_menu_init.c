@@ -12,8 +12,9 @@
 #include <extras.h>
 #include <string.h>
 
-/* Readable aliases for the placeholder symbols below; rename_symbol is blocked for this
-   translation unit, so these macros keep the file readable while the emitted symbols stay. */
+/* Readable aliases for the placeholder symbols below. rename_symbol cannot rename these
+   emitted symbols because stray game_menu_init.o artifacts break this unit's build, so
+   these macros keep the file readable while the emitted symbols stay unchanged. */
 #define resolveMenuEntry fn_80005158
 #define selectionString lbl_8034EC58
 #define menuActiveFlag lbl_8055D430
