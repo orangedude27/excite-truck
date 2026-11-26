@@ -6227,7 +6227,9 @@ extern "C" const char lbl_80329530[];
  * inlined here.  Returns the width the print loop measured. */
 #pragma push
 #pragma use_lmw_stmw off
-/* RealName: charWriterWriteString - nw4hbm::ut::CharWriter::Write(const char16 *). */
+/* nw4hbm::ut::CharWriter::Write(const char16 *): validate both pointers, write
+ * the string into a stack copy of the writer, then apply the resulting cursor
+ * to the real writer and return the measured width. */
 extern "C" f32 fn_80112960(void *writer, const u16 *str) {
 #define utf16Strlen fn_8002AEE8
 #define printAndMeasure fn_801142F8
