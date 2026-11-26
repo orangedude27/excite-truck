@@ -8,7 +8,7 @@ extern "C" s32 getBonusTrackerRecordCount(void*);
 extern "C" void stepBonusTrackerAward(void*);
 extern "C" f32 emitBonusTrackerValue(void*, void*);
 extern "C" void clearBonusListenerPending(void*);
-extern "C" f32 fn_80158E80(void*);
+extern "C" f32 getFramePlayerSpeed(void*);
 extern f32 lbl_802F9478[];
 extern "C" f32 fn_801429D0(f32, f32);
 extern "C" f64 lbl_80561780;
@@ -1705,7 +1705,7 @@ extern "C" f32 BonusTracker_updateFromPlayer(void* tracker, void* player) {
     fn_8014AEC8(player);
     if (((s32 (*)(void))fn_80141F7C)() != 0 && self->canTrackPlayer(player) != 0) {
         if (playerProgress > playerLevel) self->onLevelReached();
-        f32 speed = fn_80158E80(player);
+        f32 speed = getFramePlayerSpeed(player);
         f32 scale = lbl_8056177C;
         f32 delta = scale * speed;
         f32 newProgress = playerProgress + delta;
@@ -1799,7 +1799,7 @@ extern "C" void clearBonusListenerPending(void* listener) {
 
 /* Return the speed at +0x25D4 of a frame-driven player; callers multiply it by one
  * 60 Hz frame (lbl_8056177C) to advance that player's progress counters. */
-extern "C" f32 fn_80158E80(void* player) {
+extern "C" f32 getFramePlayerSpeed(void* player) {
     return *(f32*)((u8*)player + 0x25D4);
 }
 

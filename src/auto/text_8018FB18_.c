@@ -52,7 +52,7 @@ extern f32 lbl_805620A0;
 extern f32 lbl_805620A4;
 extern f32 lbl_805620A8;
 extern u8 lbl_8055E529;
-extern f32 fn_80158E80(void *);
+extern f32 getFramePlayerSpeed(void *);
 extern s32 fn_801B851C(s32);
 extern s32 fn_8026B7B4(s32);
 extern s32 fn_80019B54(void);
@@ -763,7 +763,7 @@ extern "C" void fn_80190388(void *arg0)
     unit = ((Car *)*(void **)(self + 0x14))->c10();
     limit = lbl_8055E3C8;
     driver = *(Driver **)(self + 4);
-    f30 = fn_80158E80(*(void **)(self + 0x20));
+    f30 = getFramePlayerSpeed(*(void **)(self + 0x20));
     idx = lbl_8055E3C4;
     lim = driver->entryLimit;
     if (idx >= lim) {
