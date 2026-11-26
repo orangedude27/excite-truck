@@ -543,7 +543,7 @@ struct WaterEnvMap {
  * billboard texture, a unit quad with colour and texture corners, and its
  * index list -- then hand the table to the object. */
 void *initWaterEnvMap(void *self) {
-    char *strings = lbl_8034ACA0; /* the file names this object loads */
+    char *fileNames = lbl_8034ACA0; /* the file names this object loads */
     register float one, neg, zero;
     float zeroConst;
     float oneConst;
@@ -558,13 +558,13 @@ void *initWaterEnvMap(void *self) {
 
     ((struct WaterEnvMap *)self)->vtable = lbl_8034AE40;
     ((struct WaterEnvMap *)self)->target = fn_802CB128(0x100, 0x100, 0, 0);
-    worldPath = strings + 0xFC; /* "worldmodel.mod" */
+    worldPath = fileNames + 0xFC; /* "worldmodel.mod" */
     if (fn_8012C33C(worldPath) != 0) {
         ((struct WaterEnvMap *)self)->worldModel = fn_802C6FC0((int)worldPath, 0, 0);
     } else {
         ((struct WaterEnvMap *)self)->worldModel = -1;
     }
-    envPath = strings + 0x10C; /* "wenv_mod.mod" */
+    envPath = fileNames + 0x10C; /* "wenv_mod.mod" */
     if (fn_8012C33C(envPath) != 0) {
         ((struct WaterEnvMap *)self)->envModel = fn_802C6FC0((int)envPath, 0, 0);
     } else {
@@ -573,7 +573,7 @@ void *initWaterEnvMap(void *self) {
     if (sEnvFacesRef == 0) {
         table = (char *)fn_801284F8(0x1B8, lbl_8055CF84); /* "skybox" heap */
         if (table != 0) {
-            sunPath = strings + 0x11C; /* "env_sun.tex" */
+            sunPath = fileNames + 0x11C; /* "env_sun.tex" */
             if (fn_8012C33C(sunPath) != 0) {
                 ((struct EnvFaces *)table)->sunTexture = RegisterTextureByName(sunPath, 0);
             } else {
