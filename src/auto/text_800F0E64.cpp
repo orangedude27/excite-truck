@@ -5068,7 +5068,7 @@ extern "C" void* allocSeqSound(s32 player, s32 priority, s32 requestedPriority, 
      * is full it takes the sound with the lowest priority away from that list
      * (stopping it first) if the new sound outranks it, and gives up otherwise.
      * The new sound is then built up: the player's first free frame heap, a copy
-     * of the the ambient arg with its update callback, its priority (+0x74) and
+     * of the ambient arg with its update callback, its priority (+0x74) and
      * ambient priority offset (+0x40), and links into the manager's priority
      * list (+0x4, node +0xB8), the player's sound list (+0x00, node +0xC0), the
      * player's priority list (+0x0C, node +0xC8) and the external player's sound
