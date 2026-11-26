@@ -38,7 +38,7 @@ extern void fn_80211F4C(void);
 extern void fn_8023C0EC(void *, s32, s32);
 extern void fn_80018318(void *, s32);
 extern void fn_800126B4(void *, void *, s32, s32);
-extern void fn_80018440(s32 *, s32, void *);
+extern void buildReversedEntryPairs(s32 *, s32, void *);
 extern void fn_8000AB48(void *, s32 *);
 extern s32 fn_802C9A58(void);
 extern void fn_802CED50(s32, s32, s32, s32);
@@ -81,7 +81,7 @@ void fn_8023B7EC(void *context, s32 arg1, s32 arg2, s32 arg3) {
     fn_8023C0EC(context, arg1, arg2);
     fn_80018318((u8 *)context + 0x3F8, arg1);
     fn_800126B4(context, (u8 *)context + 0x3F8, 0, 1);
-    fn_80018440(tempBuf, *(s32 *)((u8 *)context + 0x3E4), (u8 *)context + 0x3F8);
+    buildReversedEntryPairs(tempBuf, *(s32 *)((u8 *)context + 0x3E4), (u8 *)context + 0x3F8);
     fn_8000AB48(context, tempBuf);
 }
 #pragma pop
