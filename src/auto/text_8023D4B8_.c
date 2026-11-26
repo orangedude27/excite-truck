@@ -3,7 +3,7 @@
   
       typedef signed int s32;
 extern __declspec(section ".sdata") char gBrakingLabel[];
-extern __declspec(section ".sdata") char lbl_8055BBC0[];
+extern __declspec(section ".sdata") char gViewLabel[];
 extern __declspec(section ".sdata") char gHornLabel[];
 extern __declspec(section ".sdata") char lbl_8055BC18[];
 extern __declspec(section ".sdata") char lbl_8055BC68[];
@@ -257,7 +257,7 @@ void fn_8023D7CC(void) {
             fn_802E8664(0);
             SetControlOption(slotIndex + 8, (int)gBrakingLabel, optionData + 0x468);
             SetControlOption(slotIndex + 8, (int)gHornLabel, optionData + 0x278);
-            SetControlOption(slotIndex + 8, (int)lbl_8055BBC0, optionData + 0x29C);
+            SetControlOption(slotIndex + 8, (int)gViewLabel, optionData + 0x29C);
             SetControlOption(slotIndex + 8, (int)(optionData + 0x184), lbl_8055BC78);
             SetControlOption(slotIndex + 8, (int)(optionData + 0x16C), lbl_8055BC80);
             break;
@@ -271,7 +271,7 @@ void fn_8023D7CC(void) {
             SetControlOption(slotIndex + 8, (int)(optionData + 0x1CC), (void *)&lbl_8055BC08);
             SetControlOption(slotIndex + 8, (int)gBrakingLabel, optionData + 0x468);
             SetControlOption(slotIndex + 8, (int)gHornLabel, optionData + 0x278);
-            SetControlOption(slotIndex + 8, (int)lbl_8055BBC0, optionData + 0x29C);
+            SetControlOption(slotIndex + 8, (int)gViewLabel, optionData + 0x29C);
             break;
         default:
             Abend_Panic(optionData + 0x474, (int)GetControlScheme);
@@ -633,7 +633,7 @@ int fn_8023E028(void) {
 extern int fn_80128668(void);
 extern void fn_8023DA64(void *, int, int);
 extern char gBrakingLabel[];
-extern char lbl_8055BBC0[];
+extern char gViewLabel[];
 extern char gHornLabel[];
 extern char lbl_8055BC18[];
 extern char lbl_8055BC68[];
