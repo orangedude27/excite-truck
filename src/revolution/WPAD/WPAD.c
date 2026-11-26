@@ -6334,7 +6334,8 @@ void fn_80065934(s32 chan, u8* data)
 // control block's other receive buffer; the WPADiDecodeStatus/WPADiDecodeAccStatus
 // family, without extension data.
 extern f32 lbl_80560CD8;
-void fn_800660E8(s32 chan, u8* data)
+#define decodeWpadReport fn_800660E8
+void decodeWpadReport(s32 chan, u8* data)
 {
     /* View of the control-block fields this decoder touches. */
     typedef struct {
