@@ -1658,8 +1658,8 @@ s32 rebuildDebugWaterLayerList(void) {
     void *object;
     const u8 *rowBytes;
     f32 rowStep;
-    f32 elapsed;
-    s32 withinWindow;
+    f32 elapsedSeconds;
+    s32 inWindow;
     s32 layerSet;
     s32 layerCount;
     s32 i;
@@ -1687,9 +1687,9 @@ s32 rebuildDebugWaterLayerList(void) {
     row.unk14 = *(s32 *)(rowBytes + 0x14);
     row.unk18 = *(s32 *)(rowBytes + 0x18);
     row.unk1C = *(s32 *)(rowBytes + 0x1C);
-    elapsed = (f32)KERNEL_GetTimeMs() / kMsPerSecond - kBaseSeconds;
-    withinWindow = elapsed < kRefSeconds;
-    if (withinWindow != 0) {
+    elapsedSeconds = (f32)KERNEL_GetTimeMs() / kMsPerSecond - kBaseSeconds;
+    inWindow = elapsedSeconds < kRefSeconds;
+    if (inWindow != 0) {
         /* Still inside the window: list every water layer of this entry. */
         void *entry = ((void *(*)(void))fn_802B5B6C)();
         layerSet = *(s32 *)((u8 *)entry + 4);
