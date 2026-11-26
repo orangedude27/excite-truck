@@ -106,7 +106,7 @@ typedef struct { char *name; int state; } UnkStruct_801D701C;
  * constructor installs at +0 and the state its state()/start()/update() methods step
  * through (0 unset, 1 ready, 2 running, 3 finished - see enum TimedEffectState). */
 typedef struct { char *typeInfo; int state; } AseElementHeader;
-/* One "Text_ASE" subtitle cue: fn_801D6D68 constructs it, fn_801D6DC8 reads its
+/* One "Text_ASE" subtitle cue: initTextASE constructs it, fn_801D6DC8 reads its
  * parameters from the value file and fn_801D6EE4 copies it into the on-screen
  * display buffer lbl_80442310 when it is triggered. */
 struct TextAseElement {
@@ -2123,7 +2123,7 @@ void fn_801D6D28(void* cue) {
     *(int*)((char*)cue + 4) = 1;
 }
 #pragma scheduling on
-void fn_801D6D68(UnkStruct_801D701C *object) {
+void initTextASE(UnkStruct_801D701C *object) {
     /* Constructor: install the type/vtable table lbl_80338B98 in the object's
        first field and reset its state. */
     extern char lbl_80338B98[];
@@ -2604,7 +2604,7 @@ extern "C" void *createASEElement(void *arg0) {
     if (stricmp(name, type_text) == 0) {
         object = fn_801284F8(0x8C, alloc_Text_ASE);
         if (object != 0) {
-            object = ((void *(*)(void *))fn_801D6D68)(object); /* Text_ASE ctor */
+            object = ((void *(*)(void *))initTextASE)(object); /* Text_ASE ctor */
         }
         element = object;
         goto done;
