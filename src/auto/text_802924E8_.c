@@ -1186,7 +1186,7 @@ extern char lbl_80349250[];
  * fn_80294530 do the same for the "car" and "wood" chunk systems.
  * modelBase and remapTexture are the profile's "model_base" and
  * "remap_texture" strings, handed over as ints by the file's prototype. */
-void loadTerrainChunkModels(void *object, int modelBase, int instance, int remapTexture) {
+/* Load the terrain chunk effect's chunk models, remapping textures when the profile requests it and leaving missing slots at -1. */ void loadTerrainChunkModels(void *object, int modelBase, int instance, int remapTexture) {
     char name[0x20];
     int count;
     ChunkSys *chunkSys = (ChunkSys *)object;
