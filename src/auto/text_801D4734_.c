@@ -1202,7 +1202,7 @@ int fn_801D5A68(void *sequence) {
 
 extern char lbl_80338D20[];
 /* Initialize an object with primary/secondary vtables and two inline buffer descriptors at +0x10/+0x70. */
-void fn_801D5AA8(void *object) {
+void initObstacleASE(void *object) {
     char *base;
     char *vtable;
     char *inlineBuffer1;
@@ -2470,7 +2470,7 @@ void fn_801D72D0(void *self) {
 }
 
 extern void *fn_801284F8(int, void *);
-extern void fn_801D5AA8(void *);
+extern void initObstacleASE(void *);
 extern int stricmp(const char *, const char *);
 extern char lbl_80338A40[];
 extern char lbl_80338A78[];
@@ -2554,7 +2554,7 @@ extern "C" void *createASEElement(void *arg0) {
     if (stricmp(name, type_obstacle) == 0) {
         object = fn_801284F8(0x17C, alloc_Obstacle_ASE);
         if (object != 0) {
-            object = ((void *(*)(void *))fn_801D5AA8)(object); /* Obstacle_ASE ctor */
+            object = ((void *(*)(void *))initObstacleASE)(object); /* Obstacle_ASE ctor */
         }
         element = object;
         goto done;
