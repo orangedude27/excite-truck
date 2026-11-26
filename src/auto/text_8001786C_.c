@@ -414,7 +414,7 @@ extern "C" void fn_80018030(void *arg0, s32 arg1) {
 
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void applyCarNameOverrides(void *arg0, s32 arg1) {
+/* Patch each entry's linked id from a per-entry car name resolved through the DAV map data interface. */ extern "C" void applyCarNameOverrides(void *arg0, s32 arg1) {
     /* Resolve per-entry car name overrides from a DAV map data interface and patch each entry's linked id. */
     struct DavMapInterface {
         virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
