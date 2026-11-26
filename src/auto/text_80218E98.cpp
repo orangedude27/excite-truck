@@ -8383,8 +8383,10 @@ extern "C" void drawPictureScaled(s32, s32, s32, f32, f32, f32, f32, f32);
 #pragma scheduling invalid_target
 #pragma processor 750
 extern "C" void drawBoxBorder(s32 imageSet, f32 x, f32 y, f32 width, f32 height) {
-    /* Draw the image set's frames across the given region, positioning each
-     * frame by its own extent and stopping at the region's end. */
+    /* Tile an art set's border frames around the rectangle (x, y, width, height):
+     * repeat the top and bottom edge frames across its width, the left and right
+     * edge frames down its height (stretching the last frame to fit), then place
+     * the four corner frames. */
     if (imageSet) {
         {
             f32 pos = lbl_805634A8;
