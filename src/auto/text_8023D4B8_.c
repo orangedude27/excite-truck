@@ -18,7 +18,7 @@ extern void fn_802E30C8(void *);
    schemes 1/3 to toggle rumble; empty in this build. */
 extern void fn_802E8664(int);
 /* Initialize the four-entry player-to-control-slot map (mapping[i] = i). */
-extern void fn_80137D10(void);
+extern void initControlSlotMap(void);
 #pragma dont_inline getControlScheme
 
 /* One row of the configurable-control table at lbl_802FA190 (17 rows): the name of a
@@ -234,7 +234,7 @@ void fn_8023D7CC(void) {
     char *optionData = sOptionData;
     int slotIndex;
     int scheme;
-    fn_80137D10();
+    initControlSlotMap();
     slotIndex = 0;
     do {
         ApplyControlDefaults((void *)slotIndex, 1, 0);
@@ -647,7 +647,7 @@ extern char gPOVAnyLabel[];
 extern char gHorn2Label[];
 extern char gJBUpLabel[];
 extern char gJBDownLabel[];
-extern void fn_80137D10(void);
+extern void initControlSlotMap(void);
 
 extern void fn_802E30C8(void *);
 extern void fn_802E8664(int);

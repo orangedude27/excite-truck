@@ -215,7 +215,7 @@ int __AXGetStackHead_80137CFC(int slot) {
     return lbl_8042F798[slot];
 }
 
-void fn_80137D10(void) {
+void initControlSlotMap(void) {
     /* Initialize the 4-entry table by setting each slot's mapping to its own index (via fn_80137C84). */
     int index = 0;
     do {
