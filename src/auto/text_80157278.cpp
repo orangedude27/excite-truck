@@ -3123,7 +3123,7 @@ struct BonusTracker {
     virtual void v27();
     virtual void v28();
     virtual s32 GetType();         // 0x7C bonus category
-    // Past the category getters, the trackers that run on a timer (fn_8015CFFC,
+    // Past the category getters, the trackers that run on a timer (updateDashBonusTracker,
     // fn_8015C264 and fn_80159F2C) use these:
     virtual void scoreEvent();      // 0x80 score one queued event
     virtual void v30();             // 0x84
@@ -3765,7 +3765,7 @@ extern "C" void fn_8015CF00(Unk801577F0* arg0) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-extern "C" f32 fn_8015CFFC(void *tracker, void *truck) {
+extern "C" f32 updateDashBonusTracker(void *tracker, void *truck) {
     // One frame of the dash bonus tracker: scores every event queued since the
     // last frame (each one restarts the bonus timer and sets the dash sound's
     // scale), counts this frame off the timer and returns the score banked when
