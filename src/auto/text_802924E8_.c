@@ -1548,29 +1548,29 @@ void fn_80294408(void *arg0, const float *arg1, const float *arg2) {
  * and "ter" ones.  modelBase and remapTexture are the strings the profile's
  * "model_base" and "remap_texture" entries give, handed over as ints by the
  * file's prototype. */
-void loadWoodChunkModels(void *object, int modelBase, int instance, int remapTexture) {
+/* Load the wood chunk system's chunk models "<model_base>1.mod".."<base>8.mod", remapping textures when named, and leave unfound slots at -1. */ void loadWoodChunkModels(void *chunkSys, int modelBase, int instance, int remapTexture) {
     char name[0x20];
     int count;
-    ChunkSys *chunkSys = (ChunkSys *)object;
-    chunkSys->modelCount = 0;
+    ChunkSys *sys = (ChunkSys *)chunkSys;
+    sys->modelCount = 0;
     goto check;
 loop:
-    ((void (*)(void *, int, const char *, ...))fn_801345D8)(name, 0x20, lbl_80349250, modelBase, chunkSys->modelCount + 1);
+    ((void (*)(void *, int, const char *, ...))fn_801345D8)(name, 0x20, lbl_80349250, modelBase, sys->modelCount + 1);
     if (fn_8012C33C(name) == 0)  /* no such resource: the list of models ends here */
         goto padding;
     if (remapTexture != 0 && *(s8 *)remapTexture != 0)
         fn_80292CD8(name, instance, (u8 *)remapTexture);
-    chunkSys->models[chunkSys->modelCount] = fn_802C6FC0(name, instance, 0);
-    count = chunkSys->modelCount;
+    sys->models[sys->modelCount] = fn_802C6FC0(name, instance, 0);
+    count = sys->modelCount;
     count++;
-    chunkSys->modelCount = count;
+    sys->modelCount = count;
 check:
-    if (chunkSys->modelCount < 8)
+    if (sys->modelCount < 8)
         goto loop;
 padding:
     {
-        s32 *models = (s32 *)chunkSys;  /* models[2 + i] is model handle i */
-        count = chunkSys->modelCount;
+        s32 *models = (s32 *)sys;  /* models[2 + i] is model handle i */
+        count = sys->modelCount;
         for (; count < 8; count++)
             models[count + 2] = -1;
     }
