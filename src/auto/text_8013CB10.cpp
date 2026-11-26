@@ -227,7 +227,7 @@ extern "C" char lbl_80559D20;
 extern "C" void *fn_8013E6E4(void *arg0);
 extern "C" void fn_8002F30C(void *, s32, s32, void (*)(), void (*)());
 extern "C" void *fn_801F181C(void *, const char *, void *, void *);
-extern "C" void fn_8013E3A8(void *, void *);
+extern "C" void initTimeBonusParams(void *, void *);
 extern "C" void fn_8013CC20(void *, s32);
 extern "C" void LoadFloatOption(void *, void *, const char *);
 extern "C" void Abend_Panic(const char *, ...);
@@ -898,7 +898,7 @@ extern "C" void *fn_8013D2C4(void *arg0, void *arg1) {
         if (docB != 0 && ((V08_10 *)docB)->v10(&lbl_80559D28) != 0) {
             attr = ((V08_10 *)docB)->v08(&lbl_80559D28);
         }
-        fn_8013E3A8(lbl_8042FB3C, attr);
+        initTimeBonusParams(lbl_8042FB3C, attr);
         void **p64 = fn_801284F8(8, (void *)(base + 0xC0));
         if (p64 != 0) {
             p64 = (void **)fn_8013D8D0(p64, (TPathDocument *)docA);
@@ -1328,7 +1328,7 @@ extern "C" void *fn_8013E33C(void *object, s32 deleteFlag) {
 }
 
 /* The game's one global time-bonus / race-rule block (the .bss block
- * lbl_8042FB3C, 0x3C bytes).  fn_8013E3A8 fills it from the zone's attribute
+ * lbl_8042FB3C, 0x3C bytes).  initTimeBonusParams fills it from the zone's attribute
  * set; the HUD, the path-following code and the scoring code read it back.
  * The four fields the debug menu exposes carry the names at
  * lbl_8032C530+0xE8 ("Time-Bonus Freeze"), +0xFC ("Time-Bonus Fadeout"),
@@ -1353,7 +1353,7 @@ struct TimeBonusParams {
     f32 f38;          /* key +0x300, default 1.0 */
 };
 
-/* The one global instance of that block, filled by fn_8013E3A8. */
+/* The one global instance of that block, filled by initTimeBonusParams. */
 #define gTimeBonus (*(TimeBonusParams *)lbl_8042FB3C)
 
 #pragma scheduling invalid_target
@@ -1362,7 +1362,7 @@ struct TimeBonusParams {
 // by name with the default used when the key - or the whole set - is absent,
 // then the two table-only values are read through fn_80204CFC and the time
 // bonus is scaled by the table's global factor.
-extern "C" void fn_8013E3A8(void *params, void *attrs) {
+extern "C" void initTimeBonusParams(void *params, void *attrs) {
     TimeBonusParams *p = (TimeBonusParams *)params;
     const char *keys = (const char *)lbl_8032C530;
     s32 intValue;
