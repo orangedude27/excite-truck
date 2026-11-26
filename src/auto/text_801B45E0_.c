@@ -504,13 +504,13 @@ void fn_801B5060(int fromFrame, int toFrame, float fraction) {
 #pragma dont_inline on
 #pragma scheduling invalid_target
 #pragma cplusplus on
-/* Per-frame audio update while a replay is playing (fn_80177E14 calls this in
- * place of the empty fn_801B535C): blend the sound parameters of the replay
- * frame covering the current tick with the next one, let every registered
- * sound object write its audio out of the two frames' recorded data, and -
- * once per replay frame - run the command handlers the recorded stream holds.
- * Finishes by telling the replay queue its data was used, and kicks the DSP
- * init callback once the tick has reached the current frame's base tick. */
+/* Per-frame audio update while a replay is playing: blend the sound parameters
+ * of the replay frame covering the current tick with the next one, let every
+ * registered sound object write its audio out of the two frames' recorded data,
+ * and - once per replay frame - run the command handlers the recorded stream
+ * holds.  Finishes by telling the replay queue its data was used, and kicks
+ * the DSP init callback once the tick has reached the current frame's base
+ * tick. */
 extern "C" void updateReplayAudio(void **objects, int objectCount) {
     void *queue = gReplayPacketQueue;
     unsigned char *data;
