@@ -525,74 +525,81 @@ long fn_801ECC8C(unsigned int vehicleRender) {
 }
 
 #pragma dont_inline on
+/* Draw every live vehicle for one render pass, then the current player's vehicle
+ * on its own.  Vehicles belonging to the other pass first get their level-of-detail
+ * index chosen; the light and draw-list state changed for the pass is restored on exit. */
 void drawVehiclesForPass(long renderObj, long pass) {
     void *otherVehicles[8];
-    void *selected;
-    unsigned selectedIndex;
+    void *playerVehicle;
+    unsigned playerVehicleIndex;
     int i, count;
-    int savedState0, savedState1;
-    unsigned objectGroup;
+    int savedDrawColor, savedAmbientColor;
+    unsigned vehicleGroup;
     if (*(int *)(renderObj + 0x40) != 0) return;
     for (i = 0; lbl_80488648[i] != 0 && i < 8; i++) {
         if ((unsigned)pass != fn_801ECC8C(lbl_80488648[i])) fn_801ECB80((void *)lbl_80488648[i]);
     }
-    selectedIndex = fn_801E866C(-1);
-    selected = selectedIndex < 8 ? (void *)lbl_80488648[selectedIndex] : 0;
+    playerVehicleIndex = fn_801E866C(-1);
+    playerVehicle = playerVehicleIndex < 8 ? (void *)lbl_80488648[playerVehicleIndex] : 0;
     count = 0;
     for (i = 0; lbl_80488648[i] != 0 && i < 8; i++) {
-        if ((void *)lbl_80488648[i] != selected) {
+        if ((void *)lbl_80488648[i] != playerVehicle) {
             otherVehicles[count] = (void *)lbl_80488648[i];
             count++;
         }
     }
     lbl_80488668[2] = ((float (*)(float))fn_802C99E8)(lbl_80562E90);
-    savedState0 = setDrawListColor(((int *)lbl_80488668)[0]);
-    savedState1 = setLightAmbientColor(((int *)lbl_80488668)[1]);
+    savedDrawColor = setDrawListColor(((int *)lbl_80488668)[0]);
+    savedAmbientColor = setLightAmbientColor(((int *)lbl_80488668)[1]);
+    /* Attached effect objects of the other vehicles. */
     {
         int k;
         for (k = 0; k < count; k++) {
             void *vehicle = otherVehicles[k];
-            objectGroup = fn_801ECC8C((long)vehicle);
-            if (objectGroup != (unsigned)pass) {
-                if (objectGroup != 0) fn_802AB770(*(int *)((char *)vehicle + 0x40));
+            vehicleGroup = fn_801ECC8C((long)vehicle);
+            if (vehicleGroup != (unsigned)pass) {
+                if (vehicleGroup != 0) fn_802AB770(*(int *)((char *)vehicle + 0x40));
                 fn_801ECF58(vehicle);
-                if (objectGroup != 0) fn_802AB994();
+                if (vehicleGroup != 0) fn_802AB994();
             }
         }
     }
+    /* The model parts of the other vehicles. */
     {
         int k;
         for (k = 0; k < count; k++) {
             void *vehicle = otherVehicles[k];
-            objectGroup = fn_801ECC8C((long)vehicle);
-            if (objectGroup != (unsigned)pass) {
-                if (objectGroup != 0) fn_802AB770(*(int *)((char *)vehicle + 0x40));
+            vehicleGroup = fn_801ECC8C((long)vehicle);
+            if (vehicleGroup != (unsigned)pass) {
+                if (vehicleGroup != 0) fn_802AB770(*(int *)((char *)vehicle + 0x40));
                 drawVehicleParts(vehicle);
-                if (objectGroup != 0) fn_802AB994();
+                if (vehicleGroup != 0) fn_802AB994();
             }
         }
     }
+    /* The wheels of the other vehicles. */
     {
         int k;
         for (k = 0; k < count; k++) {
             void *vehicle = otherVehicles[k];
-            objectGroup = fn_801ECC8C((long)vehicle);
-            if (objectGroup != (unsigned)pass) {
-                if (objectGroup != 0) fn_802AB770(*(int *)((char *)vehicle + 0x40));
+            vehicleGroup = fn_801ECC8C((long)vehicle);
+            if (vehicleGroup != (unsigned)pass) {
+                if (vehicleGroup != 0) fn_802AB770(*(int *)((char *)vehicle + 0x40));
                 fn_801ED2D0(vehicle);
-                if (objectGroup != 0) fn_802AB994();
+                if (vehicleGroup != 0) fn_802AB994();
             }
         }
     }
-    objectGroup = fn_801ECC8C((long)selected);
-    if (objectGroup != (unsigned)pass) {
-        if (objectGroup != 0) fn_802AB770(*(int *)((char *)selected + 0x40));
-        fn_801ED354(selected);
-        if (objectGroup != 0) fn_802AB994();
+    /* The player's vehicle: parts and wheels together. */
+    vehicleGroup = fn_801ECC8C((long)playerVehicle);
+    if (vehicleGroup != (unsigned)pass) {
+        if (vehicleGroup != 0) fn_802AB770(*(int *)((char *)playerVehicle + 0x40));
+        fn_801ED354(playerVehicle);
+        if (vehicleGroup != 0) fn_802AB994();
     }
     ((float (*)(float))fn_802C99E8)(lbl_80488668[2]);
-    setLightAmbientColor(savedState1);
-    setDrawListColor(savedState0);
+    setLightAmbientColor(savedAmbientColor);
+    setDrawListColor(savedDrawColor);
 }
 void fn_801ECF58(void *arg0) {
     long useAltFlag;
