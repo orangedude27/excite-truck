@@ -701,7 +701,7 @@ struct PlacedObj {
  * object, then fills in what every type shares: its placement matrix (optionally transformed by
  * `transform`), model name, drop height, "forbidden in objects file" flag and shadow description,
  * and finally its "name" when the caller asks for it. Returns the new object. */
-extern "C" void *createPlacedObject(void *node, s32 transform, s32 copyName) {
+/* Create a placed object from a parameter node: select the type's creator from placedObjectCreators, then fill the shared placement, model, drop height, forbidden flag, shadow and optional name. */ extern "C" void *createPlacedObject(void *node, s32 transform, s32 copyName) {
     /* The parameter node: reads values and child nodes by key through its vtable. */
     class Node {
     public:
