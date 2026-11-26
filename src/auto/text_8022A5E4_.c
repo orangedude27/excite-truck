@@ -1302,7 +1302,7 @@ float fn_8022CA40(void *obj) {
     }
 }
 
-void initTextRecordFromDescriptor(void *arg0, void *arg1) {
+/* Initializes a UI/text record from a source descriptor: resolves the font texture and resource type, then copies and normalizes its fields. */ void initTextRecordFromDescriptor(void *record, void *descriptor) {
     extern int loadFontTexture(const char *);
     extern unsigned int fn_8022A834(unsigned int);
     extern int gxGetImageArt(const char *);
@@ -1314,13 +1314,13 @@ void initTextRecordFromDescriptor(void *arg0, void *arg1) {
     unsigned char *dest;
     char *name;
     char *resourceName;
-    int converted;
+    int color;
     int src48, src54, src40, src3C, src24, src20, src38, src1C, src8;
     float src4, src50, src4C;
 
     /* Convert/init a UI/text record from a source descriptor: resolve font/texture ids and copy/normalize fields. */
-    src = (unsigned char *)arg1;
-    dest = (unsigned char *)arg0;
+    src = (unsigned char *)descriptor;
+    dest = (unsigned char *)record;
     dest[0] = 1;
     *(int *)(dest + 4) = 0;
     *(int *)(dest + 8) = 0;
@@ -1333,9 +1333,9 @@ void initTextRecordFromDescriptor(void *arg0, void *arg1) {
         *(int *)(dest + 8) = loadFontTexture(name);
     }
     src4 = *(float *)(src + 4);
-    converted = *(int *)(src + 0x0C);
+    color = *(int *)(src + 0x0C);
     *(float *)(dest + 0x34) = src4;
-    *(int *)(dest + 0x0C) = fn_8022A834(converted);
+    *(int *)(dest + 0x0C) = fn_8022A834(color);
     *(int *)(dest + 0x10) = fn_8022A834(*(int *)(src + 0x28));
     *(int *)(dest + 0x14) = fn_8022A834(*(int *)(src + 0x10));
     *(int *)(dest + 0x18) = fn_8022A834(*(int *)(src + 0x2C));
@@ -1344,7 +1344,7 @@ void initTextRecordFromDescriptor(void *arg0, void *arg1) {
     *(int *)(dest + 0x24) = fn_8022A834(*(int *)(src + 0x30));
     *(int *)(dest + 0x28) = fn_8022A834(*(int *)(src + 0x18));
     *(int *)(dest + 0x2C) = fn_8022A834(*(int *)(src + 0x34));
-    converted = fn_8022A834(*(int *)(src + 0x14));
+    color = fn_8022A834(*(int *)(src + 0x14));
 
     resourceName = *(char **)(src + 0x44);
     src8 = *(int *)(src + 8);
@@ -1358,7 +1358,7 @@ void initTextRecordFromDescriptor(void *arg0, void *arg1) {
     src48 = *(int *)(src + 0x48);
     src4C = *(float *)(src + 0x4C);
     src50 = *(float *)(src + 0x50);
-    *(int *)(dest + 0x30) = converted;
+    *(int *)(dest + 0x30) = color;
     *(int *)(dest + 0x38) = src8;
     *(int *)(dest + 0x3C) = src1C;
     *(int *)(dest + 0x40) = src38;
