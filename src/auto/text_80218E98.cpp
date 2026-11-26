@@ -4261,10 +4261,11 @@ enum {
 
 extern "C" s32 strlen(const char *);
 extern "C" s32 isKeyPressed(s32);
-/* Key handler for an editable text field: clamps the caret, then handles
-   home/end/left/right caret motion, backspace/delete erasure, printable-character
-   insertion (shifting the tail right), and tab focus navigation.  Digit virtual
-   keys map to their ASCII codes.  Returns 1 when the key was consumed. */
+extern "C" void focusPreviousWidget(void*);
+/* Key handler of a text-edit field: moves the caret (home/end/left/right),
+   erases with backspace/delete, inserts a typed character at the caret and
+   hands tab to the widget group to move the focus.  Returns whether the key
+   was used. */
 extern "C" s32 handleTextFieldKey(void *widget, s32 keyCode) {
     s32 insertCursor;
     char *text;
@@ -4284,25 +4285,25 @@ extern "C" s32 handleTextFieldKey(void *widget, s32 keyCode) {
     case TEXT_KEY_END: field->cursor=strlen(field->text);if(field->active!=0)field->dirty=1;goto handled;
     case TEXT_KEY_LEFT: { s32 cursor=field->cursor;if(cursor>0){cursor--;field->cursor=cursor;if(field->active!=0)field->dirty=1;}goto handled; }
     case TEXT_KEY_RIGHT: { s32 length=strlen(field->text);s32 cursor=field->cursor;if((u32)cursor<(u32)length){cursor++;field->cursor=cursor;if(field->active!=0)field->dirty=1;}goto handled; }
-    case TEXT_KEY_DELETE: { s32 deleteIndex;char *textBase;char *cursorPtr;char nextChar;char *deleteText=field->text;if(strlen(deleteText)!=0){deleteIndex=field->cursor;if((u32)deleteIndex<(u32)strlen(deleteText)){goto delete_check;delete_copy:nextChar=cursorPtr[1];deleteIndex++;*cursorPtr=nextChar;delete_check:textBase=field->text;cursorPtr=textBase+deleteIndex;if((s8)textBase[deleteIndex]!=0)goto delete_copy;}}if(field->active!=0)field->dirty=1;goto handled; }
-    case TEXT_KEY_BACKSPACE: { s32 eraseIndex;char *textBase;char *cursorPtr;char nextChar;if(strlen(field->text)!=0){eraseIndex=field->cursor;if(eraseIndex>0){eraseIndex--;field->cursor=eraseIndex;goto backspace_check;backspace_copy:nextChar=cursorPtr[1];eraseIndex++;*cursorPtr=nextChar;backspace_check:textBase=field->text;cursorPtr=textBase+eraseIndex;if((s8)textBase[eraseIndex]!=0)goto backspace_copy;}}if(field->active!=0)field->dirty=1;goto handled; }
-    case TEXT_KEY_TAB: if(isKeyPressed(0xFD)==0)focusNextWidget(widget);else fn_80219508(widget);goto handled;
+    case TEXT_KEY_DELETE: { s32 index;char *base;char *current;char next;char *deleteText=field->text;if(strlen(deleteText)!=0){index=field->cursor;if((u32)index<(u32)strlen(deleteText)){goto delete_check;delete_copy:next=current[1];index++;*current=next;delete_check:base=field->text;current=base+index;if((s8)base[index]!=0)goto delete_copy;}}if(field->active!=0)field->dirty=1;goto handled; }
+    case TEXT_KEY_BACKSPACE: { s32 index;char *base;char *current;char next;if(strlen(field->text)!=0){index=field->cursor;if(index>0){index--;field->cursor=index;goto backspace_check;backspace_copy:next=current[1];index++;*current=next;backspace_check:base=field->text;current=base+index;if((s8)base[index]!=0)goto backspace_copy;}}if(field->active!=0)field->dirty=1;goto handled; }
+    case TEXT_KEY_TAB: if(isKeyPressed(0xFD)==0)focusNextWidget(widget);else focusPreviousWidget(widget);goto handled;
     default:
         if(((u32)key&0x100)==0&&(u32)key>0x1F){
             text=field->text;
             if((u32)strlen(text)<(u32)(capacity-1)){
-                char prevChar;
-                char *dest;
-                s32 srcIndex=strlen(text)+1;
+                char previous;
+                char *slot;
+                s32 insertIndex=strlen(text)+1;
                 goto insert_check;
 insert_copy:
-                dest=field->text+srcIndex;
-                prevChar=dest[-1];
-                srcIndex--;
-                *dest=prevChar;
+                slot=field->text+insertIndex;
+                previous=slot[-1];
+                insertIndex--;
+                *slot=previous;
 insert_check:
                 insertCursor=field->cursor;
-                if(srcIndex>insertCursor)goto insert_copy;
+                if(insertIndex>insertCursor)goto insert_copy;
                 text=field->text;
                 text[insertCursor]=key;
                 insertCursor++;
