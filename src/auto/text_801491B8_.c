@@ -1903,7 +1903,7 @@ void fn_8014DE4C(void) {
 
 extern s32 fn_801284F8(s32, void *);
 extern s32 fn_80145E70(void *);
-extern void *fn_8014E1D0(void *, s32);
+extern void *initPlaceBonusEntry(void *, s32);
 extern void *fn_8014E3CC(void *, s32);
 extern void *fn_8014E4BC(void *);
 extern void *fn_8014E154(void *, s32);
@@ -1987,7 +1987,7 @@ extern "C" void *fn_8014DE50(void) {
             *(s32 *)(obj + 0x9DC) = manager->get((char *)strings + 0x418, 3);
             obj[0x8F4] = 1;
         }
-        ((void (*)(void *, void *, void *, s32, s32))fn_8002F53C)(obj + 0x9E4, fn_8014E1D0, fn_8014E154, 0xC0, 8);
+        ((void (*)(void *, void *, void *, s32, s32))fn_8002F53C)(obj + 0x9E4, initPlaceBonusEntry, fn_8014E154, 0xC0, 8);
         lbl_8055E268 = obj;
         lbl_8055E238 = fn_80145E70(strings + 0x424);
         lbl_8055E23C = fn_80145E70(strings + 0x430);
@@ -2016,7 +2016,7 @@ extern "C" void fn_80128670(s32);
 extern "C" void fn_80128668(void *);
 extern "C" void *fn_8014E154(void *object, s32 shouldFree) {
     /* One of the 8 per-car race entries the betarace manager builds at
-     * +0x9E4 (fn_8014DE50).  fn_8014E1D0 loads its place-bonus item list
+     * +0x9E4 (fn_8014DE50).  initPlaceBonusEntry loads its place-bonus item list
      * (place_bonus.val) into items/itemCount with fn_8012850C. */
     struct RaceEntry {
         char pad[0x6C];
@@ -2046,7 +2046,7 @@ extern "C" void *fn_8014E154(void *object, s32 shouldFree) {
 #pragma use_lmw_stmw off
 /* Initialize one race place-bonus entry: load its item list and config values
  * from the place-bonus data table, or fall back to an empty one-item list. */
-extern "C" void *fn_8014E1D0(void *entryPtr, s32 unused) {
+extern "C" void *initPlaceBonusEntry(void *entryPtr, s32 unused) {
     struct PlaceBonusEntry {
         char pad[0x74];
         void **items;
