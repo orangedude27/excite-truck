@@ -4125,7 +4125,7 @@ extern "C" char lbl_8032F39C[];
 extern "C" f32 lbl_8042FD08[];
 #pragma push
 #pragma processor 750
-/* Score one bonus value into the current record and popup, then notify listeners; unlike sibling scorers it leaves the popup count line alone. */ extern "C" void scoreBonusValueBase(Unk801577F0* arg0, f32* arg1) {
+extern "C" void scoreBonusValueBase(Unk801577F0* trackerObj, f32* scoreVal) {
     // Scores one bonus value for this tracker's category: scale it by the
     // "score_scale" config value and by this category's multiplier, show it on
     // the bonus popup while one is up, add it to the record being filled and
@@ -4133,34 +4133,34 @@ extern "C" f32 lbl_8042FD08[];
     // scoring pass; this one never refreshes the popup's count afterwards.
     char text[16];
     f32 scale = fn_80204CFC(CFG_SCORE_SCALE);
-    BonusTracker* tracker = (BonusTracker*)arg0;
-    *arg1 *= scale;
-    *arg1 *= BONUS_TYPE_SCALE[arg0->m4];
-    if (*(BonusDisplay**)((u8*)arg0+0x248) && !((f32)__fabs(*arg1)<=BONUS_EPSILON[0])) {
+    BonusTracker* tracker = (BonusTracker*)trackerObj;
+    *scoreVal *= scale;
+    *scoreVal *= BONUS_TYPE_SCALE[trackerObj->m4];
+    if (*(BonusDisplay**)((u8*)trackerObj+0x248) && !((f32)__fabs(*scoreVal)<=BONUS_EPSILON[0])) {
         // the popup shows "<score>" (fn_8023139C writes the digits with thousands
         // separators), the category as a progress bar, the raw score, the count
         // and the extra value, all through the "%s" format.
-        (*(BonusDisplay**)((u8*)arg0+0x248))->printScore((s32)BONUS_TEXT_FMT, fn_8023139C(text,16,(u32)*arg1));
-        (*(BonusDisplay**)((u8*)arg0+0x248))->setProgress(tracker->GetType());
-        (*(BonusDisplay**)((u8*)arg0+0x248))->setScore((s32)*arg1);
-        (*(BonusDisplay**)((u8*)arg0+0x248))->printCount((s32)BONUS_TEXT_FMT,tracker->getCount());
-        (*(BonusDisplay**)((u8*)arg0+0x248))->printExtra((s32)BONUS_TEXT_FMT,tracker->getExtra());
+        (*(BonusDisplay**)((u8*)trackerObj+0x248))->printScore((s32)BONUS_TEXT_FMT, fn_8023139C(text,16,(u32)*scoreVal));
+        (*(BonusDisplay**)((u8*)trackerObj+0x248))->setProgress(tracker->GetType());
+        (*(BonusDisplay**)((u8*)trackerObj+0x248))->setScore((s32)*scoreVal);
+        (*(BonusDisplay**)((u8*)trackerObj+0x248))->printCount((s32)BONUS_TEXT_FMT,tracker->getCount());
+        (*(BonusDisplay**)((u8*)trackerObj+0x248))->printExtra((s32)BONUS_TEXT_FMT,tracker->getExtra());
         tracker->refresh();
-        (*(BonusDisplay**)((u8*)arg0+0x248))->update();
+        (*(BonusDisplay**)((u8*)trackerObj+0x248))->update();
         s32 recordCount=tracker->getRecordCount();
-        if(tracker->getIndex()>=recordCount) (*(BonusDisplay**)((u8*)arg0+0x248))->setState(1);
+        if(tracker->getIndex()>=recordCount) (*(BonusDisplay**)((u8*)trackerObj+0x248))->setState(1);
     }
-    f32 value=*arg1;
+    f32 value=*scoreVal;
     s32 offset=tracker->getIndex()*0x38;
-    ++*(s32*)(arg0->mData+offset);                                  // record.count
+    ++*(s32*)(trackerObj->mData+offset);                                  // record.count
     if (!((f32)__fabs(value)<=BONUS_EPSILON[0])) {
-        ++*(s32*)(arg0->mData+offset+4);                            // record.scoredCount
-        if ((f32)__fabs(value-*(f32*)(arg0->mData+offset+16))<=BONUS_EPSILON[0])
-            ++*(s32*)(arg0->mData+offset+8);                        // record.sameCount
+        ++*(s32*)(trackerObj->mData+offset+4);                            // record.scoredCount
+        if ((f32)__fabs(value-*(f32*)(trackerObj->mData+offset+16))<=BONUS_EPSILON[0])
+            ++*(s32*)(trackerObj->mData+offset+8);                        // record.sameCount
     }
-    *(f32*)(arg0->mData+offset+12)+=value;                          // record.total
+    *(f32*)(trackerObj->mData+offset+12)+=value;                          // record.total
     s32 index=tracker->getIndex();
-    ((void(*)(s32,s32,s32))fn_801584D4)(tracker->GetType(),arg0->m4,index);  // (category, type, record) to each listener
+    ((void(*)(s32,s32,s32))fn_801584D4)(tracker->GetType(),trackerObj->m4,index);  // (category, type, record) to each listener
 }
 #pragma pop
 
