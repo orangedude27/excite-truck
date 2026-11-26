@@ -5,7 +5,7 @@
 extern __declspec(section ".sdata") char gBrakingLabel[];
 extern __declspec(section ".sdata") char gViewLabel[];
 extern __declspec(section ".sdata") char gHornLabel[];
-extern __declspec(section ".sdata") char lbl_8055BC18[];
+extern __declspec(section ".sdata") char gJBLeftLabel[];
 extern __declspec(section ".sdata") char lbl_8055BC68[];
 extern __declspec(section ".sdata") char lbl_8055BC70[];
 extern __declspec(section ".sdata") char lbl_8055BC78[];
@@ -263,7 +263,7 @@ void fn_8023D7CC(void) {
             break;
         case 1:
             fn_802E8664(0);
-            SetControlOption(slotIndex + 8, (int)(optionData + 0x1E4), lbl_8055BC18);
+            SetControlOption(slotIndex + 8, (int)(optionData + 0x1E4), gJBLeftLabel);
             SetControlOption(slotIndex + 8, (int)(optionData + 0x208), optionData + 0x290);
             SetControlOption(slotIndex + 8, (int)(optionData + 0x184), lbl_8055BC78);
             SetControlOption(slotIndex + 8, (int)(optionData + 0x16C), lbl_8055BC80);
@@ -635,7 +635,7 @@ extern void fn_8023DA64(void *, int, int);
 extern char gBrakingLabel[];
 extern char gViewLabel[];
 extern char gHornLabel[];
-extern char lbl_8055BC18[];
+extern char gJBLeftLabel[];
 extern char lbl_8055BC68[];
 extern char lbl_8055BC70[];
 extern char lbl_8055BC78[];
