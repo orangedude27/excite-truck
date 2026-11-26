@@ -1907,7 +1907,7 @@ extern "C" void *fn_801B307C(void);
  * copy one 0x38-byte per-racer record from each deity's state block into the
  * standings table at +0x3A0; and set +0x39C to the whole seconds left until the
  * finish (0 when there is no countdown, -1 when the deadline is disarmed). */
-extern "C" void fillRaceStateSnapshot(void *raceState) {
+/* Fill a race-state packet with a snapshot: clear the info block, store leader/flags/timers, copy one 0x38-byte record per deity into the standings table, and set the seconds-remaining field. */ extern "C" void fillRaceStateSnapshot(void *raceState) {
     struct Item {
         virtual void d0();
         virtual void d1();
@@ -1917,46 +1917,46 @@ extern "C" void fillRaceStateSnapshot(void *raceState) {
         u8 padding[0x560];
         void *progressSnapshot;
     };
-    s32 slotOffset;
-    u8 *record;
-    s32 racerIndex;
-    s32 activeFlag;
+    s32 deitySlotOffset;
+    u8 *standingsRecord;
+    s32 deityIndex;
+    s32 raceActiveFlag;
 
     memset((u8 *)raceState + 0x560, 0, 0x1C);
     ((Header *)raceState)->progressSnapshot = fn_801B307C();
     *(s32 *)((u8 *)raceState + 0x564) = fn_801B2F40(0);
-    activeFlag = lbl_8055E6A8;
+    raceActiveFlag = lbl_8055E6A8;
     if (lbl_8055E691)
-        activeFlag = 0;
-    *(s32 *)((u8 *)raceState + 0x574) = activeFlag;
-    *(s32 *)((u8 *)raceState + 0x578) = activeFlag;
+        raceActiveFlag = 0;
+    *(s32 *)((u8 *)raceState + 0x574) = raceActiveFlag;
+    *(s32 *)((u8 *)raceState + 0x578) = raceActiveFlag;
     *(f32 *)((u8 *)raceState + 0x56C) = lbl_8055E6A4;
     *(f32 *)((u8 *)raceState + 0x570) = fn_801B306C();
 
-    record = (u8 *)raceState;
-    racerIndex = 0;
+    standingsRecord = (u8 *)raceState;
+    deityIndex = 0;
     *(void **)((u8 *)raceState + 0x568) = lbl_8055E680;
-    slotOffset = 0;
-    while (racerIndex < (s32)lbl_8055E678) {
-        Item *deity = (Item *)((u8 *)lbl_8055E684 + slotOffset);
+    deitySlotOffset = 0;
+    while (deityIndex < (s32)lbl_8055E678) {
+        Item *deity = (Item *)((u8 *)lbl_8055E684 + deitySlotOffset);
         void *deityState = deity->getState();
 
-        *(u32 *)(record + 0x3A0) = *(u32 *)((u8 *)deityState + 0x00);
-        *(u32 *)(record + 0x3A4) = *(u32 *)((u8 *)deityState + 0x04);
-        *(u32 *)(record + 0x3A8) = *(u32 *)((u8 *)deityState + 0x08);
-        *(f32 *)(record + 0x3AC) = *(f32 *)((u8 *)deityState + 0x0C);
-        *(u32 *)(record + 0x3B0) = *(u32 *)((u8 *)deityState + 0x10);
-        *(f32 *)(record + 0x3B4) = *(f32 *)((u8 *)deityState + 0x14);
-        *(f32 *)(record + 0x3B8) = *(f32 *)((u8 *)deityState + 0x18);
-        *(f32 *)(record + 0x3BC) = *(f32 *)((u8 *)deityState + 0x1C);
-        *(f32 *)(record + 0x3C0) = *(f32 *)((u8 *)deityState + 0x20);
-        *(u32 *)(record + 0x3C4) = *(u32 *)((u8 *)deityState + 0x24);
-        *(u8 *)(record + 0x3C8) = *(u8 *)((u8 *)deityState + 0x28);
-        *(f32 *)(record + 0x3CC) = *(f32 *)((u8 *)deityState + 0x2C);
-        *(WordPair_801B2D28 *)(record + 0x3D0) = *(WordPair_801B2D28 *)((u8 *)deityState + 0x30);
-        record += 0x38;
-        slotOffset += 0x80;
-        ++racerIndex;
+        *(u32 *)(standingsRecord + 0x3A0) = *(u32 *)((u8 *)deityState + 0x00);
+        *(u32 *)(standingsRecord + 0x3A4) = *(u32 *)((u8 *)deityState + 0x04);
+        *(u32 *)(standingsRecord + 0x3A8) = *(u32 *)((u8 *)deityState + 0x08);
+        *(f32 *)(standingsRecord + 0x3AC) = *(f32 *)((u8 *)deityState + 0x0C);
+        *(u32 *)(standingsRecord + 0x3B0) = *(u32 *)((u8 *)deityState + 0x10);
+        *(f32 *)(standingsRecord + 0x3B4) = *(f32 *)((u8 *)deityState + 0x14);
+        *(f32 *)(standingsRecord + 0x3B8) = *(f32 *)((u8 *)deityState + 0x18);
+        *(f32 *)(standingsRecord + 0x3BC) = *(f32 *)((u8 *)deityState + 0x1C);
+        *(f32 *)(standingsRecord + 0x3C0) = *(f32 *)((u8 *)deityState + 0x20);
+        *(u32 *)(standingsRecord + 0x3C4) = *(u32 *)((u8 *)deityState + 0x24);
+        *(u8 *)(standingsRecord + 0x3C8) = *(u8 *)((u8 *)deityState + 0x28);
+        *(f32 *)(standingsRecord + 0x3CC) = *(f32 *)((u8 *)deityState + 0x2C);
+        *(WordPair_801B2D28 *)(standingsRecord + 0x3D0) = *(WordPair_801B2D28 *)((u8 *)deityState + 0x30);
+        standingsRecord += 0x38;
+        deitySlotOffset += 0x80;
+        ++deityIndex;
     }
 
     if (fn_801E89EC() == 0) {
