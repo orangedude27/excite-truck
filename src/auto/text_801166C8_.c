@@ -4743,15 +4743,9 @@ void fn_8011D378(void *arg0, void *arg1, void *arg2)
   *((u32 *) (((u8 *) arg1) + 8)) = remain;
 }
 #pragma opt_propagation reset
-/* Decodes one block of a band of the compressed stream fn_8011C3A8 sets up, the
- * variant whose values come out of a Huffman lookup table.  Nothing is done
- * while the block of the previous call is still published ([start, end)).  The
- * block opens with its value count (countBits wide); a count of zero only marks
- * the band as empty.  The bit behind it picks the coding: cleared, count values
- * are decoded one by one through lookup, whose entries hold the value in their
- * low nibble and the number of bits they cost in their high one; set, the 4-bit
- * value behind it is repeated count times over the block. */
-void decodeHuffmanBandBlock(void* arg0, BitReader8011 *reader) {
+/* Decode one block of a band whose samples come from a Huffman lookup table,
+ * publishing the decoded range and advancing the bit reader. */
+void decodeHuffmanBandBlock(void* state, BitReader8011 *reader) {
     /* One band of the stream; see the BandState8011 layout above decodeBandBlock. */
     struct Band {
         u8 *start;      /* 0x00 first value of the published block */
@@ -4764,7 +4758,7 @@ void decodeHuffmanBandBlock(void* arg0, BitReader8011 *reader) {
         u32 countBits;  /* 0x28 bits of a block's value count */
         u8 *output;     /* 0x2C where the next block is decoded to */
     };
-    struct Band *band = (struct Band *)arg0;
+    struct Band *band = (struct Band *)state;
     u32 *in;
     u32 value;
     u32 bitCount;
