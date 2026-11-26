@@ -8057,7 +8057,7 @@ extern "C" s32 VFiPFFILE_Cursor_AdvanceToRead(void *cursor, s32 byteCount, s32 s
 /* Read the unaligned head of a three-part file read: bytes from the cursor offset to the end of its current sector. */ extern "C" s32 VFiPFFILE_ReadSectorHead(VFiPFCursor *cur, s32 dest, u32 length, u32 *readOut) {
     /* Read the part of a file read that lies in the rest of the sector the cursor
      * is in - the unaligned head of fn_800B0DEC's three-part read (this part, then
-     * fn_800B0A60's whole sectors, then VFiPFFILE_ReadSectorTail's tail).  A cursor already on
+     * VFiPFFILE_ReadWholeSectors's whole sectors, then VFiPFFILE_ReadSectorTail's tail).  A cursor already on
      * a sector boundary has nothing here to read.  The run is cut to the bytes
      * left in the sector, and left to the tail reader when the file ends before
      * that boundary does.  Where the FAT has not yet said which disk sector the
@@ -8112,7 +8112,7 @@ extern "C" s32 VFiPFFILE_Cursor_AdvanceToRead(void *cursor, s32 byteCount, s32 s
     return 0;
 }
 
-extern "C" s32 fn_800B0A60(void *file, s32 dst, u32 length, u32 *bytesReadOut) {
+extern "C" s32 VFiPFFILE_ReadWholeSectors(void *file, s32 dst, u32 length, u32 *bytesReadOut) {
     /* Reads file data into dst, clamping to available/cluster-aligned bytes and advancing the file cursor. */
     s32 clusters;
     u32 bytesRead;
@@ -8166,7 +8166,7 @@ extern "C" s32 fn_800B0A60(void *file, s32 dst, u32 length, u32 *bytesReadOut) {
 extern "C" s32 VFiPFFILE_ReadSectorTail(VFiPFCursor *cursor, s32 destAddr, u32 length, u32 *bytesReadOut) {
     /* Read the tail of a file read - the run that is left over once whole
      * sectors no longer fit (fn_800B0DEC calls VFiPFFILE_ReadSectorHead for the partial
-     * sector the cursor starts inside, then fn_800B0A60 for the whole sectors
+     * sector the cursor starts inside, then VFiPFFILE_ReadWholeSectors for the whole sectors
      * in between, and this for what remains).  An empty run, or one with no
      * byte of the file left to read, answers 0 without touching the disk.
      * Where the FAT has not yet said which disk sector the cursor's file
@@ -8216,7 +8216,7 @@ extern "C" s32 VFiPFFILE_ReadSectorTail(VFiPFCursor *cursor, s32 destAddr, u32 l
     return 0;
 }
 
-extern "C" s32 fn_800B0A60(void *, s32, u32, u32 *);
+extern "C" s32 VFiPFFILE_ReadWholeSectors(void *, s32, u32, u32 *);
 extern "C" s32 fn_800B0DEC(void *arg0, s32 arg1, u32 arg2, s32 *arg3, s32 arg4) {
     /* Fix note: keep the remaining byte count in the original size parameter across reads. */
     u32 sp8;
@@ -8241,7 +8241,7 @@ extern "C" s32 fn_800B0DEC(void *arg0, s32 arg1, u32 arg2, s32 *arg3, s32 arg4) 
         var_r27 = *(u16 **)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x268);
 
     for (;;) {
-        result = fn_800B0A60(arg0, arg1 + *arg3, arg2, &sp8);
+        result = VFiPFFILE_ReadWholeSectors(arg0, arg1 + *arg3, arg2, &sp8);
         *arg3 += sp8;
         if (result != 0)
             return result;
