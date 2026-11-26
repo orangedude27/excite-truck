@@ -616,11 +616,20 @@ void fn_8020DABC(void) {
 #undef sfxVolume
 }
 #pragma scheduling invalid_target
-/* Message handler for the volume options menu.  Handles up/down navigation,
-   A-button (increase volume with a short sound), B-button (decrease volume),
-   exit/back (calls the registered callback), and ignores unhandled messages.
-   Returns 1 if the message was consumed, 0 otherwise. */
-/* Message handler for the volume options menu. Handles up/down navigation (0x126/0x128), volume increase/decrease with a short sound (0x125/0x127), exit/back (0x58/0xD), re-apply settings (0x53), and ignores unhandled messages. Returns 1 if the message was consumed, 0 otherwise. */ int volumeMenuHandleMessage(int msg) {
+/* Message handler for the volume options menu. Handles up/down navigation
+   (0x126/0x128), volume decrease/increase with a short sound (0x125/0x127),
+   exit/back (0x58/0xD), re-apply settings (0x53), and ignores unhandled
+   messages. Returns 1 if the message was consumed, 0 otherwise. */
+int volumeMenuHandleMessage(int msg) {
+#define menuSelection   lbl_8055EE78
+#define musicVolume     lbl_8055EE8C
+#define sfxVolume       lbl_8055EE90
+#define volTimeVolumeDn lbl_8055EE98
+#define volTimeVolumeUp lbl_8055EE9C
+#define menuCallback    lbl_8055EE7C
+#define volumeEps       lbl_80558DC4
+#define volumeMax       lbl_8056331C
+#define volumeRateMs    lbl_8056332C
     int consumed = 1;
 
     switch (msg) {
@@ -631,66 +640,66 @@ void fn_8020DABC(void) {
         fn_8020D0CC(1);
         break;
     case 0x125:
-        switch (lbl_8055EE78) {
+        switch (menuSelection) {
         case 0:
-            if (!((float)__fabs(lbl_8055EE8C) <= lbl_80558DC4)) {
-                lbl_8055EE98 = lbl_8056332C * (float)KERNEL_GetTimeMs();
+            if (!((float)__fabs(musicVolume) <= volumeEps)) {
+                volTimeVolumeDn = volumeRateMs * (float)KERNEL_GetTimeMs();
             } else {
                 consumed = 0;
             }
             break;
         case 1:
-            if (!((float)__fabs(lbl_8055EE90) <= lbl_80558DC4)) {
-                lbl_8055EE98 = lbl_8056332C * (float)KERNEL_GetTimeMs();
+            if (!((float)__fabs(sfxVolume) <= volumeEps)) {
+                volTimeVolumeDn = volumeRateMs * (float)KERNEL_GetTimeMs();
             } else {
                 consumed = 0;
             }
             break;
         case 4:
-            lbl_8055EE98 = lbl_8056332C * (float)KERNEL_GetTimeMs();
+            volTimeVolumeDn = volumeRateMs * (float)KERNEL_GetTimeMs();
             break;
         default:
             consumed = 0;
             break;
         }
-        fn_8020CFEC(lbl_8055EE78);
+        fn_8020CFEC(menuSelection);
         break;
     case 0x127:
-        switch (lbl_8055EE78) {
+        switch (menuSelection) {
         case 0:
-            if (lbl_8055EE8C < lbl_8056331C) {
-                lbl_8055EE9C = lbl_8056332C * (float)KERNEL_GetTimeMs();
+            if (musicVolume < volumeMax) {
+                volTimeVolumeUp = volumeRateMs * (float)KERNEL_GetTimeMs();
             } else {
                 consumed = 0;
             }
             break;
         case 1:
-            if (lbl_8055EE90 < lbl_8056331C) {
-                lbl_8055EE9C = lbl_8056332C * (float)KERNEL_GetTimeMs();
+            if (sfxVolume < volumeMax) {
+                volTimeVolumeUp = volumeRateMs * (float)KERNEL_GetTimeMs();
             } else {
                 consumed = 0;
             }
             break;
         case 4:
-            lbl_8055EE9C = lbl_8056332C * (float)KERNEL_GetTimeMs();
+            volTimeVolumeUp = volumeRateMs * (float)KERNEL_GetTimeMs();
             break;
         default:
             consumed = 0;
             break;
         }
-        fn_8020CF6C(lbl_8055EE78);
+        fn_8020CF6C(menuSelection);
         break;
     case 0x58:
     case 0xD:
-        if (lbl_8055EE7C != 0 && lbl_8055EE78 == 2) {
-            ((void (*)(int, int))lbl_8055EE7C)(lbl_8055EE78, msg);
+        if (menuCallback != 0 && menuSelection == 2) {
+            ((void (*)(int, int))menuCallback)(menuSelection, msg);
             fn_8020D06C();
             break;
         }
         return 0;
     case 0x53:
-        if (lbl_8055EE7C != 0) {
-            ((void (*)(int, int))lbl_8055EE7C)(lbl_8055EE78, msg);
+        if (menuCallback != 0) {
+            ((void (*)(int, int))menuCallback)(menuSelection, msg);
             fn_8020D06C();
         }
         break;
@@ -705,6 +714,15 @@ void fn_8020DABC(void) {
         fn_80012158();
     }
     return 1;
+#undef menuSelection
+#undef musicVolume
+#undef sfxVolume
+#undef volTimeVolumeDn
+#undef volTimeVolumeUp
+#undef menuCallback
+#undef volumeEps
+#undef volumeMax
+#undef volumeRateMs
 }
 extern void *lbl_8055EE7C;
 extern void *lbl_8055EE80;
