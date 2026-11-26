@@ -346,16 +346,16 @@ done:
     fn_802C9904();
 }
 #pragma pop
-extern "C" s32 handleMenuInput(s32 input) {
+/* Handle menu/controller input: dispatch to the alternate handler when active, cycle/select the current slot for navigation keys, and run the confirm callback. */ extern "C" s32 handleMenuInput(s32 messageId) {
     /* Handle menu/controller input: dispatch to alternate handler when active,
        cycle/select the current slot for navigation keys, and run the confirm callback. */
     if (lbl_8055D405 != 0) {
-        return fn_8000C848(input);
+        return fn_8000C848(messageId);
     }
     if (lbl_8055D407 != 0) {
         return 0;
     }
-    switch (input) {
+    switch (messageId) {
     case 0x1B:
         lbl_8055D404 = 0;
         if (((s32 (*)(s32))lbl_8055D408)(0) == 0) {
