@@ -68,7 +68,7 @@ extern char lbl_80338038[];
 extern int fn_8001BF34(int);
 extern void fn_8001BF0C(int, f32);
 extern int fn_80161C38(void);
-extern void fn_801CD7BC(int, int, f32);
+extern void pushAwardsRaceTime(int, int, f32);
 extern s32 *lbl_8055E884;
 extern unsigned char *fn_801EA9A0();
 extern int fn_801EA994(void);
@@ -225,7 +225,7 @@ done:
 }
 #pragma scheduling on
 void fn_801CB648(int playerIndex, int arg1, f32 farg0) {
-    /* Conditionally forwards to fn_801CD7BC when not blocked by fn_80019BA8 and
+    /* Conditionally forwards to pushAwardsRaceTime when not blocked by fn_80019BA8 and
      * fn_80161C38 indicates case 0. */
     if (fn_80019BA8() != 0) goto done;
     switch (fn_80161C38()) {
@@ -235,7 +235,7 @@ void fn_801CB648(int playerIndex, int arg1, f32 farg0) {
         goto done;
     }
 action:
-    fn_801CD7BC(playerIndex, arg1, farg0);
+    pushAwardsRaceTime(playerIndex, arg1, farg0);
 done:
     return;
 }
@@ -1723,7 +1723,7 @@ extern f32 lbl_805629FC;
  * type is 0x20507, forward the time through that stat object's virtual setter
  * v2() (lbl_80337CA0 warns if none is found), cache it at +0x2B8 and start
  * award playback. lbl_80337D90 warns when a time was already cached. */
-extern "C" void fn_801CD7BC(int playerIndex, int pushEnabled, f32 raceTime) {
+extern "C" void pushAwardsRaceTime(int playerIndex, int pushEnabled, f32 raceTime) {
     #pragma opt_propagation off
     register u8 *awards;
     register s32 statTypeBase;
