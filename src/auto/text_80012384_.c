@@ -25,7 +25,7 @@ extern int KERNEL_GetTimeMs(void);
       void fn_8001255C(const char *, float);
 extern float lbl_80560348;
 extern int screenWidthPx;
-extern int lbl_8055FBA0;
+extern int screenHeightPx;
 extern void fn_802C92D0(void);
 extern void fn_802C92D8(void);
 extern void fn_802C92DC(int, int, int, int, int);
@@ -57,7 +57,7 @@ void fn_800123EC(float arg0) {
     if (value > 0)
         color = (int)f;
     color = (color >= 0xff ? 0xff : color);
-    fn_802C92DC(-0x14, -0x14, screenWidthPx + 0x14, lbl_8055FBA0 + 0x14, color << 24);
+    fn_802C92DC(-0x14, -0x14, screenWidthPx + 0x14, screenHeightPx + 0x14, color << 24);
     fn_802C92D8();
 }
 #pragma pop

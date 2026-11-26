@@ -90,7 +90,7 @@ int fn_80245264(struct MenuTextContext *context) {
 #pragma scheduling on
 #pragma pop
 
-extern int lbl_8055CFF0, lbl_8055CFF4, screenWidthPx, lbl_8055FBA0;
+extern int lbl_8055CFF0, lbl_8055CFF4, screenWidthPx, screenHeightPx;
 extern const float lbl_80563834, lbl_80563838, lbl_8056383C, lbl_80563840, lbl_80563844, lbl_80563848, lbl_8056384C, lbl_80563850, lbl_80563854, lbl_80563858, lbl_8056385C, lbl_80563860, lbl_80563864, lbl_80563868, lbl_8056386C, lbl_80563870, lbl_80563874, lbl_80563878, lbl_8056387C, lbl_80563888, lbl_8056388C, lbl_80563890;
 extern const double lbl_80563880;
 extern char lbl_80343080[];
@@ -204,11 +204,11 @@ int fn_80245360(int *a, struct Menu *b)
     DrawList_loadMatrix(obj);
     fn_802C974C(lbl_80563834, lbl_80563838, lbl_8056383C);
     w = (float) (screenWidthPx + 1);
-    h = (float) (lbl_8055FBA0 + 1);
+    h = (float) (screenHeightPx + 1);
     fw = (float) screenWidthPx;
     temp_f22 = temp_f22;
     x0 = ((temp_f16 * fw) * temp_f28) - temp_f17;
-    fh = (float) lbl_8055FBA0;
+    fh = (float) screenHeightPx;
     x1 = temp_f17 + (fh * temp_f28);
     if (a[1] != 0)
     {
@@ -401,9 +401,9 @@ void fn_8024590C(int *a, int *b) {
     DrawList_loadMatrix(obj);
     fn_802C974C(lbl_80563834, lbl_80563838, lbl_8056383C);
     w = (float)(screenWidthPx + 1);
-    h = (float)(lbl_8055FBA0 + 1);
+    h = (float)(screenHeightPx + 1);
     x0 = lbl_80563840 * (float)screenWidthPx * lbl_80563844 - lbl_80563834;
-    x1 = lbl_80563834 + (float)lbl_8055FBA0 * lbl_80563844;
+    x1 = lbl_80563834 + (float)screenHeightPx * lbl_80563844;
     if (a[1] != 0) {
         gxDrawPicture(a[1], x0, x1, lbl_80563830, w, h, 0);
     } else {

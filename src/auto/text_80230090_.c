@@ -13,7 +13,7 @@ extern f64 lbl_80563638;
 extern f32 lbl_80563640;
 extern f32 lbl_80563648;
 extern u32 screenWidthPx;
-extern u32 lbl_8055FBA0;
+extern u32 screenHeightPx;
 extern f32 lbl_80563614;
 extern f32 lbl_8056365C;
 extern f32 lbl_80563660;
@@ -452,7 +452,7 @@ s32 fn_80230B9C(u32 arg0) {
 void fn_80230C30(float *outX, float *outY, s32 screenX, s32 screenY) {
     /* Convert screen-space coordinates to coordinates centered at the screen middle. */
     *outX = (float)(screenX - (s32)screenWidthPx / 2);
-    *outY = (float)((s32)lbl_8055FBA0 / 2 - screenY);
+    *outY = (float)((s32)screenHeightPx / 2 - screenY);
 }
 
 /* Shift both values by whole multiples of step so they lie within [min, max] when
@@ -566,7 +566,7 @@ float fn_80230EF4(long mode) {
 }
 #pragma dont_inline reset
 extern f32 lbl_80563610, lbl_80563640, lbl_80563648;
-extern u32 screenWidthPx, lbl_8055FBA0;
+extern u32 screenWidthPx, screenHeightPx;
 float fn_80230E54(float, float);
 /* Reset a selected-item color field to the default highlight color 0xFFFFCA44
    (called by fn_80230F78). */

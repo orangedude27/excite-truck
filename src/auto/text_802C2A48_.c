@@ -1,7 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-extern unsigned int lbl_8055CFF0, lbl_8055CFF4, lbl_8055FB98, screenWidthPx, lbl_8055FBA0, lbl_8055FBA4;
+extern unsigned int lbl_8055CFF0, lbl_8055CFF4, lbl_8055FB98, screenWidthPx, screenHeightPx, lbl_8055FBA4;
 extern unsigned char gDefaultPixelFormat;
 extern float lbl_80564ED8;
 extern float lbl_80564EDC;
@@ -30,7 +30,7 @@ void fn_802C2A48(int videoModeId) {
     gDefaultPixelFormat = *(unsigned char *)(videoMode + 3);
     lbl_8055FB98 = (videoMode[2] >> 3) * videoMode[0];
     screenWidthPx = 0x280;
-    lbl_8055FBA0 = 0x1E0;
+    screenHeightPx = 0x1E0;
 }
 #pragma dont_inline reset
 
