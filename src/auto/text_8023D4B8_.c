@@ -238,6 +238,8 @@ void fn_8023D7CC(void) {
     do {
         ApplyControlDefaults((void *)slotIndex, 1, 0);
         scheme = (int)GetControlScheme;
+        /* The scheme picks a set of button bindings for this slot: 0 and 2 enable
+           rumble, 1 and 3 do not (JB = joystick-button controls). */
         switch (scheme) {
         case 0:
             fn_802E8664(1);
