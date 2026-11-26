@@ -1099,75 +1099,75 @@ __declspec(section ".sdata") extern char lbl_8055C384[]; /* ".mo0" extension */
 /* Set UI motion/model for this object: free existing handle, build "*uiaction.res/<name>.mo0"
    from the input (strip extension), load if the resource exists, and reset transform/color
    floats at offsets 0x84-0xA4. */
-void setUiActionModel(void *arg0, char *arg1) {
-    char name[0x40];
-    char *input = arg1;
+/* Set an object's UI action model: release any previous handle, build "*uiaction.res/<name>.mo0" from the given action name, load it when the resource exists, then reset the transform/color floats at +0x84..+0xA4. */ void setUiActionModel(void *arg0, char *arg1) {
+    char resourcePath[0x40];
+    char *actionName = arg1;
     void *obj = arg0;
-    char *src;
+    char *prefixCursor;
     int count;
-    char *dst;
-    int id;
+    char *pathCursor;
+    int modelHandle;
     float one;
     float zero;
-    int n;
-    char *p;
-    char *s;
-    int m;
-    char *q;
+    int room;
+    char *scan;
+    char *extCursor;
+    int extRoom;
+    char *extScan;
 #define kUiActionResPathPrefix lbl_80345208
 #define kMo0Extension lbl_8055C384
 #define kFloatOne lbl_80563AE0
 #define kFloatZero lbl_80563AE4
-    id = *(int *)((char *)obj + 0x50);
-    if (id != -1) {
-        fn_802C6CF8(id);
+    modelHandle = *(int *)((char *)obj + 0x50);
+    if (modelHandle != -1) {
+        fn_802C6CF8(modelHandle);
         *(int *)((char *)obj + 0x50) = -1;
     }
-    if (*(signed char *)input != 0 && strlen(input) != 0) {
-        src = kUiActionResPathPrefix;
-        dst = name;
+    if (*(signed char *)actionName != 0 && strlen(actionName) != 0) {
+        prefixCursor = kUiActionResPathPrefix;
+        pathCursor = resourcePath;
         count = 0x40;
-        while ((*dst++ = *src++) != 0) {
+        while ((*pathCursor++ = *prefixCursor++) != 0) {
             if (--count <= 0) {
-                dst[-1] = 0;
+                pathCursor[-1] = 0;
                 break;
             }
         }
-        p = name;
-        n = 0x40;
-        while (p[0] != 0) {
-            n--;
-            p++;
+        scan = resourcePath;
+        room = 0x40;
+        while (scan[0] != 0) {
+            room--;
+            scan++;
         }
-        if (n > 0) {
-            while ((*p++ = *input++) != 0) {
-                if (--n <= 0) {
-                    p[-1] = 0;
+        if (room > 0) {
+            while ((*scan++ = *actionName++) != 0) {
+                if (--room <= 0) {
+                    scan[-1] = 0;
                     break;
                 }
             }
         }
-        if (fn_80029004(name, '.') != 0) {
-            dst = fn_80029004(name, '.');
-            *dst = 0;
+        if (fn_80029004(resourcePath, '.') != 0) {
+            pathCursor = fn_80029004(resourcePath, '.');
+            *pathCursor = 0;
         }
-        q = name;
-        m = 0x40;
-        s = kMo0Extension;
-        while (q[0] != 0) {
-            m--;
-            q++;
+        extScan = resourcePath;
+        extRoom = 0x40;
+        extCursor = kMo0Extension;
+        while (extScan[0] != 0) {
+            extRoom--;
+            extScan++;
         }
-        if (m > 0) {
-            while ((*q++ = *s++) != 0) {
-                if (--m <= 0) {
-                    q[-1] = 0;
+        if (extRoom > 0) {
+            while ((*extScan++ = *extCursor++) != 0) {
+                if (--extRoom <= 0) {
+                    extScan[-1] = 0;
                     break;
                 }
             }
         }
-        if (fn_8012C33C(name))
-            *(int *)((char *)obj + 0x50) = fn_802C6FC0(name, 0, 0);
+        if (fn_8012C33C(resourcePath))
+            *(int *)((char *)obj + 0x50) = fn_802C6FC0(resourcePath, 0, 0);
     }
     one = kFloatZero;
     zero = kFloatOne;
