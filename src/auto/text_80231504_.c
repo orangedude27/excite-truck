@@ -1097,9 +1097,9 @@ void fn_80232D3C(u8 *text, s32 font, s32 color, s32 x, s32 flags, f32 y, f32 sca
 #pragma push
 #pragma opt_common_subs off
 #pragma scheduling on
-void drawFontText(u8 *text, s32 font, s32 color, s32 flags, f32 x, f32 y, f32 scale, f32 spacing, f32 extra) {
-    u8 *pText = text;
-    s32 nFont = font;
+/* Draws text with the given font/color/flags at (x, y): measures the run, then for each of up to two passes (secondary color/font when the font has a secondary set) decodes the UTF-8-ish run, advances the pen by each glyph's advance and submits the glyph quad. Returns nothing; the pen point is mutated through the frame temporaries. */ void drawFontText(u8 *textBytes, s32 fontId, s32 color, s32 flags, f32 x, f32 y, f32 scale, f32 spacing, f32 extra) {
+    u8 *pText = textBytes;
+    s32 nFont = fontId;
     s32 sp10;
     f32 spC;
     f32 sp8;
