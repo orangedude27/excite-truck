@@ -61,7 +61,7 @@ void* __dt__Q28PSSystem7SeqHeapFv_8025CC14(void* self, int shouldDelete) {
 }
 
 extern void fn_80230C30(float*, float*, int, int);
-extern void fn_802354A0(int, unsigned char, int, float, float, float, float, float);
+extern void drawPictureScaled(int, unsigned char, int, float, float, float, float, float);
 extern void fn_80231220(int, int, float, float, float, float, float, float, float, float);
 extern float lbl_80563B40, lbl_80563B44, lbl_80563B48;
 extern double lbl_80563B50;
@@ -81,7 +81,7 @@ void fn_8025CC78(void* p, int arg1) {
     tmpA = spC - lbl_80563B40;
     tmpB = lbl_80563B40 + sp8;
     f24 = (float)*(int*)((char*)p + 0x10);
-    fn_802354A0(*(int*)((char*)p + 0x28), *(unsigned char*)((char*)p + 0x2C), -1,
+    drawPictureScaled(*(int*)((char*)p + 0x28), *(unsigned char*)((char*)p + 0x2C), -1,
         tmpA, tmpB, lbl_80563B44,
         lbl_80563B48 + f25, lbl_80563B48 + f24);
     item = (char*)**(void***)((char*)p + 0x18) + *(int*)((char*)p + 0x1C) * 0x38;

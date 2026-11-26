@@ -1613,7 +1613,7 @@ extern "C" void fn_80251078(void *arg0, s32 index, s32 selected, f32 x, f32 y, f
     extern f32 fn_80216CB4(void);
     extern f32 getPictureWidth(s32, s32);
     extern f32 getPictureHeight(s32, s32);
-    extern void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
+    extern void drawPictureScaled(s32, s32, s32, f32, f32, f32, f32, f32);
     extern void fn_80231220(s32, s32, u32, f32, f32, f32, f32, f32, f32, f32, f32);
     class Control {
     public:
@@ -1647,7 +1647,7 @@ extern "C" void fn_80251078(void *arg0, s32 index, s32 selected, f32 x, f32 y, f
     if (disabled) flag = 0xFF808080;
     {
         f32 drawX = x, drawY = y, drawZ = lbl_80563960, drawW = w, drawH = h;
-        fn_802354A0(*(s32 *)(self + 0x24), selected && active, flag, drawX, drawY, drawZ, drawW, drawH);
+        drawPictureScaled(*(s32 *)(self + 0x24), selected && active, flag, drawX, drawY, drawZ, drawW, drawH);
     }
     time = fn_80216CB4();
     if (active) {
@@ -1674,7 +1674,7 @@ extern "C" void fn_80251078(void *arg0, s32 index, s32 selected, f32 x, f32 y, f
             a = rounded;
             py = i ? y - h : y + sh;
             offset = center - half * sw;
-            fn_802354A0(*(s32 *)(self + 0x24), id, (a << 24) | 0xFFFFFF, offset, py, zero, sw, sh);
+            drawPictureScaled(*(s32 *)(self + 0x24), id, (a << 24) | 0xFFFFFF, offset, py, zero, sw, sh);
         }
     }
     {
@@ -1709,7 +1709,7 @@ extern "C" void fn_80251078(void *arg0, s32 index, s32 selected, f32 x, f32 y, f
 #pragma pop
 
 extern f32 lbl_80563960;
-extern void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
+extern void drawPictureScaled(s32, s32, s32, f32, f32, f32, f32, f32);
 extern f32 fn_80216CB4(void);
 extern void fn_80231220(s32, s32, u32, f32, f32, f32, f32, f32, f32, f32, f32);
 #pragma push
@@ -1719,10 +1719,10 @@ void fn_802514B4(void *arg0, s32 arg1, f32 x, f32 y, f32 w, f32 h) {
     /* Draw a UI element in three layers (ids 0, 3, 6) at (x,y,w,h): the middle
      * layer uses a per-entry value from arg0's table at +0xCC, indexed by arg1. */
     s32 value = *(s32 *)(*(char **)((char *)arg0 + 0xCC) + arg1 * 0x14 + 0x10);
-    fn_802354A0(*(s32 *)((char *)arg0 + 0x24), 0, -1, x, y, lbl_80563960, w, h);
+    drawPictureScaled(*(s32 *)((char *)arg0 + 0x24), 0, -1, x, y, lbl_80563960, w, h);
     fn_80216CB4();
-    fn_802354A0(*(s32 *)((char *)arg0 + 0x24), 3, value, x, y, lbl_80563960, w, h);
-    fn_802354A0(*(s32 *)((char *)arg0 + 0x24), 6, -1, x, y, lbl_80563960, w, h);
+    drawPictureScaled(*(s32 *)((char *)arg0 + 0x24), 3, value, x, y, lbl_80563960, w, h);
+    drawPictureScaled(*(s32 *)((char *)arg0 + 0x24), 6, -1, x, y, lbl_80563960, w, h);
 }
 #pragma scheduling on
 
@@ -2012,7 +2012,7 @@ extern "C" void fn_80251B04(void *arg0) {
         b = b > f23 ? b : f23;
         (*(void (**)(void *, s32, s32, f32, f32, f32, f32, f32))(*(char **)arg0 + 0x60))(arg0, i, *(s32 *)p, lbl_805639AC * ((f32)i - c) - lbl_805639B0, (f27 - lbl_80563980 * (lbl_805639A8 * (lbl_80563964 - a))) + lbl_805639B4 * a, lbl_805639AC, lbl_805639A8 * a + lbl_805639A4 * a, lbl_80563964 - b);
     }
-    fn_802354A0(*(s32 *)((char *)arg0 + 0x24), 2, -1, lbl_805639B8, lbl_805639B4 + f27, lbl_80563960, lbl_805639AC, lbl_805639BC);
+    drawPictureScaled(*(s32 *)((char *)arg0 + 0x24), 2, -1, lbl_805639B8, lbl_805639B4 + f27, lbl_80563960, lbl_805639AC, lbl_805639BC);
 }
 
 #pragma scheduling on

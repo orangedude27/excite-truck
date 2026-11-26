@@ -92,15 +92,15 @@ int gxGetImageHeight(void* image) {
 }
 #pragma dont_inline reset
 extern void drawPicture(void);
-extern void fn_802354A0(void*, void*, int);
+extern void drawPictureScaled(void*, void*, int);
 extern void fn_80235758(void*, float, float, float, float, float, float, int);
 /* If the art set is non-null, draw its picture at pictureIndex and (x,y,z); the additional arguments are forwarded unchanged by the tail call to drawPicture. A null handle is ignored. */
 void gxDrawPictureAt(void* artSet) { if (artSet != 0) drawPicture(); }
 
 /* Draw one picture (frame `picture`) from art set `artSet` with the default
    color/tint -1; the float position/size arguments x,y,z,width,height arrive in
-   FPRs and pass through to fn_802354A0 untouched. A null art set is ignored. */
-void gxDrawPicture(void* artSet, void* picture) { if (artSet != 0) fn_802354A0(artSet, picture, -1); }
+   FPRs and pass through to drawPictureScaled untouched. A null art set is ignored. */
+void gxDrawPicture(void* artSet, void* picture) { if (artSet != 0) drawPictureScaled(artSet, picture, -1); }
 
 /* Guarded image-draw wrapper: if artSet is non-null, draw picture `pictureIndex`
    as a textured quad with color -1 (use the texture's own tint). The caller's

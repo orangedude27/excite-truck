@@ -648,7 +648,7 @@ struct TextEntry80145C08 {
 extern "C" f32 lbl_80561608;
 extern "C" void fn_8001027C(s32, s32, void *, u32, f32, f32, f32);
 extern "C" f32 fn_801452A0(s32, f32);
-extern "C" void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
+extern "C" void drawPictureScaled(s32, s32, s32, f32, f32, f32, f32, f32);
 extern "C" s32 lbl_80559E1C;
 extern "C" void fn_80145B50(void *arg0, s32 arg1)
 {
@@ -732,7 +732,7 @@ extern "C" void fn_80145CF4(void *__restrict entry, void *resource, u32 pictureI
     /* Draws an entry's artwork: aspect-correct its scale (fn_801452A0), flip Y
        into screen space (fn_801452B4), resolve X by justification (fn_801451DC),
        then hand the resource, position, scale and remaining entry fields to the
-       2D art drawer fn_802354A0. */
+       2D art drawer drawPictureScaled. */
     f32 screenY;
     f32 scaledScale;
     f32 scale;
@@ -746,7 +746,7 @@ extern "C" void fn_80145CF4(void *__restrict entry, void *resource, u32 pictureI
     x = *(f32 *)((u8 *)entry + 4);
     justification = *(s32 *)((u8 *)entry + 0xC);
     screenX = ((f32 (*)(s32, f32))fn_801451DC)(justification, x);
-    ((void (*)(s32, s32, f32, f32, f32, f32, f32, s32))fn_802354A0)(
+    ((void (*)(s32, s32, f32, f32, f32, f32, f32, s32))drawPictureScaled)(
         (s32)resource, pictureIndex, screenX, screenY, lbl_805615D4,
         scaledScale, *(f32 *)((u8 *)entry + 0x14),
         *(s32 *)((u8 *)entry + 0x18));

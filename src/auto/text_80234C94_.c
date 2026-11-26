@@ -1,6 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 #pragma ppc_psq_save off
-extern void fn_802354A0(int, int, int, float, float, float, float, float);
+extern void drawPictureScaled(int, int, int, float, float, float, float, float);
 extern const char lbl_80340808[];
 extern const char lbl_80340834[];
 extern float lbl_805636B8;
@@ -375,12 +375,12 @@ void drawPicture(int artSet, int pictureIndex, float x, float y, float z) {
         fn_802E30C8(lbl_80340808, pictureIndex, artSet);
         return;
     }
-    fn_802354A0(artSet, pictureIndex, -1, x, y, z, *(float *)((char *)pictureNode + 0x14), *(float *)((char *)pictureNode + 0x10));
+    drawPictureScaled(artSet, pictureIndex, -1, x, y, z, *(float *)((char *)pictureNode + 0x14), *(float *)((char *)pictureNode + 0x10));
 }
 
 #pragma push
 #pragma processor 750
-/* Draw one picture from an art set as a screen-aligned textured quad: look up the picture, apply the object's draw list and scale the quad when the object scale differs from one, build the four textured vertices, then queue them and restore the render mode. */ void fn_802354A0(int artSet, int pictureIndex, int colorIndex, float x, float y, float z, float width, float height)
+/* Draw one picture from an art set as a screen-aligned textured quad: look up the picture, apply the object's draw list and scale the quad when the object scale differs from one, build the four textured vertices, then queue them and restore the render mode. */ void drawPictureScaled(int artSet, int pictureIndex, int colorIndex, float x, float y, float z, float width, float height)
 {
   Idx_80235CBC ids;
   Vtx_80235CBC v3;
@@ -743,7 +743,7 @@ void *fn_80236074(void *object, int deleteFlag) {
 }
 
 #pragma dont_inline reset
-extern void fn_802354A0(int, int, int, float, float, float, float, float);
+extern void drawPictureScaled(int, int, int, float, float, float, float, float);
 extern const char lbl_80340808[];
 extern const char lbl_80340834[];
 extern float lbl_805636B8;
@@ -857,7 +857,7 @@ void fn_802361E8(void *obj, int key, int a, int b, int c, int d) {
 #pragma opt_propagation reset
 
 #pragma scheduling on
-extern void fn_802354A0(int, int, int, float, float, float, float, float);
+extern void drawPictureScaled(int, int, int, float, float, float, float, float);
 extern const char lbl_80340808[];
 extern const char lbl_80340834[];
 extern float lbl_805636B8;

@@ -168,7 +168,7 @@ extern f32 lbl_80563688;
 extern f32 lbl_8056368C;
 extern const f64 lbl_80563698;
 extern f32 fn_8023400C(s32);
-extern void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
+extern void drawPictureScaled(s32, s32, s32, f32, f32, f32, f32, f32);
 extern s32 beginDrawListPass(s32);
 extern void DrawList_RestoreNormalMode(void);
 extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
@@ -452,7 +452,7 @@ loop_body:
             f32 ratio;
             rate = (rate > f31) ? rate : f31;
             ratio = f30 / rate;
-            fn_802354A0(*(s32 *)(object + 0x0C), *(s32 *)(object + 0x10), color,
+            drawPictureScaled(*(s32 *)(object + 0x0C), *(s32 *)(object + 0x10), color,
                         sp8 - f29 * (ratio * *(f32 *)(record + 0x14) - *(f32 *)(record + 0x14)),
                         spC + f29 * (ratio * *(f32 *)(record + 0x10) - *(f32 *)(record + 0x10)),
                         sp10, ratio * *(f32 *)(record + 0x14), ratio * *(f32 *)(record + 0x10));

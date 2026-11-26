@@ -17,7 +17,7 @@ extern float PSVECDotProduct(const void *, const void *);
 extern float lbl_80560444, lbl_80560448, lbl_8056044C;
 extern float getPictureWidth(void *, int);
 extern void fn_80235AFC(void *, int, unsigned int, float, float, float, float, float, float);
-extern void fn_802354A0(void *, int, int, float, float, float, float, float);
+extern void drawPictureScaled(void *, int, int, float, float, float, float, float);
 extern void *fn_80156A40(void);
 extern float lbl_80560418;
 extern float lbl_8056041C;
@@ -610,7 +610,7 @@ subtractCheck:
                 *(f32 *)((u8 *)&frame + 0x44) *= ratio;
                 angle = (f32)getPictureWidth(record, 0);
                 result = angle * lbl_80560420;
-                fn_802354A0(record, *(s32 *)((u8 *)record + 4), -1,
+                drawPictureScaled(record, *(s32 *)((u8 *)record + 4), -1,
                             x + width * lbl_80560420 + *(f32 *)((u8 *)&frame + 0x3C) - result,
                             result + y - height * lbl_80560420 + *(f32 *)((u8 *)&frame + 0x40),
                             lbl_80560418, angle, angle);

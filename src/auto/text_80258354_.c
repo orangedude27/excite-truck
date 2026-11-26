@@ -5,7 +5,7 @@ float getPictureWidth(int, int);
 extern float lbl_80563AD0;
 extern float getPictureWidth(int, int);
 extern float getPictureHeight(int, int);
-extern void fn_802354A0(int, int, int, float, float, float, float);
+extern void drawPictureScaled(int, int, int, float, float, float, float);
 extern float lbl_80563ACC;
 extern void fn_80235380(int);
 extern void fn_802328D4(int);
@@ -337,7 +337,7 @@ void fn_8025878C(void *arg0, const char *arg1, int flags, int arg3, float x, flo
   {
     y += lbl_80563ACC * sine;
   }
-  ((void (*)(int, int, int, float, float, float, float, float)) fn_802354A0)(new_var2, *((int *) (index + 0x44)), arg3, x, y, lbl_80563AD0, cosine, sine);
+  ((void (*)(int, int, int, float, float, float, float, float)) drawPictureScaled)(new_var2, *((int *) (index + 0x44)), arg3, x, y, lbl_80563AD0, cosine, sine);
 }
 #pragma opt_common_subs off
 void fn_802588C8(void *arg0, const char *arg1, int flags, int arg3, float x, float y, float scale)
@@ -402,7 +402,7 @@ void fn_802588C8(void *arg0, const char *arg1, int flags, int arg3, float x, flo
       y += lbl_80563ACC * s;
     }
   }
-  ((void (*)(int, int, int, float, float, float, float, float)) fn_802354A0)(*((int *) (index + 0x40)), *((int *) (index + 0x44)), arg3, x, y, lbl_80563AD0, c, s);
+  ((void (*)(int, int, int, float, float, float, float, float)) drawPictureScaled)(*((int *) (index + 0x40)), *((int *) (index + 0x44)), arg3, x, y, lbl_80563AD0, c, s);
 }
 /* Look up a named entry in a 0x48-byte stride table and return its value via getPictureWidth, or 0.0f if not found. */
 float fn_80258A00(void *table, int name) {

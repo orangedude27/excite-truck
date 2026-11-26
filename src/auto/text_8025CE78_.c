@@ -14,7 +14,7 @@ extern int lbl_8055C3E0;
 extern double lbl_80563B68;
 extern float lbl_80563B58, lbl_80563B5C, lbl_80563B60;
 extern void fn_80230C30(float *, float *, int, int);
-extern void fn_802354A0(int, unsigned char, int, float, float, float, float, float);
+extern void drawPictureScaled(int, unsigned char, int, float, float, float, float, float);
 extern void fn_80231220(int, int, float, float, float, float, float, float, float, float);
 extern int fn_80012810(void);
 extern void fn_80012794(void);
@@ -436,7 +436,7 @@ extern "C" void fn_8025DDD0(void *arg0, int arg1) {
     tmpA = spC - lbl_80563B58;
     tmpB = lbl_80563B58 + sp8;
     f24 = (float)*(int *)((char *)arg0 + 0x10);
-    fn_802354A0(*(int *)((char *)arg0 + 0x28), *(unsigned char *)((char *)arg0 + 0x2C), -1,
+    drawPictureScaled(*(int *)((char *)arg0 + 0x28), *(unsigned char *)((char *)arg0 + 0x2C), -1,
         tmpA, tmpB, lbl_80563B5C,
         lbl_80563B60 + f25, lbl_80563B60 + f24);
     item = (char *)**(void ***)((char *)arg0 + 0x18) + *(int *)((char *)arg0 + 0x1C) * 0x38;

@@ -1155,14 +1155,14 @@ extern char lbl_80558BC4;
 extern s32 fn_80144F34(void *, s32, void *);
 extern f32 fn_80011DEC(void *);
 extern f32 fn_80011DC0(void *);
-extern void fn_802354A0(void *, s32, s32, f32, f32, f32, f32, f32);
+extern void drawPictureScaled(void *, s32, s32, f32, f32, f32, f32, f32);
 extern f32 lbl_805603D4, lbl_805603D8, lbl_805603DC, lbl_805603E0, lbl_805603E4;
 extern f32 lbl_80560360, lbl_805603A0;
 #pragma push
 #pragma use_lmw_stmw off
 #pragma optimize_for_size off
 /* HUD piece drawn while the race state (lbl_8055D350) has flag 0x4000 set: a 60x45
- * sprite (entry 3 of the sprite group at arg0+0x3C, drawn by fn_802354A0) placed at
+ * sprite (entry 3 of the sprite group at arg0+0x3C, drawn by drawPictureScaled) placed at
  * the current entry's position -- fn_80011DEC/fn_80011DC0 of the float table indexed
  * by the entry number at state+0x1C, moved back by 60 (lbl_805603D4) and 314
  * (lbl_805603D8). Over it go the two values fn_80144F34 reports for rows 0 and 1 of
@@ -1180,7 +1180,7 @@ void fn_80015658(void *arg0) {
     count1 = fn_80144F34(*(void **)((u8 *)lbl_8055D350 + 0x24), 1, &row1Ok);
     x = fn_80011DEC(*(void **)((u8 *)lbl_8055D350 + 0x1C)) - lbl_805603D4;
     y = fn_80011DC0(*(void **)((u8 *)lbl_8055D350 + 0x1C)) - lbl_805603D8;
-    fn_802354A0(*(void **)((u8 *)arg0 + 0x3C), 3, -1, x, y, lbl_80560360, lbl_805603D4, lbl_805603DC);
+    drawPictureScaled(*(void **)((u8 *)arg0 + 0x3C), 3, -1, x, y, lbl_80560360, lbl_805603D4, lbl_805603DC);
     ((void (*)(s32, s32, void *, s32, ...))fn_8000FF88)(-0x100, 0xA, &lbl_80558BA4, count0, lbl_805603E0, x - lbl_805603A0, y);
     ((void (*)(s32, s32, void *, s32, ...))fn_8000FF88)(-0x100, 0xA, &lbl_80558BA4, count1, lbl_805603E0, x - lbl_805603A0, y - lbl_805603E4);
 }

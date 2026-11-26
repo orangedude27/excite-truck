@@ -1749,7 +1749,7 @@ extern float lbl_805638E0, lbl_805638E4, lbl_805638E8, lbl_805638EC, lbl_805638F
 extern char lbl_8055BF00, lbl_8055BF08;
 extern float getPictureWidth(s32, s32);
 extern void drawPicture(s32, s32, float, float, float);
-extern void fn_802354A0(s32, s32, s32, float, float, float, float, float);
+extern void drawPictureScaled(s32, s32, s32, float, float, float, float, float);
 extern void fn_80234AFC(s32, char *, float, float, ...);
 extern int __cntlzw(unsigned int);
 #pragma push
@@ -1784,7 +1784,7 @@ void fn_802491A8(const void *arg0)
     }
     drawPicture(obj, 0, (origin + offset) - getPictureWidth(obj, 0), lbl_805638E4, lbl_805638B0);
     x = xOrigin + offset;
-    fn_802354A0(*((int *) (base + 0x20)), i, (selected) ? (-0x100) : ((int) 0xC0202020), x, lbl_805638F0, lbl_805638B0, lbl_805638F4, lbl_805638F4);
+    drawPictureScaled(*((int *) (base + 0x20)), i, (selected) ? (-0x100) : ((int) 0xC0202020), x, lbl_805638F0, lbl_805638B0, lbl_805638F4, lbl_805638F4);
     *((int *) ((*((int *) (base + 0x30))) + 4)) = (selected) ? (-0x100) : ((int) 0xC0202020);
     fn_80234AFC(*((int *) (base + 0x30)), (i == 0) ? ((char *) (&lbl_8055BF08)) : ((char *) (&lbl_8055BF00)), (sub + offset) - yOrigin, lbl_805638FC);
   }

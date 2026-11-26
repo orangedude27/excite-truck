@@ -1079,7 +1079,7 @@ extern float lbl_80563B74;
 extern float lbl_80563B78;
 extern double lbl_80563B80;
 extern "C" void fn_80230C30(float *, float *, int, int);
-extern "C" void fn_802354A0(int, unsigned char, int, float, float, float, float, float);
+extern "C" void drawPictureScaled(int, unsigned char, int, float, float, float, float, float);
 extern "C" void fn_80231220(int, int, float, float, float, float, float, float, float, float);
 extern float lbl_80563B70, lbl_80563B74, lbl_80563B78;
 #pragma processor 750
@@ -1097,7 +1097,7 @@ extern "C" void fn_8025FC8C(void* p, int arg1) {
     tmpA = spC - lbl_80563B70;
     tmpB = lbl_80563B70 + sp8;
     f24 = (float)*(int*)((char*)p + 0x10);
-    fn_802354A0(*(int*)((char*)p + 0x2C), *(unsigned char*)((char*)p + 0x24), -1,
+    drawPictureScaled(*(int*)((char*)p + 0x2C), *(unsigned char*)((char*)p + 0x24), -1,
         tmpA, tmpB, lbl_80563B74,
         lbl_80563B78 + f25, lbl_80563B78 + f24);
     item = (char*)**(void***)((char*)p + 0x18) + *(int*)((char*)p + 0x1C) * 0x38;

@@ -1198,7 +1198,7 @@ done:
 }
 extern float lbl_80563780, lbl_80563784, lbl_80563788, lbl_8056378C, lbl_80563790, lbl_80563794;
 extern float fn_8023659C();
-extern void fn_802354A0(int, int, unsigned, float, float, float, float, float);
+extern void drawPictureScaled(int, int, unsigned, float, float, float, float, float);
 extern void fn_80235758(int, int, unsigned, float, float, float, float, float, float, float, float);
 extern s32 fn_80211660(s32);
 extern float getPictureHeight(s32, s32);
@@ -1245,8 +1245,8 @@ void fn_80241820(void *arg0) {
                 white = (a << 24) | 0xFFFFFF;
                 col = (col & 0xFFFFFF) | (a << 24);
                 if (x > sx && x + cw < sx + w) {
-                    fn_802354A0(*(int *)(self + 0x44), 3, col, x, sy, lbl_80563758, cw, h);
-                    fn_802354A0(*(int *)(self + 0x44), 6, white, x, sy, lbl_80563758, cw, h);
+                    drawPictureScaled(*(int *)(self + 0x44), 3, col, x, sy, lbl_80563758, cw, h);
+                    drawPictureScaled(*(int *)(self + 0x44), 6, white, x, sy, lbl_80563758, cw, h);
                 } else if (x > sx) {
                     float p = cw - ((x + cw) - (sx + w));
                     float q = p / cw;
