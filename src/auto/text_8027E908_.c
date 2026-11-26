@@ -1879,7 +1879,7 @@ extern "C" void *__AXGetStackHead(void);
 extern "C" void *fn_801284F8(int, const char *);
 extern "C" char lbl_8055C818[8], lbl_8055C820[];
 extern "C" void fn_80236008(void *, int, int);
-extern "C" int fn_802054EC(void *, int, int);
+extern "C" int Difficulty_ReadBool(void *, int, int);
 extern "C" int fn_802812B4(int *arg0, void *arg1, int *arg2, void *arg3) {
     struct Item { void **vtable; };
     struct List { void **vtable; };
@@ -2259,7 +2259,7 @@ extern "C" int fn_802812B4(int *arg0, void *arg1, int *arg2, void *arg3) {
     int limit = ((int (*)(void *))item->vtable[6])(item);
     if (limit >= 5) limit = 5;
     fn_80236008((void *)(sp + 0xD8), limit,
-        fn_802054EC(p26 + 0x658, ((int (*)(void *))item->vtable[5])(item), -1));
+        Difficulty_ReadBool(p26 + 0x658, ((int (*)(void *))item->vtable[5])(item), -1));
     selectedIndex = *arg0;
     int state = -1;
     if (((unsigned char *)arg2)[0] != 0) {
@@ -2672,30 +2672,45 @@ int fn_80283B58(void) {
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" int fn_80283E28(void) {
+int __repair_literal;
+
+    class Child {
+    public:
+        virtual void d0();
+        virtual const char *f3();
+        virtual void d1(); virtual void d2(); virtual void d3();
+        virtual const char *f7();
+        virtual int f8();
+        virtual int f9();
+    };
+    struct Obj { char pad[0x60]; Child *sub; };
+    struct List { Obj **items; int count; };
     char *base = (char *)&lbl_804B2FF8;
-    struct Fn80283E28List *list = (struct Fn80283E28List *)(base + 0xE0);
+    List &list = *(List *)(base + 0xE0);
     int count;
     int idx;
-    struct Fn80283E28Obj **items;
+    Obj **items;
     unsigned int value;
     int i;
-    struct Fn80283E28Obj *obj;
-    count = list->count;
-    items = list->items;
+    Obj *obj;
+    count = list.count;
+    items = list.items;
     value = (unsigned int)lbl_8055F698;
-    idx = fn_80283B58_find(list, value);
-    if (idx >= 0) {
+    idx = fn_80283B58_find((struct Fn80283E28List *)&list, value);
+__repair_literal = 0;
+
+    if (idx >= __repair_literal) {
         i = idx;
         do {
             i--;
             if (i < 0) i += count;
         } while (items[i]->sub == 0 && i != idx);
-        if (i >= 0 && i < list->count && items[i]->sub != 0) {
+        if (i >= 0 && i < list.count && items[i]->sub != 0) {
             lbl_8055F698 = (void *)items[i];
         } else {
             lbl_8055F698 = 0;
         }
-        if (i >= 0 && i < list->count && items[i]->sub != 0) {
+        if (i >= 0 && i < list.count && items[i]->sub != 0) {
             obj = items[i];
             if (obj != 0) {
                 const char *s;
@@ -2704,7 +2719,7 @@ extern "C" int fn_80283E28(void) {
                 int a, b;
                 unsigned char c;
                 char tmp[0x20];
-                s = obj->sub->vt->v3(obj->sub);
+                s = obj->sub->f3();
                 d = base + 0x100;
                 n = 0x20;
                 goto copyText;
@@ -2715,7 +2730,7 @@ extern "C" int fn_80283E28(void) {
                     *d++ = c;
                     if ((signed char)c == 0) break;
                 }
-                s = obj->sub->vt->v7(obj->sub);
+                s = obj->sub->f7();
                 d = base + 0x120;
                 n = 0x20;
                 goto copySound;
@@ -2726,8 +2741,8 @@ extern "C" int fn_80283E28(void) {
                     *d++ = c;
                     if ((signed char)c == 0) break;
                 }
-                a = obj->sub->vt->v9(obj->sub);
-                b = obj->sub->vt->v8(obj->sub);
+                a = obj->sub->f9();
+                b = obj->sub->f8();
                 fn_8001BE94(tmp, fn_8000DA10(), 0x20507, b, a);
                 if (fn_8001BCF0(tmp) != 0) {
                     fn_8001BEE8(tmp);
@@ -2745,7 +2760,7 @@ extern "C" int fn_80283E28(void) {
                         if ((signed char)c == 0) break;
                     }
                 }
-                lbl_8055C7E0 = obj->sub->vt->v8(obj->sub);
+                lbl_8055C7E0 = obj->sub->f8();
             } else {
                 base[0x120] = 0;
                 base[0x100] = 0;

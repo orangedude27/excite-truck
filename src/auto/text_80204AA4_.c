@@ -576,7 +576,7 @@ inline DiffLookup802054EC::DiffLookup802054EC(int type, int stageIndex) {
     }
 }
 #pragma dont_inline off
-extern "C" int fn_802054EC(const char *propName, int typeIndex, int stageIndex) {
+extern "C" int Difficulty_ReadBool(const char *propName, int typeIndex, int stageIndex) {
     /* Read a difficulty property as a boolean: resolve its value string first under the
      * stage-specific "<contest>_<propName>" key, then under the plain name, panicking if
      * no set defines it; return 1 when the value is "yes" or "true", otherwise 0. */
