@@ -8391,7 +8391,7 @@ struct VFiPFDirEntry {
  * the first and last sector of that run (+0x08), the long-name entry being built
  * (+0x20) and the directory being written into (+0x40, 0x38 bytes).
  */
-extern "C" s32 fn_800B10E0(void *volume, void *entry, s32 name, s32 unused) {
+extern "C" s32 VFiPFENT_CreateFileEntry(void *volume, void *entry, s32 name, s32 unused) {
     VFiPFEntryLocalFrame frame;
     s32 nameChars;
     s32 result;
@@ -8571,7 +8571,7 @@ extern "C" void fn_800B36C4(s32, s32, s32);
             return 0x17;
         ((void (*)(u16 *, u32 *))fn_800AB2F4)(&frame.name502, &frame.value8);
     } else {
-        status = ((s32 (*)(s32, void *, void *))fn_800B10E0)((s32)volume, frame.entryState, frame.pathDir);
+        status = ((s32 (*)(s32, void *, void *))VFiPFENT_CreateFileEntry)((s32)volume, frame.entryState, frame.pathDir);
         if (status == 8) {
             if (mode & 0x10)
                 return 8;
@@ -17760,7 +17760,7 @@ extern "C" void fn_800C2590(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3)
   s32 d0 = *(t++);
   s32 d1 = *(t++);
   arg2[64] = arg1[1] + ((s32) ((((s64) a1) * d0) >> 20));
-  arg3[-64] = arg1[16] + ((s32) ((((s64) a1) * d1) >> 20));
+  arg3[-64] = arg1[16] + ((s32) ((((s64) (arg0[1])) * d1) >> 20));
   s32 a2 = arg0[2];
   s32 e0 = *(t++);
   s32 e1 = *(t++);
@@ -17768,7 +17768,7 @@ extern "C" void fn_800C2590(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3)
   arg3[-128] = arg1[15] + ((s32) ((((s64) a2) * e1) >> 20));
   s32 a3 = arg0[3];
   s32 f0 = *(t++);
-  s32 f1 = *(t++);
+  volatile int f1 = *(t++);
   arg2[192] = arg1[3] + ((s32) ((((s64) a3) * f0) >> 20));
   arg3[-192] = arg1[14] + ((s32) ((((s64) a3) * f1) >> 20));
   s32 a4 = arg0[4];
@@ -17776,7 +17776,7 @@ extern "C" void fn_800C2590(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3)
   s32 g1 = *(t++);
   arg2[256] = arg1[4] + ((s32) ((((s64) a4) * g0) >> 20));
   arg3[-256] = arg1[13] + ((s32) ((((s64) a4) * g1) >> 20));
-  s32 a5 = arg0[0, 5];
+  s32 a5 = arg0[5];
   s32 h0 = *(t++);
   s32 h1 = *(t++);
   arg2[320] = arg1[5] + ((s32) ((((s64) a5) * h0) >> 20));
