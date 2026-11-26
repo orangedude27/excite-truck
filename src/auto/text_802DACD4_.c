@@ -97,7 +97,7 @@ void gxPoint(int, int, unsigned int);
    denser the glyph.  The line wraps to the left margin when the word ahead no
    longer fits on the screen.  A negative x is the column to start at, taken as
    its absolute value; any other x starts at the left margin instead. */
-void fn_802DAE64(int xStart, int yStart, char *str)
+void drawStringToCanvas(int xStart, int yStart, char *str)
 {
   int texX;        /* where the glyph starts in the sheet, across */
   int texY;        /* ... and down */
@@ -266,7 +266,7 @@ void fn_802DB03C(char *arg0) {
         }
         p++;
     }
-    fn_802DAE64(0x140, 0x78, local.text);
+    drawStringToCanvas(0x140, 0x78, local.text);
     GX_ShowXFB();
 }
 
@@ -310,7 +310,7 @@ void fn_802DB168(void) {
     canvas.width2 = fbWidth;
     canvas.height2 = fbHeight;
     ((void (*)(void *))gxCanvasSwitch)(&canvas);
-    fn_802DAE64(-0x1C2, 0x17C, lbl_8055D140);
+    drawStringToCanvas(-0x1C2, 0x17C, lbl_8055D140);
     GX_ShowXFB();
     fn_802CED50(0x1C2, 0x17C, 0x78, 0x1E);
 }
