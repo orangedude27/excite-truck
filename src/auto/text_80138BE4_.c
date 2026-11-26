@@ -59,6 +59,8 @@ extern double fabs(double);
 #pragma scheduling invalid_target
 extern double __fabs(double);
 #pragma push
+#pragma scheduling invalid_target
+#pragma push
 #pragma processor 750
 /* Solves a MotionPair's relative motion for the time its position crosses zero:
  * con + lin * t + quad * t * t == 0, con/lin/quad being the differences of the
@@ -115,7 +117,6 @@ int solveMotionCrossingTime(MotionPair *motion, float *out_time, float *out_dist
     }
     return 0;
 }
-#pragma scheduling on
 float fn_80138DF4(void *arg0) {
     const void *carg = arg0;
     float spC;
