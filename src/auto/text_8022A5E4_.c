@@ -694,7 +694,7 @@ struct UIStyle {
  * the style draws is the floor of the result, and is all there is for a text
  * of 0.
  */
-int UIStyle_getTextHeight(int styleIndex, const char *text) {
+/* Return the pixel height of `text` drawn with UI style `styleIndex`: the larger of the style's picture height and the line height (font ascent/descent by vertical alignment plus the larger of top/bottom padding), or just the picture height when text is null. */ int UIStyle_getTextHeight(int styleIndex, const char *text) {
     struct UIStyle *style;
     int max;
     int above;
