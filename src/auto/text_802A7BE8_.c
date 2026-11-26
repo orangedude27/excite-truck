@@ -234,7 +234,7 @@ s32 fn_802A7E08(s32 *arg0, s32 *arg1) {
    camera.  In team play a car of the local player's own team also gets the
    team icon of fn_802A7CA8, style 3 when the team is the entry's 0xF8 and
    style 2 when it is the 0xE8 one. */
-void CarMarkers_Draw(void) {
+/* Draw distance-faded race-position markers over rival cars, plus a team icon in team play. */ void CarMarkers_Draw(void) {
     u32 worldPos[3];
     char rankText[8];
     f32 screen[3];
@@ -245,7 +245,7 @@ void CarMarkers_Draw(void) {
     s32 carIndex;
     s32 i;
     u32 xBits;
-    struct CarObject *obj;
+    struct CarObject *carObject;
     f32 norm;
     f32 alpha;
     f32 alphaByte;
@@ -287,20 +287,20 @@ void CarMarkers_Draw(void) {
         }
 
         car = ((void *(*)(int))fn_801EA9A0)(carIndex);
-        obj = car->object;
-        if (obj->flags & 0x40) {
+        carObject = car->object;
+        if (carObject->flags & 0x40) {
             continue;
         }
         if (car->field30 != 0) {
             continue;
         }
 
-        xBits = obj->xBits;
-        worldPos[1] = obj->yBits;
+        xBits = carObject->xBits;
+        worldPos[1] = carObject->yBits;
         norm = *(float *)&worldPos[1];
         worldPos[0] = xBits;
         norm = norm + lift;
-        worldPos[2] = obj->zBits;
+        worldPos[2] = carObject->zBits;
         *(float *)&worldPos[1] = norm;
         fn_802C8E70((float *)worldPos, screen);
 
