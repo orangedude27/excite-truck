@@ -87,7 +87,7 @@ extern f32 lbl_805622E8;
 extern f32 lbl_805622E0;
 extern f32 lbl_805622D0;
 extern f32 lbl_8056231C, lbl_80562320, lbl_80562324, lbl_80562328, lbl_80562330, lbl_805622D4, lbl_8056232C, lbl_805622D8;
-extern s32 lbl_8055E5A0;
+extern s32 trackMesh;
 extern "C" s32 fn_801CF080(s32, void*, void*, s32*, s32, f32);
 extern "C" s32 fn_8019A820(void*, void*, s32, s32, s32, f32);
 extern "C" s32 fn_801E9F08(void*, void*, void*, s32, s32, f32);
@@ -152,7 +152,7 @@ extern "C" s32 fn_801CFF18(s32, s32);
 extern "C" void fn_801D0650(void);
 extern "C" void fn_801CFF14(void);
 extern "C" s32 fn_801CF828(s32, s32, s32, s32, s32);
-extern s32 lbl_8055E5A0;
+extern s32 trackMesh;
 extern "C" s32 fn_801CFEAC(void*);
 extern s32 lbl_803336EC[];
 extern "C" void fn_801A48E4(void*);
@@ -1121,7 +1121,7 @@ static inline f32 fn_8019AC44_max(f32 a, f32 b) {
 extern "C" void fn_8019AC44(void* arg0, void* arg1, void* arg2, f32 farg0) {
     Vec work[64]; s32 count, sp8; Vec p70,p64,delta,p4c,p40,p34,p28,p1c,p10;
     f32 dot,mag,limit,scale,varf1,f31,dx,dy,dz,tx,ty,tz,ux,uy,uz,vx,vy,vz,px,py,pz; void* body=*(void**)((u8*)arg0+4);
-    if (lbl_8055E5A0!=0) { count=0x40; fn_801CF080((s32)lbl_8055E5A0,arg1,work,&count,0,farg0); Vec *wp = work; for(s32 i=0;i<count;wp++,++i) fn_8019A820(arg0,arg1,(s32)wp,0x6e,0,farg0); }
+    if (trackMesh!=0) { count=0x40; fn_801CF080((s32)trackMesh,arg1,work,&count,0,farg0); Vec *wp = work; for(s32 i=0;i<count;wp++,++i) fn_8019A820(arg0,arg1,(s32)wp,0x6e,0,farg0); }
     if (fn_801E9F08((u8*)body+0x6c,arg1,&p70,(s32)&p64,(s32)&sp8,farg0)!=0) {
         dx=((Vec*)arg1)->x-p70.x; dy=((Vec*)arg1)->y-p70.y; dz=((Vec*)arg1)->z-p70.z; delta.x=dx; delta.y=dy; delta.z=dz;
         dot=PSVECDotProduct(&p64,&delta); f31=farg0-dot; fn_8017B6D4((s32)body,&p4c,(s32)&p70);
@@ -3586,7 +3586,7 @@ extern "C" void stepPhysicsGroup(void* group) {
         ((Fn801A0F10Child*)*(void**)(entry + 0x24))->Update();
         entry += 4;
     }
-    if (lbl_8055E5A0 != 0) {                             /* the cached "track.msh" mesh */
+    if (trackMesh != 0) {                             /* the cached "track.msh" mesh */
         car = *(u8**)((u8*)group + 4);                   /* the object this group drives */
         s32 isCar;
         if (car == 0) goto set0;
@@ -3613,7 +3613,7 @@ extern "C" void stepPhysicsGroup(void* group) {
                 v.y += *(f32*)(car + 0x4C) * one;
                 v.z += *(f32*)(car + 0x50) * one;
                 count = 0x40;
-                fn_801CF080(lbl_8055E5A0, &v, points, &count, 0, lbl_8056234C);  /* mesh points near it */
+                fn_801CF080(trackMesh, &v, points, &count, 0, lbl_8056234C);  /* mesh points near it */
                 for (s32 j = 0; j < count; j++) {
                     Vec d;                               /* corner minus that point */
                     d.x = v.x - points[j].x;
@@ -5930,25 +5930,25 @@ extern "C" void* fn_801A4B5C(void* arg0, s32 arg1, void* arg2) {
 }
 #pragma pop
 extern "C" void fn_801A4E28(void) {
-    /* Static initializer: load the "track.msh" mesh resource and cache its pointer in lbl_8055E5A0. */
-    lbl_8055E5A0 = fn_801CFEAC(&lbl_803336EC[0]);
+    /* Static initializer: load the "track.msh" mesh resource and cache its pointer in trackMesh. */
+    trackMesh = fn_801CFEAC(&lbl_803336EC[0]);
 }
 #pragma pop
-/* Release the global subsystem handle lbl_8055E5A0 if set, then clear it. */
+/* Release the global subsystem handle trackMesh if set, then clear it. */
 extern "C" void fn_801A4E54(void) {
-    if (lbl_8055E5A0 != 0) {
-        ((void (*)(s32))fn_801CFF14)(lbl_8055E5A0);
-        lbl_8055E5A0 = 0;
+    if (trackMesh != 0) {
+        ((void (*)(s32))fn_801CFF14)(trackMesh);
+        trackMesh = 0;
     }
 }
 
 extern "C" void fn_801D0650(void);
-extern s32 lbl_8055E5A0;
+extern s32 trackMesh;
 extern void fn_801CFF14(void);
 extern s32 fn_801CF828(s32, s32, s32, s32, s32);
 /* Test the global object for a hit with the given parameters; on hit, store result code 0x6E and return 1. */
 extern "C" s32 fn_801A4E88(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4) {
-    if ((lbl_8055E5A0 != 0) && (fn_801CF828(lbl_8055E5A0, arg0, arg1, arg2, arg3) != 0)) {
+    if ((trackMesh != 0) && (fn_801CF828(trackMesh, arg0, arg1, arg2, arg3) != 0)) {
         *arg4 = 0x6E;
         return 1;
     }
