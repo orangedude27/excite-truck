@@ -989,7 +989,7 @@ extern "C" void fn_80217AC0(s32);
 #pragma dont_inline on
 // Tab navigation: hand the menu-group pointer held by this widget at +0x2C to
 // the group's selectable-widget focus search.
-extern "C" void fn_80219508(void* widget) {
+extern "C" void focusPreviousWidget(void* widget) {
     fn_80217AC0(*(s32*)((u8*)widget + 0x2C));
 }
 #pragma dont_inline reset
