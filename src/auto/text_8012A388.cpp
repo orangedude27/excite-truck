@@ -3104,7 +3104,7 @@ extern "C" void fn_8012E96C(s32 arg0) {
 // and entries byte-reversed if the read just brought it in - and returns the
 // mount whose table lists arg1 (fn_8012E96C reports the set by its name at
 // +0xC), or 0 when no mounted set has it.
-extern "C" s32 findResourceOwningMount(s32 manager, s32 resName) {
+/* Find which mounted external-TOC set owns a named resource: build each set's .toc path, load and byte-swap its ETOC table when freshly read, then search the entries for the name and return the owning mount (or 0). */ extern "C" s32 findResourceOwningMount(s32 manager, s32 resName) {
     char tocPath[128];
     s32 tocOffset;
     u8 startedLoad;
