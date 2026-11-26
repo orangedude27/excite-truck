@@ -14448,7 +14448,7 @@ extern "C" s32 fn_800BABD0(void *arg0, s32 arg1, s32 *arg2, s32 arg3) {
  * +0x0C and the value to write - taken from *value - at +0x10.  Returns 0, or
  * 0xC1000000 (IPC_E_FAIL) when the SD library was never initialised, value is
  * NULL, or IOS failed; every failure ends in the "%s: exit rc is 0x%X" report.
- * fn_800BC134 read-modify-writes register 0x28 with it to switch the bus width. */
+ * SDCard_SetBusWidth read-modify-writes register 0x28 with it to switch the bus width. */
 extern "C" s32 fn_800BACC4(void *device, s32 reg, s32 *value, s32 arg3) {
     const char *logStrings = lbl_8031B838;
     s32 result;
@@ -14549,7 +14549,7 @@ extern "C" void *lbl_8055DD7C;
 extern "C" u8 lbl_80407560[0x18];
 extern "C" const char lbl_8031B838[];
 extern "C" s32 runSdCardCommand(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
-extern "C" s32 fn_800BC134(void *, s32, s32);
+extern "C" s32 SDCard_SetBusWidth(void *, s32, s32);
 extern "C" s32 IOS_Ioctl(s32, s32, void *, s32, void *, s32);
 extern "C" void DCFlushRange(void *, u32);
 extern "C" s32 SDCard_writeBlocks(s32,s32,s32,s32,s32,s32);
@@ -14636,7 +14636,7 @@ struct SDCmdRequest {
  * callback the request is left running and the callback (given "callbackArg")
  * reports the result.  A card a raw command left unconfigured (state 2) is set
  * up first: its CSD is read (command 7), it is switched to 0x200 byte blocks
- * (command 0x10) and to a 4 bit bus (fn_800BC134).
+ * (command 0x10) and to a 4 bit bus (SDCard_SetBusWidth).
  *
  * "dev" is an IosDevice: the IOS handle at 0x00, the argument its commands
  * carry at 0x10, an offset limit at 0x20 (0: none) and the state at 0x24.
@@ -14672,7 +14672,7 @@ else {
 result=runSdCardCommand(*(s32*)dev,0x10,3,1,0x200,0,0,0,0,(s32)blockLenOut,0,0);
 if(result!=0) OSReport(messages+0x358,messages+0x234,result);
 else {
-result=((s32(*)(void*,s32))fn_800BC134)(dev,4); /* 4 bit bus */
+result=((s32(*)(void*,s32))SDCard_SetBusWidth)(dev,4); /* 4 bit bus */
 if(result!=0) OSReport(messages+0x358,messages+0x234,result);
 else {
  s32 fd=*(volatile s32*)dev; *lbl_8055DD70=1; s32 ioctlRes=IOS_Ioctl(fd,6,lbl_8055DD70,4,0,0); if(ioctlRes!=0){OSReport(messages+0x148);ioctlRes=(s32)0xC1000000;} result=ioctlRes; if(ioctlRes!=0){OSReport(messages+0x358,messages+0x234,ioctlRes);} /* tell the SD module (ioctl 6) the card setup changed */
@@ -14730,7 +14730,7 @@ dev->state=1;
 result=runSdCardCommand(dev->fd,SD_CMD_SET_BLOCKLEN,3,1,SD_BLOCK_SIZE,0,0,0,0,(s32)blockLenOut,0,0);
 if(result!=0) OSReport(messages+0x358,messages+0x234,result);
 else {
-result=((s32(*)(void*,s32))fn_800BC134)(dev,4); /* 4 bit bus */
+result=((s32(*)(void*,s32))SDCard_SetBusWidth)(dev,4); /* 4 bit bus */
 if(result!=0) OSReport(messages+0x358,messages+0x234,result);
 else {
  s32 fd=*(volatile s32*)dev; *lbl_8055DD70=1; s32 ioctlRes=IOS_Ioctl(fd,6,lbl_8055DD70,4,0,0); if(ioctlRes!=0){OSReport(messages+0x148);ioctlRes=(s32)0xC1000000;} result=ioctlRes; if(ioctlRes!=0){OSReport(messages+0x358,messages+0x234,ioctlRes);} /* tell the SD module (ioctl 6) the card setup changed */
@@ -14961,7 +14961,7 @@ extern "C" s32 fn_800BACC4(void *, s32, s32 *, s32);
 /* SD host helper: configure card mode (select flag from arg1==4), read/modify/write
  * a register field via SD ioctls, reporting errors through OSReport.
  */
-extern "C" s32 fn_800BC134(void *sdCtx, s32 mode, s32 unused) {
+extern "C" s32 SDCard_SetBusWidth(void *sdCtx, s32 mode, s32 unused) {
     const char *sdMsgBase = lbl_8031B838;
     s32 regValue;
     s32 responseBuf[6];
