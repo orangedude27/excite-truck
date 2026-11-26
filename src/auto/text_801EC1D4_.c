@@ -640,10 +640,10 @@ void drawVehicleParts(void *vehicleRender) {
      * the other way round.  The bits a group drew come off the list as it goes,
      * and whatever is left once all the groups have had their say is submitted
      * again with the vehicle's own pose (+0x4A0) unless SkipRestOfParts is set.
-     * fn_801ECC70 sets the model's draw scale for the pass and fn_801ED46C
+     * fn_801ECC70 sets the model's draw scale for the pass and drawLeftoverVehicleParts
      * submits what it leaves over. */
     extern void *fn_801E87A8(void);   /* the render state's flags block */
-    extern void fn_801ED46C(void *);
+    extern void drawLeftoverVehicleParts(void *);
     extern void fn_802DAC54(void);
     extern int fn_802C7A40(int, void *, int, int, void *, int);
     extern void fn_802C70AC(int, void *, int, int);
@@ -661,7 +661,7 @@ void drawVehicleParts(void *vehicleRender) {
     #define ResetPartKeys   fn_802DAC54     /* start the part-key arena over */
     #define NewPartKey      fn_802C7A40     /* a key: a part name and two words */
     #define DrawPart        fn_802C70AC     /* a part, with its pose and its bits */
-    #define DrawLeftOver    fn_801ED46C     /* what the pass leaves over */
+    #define DrawLeftOver    drawLeftoverVehicleParts     /* what the pass leaves over */
 
     struct PartName { char name[12]; };
     /* the model's part-name table, twelve-byte names from +0x2E0 on */
@@ -822,7 +822,7 @@ void fn_801ED354(void *vehicleRender) {
 /* Rotate the source vector from the current draw matrix (DrawList_getCurrentMatrix) by this
  * object's 3x3 matrix at +0x3C, write the result and its negation into two
  * indexed vec3 slots, then dispatch a draw callback using fn_802C7A34's handle. */
-void fn_801ED46C(void *self) {
+void drawLeftoverVehicleParts(void *self) {
     float outVec[3];
     float *currentMatrix;
     float *rot;
