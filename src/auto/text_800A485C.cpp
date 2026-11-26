@@ -23348,7 +23348,7 @@ extern "C" void fn_800C7E6C(void *arg0) {
 extern "C" s32 transPaneName;
 #pragma push
 #pragma dont_inline off
-extern "C" void fn_800C7F8C(void *arg0, s32 arg1) {
+extern "C" void updateHomeButtonPanes(void *arg0, s32 arg1) {
     /* Update the home-button panes: toggle each slot's pane state and controller flags, then clear the frame marker. */
     s32 *state = (s32 *)arg1;
     u8 *cursor = (u8 *)arg0;
@@ -23400,7 +23400,7 @@ extern "C" void fn_800C7F8C(void *arg0, s32 arg1) {
 #pragma pop
 extern "C" void fn_800D15B4(void *);
 extern "C" f32 lbl_80560DF8;
-extern "C" void fn_800C7F8C(void *, s32);
+extern "C" void updateHomeButtonPanes(void *, s32);
 extern "C" void fn_800C81F0(void *arg0, s32 arg1) {
     /* budget retry 10 */
     u8 *self = (u8 *)arg0;
@@ -23459,7 +23459,7 @@ extern "C" void fn_800C81F0(void *arg0, s32 arg1) {
     *(s32 *)((u8 *)current + 0x14) = 1;
     if (arg1 != 0) {
         *(s32 *)(self + 0x10) = 1;
-        fn_800C7F8C(arg0, arg1);
+        updateHomeButtonPanes(arg0, arg1);
     }
     switch (*(s32 *)(self + 0x10)) {
         case 0: *(s32 *)(self + 0x14) = 0; break;
