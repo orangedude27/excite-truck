@@ -274,7 +274,7 @@ extern "C" {
 extern u8 lbl_8033B1EC[];
 extern u8 lbl_8033B210[];
 extern u8 lbl_8033B024[];
-extern u32 lbl_802F9BA0[8];
+extern u32 placedObjectCreators[8];
 __declspec(section ".sdata") extern u8 lbl_8055B2CC[];
 __declspec(section ".sdata") extern u8 lbl_8055B2D4[];
 __declspec(section ".sdata") extern u8 lbl_8055B2DC[];
@@ -736,7 +736,7 @@ extern "C" void *createPlacedObject(void *node, s32 transform, s32 copyName) {
     struct TypeTable { TypeEntry entry[4]; };
     TypeEntry *entry;
     const char *typeName = ((Node *)node)->getString(OBJ_KEY_TYPE);
-    TypeTable table = *(TypeTable *)lbl_802F9BA0;
+    TypeTable table = *(TypeTable *)placedObjectCreators;
     PlacedObj *obj = 0;
     entry = table.entry;
     for (u32 i = 0; i < 4; i++, entry++) {
@@ -971,7 +971,7 @@ extern "C" void *fn_801F86C8(void *node) {
 }
 
 extern u32 lbl_802F9B30[];
-extern "C" u32 lbl_802F9BA0[8];
+extern "C" u32 placedObjectCreators[8];
 extern u8 lbl_8055B2CC[];
 __declspec(section ".sdata") extern u8 lbl_8055B2CC[];
 extern "C" int fn_801F88F4(void *arg0) {
