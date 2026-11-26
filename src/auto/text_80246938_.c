@@ -1091,7 +1091,7 @@ extern double sin(double);
  * values ascending from -200 to 200. */
 typedef struct LogoCurvePoint { float x; float y; } LogoCurvePoint;
 typedef struct LogoCurve { LogoCurvePoint point[9]; } LogoCurve;
-extern float lbl_802FA430[18];
+extern float thankyouCurve[18];
 extern void *memcpy(void *, const void *, unsigned long);
 extern float lbl_80563898, lbl_805638AC, lbl_805638B0, lbl_805638B4, lbl_805638B8;
 #pragma push
@@ -1112,7 +1112,7 @@ void warpTextPosition(float *outX, float *outY, float x, float y) {
 #define zero        lbl_805638B0 /* 0.0f */
 #define shakeRate   lbl_805638B4 /* 956.0f radians per second */
 #define shakeAmount lbl_805638B8 /* 3.0f pixels */
-#define logoCurve   lbl_802FA430 /* the (x, offset) curve, copied below */
+#define logoCurve   thankyouCurve /* the (x, offset) curve, copied below */
 
     typedef struct { float v[18]; } CurveCopy; /* nine LogoCurvePoint pairs */
     CurveCopy curve;
