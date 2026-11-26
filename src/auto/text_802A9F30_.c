@@ -424,7 +424,7 @@ void fn_802AA25C(void *arg0, void *arg1, float farg0) {
 
 #pragma push
 #pragma processor 750
-void fn_802AA9D4(UnkAA9D4 *arg0, void *arg1, float delta) {
+void updateStunSparkEmitter(UnkAA9D4 *arg0, void *arg1, float delta) {
     extern float lbl_805649F4, lbl_80564A08, lbl_80564A04, lbl_80564A48, lbl_80564A4C, lbl_80564A50;
     extern float fn_80287BC8(float, float);
     extern void fn_8028E590(int, Vec *, Vec *, float);
@@ -910,7 +910,7 @@ void fn_802AB628(float deltaTime) {
     extern int fn_80287B24(int);               /* object pointer/data by index */
     extern void fn_802AA1D0(unsigned int);     /* per-index setup using lbl_80488648 */
     extern void fn_802AA25C(void *, void *, float);
-    extern void fn_802AA9D4(UnkAA9D4 *, void *, float);
+    extern void updateStunSparkEmitter(UnkAA9D4 *, void *, float);
     extern void fn_802AAC80(void *, void *, float);
     extern int lbl_8055F928;                   /* base of per-object state entries (stride 0x108) */
     int count = fn_80287B14();
@@ -927,7 +927,7 @@ loop:
     entryBase = lbl_8055F928 + entryOffset;
     fn_802AA1D0(index);
     fn_802AA25C((void *)entryBase, (void *)object, deltaTime);
-    fn_802AA9D4((UnkAA9D4 *)entryBase, (void *)object, deltaTime);
+    updateStunSparkEmitter((UnkAA9D4 *)entryBase, (void *)object, deltaTime);
     fn_802AAC80((void *)entryBase, (void *)object, deltaTime);
     entryOffset += 0x108;
     index += 1;
