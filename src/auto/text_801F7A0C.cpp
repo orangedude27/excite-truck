@@ -784,7 +784,7 @@ __declspec(section ".sdata") extern const char lbl_8055B2A8[], lbl_8055B2B0[], l
 extern "C" int sprintf(char *, const char *, ...);
 // Allocates and initializes a 0x168-byte object: sets vtables/default fields, resolves
 // named resources and flags from the manager, and returns the initialized object.
-extern "C" void *createManagedObject(void *arg0) {
+/* Allocates a 0x168-byte object and initializes its vtables, fields and manager-resolved resources/flags. */ extern "C" void *createManagedObject(void *manager) {
     class Manager {
     public:
         virtual void m8();
@@ -816,20 +816,20 @@ extern "C" void *createManagedObject(void *arg0) {
         memset(object + 0x61, 0x61, 0x10);
         *(s32 *)(object + 0x74) = -1;
         *(void **)(object + 0x108) = lbl_8033B418;
-        *(void **)(object + 0x13C) = ((Manager *)arg0)->combine(base + 0xC0, ((Manager *)arg0)->get(lbl_8055B2A8));
-        *(void **)(object + 0x140) = ((Manager *)arg0)->get(base + 0xCC);
+        *(void **)(object + 0x13C) = ((Manager *)manager)->combine(base + 0xC0, ((Manager *)manager)->get(lbl_8055B2A8));
+        *(void **)(object + 0x140) = ((Manager *)manager)->get(base + 0xCC);
         *(s32 *)(object + 0x160) = 1;
         while (*(s32 *)(object + 0x160) < 8) {
             sprintf(resourceName, base + 0xD8, *(s32 *)(object + 0x160) + 1);
-            if (((Manager *)arg0)->has(resourceName) == 0) {
+            if (((Manager *)manager)->has(resourceName) == 0) {
                 break;
             }
-            *(void **)(object + 0x140 + (*(s32 *)(object + 0x160) * 4)) = ((Manager *)arg0)->get(resourceName);
+            *(void **)(object + 0x140 + (*(s32 *)(object + 0x160) * 4)) = ((Manager *)manager)->get(resourceName);
             *(s32 *)(object + 0x160) = *(s32 *)(object + 0x160) + 1;
         }
-        object[0x164] = ((Manager *)arg0)->flag(lbl_8055B2EC, 1);
-        object[0x165] = ((Manager *)arg0)->flag(base + 0xE8, 1);
-        ((Manager *)arg0)->get((const char *)lbl_8055B2DC);
+        object[0x164] = ((Manager *)manager)->flag(lbl_8055B2EC, 1);
+        object[0x165] = ((Manager *)manager)->flag(base + 0xE8, 1);
+        ((Manager *)manager)->get((const char *)lbl_8055B2DC);
     }
     return object;
 }
