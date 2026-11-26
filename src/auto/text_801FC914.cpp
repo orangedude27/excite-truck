@@ -850,7 +850,7 @@ extern "C" void fn_801FD5E8(void* arg0, float farg0) {
 /* Advances a LinearPathTMH along its linear node track by deltaTime: rolls the
  * segment parameter over into the next node (or hands the path back at the end),
  * then refreshes the Hermite position, orientation matrix and scalar output. */
-extern "C" void advanceLinearPathTMH(void* walker, float deltaTime) {
+/* Advance a LinearPathTMH along its track by deltaTime: roll the segment parameter into the next node (or release the path at the end), then refresh the Hermite position, orientation matrix and scalar output. */ extern "C" void advanceLinearPathTMH(void* walker, float deltaTime) {
     char* tmh = (char*)walker;
     char** trackSlot = *(char***)(tmh + 4);
     char* track = *trackSlot;
