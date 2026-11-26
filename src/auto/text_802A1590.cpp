@@ -122,7 +122,7 @@ class Item802A194C { public: virtual void v0(); virtual void v1(); virtual void 
 extern "C" char lbl_8055CB70;
 extern "C" void *fn_802AE414(void *);
 extern "C" void fn_801345D8(void *, s32, const char *, s32);
-extern "C" void *fn_802A194C(void *);
+extern "C" void *createTerrainTrailHandler(void *);
 extern "C" void *fn_801284F8(u32, void *);
 extern "C" void *fn_802A1DF4(void *, DummyReceiver_802A3314 *);
 extern "C" void *fn_802A2EEC(void *, DummyReceiver_802A3314 *);
@@ -156,7 +156,7 @@ extern "C" void fn_802A1590(void) {
     char terrainName[0x20];
     /* Initialize the 8 terrain handler slots: for each "terrain_%d", look up the
        object, fetch its "trail" sub-object (v21), create/cache a handler via
-       fn_802A194C, then register the terrain update and event callbacks. */
+       createTerrainTrailHandler, then register the terrain update and event callbacks. */
     memset(lbl_804BCF88, 0, 0x20);
     slot = lbl_804BCF88;
     slotIndex = 0;
@@ -167,7 +167,7 @@ loop:
         if (obj != 0)
             obj = (void *)((Item *)obj)->v21(&lbl_8055CB70);
         if (obj != 0)
-            *slot = fn_802A194C(obj);
+            *slot = createTerrainTrailHandler(obj);
     }
     slotIndex++;
     slot++;
@@ -317,7 +317,7 @@ extern "C" s32 fn_802A1864(const char *name) {
     return 0;
 }
 
-extern "C" void *fn_802A194C(void *terrainObj) {
+extern "C" void *createTerrainTrailHandler(void *terrainObj) {
     // Find the "type" id, reuse a cached terrain slot of the same type, else allocate the handler for ids 1-6.
     class Receiver {
     public:
@@ -1959,26 +1959,26 @@ extern "C" void fn_802A4A04(void* plane) {
 }
 
 /* getType() implementation for the type-1 terrain item handler: returns its fixed type id, 1
- * (one of the ids 1-6 the fn_802A194C cache keys on; id 1 selects the fn_802A1DF4 handler). */
+ * (one of the ids 1-6 the createTerrainTrailHandler cache keys on; id 1 selects the fn_802A1DF4 handler). */
 extern "C" u32 fn_802A4A18(void) { return 1; }
 
 // getType() implementation for the type-2 terrain item handler (vtable lbl_80349B50):
-// returns its fixed type id, 2 (one of the ids 1-6 the fn_802A194C cache keys on;
+// returns its fixed type id, 2 (one of the ids 1-6 the createTerrainTrailHandler cache keys on;
 // id 2 selects the fn_802A2EEC handler).
 extern "C" u8 fn_802A4A20(void) {
     return 2;
 }
 
 // getType() implementation for a terrain item handler: returns its fixed type id, 3
-// (one of the ids 1-6 the fn_802A194C cache keys on; id 3 selects the fn_802A3314 handler).
+// (one of the ids 1-6 the createTerrainTrailHandler cache keys on; id 3 selects the fn_802A3314 handler).
 extern "C" u32 fn_802A4A28(void) { return 3; }
 
 // getType() implementation for a terrain item handler: returns its fixed type id, 4
-// (one of the ids 1-6 the fn_802A194C cache keys on; id 4 selects the fn_802A3610 handler).
+// (one of the ids 1-6 the createTerrainTrailHandler cache keys on; id 4 selects the fn_802A3610 handler).
 extern "C" u32 fn_802A4A30(void) { return 4; }
 
 // getType() implementation for a terrain item handler: returns its fixed type id, 5
-// (one of the ids 1-6 the fn_802A194C cache keys on).
+// (one of the ids 1-6 the createTerrainTrailHandler cache keys on).
 extern "C" u32 fn_802A4A38(void) { return 5; }
 
 extern "C" u32 fn_802A4A40(void) {
