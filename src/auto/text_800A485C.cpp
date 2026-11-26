@@ -23232,29 +23232,30 @@ extern "C" void fn_80062088(s32);
 extern "C" f32 lbl_80560DDC,lbl_80560DE0,lbl_80560DE4;
 extern "C" f32 lbl_80560DD0,lbl_80560DE8;
 #pragma dont_inline off
-extern "C" s32 setupHomeButtonSpeakerSlots(void *arg0) {
-    /* Initialize/update this object's timer and slot UI state from global timing values. */
-    u8 *p;
-    s32 i, index;
-    void *obj;
-    *(s32 *)((u8 *)arg0 + 0x80) = (s32)(lbl_80560DDC + lbl_80560DE0 * (f32)fn_80062054());
+/* Set up the home-button menu's remote-speaker channels and event slot modes
+ * from the current WPAD data-report format. */
+extern "C" s32 setupHomeButtonSpeakerSlots(void *home) {
+    u8 *cursor;
+    s32 i, eventIndex;
+    void *spec;
+    *(s32 *)((u8 *)home + 0x80) = (s32)(lbl_80560DDC + lbl_80560DE0 * (f32)fn_80062054());
     fn_80062088(0x7f);
-    for (p = (u8 *)arg0, i = 0; i < 4; i++) {
-        ((void (*)(void *, f32))fn_800D1204)(*(void **)(p + 0x254), (f32)*(s32 *)((u8 *)arg0 + 0x80) / 10.0f);
-        ((void (*)(void *))fn_800D11F0)(*(void **)(p + 0x254));
-        p += 4;
+    for (cursor = (u8 *)home, i = 0; i < 4; i++) {
+        ((void (*)(void *, f32))fn_800D1204)(*(void **)(cursor + 0x254), (f32)*(s32 *)((u8 *)home + 0x80) / 10.0f);
+        ((void (*)(void *))fn_800D11F0)(*(void **)(cursor + 0x254));
+        cursor += 4;
     }
     for (i = 0; i < 10; i++) {
-        if (i < *(s32 *)((u8 *)arg0 + 0x80)) {
-            index = findEventSlot(i + 0x15, 10);
-            obj = ((void **)arg0)[index + 166];
-            ((void (*)(void *))fn_800CF3EC)(obj);
-            *(s32 *)((u8 *)obj + 0x14) = 1;
+        if (i < *(s32 *)((u8 *)home + 0x80)) {
+            eventIndex = findEventSlot(i + 0x15, 10);
+            spec = ((void **)home)[eventIndex + 166];
+            ((void (*)(void *))fn_800CF3EC)(spec);
+            *(s32 *)((u8 *)spec + 0x14) = 1;
         } else {
-            index = findEventSlot(i + 0x15, 9);
-            obj = ((void **)arg0)[index + 166];
-            ((void (*)(void *))fn_800CF3EC)(obj);
-            *(s32 *)((u8 *)obj + 0x14) = 1;
+            eventIndex = findEventSlot(i + 0x15, 9);
+            spec = ((void **)home)[eventIndex + 166];
+            ((void (*)(void *))fn_800CF3EC)(spec);
+            *(s32 *)((u8 *)spec + 0x14) = 1;
         }
     }
 }
