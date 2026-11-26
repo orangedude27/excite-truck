@@ -386,10 +386,10 @@ extern s32 HomeMenu_isWidescreen(void);
 extern float lbl_805651E0, lbl_805651E8, lbl_805651F0, lbl_805651F4;
 extern float lbl_805651F8, lbl_805651FC, lbl_80565200, lbl_80565204, lbl_80565208;
 #pragma dont_inline on
-/* When the Home menu is active, configure GX for a 2D overlay: viewport and
- * scissor from the current render dims, simple TEV/Z/blend state, and an
- * orthographic projection whose width follows the console aspect ratio (16:9
- * or 4:3); then draw the home-button UI quad and re-initialize GX state. */
+/* Set up GX for the Home menu's 2D overlay while the menu is active: viewport
+ * and scissor from the current render dimensions, simple TEV/Z/blend state, and
+ * an orthographic projection whose horizontal extent follows the console aspect
+ * ratio.  Draw the home-button UI quad and reinitialize the render state. */
 void HomeMenu_setupGXForOverlay(void) {
 #define gHomeMenuActive HomeMenu_active
 #define gViewportOrigin lbl_805651E0
