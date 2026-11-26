@@ -2505,7 +2505,7 @@ extern "C" void fn_8015A81C(Unk801577F0* arg0) {
 extern "C" s32 fn_801D48FC(s32);
 extern "C" s32 fn_801D4908(s32, void*, s32);
 extern "C" s32 fn_801DDA84(void*, void*, s32, f32, f32, f32);
-extern "C" f32 fn_801DDC8C(void*, f32, f32);
+extern "C" f32 getGroundHeight(void*, f32, f32);
 extern "C" void fn_801E9DC4(void*);
 extern "C" void fn_80198EA0(s32);
 extern "C" f32 lbl_805617B4, lbl_805617B8, lbl_805617BC;
@@ -2550,7 +2550,7 @@ extern "C" f32 lbl_805617B4, lbl_805617B8, lbl_805617BC;
                             u8 query[8];
                             u8 points[40];
                             fn_801E9DC4(query);
-                            f32 dist = fn_801DDC8C(query, *(f32*)(car+0x60), *(f32*)(car+0x68));
+                            f32 dist = getGroundHeight(query, *(f32*)(car+0x60), *(f32*)(car+0x68));
                             if (dist > minimum && *(f32*)(car+0x11c) - dist > margin) {
                                 fn_801E9DC4(query);
                                 s32 n = fn_801DDA84(query, points, 10, *(f32*)(car+0x60), *(f32*)(car+0x68), lbl_805617BC);

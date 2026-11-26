@@ -671,7 +671,7 @@ void fn_801DCEC8(int index, float weight) {
 }
 
 extern float lbl_804425DC[];
-/* Store the height-layer weight for an index; fn_801DDC8C uses it to scale
+/* Store the height-layer weight for an index; getGroundHeight uses it to scale
  * each ground overlay layer's contribution to the sampled terrain height. */
 void fn_801DCEDC(int weightIndex, float weight) {
     lbl_804425DC[weightIndex] = weight;
@@ -1158,7 +1158,7 @@ done:
 /* Ground height at a world X/Z position: rounds the scaled coordinates into a
  * grid cell, finds the covering tile's node, and sums the weighted overlay
  * layers chained from that node.  Returns 0 when no tile covers the point. */
-float fn_801DDC8C(float worldX, float worldZ)
+float getGroundHeight(float worldX, float worldZ)
 {
   int mapX;
   int mapZ;
