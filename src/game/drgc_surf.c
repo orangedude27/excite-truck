@@ -341,7 +341,7 @@ void fn_802D4458(void *arg0) {
  * displacing each weighted source vertex along the shared offset direction, queue
  * that transform for the next frame's streaming pass when there is room (or do it
  * inline when the queue is full), then bind the arrays and submit the prebuilt list. */
-void drDrawSurfLayout16(void *surface) {
+/* Rebuild displaced positions for a format-16 surface and queue or apply the transform before binding its arrays and drawing. */ void drDrawSurfLayout16(void *surface) {
     /* Source vertices of this layout: a position plus how far along lbl_804C56F0
        (the renderer's shared normalized offset direction) to push it. */
     struct WeightedPos { f32 x, y, z, weight; };
@@ -355,8 +355,8 @@ void drDrawSurfLayout16(void *surface) {
     f32 *newPositions = (f32 *)(u32)fn_802CFF64(count * 12);
     s32 queueIndex;
     s32 didQueue;
-    f32 *dst;
-    s32 i;
+    f32 *dest;
+    s32 vertexIndex;
 
     if (newPositions == 0) return;
     {
@@ -378,14 +378,14 @@ void drDrawSurfLayout16(void *surface) {
         }
         if (didQueue == 0) {
             /* Queue full: rebuild the array here instead. */
-            dst = newPositions;
-            for (i = count; i > 0; i--) {
+            dest = newPositions;
+            for (vertexIndex = count; vertexIndex > 0; vertexIndex--) {
                 f32 weight = src->weight;
-                dst[0] = src->x + lbl_804C56F0[0] * weight;
-                dst[1] = src->y + lbl_804C56F0[1] * weight;
-                dst[2] = src->z + lbl_804C56F0[2] * weight;
+                dest[0] = src->x + lbl_804C56F0[0] * weight;
+                dest[1] = src->y + lbl_804C56F0[1] * weight;
+                dest[2] = src->z + lbl_804C56F0[2] * weight;
                 src++;
-                dst += 3;
+                dest += 3;
             }
         }
     }
