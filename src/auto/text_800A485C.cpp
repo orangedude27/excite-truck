@@ -13152,7 +13152,7 @@ extern "C" s32 fn_800B8BE8(s32 context) {
 extern "C" s32 fn_800B808C(s32, void *, s32);
 extern "C" unsigned char lbl_80405D58[];
 #pragma dont_inline on
-extern "C" s32 NandAcquireFileSlot(s32 fileHandle) {
+/* Acquire a NAND file-state slot for a file handle, reusing an existing or free slot and marking it busy. */ extern "C" s32 NandAcquireFileSlot(s32 fileHandle) {
     /* NAND prfile2: acquire a file-state slot for fileHandle.  Reject a slot
      * already being opened, then prefer an existing unopened slot for the
      * handle, else a free one; open a new slot and mark it busy on success.
