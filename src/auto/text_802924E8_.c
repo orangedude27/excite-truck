@@ -1458,7 +1458,7 @@ void fn_8029433C(void *effect) {
     *(s32 *)((u8 *)effect + 0x222C) = 0;
 }
 
-extern void fn_80294780(void*);
+extern void stepEmitterParticles(void*);
 /**
  * @brief nw4r::ef::Effect::calc(): advance this effect's particles one frame.
  *
@@ -1470,7 +1470,7 @@ void fn_80294348(void* effect) {
     float frameTime = fn_801E7E24(effect); /* fw::Frame::getFrameTime(); the
                                             * getter takes no argument */
     float absTime = (float)__fabs((double)frameTime);
-    if (!(absTime <= lbl_80558DC4)) fn_80294780(effect);
+    if (!(absTime <= lbl_80558DC4)) stepEmitterParticles(effect);
 }
 
 #pragma scheduling invalid_target
@@ -1598,7 +1598,7 @@ extern float lbl_80564510, lbl_805644D4, lbl_80564500, lbl_805644FC, lbl_805644D
 extern unsigned char lbl_804B4030[];
 #pragma scheduling on
 /* Steps active particles in an emitter: integrate velocity with drag and gravity, copy template data, age, and compact the live list. */
-void fn_80294780(void *emitter)
+void stepEmitterParticles(void *emitter)
 {
   struct WordTriple
   {
