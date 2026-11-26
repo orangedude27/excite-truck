@@ -3777,9 +3777,9 @@ extern "C" f32 updateDashBonusTracker(void *tracker, void *truck) {
     s32 scaleSet = 0;
     f32 score;
     if (*(void **)(p + 0x278)) {
-        s32 told = *(s32 *)(p + 0x270) + *(s32 *)(p + 0x26c);
-        *(s32 *)(p + 0x270) = told;
-        if (told > 0) {
+        s32 eventTotal = *(s32 *)(p + 0x270) + *(s32 *)(p + 0x26c);
+        *(s32 *)(p + 0x270) = eventTotal;
+        if (eventTotal > 0) {
             // the dash sound plays louder the more events this bonus scored
             s32 scored = *(s32 *)(p + 0x264);
             s32 positive = scored & ((-scored & ~scored) >> 31);  // max(scored, 0)
