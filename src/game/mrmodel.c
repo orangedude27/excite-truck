@@ -297,7 +297,7 @@ void fn_802C57B0(void) { }
  * the caller's distance.  Unless the caller is batching submits
  * (gModelBatchActive), the entry list is emptied first and sorted and submitted
  * afterwards.  Elements of type 4, 6, 9 and 11, and every type from 13 up, are
- * left to the other passes (fn_802C729C and fn_802C74D8 pick those up). */
+ * left to the other passes (MRModel_SubmitType2Groups and fn_802C74D8 pick those up). */
 void fn_802C57B4(int instanceId, int transformId, int entryId, unsigned char status, float distance) {
     extern int lbl_8055D008;
     extern s8 gModelBatchActive;
@@ -1379,7 +1379,7 @@ extern float lbl_80564EF0;
 extern float PSVECSquareDistance(const float *, const float *);
 /* For each type-2 group of the model, cull it by SPHL sphere distance and submit
  * its eligible elements through fn_802C53C4 / fn_802CC550 using the global context. */
-/* Submit eligible elements of the model's type-2 groups for display, culling groups by SPHL sphere distance first. */ void fn_802C729C(int instanceId, float viewDistance) {
+/* Submit eligible elements of the model's type-2 groups for display, culling groups by SPHL sphere distance first. */ void MRModel_SubmitType2Groups(int instanceId, float viewDistance) {
     char *groupEntry;
     int transformId;
     int j;
