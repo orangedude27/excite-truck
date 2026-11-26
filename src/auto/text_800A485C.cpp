@@ -114,7 +114,7 @@ struct Fn800BD710Obj {
     u8 pad9EC[0xA6E - 0x9EC];
     s16 tab[33];
 };
-extern "C" s32 fn_800A9BB4(u8 *, u8 *, s32, s32, u32, s32, s32 *, s32);
+extern "C" s32 VFiPFDIR_CheckEntry(u8 *, u8 *, s32, s32, u32, s32, s32 *, s32);
 extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *, void *);
 extern "C" s32 fn_800B3A70(void *, void *, s32);
 extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *, u8 *);
@@ -134,7 +134,7 @@ extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32
  s32 len;
  u16 hiSwap, loSwap;
  u8 *d0,*d1,*d2,*d3,*d4;
- if (((s32 (*)(u8 *,u8 *,s32,s32,u32,s32,s32 *))fn_800A9BB4)((u8 *)object,it+0x4c,arg2,flags,arg3,arg4,arg5)==1) {
+ if (((s32 (*)(u8 *,u8 *,s32,s32,u32,s32,s32 *))VFiPFDIR_CheckEntry)((u8 *)object,it+0x4c,arg2,flags,arg3,arg4,arg5)==1) {
   if ((flags&15)==15) {
    if (VFiPFENT_LoadLFNEntryFieldsFromBuf(object,it+0x4c)) { ((u8 *)object)[0x20a]=0; *(u16 *)object=0; }
   } else { ((u8 *)object)[0x20a]=0; *(u16 *)object=0; }
@@ -3804,7 +3804,7 @@ extern "C" s32 VFiPFPATH_cmpName(void *, s32, s32);
 #pragma push
 #pragma use_lmw_stmw off
 // Checks a directory/path entry against requested name, attributes and state; returns 0 if it matches, 1 if rejected.
-extern "C" s32 fn_800A9BB4(u8 *entry, u8 *source, s32 compareArg, s32 attrMask, u32 requiredAttr, s32 excludedAttr, s32 *matchCount, s32 arg_sp0) {
+extern "C" s32 VFiPFDIR_CheckEntry(u8 *entry, u8 *source, s32 compareArg, s32 attrMask, u32 requiredAttr, s32 excludedAttr, s32 *matchCount, s32 arg_sp0) {
  s32 isVolumeLabel;
  s32 reject = 1, attrValid = 1;
  u8 shortName[13];
