@@ -5534,7 +5534,7 @@ block_21:
 #define VFiPFFAT_SetEntry32        fn_800B0488   /* FAT32: write a 28-bit entry through a page */
 /* The entry of a position of a file's cluster chain, followed from the start of
  * the cached page that holds it; *found says whether the chain reaches it. */
-#define VFiPFFAT_GetChainEntryPage fn_800AD0B0
+#define VFiPFFAT_GetChainEntryPage VFiPFFAT_GetClusterAtOffset
 /* The same entry of a position of a chain with no page held for it: the walk
  * reads every FAT sector through the volume's own sector I/O. */
 #define VFiPFFAT_GetChainEntry     fn_800ACF20
@@ -5792,7 +5792,7 @@ done:
 
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" s32 fn_800AD0B0(void *arg0, u32 offset, u32 *outCluster, u32 *outFound, void *userData)
+extern "C" s32 VFiPFFAT_GetClusterAtOffset(void *arg0, u32 offset, u32 *outCluster, u32 *outFound, void *userData)
 {
     volatile s32 end = -1;
     s32 result;
@@ -5939,7 +5939,7 @@ extern "C" s32 VFiPFFAT_ReadClusterPage(void *arg0, u32 arg1, s32 arg2, s32 *arg
     u8 *p = (u8 *)arg0;
     *arg3 = -1;
     if (*(s32 *)(p + 0x1C) != 0 && *(u32 *)arg4 == 1) {
-        result = fn_800AD0B0(arg0, arg2, (u32 *)arg3, (u32 *)arg4, arg5);
+        result = VFiPFFAT_GetClusterAtOffset(arg0, arg2, (u32 *)arg3, (u32 *)arg4, arg5);
         if (result != 0) {
             return result;
         }
