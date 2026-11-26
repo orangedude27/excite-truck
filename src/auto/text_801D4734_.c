@@ -1367,7 +1367,7 @@ extern "C" int fn_801D5BBC(void *out, void *object) {
     return result;
 }
 
-extern "C" s32 startObstacleActionSequenceEvent(void *object) {
+/* Starts an obstacle action sequence event, giving each obstacle in its group a random throw and entering a timed wait before release. */ extern "C" s32 startObstacleActionSequenceEvent(void *event) {
     /* ObstacleActionSequenceEvent's start step: hand every obstacle of the
      * event's group a random throw.
      *
@@ -1409,7 +1409,7 @@ extern "C" s32 startObstacleActionSequenceEvent(void *object) {
 #define kBlendMax       lbl_80562AE0 /* 1.0f */
 #define gFrameTick      lbl_8055E3C4 /* global frame-tick counter */
 
-    char *self = (char *)object;
+    char *self = (char *)event;
     Vec dir, velocity;
     f32 d1x, d2x, d1y, d1z, d2z, d2y;
     f32 dirX, dirY, dirZ;
