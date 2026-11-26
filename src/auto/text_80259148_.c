@@ -131,7 +131,7 @@ extern "C" int fn_80259224(void **arg0) {
     extern float lbl_80563AE4;
     extern unsigned char *fn_8001EFAC(int, int);
     extern int fn_801345D8(char *, int, const char *, int);
-    extern int fn_8001EFA4(int, int);
+    extern int getAchievementLevelValue(int, int);
     extern int fn_8001EF9C(int, int, int, const void *, const void *);
     extern void fn_80259740(int, float);
     extern char lbl_803450F8[];
@@ -230,7 +230,7 @@ extern "C" int fn_80259224(void **arg0) {
     *(unsigned char *)(((char *)frame + 0x10A - 8)) = 1;
     for (i = 1; i <= 5; ++i) {
         ((int (*)(char *, int, const char *, ...))fn_801345D8)(((char *)frame + 0x20 - 8) + ((i - 1) << 2) + (i - 1), 0x20, lbl_8055C260,
-                    fn_8001EFA4(*(int *)((char *)arg0 + 0x18), i));
+                    getAchievementLevelValue(*(int *)((char *)arg0 + 0x18), i));
     }
 
     *(void **)(((char *)frame + 0x188 - 8)) = button;
@@ -818,7 +818,7 @@ extern float lbl_80563AF8;
 extern float lbl_80563AEC;
 extern float lbl_80563AF0;
 extern int getAchievementLevel(int, int);
-extern int fn_8001EFA4(int, int);
+extern int getAchievementLevelValue(int, int);
 extern void fn_8001EFB0(void *);
 extern void fn_80130FCC(void *, int, int);
 extern int fn_8025978C(void **);
@@ -884,7 +884,7 @@ void fn_8025A204(void) {
             changed = zero;
         current = getAchievementLevel(state.object, current);
         state.saved = current;
-        result = fn_8001EFA4(state.object, current + 1);
+        result = getAchievementLevelValue(state.object, current + 1);
         if (result >= 0) {
             fn_80130FCC(state.spareText, 0x14, result);
         } else {
@@ -937,7 +937,7 @@ int fn_8025A4CC(int object, int deleteFlag) {
 }
 
 extern int getAchievementLevel(int, int);
-extern int fn_8001EFA4(int, int);
+extern int getAchievementLevelValue(int, int);
 extern void fn_8001EFB0(void *);
 extern void fn_80130FCC(void *, int, int);
 extern int fn_80259224(void **);
@@ -995,7 +995,7 @@ void fn_8025A50C(void) {
             changed = zero;
         current = getAchievementLevel(state.object, current);
         state.saved = current;
-        result = fn_8001EFA4(state.object, current + 1);
+        result = getAchievementLevelValue(state.object, current + 1);
         if (result >= 0) {
             fn_80130FCC(state.spareText, 0x14, result);
         } else {
@@ -1738,7 +1738,7 @@ extern char lbl_80344E20[];
     }
     result = getAchievementLevel(row->achievement, value);
     row->rank = result;
-    result = fn_8001EFA4(row->achievement, result + 1);
+    result = getAchievementLevelValue(row->achievement, result + 1);
     if (result >= 0) {
         fn_80130FCC(row->goalText, 0x14, result);
     } else {
@@ -1915,7 +1915,7 @@ shown_done:;
     }
     result = getAchievementLevel(row->achievement, value);
     row->rank = result;
-    result = fn_8001EFA4(row->achievement, result + 1);
+    result = getAchievementLevelValue(row->achievement, result + 1);
     if (result >= 0) {
         fn_80130FCC(row->goalText, 0x14, result);
     } else {
