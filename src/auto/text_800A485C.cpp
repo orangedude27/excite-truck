@@ -21082,7 +21082,7 @@ extern "C" void fn_800D11E0(void* controller) {
 }
 
 extern "C" void Connect__Q210homebutton9RemoteSpkFl(void *, s32);
-extern "C" s32 fn_800D51F4(long, long, long, long, long, long);
+extern "C" s32 getArcFileAddress(long, long, long, long, long, long);
 #pragma opt_tail_call on
 extern "C" void fn_800D11F0(void *spkChannel) {
     /* Connect the Wii Remote speaker channel described by spkChannel: forward
@@ -22809,7 +22809,7 @@ extern "C" s32 fn_800D50A8(ARCHandle *handle, const char *name) {
     return result;
 }
 #pragma pop
-extern "C" s32 fn_800D51F4(long arcHandle, long dirPath, long subDirFourCC, long fileName, long outSize, long unused) {
+extern "C" s32 getArcFileAddress(long arcHandle, long dirPath, long subDirFourCC, long fileName, long outSize, long unused) {
     /* Resolves a file in an ARC directory/subdirectory and returns its memory address, optionally writing its length. */
     s32 entry=-1;
     char subDirName[5]; ARCFileInfo info;
@@ -22882,7 +22882,7 @@ extern "C" s32 fn_800D53FC(void *arg0, void *arg1, const char *arg2) {
 #pragma pop
 extern "C" void fn_800D54E0(s32 archive, s32 subDirFourCC, s32 fileName, s32 outSize) {
     /* Load a file from this archive: pass its stored ARC handle (+4) and root directory (+0x30) to the resolver. */
-    fn_800D51F4(archive + 4, archive + 0x30, subDirFourCC, fileName, outSize, subDirFourCC);
+    getArcFileAddress(archive + 4, archive + 0x30, subDirFourCC, fileName, outSize, subDirFourCC);
 }
 
 extern "C" s32 fn_800D5500(void *container, const char *name) {
@@ -22937,14 +22937,14 @@ extern "C" s32 fn_800D5640(void *list, s32 arg1, s32 arg2, s32 arg3) {
     sentinel.end = (u32)base + 8;
     u32 &end = sentinel.end;
     /* Iterate the linked list from head+8 until the sentinel, invoking
-     * fn_800D51F4 on each entry and returning its result if nonzero. */
+     * getArcFileAddress on each entry and returning its result if nonzero. */
     while (entry != end) {
         if (entry == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F4A4, 0x23d, lbl_8031F480);
         u32 next = entry + 8;
         if (entry == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F4A4, 0x23d, lbl_8031F480);
-        s32 result = ((s32 (*)(long, long, long, long, long))fn_800D51F4)(next, entry + 0x24, arg1, arg2, arg3);
+        s32 result = ((s32 (*)(long, long, long, long, long))getArcFileAddress)(next, entry + 0x24, arg1, arg2, arg3);
         if (result != 0) return result;
         entry = *(u32 *)entry;
     }
