@@ -1730,15 +1730,18 @@ extern "C" void fn_8029A904(void* arg0, int arg1, void* arg2, float farg0, float
     }
 }
  #pragma pop
- extern "C" void transformTwoPoints(int arg0, int arg1, void *arg2)
+extern "C" void transformTwoPoints(int outBase, int slotIndex, void *xform)
 {
-  /* Transform two 3D points by a 3x3 matrix/translation from XformData, apply a fixed Y offset, and store them into the arg0+arg1*0x2C slot. */
-  float *out = (float *) (((char *) arg0) + (arg1 * 0x2C));
+  /* Transform the two 3D points of an XformData by its 3x3 matrix and translation,
+     add a fixed Y offset to each, and store the six floats into the slot at
+     outBase + slotIndex*0x2C.  The per-row temporaries and the source/destination
+     aliasing checks are kept for the exact instruction order MWCC emits. */
+  float *out = (float *) (((char *) outBase) + (slotIndex * 0x2C));
   float new_var2;
   float new_var;
   float nv6, nv8, nw6, nw8;
-  XformData *d = (XformData *) arg2;
-  fn_80288208(arg1);
+  XformData *d = (XformData *) xform;
+  fn_80288208(slotIndex);
   if (out == d->v0)
   {
     float m3 = d->m[3];
