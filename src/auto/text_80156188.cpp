@@ -121,10 +121,10 @@ extern "C" void fn_801561D8(s32 subObject) {
     fn_80155AEC(subObject - 0xC);
 }
 
-extern "C" s32 fn_80155AF0(s32);
-/* This-adjusting thunk: subtract the 0xC subobject offset to recover `this`, then forward to fn_80155AF0. */
+extern "C" s32 registerTargetEntry(s32);
+/* This-adjusting thunk: subtract the 0xC subobject offset to recover `this`, then forward to registerTargetEntry. */
 extern "C" void fn_801561E0(s32 subobjectThis) {
-    fn_80155AF0(subobjectThis - 0xC);
+    registerTargetEntry(subobjectThis - 0xC);
 }
 
 extern "C" u8 *fn_80029004(void *, s32);

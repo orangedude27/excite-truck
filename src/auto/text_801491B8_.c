@@ -4970,7 +4970,7 @@ void fn_80155AEC(void) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_80155AF0(void *arg0, void *arg1) {
+extern "C" void registerTargetEntry(void *arg0, void *arg1) {
     /* Register an object as a target entry in one of the manager's two arrays:
      * objects whose subtype is named "points" are appended to the first array
      * (count at +0x330, list at +0x32c), others to the second (+0x3bc/+0x3b8).
