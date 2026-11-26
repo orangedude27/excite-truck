@@ -1973,57 +1973,58 @@ extern "C" void fn_80159724(void) {
 
 #pragma processor 750
 #pragma scheduling reset
-/* Per-frame update of a Fn8015889C tracker: advances its progress counters by
-   the frame time while the input magnitude is small; when progress exceeds the
-   level, reads the current record's value, applies it, and resets.  Returns the
-   value read (zero while still accumulating). */
+/* One frame of the record-list bonus tracker driven by an external frame player.
+   While that player's input at +0x2690 is quiet, advance all three progress
+   counters by (its speed * one 60 Hz frame).  Otherwise, or on the final record,
+   emit the current record's scaled value and reset the counters.  Returns the
+   value emitted, or zero while still accumulating. */
 extern "C" f32 BonusTracker_updateFromInput(void* arg0, void *__restrict arg1) {
  Fn8015889C* self = (Fn8015889C*)arg0;
- u8* p = (u8*)arg0;
+ u8* bytes = (u8*)arg0;
  f32 result = 0.0f;
  if ((f32)__fabs(*(f32*)((u8*)arg1+0x2690)) <= lbl_80558DC4[0] && self->v37()) {
-  if (*(f32*)(p+0x25c) > *(f32*)(p+0x24c)) self->v32();
-  f32 input = *(f32*)((u8*)arg1+0x25d4);
-  f32 step = lbl_8056177C * input;
-  *(f32*)(p+0x25c) += step;
-  *(f32*)(p+0x260) += step;
-  *(f32*)(p+0x264) += step;
+  if (*(f32*)(bytes+0x25c) > *(f32*)(bytes+0x24c)) self->v32();
+  f32 speed = *(f32*)((u8*)arg1+0x25d4);
+  f32 delta = lbl_8056177C * speed;
+  *(f32*)(bytes+0x25c) += delta;
+  *(f32*)(bytes+0x260) += delta;
+  *(f32*)(bytes+0x264) += delta;
   self->v34();
-  if (*(f32*)(p+0x25c) > *(f32*)(p+0x24c) && self->v23()>0) {
-   *(f32*)(p+0x258) = 0.0f;
-   if (*(u8**)(p+0x26c)) *(s32*)(*(u8**)(p+0x26c)+8)=0;
+  if (*(f32*)(bytes+0x25c) > *(f32*)(bytes+0x24c) && self->v23()>0) {
+   *(f32*)(bytes+0x258) = 0.0f;
+   if (*(u8**)(bytes+0x26c)) *(s32*)(*(u8**)(bytes+0x26c)+8)=0;
   }
   result = 0.0f;
- } else if ((f32)__fabs(*(f32*)(p+0x258)) <= lbl_80558DC4[0]) {
+ } else if ((f32)__fabs(*(f32*)(bytes+0x258)) <= lbl_80558DC4[0]) {
   f32 value = 0.0f;
-  if (*(f32*)(p+0x25c) > *(f32*)(p+0x24c) && self->v23()>0) {
-   value = *(f32*)(p+0x250) * self->v20(self->v23());
+  if (*(f32*)(bytes+0x25c) > *(f32*)(bytes+0x24c) && self->v23()>0) {
+   value = *(f32*)(bytes+0x250) * self->v20(self->v23());
    self->v35(&value);
    self->v33();
   }
-  if (!fn_80141F7C(value)) self->v38(*(f32*)(p+0x25c));
-  f32 x=*(f32*)(p+0x258)+lbl_8056177C, z=0.0f;
-  *(f32*)(p+0x25c)=z; *(f32*)(p+0x264)=z; *(f32*)(p+0x258)=x;
+  if (!fn_80141F7C(value)) self->v38(*(f32*)(bytes+0x25c));
+  f32 newTime=*(f32*)(bytes+0x258)+lbl_8056177C, zero=0.0f;
+  *(f32*)(bytes+0x25c)=zero; *(f32*)(bytes+0x264)=zero; *(f32*)(bytes+0x258)=newTime;
   result=value;
  } else {
   self->v33();
-  *(f32*)(p+0x258) += lbl_8056177C;
-  if (*(f32*)(p+0x260) > *(f32*)(p+0x24c)) {
-   if (*(s32*)(p+0x268)) fn_801CB750(*(s32*)(p+0x268),*(s32*)(p+4));
-   *(f32*)(p+0x260)=0.0f;
+  *(f32*)(bytes+0x258) += lbl_8056177C;
+  if (*(f32*)(bytes+0x260) > *(f32*)(bytes+0x24c)) {
+   if (*(s32*)(bytes+0x268)) fn_801CB750(*(s32*)(bytes+0x268),*(s32*)(bytes+4));
+   *(f32*)(bytes+0x260)=0.0f;
   }
  }
- s32 total = *(s32*)(p+0xc);
- s32 current = self->v23();
- if (current == total-1) {
+ s32 recordCount = *(s32*)(bytes+0xc);
+ s32 recordIndex = self->v23();
+ if (recordIndex == recordCount-1) {
   f32 value = 0.0f;
-  if (*(f32*)(p+0x25c) > *(f32*)(p+0x24c) && self->v23()>0) {
-   value = *(f32*)(p+0x250)*self->v20(self->v23());
+  if (*(f32*)(bytes+0x25c) > *(f32*)(bytes+0x24c) && self->v23()>0) {
+   value = *(f32*)(bytes+0x250)*self->v20(self->v23());
    self->v35(&value); self->v33();
   }
-  if (!fn_80141F7C(value)) self->v38(*(f32*)(p+0x25c));
-  f32 x=*(f32*)(p+0x258)+lbl_8056177C, z=0.0f;
-  *(f32*)(p+0x25c)=z; *(f32*)(p+0x264)=z; *(f32*)(p+0x258)=x;
+  if (!fn_80141F7C(value)) self->v38(*(f32*)(bytes+0x25c));
+  f32 newTime=*(f32*)(bytes+0x258)+lbl_8056177C, zero=0.0f;
+  *(f32*)(bytes+0x25c)=zero; *(f32*)(bytes+0x264)=zero; *(f32*)(bytes+0x258)=newTime;
   result=value;
  }
  return result;
