@@ -3894,75 +3894,72 @@ extern "C" void fn_8021E7D4(void *);
 #pragma push
 #pragma optimization_level 4
 // Match jump table dispatch structure from target
-extern "C" s32 OptionList_handleKey(void *arg0, s32 arg1) {
-    /* Key handler of the option list fn_8021E0C0 builds (vtable lbl_8033EA90):
-     * steps the selection (*indexPtr, +0x25C) and the visible window in
-     * valueRange (+0x248: {base, rowsVisible, firstRowShown}) on its page keys,
-     * re-clamps the window with fn_8021E7D4, and returns 1 when the key was
-     * used (0x121/0x122 = one line back/forward, 0x123/0x124 = one page
-     * forward/back, 0x125 = first entry, 0x126 = last entry). */
-    switch (arg1) {
+extern "C" s32 OptionList_handleKey(void *widget, s32 key) {
+    /* Navigation keys for the option list: move the selection (+0x25C) by one
+     * line or one page and slide the visible window (+0x248), clamp with
+     * fn_8021E7D4, and return 1 for a handled key. */
+    switch (key) {
     case 0x121: {
-        if (**(s32 **)((u8 *)arg0 + 0x25C) > 0)
-            (**(s32 **)((u8 *)arg0 + 0x25C))--;
-        fn_8021E7D4(arg0);
+        if (**(s32 **)((u8 *)widget + 0x25C) > 0)
+            (**(s32 **)((u8 *)widget + 0x25C))--;
+        fn_8021E7D4(widget);
         return 1;
     }
     case 0x122: {
-        s32 *indexPtr = *(s32 **)((u8 *)arg0 + 0x25C);
-        s32 v = *indexPtr + 1;
-        if (v < *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x244) + 8))
-            *indexPtr = v;
-        fn_8021E7D4(arg0);
+        s32 *indexPtr = *(s32 **)((u8 *)widget + 0x25C);
+        s32 nextIndex = *indexPtr + 1;
+        if (nextIndex < *(s32 *)((u8 *)*(void **)((u8 *)widget + 0x244) + 8))
+            *indexPtr = nextIndex;
+        fn_8021E7D4(widget);
         return 1;
     }
     case 0x123: {
-        s32 *limitPtr = *(s32 **)((u8 *)arg0 + 0x244);
-        s32 *rangePtr = *(s32 **)((u8 *)arg0 + 0x248);
-        s32 *statePtr = *(s32 **)((u8 *)arg0 + 0x25C);
-        s32 lim = limitPtr[2] - 1;
-        s32 rg1 = rangePtr[1];
-        s32 st = *statePtr;
-        s32 sum = st + rg1;
-        if (lim < sum)
-            sum = lim;
-        *statePtr = sum;
+        s32 *countPtr = *(s32 **)((u8 *)widget + 0x244);
+        s32 *windowPtr = *(s32 **)((u8 *)widget + 0x248);
+        s32 *indexPtr = *(s32 **)((u8 *)widget + 0x25C);
+        s32 lastIndex = countPtr[2] - 1;
+        s32 pageRows = windowPtr[1];
+        s32 index = *indexPtr;
+        s32 newIndex = index + pageRows;
+        if (lastIndex < newIndex)
+            newIndex = lastIndex;
+        *indexPtr = newIndex;
         {
-            s32 *range = *(s32 **)((u8 *)arg0 + 0x248);
-            range[2] += range[1];
-            if (range[2] > range[0] - range[1])
-                range[2] = range[0] - range[1];
-            if (range[2] < 0)
-                range[2] = 0;
+            s32 *window = *(s32 **)((u8 *)widget + 0x248);
+            window[2] += window[1];
+            if (window[2] > window[0] - window[1])
+                window[2] = window[0] - window[1];
+            if (window[2] < 0)
+                window[2] = 0;
         }
-        fn_8021E7D4(arg0);
+        fn_8021E7D4(widget);
         return 1;
     }
     case 0x124: {
-        s32 *p = *(s32 **)((u8 *)arg0 + 0x25C);
-        s32 st = *p;
-        s32 rg1 = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x248) + 4);
-        s32 v = st - rg1;
-        *p = v & ~(v >> 31);
+        s32 *indexPtr = *(s32 **)((u8 *)widget + 0x25C);
+        s32 index = *indexPtr;
+        s32 pageRows = *(s32 *)((u8 *)*(void **)((u8 *)widget + 0x248) + 4);
+        s32 newIndex = index - pageRows;
+        *indexPtr = newIndex & ~(newIndex >> 31);
         {
-            s32 *range = *(s32 **)((u8 *)arg0 + 0x248);
-            range[2] -= range[1];
-            if (range[2] > range[0] - range[1])
-                range[2] = range[0] - range[1];
-            if (range[2] < 0)
-                range[2] = 0;
+            s32 *window = *(s32 **)((u8 *)widget + 0x248);
+            window[2] -= window[1];
+            if (window[2] > window[0] - window[1])
+                window[2] = window[0] - window[1];
+            if (window[2] < 0)
+                window[2] = 0;
         }
-        fn_8021E7D4(arg0);
+        fn_8021E7D4(widget);
         return 1;
     }
     case 0x125:
-        *(s32 *)*(s32 **)((u8 *)arg0 + 0x25C) = 0;
-        fn_8021E7D4(arg0);
+        *(s32 *)*(s32 **)((u8 *)widget + 0x25C) = 0;
+        fn_8021E7D4(widget);
         return 1;
     case 0x126: {
-        s32 lim = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x244) + 8) - 1;
-        *(s32 *)*(s32 **)((u8 *)arg0 + 0x25C) = lim;
-        fn_8021E7D4(arg0);
+        s32 lastIndex = *(s32 *)((u8 *)*(void **)((u8 *)widget + 0x244) + 8) - 1;
+        *(s32 *)*(s32 **)((u8 *)widget + 0x25C) = lastIndex;
+        fn_8021E7D4(widget);
         return 1;
     }
     case 0x127:
