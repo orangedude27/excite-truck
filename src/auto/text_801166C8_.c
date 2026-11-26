@@ -2006,7 +2006,7 @@ void fn_801195A0(void *voices) {
 #undef SetVoicePairState
 }
 
-void feedStreamVoices(void *arg0) {
+/* Feeds decoded PCM into the stream voices' ring buffers while there is room, then advances the cursors and restarts the voices when the stream drains. */ void feedStreamVoices(void *stream) {
     /* Feed the stream voices: while the ring has more than the fill threshold
      * free, copy the remaining decoded source bytes into the ring (deinterleave
      * stereo 16-bit samples into the two channel buffers, or plain bytes for
@@ -2027,7 +2027,7 @@ void feedStreamVoices(void *arg0) {
     #define WRITE_POS_RELOAD (*(volatile u32 *)(player + 0xB8))
     #define TO_PLAY    (*(u32 *)(player + 0xBC))          /* bytes still to be played */
 
-    u8 *player = (u8 *)arg0;
+    u8 *player = (u8 *)stream;
     u32 freeBytes = BYTES_FREE;
     u8 *src;
     u32 count, pos, ringBytes, irq;
