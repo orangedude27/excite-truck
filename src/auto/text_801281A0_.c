@@ -37,7 +37,7 @@ void fn_801287D0(void *);
 s32 fn_801281F4(s32, s32);
 void fn_802E30C8(void *, void *, void *, ...);
 s32 Abend_Panic(void *, void *);
-void fn_8012834C(void *, void *, s32);
+void MemAllocRing(void *, void *, s32);
 void fn_802E3DF8(s32, void *, void *);
 void fn_80128714(void *, s32, s32);
 extern void *memset(void *, int, unsigned long);
@@ -133,7 +133,7 @@ void fn_801282E8(void) {
 }
 
 void fn_801282EC(s32 size) {
-    /* Set the pending heap allocation size, consumed by the next fn_8012834C alloc. */
+    /* Set the pending heap allocation size, consumed by the next MemAllocRing alloc. */
     #define heapPendingSize lbl_8055DF8C
     heapPendingSize = size;
     #undef heapPendingSize
@@ -160,7 +160,7 @@ s32 fn_80127964(void);
 void *fn_801288AC(void *, s32, char *, s32);
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void fn_8012834C(void *label, void *size, s32 allocSource) {
+extern "C" void MemAllocRing(void *label, void *size, s32 allocSource) {
     /* MemAlloc: allocate `size` bytes out of the debug heap ring, tagged with
      * `label` and the allocation source id (0 "new[]", 1 "MemAlloc",
      * 2 "MemAllocPhys", 3 "new" -- see fn_801281A0).  Called through the
@@ -244,23 +244,23 @@ extern "C" void fn_8012834C(void *label, void *size, s32 allocSource) {
 
 /* Debug heap allocation wrapper: allocate `size` bytes tagged with `label`, using allocation source id 1 ("MemAlloc"). */
 s32 fn_801284E8(void *label, void *size) {
-    fn_8012834C(label, size, 1);
+    MemAllocRing(label, size, 1);
 }
 
 /* Debug heap allocation wrapper: allocate `size` bytes tagged with `label`, using allocation source id 2. */
 void fn_801284F0(void *label, void *size) {
-    fn_8012834C(label, size, 2);
+    MemAllocRing(label, size, 2);
 }
 
 /* Named heap allocation through C++ operator new (source id 3): allocates
    `size` bytes and records `label` as the allocation's source name. */
 void fn_801284F8(void *size, void *label) {
-    fn_8012834C(label, size, 3);
+    MemAllocRing(label, size, 3);
 }
 
 /* Debug allocator wrapper: allocate a size-byte heap block through the "new[]" source (id 0), tagged with name. */
 void fn_8012850C(void *size, void *name) {
-    fn_8012834C(name, size, 0);
+    MemAllocRing(name, size, 0);
 }
 
 #pragma opt_propagation off
@@ -269,7 +269,7 @@ s32 fn_80128520(s32 arg0) {
         goto do_log;
     switch (lbl_8055DF84) {
     case 0:
-        return ((s32 (*)(void *, void *, s32))fn_8012834C)(lbl_8032A068, (void *)arg0, 3);
+        return ((s32 (*)(void *, void *, s32))MemAllocRing)(lbl_8032A068, (void *)arg0, 3);
     default:
         goto do_log;
     }
