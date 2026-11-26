@@ -1853,55 +1853,55 @@ extern "C" int drawCrushHudInfoPanels(void *master, int playerIndex) {
  struct Manager { virtual void *unused(); virtual void *get(const char *); };
  struct Frame { Rect rect2; char text2[24]; Rect rect1; char text1[20]; } frame;
    const char *base = resultsLabels;
-  struct Manager *scene; void *bgHandle, *fgHandle;
-  float tTotal, tFadeOut1, elapsed, tFadeIn1, tFadeOut2, tFadeIn2, tFadeStart, t, fade;
-  elapsed = *(float *)((char *)getRoundClock()+0x10);
-  tTotal=timelineEnd; tFadeOut1=tTotal-fadeOut1Dur; tFadeIn1=tFadeOut1-fadeIn1Dur;
+  struct Manager *scene; void *backgroundHandle, *foregroundHandle;
+  float totalTime, tFadeOut1, elapsedTime, tFadeIn1, tFadeOut2, tFadeIn2, tFadeStart, progress, fadeAmount;
+  elapsedTime = *(float *)((char *)getRoundClock()+0x10);
+  totalTime=timelineEnd; tFadeOut1=totalTime-fadeOut1Dur; tFadeIn1=tFadeOut1-fadeIn1Dur;
   tFadeOut2=tFadeIn1-fadeOut2Dur; tFadeIn2=tFadeOut2-fadeOut1Dur; tFadeStart=tFadeIn2-fadeIn1Dur;
   scene=*(struct Manager **)((char *)master+0x98);
-  bgHandle=scene->get(base+0x458);
+  backgroundHandle=scene->get(base+0x458);
   scene=*(struct Manager **)((char *)master+0x98);
-  fgHandle=scene->get(base+0x468);
-  if (elapsed < tFadeStart) showCountdown();
+  foregroundHandle=scene->get(base+0x468);
+  if (elapsedTime < tFadeStart) showCountdown();
   if (!challengeSubtaskActive()) {
-    if (elapsed < tTotal) {
+    if (elapsedTime < totalTime) {
       void *panelHandle, *detailHandle;
-      t=(elapsed-tFadeOut1)/(tFadeIn1-tFadeOut1); fade=fadeMax;
-      fade = fade < t ? fade : t;
-      fade = fade > fadeMin ? fade : fadeMin;
-      fade=fadeMin+fade*fadeMax;
+      progress=(elapsedTime-tFadeOut1)/(tFadeIn1-tFadeOut1); fadeAmount=fadeMax;
+      fadeAmount = fadeAmount < progress ? fadeAmount : progress;
+      fadeAmount = fadeAmount > fadeMin ? fadeAmount : fadeMin;
+      fadeAmount=fadeMin+fadeAmount*fadeMax;
       scene=*(struct Manager **)((char *)master+0x98);
       panelHandle=scene->get(base+0x478);
       scene=*(struct Manager **)((char *)master+0x98);
       detailHandle=scene->get(base+0x484);
       notifyScoreGrade(getPlayerNumber(playerIndex),0);
-      if (bgHandle && fgHandle && panelHandle && detailHandle) {
-        drawPanelText(bgHandle,fgHandle,lookupMessage(base+0x490),HudEase(fade));
+      if (backgroundHandle && foregroundHandle && panelHandle && detailHandle) {
+        drawPanelText(backgroundHandle,foregroundHandle,lookupMessage(base+0x490),HudEase(fadeAmount));
         fn_80160A74(); ((void (*)(void *,int,int))formatScore)(frame.text1,0x14,getScore());
         frame.rect1.a=*(int *)panelHandle;
         { int cword; int bword; bword=*(volatile int *)((char *)panelHandle+4); cword=*(volatile int *)((char *)panelHandle+8); *(int *)&frame.rect1.b=bword; frame.rect1.c=cword; } frame.rect1.d=*(int *)((char *)panelHandle+12); frame.rect1.e=*(float *)((char *)panelHandle+16); frame.rect1.f=*(int *)((char *)panelHandle+20); frame.rect1.g=*(int *)((char *)panelHandle+24); frame.rect1.h=*(int *)((char *)panelHandle+28);
         frame.rect1.b-=textWidthScale*measureTextWidth(&frame.rect1,frame.text1);
-        drawPanelText(&frame.rect1,detailHandle,frame.text1,HudEase(fade));
+        drawPanelText(&frame.rect1,detailHandle,frame.text1,HudEase(fadeAmount));
       }
     }
-    if (elapsed < tFadeOut2) {
+    if (elapsedTime < tFadeOut2) {
       void *panelHandle, *detailHandle;
       setupUiElement(*(void **)((char *)master+0x98),base+0x4ac,base+0x4bc,0);
-      t=(elapsed-tFadeIn2)/(tFadeStart-tFadeIn2); fade=fadeMax;
-      fade = fade < t ? fade : t;
-      fade = fade > fadeMin ? fade : fadeMin;
-      fade=fadeMin+fade*fadeMax;
+      progress=(elapsedTime-tFadeIn2)/(tFadeStart-tFadeIn2); fadeAmount=fadeMax;
+      fadeAmount = fadeAmount < progress ? fadeAmount : progress;
+      fadeAmount = fadeAmount > fadeMin ? fadeAmount : fadeMin;
+      fadeAmount=fadeMin+fadeAmount*fadeMax;
       scene=*(struct Manager **)((char *)master+0x98);
       panelHandle=scene->get(base+0x4d0);
       scene=*(struct Manager **)((char *)master+0x98);
       detailHandle=scene->get(&dataLabel);
-      if (bgHandle && fgHandle && panelHandle && detailHandle) {
-        drawPanelText(bgHandle,fgHandle,lookupMessage(base+0x4dc),HudEase(fade));
+      if (backgroundHandle && foregroundHandle && panelHandle && detailHandle) {
+        drawPanelText(backgroundHandle,foregroundHandle,lookupMessage(base+0x4dc),HudEase(fadeAmount));
         formatSeconds(frame.text2,0x14,*(float *)((char *)master+0x38));
         frame.rect2.a=*(int *)panelHandle;
         { int cword; int bword; bword=*(volatile int *)((char *)panelHandle+4); cword=*(volatile int *)((char *)panelHandle+8); *(int *)&frame.rect2.b=bword; frame.rect2.c=cword; } frame.rect2.d=*(int *)((char *)panelHandle+12); frame.rect2.e=*(float *)((char *)panelHandle+16); frame.rect2.f=*(int *)((char *)panelHandle+20); frame.rect2.g=*(int *)((char *)panelHandle+24); frame.rect2.h=*(int *)((char *)panelHandle+28);
         frame.rect2.b+=textWidthScale*measureTextWidth(&frame.rect2,frame.text2);
-        drawPanelText(&frame.rect2,detailHandle,frame.text2,HudEase(fade));
+        drawPanelText(&frame.rect2,detailHandle,frame.text2,HudEase(fadeAmount));
       }
     }
   }
