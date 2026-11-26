@@ -1828,7 +1828,7 @@ extern int fn_801CB648();
 /* Advance a betarace owner's task lists: run its callback, recycle finished
    nodes onto the free tail while summing their durations, then finalize the
    car's finish points and time. */
-extern "C" void advanceBetaraceOwner(void *owner) {
+/* Runs the betarace owner's callback, moves pending and finished task nodes onto the free tail while accumulating their durations, then refreshes debug state and records the car's finish points and time. */ extern "C" void advanceBetaraceOwner(void *owner) {
     struct Node { char pad0[4]; u8 flag; u8 timed; char pad1[0x102]; int duration; char pad2[0x10]; Node *next; Node *prev; };
     struct Lists { char pad[0x1244]; Node *first; Node *last; Node *active; Node *activeLast; Node *pending; };
     struct Callback { virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7(); virtual void call(); };
