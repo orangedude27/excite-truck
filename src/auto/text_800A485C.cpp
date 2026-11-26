@@ -11611,7 +11611,7 @@ extern "C" s32 fn_800A53F8(void *);
  * keeps the drive attached.  Returns 0 once the drive is attached, or the error
  * that kept it from being attached.
  */
-extern "C" s32 VFiPFDRV_Attach(VFiPFDriver *driver, const char *name, s32 index) {
+/* Attach a VF driver's device into a free volume slot and mount its volume when media is present. */ extern "C" s32 VFiPFDRV_Attach(VFiPFDriver *driver, const char *name, s32 index) {
     u8 *base;
     s32 result = index, slot_index, open_result, mount_result, attached, error;
     VFiPFDriverParams *params, *params2, *cache;
