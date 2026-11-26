@@ -645,7 +645,7 @@ extern "C" void fn_80149CEC(void *state, const void *owner) {
 #pragma dont_inline reset
 extern f32 fn_80149F00(void *, void *);
 extern s32 fn_801609C4(s32);
-void updateSoundDebugReadout(void *state, void *sound, s32 arg2) {
+/* Update a sound-debug readout: derive a phase index from the sound's frame, pick the frame/voice value, flag a voice sub-object on change, and store the extent and its band. */ void updateSoundDebugReadout(void *state, void *sound, s32 arg2) {
     /* Update a sound-debug readout: derive a phase index from the sound's frame, pick the
        frame/voice value (live rate when more than one player, otherwise a table lookup),
        flag a voice sub-object when that value changes, and store the extent and its band. */
