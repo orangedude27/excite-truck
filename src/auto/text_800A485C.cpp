@@ -5528,7 +5528,7 @@ block_21:
 #define VFiPFFAT_GetEntry12        fn_800AFBA8   /* FAT12: the 12-bit entry of a cluster */
 #define VFiPFFAT_GetEntry16        fn_800B00E8   /* FAT16: the 16-bit entry of a cluster */
 #define VFiPFFAT_GetEntry32        fn_800B05C8   /* FAT32: the 28-bit entry of a cluster */
-#define VFiPFFAT_SetEntry12        fn_800AF8EC   /* FAT12: write a 12-bit entry through a page */
+#define VFiPFFAT_SetEntry12        VFiPFFAT_SetEntry12Page   /* FAT12: write a 12-bit entry through a page */
 #define VFiPFFAT_SetEntry16        fn_800AFFE0   /* FAT16: write a 16-bit entry through a page */
 #define VFiPFFAT_SetEntry32        fn_800B0488   /* FAT32: write a 28-bit entry through a page */
 /* The entry of a position of a file's cluster chain, followed from the start of
@@ -6142,7 +6142,7 @@ extern "C" s32 VFiPFFAT_WriteCluster(void *object, s32 clusterNum, s32 chainPos,
     return 0;
 }
 
-extern "C" s32 fn_800AF8EC(void *, s32, u32, void *);
+extern "C" s32 VFiPFFAT_SetEntry12Page(void *, s32, u32, void *);
 extern "C" s32 fn_800AFFE0(void *, s32, u16, void *, s32);
 extern "C" s32 fn_800B0488(void *, u32, u32, void *, s32);
 #pragma push
@@ -7477,7 +7477,7 @@ extern "C" s32 fn_800AF734(void *fatCtx, s32 clusterIndex, s32 entryValue) {
 
 #pragma use_lmw_stmw off
 /* Write a 12-bit FAT entry for a cluster into the cached FAT page, reloading/flushing sectors as needed. */
-extern "C" s32 fn_800AF8EC(void *fatCtx, s32 cluster, u32 entryValue, void *page) {
+extern "C" s32 VFiPFFAT_SetEntry12Page(void *fatCtx, s32 cluster, u32 entryValue, void *page) {
     extern s32 fn_800B5260(void *, void *, u32, u32, s32);
     extern s32 fn_800B5618(void *, void *, u32, u32, s32);
     s32 byteOffset = (cluster + (cluster >> 1)) & 0xFFFF;
