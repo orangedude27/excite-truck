@@ -78,7 +78,7 @@ int fn_801BF2A4(int arg0, int arg1, float *arg2, float *arg3, float *arg4, int a
   extern void fn_801BFE7C(float *, float *, float *);
   extern void fn_801BFD34(float *, float *, const float *);
   extern void fn_801BFB2C(char *, float *, FV3 *);
-  extern void fn_801BF75C(float *, const float *, const float *, int);
+  extern void composeTransformInv(float *, const float *, const float *, int);
   extern int fn_801BF754(int);
   extern float lbl_805628C0;
   extern float lbl_805628C4;
@@ -286,7 +286,7 @@ int fn_801BF2A4(int arg0, int arg1, float *arg2, float *arg3, float *arg4, int a
     }
     fn_80144DC8(frame.spB0);
     fn_801BFB2C(found, frame.spB0, (FV3 *) frame.sp80);
-    ((void (*)(float *, float *, float *)) fn_801BF75C)((float *) (((char *) found) + 0x230), frame.sp50, frame.spB0);
+    ((void (*)(float *, float *, float *)) composeTransformInv)((float *) (((char *) found) + 0x230), frame.sp50, frame.spB0);
     {
       int idx = 0;
       int *dstp = frame.sp38;
@@ -332,7 +332,7 @@ extern float dotProduct3(float, float, float, float, float, float);
  * rows the nine dot products walk; when the caller passes out == b the products are
  * collected in temporaries before being stored, so writing out cannot disturb the
  * reads of b. */
-void fn_801BF75C(float *out, const float *b, const float *a, int unused) {
+void composeTransformInv(float *out, const float *b, const float *a, int unused) {
     /* a's rotation, transposed; the raw bits member keeps the copy a plain 9-float block. */
     union { unsigned int bits[9]; float values[9]; } rotT;
     register float *t = rotT.values;
