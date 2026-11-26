@@ -1520,7 +1520,7 @@ extern "C" void fn_80162268(void *challengeMgr) {
      * player truck ("PCAR") against every active gate, scoring a pass when the truck's velocity
      * aligns with the gate direction or it comes within range, and finishes once the met count
      * reaches its target. The alternate phase resets the trucks and advances the challenge step.
-     * This variant omits the progress-reached flag check its sibling fn_801638A0 performs. */
+     * This variant omits the progress-reached flag check its sibling GateChallenge_updateWithTimeout performs. */
     s32 carIndex,gateIndex;
     int *carTable;
     u8 *mgr=(u8 *)challengeMgr;
@@ -2396,7 +2396,7 @@ void fn_8016386C(void *obj, s32 eventType, s32 carIndex, s32 progressValue) {
 // player truck ("PCAR") against every active gate, scoring a pass when the truck's velocity
 // aligns with the gate direction or it comes within range, and finishes once the met count
 // reaches its target. The alternate phase resets the trucks and advances the challenge step.
-extern "C" void fn_801638A0(void *challengeMgr) {
+extern "C" void GateChallenge_updateWithTimeout(void *challengeMgr) {
     s32 carIndex,gateIndex;
     int *carTable;
     u8 *mgr=(u8 *)challengeMgr;
