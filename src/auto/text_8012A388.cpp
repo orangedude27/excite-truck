@@ -27,7 +27,7 @@ struct ResEntry {
 };
 
 /* One resource manager ("resource set") in the global list lbl_8055E000: the
- * 0xB0-byte node fn_8012AFE0 builds from one resource file. Its directory name
+ * 0xB0-byte node loadResourceNode builds from one resource file. Its directory name
  * is the string at +0x00 (fn_8012B534 matches a path's directory against it)
  * and the list link is +0xA8. */
 struct ResManager {
@@ -635,7 +635,7 @@ loop_37_done:
 
 #pragma push
 #pragma processor 750
-extern "C" void *fn_8012AFE0(void *arg0, void *arg1) {
+extern "C" void *loadResourceNode(void *arg0, void *arg1) {
     /* Load a resource file into a 0xB0-byte node: open/validate it, allocate the
        node, copy the name strings and header, read the data, parse it, and on
        failure tear the node down; returns the node, or 0 on failure. */
@@ -777,7 +777,7 @@ extern "C" void *fn_8012B314(s32 value, s32 buffer, s32 flag) {
     return (void *)fn_8012B2C4(buffer, value, flag);
 }
 
-/* No-op resource-load failure hook: invoked with the rejected node when fn_8012AFE0
+/* No-op resource-load failure hook: invoked with the rejected node when loadResourceNode
  * cannot resolve a resource (paired with the success hook fn_8012B328); does nothing. */
 extern "C" void fn_8012B324(void) {
 
@@ -789,10 +789,10 @@ extern "C" void fn_8012B328(void) {
 
 }
 
-extern "C" void *fn_8012AFE0(void *, void *);
+extern "C" void *loadResourceNode(void *, void *);
 extern char lbl_8032A960[];
 #pragma scheduling invalid_target
-/* Look up a named resource by iterating candidate nodes until fn_8012AFE0 resolves one (logs "res: loading %s"). */
+/* Look up a named resource by iterating candidate nodes until loadResourceNode resolves one (logs "res: loading %s"). */
 extern "C" void *fn_8012B32C(const char *arg0) {
     u8 scratch[0x48];
     void *result = 0;
@@ -805,7 +805,7 @@ extern "C" void *fn_8012B32C(const char *arg0) {
         node = ((void *(*)(void *, void *, s32))fn_8012B314)((void *)arg0, scratch, index);
         if (node == 0)
             break;
-        result = fn_8012AFE0(node, (void *)arg0);
+        result = loadResourceNode(node, (void *)arg0);
         if (result != 0) {
             ((void (*)(void))fn_8012B328)();
             break;
