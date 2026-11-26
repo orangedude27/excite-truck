@@ -8943,7 +8943,7 @@ extern "C" FN786C_RET fn_800B786C(void *);
  * Any failure is left in the VF instance's last error, in the volume's and in
  * the handle's, and is the return value.
  */
-extern "C" void *VFiPFFILE_p_fclose(void *file) {
+/* File-thread fclose worker: lock the volume, drop the handle's queued write, flush the directory entry and dirty cache pages when it is the last handle, then clear the open flags and handle counts; returns 0 or the first error. */ extern "C" void *VFiPFFILE_p_fclose(void *file) {
     u8 *volume;
     s32 result = 0;
     s32 status;
