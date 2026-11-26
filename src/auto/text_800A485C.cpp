@@ -12760,14 +12760,14 @@ done:
 
 extern "C" s32 fn_800B814C(void *fileState) {
     extern s32 NANDClose(void *); extern s32 NANDDelete(void *);
-    extern s32 fn_800B8318(void); extern s32 buildFATBootSector(void *,u8*,s32*,s32);
+    extern s32 createOrOpenNandFile(void); extern s32 buildFATBootSector(void *,u8*,s32*,s32);
     extern s32 fn_800B8520(void *,u32 *); extern void fn_800B865C(void *);
     u8 zeroSector[0x200] __attribute__((aligned(32))), bootSector[0x200] __attribute__((aligned(32))), fsInfoSector[0x200] __attribute__((aligned(32)));
     s32 fatType,result; u32 clusterCount,bytesRemaining;
     /* Initializes a NAND-backed FAT image for fileState: writes the boot sector (and
      * FS info sector for FAT32), then clears the rest of the file, closing and
      * deleting it on any write error. */
-    if((result=fn_800B8318())!=0)return result;
+    if((result=createOrOpenNandFile())!=0)return result;
     fn_800A499C((const char*)bootSector,0,0x200); clusterCount=0;
     buildFATBootSector(fileState,bootSector,&fatType,0);
     if(fatType!=fn_800B8520(bootSector,&clusterCount))buildFATBootSector(fileState,bootSector,&fatType,clusterCount);
@@ -12795,7 +12795,7 @@ extern "C" s32 fn_800B814C(void *fileState) {
 #pragma push
 #pragma global_optimizer off
 // Creates/opens the NAND file for the path in arg0+0x4 and stores handle in arg0+0x58.
-extern "C" s32 fn_800B8318(void *arg0, s32 arg1) {
+extern "C" s32 createOrOpenNandFile(void *arg0, s32 arg1) {
     extern s32 NANDCreate(void*,s32,s32);
     extern s32 NANDGetType(void*);
     extern s32 NANDOpen(void*,void*,s32);
