@@ -98,7 +98,7 @@ extern int fn_801E4B48(int *);
 extern int fn_80232B78(int);
 extern char lbl_8033FF98[];
 extern int stricmp(const char *, const char *);
-extern void fn_8022CAA8();
+extern void initTextRecordFromDescriptor();
 extern float lbl_80563588;
 extern char *strncpy(char *, const char *, unsigned int);
 extern void fn_8023293C(void *, char *, float);
@@ -200,10 +200,10 @@ unsigned int fn_8022A834(unsigned int color) {
 #pragma pop
 
 /* Initialize the UI text style at styleIndex in the style table; the caller's
- * descriptor block (arriving in r4) is forwarded to fn_8022CAA8 unchanged. */
+ * descriptor block (arriving in r4) is forwarded to initTextRecordFromDescriptor unchanged. */
 void fn_8022A858(int styleIndex) {
 #define StyleTable lbl_80490968
-    fn_8022CAA8(StyleTable + styleIndex * 0x74);
+    initTextRecordFromDescriptor(StyleTable + styleIndex * 0x74);
 #undef StyleTable
 }
 
@@ -215,7 +215,7 @@ void fn_8022A858(int styleIndex) {
  * struct UIStyle below; fn_8022CA2C(n) is the address of the n-th) and takes
  * the first free one -- a record whose inUse byte at +0x00 is 0 -- fills it
  * from the caller's 0x58-byte parameter block through fn_8022A858 ->
- * fn_8022CAA8 (the block travels in r4) and returns its index.  With every
+ * initTextRecordFromDescriptor (the block travels in r4) and returns its index.  With every
  * slot taken it reports "UIStyle: too many styles" and returns -1. */
 int fn_8022A86C(void *params) {
     extern int Abend_Panic(const char *, ...);
@@ -1302,7 +1302,7 @@ float fn_8022CA40(void *obj) {
     }
 }
 
-void fn_8022CAA8(void *arg0, void *arg1) {
+void initTextRecordFromDescriptor(void *arg0, void *arg1) {
     extern int loadFontTexture(const char *);
     extern unsigned int fn_8022A834(unsigned int);
     extern int gxGetImageArt(const char *);
