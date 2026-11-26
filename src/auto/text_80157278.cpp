@@ -716,7 +716,7 @@ struct StuntRecord {
 #pragma scheduling invalid_target
 #pragma processor 750
 #pragma use_lmw_stmw off
-extern "C" void loadBonusStuntTable(VObj *arg0) {
+extern "C" void loadBonusStuntTable(VObj *tracker) {
     /* Fill one bonus tracker's stunt table from the game's stunt value files.
        "stunts.val" (the per-course values) is opened first and "stuntdef.val"
        (the defaults) next; the tracker's own category name picks the group of
@@ -732,7 +732,7 @@ extern "C" void loadBonusStuntTable(VObj *arg0) {
     if (stunts == 0) {
         stunts = stuntDef;
     }
-    const char *category = ((Unk801577F0 *)arg0)->GetCategoryName();
+    const char *category = ((Unk801577F0 *)tracker)->GetCategoryName();
     if (stunts->hasKey(category) != 0) {
         group = stunts->getGroup(category);
     } else if (stuntDef->hasKey(category) != 0) {
@@ -753,8 +753,8 @@ extern "C" void loadBonusStuntTable(VObj *arg0) {
                 pts = stuntDef->getGroup(STUNT_GROUP_DEFAULT)->getEntry(index)->getFloat(STUNT_KEY_PTS);
             }
             s32 offset = rank * 0x38;
-            ((Unk801577F0 *)arg0)->mCount++;
-            char *records = (char *)((Unk801577F0 *)arg0)->mData;
+            ((Unk801577F0 *)tracker)->mCount++;
+            char *records = (char *)((Unk801577F0 *)tracker)->mData;
             *(s32 *)(records + offset) = 0;
             char *rec = records + offset;
             *(s32 *)(rec + 4) = 0;
