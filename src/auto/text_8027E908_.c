@@ -1581,7 +1581,7 @@ done:
 #pragma scheduling on
 /* Return to the remembered page entry (lbl_8055F690): save the current
    selection, select that entry in the list and copy its text for display. */
-extern "C" int returnToPageEntry(void) {
+/* Menu action: return to the remembered page entry, reselect it in the widget list, and copy its text into the menu's display buffer. */ extern "C" int returnToPageEntry(void) {
     class Object {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
