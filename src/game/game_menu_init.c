@@ -79,7 +79,7 @@ extern void fn_8023F694(void);
 extern void fn_8023EEF8(void);
 extern void fn_8023F2C4(void);
 extern void fn_8023ED30(void);
-extern void pendingControlInit(void);
+extern void fn_8023D7CC(void);
 extern void fn_8023D70C(void);
 extern void fn_8023BFBC(int, int);
 extern void fn_8012E81C(void*);
