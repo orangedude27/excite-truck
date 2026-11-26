@@ -1674,6 +1674,7 @@ extern "C" void UpdateAxSrc__Q46nw4hbm3snd6detail7AxVoiceFb(void *, int);
 extern "C" void UpdateAxMix__Q46nw4hbm3snd6detail7AxVoiceFv(void *);
 extern "C" void UpdateAxLpf__Q46nw4hbm3snd6detail7AxVoiceFv(char *);
 extern "C" int fn_800E6B24(void *);
+struct AxVoice;
 #pragma use_lmw_stmw off
 extern "C" void ApplyPendingAxUpdates__Q46nw4hbm3snd6detail7AxVoiceFv(void *voice_) {
 #define B(off) (*(unsigned char *)((char *)voice_ + (off)))
