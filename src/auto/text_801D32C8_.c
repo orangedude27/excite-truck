@@ -398,7 +398,7 @@ void fn_801D3910(void *arg0) {
 }
 
 #pragma opt_propagation off
-/* Reset a mut_phob physics object to its defaults: clear state fields, reinitialize its attached SPHR sphere shape, reset the local transform to identity with a -1000 z offset, copy it to the world matrix, and refresh per-frame/child state. */ void resetPhobObject(void *object) {
+/* Reset a mut_phob physics object to defaults: clear state, reinitialize its attached SPHR sphere, set the local transform to identity with a -1000 z offset, copy it to the world matrix, then refresh per-frame/child state. */ /* Reset a mut_phob physics object to its defaults: clear state fields, reinitialize its attached SPHR sphere shape, reset the local transform to identity with a -1000 z offset, copy it to the world matrix, and refresh per-frame/child state. */ void resetPhobObject(void *object) {
     struct Mtx48Copy { int w[12]; };
     register char *self = (char *)object;
     char *sphere = *(char **)(self + 0x244);
