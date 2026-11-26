@@ -299,13 +299,13 @@ extern "C" void fn_80208D80(int closeDevices) {
 #pragma cplusplus on
 extern "C" int strncmp(const char *, const char *, unsigned int);
 extern "C" void fn_802E30C8(const char *, ...);
-/* RealName: Mixer_RegisterDevice — add one sound-mixer backend ("Null Mixer",
-   "Voice Mixer", ...) to the mixer's device registry, which holds at most
-   MIXER_DEVICE_MAX (6) device pointers at lbl_80489238 (+0x18 is the count).
-   A device whose name matches the hard-coded bogus name, and any device past
-   the 6th, is refused with a message and destroyed.  mode 0 registers the
-   device as it stands; mode 1 registers it only if its startup method (+0x18)
-   succeeds, and immediately runs its shutdown method (+0x24) again. */
+/* Register one sound-mixer backend ("Null Mixer", "Voice Mixer", ...) in the
+ * mixer's device registry (real name: Mixer_RegisterDevice). The registry holds
+ * at most MIXER_DEVICE_MAX (6) device pointers at lbl_80489238 (+0x18 is the
+ * count). A device whose name matches the hard-coded bogus name, and any device
+ * past the 6th, is refused with a message and destroyed. mode 0 registers the
+ * device as it stands; mode 1 registers it only if its startup method (+0x18)
+ * succeeds, and immediately runs its shutdown method (+0x24) again. */
 extern "C" void RegisterMixerDevice(void *devicePtr, int mode) {
     /* Sound-mixer backend interface.  CodeWarrior reserves the first two vtable
        slots for the deleting and complete destructors, so the first method
