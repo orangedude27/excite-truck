@@ -1058,7 +1058,7 @@ extern float lbl_8055CC80;
 /* Build the two "partman" particle emitters for the UI stun-part effect (the invincible-car
  * spark and the entry puff) from their tuning constants, register each with fn_8028E2F8,
  * and store the resulting handle pair in lbl_8055F924. */
-void initUiStunParts(void) {
+/* Builds the invincible-car spark and entry-puff particle emitters for the UI stun effect and stores their handles. */ void initUiStunParts(void) {
     struct {
         Vec v[4];
         InitStruct puffDef;
