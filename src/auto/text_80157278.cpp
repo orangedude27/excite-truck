@@ -541,7 +541,7 @@ extern "C" void* fn_80157F98(void*, s32, s32);
 extern "C" void* fn_80158054(void*, s32, s32, void*);
 extern "C" void* fn_8015812C(void*, s32, s32, void*);
 extern "C" void* fn_801582A4(void*, s32, s32, void*);
-extern "C" void* fn_80158280(void*, s32*);
+extern "C" void* TrackerArray_push(void*, s32*);
 extern "C" void* fn_80158374(void*, s32, s32, s32);
 extern "C" void fn_801584A4(void*);
 extern "C" void fn_801584A8(void*);
@@ -575,55 +575,55 @@ extern "C" void* BonusGroup_create(s32 configPtr, s32 courseIndex, s32 initValue
             tracker = fn_801582A4(tracker, configPtr, courseIndex, *(void**)(group + 0x50));
         }
         airTracker = tracker;
-        fn_80158280(group + 4, (s32*)&airTracker);
+        TrackerArray_push(group + 4, (s32*)&airTracker);
         tracker = fn_801284F8(0x27C, (void*)(tagTable + 0x57C));
         if (tracker != 0) {
             tracker = fn_8015812C(tracker, configPtr, courseIndex, *(void**)(group + 0x50));
         }
         driftTracker = tracker;
-        fn_80158280(group + 4, (s32*)&driftTracker);
+        TrackerArray_push(group + 4, (s32*)&driftTracker);
         tracker = fn_801284F8(0x2DC, (void*)(tagTable + 0x58C));
         if (tracker != 0) {
             tracker = fn_80158054(tracker, configPtr, courseIndex, *(void**)(group + 0x50));
         }
         closeCallTracker = tracker;
-        fn_80158280(group + 4, (s32*)&closeCallTracker);
+        TrackerArray_push(group + 4, (s32*)&closeCallTracker);
         tracker = fn_801284F8(0x280, (void*)(tagTable + 0x59C));
         if (tracker != 0) {
             tracker = fn_80157F98(tracker, configPtr, courseIndex);
         }
         spinTracker = tracker;
-        fn_80158280(group + 4, (s32*)&spinTracker);
+        TrackerArray_push(group + 4, (s32*)&spinTracker);
         tracker = fn_801284F8(0x2F4, (void*)(tagTable + 0x5A8));
         if (tracker != 0) {
             tracker = fn_80157DA0(tracker, configPtr, courseIndex);
         }
         throwTracker = tracker;
-        fn_80158280(group + 4, (s32*)&throwTracker);
+        TrackerArray_push(group + 4, (s32*)&throwTracker);
         tracker = fn_801284F8(0x27C, (void*)(tagTable + 0x5B8));
         if (tracker != 0) {
             tracker = fn_80157CF0(tracker, configPtr, courseIndex);
         }
         jumpComboTracker = tracker;
-        fn_80158280(group + 4, (s32*)&jumpComboTracker);
+        TrackerArray_push(group + 4, (s32*)&jumpComboTracker);
         tracker = fn_801284F8(0x29C, (void*)(tagTable + 0x5C8));
         if (tracker != 0) {
             tracker = fn_80157B00(tracker, configPtr, courseIndex);
         }
         carHitTracker = tracker;
-        fn_80158280(group + 4, (s32*)&carHitTracker);
+        TrackerArray_push(group + 4, (s32*)&carHitTracker);
         tracker = fn_801284F8(0x254, (void*)(tagTable + 0x5D8));
         if (tracker != 0) {
             tracker = fn_801579F4(tracker, configPtr, courseIndex);
         }
         crashTracker = tracker;
-        fn_80158280(group + 4, (s32*)&crashTracker);
+        TrackerArray_push(group + 4, (s32*)&crashTracker);
         tracker = fn_801284F8(0x27C, (void*)(tagTable + 0x5E8));
         if (tracker != 0) {
             tracker = fn_8015783C(tracker, configPtr, courseIndex);
         }
         ringTracker = tracker;
-        fn_80158280(group + 4, (s32*)&ringTracker);
+        TrackerArray_push(group + 4, (s32*)&ringTracker);
         s32 index = 0;
         while (index < fn_80157558(group + 4)) {
             fn_80157560(*(VObj**)(u32)fn_8015782C((s32*)(group + 4), index));  /* its stunt table */
@@ -636,7 +636,7 @@ extern "C" void* BonusGroup_create(s32 configPtr, s32 courseIndex, s32 initValue
 }
 
 /* The list of a course group's bonus trackers (fn_801584A8 sets it up,
-   fn_80158280 appends to it): the items pointer at +0x00 starts out aimed at
+   TrackerArray_push appends to it): the items pointer at +0x00 starts out aimed at
    the inline storage at +0x0C, the element count is at +0x04 and the capacity
    (0x10 items at first) at +0x08. */
 struct PtrArray801584A8 {
@@ -1299,7 +1299,7 @@ extern "C" void* fn_80158218(void* self, s32 shouldDelete) {
 
 /* Append *pValue to the integer vector's data array, advance its count, and
  * return the address of the newly filled slot. */
-extern "C" void *fn_80158280(void *vec, s32 *__restrict pValue) {
+extern "C" void *TrackerArray_push(void *vec, s32 *__restrict pValue) {
     s32 newIndex;
     s32 index = ((s32 *)vec)[1];
     s32 *data = *(s32 **)vec;
