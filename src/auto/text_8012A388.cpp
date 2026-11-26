@@ -2237,7 +2237,7 @@ struct ResTocManager {
 // every mounted set's on-disc ETOC table whether it lists NAME; if one does,
 // the set is mounted but its resources have not been set yet, which is the
 // "Get-Before-Wait" error the res-CRIP() message reports with the set's name.
-extern "C" void reportGetBeforeWaitError(s32 arg0) {
+extern "C" void reportGetBeforeWaitError(s32 resName) {
     char tocPath[128];
     s32 tocOffset;
     u8 startedLoad;
@@ -2327,7 +2327,7 @@ entry_test:
     nameEntry = toc + RES_TOC_HEADER_SIZE; hasName = 0; nameIndex = 0;
     goto name_test;
 name_loop:
-    if (stricmp((const char *)nameEntry, (const char *)arg0) == 0) {
+    if (stricmp((const char *)nameEntry, (const char *)resName) == 0) {
         hasName = 1; goto name_found;
     }
     nameEntry += RES_TOC_ENTRY_SIZE; nameIndex += 1;
@@ -2339,7 +2339,7 @@ name_found:
     mount = mount->next;
 mount_test:
     if (mount != 0 && matched == 0) goto mount_loop;
-    if (matched != 0) Abend_Panic(lbl_8032ADA0, matched->name, (const char *)arg0);
+    if (matched != 0) Abend_Panic(lbl_8032ADA0, matched->name, (const char *)resName);
 }
 
 #pragma push
