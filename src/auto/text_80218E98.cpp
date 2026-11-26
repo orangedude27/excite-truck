@@ -377,7 +377,7 @@ extern "C" void fn_802192AC(void *);
 extern "C" f32 fn_80214D48(void);
 extern "C" f32 lbl_80563504;
 extern "C" f32 lbl_80563510;
-extern "C" void fn_80219AB4(void *, s32, s32, s32, s32, s32, s32);
+extern "C" void initArtWidget(void *, s32, s32, s32, s32, s32, s32);
 extern "C" void fn_8021D61C(void *);
 extern "C" u8 lbl_8033EB14[];
 extern "C" char lbl_8055B87C;
@@ -1190,13 +1190,13 @@ struct LayoutEntry {
 extern "C" void *fn_80219A28(void *label, LayoutEntry *entry, s32 text, s32 watched) {
     /* Build one dynamic text label (0x284 bytes) for a layout record: run the
        base widget constructor over the raw object, install this class's
-       vtable, then let fn_80219AB4 pick the font and the scale that fits the
+       vtable, then let initArtWidget pick the font and the scale that fits the
        string in the box.  `text` is the string to draw and `watched` the
        value (or font file name) the label follows; the factory picks both out
        of the record. */
     fn_80218F80(); /* base constructor; label and entry are still in r3/r4 */
     *(void **)label = TextLabelVTable;
-    fn_80219AB4(label, entry->drawKind, text, entry->field9C, watched,
+    initArtWidget(label, entry->drawKind, text, entry->field9C, watched,
         entry->fieldA0, entry->fieldA4 != 0);
     return label;
 }
@@ -1207,7 +1207,7 @@ extern "C" s32 ArtSetGet(s32);
 extern "C" void fn_80235380(void *);
 extern char lbl_8033D8B8[];
 
-/* The fields fn_80219AB4 sets up below the 0x244-byte base widget, which the
+/* The fields initArtWidget sets up below the 0x244-byte base widget, which the
  * drawer fn_80219FE0 and the destructor fn_80219E44 read back:
  *   0x244 kind: what the label draws (2,4,5 text; 3,6,8,9 a picture)
  *   0x248 the loaded resource: a gText font (text) or an ArtSet (picture)
@@ -1221,7 +1221,7 @@ extern char lbl_8033D8B8[];
  * answers its width through vtable slot 0x70 (VfObj::vf28). */
 #pragma push
 #pragma processor 750
-extern "C" void fn_80219AB4(void *widget, s32 kind, s32 text, s32 idleValue, s32 watched, s32 style, s32 ownSize) {
+extern "C" void initArtWidget(void *widget, s32 kind, s32 text, s32 idleValue, s32 watched, s32 style, s32 ownSize) {
     /* Set up one dynamic text label (fn_80219A28 builds the object this runs on):
      * remember what it draws -- the string `text`, the value or font name it
      * follows, where to put it -- and work out the scale to draw the string at so
@@ -1495,7 +1495,7 @@ extern "C" void fn_80219FE0(void *arg0) {
     }
     }
 }
-extern "C" void fn_80219AB4(void *, s32, s32, s32, s32, s32, s32);
+extern "C" void initArtWidget(void *, s32, s32, s32, s32, s32, s32);
 extern "C" u8 lbl_8033F3B0[];
 extern "C" u8 lbl_8033F434[];
 /* Initialize an object: run base setup, install lbl_8033F3B0 vtable, and store the provided config fields. */
