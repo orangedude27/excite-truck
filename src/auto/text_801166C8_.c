@@ -4751,7 +4751,7 @@ void fn_8011D378(void *arg0, void *arg1, void *arg2)
  * are decoded one by one through lookup, whose entries hold the value in their
  * low nibble and the number of bits they cost in their high one; set, the 4-bit
  * value behind it is repeated count times over the block. */
-void fn_8011D5F0(void* arg0, BitReader8011 *reader) {
+void decodeHuffmanBandBlock(void* arg0, BitReader8011 *reader) {
     /* One band of the stream; see the BandState8011 layout above decodeBandBlock. */
     struct Band {
         u8 *start;      /* 0x00 first value of the published block */
