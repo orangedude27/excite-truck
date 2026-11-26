@@ -1097,7 +1097,7 @@ extern f32 lbl_80560368, lbl_80560384, lbl_805603CC, lbl_805603D0;
 extern char lbl_80558BC4;
 #pragma dont_inline on
 #pragma use_lmw_stmw off
-/* Draw the race standings list: show a two-row window of places around the player's current place, then highlight the player's own row at the split. */ void drawRaceStandings(void)
+/* Draws the race standings: a two-row window of places around the player's current place, with the player's own row highlighted at the split. */ /* Draw the race standings list: show a two-row window of places around the player's current place, then highlight the player's own row at the split. */ void drawRaceStandings(void)
 {
   s32 racerCount;
   s32 *standings;
