@@ -3225,7 +3225,7 @@ extern "C" s32 lbl_8055A05C[];
 extern "C" s32 lbl_8055A05C[1];
 #pragma push
 #pragma processor 750
-extern "C" void scoreBonusValueQueued(Unk801577F0* arg0, f32* arg1) {
+/* Score one bonus value into the current record and popup; the trailing count/extra lines include the scaled number of events queued since the last frame. */ extern "C" void scoreBonusValueQueued(Unk801577F0* arg0, f32* arg1) {
     // Scores one bonus value for this tracker's category: scale it by the
     // "score_scale" config value and by this category's multiplier, show it on
     // the bonus popup while one is up, add it to the record being filled and
