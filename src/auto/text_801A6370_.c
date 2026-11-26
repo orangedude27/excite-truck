@@ -303,64 +303,64 @@ extern int lbl_8055E0D0;
  * -1 - to the camera and its slot record, notes the slot with the array
  * manager (fn_80136EA4) and updates the camera at once (fn_801A7444), unless
  * the camera has only just been started. */
-extern "C" void updateCameraMoveFollow(void *self) {
-    char *cam = (char *)self;
-    int state = *(int *)(cam + 0x2610);
-    *(char *)(cam + 0x1e9) = 0;
-    if (state != *(int *)(cam + 0x2778))
-        *(void **)(cam + 0x277C) = KERNEL_GetTimeMs();
+/* Per-frame update of a camera that follows a move record: restarts the state timer on state change, hands off the move when it still has time left, or finishes the move — copies the saved pose into the node, clears the up/side vectors, pushes the pose to the scene record — and, when the move just ended, hands the record's settings to the camera and its slot record and updates the camera. */ extern "C" void updateCameraMoveFollow(void *self) {
+    char *camera = (char *)self;
+    int gameState = *(int *)(camera + 0x2610);
+    *(char *)(camera + 0x1e9) = 0;
+    if (gameState != *(int *)(camera + 0x2778))
+        *(void **)(camera + 0x277C) = KERNEL_GetTimeMs();
     if (fn_801A6724(self) == 0) {
-        if (*(unsigned char *)(cam + 0x2740) != 0) {
-            char *attached = (*(Fn801A67C4Vt **)(cam + 0x2774))->d2();
-            if (*(int *)(attached + 0x24) == 0) {
-                *(unsigned char *)(cam + 0x2740) = 0;
-                *(char *)(cam + 0x2741) = 1;
+        if (*(unsigned char *)(camera + 0x2740) != 0) {
+            char *attachedObj = (*(Fn801A67C4Vt **)(camera + 0x2774))->d2();
+            if (*(int *)(attachedObj + 0x24) == 0) {
+                *(unsigned char *)(camera + 0x2740) = 0;
+                *(char *)(camera + 0x2741) = 1;
             }
         }
     } else {
-        float zero;
-        *(int *)(cam + 0x2704) = 0;
-        *(unsigned char *)(cam + 0x2740) = 1;
-        *(int *)(cam + 0x3C) = *(int *)(cam + 0x2744);
-        *(int *)(cam + 0x40) = *(int *)(cam + 0x2748);
-        *(int *)(cam + 0x44) = *(int *)(cam + 0x274C);
-        *(int *)(cam + 0x48) = *(int *)(cam + 0x2750);
-        *(int *)(cam + 0x4C) = *(int *)(cam + 0x2754);
-        *(int *)(cam + 0x50) = *(int *)(cam + 0x2758);
-        *(int *)(cam + 0x54) = *(int *)(cam + 0x275C);
-        *(int *)(cam + 0x58) = *(int *)(cam + 0x2760);
-        *(int *)(cam + 0x5C) = *(int *)(cam + 0x2764);
-        *(int *)(cam + 0x60) = *(int *)(cam + 0x2768);
-        *(int *)(cam + 0x64) = *(int *)(cam + 0x276C);
-        *(int *)(cam + 0x68) = *(int *)(cam + 0x2770);
+        float zeroFloat;
+        *(int *)(camera + 0x2704) = 0;
+        *(unsigned char *)(camera + 0x2740) = 1;
+        *(int *)(camera + 0x3C) = *(int *)(camera + 0x2744);
+        *(int *)(camera + 0x40) = *(int *)(camera + 0x2748);
+        *(int *)(camera + 0x44) = *(int *)(camera + 0x274C);
+        *(int *)(camera + 0x48) = *(int *)(camera + 0x2750);
+        *(int *)(camera + 0x4C) = *(int *)(camera + 0x2754);
+        *(int *)(camera + 0x50) = *(int *)(camera + 0x2758);
+        *(int *)(camera + 0x54) = *(int *)(camera + 0x275C);
+        *(int *)(camera + 0x58) = *(int *)(camera + 0x2760);
+        *(int *)(camera + 0x5C) = *(int *)(camera + 0x2764);
+        *(int *)(camera + 0x60) = *(int *)(camera + 0x2768);
+        *(int *)(camera + 0x64) = *(int *)(camera + 0x276C);
+        *(int *)(camera + 0x68) = *(int *)(camera + 0x2770);
         fn_8017A580(self);
-        zero = lbl_80562430;
-        *(float *)(cam + 0x118) = zero;
-        *(float *)(cam + 0x11C) = zero;
-        *(float *)(cam + 0x120) = zero;
-        *(float *)(cam + 0x124) = zero;
-        *(float *)(cam + 0x128) = zero;
-        *(float *)(cam + 0x12C) = zero;
-        fn_8018ADBC(self, zero);
+        zeroFloat = lbl_80562430;
+        *(float *)(camera + 0x118) = zeroFloat;
+        *(float *)(camera + 0x11C) = zeroFloat;
+        *(float *)(camera + 0x120) = zeroFloat;
+        *(float *)(camera + 0x124) = zeroFloat;
+        *(float *)(camera + 0x128) = zeroFloat;
+        *(float *)(camera + 0x12C) = zeroFloat;
+        fn_8018ADBC(self, zeroFloat);
         fn_8018ADB4(self, lbl_80562430);
         fn_8018ADC4(self, lbl_80562430);
-        (*(Fn801A67C4Vt **)(cam + 0x2774))->d7();
-        fn_801BE168(*(void **)(cam + 0x1EC), cam + 0x3C, cam + 0x118, cam + 0x124);
+        (*(Fn801A67C4Vt **)(camera + 0x2774))->d7();
+        fn_801BE168(*(void **)(camera + 0x1EC), camera + 0x3C, camera + 0x118, camera + 0x124);
     }
-    if (*(unsigned char *)(cam + 0x2740) == 0 && *(int *)(cam + 0x2704) == 3) {
-        fn_8018ADA4(self, *(float *)(*(char **)(cam + 0x2700) + 0xD));
+    if (*(unsigned char *)(camera + 0x2740) == 0 && *(int *)(camera + 0x2704) == 3) {
+        fn_8018ADA4(self, *(float *)(*(char **)(camera + 0x2700) + 0xD));
         fn_8018ADCC(self, lbl_80562430);
-        if (*(int *)(*(char **)(cam + 0x2700) + 0x15) != -1)
-            fn_8018ADD4(self, *(int *)(*(char **)(cam + 0x2700) + 0x15));
+        if (*(int *)(*(char **)(camera + 0x2700) + 0x15) != -1)
+            fn_8018ADD4(self, *(int *)(*(char **)(camera + 0x2700) + 0x15));
         fn_8018ADC4(self, lbl_80562430);
-        fn_8018ADBC(self, *(float *)(*(char **)(cam + 0x2700) + 0x9));
-        fn_8018ADB4(self, *(float *)(*(char **)(cam + 0x2700) + 0x11));
-        fn_80136EA4(lbl_8055E0D0, *(int *)(cam + 0x1EC));
-        if ((state != 2 || *(int *)(cam + 0x2778) != 0) && state != 0)
+        fn_8018ADBC(self, *(float *)(*(char **)(camera + 0x2700) + 0x9));
+        fn_8018ADB4(self, *(float *)(*(char **)(camera + 0x2700) + 0x11));
+        fn_80136EA4(lbl_8055E0D0, *(int *)(camera + 0x1EC));
+        if ((gameState != 2 || *(int *)(camera + 0x2778) != 0) && gameState != 0)
             fn_801A7444(self);
-        *(char *)(cam + 0x2741) = 0;
+        *(char *)(camera + 0x2741) = 0;
     }
-    *(int *)(cam + 0x2778) = state;
+    *(int *)(camera + 0x2778) = gameState;
 }
 #pragma cplusplus reset
 extern int lbl_8055E3C4;
