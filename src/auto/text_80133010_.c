@@ -3,7 +3,7 @@
 
 // Options files: readOptionsFile parses a text file ("default.opt", written back
 // out as "options.dat") into the table lbl_8055E07C, which fn_80133024
-// allocates here.  fn_80133E10 looks an option up by section + key and adds it
+// allocates here.  findOrAddOption looks an option up by section + key and adds it
 // when it is missing; LoadIntOptionValue/fn_80133348/fn_8013323C/fn_80133460/
 // fn_8013358C read and write the typed values it keeps.
 
@@ -113,7 +113,7 @@ extern const char lbl_8032B8B0[];
 extern int lbl_8042F718[];
 extern const char lbl_8032B8D0[];
 extern int fn_80128668(int);
-extern int fn_80133E10(void **, int, int);
+extern int findOrAddOption(void **, int, int);
 extern int fn_8013323C(int, int, float);
 extern const char lbl_8032B920[];
 int fn_80133010(void) {
@@ -184,7 +184,7 @@ void fn_80133144(void) {
 void LoadFloatOption(int arg0,int arg1,float *arg2) {
  void *sp8;
  int ok;
- ok=fn_80133E10(&sp8,arg0,arg1);
+ ok=findOrAddOption(&sp8,arg0,arg1);
  if(ok) *arg2=*(float *)((char *)sp8+0x10);
  else fn_8013323C(arg0,arg1,*arg2);
 }
@@ -198,7 +198,7 @@ int fn_8013323C(int section, int key, float value) {
     char *entryData;
     char *result;
     int intValue;
-    fn_80133E10((void **)&entryData, section, key);
+    findOrAddOption((void **)&entryData, section, key);
     intValue = (int)value;
     *(float *)(entryData + 0x10) = value;
     *(unsigned char *)(entryData + 8) = lbl_805612D0 != value;
@@ -225,13 +225,13 @@ int fn_80133348(int, int, int);
 int fn_80133460(int, int, unsigned char);
 int sprintf(char *, const char *, ...);
 #pragma scheduling invalid_target
-/* Reads an option (section, key) as an integer: fn_80133E10 looks the option up
+/* Reads an option (section, key) as an integer: findOrAddOption looks the option up
  * and adds it when it is missing, so an option that is not in the table yet
  * takes the caller's *value as its default (through fn_80133348, which also
  * writes its bool/float/text readings) instead of reading back 0. */
 void LoadIntOptionValue(int section, int key, int *value) {
     OptionEntry *entry;
-    if (fn_80133E10((void **)&entry, section, key) != 0) {
+    if (findOrAddOption((void **)&entry, section, key) != 0) {
         *value = entry->intValue;
     } else {
         fn_80133348(section, key, *value);
@@ -243,7 +243,7 @@ __declspec(section ".sdata") extern const char lbl_80559B60[];
 int fn_80133348(int section, int key, int value) {
     char *entryData;
     char *result;
-    fn_80133E10((void **)&entryData, section, key);
+    findOrAddOption((void **)&entryData, section, key);
     *(int *)(entryData + 0xC) = value;
     *(float *)(entryData + 0x10) = (float)value;
     *(unsigned char *)(entryData + 8) = value != 0;
@@ -254,13 +254,13 @@ int fn_80133348(int section, int key, int value) {
 }
 
 #pragma scheduling invalid_target
-/* Reads an option (section, key) as a true/false value: fn_80133E10 looks the
+/* Reads an option (section, key) as a true/false value: findOrAddOption looks the
  * option up and adds it when it is missing, so an option that is not in the
  * table yet takes the caller's *value as its default (through fn_80133460,
  * which also writes its int/float/text readings) instead of reading back 0. */
 void fn_801333E8(int section, int key, unsigned char *value) {
     OptionEntry *entry;
-    if (fn_80133E10((void **)&entry, section, key) != 0) {
+    if (findOrAddOption((void **)&entry, section, key) != 0) {
         *value = entry->boolValue;
     } else {
         fn_80133460(section, key, *value);
@@ -274,7 +274,7 @@ int fn_80133460(int section, int key, unsigned char value) {
     char *entryData;
     char *result;
     /* Store a boolean setting in its (section,key) record: type 1, numeric/float value and a "yes"/"no" string. */
-    fn_80133E10((void **)&entryData, section, key);
+    findOrAddOption((void **)&entryData, section, key);
     *(unsigned char *)(entryData + 8) = value;
     *(int *)(entryData + 0xC) = value;
     *(float *)(entryData + 0x10) = (float)value;
@@ -287,7 +287,7 @@ int fn_80133460(int section, int key, unsigned char value) {
 /* Copy a value's string (offset 0x14) for (groupId, valueId) into outBuf, or initialize it via fn_8013358C. */
 void fn_801334F4(int groupId, int valueId, char *outBuf, int outSize) {
     void *sp8;
-    if (fn_80133E10(&sp8, groupId, valueId) != 0) {
+    if (findOrAddOption(&sp8, groupId, valueId) != 0) {
         strncpy(outBuf, (char *)sp8 + 0x14, outSize);
         outBuf[outSize - 1] = 0;
     } else {
@@ -305,7 +305,7 @@ int fn_8013358C(int section, int key, char *valueStr) {
     void *entry;
     int savedSection = section;
     int savedKey = key;
-    fn_80133E10(&entry, savedSection, savedKey);
+    findOrAddOption(&entry, savedSection, savedKey);
     strncpy((char *)entry + 0x14, valueStr, 0x10);
     *((char *)entry + 0x23) = 0;
     *(int *)((char *)entry + 0xC) = fn_801338D8((char *)entry + 0x14);
@@ -566,7 +566,7 @@ int fn_80133B24(char *sectionName) {
  * names), ';' '#' and empty lines are skipped, and any other line inside the
  * file is "key value": the text after the first space is stored under that
  * section and key, together with its int, float and true/false readings
- * (fn_80133E10 finds the option and adds it when it isn't there yet).  The
+ * (findOrAddOption finds the option and adds it when it isn't there yet).  The
  * file has to start with "version 2" unless ignoreVersion is set, and only
  * options of wantSection are stored - OPTIONS_SECTION_NONE takes them all.
  * Returns 0 when the file can't be read or has the wrong version.
@@ -623,7 +623,7 @@ int readOptionsFile(int path, int ignoreVersion, int wantSection) {
                             *sep = 0;  // "key value": cut the key off
                             if (wantSection == OPTIONS_SECTION_NONE ||
                                 wantSection == section) {
-                                fn_80133E10(&entry, section, (int)buf);
+                                findOrAddOption(&entry, section, (int)buf);
                                 strcpy(((OptionEntry *)entry)->text, sep + 1);
                                 ((OptionEntry *)entry)->intValue =
                                     fn_801338D8(((OptionEntry *)entry)->text);
@@ -660,7 +660,7 @@ int readOptionsFile(int path, int ignoreVersion, int wantSection) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-int fn_80133E10(void **outEntry, int section, int key) {
+int findOrAddOption(void **outEntry, int section, int key) {
     /* Options_FindOrAdd: find the option with this section and key in the options
      * table (lbl_8055E07C). Returns 1 with its OptionEntry in *outEntry, or appends
      * a new zero-initialized entry and returns 0 when it is missing. */
@@ -835,5 +835,5 @@ extern const char lbl_8032B8B0[];
 extern int lbl_8042F718[];
 extern const char lbl_8032B8D0[];
 extern int fn_80128668(int);
-extern int fn_80133E10(void **, int, int);
+extern int findOrAddOption(void **, int, int);
 extern int fn_8013323C(int, int, float);
