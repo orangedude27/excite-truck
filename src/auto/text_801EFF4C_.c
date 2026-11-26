@@ -328,7 +328,7 @@ extern "C" int fn_802C6FC0(char *, int, int);
 extern "C" void MRModel_GetBoundingBoxArray(int, float *);
 extern double fabs(double);
 extern "C" double __fabs(double);
-extern "C" void loadWheelModels(void *arg0, void *arg1) {
+/* Load each LOD's left/right slow and fast remap models for a wheel, with LOD-0 fallbacks, then scale the models to the wheel width. */ extern "C" void loadWheelModels(void *arg0, void *arg1) {
     class WheelModResource {
     public:
         virtual void unused0();
