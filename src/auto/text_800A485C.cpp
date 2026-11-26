@@ -2616,7 +2616,7 @@ extern "C" s32 VFiPFCACHE_DoReadPage(void *volume, s32 listAddr, s32 sector, s32
  * a page the list already had is handed out untouched, and only a page it had
  * to read in itself gets cleared of CHANGED and claimed (or unclaimed).
  */
-extern "C" s32 VFiPFCACHE_DoReadPageWithWriteBack(void *volume, s32 listAddr, s32 sector, s32 outPageAddr, s32 claim) {
+/* Bring the cache page covering `sector` into one of the volume's page lists, reading it in if needed; write back changed foreign-owned pages first; hand the page out through outPageAddr. */ extern "C" s32 VFiPFCACHE_DoReadPageWithWriteBack(void *volume, s32 listAddr, s32 sector, s32 outPageAddr, s32 claim) {
     u32 sectorsRead;
     s32 cached;
     s32 result;
