@@ -1437,7 +1437,7 @@ void fn_8025B134(void) {
      * as (void* (*)(void*)) it effectively returns the argument unchanged (identity source for a copy). */
 }
 
-void fn_8025B138(void *arg0) {
+void updateAchievementLevelLabel(void *arg0) {
     /* Update this object's cached text/labels from a resource string: copy up to 0x32
      * chars from getAchievementLevelName(id,size) into the child buffer, set a "Level %d" label
      * when size > 0, then format the display string at arg0+0x20. */
