@@ -9431,7 +9431,7 @@ done:
 }
 #pragma pop
 extern void fn_80126A10(s8 *, void *, u32);
-void fn_80126EF0(u8 *dstBlock, s32 dstPitch, s32 reader, s32 maxCoeffs, u8 *srcBlock, s32 srcPitch) {
+void addDecodedResidualBlock8x8(u8 *dstBlock, s32 dstPitch, s32 reader, s32 maxCoeffs, u8 *srcBlock, s32 srcPitch) {
     // Decodes one 8x8 block of signed 8-bit residuals from the bit stream at
     // `reader` (fn_80126A10, at most `maxCoeffs` coefficients) into `coeffs`,
     // then adds them to the 8x8 block at `srcBlock` and writes the result to
