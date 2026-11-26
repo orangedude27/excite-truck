@@ -22426,28 +22426,28 @@ extern "C" u16 fn_800D4138(const void *arg0, u32 arg1, f32 farg0) {
 }
 
 extern "C" f32 lbl_80560E48, lbl_80560E4C, lbl_80560E50, lbl_80560E54, lbl_80560E58, lbl_80560E5C;
-extern "C" f32 evaluateHermiteCurve(const void *arg0, u32 arg1, f32 farg0) {
+/* Evaluates a cubic Hermite keyframe curve at the given time: binary-searches the 12-byte keys, clamps at the endpoints and interpolates with the stored tangents. */ extern "C" f32 evaluateHermiteCurve(const void *keys, u32 keyCount, f32 time) {
     /* Evaluate a cubic Hermite keyframe curve: each 12-byte key is (time, value, tangent),
      * keys are searched for the span containing farg0 and the value is interpolated (with
      * endpoint clamping and a small-epsilon check for hitting a key exactly). */
-    const u8 *base = (const u8 *)arg0;
-    if (arg1 == 1 || farg0 <= *(f32 *)base) return *(f32 *)(base + 4);
-    const u8 *end = base + arg1 * 12;
-    if (farg0 >= *(f32 *)(end - 12)) return *(f32 *)(end - 8);
+    const u8 *base = (const u8 *)keys;
+    if (keyCount == 1 || time <= *(f32 *)base) return *(f32 *)(base + 4);
+    const u8 *end = base + keyCount * 12;
+    if (time >= *(f32 *)(end - 12)) return *(f32 *)(end - 8);
     s32 low = 0;
-    s32 high = arg1 - 1;
+    s32 high = keyCount - 1;
     while (low != high - 1 && low != high) {
         s32 mid = (low + high) / 2;
-        if (farg0 <= *(f32 *)(base + mid * 12)) high = mid;
+        if (time <= *(f32 *)(base + mid * 12)) high = mid;
         else low = mid;
     }
     const u8 *right = base + high * 12;
     const u8 *left = base + low * 12;
-    f32 delta = farg0 - *(f32 *)right;
+    f32 delta = time - *(f32 *)right;
     s32 found = 0;
     if (lbl_80560E48 < delta && delta < lbl_80560E4C) found = 1;
     if (found) {
-        if ((u32)high < arg1 - 1) {
+        if ((u32)high < keyCount - 1) {
             s32 off = (high + 1) * 12;
             if (*(f32 *)right == *(f32 *)(base + off)) {
                 base += off;
@@ -22456,7 +22456,7 @@ extern "C" f32 evaluateHermiteCurve(const void *arg0, u32 arg1, f32 farg0) {
         }
         return *(f32 *)(right + 4);
     }
-    f32 t1 = farg0 - *(f32 *)left;
+    f32 t1 = time - *(f32 *)left;
     f32 t2 = lbl_80560E50 / (*(f32 *)right - *(f32 *)left);
     f32 v0 = *(f32 *)(left + 4);
     f32 v1 = *(f32 *)(right + 4);
