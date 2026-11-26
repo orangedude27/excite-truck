@@ -107,7 +107,7 @@ extern void fn_80035DA8(s32);
 extern void __DVDHandleError(u32);
 extern void fn_8003773C(void);
 extern void fn_8003801C(void);
-extern void fn_800373E0(u32);
+extern void __DVDHandleMotorError(u32);
 extern s32 lbl_8055D870, lbl_8055D874;
 extern void fn_8003B9CC(u32, void *);
 extern void fn_8003A1A0(u32, void (*)(void));
@@ -1561,7 +1561,7 @@ static inline void HandleErrorCategory(u32 kind, u32 error) {
     } else if (kind == 0) {
         if (error - 0x00050000 == 0x3000) {
             fn_800356F4(0x10, 0, 0);
-            fn_8003AF1C(0, 0, (void *)fn_800373E0);
+            fn_8003AF1C(0, 0, (void *)__DVDHandleMotorError);
         } else {
             fn_8003A1A0(0x1234567, fn_80035C64);
         }
@@ -1570,7 +1570,7 @@ static inline void HandleErrorCategory(u32 kind, u32 error) {
     }
 }
 
-/* Log a cover-closed error and re-read the disk ID through fn_800373E0. */
+/* Log a cover-closed error and re-read the disk ID through __DVDHandleMotorError. */
 static inline void StateCoverClosed(void) {
     s32 interrupts;
     u8 *info;
@@ -1588,7 +1588,7 @@ static inline void StateCoverClosed(void) {
     *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;
     *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
     OSRestoreInterrupts(interrupts);
-    fn_8003AF1C(0, 0, (void *)fn_800373E0);
+    fn_8003AF1C(0, 0, (void *)__DVDHandleMotorError);
 }
 
 #pragma dont_inline off
@@ -1687,7 +1687,7 @@ void fn_80035E6C(u32 arg0) {
             *(s32 *)(localInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = localTick;
             *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
             OSRestoreInterrupts(localInterrupts);
-            fn_8003AF1C(0, 0, (void *)fn_800373E0);
+            fn_8003AF1C(0, 0, (void *)__DVDHandleMotorError);
             return;
         }
         fn_8003A1A0(0x1234567, fn_80035C64);
@@ -1861,7 +1861,7 @@ extern char lbl_80376B20[];
 extern char lbl_80376B40[];
 extern u32 *lbl_8055D89C;
 extern void fn_80036D24(u32);
-extern void fn_800373E0(u32);
+extern void __DVDHandleMotorError(u32);
 extern int memcmp(const void *, const void *, u32);
 void fn_8003684C(void) {
     s32 enabled;
@@ -1893,13 +1893,13 @@ void fn_8003684C(void) {
             fn_8003AD88(idBase + 0xA0, 0x20, 0x10000, (u32)fn_80036B84);
         } else {
             LOG_ENTRY(0x10, 0, 0);
-            fn_8003AF1C(0, 0, fn_800373E0);
+            fn_8003AF1C(0, 0, __DVDHandleMotorError);
         }
         break;
     default:
         if (memcmp(idBase + 0x80, (void *)IDShouldBe_8055D8C4, 0x20) != 0) {
             LOG_ENTRY(0x10, 0, 0);
-            fn_8003AF1C(0, 0, fn_800373E0);
+            fn_8003AF1C(0, 0, __DVDHandleMotorError);
         } else {
             lbl_8055D860 = 0;
             fn_8003BCDC(0);
@@ -2184,7 +2184,7 @@ void fn_8003727C(u32 status) {
 
 /* DVD motor/error callback: records error state, handles special/reset cases, and either
  * cancels the executing command or schedules periodic motor-off via alarm. */
-void fn_800373E0(u32 arg0) {
+void __DVDHandleMotorError(u32 arg0) {
     register u32 value = arg0;
     s32 interrupts;
     s32 resetDone;
