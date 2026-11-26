@@ -6,7 +6,7 @@
  * is the quadratic (target.position - self.position)
  *                      + (target.velocity - self.velocity) * t
  *                      + 0.5 * (target.acceleration - self.acceleration) * t * t
- * whose zero crossing fn_80138C28 solves for (the AI uses it for a truck
+ * whose zero crossing solveMotionCrossingTime solves for (the AI uses it for a truck
  * closing on the truck ahead: gap, speed and the speed controller's own rate). */
 typedef struct Motion1D {
     /* 0x0 */ float position;
@@ -67,7 +67,7 @@ extern double __fabs(double);
  * far root when the two straddle zero, the near one when both lie ahead, and
  * NO_CROSSING when neither does. Returns 0 otherwise, and when the quadratic
  * never reaches zero writes how far it falls short into *out_distance. */
-int fn_80138C28(MotionPair *motion, float *out_time, float *out_distance) {
+int solveMotionCrossingTime(MotionPair *motion, float *out_time, float *out_distance) {
     float quad;
     float lin;
     float con;
@@ -132,7 +132,7 @@ float fn_80138DF4(void *arg0) {
         float b = *(const float *)((const char *)carg + 8);
         float a = *(const float *)((const char *)carg + 0x14);
         if (fn_80138BFC(a - b) == 0) {
-            if (fn_80138C28(arg0, &spC, &sp8) != 0) {
+            if (solveMotionCrossingTime(arg0, &spC, &sp8) != 0) {
                 float pos14 = *(const float *)((const char *)carg + 0x14);
                 var_f4 = spC;
                 temp_f1 = (*(const float *)((const char *)carg + 0x10) + (var_f4 * pos14)) - *(const float *)((const char *)carg + 4);
@@ -199,7 +199,7 @@ void fn_80138F38(const void *arg0)
     temp = *((const float *) (((const char *) arg0) + 0x14));
     if (temp < 0.0f)
     {
-      if (fn_80138C28((MotionPair *) arg0, &sp8, 0))
+      if (solveMotionCrossingTime((MotionPair *) arg0, &sp8, 0))
       {
         x = *((const float *) (((const char *) arg0) + 0x10));
         y = *((const float *) (((const char *) arg0) + 0x14));
