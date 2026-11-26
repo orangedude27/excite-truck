@@ -45,7 +45,7 @@ extern f32 lbl_805626A0;
 extern f32 lbl_805626A4;
 extern f32 lbl_805626A8;
 extern f32 lbl_80435EB8[4];
-extern void fn_801B561C(void *, s32, void *, s32, f32, f32, f32, f32, f32, f32);
+extern void quadTreeAddObject(void *, s32, void *, s32, f32, f32, f32, f32, f32, f32);
 extern f32 lbl_80562698, lbl_8056269C;
 extern s32 lbl_8055E6EC;
 extern s32 lbl_8055E6F0;
@@ -191,7 +191,7 @@ void fn_801B54B0(s32 listHead) {
  * quadrant, so an object sitting on a border ends up in each square touching
  * it.  The last two floats are handed over by fn_801B5B04 but never read, and
  * the recursion drops them. */
-void fn_801B561C(void *object, s32 index, void *node, s32 depth, f32 x0, f32 y0, f32 x1, f32 y1, f32 unused1, f32 unused2) {
+void quadTreeAddObject(void *object, s32 index, void *node, s32 depth, f32 x0, f32 y0, f32 x1, f32 y1, f32 unused1, f32 unused2) {
     #define QUARTER        lbl_80562698 /* 0.5f: where a square is cut into four */
     #define MIN_SQUARE     lbl_8056269C /* 50.0f: a square this small is not cut again */
     #define ObjectBox      lbl_80435EB8 /* the object's box: minX, minY, maxX, maxY */
@@ -248,7 +248,7 @@ void fn_801B561C(void *object, s32 index, void *node, s32 depth, f32 x0, f32 y0,
         if (square->children == 0) {
             square->children = (QuadSquare *)NewArray(AllocBlock(0x40, CHILDREN_TAG), Square_Init, Square_Destroy, 0xC, 4);
         }
-        ((AddObject)fn_801B561C)(object, index, (char *)square->children + last * 0xC, depth + 1,
+        ((AddObject)quadTreeAddObject)(object, index, (char *)square->children + last * 0xC, depth + 1,
                            r[last].x0, r[last].y0, r[last].x1, r[last].y1);
         return;
     }
@@ -270,7 +270,7 @@ void fn_801B561C(void *object, s32 index, void *node, s32 depth, f32 x0, f32 y0,
     }
     for (j = 0; j < 4; j++) {
         if (hit[j] != 0) {
-            ((AddObject)fn_801B561C)(object, index, (char *)square->children + j * 0xC, depth + 1,
+            ((AddObject)quadTreeAddObject)(object, index, (char *)square->children + j * 0xC, depth + 1,
                                r[j].x0, r[j].y0, r[j].x1, r[j].y1);
         }
     }
@@ -388,7 +388,7 @@ extern "C" void fn_801B5B04(void *arg0, void **arg1, s32 arg2) {
         lbl_80435EB8[0] = outA[0] - base;
         lbl_80435EB8[2] = base + outB[0];
         lbl_80435EB8[3] = base + outB[2];
-        fn_801B561C(*item, i, arg0, 0, lbl_805626A4, lbl_805626A4, lbl_805626A8, lbl_805626A8, base + outB[0], outA[2] - base);
+        quadTreeAddObject(*item, i, arg0, 0, lbl_805626A4, lbl_805626A4, lbl_805626A8, lbl_805626A8, base + outB[0], outA[2] - base);
         item++;
     }
 }
