@@ -100,7 +100,7 @@ extern "C" void fn_8021E6D4(void *arg0);
 extern "C" void fn_8021E724(void *arg0);
 extern "C" void fn_8021E774(void *arg0);
 extern "C" void fn_8021E7C4(void *arg0);
-extern "C" s32 fn_8022B620(s32, const char *);
+extern "C" s32 UIStyle_getTextHeight(s32, const char *);
 extern "C" void *lbl_8033EA90[];
 #pragma push
 #pragma small_data on
@@ -2242,7 +2242,7 @@ extern "C" void fn_8021BA64(void *setup, s32 width, s32 arg2, s32 buffer, s32 ar
 
     stride = fn_8022A86C(params);
     *(s32 *)((u8 *)setup + 0x244) = stride;
-    stride = fn_8022B620(stride, &lbl_8055B878) - 0x17;
+    stride = UIStyle_getTextHeight(stride, &lbl_8055B878) - 0x17;
     *(s32 *)((u8 *)setup + 0x260) = stride / 2;
     fn_80219440(setup, 0, (u8 *)buffer + 0x24, 4);
     fn_8022D924((void *)buffer, arg2 / height);
@@ -3661,7 +3661,7 @@ extern "C" void *fn_8021E0C0(void *obj, s32 x, s32 y, s32 width, s32 height, voi
     *(void **)obj = vtable;
     *(s32 *)((u8 *)obj + 0x260) = 0;
     *(f32 *)((u8 *)obj + 0x264) = alpha;
-    s32 stride = fn_8022B620(7, (const char *)&lbl_8055B880) + 2;
+    s32 stride = UIStyle_getTextHeight(7, (const char *)&lbl_8055B880) + 2;
     *(void **)((u8 *)obj + 0x244) = table;
     *(s32 *)((u8 *)obj + 0x258) = stride;
     *(void **)((u8 *)obj + 0x25C) = indexPtr;
@@ -4191,7 +4191,7 @@ extern "C" void fn_8021EDA4(void *self) {
         strcpy(caretText, box->text);
         if (box->caretIndex >= 0) caretText[box->caretIndex] = zero;
         x += (f32)fn_8022B498(box->style, (s32)caretText);
-        f32 height = (f32)fn_8022B620(box->style, caretText);
+        f32 height = (f32)UIStyle_getTextHeight(box->style, caretText);
         ((void (*)(s32,f32,f32,f32,f32,f32))fn_80230924)(-0x100, x, y - lbl_80563514, lbl_805634A4 + x, lbl_80563514 + (y - height), lbl_805634A8);
     }
 }

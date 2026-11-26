@@ -694,7 +694,7 @@ struct UIStyle {
  * the style draws is the floor of the result, and is all there is for a text
  * of 0.
  */
-int fn_8022B620(int styleIndex, const char *text) {
+int UIStyle_getTextHeight(int styleIndex, const char *text) {
     struct UIStyle *style;
     int max;
     int above;
