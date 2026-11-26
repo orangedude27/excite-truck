@@ -848,7 +848,7 @@ extern int fn_8026A554(int *);
  * module installs its category-13 callback (fn_8026A554), and fn_80267680
  * lays the per-frame defaults on top.
  */
-void Camera_Init(void) {
+/* Initialise the camera module at boot: reset all camera records to identity transforms and no subject/mode, set the default view angle, initialise the camera helpers and ambience sounds, install the camera callback and apply per-frame defaults. */ void Camera_Init(void) {
     extern void *__AXFXGetLfoSinTable_801769CC(void);
     extern float FLOAT_ZERO, FLOAT_ONE, CAMERA_VIEW_ANGLE;
     extern int sCrashVolume;
