@@ -23348,36 +23348,36 @@ extern "C" void fn_800C7E6C(void *arg0) {
 extern "C" s32 transPaneName;
 #pragma push
 #pragma dont_inline off
-extern "C" void updateHomeButtonPanes(void *arg0, s32 arg1) {
+extern "C" void updateHomeButtonPanes(void *homeButton, s32 slotStates) {
     /* Update the home-button panes: toggle each slot's pane state and controller flags, then clear the frame marker. */
-    s32 *state = (s32 *)arg1;
-    u8 *cursor = (u8 *)arg0;
-    u8 *info = (u8 *)arg0 + 0x158;
+    s32 *stateRecord = (s32 *)slotStates;
+    u8 *slot = (u8 *)homeButton;
+    u8 *wpadInfo = (u8 *)homeButton + 0x158;
     s32 i, j;
-    u8 *self = (u8 *)arg0;
+    u8 *base = (u8 *)homeButton;
     void *pane;
-    for (i = 0; i < 4; i++, state += 4, cursor += 4, info += 0x18) {
-        if (*state) {
-            if (*(s32 *)(*(u8 **)(self + 4) + 0x20) == 0) {
-                pane = (void *)((PaneFindDispatch *)*(void **)((u8 *)*(void **)(cursor + 0x1E4) + 0x10))->find(transPaneName, 1);
+    for (i = 0; i < 4; i++, stateRecord += 4, slot += 4, wpadInfo += 0x18) {
+        if (*stateRecord) {
+            if (*(s32 *)(*(u8 **)(base + 4) + 0x20) == 0) {
+                pane = (void *)((PaneFindDispatch *)*(void **)((u8 *)*(void **)(slot + 0x1E4) + 0x10))->find(transPaneName, 1);
                 ((u8 *)pane)[0xCF] = (((u8 *)pane)[0xCF] & 0xFE) | 1;
             }
             j = findEventSlot(i + 0x1F, 0x11);
-            pane = ((void **)self)[j + 166];
+            pane = ((void **)base)[j + 166];
             ((void (*)(void *))fn_800CF3EC)(pane);
             *(s32 *)((u8 *)pane + 0x14) = 1;
-            self[0x7C + i] = 1;
-            ((s32 (*)(void *, void *))getInfoAsync__Q210homebutton10ControllerFP8WPADInfo)(*(void **)(cursor + 0x254), info);
+            base[0x7C + i] = 1;
+            ((s32 (*)(void *, void *))getInfoAsync__Q210homebutton10ControllerFP8WPADInfo)(*(void **)(slot + 0x254), wpadInfo);
         } else {
-            if (*(s32 *)(*(u8 **)(self + 4) + 0x20) == 0) {
-                pane = (void *)((PaneFindDispatch *)*(void **)((u8 *)*(void **)(cursor + 0x1E4) + 0x10))->find(transPaneName, 1);
+            if (*(s32 *)(*(u8 **)(base + 4) + 0x20) == 0) {
+                pane = (void *)((PaneFindDispatch *)*(void **)((u8 *)*(void **)(slot + 0x1E4) + 0x10))->find(transPaneName, 1);
                 ((u8 *)pane)[0xCF] = ((u8 *)pane)[0xCF] & 0xFE;
             }
             j = findEventSlot(i + 0x1F, 0x10);
-            pane = ((void **)self)[j + 166];
+            pane = ((void **)base)[j + 166];
             ((void (*)(void *))fn_800CF3EC)(pane);
             *(s32 *)((u8 *)pane + 0x14) = 1;
-            self[0x7C + i] = 0;
+            base[0x7C + i] = 0;
         }
     }
     {
@@ -23388,14 +23388,14 @@ extern "C" void updateHomeButtonPanes(void *arg0, s32 arg1) {
         do {
             s32 *p = ids;
             for (j = 0; j < 4; j++, p++) {
-                pane = (void *)((PaneFindDispatch *)*(void **)((u8 *)*(void **)(self + 0x1E0) + 0x10))->find(*p, 1);
+                pane = (void *)((PaneFindDispatch *)*(void **)((u8 *)*(void **)(base + 0x1E0) + 0x10))->find(*p, 1);
                 ((u8 *)pane)[0xCF] = ((u8 *)pane)[0xCF] & 0xFE;
             }
             n++;
             ids += 4;
         } while (n < 4);
     }
-    *(s32 *)(self + 0x78) = 0;
+    *(s32 *)(base + 0x78) = 0;
 }
 #pragma pop
 extern "C" void fn_800D15B4(void *);
