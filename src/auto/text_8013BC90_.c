@@ -390,7 +390,7 @@ extern void fn_8013A598(void *, int);
 extern unsigned char lbl_8042F8C8[];
 
 // The resource cache: CACHE_ENTRY_MAX entries with the number in use right
-// behind them. fn_8013BFE8 files a resource under its name here and fn_8013C428
+// behind them. fn_8013BFE8 files a resource under its name here and CacheTable_releaseResource
 // takes it back out; an entry lives until its reference count reaches zero.
 #define CACHE_ENTRY_MAX 8
 typedef struct CacheTable {
@@ -428,7 +428,7 @@ typedef struct CacheTable {
     CACHE_COPY2(dst, src, 60) CACHE_COPY2(dst, src, 62)                        \
     CACHE_COPY2(dst, src, 64) CACHE_COPY2(dst, src, 66)
 #pragma scheduling invalid_target
-void fn_8013C428(void *obj) {
+void CacheTable_releaseResource(void *obj) {
     // Hand a cached resource back: find the entry that holds it and drop one
     // reference. The last reference frees the resource and closes the hole its
     // entry left in the table with the table's last entry.

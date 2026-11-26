@@ -719,7 +719,7 @@ void *fn_80138968(int resourceName) {
 void fn_80138AD8(void **objectSlot) {
     /* Release one reference to a cached object, free it, and clear the slot. */
     void *object = *objectSlot;
-    fn_8013C428(*(int *)((char *)object + 0x28), object);
+    CacheTable_releaseResource(*(int *)((char *)object + 0x28), object);
     fn_8012C4D8(*objectSlot);
     *objectSlot = 0;
 }
