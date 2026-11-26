@@ -13270,7 +13270,7 @@ extern "C" s32 fn_800B8F20(s32 buffer, s32 path, s32 length, s32 offset, s32 *ou
     return 0;
 }
 #pragma dont_inline reset
-extern "C" s32 fn_800B98F8(s32, s32, s32, s32, s32 *, s32);
+extern "C" s32 NandSlot_writeSectors(s32, s32, s32, s32, s32 *, s32);
 #pragma dont_inline on
 /* Read/resolve NAND data with locking: validates args, performs operation, returns status. */
 extern "C" s32 fn_800B8FE4(s32 buffer, s32 path, s32 length, s32 offset, s32 *outBytes, s32 unused) {
@@ -13285,7 +13285,7 @@ extern "C" s32 fn_800B8FE4(s32 buffer, s32 path, s32 length, s32 offset, s32 *ou
         fn_800B8048(lbl_8055DD30);
         return -0x14;
     }
-    result = fn_800B98F8(offset, path, length, 0x200, outBytes, buffer);
+    result = NandSlot_writeSectors(offset, path, length, 0x200, outBytes, buffer);
     if (result != 0) {
         fn_800B8048(lbl_8055DD30);
         return result;
@@ -13658,7 +13658,7 @@ fail:
     #undef PF2_BUF_SIZE
 }
 
-extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
+extern "C" s32 NandSlot_writeSectors(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
     /* Write arg0*arg3 bytes from arg1 to the open NAND file slot identified by arg5
      * at offset arg2*arg3 (buffering through a 0x200-byte aligned temp). On success
      * stores arg0 to *arg4 and returns 0; on failure records the NAND error in the
