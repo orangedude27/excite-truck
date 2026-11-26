@@ -53,7 +53,7 @@ __declspec(section ".sdata") extern const char lbl_8055C6B0[];
 __declspec(section ".sdata") extern const char lbl_8055C6B8[];
 __declspec(section ".sdata") extern const char lbl_8055C6C0[];
 extern char lbl_80347690[];
-extern const char lbl_8055C6C8[4];
+extern const char carLayoutAllocLabel[4];
 extern const char lbl_8055C6D0[4];
 extern const char lbl_8055C6D8[4];
 extern const char lbl_8055C6E0[4];
@@ -323,7 +323,7 @@ extern "C" void* loadCarResource(s32 name, s32 arg1) {
      * bone-info file (with a .mvl/.val fallback) and build the bone layout, then copy
      * the per-bone min/max bounds out of the "bounds" resource, and register the car
      * at the head of the global car list. */
-    carObj = (char*)fn_801284F8(0x2464, lbl_8055C6C8);
+    carObj = (char*)fn_801284F8(0x2464, carLayoutAllocLabel);
     sprintf(path, formatStrings + 0xF4, carName);
     *(void**)(carObj + 0x2438) = fn_80131808(path);
     sprintf(path, formatStrings + 0x108, carName);
