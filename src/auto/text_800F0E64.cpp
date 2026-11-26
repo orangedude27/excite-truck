@@ -188,7 +188,7 @@ extern "C" u8 lbl_8055DE58;
 extern "C" void OSInitMutex(void*);
 extern "C" void NWC24Data_Init(void*);
 extern "C" s32 fn_800FAB98(void*, void*);
-extern "C" s32 fn_800FACC0(void*, void*, s32);
+extern "C" s32 StrmFile_GetAdpcmParam(void*, void*, s32);
 extern "C" s32 fn_800FAF10(void*, void*, unsigned long, s32);
 struct ExecStream { virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual int v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19(); virtual int v20(); };
 extern "C" const char lbl_803251B0[];
@@ -4317,7 +4317,7 @@ extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv
         }
         for (i = 0, off = 0; i < f.header[2]; i++, off += 0x30) {
             if ((u32)(-f.valid | f.valid) >> 31) {
-                fn_800FACC0(&f.valid, (void*)((u8*)f.adpcm + off), i);
+                StrmFile_GetAdpcmParam(&f.valid, (void*)((u8*)f.adpcm + off), i);
             }
         }
         Cb_t cb2 = *(Cb_t*)((u8*)self + 0x1C);
@@ -6773,7 +6773,7 @@ enum { STRM_CODEC_ADPCM = 2 };
  * plain addresses (the DBAssert(ref.dataType == 0) checks below).  Nothing is
  * copied, and 0 is returned, when the file's codec is not the ADPCM one or the
  * index is past the end of the table. */
-extern "C" s32 fn_800FACC0(void *arg0, void *arg1, s32 index) {
+extern "C" s32 StrmFile_GetAdpcmParam(void *arg0, void *arg1, s32 index) {
     if (*(void **)arg0 == 0) /* DBAssert(mHeader != NULL) */
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326518, 0xAD, lbl_80326688);
     u8 *block = (u8 *)*((void **)arg0 + 1);
