@@ -13927,15 +13927,15 @@ extern "C" s32 fn_800BB3F4(s32);
 #pragma pop
 /* Initialize/query an IOS device state with retries and a sequence of control
  * commands, returning 0 on success or a status/error code on failure. */
-extern "C" s32 initSdCardDevice(s32 shouldInit) {
-    s32 ioctlParam;
+extern "C" s32 initSdCardDevice(s32 doInit) {
+    s32 ioctlValue;
     s32 ioctlBuffer[4];
-    s16 ioctlShortParam;
-    s32 result;
+    s16 ioctlShortValue;
+    s32 ioctlResult;
     u32 retryCount;
     const char *logBase = lbl_8031B2B0;
 
-    if (shouldInit == 0)
+    if (doInit == 0)
         return 1;
     if (*(s32 *)(VFiPFSD_state + 0x10) == 0)
         return 6;
@@ -13945,16 +13945,16 @@ extern "C" s32 initSdCardDevice(s32 shouldInit) {
     }
     retryCount = 0;
     do {
-        result = fn_800BB2C4(*(void **)(VFiPFSD_state + 8));
-        if (result == 0)
+        ioctlResult = fn_800BB2C4(*(void **)(VFiPFSD_state + 8));
+        if (ioctlResult == 0)
             break;
-        OSReport(logBase + 0x1A4, result);
+        OSReport(logBase + 0x1A4, ioctlResult);
         retryCount++;
     } while (retryCount < 5);
     if (retryCount == 5)
         return 0x15;
-    ioctlParam = 0;
-    if (fn_800BBEA4(*(IosDevice **)(VFiPFSD_state + 8), 0x29, &ioctlParam, 4) != 0) {
+    ioctlValue = 0;
+    if (fn_800BBEA4(*(IosDevice **)(VFiPFSD_state + 8), 0x29, &ioctlValue, 4) != 0) {
         OSReport(logBase + 0x1E4);
         return 0x15;
     }
@@ -13963,8 +13963,8 @@ extern "C" s32 initSdCardDevice(s32 shouldInit) {
         OSReport(logBase + 0x214);
         return 0x15;
     }
-    ioctlShortParam = 0;
-    if (fn_800BBEA4(*(IosDevice **)(VFiPFSD_state + 8), 3, (s32 *)&ioctlShortParam, 2) != 0) {
+    ioctlShortValue = 0;
+    if (fn_800BBEA4(*(IosDevice **)(VFiPFSD_state + 8), 3, (s32 *)&ioctlShortValue, 2) != 0) {
         OSReport(logBase + 0x244);
         return 0x15;
     }
