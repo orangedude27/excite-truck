@@ -10,6 +10,7 @@ extern __declspec(section ".sdata") char gPOVAnyLabel[];
 extern __declspec(section ".sdata") char gHorn2Label[];
 extern __declspec(section ".sdata") char gJBUpLabel[];
 extern __declspec(section ".sdata") char gJBDownLabel[];
+/* Zero-filled sentinel passed as the value to clear a control binding. */
 extern __declspec(section ".sdata") int gEmptyControlName;
 /* Forward a formatted message to the abnormal-end logger's sink without the panic prefix. */
 extern void fn_802E30C8(void *);
