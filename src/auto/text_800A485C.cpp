@@ -771,7 +771,7 @@ public:
     virtual void d12();
     virtual void *findPane(u32, s32);
 };
-extern "C" s32 lbl_8031E370[];
+extern "C" s32 homeButtonPaneNames[];
 extern "C" s32 lbl_802F4588[];
 struct BatteryRec { u8 b[0x18]; };
 struct NandFileSlot { u32 id; u8 pad[0xE8]; s32 err; };
@@ -23383,7 +23383,7 @@ extern "C" void updateHomeButtonPanes(void *arg0, s32 arg1) {
     {
         s32 n;
         s32 *ids;
-        ids = lbl_8031E370;
+        ids = homeButtonPaneNames;
         n = 0;
         do {
             s32 *p = ids;
@@ -24159,7 +24159,7 @@ extern "C" void fn_800C81F0(void *arg0, s32 arg1) {
 void homebutton::HomeButton::calc_battery(int n) {
     u8 *self = (u8 *)this;
     void *obj;
-    s32 *ids = (s32 *)((u8 *)lbl_8031E370 + n * 16);
+    s32 *ids = (s32 *)((u8 *)homeButtonPaneNames + n * 16);
     u8 *rec = (u8 *)this + n * 0x18;
     s32 i, index;
     for (i = 0; i < 4; i++) {
@@ -24297,7 +24297,7 @@ extern "C" void fn_800CA264(void *arg0, void *arg1) {
     info = self + 0x158;
     alarmA = (OSAlarm *)(self + 0x410);
     alarmB = (OSAlarm *)(self + 0x4D0);
-    ids = lbl_8031E370;
+    ids = homeButtonPaneNames;
     for (i = 0; i < 4; i++, s += 4, ic += 0x10, info += 0x18, alarmA = (OSAlarm *)((u8 *)alarmA + 0x30), alarmB = (OSAlarm *)((u8 *)alarmB + 0x30), ids += 4) {
         f32 a, b, ang, px, py;
         ctrl = *(void **)ic;
