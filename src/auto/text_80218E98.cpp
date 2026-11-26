@@ -8382,7 +8382,7 @@ extern "C" void fn_80227880(s32 unused, f32 x, f32 y, f32 width, f32 height) {
 extern "C" void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 #pragma scheduling invalid_target
 #pragma processor 750
-extern "C" void fn_802278F0(s32 imageSet, f32 x, f32 y, f32 width, f32 height) {
+extern "C" void drawBoxBorder(s32 imageSet, f32 x, f32 y, f32 width, f32 height) {
     /* Draw the image set's frames across the given region, positioning each
      * frame by its own extent and stopping at the region's end. */
     if (imageSet) {
@@ -8460,7 +8460,7 @@ extern "C" void fn_802278F0(s32 imageSet, f32 x, f32 y, f32 width, f32 height) {
 extern "C" void fn_80227C9C(s32 unused, f32 x, f32 y, f32 width, f32 height) {
     /* Draw a filled background and its border for the same rectangle. */
     fn_80227880(unused, x, y, width, height);
-    fn_802278F0(unused, x, y, width, height);
+    drawBoxBorder(unused, x, y, width, height);
 }
 
 extern "C" void *fn_80227D00(void *object) {
@@ -8664,7 +8664,7 @@ lbl_80563578, lbl_805634A8, lbl_805634A4);
 if (flag != 0)
 fn_802353F4(*(s32*)((u8*)arg0 + 0x254), 4, phase3Pos + remaining,
 topAdjusted, lbl_805634A8);
-fn_802278F0(*(s32*)((u8*)arg0 + 0x258), endPos, negTop, virtualPos,
+drawBoxBorder(*(s32*)((u8*)arg0 + 0x258), endPos, negTop, virtualPos,
 (f32)span);
 }
 }
