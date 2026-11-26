@@ -1478,7 +1478,7 @@ incEntry:;
 extern char lbl_8055A1B8;
 s32 fn_80169D64(s32 unused, s32 name) {
     /* Returns nonzero if the given object name starts with the "poop" prefix,
-     * the names of the "poop_%d" objects fn_80169DB8 places. */
+     * the names of the "poop_%d" objects placePoopGroup places. */
     s32 prefix = (s32)&lbl_8055A1B8; /* "poop" */
     s32 len = strlen((char *)prefix);
     s32 cmp = fn_8002B1D8(name, (s32 *)prefix, len); /* strncmp */
@@ -1494,7 +1494,7 @@ s32 fn_80169D64(s32 unused, s32 name) {
  * ground at its position, lifted by the pickup type's height offset and by its
  * own hit radius; the whole group shares one entry in the manager's group list.
  * fn_80169D64() is the name check that picks this handler for a table. */
-extern "C" s32 fn_80169DB8(void *unused, DummyArg1 *table, DummyManager *manager) {
+extern "C" s32 placePoopGroup(void *unused, DummyArg1 *table, DummyManager *manager) {
     s32 parsedId = -1;
     DummyItem *item = 0;
     s32 groupId = 0;
