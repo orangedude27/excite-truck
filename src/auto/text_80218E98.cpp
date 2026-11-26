@@ -3586,22 +3586,22 @@ extern "C" void paintValueRows(u8 *self) {
     s32 arrow1 = fn_80211660(1);
     f32 nowSlide0 = fn_8023659C();
     f32 slideFade0 = lbl_805634A4;
-    f32 slideT0 = ((lbl_805634E8 + *(f32 *)(self + 0x260)) - nowSlide0 - lbl_805634A8) / lbl_805634E8;
-    slideFade0 = (slideFade0 < slideT0) ? slideFade0 : slideT0;
+    f32 slideProgress0 = ((lbl_805634E8 + *(f32 *)(self + 0x260)) - nowSlide0 - lbl_805634A8) / lbl_805634E8;
+    slideFade0 = (slideFade0 < slideProgress0) ? slideFade0 : slideProgress0;
     slideFade0 = (slideFade0 > lbl_805634A8) ? slideFade0 : lbl_805634A8;
     slide0 = lbl_805634A8 + slideFade0 * lbl_805634C8;
     f32 nowSlide1 = fn_8023659C();
     f32 slideFade1 = lbl_805634A4;
-    f32 slideT1 = ((lbl_805634E8 + *(f32 *)(self + 0x264)) - nowSlide1 - lbl_805634A8) / lbl_805634E8;
-    slideFade1 = (slideFade1 < slideT1) ? slideFade1 : slideT1;
+    f32 slideProgress1 = ((lbl_805634E8 + *(f32 *)(self + 0x264)) - nowSlide1 - lbl_805634A8) / lbl_805634E8;
+    slideFade1 = (slideFade1 < slideProgress1) ? slideFade1 : slideProgress1;
     slideFade1 = (slideFade1 > lbl_805634A8) ? slideFade1 : lbl_805634A8;
     slide1 = lbl_805634A8 + slideFade1 * lbl_805634C8;
-    s32 pad = fn_8022AB18(*(s32 *)(self + 0x268), 0, 3);
-    f32 padF = (f32)pad;
-    x1 = originX + padF;
-    fn_8022AAA8(*(void **)(self + 0x268), (*(ValueSource **)(self + 0x254))->getText(padF));
-    pad = fn_8022AB18(*(s32 *)(self + 0x268), 1, 3);
-    originY = originY - (f32)pad;
+    s32 padding = fn_8022AB18(*(s32 *)(self + 0x268), 0, 3);
+    f32 paddingF = (f32)padding;
+    x1 = originX + paddingF;
+    fn_8022AAA8(*(void **)(self + 0x268), (*(ValueSource **)(self + 0x254))->getText(paddingF));
+    padding = fn_8022AB18(*(s32 *)(self + 0x268), 1, 3);
+    originY = originY - (f32)padding;
     x0 = (x1 - getPictureWidth(arrow0, row0Style)) - slide0;
     x1 += slide1;
     s32 alignFlags = fn_8022AA84(*(s32 *)(self + 0x268));
@@ -3622,8 +3622,8 @@ extern "C" void paintValueRows(u8 *self) {
     if (source0 == 0 || source0->isRow0Hidden() == 0) {
         f32 nowColor = fn_8023659C();
         f32 alphaFade = lbl_805634A4;
-        f32 alphaT = ((nowColor - *(f32 *)(self + 0x260)) - lbl_805634A8) / lbl_80563504;
-        alphaFade = (alphaFade < alphaT) ? alphaFade : alphaT;
+        f32 alphaProgress = ((nowColor - *(f32 *)(self + 0x260)) - lbl_805634A8) / lbl_80563504;
+        alphaFade = (alphaFade < alphaProgress) ? alphaFade : alphaProgress;
         alphaFade = (alphaFade > lbl_805634A8) ? alphaFade : lbl_805634A8;
         color0 = ((s32)(lbl_80563508 + alphaFade * lbl_8056350C) << 24) | 0xFFFFFF;
     }
@@ -3631,8 +3631,8 @@ extern "C" void paintValueRows(u8 *self) {
     if (source1 == 0 || source1->isRow1Hidden() == 0) {
         f32 nowColor = fn_8023659C();
         f32 alphaFade = lbl_805634A4;
-        f32 alphaT = ((nowColor - *(f32 *)(self + 0x264)) - lbl_805634A8) / lbl_80563504;
-        alphaFade = (alphaFade < alphaT) ? alphaFade : alphaT;
+        f32 alphaProgress = ((nowColor - *(f32 *)(self + 0x264)) - lbl_805634A8) / lbl_80563504;
+        alphaFade = (alphaFade < alphaProgress) ? alphaFade : alphaProgress;
         alphaFade = (alphaFade > lbl_805634A8) ? alphaFade : lbl_805634A8;
         color1 = ((s32)(lbl_80563508 + alphaFade * lbl_8056350C) << 24) | 0xFFFFFF;
     }
