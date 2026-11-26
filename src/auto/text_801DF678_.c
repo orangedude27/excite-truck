@@ -633,7 +633,7 @@ extern float lbl_80562C58, lbl_80562C5C, lbl_80562C60, lbl_80562C64, lbl_80562C6
  * cycling effect objects to play it; a raised or never-started instance then
  * fades back down and tells the sound manager about the change.
  */
-extern "C" void updateSlipSkidEffects(void *manager) {
+/* Run one frame of the slip/skid effects: build each vehicle's slip from speed/spin, start the zone sound at its threshold, charge/raise the effect and cycle a screen-effect object, then fade and notify the sound manager of changes. */ extern "C" void updateSlipSkidEffects(void *manager) {
     struct FxIface {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
         virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9();
