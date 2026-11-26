@@ -6,7 +6,7 @@ extern __declspec(section ".sdata") char gBrakingLabel[];
 extern __declspec(section ".sdata") char gViewLabel[];
 extern __declspec(section ".sdata") char gHornLabel[];
 extern __declspec(section ".sdata") char gJBLeftLabel[];
-extern __declspec(section ".sdata") char lbl_8055BC68[];
+extern __declspec(section ".sdata") char gPOVAnyLabel[];
 extern __declspec(section ".sdata") char lbl_8055BC70[];
 extern __declspec(section ".sdata") char lbl_8055BC78[];
 extern __declspec(section ".sdata") char lbl_8055BC80[];
@@ -237,7 +237,7 @@ void fn_8023D7CC(void) {
         switch (scheme) {
         case 0:
             fn_802E8664(1);
-            SetControlOption(slotIndex + 8, (int)gHornLabel, lbl_8055BC68);
+            SetControlOption(slotIndex + 8, (int)gHornLabel, gPOVAnyLabel);
             SetControlOption(slotIndex + 8, (int)lbl_8055BC70, (void *)&lbl_8055BC08);
             SetControlOption(slotIndex + 8, (int)(optionData + 0x1B4), (void *)&lbl_8055BC08);
             SetControlOption(slotIndex + 8, (int)(optionData + 0x1CC), (void *)&lbl_8055BC08);
@@ -636,7 +636,7 @@ extern char gBrakingLabel[];
 extern char gViewLabel[];
 extern char gHornLabel[];
 extern char gJBLeftLabel[];
-extern char lbl_8055BC68[];
+extern char gPOVAnyLabel[];
 extern char lbl_8055BC70[];
 extern char lbl_8055BC78[];
 extern char lbl_8055BC80[];
