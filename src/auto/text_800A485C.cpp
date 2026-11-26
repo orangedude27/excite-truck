@@ -8785,7 +8785,7 @@ extern "C" void VFiPFFILE_FinalizeAllFiles(u8 *volume) {
 #define VF_HANDLE_SECTOR(f)     (*(u32 *)((u8 *)(f) + 0x24)) /* 0x24 sector of it */
 #define VF_HANDLE_SECTOR_OFF(f) (*(u16 *)((u8 *)(f) + 0x28)) /* 0x28 byte inside that sector */
 
-/* Where a seek counts its offset from (third argument of fn_800B1FF4). */
+/* Where a seek counts its offset from (third argument of vfSeekFile). */
 #define VF_SEEK_SET  0 /* from the start of the file */
 #define VF_SEEK_CUR  1 /* from where the handle reads now */
 #define VF_SEEK_END  2 /* from the end of the file */
@@ -9109,7 +9109,7 @@ extern "C" s32 fn_800B1EB8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4) {
  * does.  A failure is left in the VF instance's last error, in the volume's and
  * in the handle's, and is the return value.
  */
-extern "C" s32 fn_800B1FF4(void *file, u32 offset, s32 whence) {
+extern "C" s32 vfSeekFile(void *file, u32 offset, s32 whence) {
     u8 *volume;
     s32 status;
     u8 *stream;
@@ -12287,12 +12287,12 @@ extern "C" s32 fn_800B75C4(s32 buffer, s32 size, s32 count, s32 file) {
     return bytesRead;
 }
 
-extern "C" s32 fn_800B1FF4(void *, u32, s32);
+extern "C" s32 vfSeekFile(void *, u32, s32);
 extern "C" void fn_800B75EC(OSAlarm *alarm, OSContext *ctx) {
 #pragma unused(ctx)
-    /* File-thread alarm callback: run the VFiPFFILE seek (fn_800B1FF4) with the
+    /* File-thread alarm callback: run the VFiPFFILE seek (vfSeekFile) with the
      * alarm as its handle and normalize the returned status via fn_800B73BC. */
-    fn_800B73BC((s32)((void *(*)(void *))fn_800B1FF4)(alarm));
+    fn_800B73BC((s32)((void *(*)(void *))vfSeekFile)(alarm));
 }
 
 extern "C" s32 fn_800A4E80(void *, s32, u32);
