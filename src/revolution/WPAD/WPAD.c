@@ -4143,7 +4143,7 @@ void fn_8006022C(s32 chan)
     BTA_HhClose(((u8*)cb)[0x803]);
 }
 
-/* Requests a controller status report on a ready channel: builds a RPTID_REQUEST_STATUS command with format as its WPADInfo output buffer and data as its completion callback, then pushes it onto the channel's command queue. Returns 0 on success, -2 if not ready or the queue is full, or the channel's prior error status. */
+/* Requests a controller status report on a ready channel: builds a RPTID_REQUEST_STATUS command with statusOut as its WPADInfo output and callback as its completion callback, then queues it on the channel's standard command queue. */
 #pragma push
 #pragma opt_propagation off
 s32 fn_800604E8(s32 chan, s32 statusOut, void* callback) {
