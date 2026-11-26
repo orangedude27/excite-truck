@@ -42,7 +42,7 @@ struct F801B49D4 {
 };
 /* One of the sound objects of the global registered-object list (lbl_8055E434,
  * count lbl_8055E438; fn_801785A4 appends to it).  While a replay is playing,
- * fn_801B50B4 drives every entry through its last two slots each frame: 0x40,
+ * updateReplayAudio drives every entry through its last two slots each frame: 0x40,
  * the isValid() that fn_801785A4 calls too, says whether the object has
  * something to write, and 0x30 writes its audio for the frame from the current
  * and the next replay frame's recorded data, reporting through its two int*
@@ -73,7 +73,7 @@ extern char lbl_80435C70[];
 extern char lbl_80335E48[];
 extern int lbl_8055E3C4;
 extern char *lbl_8055E6DC;
-/* Replay playback, the globals the per-frame driver fn_801B50B4 works on: the
+/* Replay playback, the globals the per-frame driver updateReplayAudio works on: the
  * packet queue being played (created by fn_801B52CC, dropped by fn_801B5274),
  * the rate index its command handlers are given (3 by default), the recorded
  * data of the replay frame whose commands were parsed last, and the tick the
@@ -491,7 +491,7 @@ void fn_801B5060(int fromFrame, int toFrame, float fraction) {
      * are 12-byte records: a word at +0 and a byte at +4 are copied from the
      * first one, while the u16 fields at +6, +8 and +0xA are turned into
      * pan (-300..300) and two -4..4 mix values, clamped to 0..1 first, and
-     * linearly blended by fraction.  fn_801B50B4 calls this with the pointers
+     * linearly blended by fraction.  updateReplayAudio calls this with the pointers
      * fn_801B49D4 fetched for the current and the next frame of the replay
      * queue, and the part of the 6-tick frame already played.
      * Proposed name: AudioBlendReplayParams. */
@@ -511,7 +511,7 @@ void fn_801B5060(int fromFrame, int toFrame, float fraction) {
  * once per replay frame - run the command handlers the recorded stream holds.
  * Finishes by telling the replay queue its data was used, and kicks the DSP
  * init callback once the tick has reached the current frame's base tick. */
-extern "C" void fn_801B50B4(void **objects, int objectCount) {
+extern "C" void updateReplayAudio(void **objects, int objectCount) {
     void *queue = gReplayPacketQueue;
     unsigned char *data;
     unsigned char *frameData;
@@ -637,7 +637,7 @@ void fn_801B5354(void) {
     #undef gReplayQueue
 }
 
-/* Empty audio-update callback: fn_80177E14 calls this for normal playback instead of the replay audio processor (fn_801B50B4). */
+/* Empty audio-update callback: fn_80177E14 calls this for normal playback instead of the replay audio processor (updateReplayAudio). */
 void fn_801B535C(void) {
 
 }

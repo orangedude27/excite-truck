@@ -252,7 +252,7 @@ extern "C" void fn_801AD5F0(void);
 extern "C" void fn_80186DE8(void);
 extern "C" void fn_801D0F38(void);
 extern "C" void fn_801B535C(void**, int);
-extern "C" void fn_801B50B4(void**, int);
+extern "C" void updateReplayAudio(void**, int);
 #pragma scheduling invalid_target
 extern "C" void fn_80177E14(void) {
     /* Per-frame update of the active sound/effect list: in normal mode run setup helpers and each element's
@@ -274,7 +274,7 @@ extern "C" void fn_80177E14(void) {
         }
         fn_801B535C(lbl_8055E434, lbl_8055E438);
     } else {
-        fn_801B50B4(lbl_8055E434, lbl_8055E438);
+        updateReplayAudio(lbl_8055E434, lbl_8055E438);
     }
     element = (SoundElement **)lbl_804340C0;
     for (elementIndex = 0; elementIndex < lbl_8055E468; element++, elementIndex++) {
