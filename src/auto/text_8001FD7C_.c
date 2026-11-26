@@ -387,7 +387,7 @@ struct TipsCamera_8035B758 {
    by name, plus its duration and hermite flag.  Afterwards it (re)arms the tips
    flag lbl_8055D644 from the game-option bits, unless lbl_8055D646 forces tips
    off. */
-extern "C" void fn_800201F0(void) {
+extern "C" void Tips_LoadCameraSequence(void) {
     int tipOptions;
     char *base = lbl_802FE138;
     VList_800201F0 *valFile;

@@ -1171,7 +1171,7 @@ void fn_80006D30(void) {
 }
 #pragma scheduling on
 
-extern void fn_800201F0(void);
+extern void Tips_LoadCameraSequence(void);
 extern void fn_801A7F8C(void);
 extern void fn_800054E0(void);
 extern void fn_8000F0E4(void *);
@@ -1188,7 +1188,7 @@ extern f32 lbl_8055892C; /* the "effects_volume" setting; startup reads it with 
 #pragma dont_inline on
 /* fn_80006D9C - start the game's managers up; shutdownGameManagers is its reverse.
  *
- * It opens the subsystems shutdownGameManagers closes again at its end - fn_800201F0
+ * It opens the subsystems shutdownGameManagers closes again at its end - Tips_LoadCameraSequence
  * (shut by fn_80020430), the HUD font read from "uifnt_o.gtx" (freed by
  * fn_8000F158), fn_8000F884 (fn_8000FB44) and fn_80011F64 (fn_800120BC) -
  * fills the session's state block with the object fn_801E87A8 hands out and the
@@ -1230,7 +1230,7 @@ extern "C" void fn_80006D9C(void) {
         virtual void v56() = 0; virtual void v57() = 0; virtual void v58() = 0; virtual void v59() = 0;
         virtual void hook() = 0; /* +0xF8 */
     };
-    fn_800201F0();
+    Tips_LoadCameraSequence();
     fn_801A7F8C();
     fn_800054E0();
     fn_8000F0E4((u8 *)names + 0x1EC);   /* "uifnt_o.gtx": the HUD's font texture */
