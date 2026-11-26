@@ -41,7 +41,7 @@ extern void fn_802E30C8(const char *, ...);
 extern char lbl_803498AC[];
 extern void *fn_80131810(void *);
 extern void fn_80131818(void *);
-extern void fn_8029FB00(void *);
+extern void registerNamedObject(void *);
 extern char lbl_8034989C[];
 __declspec(section ".sdata") extern char lbl_8055CB60[];
 extern unsigned char lbl_804B5070[];
@@ -591,7 +591,7 @@ done:
 #pragma pop
 
 #pragma cplusplus on
-extern "C" void fn_8029FB00(void *arg0) {
+extern "C" void registerNamedObject(void *arg0) {
     class Obj {
     public:
         virtual void v0();
@@ -692,7 +692,7 @@ extern "C" void fn_8029FB00(void *arg0) {
 #pragma scheduling invalid_target
 #pragma cplusplus on
 // Loads the "partemit.val" resource group (lbl_8034989C) and registers every child named
-// "emitter" (lbl_8055CB60) into the emitter table via fn_8029FB00. The emitter-record bump
+// "emitter" (lbl_8055CB60) into the emitter table via registerNamedObject. The emitter-record bump
 // allocator (lbl_804B9B7C: base pointer at [0], count at [1]) is reset first; the group
 // handle is released again at the end.
 extern "C" void fn_8029FD04(void) {
@@ -713,7 +713,7 @@ extern "C" void fn_8029FD04(void) {
         child = group->child(childIndex++);
         while (child != 0) {
             if (stricmp(child->name(), lbl_8055CB60) == 0)
-                fn_8029FB00(child);
+                registerNamedObject(child);
             child = group->child(childIndex++);
         }
         fn_80131818(group);
