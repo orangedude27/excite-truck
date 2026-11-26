@@ -50,7 +50,7 @@ void fn_8011C120();
 extern s32 fn_80119300(void *, s32, s32);
 void fn_8011C274(s32, void *);
 void fn_8011C2EC(s32, void *);
-void fn_801195D8();
+void feedStreamVoices();
 #define M2C_FIELD(base, type, offset) (*(type)((u8 *)(base) + (offset)))
 
 extern void* HomeMenu_drainHandover(void*);
@@ -2006,7 +2006,7 @@ void fn_801195A0(void *voices) {
 #undef SetVoicePairState
 }
 
-void fn_801195D8(void *arg0) {
+void feedStreamVoices(void *arg0) {
     /* Feed the stream voices: while the ring has more than the fill threshold
      * free, copy the remaining decoded source bytes into the ring (deinterleave
      * stereo 16-bit samples into the two channel buffers, or plain bytes for
@@ -2107,7 +2107,7 @@ typedef struct VoicePair {
 } VoicePair;
 
 /* Streaming PCM player: fn_80119DD0 opens it and installs the callbacks below,
-   fn_801195D8 copies decoded samples into the voice buffers as a ring of
+   feedStreamVoices copies decoded samples into the voice buffers as a ring of
    voices.length bytes, and bytesToPlay counts what is left to hand over. */
 typedef struct StreamPlayer {
     void *tick;         /* 0x00 fn_80119824, called every frame while playing */
@@ -2120,7 +2120,7 @@ typedef struct StreamPlayer {
     void *release;      /* 0x1C fn_80119D40 */
     /* 0x20..0x5B: decoded-source ring (start 0x2C, end 0x30, read cursor 0x38),
      * free-byte counter at 0x40, 16->8-bit sample flag at 0x44 and fill
-     * thresholds at 0x48/0x54/0x58 (see STREAM_AT above).  fn_801195D8 feeds
+     * thresholds at 0x48/0x54/0x58 (see STREAM_AT above).  feedStreamVoices feeds
      * the voice ring from this source ring while free bytes exceed 0x54. */
     char pad_20[0x3C];
     s32 resynced;       /* 0x5C the ring ran dry and was skipped over with silence */
@@ -2150,7 +2150,7 @@ typedef struct StreamPlayer {
 
 /* Keep the stream's PCM ring ahead of the AX voices: re-sample how far they
  * have read, and while the ring has room either hand them the next block of
- * decoded samples (fn_801195D8) or, once they are so far ahead that the
+ * decoded samples (feedStreamVoices) or, once they are so far ahead that the
  * decoder can never catch up, skip writePos forward over silence and mark the
  * player as resynced.  Always returns 0. */
 s32 fn_80119824(void *arg0) {
@@ -2162,7 +2162,7 @@ s32 fn_80119824(void *arg0) {
         return 0;
     }
     if (player->looping == 0) {
-        ((void (*)(void))fn_801195D8)();
+        ((void (*)(void))feedStreamVoices)();
         return 0;
     }
     readPos = player->readPos;
@@ -2213,7 +2213,7 @@ skipAhead:
     goto resample;
 handOver:
     player->bytesToPlay = block;
-    fn_801195D8(player);
+    feedStreamVoices(player);
 done:
     return 0;
 }
