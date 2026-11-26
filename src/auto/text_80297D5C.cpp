@@ -1324,7 +1324,7 @@ extern "C" void fn_80299FE0(void *unused, void *strip, float unusedTime) {
 /* The 0x44-byte shadow record shared by the functions below (fn_8029A114,
  * fn_8029A17C, fn_8029A208, fn_8029A4B4, fn_8029A60C):
  *   +0x00 9 floats  the vehicle's 3x3 orientation, copied from its object record
- *   +0x24 3 floats  the object record's translation (fn_8029A318's a[9..11])
+ *   +0x24 3 floats  the object record's translation (transformShadowAnchor's a[9..11])
  *   +0x30 3 floats  anchor point: the model's bounding-box min corner (a[12..14])
  *   +0x3C int       vehicle index this shadow follows, -1 when free
  *   +0x40 int       the shadow-pool (lbl_8055F7C0) slot it holds, -1 when none
@@ -1433,7 +1433,7 @@ static inline void ScaleVec3(const float *src, float *dst, float scale) {
  * anchor at xform[12..14]); also emit 0.4x the first column into xEdge and
  * 0.75x the third column into zEdge.  x/y/z are vestigial: callers pass the
  * anchor, which is read from xform instead. */
-extern "C" void fn_8029A318(float *xform, float *centre, float *xEdge, float *zEdge, float x, float y, float z) {
+extern "C" void transformShadowAnchor(float *xform, float *centre, float *xEdge, float *zEdge, float x, float y, float z) {
     if ((unsigned char *)centre == (unsigned char *)xform + 0x30) {
         float ax, ay, az;
         float m00, m10, m20, m01, m11, m21, m02, m12, m22;
@@ -1507,17 +1507,17 @@ extern "C" void fn_8029A4B4(void *shadow, int vehicleIdx) {
     centre[0] = 0.0f; centre[1] = 0.0f; centre[2] = 0.0f;
     xEdge[0] = 0.0f; xEdge[1] = 0.0f; xEdge[2] = 0.0f;
     zEdge[0] = 0.0f; zEdge[1] = 0.0f; zEdge[2] = 0.0f;
-    ((void (*)(void *, float *, float *, float *, float, float, float))fn_8029A318)
+    ((void (*)(void *, float *, float *, float *, float, float, float))transformShadowAnchor)
         (dest, centre, xEdge, zEdge, anchor[0], anchor[1], anchor[2]);
     *(int *)((char *)dest + 0x40) =
         ((int (*)(void *, void *, void *, void *, short, float))fn_8029833C)
         (lbl_8055F7C0, centre, xEdge, zEdge, *(short *)((char *)vehicle + 0x30), lbl_80564608);
 }
-extern "C" void fn_8029A318(float*, float*, float*, float*, float, float, float);
+extern "C" void transformShadowAnchor(float*, float*, float*, float*, float, float, float);
 #pragma dont_inline on
 extern "C" void fn_8029A60C(void *xform, void *__restrict source) {
     /* Copy the 3x4 transform at source into xform, compute three transformed vectors with
-       fn_8029A318, then submit them through fn_80298458. */
+       transformShadowAnchor, then submit them through fn_80298458. */
     volatile float vectors[9];
     volatile unsigned int *words = (volatile unsigned int *)source;
     unsigned int m11, m10, m9, m8, m7, m6, m5, m4, m3, m2, m1, m0;
@@ -1558,7 +1558,7 @@ extern "C" void fn_8029A60C(void *xform, void *__restrict source) {
     *(unsigned int *)((char *)xform + 0x28) = m10;
     *(unsigned int *)((char *)xform + 0x2C) = m11;
 
-    ((void (*)(void*, float*, float*, float*))fn_8029A318)(xform, (float *)&vectors[6], (float *)&vectors[3], (float *)&vectors[0]);
+    ((void (*)(void*, float*, float*, float*))transformShadowAnchor)(xform, (float *)&vectors[6], (float *)&vectors[3], (float *)&vectors[0]);
     fn_80298458((int)lbl_8055F7C0, *(int *)((char *)xform + 0x40), (void *)&vectors[6], (void *)&vectors[3], (void *)&vectors[0], *(short *)((char *)source + 0x30));
 }
 
