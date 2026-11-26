@@ -5828,7 +5828,7 @@ void fn_80120E14(register s32 n, register void *a, register s32 ip, register s32
  * only two blocks and one partner.  Samples at 2*k and 2*k+m2 are swapped with
  * their own partner and need no ip lookup.
  */
-void fftBitReverse(s32 n, s32 ip_arg, void *a_arg) {
+/* Reorder complex FFT samples in-place into bit-reversed order, building the bit-reversal offset table in ip first. */ void fftBitReverse(s32 n, s32 ip_arg, void *a_arg) {
     s32 *ip = (s32 *)ip_arg; /* bit-reversal offsets, one per complex sample */
     float *a = (float *)a_arg; /* the samples, as re/im pairs */
     int j, j1, k, k1, l, m, m2;
