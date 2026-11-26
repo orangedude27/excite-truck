@@ -1416,7 +1416,7 @@ extern void fn_801971AC(void *, void *);
 extern void fn_801981A0(void *, void *);
 extern void fn_8019743C(void *, void *);
 extern void fn_80197BD0(void *, void *);
-extern void fn_8019724C(void *, float *);
+extern void steerAIDriverOutputVector(void *, float *);
 extern unsigned char fn_80167544(int);
 void fn_80195654(void *arg0, void *arg1)
 {
@@ -1508,7 +1508,7 @@ void fn_80195654(void *arg0, void *arg1)
   fn_801981A0(arg0, arg1);
   fn_8019743C(arg0, arg1);
   fn_80197BD0(arg0, arg1);
-  fn_8019724C(arg0, arg1);
+  steerAIDriverOutputVector(arg0, arg1);
   flags = ((int (*)(int)) fn_80167544)(*((int *) (((char *) arg0) + 0x290)));
   if (flags != 0)
   {
@@ -2778,7 +2778,7 @@ typedef struct { float x, y; } Vec2_801973FC;
 extern float lbl_80562160, lbl_8056222C, lbl_80562268, lbl_8056226C;
 #pragma processor 750
 /* Steer the output 2D vector from the object's XY direction when its speed exceeds the entry threshold: normalize, project, blend and set state flags. */
-void fn_8019724C(void *state, float *out) {
+void steerAIDriverOutputVector(void *state, float *out) {
     float projected[2];
     float direction[2];
     float norm;
