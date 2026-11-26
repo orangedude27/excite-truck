@@ -64,7 +64,7 @@ extern s32 Abend_Panic(const char *, ...);
 // split_file divides it into the game's real files (file_status shows its range).
 extern s32 lbl_8034127C[];
 extern float lbl_80563730;
-extern s32 fn_8022BAD0(s32, s32, s32, s32, s32, s32, s32, s32, s32, float);
+extern s32 drawTextIntArgs(s32, s32, s32, s32, s32, s32, s32, s32, s32, float);
 
 extern void* lbl_8055BAC8;
 s32 fn_80214D04(void);
@@ -957,7 +957,7 @@ void fn_8023AFD0(void *widget) {
     y = *(s32 *)((char *)row + 8);
     x = *(s32 *)((char *)row + 4);
     labelText = fn_80131234(&lbl_8034127C[0]);
-    fn_8022BAD0(0xCB, x, y, 0, height, param5, labelText, *(s32 *)((char *)row + 0x1C), 0, 1.0f);
+    drawTextIntArgs(0xCB, x, y, 0, height, param5, labelText, *(s32 *)((char *)row + 0x1C), 0, 1.0f);
 }
 #pragma pop
 
@@ -1014,7 +1014,7 @@ extern "C" void fn_8023B054(void *obj) {
 extern s32 lbl_80341268[];
 #pragma pop
 extern float lbl_80563730;
-extern s32 fn_8022BAD0(s32, s32, s32, s32, s32, s32, s32, s32, s32, float);
+extern s32 drawTextIntArgs(s32, s32, s32, s32, s32, s32, s32, s32, s32, float);
 #pragma push
 #pragma scheduling invalid_target
 /* Draws the localized "UIOptions:SFXVOLUME" option label using the widget's layout fields (+0x04..+0x10) and selection state (+0x18). */
@@ -1031,7 +1031,7 @@ void fn_8023B0BC(void *widget) {
     y = *(s32 *)((char *)p + 8);
     x = *(s32 *)((char *)p + 4);
     labelText = fn_80131234(&lbl_80341268[0]);
-    fn_8022BAD0(0xC9, x, y, 0, height, param5, labelText, *(s32 *)((char *)p + 0x18), 0, 1.0f);
+    drawTextIntArgs(0xC9, x, y, 0, height, param5, labelText, *(s32 *)((char *)p + 0x18), 0, 1.0f);
 }
 #pragma pop
 
@@ -1098,7 +1098,7 @@ void fn_8023B1A0(void *widget) {
     y = *(s32 *)((char *)p + 8);
     x = *(s32 *)((char *)p + 4);
     labelText = fn_80131234(&lbl_80341250[0]);
-    fn_8022BAD0(0xC9, x, y, 0, height, param5, labelText, *(s32 *)((char *)p + 0x18), 0, 1.0f);
+    drawTextIntArgs(0xC9, x, y, 0, height, param5, labelText, *(s32 *)((char *)p + 0x18), 0, 1.0f);
 }
 #pragma pop
 
@@ -1182,7 +1182,7 @@ void fn_8023B2EC(void *widget) {
     y = *(s32 *)((char *)p + 8);
     x = *(s32 *)((char *)p + 4);
     labelText = fn_80131234(&lbl_80341240[0]);
-    fn_8022BAD0(0xC9, x, y, 0, height, param5, labelText, *(s32 *)((char *)p + 0x18), 0, 1.0f);
+    drawTextIntArgs(0xC9, x, y, 0, height, param5, labelText, *(s32 *)((char *)p + 0x18), 0, 1.0f);
 }
 #pragma pop
 
@@ -1303,7 +1303,7 @@ void fn_8023B4F8(void *widget) {
     y = *(s32 *)((char *)p + 8);
     x = *(s32 *)((char *)p + 4);
     labelText = fn_80131234(&lbl_80341228[0]);
-    fn_8022BAD0(0xC9, x, y, 0, height, param5, labelText, *(s32 *)((char *)p + 0x18), 0, 1.0f);
+    drawTextIntArgs(0xC9, x, y, 0, height, param5, labelText, *(s32 *)((char *)p + 0x18), 0, 1.0f);
 }
 #pragma pop
 

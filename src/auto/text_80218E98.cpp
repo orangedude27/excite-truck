@@ -560,7 +560,7 @@ extern char lbl_8033DE28[];
 extern char lbl_8033DCDC[];
 
 
-extern "C" void fn_8022BAD0(s32, s32, s32, s32, s32, s32, s32, s32, f32);
+extern "C" void drawTextIntArgs(s32, s32, s32, s32, s32, s32, s32, s32, f32);
 extern "C" s32 fn_8012850C(void *, const char *);
 extern "C" void *memcpy(void *, const void *, unsigned long);
 extern "C" char *strcpy(char *, const char *);
@@ -1081,7 +1081,7 @@ extern "C" void fn_80219660(void *arg0) {
     textSlot = ((Dispatch *)self)->At88();
     register s32 contentHeight = ((Dispatch *)self)->At78();
     f32 scale = 1.0f;
-    ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, f32, u8))fn_8022BAD0)(
+    ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, f32, u8))drawTextIntArgs)(
         *(s32 *)((u8 *)self + 0x250),
         *(s32 *)((u8 *)self + 0x244) + left,
         *(s32 *)((u8 *)self + 0x248) + top,
@@ -2318,7 +2318,7 @@ extern "C" void fn_8021BC20(void *widget, void *unused) {
             }
         }
         flags = zero;
-        ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, s32, f32))fn_8022BAD0)(
+        ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, s32, f32))drawTextIntArgs)(
             *(s32 *)((u8 *)widget + 0x244), boxWidth, cellX,
             0, 0, 0, glyph, tag, flags, 1.0f);
     }
@@ -2672,12 +2672,12 @@ extern "C" void fn_8021C4D4(void *widget) {
     mode = *(s32 *)(self + 0x2CC);
     isActive = (s32)(((u32)((-isActive) | isActive)) >> 31);
     if (mode == 0 && *(s32 *)(self + 0x2C8) != 0) {
-        ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, f32, s32))fn_8022BAD0)(
+        ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, f32, s32))drawTextIntArgs)(
             *(s32 *)(self + 0x2C4), *(s32 *)(self + 0x2BC),
             *(s32 *)(self + 0x2B8) - 3, 0, 0, 0,
             *(s32 *)(self + 0x2C8), isActive, 0.0f, 1);
     } else if (mode == 1 && *(s32 *)(self + 0x2C8) != 0) {
-        ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, f32, s32))fn_8022BAD0)(
+        ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, f32, s32))drawTextIntArgs)(
             *(s32 *)(self + 0x2C4), *(s32 *)(self + 0x2C0),
             *(s32 *)(self + 0x2B8) - 3, 0, 0, 0,
             *(s32 *)(self + 0x2C8), isActive, 0.0f, 1);
@@ -3872,7 +3872,7 @@ body:
                          item, 0, flagMask, equal);
     local.sp8 = 0;
     combined = equal | (flagMask & 2);
-    fn_8022BAD0(7, xBase + 2,
+    drawTextIntArgs(7, xBase + 2,
                 yBase + i * *(s32 *)((u8 *)self + 0x258) + 2,
                 0, 0, 0, result, combined, lbl_805634A4);
 
@@ -4152,7 +4152,7 @@ extern "C" void fn_8021EC1C(void* entity, s32 canvas) {
  * one-pixel-wide 0xFFFFFF00 bar at the x the text reaches when cut at the caret
  * index.  Nothing is drawn at the box' own coordinates: +0x04/+0x08 count from
  * the middle of the screen with y upwards, so every position goes through the
- * same centring before gxDrawPicture/fn_8022BAD0/drawSolidRect see it.  No code
+ * same centring before gxDrawPicture/drawTextIntArgs/drawSolidRect see it.  No code
  * calls this; it is reached through the object' vtable. */
 extern "C" void drawTextBox(void *self) {
     /* The text box being drawn; only the fields used here are named. */
@@ -4181,7 +4181,7 @@ extern "C" void drawTextBox(void *self) {
         gxDrawPicture(box->sliderArt, 0, x, y, lbl_805634A8, width, height);
     }
     s32 zero = 0;
-    ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, s32, f32))fn_8022BAD0)(
+    ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, s32, f32))drawTextIntArgs)(
         box->style, box->x, box->y,
         0, 0, 0, (s32)box->text, box->showCaret != 0,
         zero, 1.0f);

@@ -17,7 +17,7 @@ extern f32 fn_8023659C(void);
 extern s32 fn_80214AF0(s32);
 extern s32 fn_80128668(void);
 extern s32 fn_80131234(const u8 *name); /* resource/text lookup by name */
-extern void fn_8022BAD0(s32 style, s32 x, s32 y, s32 w, s32 h, s32 param5, s32 text, s32 index, s32 flags, f32 scale);
+extern void drawTextIntArgs(s32 style, s32 x, s32 y, s32 w, s32 h, s32 param5, s32 text, s32 index, s32 flags, f32 scale);
 extern s32 fn_802328D4(s32);
 extern const u8 lbl_80346324[];
 extern const u8 lbl_80346120[];
@@ -463,7 +463,7 @@ void fn_80263848(void *widget, s32 arg1) {
     y = *(s32 *)((char *)p + 8);
     x = *(s32 *)((char *)p + 4);
     labelText = fn_80131234(lbl_80346324);
-    fn_8022BAD0(0x12, x, y, 0, height, param5, labelText, *(s32 *)((char *)p + 0x18), 0, 1.0f);
+    drawTextIntArgs(0x12, x, y, 0, height, param5, labelText, *(s32 *)((char *)p + 0x18), 0, 1.0f);
 }
 #pragma pop
 /* No-op virtual slot 0x64 of the menu-widget vtable lbl_80346120: this widget
@@ -721,22 +721,22 @@ void fn_80263D18(void *arg0, int arg_sp0) {
         if (((low ^ sign) - sign) != 0) {
             a=obj->field10; b=obj->fieldC; c=obj->field8; d=obj->field4;
             e=((int (*)(const u8 *))fn_80131234)(lbl_80346310);
-            ((void (*)(s32,s32,s32,s32,s32,s32,s32,s32,s32,f32))fn_8022BAD0)(
+            ((void (*)(s32,s32,s32,s32,s32,s32,s32,s32,s32,f32))drawTextIntArgs)(
                 0xC9,d,c,0,b,a,e,obj->field1C,0,1.0f);
         } else {
             a=obj->field10; b=obj->fieldC; c=obj->field8; d=obj->field4;
             e=((int (*)(const u8 *))fn_80131234)(lbl_803462FC);
-            ((void (*)(s32,s32,s32,s32,s32,s32,s32,s32,s32,f32))fn_8022BAD0)(
+            ((void (*)(s32,s32,s32,s32,s32,s32,s32,s32,s32,f32))drawTextIntArgs)(
                 0xC9,d,c,0,b,a,e,obj->field1C,0,1.0f);
         }
     }
     a=obj->field10; b=obj->fieldC; c=obj->field8; d=obj->field4;
     e=((int (*)(const u8 *))fn_80131234)(lbl_803462E8);
-    ((void (*)(s32,s32,s32,s32,s32,s32,s32,s32,s32,f32))fn_8022BAD0)(
+    ((void (*)(s32,s32,s32,s32,s32,s32,s32,s32,s32,f32))drawTextIntArgs)(
         0xCA,d+0x159,c+2,0,b,a,e,var_r31,0,1.0f);
     a=obj->field10; b=obj->fieldC; c=obj->field8; d=obj->field4;
     e=((int (*)(const u8 *))fn_80131234)(lbl_803462D4);
-    ((void (*)(s32,s32,s32,s32,s32,s32,s32,s32,s32,f32))fn_8022BAD0)(
+    ((void (*)(s32,s32,s32,s32,s32,s32,s32,s32,s32,f32))drawTextIntArgs)(
         0xCA,d+0x1BD,c+2,0,b,a,e,var_r30,0,1.0f);
 }
 #pragma pop

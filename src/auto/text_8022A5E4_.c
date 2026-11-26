@@ -859,7 +859,7 @@ check:
 #pragma scheduling reset
 #pragma dont_inline off
 extern void fn_8022BD40(int, int, int, unsigned char, float, float, float, float, float, float);
-void fn_8022BAD0(int context, int x, int y, int w, int h, int param5, int textOrSlot, int index, float scale, unsigned char flags) {
+void drawTextIntArgs(int context, int x, int y, int w, int h, int param5, int textOrSlot, int index, float scale, unsigned char flags) {
     /* Forwards integer text/layout arguments as floats to the main text draw helper. */
     fn_8022BD40(context, textOrSlot, index, flags,
                 (float)x, (float)y, (float)w, (float)h, (float)param5, scale);

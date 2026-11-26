@@ -232,7 +232,7 @@ extern "C" char lbl_8055B820;
 #pragma small_data off
 extern "C" s32 fn_80214FE0(s32, s32, s32, s32);
 extern "C" s32 fn_80206430(void);
-extern "C" s32 fn_8022BAD0(s32, s32, s32, s32, s32, s32, s32, s32, s32, float);
+extern "C" s32 drawTextIntArgs(s32, s32, s32, s32, s32, s32, s32, s32, s32, float);
 extern "C" s32 fn_8022AC1C(s32, s32, s32, s32, s32, s32, s32, s32);
 extern float lbl_80563450;
 extern "C" float fn_80209028(void);
@@ -2440,7 +2440,7 @@ extern "C" void fn_8021541C(void *widget) {
 /* Base widget class (vtable lbl_8033FB38) default for vtable slot 0x28, the
  * widget's draw method (VfObj::vf8; the layout wrapper forwards its own slot
  * 0x28 to the widget held at +0x244 -- fn_80215B30).  Derived widgets override
- * it to draw their content: fn_80219660 draws a text line through fn_8022BAD0,
+ * it to draw their content: fn_80219660 draws a text line through drawTextIntArgs,
  * fn_802299FC hands the box to a callback, and the option widget's fn_8021D378
  * chains to fn_80219660 before drawing its blinker arrows.  The base widget has
  * nothing of its own to draw, so the default does nothing. */
@@ -2582,7 +2582,7 @@ extern "C" void fn_80215500(void) {
 #pragma scheduling off
 extern "C" void fn_80215504(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     f32 rate = lbl_80563450;
-    ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, s32, f32))fn_8022BAD0)(
+    ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, s32, f32))drawTextIntArgs)(
         *(s32 *)((u8 *)arg0 + 8), arg1, arg2, 0, arg4, arg5,
         *(s32 *)((u8 *)arg0 + 4), arg6, 0, rate);
 }
