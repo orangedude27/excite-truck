@@ -4540,10 +4540,10 @@ extern "C" u8 fn_800AB2F4(void *dateOut, void *timeOut, s32 unused) {
  * that cannot place the position it asked for puts the old one back and calls
  * this again, so every call of it in the entry code comes in a pair.
  */
-extern "C" s32 VFiPFENT_ITER_seek(void *arg0, s32 grow) {
+extern "C" s32 VFiPFENT_ITER_seek(void *iter, s32 grow) {
     typedef s32 (*ClaimPage)(void *, s32, void **, s32 *);              /* fn_800A8D08: a page of the volume's cache; -1 asks for one held by nobody */
     typedef s32 (*WriteSector)(void *, s32, s32, s32, u16, u32 *, s32); /* VFiPFCACHE_WriteData: write bytes to a sector */
-    VFiPFEntIter *it = (VFiPFEntIter *)arg0;
+    VFiPFEntIter *it = (VFiPFEntIter *)iter;
     void *page;
     u32 bytesWritten;
     s32 pageCached;
