@@ -179,7 +179,7 @@ extern void fn_801333E8(long, void *, char *);
 extern void fn_80133460(void);
 extern long fn_80137C74(void);
 extern unsigned long __AXGetStackHead_80137CFC(long);
-extern char lbl_803416A8[0x400];
+extern char gControlOptions[0x400];
 extern long lbl_8055BC54;
 extern long lbl_804987D0[];
 /* Set the currently selected control scheme (0..3), stored in lbl_8055F18C. */
@@ -192,7 +192,7 @@ void fn_8023D704(long scheme) {
 void fn_8023D70C(void) {
     /* Initialize five menu option byte fields (offsets 0x368,0x378,0x38C,0x3A0,0x3B0) to defaults over five entries. */
     register long valueSize;
-    register char *optionBase = lbl_803416A8;
+    register char *optionBase = gControlOptions;
     register long index = 0;
     char value368;
     char value378;
@@ -222,7 +222,7 @@ void fn_8023D70C(void) {
    selected control scheme (0..3) and set that scheme's option names/bindings; log an
    error for an unrecognized scheme. */
 void fn_8023D7CC(void) {
-#define sOptionData          lbl_803416A8
+#define sOptionData          gControlOptions
 #define ApplyControlDefaults fn_8023DA64
 #define GetControlScheme     (((void* (*)(void))fn_8023D6FC)())
 #define SetControlOption     fn_8013358C
