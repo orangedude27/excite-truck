@@ -14543,7 +14543,7 @@ extern "C" s32 lbl_8055DD78;
 extern "C" void *lbl_8055DD7C;
 extern "C" u8 lbl_80407560[0x18];
 extern "C" const char lbl_8031B838[];
-extern "C" s32 fn_800BB0A8(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+extern "C" s32 runSdCardCommand(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 extern "C" s32 fn_800BC134(void *, s32, s32);
 extern "C" s32 IOS_Ioctl(s32, s32, void *, s32, void *, s32);
 extern "C" void DCFlushRange(void *, u32);
@@ -14589,7 +14589,7 @@ struct SdRequest {
 };
 
 /* The SD module takes one MMC/SD command per request through its ioctl 7
-   (fn_800BB0A8 and fn_800BAE98 build that request block).  The read path
+   (runSdCardCommand and fn_800BAE98 build that request block).  The read path
    readSdCardBlocks sends 7, 0x10 and 0x12; its write twin SDCard_writeBlocks sends 0x19. */
 #define SD_BLOCK_SIZE       0x200 /* one card block, and the alignment of a transfer */
 #define SD_CMD_SEND_CSD     7     /* MMC SEND_CSD */
@@ -14660,11 +14660,11 @@ if(lbl_8055DD6C!=0){OSUnlockMutex(lbl_80407560);result=(s32)0xC1000000;} /* anot
 else {
 lbl_8055DD6C=1; OSUnlockMutex(lbl_80407560);
 if(*(u32*)((u8*)dev+0x24)==2){ /* set the card up before reading */
-result=fn_800BB0A8(*(s32*)dev,7,3,2,*(s32*)((u8*)dev+0x10),0,0,0,0,(s32)csdOut,0,0);
+result=runSdCardCommand(*(s32*)dev,7,3,2,*(s32*)((u8*)dev+0x10),0,0,0,0,(s32)csdOut,0,0);
 if(result!=0) OSReport(messages+0x338,result);
 else {
 *(s32*)((u8*)dev+0x24)=1;
-result=fn_800BB0A8(*(s32*)dev,0x10,3,1,0x200,0,0,0,0,(s32)blockLenOut,0,0);
+result=runSdCardCommand(*(s32*)dev,0x10,3,1,0x200,0,0,0,0,(s32)blockLenOut,0,0);
 if(result!=0) OSReport(messages+0x358,messages+0x234,result);
 else {
 result=((s32(*)(void*,s32))fn_800BC134)(dev,4); /* 4 bit bus */
@@ -14718,11 +14718,11 @@ if(lbl_8055DD6C!=0){OSUnlockMutex(lbl_80407560);result=(s32)0xC1000000;} /* anot
 else {
 lbl_8055DD6C=1; OSUnlockMutex(lbl_80407560);
 if(dev->state==2){ /* set the card up before writing */
-result=fn_800BB0A8(dev->fd,SD_CMD_SEND_CSD,3,2,dev->field10,0,0,0,0,(s32)csdOut,0,0);
+result=runSdCardCommand(dev->fd,SD_CMD_SEND_CSD,3,2,dev->field10,0,0,0,0,(s32)csdOut,0,0);
 if(result!=0) OSReport(messages+0x338,result);
 else {
 dev->state=1;
-result=fn_800BB0A8(dev->fd,SD_CMD_SET_BLOCKLEN,3,1,SD_BLOCK_SIZE,0,0,0,0,(s32)blockLenOut,0,0);
+result=runSdCardCommand(dev->fd,SD_CMD_SET_BLOCKLEN,3,1,SD_BLOCK_SIZE,0,0,0,0,(s32)blockLenOut,0,0);
 if(result!=0) OSReport(messages+0x358,messages+0x234,result);
 else {
 result=((s32(*)(void*,s32))fn_800BC134)(dev,4); /* 4 bit bus */
@@ -14735,7 +14735,7 @@ else {
 if(result!=0){lbl_8055DD6C=0;goto done;}
 }
 DCFlushRange((void*)buffer,(u32)length); /* the card must see what the CPU wrote */
-result=fn_800BB0A8(dev->fd,SD_CMD_WRITE,3,1,offset,buffer,blocks,blockSize,1,lbl_8055DD78,callback,callbackArg); /* MMC WRITE_MULTIPLE_BLOCK */
+result=runSdCardCommand(dev->fd,SD_CMD_WRITE,3,1,offset,buffer,blocks,blockSize,1,lbl_8055DD78,callback,callbackArg); /* MMC WRITE_MULTIPLE_BLOCK */
 if(result!=0){OSReport(messages+0x474,messages+0x438,result);lbl_8055DD6C=0;}
 if(callback==0)lbl_8055DD6C=0; /* waited for it: the card is free again */
 }
@@ -14792,7 +14792,7 @@ extern "C" s32 fn_800BBB58(s32 arg0, void **arg1) {
     return returnValue;
 }
 
-extern "C" s32 fn_800BB0A8(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+extern "C" s32 runSdCardCommand(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 extern "C" s32 lbl_8055DD6C;
 extern "C" s32 *lbl_8055DD70;
 extern "C" u8 lbl_80407560[0x18];
@@ -14895,7 +14895,7 @@ extern "C" s32 fn_800BBEA4(IosDevice *dev, s32 arg1, s32 *arg2, s32 arg3) {
             OSUnlockMutex(lbl_80407560);
             if (dev->state == 1) {
                 s32 sp18[6];
-                res = fn_800BB0A8(dev->fd, 7, 3, 2, 0, 0, 0, 0, 0, (s32)sp18, 0, 0);
+                res = runSdCardCommand(dev->fd, 7, 3, 2, 0, 0, 0, 0, 0, (s32)sp18, 0, 0);
                 dev->state = 2;
                 if (res == (s32)0xC1000003) {
                     res = 0;
@@ -14938,7 +14938,7 @@ extern "C" s32 fn_800BBEA4(IosDevice *dev, s32 arg1, s32 *arg2, s32 arg3) {
                     lbl_8055DD6C = 0;
                     goto end;
                 }
-                res = fn_800BB0A8(dev->fd, cmd, 3, r30, field10, 0, 0, 0, 0, (s32)out, 0, 0);
+                res = runSdCardCommand(dev->fd, cmd, 3, r30, field10, 0, 0, 0, 0, (s32)out, 0, 0);
                 lbl_8055DD6C = 0;
             }
         }
@@ -14962,13 +14962,13 @@ extern "C" s32 fn_800BC134(void *sdCtx, s32 mode, s32 unused) {
     s32 responseBuf[6];
     s32 result;
     s32 modeFlag = (mode == 4) ? 2 : 0;
-    result = fn_800BB0A8(*(s32 *)sdCtx, 0x37, 3, 1, *(s32 *)((u8 *)sdCtx + 0x10), 0, 0, 0, 0, (s32)responseBuf, 0, 0);
+    result = runSdCardCommand(*(s32 *)sdCtx, 0x37, 3, 1, *(s32 *)((u8 *)sdCtx + 0x10), 0, 0, 0, 0, (s32)responseBuf, 0, 0);
     if (result) {
         OSReport(sdMsgBase + 0x618);
         OSReport(sdMsgBase + 0x624, sdMsgBase + 0x608, result);
         return result;
     }
-    result = fn_800BB0A8(*(s32 *)sdCtx, 6, 3, 1, modeFlag, 0, 0, 0, 0, (s32)responseBuf, 0, 0);
+    result = runSdCardCommand(*(s32 *)sdCtx, 6, 3, 1, modeFlag, 0, 0, 0, 0, (s32)responseBuf, 0, 0);
     if (result) {
         OSReport(sdMsgBase + 0x638);
         OSReport(sdMsgBase + 0x624, sdMsgBase + 0x608, result);
@@ -14990,7 +14990,7 @@ extern "C" s32 fn_800BC134(void *sdCtx, s32 mode, s32 unused) {
 }
 
 s32 fn_800BC2EC(void *device, s32 *outData) {
-    /* Issues a sequence of SD card ioctl commands via fn_800BB0A8 to query data
+    /* Issues a sequence of SD card ioctl commands via runSdCardCommand to query data
        into outData (and logs progress/results via OSReport strings in lbl_8031B838).
        Returns 0 on success or an error/status code (0xC1000000 if outData is NULL). */
     const char *baseStr = lbl_8031B838;
@@ -14998,28 +14998,28 @@ s32 fn_800BC2EC(void *device, s32 *outData) {
     s32 result = (s32)0xC1000000;
     if (outData != 0) {
         OSReport(baseStr + 0x688);
-        fn_800BB0A8(*(s32 *)device, 0x10, 3, 1, 4, 0, 0, 0, 0, (s32)ioctlReply, 0, 0);
-        result = fn_800BB0A8(*(s32 *)device, 0x37, 3, 1, *(s32 *)((u8 *)device + 0x10), 0, 0, 0, 0, (s32)ioctlReply, 0, 0);
+        runSdCardCommand(*(s32 *)device, 0x10, 3, 1, 4, 0, 0, 0, 0, (s32)ioctlReply, 0, 0);
+        result = runSdCardCommand(*(s32 *)device, 0x37, 3, 1, *(s32 *)((u8 *)device + 0x10), 0, 0, 0, 0, (s32)ioctlReply, 0, 0);
         if (result != 0) {
             OSReport(baseStr + 0x6A0, result);
             return result;
         }
-        result = fn_800BB0A8(*(s32 *)device, 0x33, 3, 1, 0, (s32)outData, 1, 4, 0, (s32)ioctlReply, 0, 0);
+        result = runSdCardCommand(*(s32 *)device, 0x33, 3, 1, 0, (s32)outData, 1, 4, 0, (s32)ioctlReply, 0, 0);
         if (result != 0) {
             OSReport(baseStr + 0x6C0, result);
         } else {
             OSReport(baseStr + 0x6E0, outData[0], outData[1]);
         }
-        result = fn_800BB0A8(*(s32 *)device, 0x10, 3, 1, 0x200, 0, 0, 0, 0, (s32)ioctlReply, 0, 0);
+        result = runSdCardCommand(*(s32 *)device, 0x10, 3, 1, 0x200, 0, 0, 0, 0, (s32)ioctlReply, 0, 0);
     }
     return result;
 }
 
-extern "C" s32 fn_800BB0A8(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+extern "C" s32 runSdCardCommand(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 extern "C" s32 lbl_8055DD78;
 extern "C" const char lbl_8031BF54[];
 extern "C" const char lbl_8031BF74[];
-/* Issues SD command 0x40 via fn_800BB0A8 with the given callback/argument, validating
+/* Issues SD command 0x40 via runSdCardCommand with the given callback/argument, validating
  * the SD heap, inputs, and argument pointer, and reports non-zero results. */
 extern "C" s32 fn_800BC474(s32 *arg0, s32 arg1, s32 *arg2) {
     s32 result;
@@ -15037,7 +15037,7 @@ neg4:
         result = -4;
         goto report;
 docall:
-        result = fn_800BB0A8(*arg0, 0x40, 0, 0, argValue, 0, 0, 0, 0, lbl_8055DD78, arg1, (s32)arg2);
+        result = runSdCardCommand(*arg0, 0x40, 0, 0, argValue, 0, 0, 0, 0, lbl_8055DD78, arg1, (s32)arg2);
         goto report;
     }
 report:
@@ -27628,7 +27628,7 @@ extern "C" s32 IOS_IoctlAsync(s32, s32, void *, s32, void *, s32, void *, void *
 #pragma push
 #pragma use_lmw_stmw off
 /*
- * fn_800BB0A8 - run one MMC/SD command on the card opened as "fd" through the
+ * runSdCardCommand - run one MMC/SD command on the card opened as "fd" through the
  * SD module's ioctl 7: the command goes over in a 0x24 byte SDCmdBlock and the
  * card's 0x10 byte response comes back in the library's shared response buffer
  * lbl_8055DD74, from where it is copied to the caller's "response" (4 words).
@@ -27641,7 +27641,7 @@ extern "C" s32 IOS_IoctlAsync(s32, s32, void *, s32, void *, s32, void *, void *
  * fn_800BAE98 instead, which hands the buffer to IOS as its own vector.
  * lbl_80559248 is the SD library's heap and lbl_8031B838 its message strings.
  */
-extern "C" s32 fn_800BB0A8(s32 fd,s32 command,s32 type,s32 responseKind,s32 argument,s32 buffer,s32 count,s32 blockSize,s32 writeFlag,s32 response,s32 callback,s32 callbackArg) {
+extern "C" s32 runSdCardCommand(s32 fd,s32 command,s32 type,s32 responseKind,s32 argument,s32 buffer,s32 count,s32 blockSize,s32 writeFlag,s32 response,s32 callback,s32 callbackArg) {
  const char *messages=lbl_8031B838;
  s32 res;
  SDCmdBlock *cmd;
