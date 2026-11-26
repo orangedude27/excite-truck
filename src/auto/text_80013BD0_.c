@@ -67,7 +67,7 @@ typedef struct { char pad0[4]; int f4; char pad8[4]; void *fC; char pad10[0x20];
 f32 fn_80013D60(f32);
 void fn_80014B9C(void *);
 s32 fn_800151DC(void *);
-void fn_800154B8(void);
+void drawRaceStandings(void);
 void fn_80015658(void *);
 s32 fn_80016214(void);
 void fn_80015F30(void *);
@@ -741,7 +741,7 @@ typedef struct RaceSession {
 #define HUD_LAPWARN   0x0200 /* lap warning (fn_800151DC) */
 #define HUD_RESETWARN 0x0400 /* "wrong way" / reset warning (fn_800151DC) */
 #define HUD_TRACKMAP  0x1000 /* this player's mark on the track map */
-#define HUD_STANDINGS 0x2000 /* the standings list (fn_800154B8) */
+#define HUD_STANDINGS 0x2000 /* the standings list (drawRaceStandings) */
 #define HUD_COUNTS    0x4000 /* the two counters drawn over the map */
 
 /* One screen's race HUD object (vtable lbl_802FCE18, see fn_80014524). */
@@ -941,7 +941,7 @@ extern s32 fn_8027AA48(void *, f32, f32);
                 }
             }
             if ((gSession->hudMask & HUD_STANDINGS) && gSession->mode == 1) {
-                ((void (*)(void *))fn_800154B8)(overlay);
+                ((void (*)(void *))drawRaceStandings)(overlay);
             }
             if ((gSession->hudMask & HUD_COUNTS) && fn_80144F2C() != 0) {
                 fn_80015658(overlay);
@@ -1097,7 +1097,7 @@ extern f32 lbl_80560368, lbl_80560384, lbl_805603CC, lbl_805603D0;
 extern char lbl_80558BC4;
 #pragma dont_inline on
 #pragma use_lmw_stmw off
-/* Draw the race standings list: show a two-row window of places around the player's current place, then highlight the player's own row at the split. */ void fn_800154B8(void)
+/* Draw the race standings list: show a two-row window of places around the player's current place, then highlight the player's own row at the split. */ void drawRaceStandings(void)
 {
   s32 racerCount;
   s32 *standings;
