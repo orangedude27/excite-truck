@@ -534,7 +534,7 @@ public:
 
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void fn_80193AEC(void *arg0, void *arg1) {
+extern "C" void initDriver(void *arg0, void *arg1) {
     /* Initialize a player/vehicle-related runtime object, register it, and one-time init shared tuning/state. */
     char *table = lbl_80333158;
     int zero = 0;
