@@ -217,7 +217,7 @@ loop28:
 check28:
     if (i < ((int *)arg0)[7]) goto loop28;
 }
-void *fn_8012C370(unsigned int, int *, int, int, unsigned char *);
+void *getResourceData(unsigned int, int *, int, int, unsigned char *);
 void Abend_Panic(const char *, ...);
 extern char lbl_80338268[];
 extern char lbl_80338284[];
@@ -230,7 +230,7 @@ void *fn_801D2008(void *arg0) {
     register unsigned char temp;
     int i;
 
-    result = (unsigned char *)((void *(*)(void *, unsigned int, int *, int, int, unsigned char *))fn_8012C370)(arg0, 0x434D7368, &error, 0, 0, &swap);
+    result = (unsigned char *)((void *(*)(void *, unsigned int, int *, int, int, unsigned char *))getResourceData)(arg0, 0x434D7368, &error, 0, 0, &swap);
     if (result == 0) {
         Abend_Panic(lbl_80338268, arg0);
     }

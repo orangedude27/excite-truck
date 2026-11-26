@@ -1254,7 +1254,7 @@ extern long fn_800B7C64(long, long);
 extern long fn_800B7C60(long, long, long, long);
 extern long lbl_805076A0[];
 extern char lbl_8034E990[];
-extern long fn_8012C370(long, long, long *, long *, long, long);
+extern long getResourceData(long, long, long *, long *, long, long);
 extern long fn_802E30C8(char *, long);
 #pragma push
 #pragma scheduling invalid_target
@@ -1273,7 +1273,7 @@ void fn_802EC294(int index, int resourceId) {
     slot = (long *)((char *)base + offset);
     handle = zero;
     streamInfo = zero;
-    result = fn_8012C370(resourceId, 0x4D4D5033, &handle, &streamInfo, 0, 0);
+    result = getResourceData(resourceId, 0x4D4D5033, &handle, &streamInfo, 0, 0);
     if (result != 0) {
         slot[0] = result;
         slot[1] = streamInfo;
@@ -1341,6 +1341,6 @@ typedef signed long s32;
 extern long fn_800B7C64(long, long);
 extern long fn_800B7C60(long, long, long, long);
 extern long lbl_805076A0[];
-extern long fn_8012C370(long, long, long *, long *, long, long);
+extern long getResourceData(long, long, long *, long *, long, long);
 extern long fn_802E30C8(char *, long);
 extern char lbl_80560060;

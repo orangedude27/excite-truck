@@ -269,7 +269,7 @@ static inline void swap32_802CA57C(unsigned char *p) {
     }
 }
 #pragma pop
-extern int fn_8012C370(const char *, int *, int *, signed char *, unsigned char *);
+extern int getResourceData(const char *, int *, int *, signed char *, unsigned char *);
 extern char lbl_8034B634[];
 extern char lbl_8034B658[];
 extern void fn_802CA57C(void *, int, int, int);
@@ -283,7 +283,7 @@ extern void fn_802CA57C(void *, int, int, int);
     signed char newlyLoaded = 0;
     unsigned char swapEndian = 0;
     int textureData;
-    textureData = ((int (*)(int, int, unsigned int *, int *, signed char *, unsigned char *))fn_8012C370)(texturePath, 0x54455820, &version, &dataSize, &newlyLoaded, &swapEndian);
+    textureData = ((int (*)(int, int, unsigned int *, int *, signed char *, unsigned char *))getResourceData)(texturePath, 0x54455820, &version, &dataSize, &newlyLoaded, &swapEndian);
     if (textureData != 0) {
         if ((textureData & 0x7F) != 0)
             Abend_Panic(lbl_8034B634, texturePath, textureData);

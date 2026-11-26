@@ -25,7 +25,7 @@ extern s32 lbl_8055AFB8;
 extern s32 lbl_8055AFBC;
 extern f32 lbl_8055EBA4;
 extern f32 lbl_80562E6C;
-extern void *fn_8012C370(s32, u32 *, void *, void *, u8 *);
+extern void *getResourceData(s32, u32 *, void *, void *, u8 *);
 extern s32 fn_8012C33C(void *);
 extern s32 fn_801E2CCC(void *, f32 **);
 extern void fn_801EB6A8(s32);
@@ -566,7 +566,7 @@ extern "C" s32 fn_801EB9FC(void *resourceMgr) {
 #define gParamHandle lbl_8055AFB8
 #define gSoundHandle lbl_8055AFBC
 
-    gEBContext = (s32 *)((void *(*)(void *, s32, u32 *, u32 *, u8 *, u8 *))fn_8012C370)(
+    gEBContext = (s32 *)((void *(*)(void *, s32, u32 *, u32 *, u8 *, u8 *))getResourceData)(
         resourceMgr, 0x47524146, &version, &spareSize, &spare8, &hasExtraSetup);
     if (gEBContext == 0)
         goto no_resource;

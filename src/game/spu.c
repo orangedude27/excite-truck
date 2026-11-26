@@ -72,7 +72,7 @@ void fn_802E4D84(void *dst, void *src, int size) {
     DCFlushRange((void *)destination, length);
 }
 
-extern unsigned char *fn_8012C370(int, unsigned int *, int, unsigned char *, unsigned char *);
+extern unsigned char *getResourceData(int, unsigned int *, int, unsigned char *, unsigned char *);
 extern char lbl_8034D280[];
 #pragma scheduling invalid_target
 /* Load an SFX0 sample blob by name: endian-swap its header when the loader says so,
@@ -89,7 +89,7 @@ void *SFXLoad(char *path) {
     register int byteCount;
     register int dataBytes;
 
-    sfxData = ((unsigned char *(*)(char *, unsigned int, unsigned int *, int, unsigned char *, unsigned char *))fn_8012C370)(
+    sfxData = ((unsigned char *(*)(char *, unsigned int, unsigned int *, int, unsigned char *, unsigned char *))getResourceData)(
         path, 0x53465830 /* 'SFX0' */, &version, 0, &attr, &needsSwap);
     if (sfxData == 0) goto return_null;
     if (version != 3) Abend_Panic(lbl_8034D280, path, version, 3);

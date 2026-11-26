@@ -199,7 +199,7 @@ void fn_801E6B98(void* object) {
     fn_80128668((s32)object);
 }
 
-extern void *fn_8012C370(const char *, unsigned int, int *, int *, unsigned char *, unsigned char *);
+extern void *getResourceData(const char *, unsigned int, int *, int *, unsigned char *, unsigned char *);
 extern char *strcpy(char *, const char *);
 extern char *fn_80029004(const char *, int);
 extern void fn_80028E00(char *, const char *);
@@ -221,7 +221,7 @@ void *fn_801E6BEC(char *arg0) {
     loadInfo.dataSize = 0;
     loadInfo.isNew = 0;
     loadInfo.swapEndian = 0;
-    animData = (char *)fn_8012C370(path, 0x416e696d, &loadInfo.version, &loadInfo.dataSize, &loadInfo.isNew, &loadInfo.swapEndian);
+    animData = (char *)getResourceData(path, 0x416e696d, &loadInfo.version, &loadInfo.dataSize, &loadInfo.isNew, &loadInfo.swapEndian);
     if (animData == 0)
         Abend_Panic(lbl_80339A64, path);
     if ((unsigned int)loadInfo.version != 2)

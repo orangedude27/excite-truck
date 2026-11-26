@@ -614,7 +614,7 @@ void *fn_802BD194(void *treeList, const char *name) {
 #pragma processor 750
 int fn_802BD210(void *arg0) {
     #pragma unused(arg0)
-    extern void *fn_8012C370(void *, unsigned int, unsigned int *, int, int, unsigned char *);
+    extern void *getResourceData(void *, unsigned int, unsigned int *, int, int, unsigned char *);
     extern void *fn_801284F8(int, int);
     extern void fn_802BD414(int, volatile int *);
     extern void fn_802BD478(int, volatile int *);
@@ -623,7 +623,7 @@ int fn_802BD210(void *arg0) {
     register char *strings = (char *)&lbl_8034AB38;
     unsigned int spC = 0;
     unsigned char sp8;
-    void *object = fn_8012C370(strings + 0x8C, 0x544C5354, &spC, 0, 0, &sp8);
+    void *object = getResourceData(strings + 0x8C, 0x544C5354, &spC, 0, 0, &sp8);
     lbl_8055FAB8 = (int)object;
     if (object != 0) {
         if (spC == 2) {

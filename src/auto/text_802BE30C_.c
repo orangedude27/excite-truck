@@ -3,7 +3,7 @@
 #include "revolution/BTE/stack/include/hcimsgs.h"
 #include "revolution/BTE/gki/platform/gki_int.h"
 
-extern s32 fn_8012C370(s32, s32, s32, s32, s32, s32);
+extern s32 getResourceData(s32, s32, s32, s32, s32, s32);
 extern void fn_8012E96C(s32);
 extern void fn_8012C4D8(void *);
 extern void Abend_Panic(const char *, ...);
@@ -95,7 +95,7 @@ void loadFanInfo(void) {
     path = (u32)lbl_8034AC68;
     fn_8012E96C(path);
     lbl_8055FACC = 0;
-    fileData = (void *)fn_8012C370(path, 0x46494E46, (s32)&loadInfo[2], (s32)&loadInfo[1], 0, (s32)&loadInfo[0]);
+    fileData = (void *)getResourceData(path, 0x46494E46, (s32)&loadInfo[2], (s32)&loadInfo[1], 0, (s32)&loadInfo[0]);
     if (fileData != NULL) {
         if (loadInfo[2] == 2) {
             cursor = (u32 *)fileData;

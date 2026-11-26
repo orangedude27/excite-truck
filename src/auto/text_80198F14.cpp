@@ -1406,7 +1406,9 @@ extern "C" void fn_8019BD54(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     (void)lbl_80562344; (void)lbl_8055A4C0; (void)fn_8002F234;
 }
 
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
+#pragma ppc_psq_save off
 extern "C" s32 fn_8019C854(void* arg0, void* arg1) {
     Vec local; Vec point; Vec normal; Vec worldPoint; Vec worldNormal;
     void* saved0; void* saved1; f32 radius; f32 otherRadius; f32 halfHeight; f32 depth;
@@ -1481,9 +1483,6 @@ extern "C" s32 fn_8019C854(void* arg0, void* arg1) {
     fn_8019A788(saved0, saved1, &worldPoint, &worldNormal, 0, 0, depth, lbl_805622D0, lbl_805622D0);
     return 1;
 }
-
-#pragma push
-#pragma processor 750
 extern "C" s32 fn_8019CCCC(void* arg0, Vec* arg1, void* arg2, f32 farg0) {
     if (fn_8019B08C(arg0, arg1, arg2, farg0) != 0) {
         return 1;
@@ -5617,7 +5616,7 @@ extern "C" void fn_801A4538(void* resource) {
     fn_8012C4E4(resource, &fn_801A44D4, 0);
 }
 
-extern "C" s32 fn_8012C370(s32, s32*, s32, s32, s32, s32);
+extern "C" s32 getResourceData(s32, s32*, s32, s32, s32, s32);
 extern "C" void fn_8019EB14(s32, s32);
 extern "C" void fn_801A4768(s32*, s32);
 extern "C" void fn_801A4780(s32*, s32);
@@ -5635,7 +5634,7 @@ extern "C" void fn_801A4538(void*);
 extern "C" void* fn_801A4548(s32 arg0) {
     s32 size;
     u8 ok = 0;
-    Fn801A4548Hdr* h = (Fn801A4548Hdr*)((s32 (*)(s32, s32, s32*, s32, s32, s32))fn_8012C370)(arg0, 0x534F424C, &size, 0, 0, (s32)&ok);
+    Fn801A4548Hdr* h = (Fn801A4548Hdr*)((s32 (*)(s32, s32, s32*, s32, s32, s32))getResourceData)(arg0, 0x534F424C, &size, 0, 0, (s32)&ok);
     if (h && ok) {
         s32* lp = (s32*)&h->list;
         Fn801A4548Swap4((u8*)h);

@@ -4,7 +4,7 @@
 // auto/text_802C8238_.c pending a promotion pass.
 #include "types.h"
 extern void fn_802CC550(int, void *, float, float);
-extern void *fn_8012C370(int, int, u32 *, int *, u8 *, u8 *);
+extern void *getResourceData(int, int, u32 *, int *, u8 *, u8 *);
 extern void Abend_Panic(const char *, ...);
 extern void DCStoreRangeNoSync(const void *, u32);
 extern void fn_802C61BC(void *, int);
@@ -1037,7 +1037,7 @@ int fn_802C6B44(int modelPath) {
     u8 swapEndian;
     u8 isNew;
 
-    modelData = fn_8012C370(modelPath, modlTag, &version, &dataSize, &isNew, &swapEndian);
+    modelData = getResourceData(modelPath, modlTag, &version, &dataSize, &isNew, &swapEndian);
     if (modelData != 0) {
         if (swapEndian != 0) {
             if (version != expectedVersion) {

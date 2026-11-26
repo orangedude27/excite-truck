@@ -4,14 +4,14 @@
 void fn_8012C4D8(void);
 void fn_80128670(int);
 void fn_80128668(void *);
-void *fn_8012C370(int, unsigned int, unsigned int *, unsigned int *, int, unsigned char *);
+void *getResourceData(int, unsigned int, unsigned int *, unsigned int *, int, unsigned char *);
 void *fn_80131234(void *);
 void Abend_Panic(char *, ...);
 extern char lbl_803401F8[];
 extern char lbl_80340220[];
 
 // "LAYT" layout resource.  loadLayout loads one through the resource manager
-// (fn_8012C370) and byte-swaps it; fn_8022E4C0 builds the same records in
+// (getResourceData) and byte-swaps it; fn_8022E4C0 builds the same records in
 // memory for the fallback dialog, and fn_802123B8 turns each entry into a
 // message-window node.  The block is big-endian: a 0x68-byte header followed
 // by 0x134-byte auto-item entries, the list ended by an entry whose first
@@ -58,7 +58,7 @@ void *loadLayout(const char *name) {
     char *stringDst;
     char t;
 
-    layout = fn_8012C370((int)name, LAYT_TAG, &version, &size, 0, &firstLoad);
+    layout = getResourceData((int)name, LAYT_TAG, &version, &size, 0, &firstLoad);
     if (layout != 0) {
         if (version != LAYT_VERSION) {
             Abend_Panic(lbl_803401F8, name, version, LAYT_VERSION);

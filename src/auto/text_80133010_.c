@@ -7,7 +7,7 @@
 // when it is missing; LoadIntOptionValue/fn_80133348/fn_8013323C/fn_80133460/
 // fn_8013358C read and write the typed values it keeps.
 
-// Fourcc the resource manager (fn_8012C370) looks an options file up by.
+// Fourcc the resource manager (getResourceData) looks an options file up by.
 #define OPTIONS_TAG 0x424F5054  // 'BOPT'
 #define OPTIONS_FILE_VERSION 2  // the "version 2" line a file starts with
 #define OPTIONS_MAX_ENTRIES 500 // options the table holds (0x1F4)
@@ -89,7 +89,7 @@ typedef struct OptionTable {
 //                  still set at shutdown); each call-back is run after the
 //                  options have been reloaded so its module reads them again
 
-extern void *fn_8012C370(int, int, int *, int *, int, int);
+extern void *getResourceData(int, int, int *, int *, int, int);
 extern void fn_8012C4D8(void *);
 extern int fn_80133B24(char *);
 extern char *strchr(const char *, int);
@@ -589,7 +589,7 @@ int readOptionsFile(int path, int ignoreVersion, int wantSection) {
 #define buf bufu.c
 
     size = 0;
-    data = fn_8012C370(path, OPTIONS_TAG, &loadStatus, &size, 0, 0);
+    data = getResourceData(path, OPTIONS_TAG, &loadStatus, &size, 0, 0);
     ok = 0;
     if (data != 0) {
         pos = (char *)data;

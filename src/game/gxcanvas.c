@@ -99,15 +99,18 @@ s32 gxCanvasConvert565ToRGBA(s32 rgb565) {
 }
 
 void fn_802C2CE8(void *arg0, s32 arg1, s32 arg2, s8 arg3) {
-    s32 prod;
+char *__repair_addr;
+
+    s32 prod = arg1 * arg2;
     *(s8 *)arg0 = arg3;
     ((u8 *)arg0)[1] = 0x82;
-    prod = arg1 * arg2;
     *(void **)((u8 *)arg0 + 4) = fn_801284E8(&lbl_8055D000, prod * ((arg3 == 5) ? 4 : 2));
     *(s32 *)((u8 *)arg0 + 8) = arg1;
-    *(s32 *)((u8 *)arg0 + 0xC) = arg2;
+__repair_addr = (char *)((u8 *)arg0 + 0xC);
+
+    *(s32 *)(__repair_addr) = arg2;
     *(s32 *)((u8 *)arg0 + 0x10) = arg1 * ((arg3 == 5) ? 4 : 2);
-    gxCanvasResetClipRect(arg0);
+    fn_802C3014(arg0);
 }
 
 /* Free a GxCanvas: release its pixel buffer, then zero the whole canvas block. */ void fn_802C2D94(void *canvas) {
@@ -116,7 +119,7 @@ void fn_802C2CE8(void *arg0, s32 arg1, s32 arg2, s8 arg3) {
     memset(canvas, 0, sizeof(GxCanvas));
 }
 
-extern void *fn_8012C370(s32,u32 *,s32 *,s32,u8 *);
+extern void *getResourceData(s32,u32 *,s32 *,s32,u8 *);
 extern void Abend_Panic(const char *,...);
 extern const char gxCanvasWrongVerFmt[],gxCanvasLoadFailFmt[];
 #pragma scheduling invalid_target
@@ -132,7 +135,7 @@ void *gxCanvasLoad(s32 path) {
     u8 temp;
     void *canvas;
 
-    canvas = ((void *(*)(s32, s32, u32 *, s32 *, s32, u8 *))fn_8012C370)(path, 0x43414E56, &version, &byteSize, 0, &needsSwap);
+    canvas = ((void *(*)(s32, s32, u32 *, s32 *, s32, u8 *))getResourceData)(path, 0x43414E56, &version, &byteSize, 0, &needsSwap);
     if (canvas != 0) {
         if (version == 1) {
             if (needsSwap != 0) {
@@ -1153,7 +1156,7 @@ void fn_802C47B8(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
     }
 }
 #pragma pop
-/* The resource manager's loader (fn_8012C370), as the loaders in this file
+/* The resource manager's loader (getResourceData), as the loaders in this file
    call it: hand back the resource named `name` whose fourcc tag is `tag`,
    report the file's version through `version`, and, through `swapFlag`,
    whether the block was only just read in and so still holds the
@@ -1224,7 +1227,7 @@ extern const char lbl_8034B144[]; /* "Wrong stamp version in \"%s\": %x (expecti
 
     needsSwap = 0;
     outSize = 0;
-    stampData = (u8 *)((LoadResource)fn_8012C370)(name, STAMP_TAG, &version, &outSize, 0, &needsSwap);
+    stampData = (u8 *)((LoadResource)getResourceData)(name, STAMP_TAG, &version, &outSize, 0, &needsSwap);
     if (stampData == 0)
         goto ret0;
     stamp = (Stamp *)stampData;

@@ -26,7 +26,7 @@ extern f32 lbl_80563720;
 extern f32 lbl_80563724;
 extern f32 lbl_80563728;
 extern f32 lbl_8056372C;
-extern void *fn_8012C370(s32, s32, u32 *, s32 *, u8 *, u8 *);
+extern void *getResourceData(s32, s32, u32 *, s32 *, u8 *, u8 *);
 extern void fn_802E30C8(const char *, ...);
 extern void Abend_Panic(const char *, ...);
 extern char lbl_80340AD0[];
@@ -211,7 +211,7 @@ void fn_802390B4(void *arg0, s32 arg1) {
     valid = 0;
     swap = 0;
     version = 1;
-    loaded = fn_8012C370(arg1, 0x53574632, &version, &unused, &valid, &swap);
+    loaded = getResourceData(arg1, 0x53574632, &version, &unused, &valid, &swap);
     *(void **)((u8 *)arg0 + 0x14) = loaded;
     if (loaded == 0) {
         fn_802E30C8(lbl_80340AD0, arg1);

@@ -905,7 +905,7 @@ check:
     return 1;
 }
 #pragma scheduling on
-extern int fn_8012C370(const char *, int, void *, void *, int, int);
+extern int getResourceData(const char *, int, void *, void *, int, int);
 extern void fn_8012E81C(const char *);
 extern char lbl_8034D9C0[];
 extern char lbl_8034E0E8[];
@@ -945,7 +945,7 @@ extern void *memcpy(void *, const void *, unsigned int);
     *(int *)&rmemcard_async_state = RMEMCARD_WRITE_CREATE;
     fn_8012E81C(lbl_8034E0F8);
     ctx = (char *)&rmemcard_async_state;
-    *(int *)(ctx + 0x260) = fn_8012C370(lbl_8034E0E8, BANNER_RES_TAG, &dummy, ctx + 0x264, 0, 0);
+    *(int *)(ctx + 0x260) = getResourceData(lbl_8034E0E8, BANNER_RES_TAG, &dummy, ctx + 0x264, 0, 0);
     nameDst = ctx + 0x270;
     charsLeft = MAX_NAME_LEN;
     *(int *)(ctx + 0x268) = buffer;

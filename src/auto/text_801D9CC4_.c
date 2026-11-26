@@ -6,7 +6,7 @@ extern float lbl_80562B3C;
 typedef unsigned char u8;
 typedef unsigned int u32;
 typedef int s32;
-extern void *fn_8012C370(void *, int, int *, int, int, u8 *);
+extern void *getResourceData(void *, int, int *, int, int, u8 *);
 extern void Abend_Panic(const char *, ...);
 extern char lbl_80339200[];
 extern char lbl_80339218[];
@@ -28,7 +28,7 @@ void *fn_801D9CC4(void *arg0)
   volatile u8 *e;
   volatile u8 *r;
   u32 t;
-  base = (volatile u8 *) fn_8012C370(arg0, 0x50507468, &type, 0, 0, &flag);
+  base = (volatile u8 *) getResourceData(arg0, 0x50507468, &type, 0, 0, &flag);
   if (base == 0)
   {
     Abend_Panic(lbl_80339200, arg0);

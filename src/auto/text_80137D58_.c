@@ -655,7 +655,7 @@ typedef struct IdealResLoadInfo {
 #define sIdealSizeMismatchMsg lbl_8032BF20
 #define sIdealBadVersionMsg lbl_8032BF70
 
-extern void *fn_8012C370(int, int, unsigned int *, int *, void **, unsigned char *);
+extern void *getResourceData(int, int, unsigned int *, int *, void **, unsigned char *);
 extern void fn_8012C4D8(void *);
 extern void fn_801381B4(void *);
 extern void fn_80138594(void *);
@@ -674,7 +674,7 @@ void *fn_80138968(int resourceName) {
     void *res;
     int accepted;
 
-    res = fn_8012C370(resourceName, IDEAL_RES_TAG, &info.version, &info.valid, (void **)&info.firstLoad, &info.swapEndian);
+    res = getResourceData(resourceName, IDEAL_RES_TAG, &info.version, &info.valid, (void **)&info.firstLoad, &info.swapEndian);
     if (res != 0) {
         accepted = 0;
         if (info.valid != 0) {

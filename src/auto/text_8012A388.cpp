@@ -85,7 +85,7 @@ extern "C" s32 fn_802E748C(s32, s32, void *);
 extern "C" s32 KERNEL_GetTimeMs(void);
 extern "C" void fn_8002B0D8(char *);
 extern "C" char *fn_80029004(char *, int);
-extern "C" s32 fn_8012C370(s32, s32, s32, s32, s32, s32);
+extern "C" s32 getResourceData(s32, s32, s32, s32, s32, s32);
 class Unk8012A570 { public: virtual ~Unk8012A570(); };
 
 extern "C" s32 lbl_8055E004;
@@ -691,7 +691,7 @@ loop_15_copy:
     if ((s8)temp_r3_2 != 0) goto loop_15_limit;
 loop_10_done:
     fn_8002B0D8(sp10);
-    temp_r3_3 = (u8 *)fn_8012C370((s32)sp10, 0x45544F43, (s32)&spC, 0, 0, (s32)&sp8);
+    temp_r3_3 = (u8 *)getResourceData((s32)sp10, 0x45544F43, (s32)&spC, 0, 0, (s32)&sp8);
     if (temp_r3_3 != 0 && sp8 != 0) {
         temp_r4 = temp_r3_3[0]; temp_r3_3[0] = temp_r3_3[3]; temp_r3_3[3] = temp_r4;
         temp_r4_2 = temp_r3_3[1]; temp_r3_3[1] = temp_r3_3[2]; temp_r3_3[2] = temp_r4_2;
@@ -1508,7 +1508,7 @@ append_2:
                         ch1 = *src_a2++; *dst_s2++ = ch1; if ((s8)ch1 != 0) goto limit_2;
 suffix_done_2:
                         fn_8002B0D8(name);
-                        data = (u8 *)fn_8012C370((s32)name, 0x45544F43, (s32)&size, 0, 0, (s32)&ok);
+                        data = (u8 *)getResourceData((s32)name, 0x45544F43, (s32)&size, 0, 0, (s32)&ok);
                         if (data != 0 && ok != 0) {
                             u8 t; u32 n; u8 *entry;
                             t=data[0]; data[0]=data[3]; data[3]=t; t=data[1]; data[1]=data[2]; data[2]=t;
@@ -1561,7 +1561,7 @@ extern "C" s32 fn_8012C33C(char *path) {
  * returned: the entry's data, or 0.  The four arguments after dataTag are the
  * out pointers fn_8012B85C fills: entry id, data size, first reference and
  * newly-requested flag. */
-extern "C" s32 fn_8012C370(s32 path, s32 dataTag, s32 outId, s32 outSize, s32 outFirstUse, s32 outNewRequest) {
+extern "C" s32 getResourceData(s32 path, s32 dataTag, s32 outId, s32 outSize, s32 outFirstUse, s32 outNewRequest) {
 #define sLoadRetryFlag   lbl_8055DFF9
 #define ResourceGetInner fn_8012B85C
 #define badReadMsg       lbl_8032AB78 /* "ResourceGet(%s): BAD READ, retrying" */
@@ -2402,7 +2402,7 @@ path_ready:
     fn_8002B0D8(tocPath);  // map the path through the current character table
     // Read the set's ETOC resource; startedLoad is set when this call had to
     // start the read, so the block that came in is still little-endian.
-    toc = (u8 *)fn_8012C370((s32)tocPath, RES_TOC_FOURCC, (s32)&tocOffset, 0, 0, (s32)&startedLoad);
+    toc = (u8 *)getResourceData((s32)tocPath, RES_TOC_FOURCC, (s32)&tocOffset, 0, 0, (s32)&startedLoad);
     if (toc != 0 && startedLoad != 0) {
         // byte-reverse the ETOC header's five words
         swap0 = toc[0]; toc[0] = toc[3]; toc[3] = swap0;
@@ -2744,7 +2744,7 @@ suffix_copy:
     if ((s8)suffixCh != 0) goto suffix_limit;
 path_all_done:
     fn_8002B0D8(pathBuf);
-    data = (void *)fn_8012C370((s32)pathBuf, 0x45544F43, (s32)&dataSize, 0, 0, (s32)&swappedFlag);
+    data = (void *)getResourceData((s32)pathBuf, 0x45544F43, (s32)&dataSize, 0, 0, (s32)&swappedFlag);
     if (data != 0 && swappedFlag != 0) {
         u8 *d = (u8 *)data;
         t = d[0]; d[0] = d[3]; d[3] = t;
@@ -3165,7 +3165,7 @@ path_ready:
     fn_8002B0D8(tocPath);  // map the path through the current character table
     // Read the set's ETOC resource; startedLoad is set when this call had to
     // start the read, so the block that came in is still little-endian.
-    toc = (u8 *)fn_8012C370((s32)tocPath, RES_TOC_FOURCC, (s32)&tocOffset, 0, 0, (s32)&startedLoad);
+    toc = (u8 *)getResourceData((s32)tocPath, RES_TOC_FOURCC, (s32)&tocOffset, 0, 0, (s32)&startedLoad);
     if (toc != 0 && startedLoad != 0) {
         // byte-reverse the ETOC header's five words
         swap0 = toc[0]; toc[0] = toc[3]; toc[3] = swap0;

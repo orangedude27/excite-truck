@@ -43,7 +43,7 @@ typedef struct Unk131588 {
 } Unk131588;
 
 extern Unk131588 *fn_80131588(void *, s32);
-extern Unk131588 *fn_8012C370();
+extern Unk131588 *getResourceData();
 typedef void *fn_80131960_ret;
 #define fn_80131960_RETURN(x) return (fn_80131960_ret)(x)
 extern fn_80131960_ret fn_80131960(void *, void *);
@@ -60,7 +60,7 @@ Unk131588 *fn_80131588(void *arg0, s32 arg1) {
     s32 off1, off2;
     u8 t;
 
-    r = fn_8012C370(arg0, 0x56414C54, &type, 0, 0, &flag);
+    r = getResourceData(arg0, 0x56414C54, &type, 0, 0, &flag);
     if (r != NULL) {
         if (type == 0xB) {
             if (flag != 0 && r != NULL) {

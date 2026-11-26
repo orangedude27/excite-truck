@@ -787,7 +787,7 @@ void fn_802324D8(void) {
 }
 
 #pragma pop
-extern void *fn_8012C370(const char *, s32, u32 *, s32 *, u8 *, u8 *);
+extern void *getResourceData(const char *, s32, u32 *, s32 *, u8 *, u8 *);
 extern void fn_80028E00(char *, const char *);
 extern s32 RegisterTextureWithResource(char *, s32);
 extern u32 lbl_8055B9D4;
@@ -834,7 +834,7 @@ extern u32 lbl_8055B9D4;
     firstLoad = 0;
     swap = 0;
     dataSize = 0;
-    rawBlock = fn_8012C370(name, GETX_FOURCC, &version, &dataSize, &firstLoad, &swap);
+    rawBlock = getResourceData(name, GETX_FOURCC, &version, &dataSize, &firstLoad, &swap);
     data = (u8 *)rawBlock;
     if (rawBlock != 0) {
         if (version != 8) {

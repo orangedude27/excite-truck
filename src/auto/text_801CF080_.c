@@ -406,10 +406,10 @@ void fn_801CFA48(void *arg0) {
 #pragma pop
 
 
-extern s32 fn_8012C370(s32, s32 *, s32, s32, u8 *);
+extern s32 getResourceData(s32, s32 *, s32, s32, u8 *);
 extern void fn_801CFA48(void *);
 #pragma scheduling invalid_target
-/* Load a 'PMsh' mesh resource via fn_8012C370 and byte-swap its header/arrays in place if a swap is requested. */
+/* Load a 'PMsh' mesh resource via getResourceData and byte-swap its header/arrays in place if a swap is requested. */
 void *fn_801CFEAC(void *path) {
     s32 outValue;
     u8 needsSwap;
@@ -417,7 +417,7 @@ void *fn_801CFEAC(void *path) {
 
     outValue = 1;
     needsSwap = 0;
-    mesh = ((void *(*)(void *, s32, s32 *, s32, s32, u8 *))fn_8012C370)(path, 0x504D7368, &outValue, 0, 0, &needsSwap);
+    mesh = ((void *(*)(void *, s32, s32 *, s32, s32, u8 *))getResourceData)(path, 0x504D7368, &outValue, 0, 0, &needsSwap);
     if (needsSwap != 0) {
         fn_801CFA48(mesh);
     }

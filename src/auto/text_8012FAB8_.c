@@ -826,7 +826,7 @@ void fn_801310B4(char *buffer, int bufferSize, int number) {
 #undef ordinalFormat
 }
 
-extern void *fn_8012C370(const char *, unsigned int, unsigned int *, int *, int, void **);
+extern void *getResourceData(const char *, unsigned int, unsigned int *, int *, int, void **);
 extern void fn_8012C4D8(void *);
 extern void fn_8012BEF0(void *);
 extern void fn_802E30C8(const char *, ...);
@@ -854,7 +854,7 @@ void fn_8013111C(int langIndex) {
     fn_8012BEF0(*(void **)((char *)lbl_802F8E60 + langIndex * 0xC));
     path = strings + 0x2E8;
     size = 0;
-    buffer = fn_8012C370(path, 0x4C414E47, &status, &size, 0, &out);
+    buffer = getResourceData(path, 0x4C414E47, &status, &size, 0, &out);
     if (buffer != 0) {
         data = (char *)&lbl_804230D0;
         memcpy(data + 8, buffer, size);
