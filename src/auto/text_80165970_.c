@@ -1174,7 +1174,7 @@ typedef struct LfoEntry {
 #pragma scheduling invalid_target
 #pragma processor 750
 #pragma use_lmw_stmw off
-float fn_801673A4(int entryIndex, float *lfoOut) {
+float sampleAutomationEntry(int entryIndex, float *lfoOut) {
     /* Sample automation entry `entryIndex` on the lbl_8055E318 clock: *lfoOut gets
      * its triangle LFO, smoothed with smoothstep and scaled into [+0x48, +0x4C],
      * and the return value is the entry's fade weight, interpolated from +0x34 to

@@ -921,7 +921,7 @@ void fn_80194844(void *obj) {
     *(float *)((char *)obj + 8) = zero;
 }
 
-extern float fn_801673A4(int, float *);
+extern float sampleAutomationEntry(int, float *);
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
@@ -959,7 +959,7 @@ float fn_801948B0(void *arg0, int arg1, float arg2)
   factor = (one < t) ? (one) : (t);
   factor = (factor > lbl_80562144) ? (factor) : (lbl_80562144);
   f[0x220 / 4] = current + (factor * (high - current));
-  weight = fn_801673A4(*((int *) (((char *) arg0) + 0x290)), &sample);
+  weight = sampleAutomationEntry(*((int *) (((char *) arg0) + 0x290)), &sample);
   c184 = lbl_80562184;
   c1C0 = lbl_805621C0;
   v2e4 = f[0x2E4 / 4];
