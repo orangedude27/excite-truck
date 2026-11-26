@@ -298,7 +298,7 @@ void fn_802C57B0(void) { }
  * (gModelBatchActive), the entry list is emptied first and sorted and submitted
  * afterwards.  Elements of type 4, 6, 9 and 11, and every type from 13 up, are
  * left to the other passes (MRModel_SubmitType2Groups and fn_802C74D8 pick those up). */
-void MRModel_SubmitInstance(int instanceId, int transformId, int entryId, unsigned char status, float distance) {
+/* Submit one model instance: link a display entry for every visible group element, then sort and submit unless batching. */ void MRModel_SubmitInstance(int instanceId, int transformId, int entryId, unsigned char status, float distance) {
     extern int lbl_8055D008;
     extern s8 gModelBatchActive;
     extern void mrModelResetDisplayEntries(void);
