@@ -177,7 +177,7 @@ enum DriverBinding {
 
 /* The per-player "DriverInterface" object (the name it is heap-allocated
  * under, lbl_80331E68): one per driver index, created on demand by
- * fn_8018108C and kept in lbl_804348D8[].  Its vtable is lbl_80331E78
+ * getOrCreateDriverInterface and kept in lbl_804348D8[].  Its vtable is lbl_80331E78
  * (fn_80181428 is the base constructor).  fn_8017F718 fills one from the
  * player's options - the bindings, the response levels and the option bytes
  * below - and PhysDriverUpdate (fn_8017ED00) turns those bindings into the
@@ -1715,7 +1715,7 @@ extern f32 lbl_80561C8C;
  * live in lbl_804348D8[] - and return it, or 0 when the heap has no room.
  * The object itself only gets its identity, its sound id and zeroed player
  * slots here; fn_8017F718 is what names the slots and registers the sounds. */
-s32 fn_8018108C(s32 arg0) {
+s32 getOrCreateDriverInterface(s32 arg0) {
     Unk8017Object **table;
     s32 entry_offset = arg0 * 4;
     void *slot_end;
@@ -1858,7 +1858,7 @@ void fn_80181418(void *arg0, int arg1) {
 extern void lbl_80331EFC(void);
 #define s_baseDriverVTable lbl_80331EFC
 /* Base DriverInterface constructor: store the address of the all-null base
- * vtable in *vtableSlot; fn_8018108C then overrides it with the real vtable,
+ * vtable in *vtableSlot; getOrCreateDriverInterface then overrides it with the real vtable,
  * lbl_80331E78. */
 void fn_80181428(void **vtableSlot) {
     *vtableSlot = (void *)&s_baseDriverVTable;

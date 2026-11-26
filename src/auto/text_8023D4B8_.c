@@ -83,7 +83,7 @@ extern void *fn_8023E078(void *, int);
 extern void *lbl_8055F198;
 extern int lbl_804987B8[];
 extern int lbl_8055B860;
-extern int fn_8018108C(void);
+extern int getOrCreateDriverInterface(void);
 extern int fn_80137C98(int);
 extern int fn_802146BC(int *, int, int, int, int, int, int, int);
 extern void fn_8023DB68(void);
@@ -103,7 +103,7 @@ void fn_8023D4B8(int arg0)
   fn_80137C84(arg0, 0);
   fn_8017EBE0();
   fn_80137C98(arg0);
-  lbl_8055F198 = (void *) fn_8018108C();
+  lbl_8055F198 = (void *) getOrCreateDriverInterface();
   fn_8023E078(ctx, arg0);
   lbl_8055F190 = ctx;
   recs[0].name = &lbl_8055BC58;
@@ -652,14 +652,14 @@ extern void fn_8023E0DC(void *, int, int);
 extern int lbl_80563748;
 extern void *fn_8022D458(void *, int, int, int *);
 extern int fn_80137C98(int);
-extern int fn_8018108C(void);
+extern int getOrCreateDriverInterface(void);
 extern void fn_8023E1FC(void *);
 /* Initialize a request/context object: run the base initializer, store the parameter, cache the related object, and finish setup. */
 void *fn_8023E078(void *object, int param) {
     fn_8022D458(object, 0x12, 2, &lbl_80563748);
     *(int *)((char *)object + 0x30) = param;
     fn_80137C98(param);
-    *(int *)((char *)object + 0x34) = fn_8018108C();
+    *(int *)((char *)object + 0x34) = getOrCreateDriverInterface();
     fn_8023E1FC(object);
     return object;
 }

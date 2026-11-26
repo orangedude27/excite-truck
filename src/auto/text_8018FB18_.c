@@ -84,7 +84,7 @@ extern char lbl_80332F40[];
 extern s32 lbl_8055A478;
 extern u8 lbl_8055E528;
 extern void *fn_801284F8(s32, const void *);
-extern void *fn_8018108C(s32);
+extern void *getOrCreateDriverInterface(s32);
 extern void *fn_801B2EC0(s32);
 extern s32 fn_80019B78(void);
 #pragma scheduling invalid_target
@@ -337,7 +337,7 @@ int fn_8018FF84(int object, int deleteFlag) {
 extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
     // RealName: ReplayDriverCtor. Builds the 0x24-byte replay driver wrapper in
     // arg0: allocates the inner "repl_di" (replay driver interface) object, which
-    // wraps the per-mode DriverInterface (fn_8018108C) and the "replaypkt" buffer
+    // wraps the per-mode DriverInterface (getOrCreateDriverInterface) and the "replaypkt" buffer
     // (lbl_804349B0[mode]) and caches four of the driver's flags; then records the
     // racer slot (fn_801B2EC0(car+0x1EC)), the owner car and the mode word
     // (car+0x260 & 3). arg2+0x5C supplies a sign/zero pair stored at +0x25/+0x26.
@@ -407,7 +407,7 @@ extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
         temp_r0 = ((s32 *)lbl_804349B0)[temp_r27];
         *(s32 *)((u8 *)temp_r3 + 0x18) = temp_r0;
         *(s32 *)((u8 *)temp_r3 + 8) = temp_r0;
-        *(void **)((u8 *)temp_r3 + 4) = fn_8018108C(temp_r27);
+        *(void **)((u8 *)temp_r3 + 4) = getOrCreateDriverInterface(temp_r27);
         *(s32 *)((u8 *)temp_r3 + 0xC) = 0;
         lbl_8055E524 = 0;
         if (fn_801CF050() != 0) {
