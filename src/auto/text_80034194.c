@@ -168,7 +168,7 @@ extern void fn_8003BB58(void (*callback)(void));
 extern void fn_8003B380(s32);
 extern void fn_8003B38C(void *);
   extern void fn_80035B88(u32);
-  extern void fn_80036624(s32);
+  extern void __DVDHandleDriveError(s32);
   extern void fn_8003AF1C(s32, s32, void *);
   
   extern s32 lbl_80558E04;
@@ -1485,7 +1485,7 @@ s32 fn_80035CB4(u32 arg0) {
 }
 
 void fn_80035DA8(s32 arg0) {
-    /* Record a DVD error (command 0x10) in the next __ErrorInfo slot, then invoke fn_8003AF1C with callback fn_80036624. */
+    /* Record a DVD error (command 0x10) in the next __ErrorInfo slot, then invoke fn_8003AF1C with callback __DVDHandleDriveError. */
     s32 enabled;
     u32 tick;
     u8 *info;
@@ -1501,7 +1501,7 @@ void fn_80035DA8(s32 arg0) {
     *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;
     *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
     OSRestoreInterrupts(enabled);
-    fn_8003AF1C(0, 0, fn_80036624);
+    fn_8003AF1C(0, 0, __DVDHandleDriveError);
     #pragma unused(arg0)
 }
 
@@ -1731,7 +1731,7 @@ void fn_80036370(u32 arg0) {
         *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;
         *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
         OSRestoreInterrupts(interrupts);
-        fn_8003AF1C(0, 0, fn_80036624);
+        fn_8003AF1C(0, 0, __DVDHandleDriveError);
         return;
     }
 
@@ -1778,7 +1778,7 @@ void fn_80036550(u32 errorCode) {
  * the drive was running is completed with DVD_RESULT_CANCELED.  When nothing
  * was being cancelled the dummy block is marked as needing attention instead
  * and the periodic cover/motor poll is armed. */
-void fn_80036624(s32 errorCode) {
+void __DVDHandleDriveError(s32 errorCode) {
     register u32 code = errorCode;
     s32 interrupts;
     s32 complete;
