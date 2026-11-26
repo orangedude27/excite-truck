@@ -5673,33 +5673,33 @@ void getDevConfig(s32 chan, s32 result, WPADStatus* status, u8* data)
    accelerometer calibration in the channel's extension config. On failure the
    channel is marked as an unsupported extension. */
 void parseExtConfig(s32 chan, s32 result) {
-    const char* messages = (const char*)lbl_80312338;
+    const char* debugStrings = (const char*)lbl_80312338;
     WPADCB* cb = lbl_8038F4F0[chan];
     WPADExtConfig* ext = (WPADExtConfig*)((u8*)cb + 0x7C2);
-    u8* data = (u8*)cb->samplingBufSize;
-    s32 found = -1;
-    s32 i;
+    u8* configData = (u8*)cb->samplingBufSize;
+    s32 validOffset = -1;
+    s32 blockIdx;
     s32 offset;
-    s32 j;
-    s32 sum;
+    s32 byteIdx;
+    s32 blockSum;
     if (result != 0) {
         cb->UNK_0x801 = WPAD_DEV_NOT_SUPPORTED;
     } else if ((u8)(cb->UNK_0x801 + 0xFF) <= 1) {
-        WPADiDecode(chan, data, 0x20, 0x20);
-        for (i = 0; i < 2; i++) {
-            offset = i * 16;
-            sum = 0;
-            for (j = offset; j < offset + 14; j++) {
-                sum += data[j];
+        WPADiDecode(chan, configData, 0x20, 0x20);
+        for (blockIdx = 0; blockIdx < 2; blockIdx++) {
+            offset = blockIdx * 16;
+            blockSum = 0;
+            for (byteIdx = offset; byteIdx < offset + 14; byteIdx++) {
+                blockSum += configData[byteIdx];
             }
-            if ((u8)(sum + WPAD_CONFIG_BLOCK_CHECKSUM_BIAS) == data[offset + 14] && (u8)(sum + 0xAA) == data[offset + 15]) {
-                found = offset;
+            if ((u8)(blockSum + WPAD_CONFIG_BLOCK_CHECKSUM_BIAS) == configData[offset + 14] && (u8)(blockSum + 0xAA) == configData[offset + 15]) {
+                validOffset = offset;
             }
         }
         switch (cb->UNK_0x801) {
         case WPAD_DEV_FREESTYLE:
-            if (found < 0) {
-                DBPrintf_80068D68(messages + 0x194);
+            if (validOffset < 0) {
+                DBPrintf_80068D68(debugStrings + 0x194);
                 ext->fs.accX0g = 0x200;
                 ext->fs.accY0g = 0x200;
                 ext->fs.accZ0g = 0x200;
@@ -5707,8 +5707,8 @@ void parseExtConfig(s32 chan, s32 result) {
                 ext->fs.accY1g = 0x2CC;
                 ext->fs.accZ1g = 0x2CC;
             } else {
-                u8* p = (u8*)(found + (s32)data);
-                u8 b0 = data[found];
+                u8* p = (u8*)(validOffset + (s32)configData);
+                u8 b0 = configData[validOffset];
                 ext->fs.accX0g = (u16)((b0 << 2) | ((p[3] >> 4) & 3));
                 ext->fs.accY0g = (u16)((p[1] << 2) | ((p[3] >> 2) & 3));
                 ext->fs.accZ0g = (u16)((p[2] << 2) | (p[3] & 3));
@@ -5721,15 +5721,15 @@ void parseExtConfig(s32 chan, s32 result) {
                 ext->fs.stickYMax = (s8)p[11];
                 ext->fs.stickYMin = (s8)p[12];
                 ext->fs.stickYCenter = (s8)p[13];
-                DBPrintf_80068D68(messages + 0x1a8, ext->fs.accX0g, ext->fs.accY0g, ext->fs.accZ0g);
-                DBPrintf_80068D68(messages + 0x1d8, ext->fs.accX1g, ext->fs.accY1g, ext->fs.accZ1g);
-                DBPrintf_80068D68(messages + 0x208, ext->fs.stickXCenter, ext->fs.stickXMax, ext->fs.stickXMin);
-                DBPrintf_80068D68(messages + 0x230, ext->fs.stickYCenter, ext->fs.stickYMax, ext->fs.stickYMin);
+                DBPrintf_80068D68(debugStrings + 0x1a8, ext->fs.accX0g, ext->fs.accY0g, ext->fs.accZ0g);
+                DBPrintf_80068D68(debugStrings + 0x1d8, ext->fs.accX1g, ext->fs.accY1g, ext->fs.accZ1g);
+                DBPrintf_80068D68(debugStrings + 0x208, ext->fs.stickXCenter, ext->fs.stickXMax, ext->fs.stickXMin);
+                DBPrintf_80068D68(debugStrings + 0x230, ext->fs.stickYCenter, ext->fs.stickYMax, ext->fs.stickYMin);
             }
             break;
         case WPAD_DEV_CLASSIC: {
-            u8* p = (u8*)(found + (s32)data);
-            ext->cl.lStickXMax = (s8)data[found];
+            u8* p = (u8*)(validOffset + (s32)configData);
+            ext->cl.lStickXMax = (s8)configData[validOffset];
             ext->cl.lStickXMin = (s8)p[1];
             ext->cl.lStickXCenter = (s8)p[2];
             ext->cl.lStickYMax = (s8)p[3];
@@ -5743,11 +5743,11 @@ void parseExtConfig(s32 chan, s32 result) {
             ext->cl.rStickYCenter = (s8)p[11];
             ext->cl.triggerLZero = p[12];
             ext->cl.triggerRZero = p[13];
-            DBPrintf_80068D68(messages + 0x258, ext->cl.lStickXCenter, ext->cl.lStickXMax, ext->cl.lStickXMin);
-            DBPrintf_80068D68(messages + 0x280, ext->cl.lStickYCenter, ext->cl.lStickYMax, ext->cl.lStickYMin);
-            DBPrintf_80068D68(messages + 0x2a8, ext->cl.rStickXCenter, ext->cl.rStickXMax, ext->cl.rStickXMin);
-            DBPrintf_80068D68(messages + 0x2d0, ext->cl.rStickYCenter, ext->cl.rStickYMax, ext->cl.rStickYMin);
-            DBPrintf_80068D68(messages + 0x2f8, ext->cl.triggerLZero, ext->cl.triggerRZero);
+            DBPrintf_80068D68(debugStrings + 0x258, ext->cl.lStickXCenter, ext->cl.lStickXMax, ext->cl.lStickXMin);
+            DBPrintf_80068D68(debugStrings + 0x280, ext->cl.lStickYCenter, ext->cl.lStickYMax, ext->cl.lStickYMin);
+            DBPrintf_80068D68(debugStrings + 0x2a8, ext->cl.rStickXCenter, ext->cl.rStickXMax, ext->cl.rStickXMin);
+            DBPrintf_80068D68(debugStrings + 0x2d0, ext->cl.rStickYCenter, ext->cl.rStickYMax, ext->cl.rStickYMin);
+            DBPrintf_80068D68(debugStrings + 0x2f8, ext->cl.triggerLZero, ext->cl.triggerRZero);
             break;
         }
         default:
