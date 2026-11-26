@@ -111,7 +111,7 @@ extern "C" void *fn_8012A570(u32, void *);
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern "C" s32 stricmp(const char *, const char *);
-extern "C" s32 fn_8012B85C(s32, s32, s32, s32, s32, s32);
+extern "C" s32 ResourceGetEntry(s32, s32, s32, s32, s32, s32);
 extern "C" const char lbl_805599A4[1];
 extern "C" void *findResourceEntry(char *arg0, s32 *arg1, u32 arg2);
 extern "C" void fn_80127464(void);
@@ -1130,7 +1130,7 @@ static inline s32 LoadEntryDataBody(struct ResManager *manager, s32 entryIndex) 
  * header and the allocation, gains RES_ENTRY_ALLOCATED|RES_ENTRY_LOADED and the
  * load is logged with the time it took, on failure the CRC message is logged and
  * the allocation handed back. Returns the entry's RES_ENTRY_LOADED bit, which
- * tells ResourceGet (fn_8012B85C) whether it can hand out the entry's data. */
+ * tells ResourceGet (ResourceGetEntry) whether it can hand out the entry's data. */
 extern "C" s32 fn_8012B6FC(struct ResManager *manager, s32 entryIndex) {
     return LoadEntryDataBody(manager, entryIndex);
 }
@@ -1148,7 +1148,7 @@ extern "C" s32 fn_8012B6FC(struct ResManager *manager, s32 entryIndex) {
  *   outNewRequest- whether the entry was not marked "requested" until now
  * Returns 0 when the resource is unknown, could not be made resident, or has
  * another type tag than asked for (each reported on the "res:" log). */
-extern "C" s32 fn_8012B85C(s32 path, s32 dataTag, s32 outId, s32 outSize, s32 outFirstUse, s32 outNewRequest) {
+extern "C" s32 ResourceGetEntry(s32 path, s32 dataTag, s32 outId, s32 outSize, s32 outFirstUse, s32 outNewRequest) {
     /* The entry's flag word at +0x34, seen as bitfields. */
     struct EntryFlags {
         u32 rest : 31;
@@ -1552,18 +1552,18 @@ extern "C" s32 fn_8012C33C(char *path) {
 
 #pragma use_lmw_stmw off
 /* ResourceGet: the public resource lookup, a retrying wrapper around the
- * entry lookup of fn_8012B85C.  Every attempt clears the load-retry flag
+ * entry lookup of ResourceGetEntry.  Every attempt clears the load-retry flag
  * (raised by fn_8012A7FC when a read of the archive had to wait), asks for
  * `path`'s data carrying the type tag `dataTag` (a fourcc such as 'ETOC') and
  * stops as soon as no read error happened or the data is in hand; a failed
  * read is logged and the background-task pump (fn_80127464) is run so the
  * pending load can finish - up to 10 attempts.  The last lookup result is
  * returned: the entry's data, or 0.  The four arguments after dataTag are the
- * out pointers fn_8012B85C fills: entry id, data size, first reference and
+ * out pointers ResourceGetEntry fills: entry id, data size, first reference and
  * newly-requested flag. */
 extern "C" s32 getResourceData(s32 path, s32 dataTag, s32 outId, s32 outSize, s32 outFirstUse, s32 outNewRequest) {
 #define sLoadRetryFlag   lbl_8055DFF9
-#define ResourceGetInner fn_8012B85C
+#define ResourceGetInner ResourceGetEntry
 #define badReadMsg       lbl_8032AB78 /* "ResourceGet(%s): BAD READ, retrying" */
 #define pumpTasks        fn_80127464
     s32 result;
