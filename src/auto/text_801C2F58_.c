@@ -305,21 +305,21 @@ s32 parseInterludeWhoMask(char *who) {
     if (strcmp(who, lbl_8055A97C) == 0) return 1 << fn_80179630(0);
     if (strcmp(who, lbl_80336BC0) == 0) return 1 << lbl_8055E808;
     if (strcmp(who, lbl_8055A984) == 0) {
-        s32 mask = 0;
-        s32 i;
-        for (i = 0; i < lbl_8055E804; i += 2) mask |= 1 << i;
-        return mask;
+        s32 playerMask = 0;
+        s32 player;
+        for (player = 0; player < lbl_8055E804; player += 2) playerMask |= 1 << player;
+        return playerMask;
     }
     if (strcmp(who, lbl_8055A98C) == 0) {
-        s32 mask = 0;
-        s32 i;
-        for (i = 1; i < lbl_8055E804; i += 2) mask |= 1 << i;
-        return mask;
+        s32 playerMask = 0;
+        s32 player;
+        for (player = 1; player < lbl_8055E804; player += 2) playerMask |= 1 << player;
+        return playerMask;
     }
     {
-        s32 num = (s32) atoi(who);
-        if (num > 0) return 1 << num;
-        if (num < 0) return 1 << (lbl_8055E804 - num);
+        s32 playerNumber = (s32) atoi(who);
+        if (playerNumber > 0) return 1 << playerNumber;
+        if (playerNumber < 0) return 1 << (lbl_8055E804 - playerNumber);
     }
     fn_802E30C8(lbl_80336BCC, who);
     return 0;
