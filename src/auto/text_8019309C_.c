@@ -1086,7 +1086,7 @@ extern float lbl_80562174, lbl_80562184, lbl_805621D8, lbl_805621DC;
 extern double lbl_805621C8;
 extern float lbl_805621E0, lbl_805621E4, lbl_805621E8, lbl_805621EC;
 #pragma cplusplus on
-extern "C" void computeAIDriverControls(char *arg0, float *arg1) {
+/* Compute the AI driver's control output and hand it to the car's controller callback. */ extern "C" void computeAIDriverControls(char *arg0, float *arg1) {
     class OtherObj {
     public:
         virtual void d0(); virtual void d1();
