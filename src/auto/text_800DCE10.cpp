@@ -1207,11 +1207,11 @@ extern "C" unsigned long lbl_80559800;
  * line is part of the box. */
 extern "C" void textBoxMeasureString(f32 *rect, void *textWriter, const u16 *str, s32 length, f32 maxWidth) {
     f32 lineRect[4];
-    u8 wrapped;
+    u8 lineWrapped;
     f32 curLeft, curTop, curRight, curBottom;
     f32 lineLeft, lineTop, lineRight, lineBottom;
-    s32 consumed, remaining = length;
-    const u16 *cursor = str;
+    s32 charsConsumed, charsLeft = length;
+    const u16 *textCursor = str;
     const char *msg = lbl_80320560;
 
     /* nw4hbm's debug checks: msg + 0x10 is this file's name, the other offsets
@@ -1219,8 +1219,8 @@ extern "C" void textBoxMeasureString(f32 *rect, void *textWriter, const u16 *str
     PTRCHECK(textWriter, 0xDA, 0x194)
     PTRCHECK(rect, 0xDB, 0x240)
     PTRCHECK(str, 0xDC, 0x1D0)
-    if (remaining < 0) {
-        PANIC(msg + 0x10, 0xDD, msg + 0x208, remaining, 0);
+    if (charsLeft < 0) {
+        PANIC(msg + 0x10, 0xDD, msg + 0x208, charsLeft, 0);
     }
     {
         f32 zero = FLOAT_ZERO;
@@ -1237,14 +1237,14 @@ extern "C" void textBoxMeasureString(f32 *rect, void *textWriter, const u16 *str
             lineRect[1] = zero;
             lineRect[2] = zero;
             lineRect[3] = zero;
-            consumed = fn_800DDDF4(&lineRect[0], textWriter, cursor, remaining, &wrapped, maxWidth);
-            if (wrapped != 0) {
-                fn_800DDDF4(&lineRect[0], textWriter, (const u16 *)&LINE_BREAK_CODE, 1, &wrapped, maxWidth);
+            charsConsumed = fn_800DDDF4(&lineRect[0], textWriter, textCursor, charsLeft, &lineWrapped, maxWidth);
+            if (lineWrapped != 0) {
+                fn_800DDDF4(&lineRect[0], textWriter, (const u16 *)&LINE_BREAK_CODE, 1, &lineWrapped, maxWidth);
             }
             lineLeft = lineRect[0];
             curLeft = rect[0];
-            cursor += consumed;
-            remaining -= consumed;
+            textCursor += charsConsumed;
+            charsLeft -= charsConsumed;
             lineLeft = curLeft > lineLeft ? lineLeft : curLeft;
             rect[0] = lineLeft;
             curTop = rect[1];
@@ -1259,7 +1259,7 @@ extern "C" void textBoxMeasureString(f32 *rect, void *textWriter, const u16 *str
             lineBottom = lineRect[3];
             lineBottom = curBottom < lineBottom ? lineBottom : curBottom;
             rect[3] = lineBottom;
-        } while (remaining > 0);
+        } while (charsLeft > 0);
     }
 }
 
