@@ -5541,7 +5541,7 @@ block_21:
 /* Writing an entry with no page held: the FAT sector is read, the entry
  * changed in it and the sector written back to every FAT copy of the volume
  * (the volume's VFiPFVolume fields, further down, say how many there are). */
-#define VFiPFFAT_SetEntry12NoPage  fn_800AF734  /* FAT12: write a 12-bit entry to the FAT */
+#define VFiPFFAT_SetEntry12NoPage  VFiPF_setFatEntry12  /* FAT12: write a 12-bit entry to the FAT */
 #define VFiPFFAT_SetEntry16NoPage  fn_800AFF28  /* FAT16: write a 16-bit entry to the FAT */
 #define VFiPFFAT_SetEntry32NoPage  fn_800B037C  /* FAT32: write a 28-bit entry to the FAT */
 
@@ -6042,7 +6042,7 @@ extern "C" s32 VFiPFFAT_ReadClusterPage(void *arg0, u32 arg1, s32 arg2, s32 *arg
 #define VF_ERR_CHAIN_SHORT 6
 #endif
 
-extern "C" s32 fn_800AF734(void *, s32, s32);
+extern "C" s32 VFiPF_setFatEntry12(void *, s32, s32);
 extern "C" s32 fn_800AFF28(void *, s32, u16);
 extern "C" s32 fn_800B037C(void *, s32, s32);
 /* Write one FAT entry of a file's cluster, and keep the file's chain cache in
@@ -7091,7 +7091,7 @@ static inline s32 FatSetEndMark(void *ctx, s32 idx, u32 value) {
     switch (*(s32 *)((u8 *)ctx + 0x1C)) {
     case 0:
         if (value > 0xFFF) return 0x10;
-        return fn_800AF734(ctx, idx, (u16)value);
+        return VFiPF_setFatEntry12(ctx, idx, (u16)value);
     case 1:
         if (value > 0xFFFF) return 0x10;
         return ((s32 (*)(void *, s32))fn_800AFF28)(ctx, idx);
@@ -7130,7 +7130,7 @@ static inline s32 FatSetEndMark(void *ctx, s32 idx, u32 value) {
     switch (fatType) {
     case 0:
         if (entryValue > 0xFFF) result = 0x10;
-        else result = fn_800AF734(volume, 0, (u16)entryValue);
+        else result = VFiPF_setFatEntry12(volume, 0, (u16)entryValue);
         break;
     case 1:
         if (entryValue > 0xFFFF) result = 0x10;
@@ -7151,7 +7151,7 @@ static inline s32 FatSetEndMark(void *ctx, s32 idx, u32 value) {
     switch (fatType) {
     case 0:
         if (entryValue > 0xFFF) result = 0x10;
-        else result = fn_800AF734(volume, 1, (u16)entryValue);
+        else result = VFiPF_setFatEntry12(volume, 1, (u16)entryValue);
         break;
     case 1:
         if (entryValue > 0xFFFF) result = 0x10;
@@ -7171,7 +7171,7 @@ static inline s32 FatSetEndMark(void *ctx, s32 idx, u32 value) {
 }
 
 s32 fn_800AEF6C(void *);
-extern "C" s32 fn_800AF734(void *arg0, s32 arg1, s32 arg2);
+extern "C" s32 VFiPF_setFatEntry12(void *arg0, s32 arg1, s32 arg2);
 extern "C" s32 fn_800AFF28(void *arg0, s32 arg1, u16 arg2);
 extern "C" s32 fn_800B037C(void *arg0, s32 arg1, s32 arg2);
 /* Set a FAT entry (12/16/28-bit, selected by the volume's FAT type) to the given value,
@@ -7433,7 +7433,7 @@ retryCheck:
 /* Set a packed 12-bit FAT entry (even/odd nibble layout), updating it across
  * all FAT copies while preserving the neighbouring nibble/byte in the sector.
  */
-extern "C" s32 fn_800AF734(void *fatCtx, s32 clusterIndex, s32 entryValue) {
+extern "C" s32 VFiPF_setFatEntry12(void *fatCtx, s32 clusterIndex, s32 entryValue) {
     extern s32 fn_800B5618(void *, void *, u32, u16, s32);
     u32 byteOffsetInPage;
     u8 *fat = (u8 *)fatCtx;
