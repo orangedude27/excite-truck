@@ -2369,7 +2369,7 @@ extern f32 fn_8013CB3C(void);
 #pragma optimize level=4
 #pragma scheduling invalid_target
 #pragma opt_propagation off
-extern "C" void fn_80140728(void *obj, void *index, void *item) {
+extern "C" void updateQueuedStringItem(void *obj, void *index, void *item) {
     /* Per-frame update of one queued string item: when its time window has
      * elapsed, hand its string states to the draw list. */
     struct VString { virtual void d0(); virtual void d1(); virtual u8 *get(const char *); };
@@ -2480,7 +2480,7 @@ extern "C" void fn_80140A6C(void *hud, int playerIndex) {
         ((void (*)(void *, void *, void *))fn_8013FDB0)(hud, (void *)playerIndex, entity);
         fn_8013F918(hud, (void *)playerIndex, entity);
         fn_8014052C(hud, playerIndex, (unsigned char *)entity);
-        fn_80140728(hud, (void *)playerIndex, entity);
+        updateQueuedStringItem(hud, (void *)playerIndex, entity);
         fn_80140614(hud, (void *)playerIndex, entity);
         if (lbl_8055E1BC != 0) {
             sceneObject = *(void **)((char *)hud + 0x54);
