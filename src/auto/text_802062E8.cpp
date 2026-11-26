@@ -463,10 +463,10 @@ struct Sound3D {
  * takes the sound out of play, and a muted sound is unmuted once the mute is
  * lifted.  Whatever was queued at +0x50 then goes to the sound, and a sound
  * that is not muted runs its own virtual update. */
-extern "C" void Sound3D_update(void *object, int context, int arg) {
+/* Apply Sound3D's queued play/mute/release requests to its VoiceSnd based on the sound's reported state, flush a queued parameter block, then run the sound's own virtual update when not muted. */ extern "C" void Sound3D_update(void *soundObj, int context, int arg) {
     /* The sound's own update: vtable slot +0x0C, fn_80206B14 in the base class. */
     struct SoundBase { virtual void dispose(); virtual void update(int, int); };
-    Sound3D *self = (Sound3D *)object;
+    Sound3D *self = (Sound3D *)soundObj;
     int state = self->sound->state(); /* VOICE_STATE_* below */
     self->playing = 1;                /* stays down only if the sound is out of play */
     switch (state) {
@@ -511,7 +511,7 @@ skip:
         self->queuedParam = 0;
     }
     if (!self->muted) { /* a muted sound does not run its own update */
-        ((SoundBase *)object)->update(context, arg);
+        ((SoundBase *)soundObj)->update(context, arg);
     }
 }
 
