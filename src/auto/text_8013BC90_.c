@@ -166,7 +166,7 @@ extern "C" void fn_8013BD5C(void *arg0, void *arg1) {
 }
 #pragma scheduling on
 #pragma cplusplus reset
-extern void fn_8013A2FC(void *, int);
+extern void buildAiExceptionList(void *, int);
 extern void fn_8013BD5C(void *, void *);
 extern const char lbl_8032C420[];
 #pragma cplusplus on
@@ -205,7 +205,7 @@ copy:
     if ((signed char)c != 0)
         goto count_check;
 copied:
-    fn_8013A2FC(line->blocks, ((ResourceReader *)reader)->getSection(lbl_8032C420));
+    buildAiExceptionList(line->blocks, ((ResourceReader *)reader)->getSection(lbl_8032C420));
     ((void (*)(void *, void *))fn_8013BD5C)(line->params, reader);
     *(volatile int *)&line->buffer = 0;
     return line;

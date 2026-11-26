@@ -5,7 +5,7 @@ typedef unsigned char u8;
 typedef float f32;
 
 /* The seven AI driving values a track section can tune. The names in the comments are the
-   keys they are read under in the track's "exception" container (see fn_8013A2FC). */
+   keys they are read under in the track's "exception" container (see buildAiExceptionList). */
 typedef struct AiParams {
     f32 onT;             /* "on_t": time the driver blends towards these values over */
     f32 moveout;         /* "moveout" */
@@ -117,19 +117,17 @@ extern f32 lbl_80561424, lbl_80561428, lbl_8056142C; /* track max, track min and
 #define AI_WRAP_ON_T            lbl_8056142C /* 0.1 -- blend time given to it */
 f32 fn_80134B58(f32 *, f32);                     /* value set for this key, or the default */
 
-#pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 void *fn_8013A264(void *arg0) {
-    f32 first = lbl_80561418;
-    unsigned int base = (unsigned int)lbl_8032C118;
-    *(f32 *)((u8 *)arg0 + 0xC) = fn_80134B58((f32 *)(base + 0), first);
-    *(f32 *)((u8 *)arg0 + 8) = fn_80134B58((f32 *)(base + 0x10), lbl_80561418);
-    *(f32 *)((u8 *)arg0 + 0x10) = fn_80134B58((f32 *)(base + 0x20), lbl_80561418);
+    u8 *base = (u8 *)lbl_8032C118;
+    *(f32 *)((u8 *)arg0 + 0xC) = fn_80134B58((f32 *)(base + 0), 1.0f);
+    *(f32 *)((u8 *)arg0 + 8) = fn_80134B58((f32 *)(base + 0x10), 1.0f);
+    *(f32 *)((u8 *)arg0 + 0x10) = fn_80134B58((f32 *)(base + 0x20), 1.0f);
     {
         f32 r4, w, v;
-        r4 = fn_80134B58(&lbl_80559C60, lbl_8056141C);
-        v = lbl_80561418;
-        w = lbl_80561420;
+        r4 = fn_80134B58(&lbl_80559C60, 10.0f);
+        v = 1.0f;
+        w = 3.0f;
         *(f32 *)((u8 *)arg0 + 0x18) = r4;
         *(f32 *)((u8 *)arg0 + 0x14) = v;
         *(f32 *)((u8 *)arg0 + 0x1C) = v;
@@ -138,7 +136,6 @@ void *fn_8013A264(void *arg0) {
     *(s32 *)arg0 = 0;
     return arg0;
 }
-#pragma pop
 
 #pragma push
 #pragma processor 750
@@ -151,7 +148,7 @@ void *fn_8013A264(void *arg0) {
    whose on_lon is past its off_lon wraps the end of the track, so a twin node is pushed for the
    other end, covering [0, off_lon] with a short blend time. Logs how many were found.
    The third argument's incoming value is ignored: it becomes the entry counter. */
-extern "C" void fn_8013A2FC(AiExceptionConfig *config, struct Container *container, int count) {
+extern "C" void buildAiExceptionList(AiExceptionConfig *config, struct Container *container, int count) {
     #pragma scheduling invalid_target
     const char *keys = (const char *)lbl_8032C118;
     if (container != 0) {
