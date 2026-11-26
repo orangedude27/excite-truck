@@ -3378,7 +3378,7 @@ BOOL fn_8005D0DC(BOOL final, s32 event) {
  * deadline that belongs to a 0xFF delay request (+0x850) only reports
  * WPAD_ERR_TRANSFER instead.  The status for the caller is returned. */
 #pragma opt_propagation off
-s32 WPADiSendGameInfoReport(s32 chan, WPADGameInfo *pInfo)
+/* Send a game-info output report on a Wiimote channel when the read status allows it, clearing a stale transfer status or dropping a timed-out busy HID link. */ s32 WPADiSendGameInfoReport(s32 chan, WPADGameInfo *pInfo)
 {
 #define s_wpadControlBlocks lbl_8038F4F0
 #define s_wpadTimeout lbl_8055DC1A
