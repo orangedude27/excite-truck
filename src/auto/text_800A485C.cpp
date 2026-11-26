@@ -7097,7 +7097,7 @@ static inline s32 FatSetEndMark(void *ctx, s32 idx, u32 value) {
 }
 /* Format a volume's FAT: clear and write out every FAT sector, then put the
  * media descriptor in entry 0 and the end-of-chain marker in entry 1. */
-extern "C" s32 fn_800AED1C(void *volume) {
+extern "C" s32 vfFormatFat(void *volume) {
     void *page;
     s32 unusedOut;
     s32 result;
@@ -11056,7 +11056,7 @@ extern "C" s32 readVolumeData(void *vol, u8 *dest, u32 sector, u32 offset, u32 l
 }
 
 extern "C" s32 VFiPFMountVolume(void *);
-extern "C" s32 fn_800AED1C(void *);
+extern "C" s32 vfFormatFat(void *);
 extern "C" s32 fn_800A5800(void *, s32);
 #pragma opt_strength_reduction off
 extern "C" s32 fn_800B5988(void *arg0) {
@@ -11123,7 +11123,7 @@ done:
     if (r == 0 && (*(u16 *)((u8 *)arg0 + 0x1F8C) & 0x40)) {
         r = fn_800A5800(arg0, *(s32 *)((u8 *)arg0 + 0x1FC4));
         if (r == 0 && !(*(u16 *)((u8 *)arg0 + 0x1F8C) & 0x80)) {
-            r = fn_800AED1C(arg0);
+            r = vfFormatFat(arg0);
             if (r == 0) r = fn_800AAF70(arg0);
         }
     }
