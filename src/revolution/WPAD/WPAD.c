@@ -4626,7 +4626,9 @@ void fn_80062088(s32 volume) {
     OSRestoreInterrupts(interrupts);
 }
 
-// fn_80062278: check controller
+/* Out-of-line copy of WPADSendStreamData with WPADiSendStreamData and the
+ * command-queue push inlined: validate the channel and stream state, build the
+ * 0x18 speaker stream report and enqueue it on the channel's standard queue. */
 #pragma push
 #pragma opt_propagation off
 s32 fn_80062278(s32 chan, void* pData, u16 len) {
