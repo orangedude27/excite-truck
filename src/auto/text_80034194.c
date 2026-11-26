@@ -2754,7 +2754,7 @@ extern void (*lbl_80558E08)(void *, void *);
 /* DVD low-level command completion handler (the driver's busy state). Logs
  * selected commands to the error-info ring buffer, then dispatches each one to
  * the matching DVDLow routine; long reads are split into 0x80000-byte chunks. */
-void __DVDStateBusy(void *block) {
+/* Complete a DVD command in the driver's busy state: stamp interesting commands into the error-info ring, then issue the matching DVDLow call, splitting long reads into 0x80000-byte chunks. */ void __DVDStateBusy(void *block) {
  u8 *blockBytes = block;
  int offset;
  int length;
