@@ -888,7 +888,7 @@ done:
 
 /* A "firetext" credits item.  Credits_BuildItem builds it under the name "TextWoot" (0xbc bytes)
    and fn_80265268 hands it the line to show; its class vtable is lbl_80346618 and
-   fn_802652E8 is that vtable's slot 0x28 (draw the line). */
+   FireTextDraw is that vtable's slot 0x28 (draw the line). */
 typedef struct FireText {
     /* 0x00 */ void *vt;
     /* 0x04 */ int x;           /* anchor of the line, kept as an int, drawn as a float */
@@ -913,7 +913,7 @@ typedef struct FireText {
  * pixels for a whole character) and at the vertical middle of the text.
  * Nothing happens at all until startTime comes up.
  */
-void fn_802652E8(void *arg0) {
+void FireTextDraw(void *arg0) {
     FireText *item = (FireText *)arg0;
     char *cut;
     float box[8];              /* [0..3] the shown part, [4..7] the whole line: minX, minY, maxX, maxY */
