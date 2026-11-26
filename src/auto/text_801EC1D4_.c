@@ -819,9 +819,9 @@ void fn_801ED354(void *vehicleRender) {
 
 #pragma push
 #pragma scheduling invalid_target
-/* Rotate the source vector from the current draw matrix (DrawList_getCurrentMatrix) by this
- * object's 3x3 matrix at +0x3C, write the result and its negation into two
- * indexed vec3 slots, then dispatch a draw callback using fn_802C7A34's handle. */
+/* Rotate the current draw matrix's translation vector by this object's 3x3 matrix
+ * at +0x3C, write the result and its negation into two indexed vec3 slots, then
+ * dispatch the leftover part draw with the handle from fn_802C7A34. */
 void drawLeftoverVehicleParts(void *self) {
     float outVec[3];
     float *currentMatrix;
