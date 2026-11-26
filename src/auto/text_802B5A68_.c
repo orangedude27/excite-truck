@@ -1519,71 +1519,71 @@ extern "C" void setupBrushColumn(void) {
 #define kMsPerSecond    lbl_80564C70   /* 1000.0f */
 
     char *base = lbl_8034A598;
-    s32 rowOffset;
-    s32 i;
-    s32 brushCount;
+    s32 entryByteOffset;
+    s32 brushIndex;
+    s32 loadedBrushCount;
     DebugUi *uiRoot = (DebugUi *)kPanelRoot;
     void *object;
-    volatile const u8 *rowBytes;
+    volatile const u8 *sourceRowBytes;
     f32 rowStep;
-    f32 elapsed;
-    s32 withinWindow;
-    s32 rowBits;
+    f32 elapsedSeconds;
+    s32 withinRefreshWindow;
+    s32 rowYBits;
     s32 rowValue;
-    s32 index;
-    void *selected;
+    s32 selectedIndex;
+    void *selectedEntry;
     DebugRow row;
-    char label[0x20];
+    char rowLabel[0x20];
 
     object = uiRoot->findObject(kMatmapCol);
     rowStep = *(f32 *)((u8 *)object + 0x14);
     uiRoot = (DebugUi *)kPanelRoot;
     object = uiRoot->findPane(kBrushColumn);
-    rowBytes = (volatile const u8 *)object;
-    row.name = *(void * volatile *)(rowBytes + 0);
-    rowValue = *(volatile const s32 *)(rowBytes + 4);
-    rowBits = *(volatile const s32 *)(rowBytes + 8);
+    sourceRowBytes = (volatile const u8 *)object;
+    row.name = *(void * volatile *)(sourceRowBytes + 0);
+    rowValue = *(volatile const s32 *)(sourceRowBytes + 4);
+    rowYBits = *(volatile const s32 *)(sourceRowBytes + 8);
     row.value = rowValue;
-    row.unk8 = rowBits;
-    row.unkC = *(volatile const s32 *)(rowBytes + 0xC);
-    row.time = *(volatile const f32 *)(rowBytes + 0x10);
-    row.unk14 = *(volatile const s32 *)(rowBytes + 0x14);
-    row.unk18 = *(volatile const s32 *)(rowBytes + 0x18);
-    row.unk1C = *(volatile const s32 *)(rowBytes + 0x1C);
+    row.unk8 = rowYBits;
+    row.unkC = *(volatile const s32 *)(sourceRowBytes + 0xC);
+    row.time = *(volatile const f32 *)(sourceRowBytes + 0x10);
+    row.unk14 = *(volatile const s32 *)(sourceRowBytes + 0x14);
+    row.unk18 = *(volatile const s32 *)(sourceRowBytes + 0x18);
+    row.unk1C = *(volatile const s32 *)(sourceRowBytes + 0x1C);
     uiRoot = (DebugUi *)kPanelRoot;
     object = uiRoot->findPane(kBrushDropdown);
     formatDebugTextEntry(object, kBrushesCaption);
-    elapsed = (f32)KERNEL_GetTimeMs() / kMsPerSecond -
+    elapsedSeconds = (f32)KERNEL_GetTimeMs() / kMsPerSecond -
               kBaseSeconds;
-    withinWindow = elapsed < kRefSeconds;
-    if (withinWindow != 0) {
+    withinRefreshWindow = elapsedSeconds < kRefSeconds;
+    if (withinRefreshWindow != 0) {
         /* Still inside the window: rescan, then list every brush of the folder. */
         fn_802B6AC0();
-        brushCount = ((s32 *)&kBrushList)[1];
-        if (brushCount > 0) {
-            i = 0;
-            rowOffset = 0;
-            while (i < ((s32 *)&kBrushList)[1]) {
+        loadedBrushCount = ((s32 *)&kBrushList)[1];
+        if (loadedBrushCount > 0) {
+            brushIndex = 0;
+            entryByteOffset = 0;
+            while (brushIndex < ((s32 *)&kBrushList)[1]) {
                 ((void (*)(char *, s32, const char *, ...))fn_801345D8)(
-                    label, 0x20, kRowFormat, i);
-                row.name = label;
+                    rowLabel, 0x20, kRowFormat, brushIndex);
+                row.name = rowLabel;
                 formatDebugTextEntry(&row, kFormatS,
-                            (void *)(*(u32 *)&kBrushList + rowOffset));
+                            (void *)(*(u32 *)&kBrushList + entryByteOffset));
                 *(f32 *)((u8 *)&row + 8) += rowStep;
-                rowOffset += 0x128;
-                i++;
+                entryByteOffset += 0x128;
+                brushIndex++;
             }
         } else {
             fn_80147230(&row, kNoBrushes);
         }
     } else {
         /* Settled: only the brush the drop-down selected. */
-        index = kSelectedBrush;
-        selected = kNoSelection;
-        if (index >= 0 && index < *(s32 *)((u8 *)&kBrushList + 4)) {
-            selected = (void *)(*(u32 *)&kBrushList + index * 0x128);
+        selectedIndex = kSelectedBrush;
+        selectedEntry = kNoSelection;
+        if (selectedIndex >= 0 && selectedIndex < *(s32 *)((u8 *)&kBrushList + 4)) {
+            selectedEntry = (void *)(*(u32 *)&kBrushList + selectedIndex * 0x128);
         }
-        fn_80147230(&row, kFormatS, selected);
+        fn_80147230(&row, kFormatS, selectedEntry);
     }
 
 #undef kMatmapCol
