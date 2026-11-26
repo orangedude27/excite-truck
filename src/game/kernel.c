@@ -604,7 +604,7 @@ extern void Spu_Init(void);
 extern void initStrmBank(void);
 extern void fn_802EBE2C(void);
 extern void fn_802CF600(void);
-extern void fn_802EC614(void);
+extern void initHomeButtonChannel2(void);
 extern void KERNEL_ReadStartupCalendar(void *);
 extern void fn_802E27F0(void);
 extern void fn_80127C90(void *, void *);
@@ -661,7 +661,7 @@ int KERNEL_Init(void) {
     initStrmBank();
     fn_802EBE2C();
     fn_802CF600();
-    fn_802EC614();
+    initHomeButtonChannel2();
     KERNEL_ReadStartupCalendar(&startTime);
     fn_802E30C8(KERNEL_DATE_FORMAT, startTime.month, startTime.day, startTime.year, startTime.weekDay);
     fn_802E30C8(KERNEL_TIME_FORMAT, startTime.hour, startTime.minute, startTime.second);

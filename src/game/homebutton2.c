@@ -106,7 +106,7 @@ extern void closeFileHandle(s32 *);
 #pragma dont_inline off
 
 #pragma scheduling invalid_target
-/* Initializes home-button channel 2: clears the menu flags, sets up fast casts and WPAD info, loads the language archive and UI resources, then marks the module ready. */ void fn_802EC614(void) {
+/* Initializes home-button channel 2: clears the menu flags, sets up fast casts and WPAD info, loads the language archive and UI resources, then marks the module ready. */ void initHomeButtonChannel2(void) {
     // Home-button channel 2 start-up: clear the menu mode/request flags, init the
     // fast-cast table, seed the WPAD info config, fill the HomeBtn2Resources block
     // (per-language homeBtn_*.arc + three files, a 0x80000-byte archive buffer and
@@ -199,7 +199,7 @@ extern void fn_801282F4(void);
 extern void fn_800C64F4(void *);
 extern void *memset(void *, int, unsigned int);
 
-/* Home-button channel 2's resource block at lbl_80558860: fn_802EC614() fills it
+/* Home-button channel 2's resource block at lbl_80558860: initHomeButtonChannel2() fills it
  * in at start-up and fn_802EC7AC() releases it at shutdown.  The handles are
  * what fn_802EC4E8() returns for the names after this file's string block. */
 struct HomeBtn2Resources {
@@ -221,7 +221,7 @@ struct HomeBtn2Resources {
 #define HOMEBTN2_UNREMOVED_MSG (lbl_8034EB28) /* "homebtn: callback %p never removed" */
 
 #pragma scheduling invalid_target
-/* Home-button channel 2 shutdown, the mirror of fn_802EC614(): clears the
+/* Home-button channel 2 shutdown, the mirror of initHomeButtonChannel2(): clears the
  * "ready" flag, tears down the home-button driver's heap, panics on every
  * callback the game left registered, then frees the archive buffer, the four
  * opened files and the two home-button UI resources. */
