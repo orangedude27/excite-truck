@@ -21720,7 +21720,7 @@ extern "C" void fn_800D2E3C(s32, s32, s32, s32);
 extern "C" void Console_DrawDirectLines(void*, s32);
 extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597E0[]; }
 extern "C" void fn_8010DC74(s32, const char *, ...);
-extern "C" void fn_800D2FDC(void *arg0, void *arg1, s32 arg2, const char *fmt, ...);
+extern "C" void db_DirectPrint(void *arg0, void *arg1, s32 arg2, const char *fmt, ...);
 extern void* lbl_8055DDBC;
 extern "C" void fn_800D2098(const char *, s32, const char *, va_list);
 extern "C" void __VprintfThunk(const char*, va_list);
@@ -21799,7 +21799,7 @@ extern "C" void fn_800D2FC8(void) {
 extern "C" const char lbl_8031EBA0[];
 extern "C" const char lbl_8031EBB4[];
 extern "C" void fn_800D30E8(s32, s32, const char *, s32, s32);
-extern "C" void fn_800D2FDC(void *arg0, void *arg1, s32 arg2, const char *fmt, ...) {
+extern "C" void db_DirectPrint(void *arg0, void *arg1, s32 arg2, const char *fmt, ...) {
     /* Format a debug/direct-print message into a stack buffer and, when the debug print
        system is enabled, forward it to the text drawing routine. Panics if formatting is
        attempted while the required frame buffer/state is unavailable. */
@@ -27438,7 +27438,7 @@ extern "C" void Console_DrawDirectLines(void *consoleHead, s32 charWriter)
             fn_8010DC74(charWriter, lbl_805597E0, text);
         } else {
             /* One line feed of the console's text is 10 pixels. */
-            fn_800D2FDC((void *)(s32)console->drawX,
+            db_DirectPrint((void *)(s32)console->drawX,
                         (void *)(s32)(console->drawY + (u16)drawn * 10), 0,
                         lbl_805597E0, text);
         }
