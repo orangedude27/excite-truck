@@ -88,7 +88,7 @@ typedef struct {
     Cmd64 ext;
     Cmd64 extCopy;
 } WPADManageFrame;
-void fn_80063324(s32 chan, WPADGameInfo *info);
+void WPADiSendOutputReport(s32 chan, WPADGameInfo *info);
 s32 fn_8005D234(s32 chan, WPADGameInfo* pInfo);
 
 typedef struct WPADCB_8011_View {
@@ -847,7 +847,7 @@ block_33:
                     frame.rmbCopy.d[3] = frame.rmb.d[3];
                     frame.rmbCopy.d[4] = frame.rmb.d[4];
                     frame.rmbCopy.d[5] = frame.rmb.d[5];
-                    fn_80063324(var_r26, (WPADGameInfo*)&frame.rmbCopy);
+                    WPADiSendOutputReport(var_r26, (WPADGameInfo*)&frame.rmbCopy);
                 }
 block_done:
                 if (*(s32*)((u8*)*var_r28 + 0x810) != 0) {
@@ -3368,7 +3368,7 @@ BOOL fn_8005D0DC(BOOL final, s32 event) {
  *
  * Ready channel (readStatus WPAD_ERR_OK and no report request outstanding):
  * copy the command word by word into a local and pass that to __SendData
- * (fn_80063324), which builds the HID report and sends it - the copy keeps
+ * (WPADiSendOutputReport), which builds the HID report and sends it - the copy keeps
  * __SendData from touching the queue entry the caller still owns.
  * A leftover WPAD_ERR_TRANSFER is cleared back to WPAD_ERR_OK so the next read
  * can start.  While the channel is busy, a command whose deadline (+0x848,
@@ -3442,7 +3442,7 @@ s32 fn_8005D234(s32 chan, WPADGameInfo *pInfo)
       cmdWords[9] = w9;
       cmdWords[10] = w10;
       cmdWords[11] = w11;
-      fn_80063324(chan, (WPADGameInfo *) cmdWords);
+      WPADiSendOutputReport(chan, (WPADGameInfo *) cmdWords);
     }
   }
   else
@@ -5209,7 +5209,7 @@ finish:
     return status;
 }
 extern const char lbl_803122F4[];
-void fn_80063324(s32 chan, WPADGameInfo *pCommand) {
+void WPADiSendOutputReport(s32 chan, WPADGameInfo *pCommand) {
     /* Send one Wiimote output report on channel: set up the controller block,
      * handle rumble/ack timing, build a HID report buffer and send it over HID. */
     WPADCommand* command = (WPADCommand*)pCommand;
