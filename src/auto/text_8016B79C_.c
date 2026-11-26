@@ -1594,59 +1594,62 @@ s32 fn_8016DE10(s32 *header, s32 index) {
  * Frees any existing handle, formats mode-specific label text, resolves display
  * metrics for that label, then allocates/updates the active handle; logs an
  * error for unknown modes. */
-void refreshRingSetMapMarker(void *obj) {
-    char textBuffer[0x20];
-    register char *formatBase = lbl_803306D0;
-    register void *object = obj;
-    s32 activeId;
-    s32 displayMode;
+void refreshRingSetMapMarker(void *controller)
+{
+    /* Release the old marker slot, build the ring-set name for the current
+       difficulty, measure its text and reserve a fresh map marker. */
+    char labelText[0x20];
+    register char *strings = lbl_803306D0;
+    register void *ctrl = controller;
+    s32 oldMarkerSlot;
+    s32 difficulty;
 
-    activeId = *(s32 *)((u8 *)object + 0x24);
-    if (activeId != -1) {
-        if (activeId != -1) {
-            fn_8001B450(activeId);
-            *(s32 *)((u8 *)object + 0x24) = -1;
+    oldMarkerSlot = *(s32 *)((u8 *)ctrl + 0x24);
+    if (oldMarkerSlot != -1) {
+        if (oldMarkerSlot != -1) {
+            fn_8001B450(oldMarkerSlot);
+            *(s32 *)((u8 *)ctrl + 0x24) = -1;
         }
     }
 
-    displayMode = *(s32 *)((u8 *)object + 0x44);
-    switch (displayMode) {
+    difficulty = *(s32 *)((u8 *)ctrl + 0x44);
+    switch (difficulty) {
     case 0:
-        fn_801345D8(textBuffer, 0x1E, formatBase + 0x264, *(s32 *)((u8 *)object + 0x2C));
+        fn_801345D8(labelText, 0x1E, strings + 0x264, *(s32 *)((u8 *)ctrl + 0x2C));
         break;
     case 1:
-        fn_801345D8(textBuffer, 0x1E, formatBase + 0x270, *(s32 *)((u8 *)object + 0x2C));
+        fn_801345D8(labelText, 0x1E, strings + 0x270, *(s32 *)((u8 *)ctrl + 0x2C));
         break;
     case 2:
-        fn_801345D8(textBuffer, 0x1E, formatBase + 0x27C, *(s32 *)((u8 *)object + 0x2C));
+        fn_801345D8(labelText, 0x1E, strings + 0x27C, *(s32 *)((u8 *)ctrl + 0x2C));
         break;
     default:
-        Abend_Panic(formatBase + 0x288);
+        Abend_Panic(strings + 0x288);
         break;
     }
 
-    displayMode = *(s32 *)((u8 *)object + 0x44);
-    switch (displayMode) {
+    difficulty = *(s32 *)((u8 *)ctrl + 0x44);
+    switch (difficulty) {
     case 0: {
-        FloatPair8016A6B0 result = fn_8016A6B0(textBuffer, 0xC);
-        *(s32 *)((u8 *)object + 0x24) =
-            fn_8001B308(&result, *(s32 *)((u8 *)object + 0x20), 2);
+        FloatPair8016A6B0 labelMetrics = fn_8016A6B0(labelText, 0xC);
+        *(s32 *)((u8 *)ctrl + 0x24) =
+            fn_8001B308(&labelMetrics, *(s32 *)((u8 *)ctrl + 0x20), 2);
         break;
     }
     case 1: {
-        FloatPair8016A6B0 result = fn_8016A6B0(textBuffer, 9);
-        *(s32 *)((u8 *)object + 0x24) =
-            fn_8001B308(&result, *(s32 *)((u8 *)object + 0x20), 2);
+        FloatPair8016A6B0 labelMetrics = fn_8016A6B0(labelText, 9);
+        *(s32 *)((u8 *)ctrl + 0x24) =
+            fn_8001B308(&labelMetrics, *(s32 *)((u8 *)ctrl + 0x20), 2);
         break;
     }
     case 2: {
-        FloatPair8016A6B0 result = fn_8016A6B0(textBuffer, 6);
-        *(s32 *)((u8 *)object + 0x24) =
-            fn_8001B308(&result, *(s32 *)((u8 *)object + 0x20), 2);
+        FloatPair8016A6B0 labelMetrics = fn_8016A6B0(labelText, 6);
+        *(s32 *)((u8 *)ctrl + 0x24) =
+            fn_8001B308(&labelMetrics, *(s32 *)((u8 *)ctrl + 0x20), 2);
         break;
     }
     default:
-        Abend_Panic(formatBase + 0x288);
+        Abend_Panic(strings + 0x288);
         break;
     }
 }
