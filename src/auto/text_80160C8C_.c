@@ -2528,7 +2528,7 @@ extern "C" s32 fn_80163C38(void *arg0) {
 #pragma cplusplus on
 // Draws the tutorial/progress HUD: the top and bottom bar graphics, a status
 // text line and the bar fill, picking the message from the object's state.
-extern "C" s32 fn_80163D34(void *arg0) {
+extern "C" s32 drawTutorialHud(void *arg0) {
     class HudObject {
     public:
         virtual void m08(); virtual void m0C(); virtual void m10(); virtual void m14();
