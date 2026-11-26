@@ -2141,7 +2141,7 @@ extern "C" s32 fn_801631E0(void *arg0) {
 // ("results1") and body line ("results2", whose text comes from the message
 // table and says why the tutorial was lost), and, once the banner is far
 // enough in, the "continue" prompt.  Returns 1 to keep the HUD object alive.
-extern "C" s32 fn_801632C8(void *banner) {
+extern "C" s32 drawTutorialResultsBanner(void *banner) {
     class HudObject {
     public:
         virtual void m08(); virtual void m0C(); virtual void m10(); virtual void m14();
