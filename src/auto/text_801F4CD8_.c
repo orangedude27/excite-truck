@@ -67,7 +67,7 @@ extern char lbl_8033AE54[], lbl_8033AE78[];
 extern char lbl_8055B1C0[];
 typedef int (*GetterI)(void *, const char *);
 typedef void (*SetterV)(void *, const char *);
-extern void fn_801F5344(void *, void *, void *);
+extern void snapshotClothSetup(void *, void *, void *);
 typedef void *FN_801F70D0_RETURN;
 extern FN_801F70D0_RETURN fn_801F70D0(void *, int);
 extern void *fn_801F6D60(void *, int);
@@ -329,7 +329,7 @@ extern "C" int fn_801F52BC(void *self, int sourceId, int outBuf, int outMax) {
 }
 #pragma cplusplus on
 #pragma scheduling on
-extern "C" void fn_801F5344(void *out, void *arg1, void *arg2) {
+extern "C" void snapshotClothSetup(void *out, void *arg1, void *arg2) {
     char *base = lbl_8033AC68;
     Getter_801F5344 *object = (Getter_801F5344 *)arg1;
     volatile float *outFloats = (volatile float *)out;
@@ -1430,7 +1430,7 @@ __declspec(section ".sdata") extern char lbl_8055B1B8[];
 __declspec(section ".sdata") extern char lbl_8055B1C0[];
 #pragma cplusplus on
 // Adds a manual (non-uniform) mesh/fabric entry into this object's slot table:
-// validates capacity/type, snapshots setup via fn_801F5344, fills slot params (id/state,
+// validates capacity/type, snapshots setup via snapshotClothSetup, fills slot params (id/state,
 // scaled gravity/wind values) using the object's virtual getters, and increments slot count.
 extern "C" void fn_801F7280(void *arg0, void *arg1, void *arg2) {
     char sp8[0x68];
@@ -1450,7 +1450,7 @@ extern "C" void fn_801F7280(void *arg0, void *arg1, void *arg2) {
     object = (DummyObj_801F7280 *)arg1;
     value = (int)object->d5(lbl_8055B1C0);
     old = fn_801F4E44(object->d5(lbl_8055B19C));
-    fn_801F5344(sp8, arg1, arg2);
+    snapshotClothSetup(sp8, arg1, arg2);
     fn_801F602C(slot, (int)sp8, value, old, got);
     *(int *)(slot + 0x34) = -1;
     slot[0x38] = 1;
@@ -1543,88 +1543,112 @@ typedef struct OutputRecord_801F7400 {
     float value60;
     float value64;
 } OutputRecord_801F7400;
-#pragma push
-#pragma use_lmw_stmw off
-#pragma scheduling invalid_target
-void fn_801F7400(void *out, void *base, void *obj) {
-    volatile int *dstI = (volatile int *)out;
-    volatile float *dstF = (volatile float *)out;
-    char *recordA;
-    char *recordB;
-    char *recordC;
-    int indexA, indexB, indexC;
-    int a10, a14, a18, a1C;
-    int b10, b14, b18, b1C;
-    int c10, c14, c18, c1C;
-    float a20, a24, b20, b24, c20, c24;
-    float sumX, sumY, sum0, sum1, sum2, t5, t6, t7, t8;
-    indexA = *(volatile int *)((char *)base + 0x60);
-    indexB = *(volatile int *)((char *)base + 0x5C);
-    indexC = *(volatile int *)((char *)base + 0x58);
-    recordA = (char *)base + indexA * 0x18;
-    recordC = (char *)base + indexC * 0x18;
-    a10 = *(int *)(recordA + 0x10);
-    a14 = *(int *)(recordA + 0x14);
-    a18 = *(int *)(recordA + 0x18);
-    dstI[13] = a14;
-    recordB = (char *)base + indexB * 0x18;
-    c10 = *(int *)(recordC + 0x10);
-    dstI[14] = a18;
-    c14 = *(int *)(recordC + 0x14);
-    b10 = *(int *)(recordB + 0x10);
-    b14 = *(int *)(recordB + 0x14);
-    dstI[6] = b10;
-    b18 = *(int *)(recordB + 0x18);
-    dstI[7] = b14;
-    b1C = *(int *)(recordB + 0x1C);
-    dstI[12] = a10;
-    b20 = *(float *)(recordB + 0x20);
-    a20 = *(float *)(recordA + 0x20);
-    dstI[8] = b18;
-    c18 = *(int *)(recordC + 0x18);
-    c20 = *(float *)(recordC + 0x20);
-    b24 = *(float *)(recordB + 0x24);
-    a24 = *(float *)(recordA + 0x24);
-    c24 = *(float *)(recordC + 0x24);
-    sumX = (b20 + a20) - c20;
-    c1C = *(int *)(recordC + 0x1C);
-    a1C = *(int *)(recordA + 0x1C);
-    sumY = (b24 + a24) - c24;
-    dstI[0] = c10;
-    t8 = dstF[12] + dstF[6];
-    t6 = dstF[14];
-    t7 = dstF[13] + dstF[7];
-    dstI[1] = c14;
-    t5 = t6 + dstF[8];
-    sum0 = t8 - dstF[0];
-    dstI[2] = c18;
-    sum1 = t7 - dstF[1];
-    sum2 = t5 - dstF[2];
-    dstI[3] = c1C;
-    dstI[9] = b1C;
-    dstI[15] = a1C;
-    dstF[4] = c20;
-    dstF[5] = c24;
-    dstF[10] = b20;
-    dstF[11] = b24;
-    dstF[16] = a20;
-    dstF[17] = a24;
-    dstF[18] = sum0;
-    dstF[19] = sum1;
-    dstF[20] = sum2;
-    dstF[22] = sumX;
-    dstF[23] = sumY;
-    dstI[21] = b1C;
-    if (((int (*)(void *, int, void *, int, int, int, void *, int,
-                  float, float, float, float, float, float, float, float))fn_801F52BC)(
-            obj, (int)lbl_8033AD7C, (char *)out + 0x60, 4,
-            c1C, a10, recordA, b1C,
-            sumX, sum2, sum1, sum0, t5, t6, t7, t8) == 0)
-        dstF[24] = lbl_80562FB8;
-    if (((int (*)(void *, int, void *, int))fn_801F52BC)(obj, (int)lbl_8033AD88, (char *)out + 0x64, 4) == 0)
-        dstF[25] = lbl_80562FB8;
+#pragma scheduling on
+void fn_801F7400(void *out, void *base, void *obj)
+{
+  volatile int *dstI = (volatile int *) out;
+  volatile float *dstF = (volatile float *) out;
+  char *recordA;
+  char *recordB;
+  char *recordC;
+  int indexA;
+  int indexB;
+  int indexC;
+  int a10;
+  int a14;
+  int a18;
+  int a1C;
+  int b10;
+  int b14;
+  unsigned char b18;
+  int b1C;
+  int c14;
+  int c18;
+  int c1C;
+  float a24;
+  float a20;
+  float b20;
+  int c10;
+  float b24;
+  float c24;
+  float c20;
+  float sumX;
+  float sumY;
+  float sum0;
+  float sum1;
+  float sum2;
+  float t5;
+  float t6;
+  float t7;
+  float t8;
+  int temp;
+  indexA = *((volatile int *) (((char *) base) + 0x60));
+  indexB = *((volatile int *) (((char *) base) + 0x5C));
+  indexC = *((volatile int *) (((char *) base) + 0x58));
+  recordC = ((char *) base) + (indexC * 0x18);
+  a10 = *((int *) ((recordA = ((char *) base) + (indexA * 0x18)) + 0x10));
+  a14 = *((int *) (recordA + 0x14));
+  a18 = *((int *) (recordA + 0x18));
+  dstI[13] = a14;
+  recordB = ((char *) base) + (indexB * 0x18);
+  c10 = *((int *) ((((char *) base) + (indexC * 0x18)) + 0x10));
+  dstI[14] = a18;
+  temp = *((int *) (recordC + 0x14));
+  c14 = temp;
+  b10 = *((int *) (recordB + 0x10));
+  b14 = *((int *) (recordB + 0x14));
+  dstI[6] = ((((((b10 & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) & 0xFFFFu) & 0xFFFFu;
+  b18 = *((int *) (recordB + 0x18));
+  dstI[7] = b14;
+  b1C = *((int *) (recordB + 0x1C));
+  dstI[12] = a10;
+  b20 = *((float *) (recordB + 0x20));
+  a20 = *((float *) (recordA + 0x20));
+  dstI[8] = b18;
+  c18 = *((int *) (recordC + 0x18));
+  c20 = *((float *) (recordC + 0x20));
+  b24 = *((float *) (recordB + 0x24));
+  a24 = *((float *) (recordA + 0x24));
+  sumX = (b20 + a20) - c20;
+  c1C = *((int *) (recordC + 0x1C));
+  a1C = *((int *) (recordA + 0x1C));
+  c24 = *((float *) (recordC + 0x24));
+  ;
+  dstI[0] = c10;
+  t7 = dstF[13] + dstF[7];
+  t6 = dstF[14];
+  dstI[1] = c14;
+  t5 = t6 + dstF[8];
+  t8 = dstF[6] + dstF[12];
+  sum0 = t8 - dstF[0];
+  dstI[2] = c18;
+  sum1 = t7 - dstF[1];
+  sum2 = t5 - dstF[2];
+  dstI[3] = c1C;
+  dstI[9] = b1C;
+  dstI[15] = a1C;
+  dstF[4] = c20;
+  dstF[5] = c24;
+  dstF[10] = b20;
+  dstF[11] = b24;
+  dstF[16] = a20;
+  dstF[17] = a24;
+  dstF[18] = sum0;
+  dstF[19] = sum1;
+  dstF[20] = sum2;
+  dstF[22] = (b20 + a20) - c20;
+  dstF[23] = (b24 + a24) - c24;
+  dstI[21] = b1C;
+  if (((int (*)(void *, int, void *, int, int, int, void *, int, float, float, float, float, float, float, float, float)) fn_801F52BC)(obj, (int) lbl_8033AD7C, ((char *) out) + 0x60, 4, c1C, a10, recordA, b1C, sumX, sum2, sum1, sum0, t5, t6, t7, t8) == 0)
+  {
+    dstF[24] = lbl_80562FB8;
+  }
+  if (!((int (*)(void *, int, void *, int)) fn_801F52BC)(obj, (int) lbl_8033AD88, ((char *) out) + 0x64, 4))
+  {
+    dstF[25] = lbl_80562FB8;
+  }
 }
-#pragma pop
+#pragma scheduling invalid_target
 extern void *ResourceEntry_GetName(void *);
 extern void MlistAddDrawEntry(void *, int);
 extern char lbl_8033AF20[];
