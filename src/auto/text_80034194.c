@@ -2248,7 +2248,7 @@ void fn_8003727C(u32 status) {
 
 #pragma push
 #pragma use_lmw_stmw off
-void onDiscHeaderReadComplete(u32 statusCode) {
+/* Completion callback for the disc-header read: log the drive status, then re-issue the boot-data read on cancel/odd status or queue a fatal drive reset otherwise. */ void onDiscHeaderReadComplete(u32 statusCode) {
     register u32 status = statusCode;
     s32 interrupts;
 
