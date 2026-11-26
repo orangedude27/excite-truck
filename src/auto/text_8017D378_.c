@@ -39,7 +39,7 @@ struct VObj_8017D6E0 {
 };
 #pragma cplusplus reset
 #pragma cplusplus on
-/* The object fn_801B2EC0 gives for a target id; slot 0x10 returns the state whose +0x24
+/* The object getDeitySlot gives for a target id; slot 0x10 returns the state whose +0x24
    says whether the target can still have a body dropped next to it. */
 struct VT8017DCB4 { virtual void f0(); virtual void f1(); virtual void* f2(); virtual void f3(); virtual void* f4(); };
 #pragma cplusplus reset
@@ -477,7 +477,7 @@ done:
     extern void fn_8017A580(void *);                /* refreshes the body's world transform */
     extern float fn_8017D378(void);                 /* the clock the body's timers run on */
     extern void *getRegisteredObject(int);                  /* scene object by id; its tag is at +0x10 */
-    extern void *fn_801B2EC0(int);                  /* the target's vehicle by id */
+    extern void *getDeitySlot(int);                  /* the target's vehicle by id */
     extern void fn_801602B0(void *);                /* no-op */
     extern void fn_8017E3C4(void *, void *, short *); /* a random spot beside the target */
     extern void fn_80144DC8(void *);                /* no-op */
@@ -525,7 +525,7 @@ done:
         allowed = 0;
         if ((flags & 1) && (flags & 0x80)) allowed = 1;
         if (allowed != 0) {
-            void *vehicle = fn_801B2EC0(body->targetId);
+            void *vehicle = getDeitySlot(body->targetId);
             void *state = ((struct VT8017DCB4 *)vehicle)->f2();
             if (*(int *)((char *)state + 0x24) == 0) { /* the target is still in play */
                 short groundId;
@@ -731,7 +731,7 @@ void fn_8017E388(void *out) {
 #pragma paired_single off
 void fn_8017E3C4(void *arg0, void *arg1, short *arg2) {
     extern void *__AXFXGetLfoSinTable_801769CC(void);
-    extern void *fn_801B2EC0(int);
+    extern void *getDeitySlot(int);
     extern int fn_801E9E30(void *, void *);
     extern void fn_801E9DC4(void *, float, float, float, float, float);
     extern float lbl_80561C30, lbl_80561C34, lbl_80561C38, lbl_80561C3C, lbl_80561C40;
@@ -765,7 +765,7 @@ void fn_8017E3C4(void *arg0, void *arg1, short *arg2) {
         }
         return;
     }
-    veh = fn_801B2EC0(*(int *)((char *)arg0 + 0x1F8));
+    veh = getDeitySlot(*(int *)((char *)arg0 + 0x1F8));
     ftbl = *(void ***)veh;
     p = (char *)((void *(*)(void))ftbl[6])();
     t = randFloatInRange(4, lbl_80561C38, lbl_80561C3C);

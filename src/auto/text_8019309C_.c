@@ -1077,7 +1077,7 @@ float fn_80194B60(float start, float end, float period, float phase) {
 extern float fn_80134C1C(void);
 extern int fn_801769A8(void);
 extern float fn_801B3064(void);
-extern void *fn_801B2EC0(int);
+extern void *getDeitySlot(int);
 extern float fn_80139048(void);
 extern float PSQUATMultiply(void *, void *);
 extern void fn_80194F70(void *, float *, float *);
@@ -1132,7 +1132,7 @@ extern "C" void computeAIDriverControls(char *driver, float *out) {
         out[2] = rateScale;
         slotIndex = 0;
         while (slotIndex < fn_801B2F24()) {
-            void *other = fn_801B2EC0(slotIndex);
+            void *other = getDeitySlot(slotIndex);
             if (slotIndex != *(int *)(driver + 0x290)) {
                 void *state = ((OtherObj *)other)->getState();
                 if (*(int *)((char *)state + 0x30) == 0) {

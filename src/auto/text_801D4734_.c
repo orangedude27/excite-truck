@@ -35,7 +35,7 @@ struct ActionSequence {
     int elementCapacity;         /* 0x38 bytes; 0x40 = 16 elements */
     void *inlineElements[16];    /* 0x3C what elements points at */
 };
-/* The AI truck (racer) table: fn_801B2EC0 gives the 0x80-byte slot of a racer
+/* The AI truck (racer) table: getDeitySlot gives the 0x80-byte slot of a racer
  * and fn_801B2F24 the number of racers.  vtable+0x10 of a slot hands back the
  * racer state block that starts at slot+4. */
 struct RacerState {
@@ -92,7 +92,7 @@ struct TimedEffect {
   extern void updateActionSequence(int);
 
 extern int getRegisteredObject(int);
-extern void *fn_801B2EC0(int);
+extern void *getDeitySlot(int);
 extern int fn_801B2F24(void);
   extern char lbl_80338C78[];
 extern char lbl_80338BD0[];
@@ -660,14 +660,14 @@ void updateActionSequence(int sequence) {
         virtual void update();
         virtual void reset();
     };
-    /* One racer slot of the AI truck table (fn_801B2EC0). */
+    /* One racer slot of the AI truck table (getDeitySlot). */
     struct RacerSlot {
         virtual void v0();
         virtual void v1();
         virtual struct RacerState *state();
     };
     extern int getRegisteredObject(int);
-    extern void *fn_801B2EC0(int);
+    extern void *getDeitySlot(int);
     extern int fn_801B2F24(void);
     ActionSequence *seq = (ActionSequence *)sequence;
     if (seq->state == ACTION_SEQ_PLAYING) {
@@ -722,7 +722,7 @@ loop3:
         {
             RacerObject *player = (RacerObject *)getRegisteredObject(racer);
             if (player->competitorId == COMPETITOR_SETS_LAPS) {
-                RacerSlot *slot = (RacerSlot *)fn_801B2EC0(racer);
+                RacerSlot *slot = (RacerSlot *)getDeitySlot(racer);
                 RacerState *racerState = slot->state();
                 int lap = racerState->laps;
                 if (lap > leaderLap) leaderLap = lap;
@@ -3275,7 +3275,7 @@ extern "C" int fn_801D815C(PhysPathAse *cue, int direction) {
     extern int getRegisteredObject(int);
     extern int fn_80179650(void);
     extern int fn_80139B5C(int, int);
-    extern void *fn_801B2EC0(int);
+    extern void *getDeitySlot(int);
     extern void *fn_801B83A0(void);
     extern char lbl_80339018[];
     extern char lbl_8055AD34;
@@ -3343,7 +3343,7 @@ extern "C" int fn_801D815C(PhysPathAse *cue, int direction) {
                 objectIndex = fn_80179630(playerSlot);
                 insideKillBound = fn_80139B5C(getRegisteredObject(objectIndex), (int)effect->killBound);
                 if (insideKillBound != 0) {
-                    racerSlot = (Name *)fn_801B2EC0(objectIndex);
+                    racerSlot = (Name *)getDeitySlot(objectIndex);
                     racerProperty = *(int *)((char *)racerSlot->get() + 4);
                     callback = (Callback *)fn_801B83A0();
                     callback->run(objectIndex, racerProperty);

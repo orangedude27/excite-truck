@@ -191,7 +191,7 @@ void fn_801A6558(void *arg0) {
 }
 #pragma opt_propagation reset
 extern void fn_80182074(void);
-extern void *fn_801B2EC0(int);
+extern void *getDeitySlot(int);
 extern void fn_80265D40(void *, int, float);
 #pragma scheduling invalid_target
 /* Reset the camera/vehicle state: initialize internals, bind the tracked object for slot 0x1EC, clear runtime flags, seed default scalar fields, then notify 80265D40 and mark state active (0x267C). */
@@ -201,7 +201,7 @@ void fn_801A65FC(void *obj) {
     int objectSlot;
     fn_80182074();
     *(void **)((char *)obj + 0x2774) =
-        fn_801B2EC0(*(int *)((char *)obj + 0x1EC));
+        getDeitySlot(*(int *)((char *)obj + 0x1EC));
     *(volatile unsigned char *)((char *)obj + 0x2740) = 0;
     *(volatile unsigned char *)((char *)obj + 0x2741) = 1;
     fn_801A6558(obj);

@@ -108,9 +108,9 @@ extern double lbl_80561890;
 extern float lbl_8055E320;
 extern float fn_8013672C(int);
 extern int fn_80179630(int);
-extern int fn_801B2EC0();
+extern int getDeitySlot();
 extern int fn_80179630(int);
-extern int fn_801B2EC0();
+extern int getDeitySlot();
 extern float fn_8013672C(int);
 extern float lbl_8056189C;
 extern double lbl_80561890;
@@ -364,7 +364,7 @@ void *fn_80166040(int id) {
 #pragma pop
 void fn_80166098(void) {
 #define GetPlayerVehicleIndex fn_80179630
-#define GetRacerObject        fn_801B2EC0
+#define GetRacerObject        getDeitySlot
     /* Fetch the reference racer object used for relative progress: resolve
      * player 0's vehicle index (-1 clamps to 0), then index the 0x80-byte
      * racer-object table. The object comes back in r3 from the second call,
@@ -452,7 +452,7 @@ extern "C" float fn_8016618C(void *arg0) {
 extern void fn_80128668(void *);
 extern void fn_80163550(int);
 extern int fn_800081F0(int);
-extern int fn_801B2EC0(void);
+extern int getDeitySlot(void);
 extern void *getRegisteredObject(void);
 extern float lbl_805618D0;
 extern float lbl_805618D4;
@@ -473,7 +473,7 @@ extern "C" float fn_80166274(void) {
     Obj *object;
     void *data;
     fn_80179630(-1);
-    object = (Obj *)fn_801B2EC0();
+    object = (Obj *)getDeitySlot();
     data = object->get();
     fn_80179630(-1);
     {
@@ -777,7 +777,7 @@ extern "C" void fn_80166A24(void) {
              var_r28 < *(int *)((unsigned char *)(*(unsigned char * volatile *)&lbl_8055E32C) + 4);
              var_r27 += 0x88, var_r28++) {
             object = *(unsigned char * volatile *)(*(unsigned char * volatile *)&lbl_8055E32C) + (int)var_r27;
-            time = fn_8016618C((void *)((int (*)(int))fn_801B2EC0)(*(int *)object));
+            time = fn_8016618C((void *)((int (*)(int))getDeitySlot)(*(int *)object));
             object[0x2C] = 1;
             *(float *)(object + 0x30) = time;
         }
@@ -792,7 +792,7 @@ extern "C" void fn_80166A24(void) {
          var_r30 < *(int *)((unsigned char *)(*(unsigned char *volatile *)&lbl_8055E32C) + 4);
          var_r29 += 0x88, var_r30++) {
         temp_r31 = *(unsigned char * volatile *)(*(unsigned char * volatile *)&lbl_8055E32C) + var_r29;
-        object = (unsigned char *)((int (*)(int))fn_801B2EC0)(*(int *)temp_r31);
+        object = (unsigned char *)((int (*)(int))getDeitySlot)(*(int *)temp_r31);
         fn_8016707C(temp_r31, (void **)object);
         if (*(void **)(temp_r31 + 0x58) != 0) {
             time = fn_8016618C(object);
@@ -1118,7 +1118,7 @@ extern "C" float fn_801671FC(int arg0) {
                         delta = lbl_80561898;
                 }
             } else {
-                object = (void *)((int (*)(int))fn_801B2EC0)(arg0);
+                object = (void *)((int (*)(int))getDeitySlot)(arg0);
                 other = ((Obj *)object)->getData();
                 other = *(void **)((char *)other + 4);
                 f2 = *(float *)((char *)other + 0x24);

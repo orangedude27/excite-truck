@@ -2485,7 +2485,7 @@ int fn_80176038(void) {
 
 void fn_80176040(char *self, int a, int b) {
     extern float fn_8001DAE8();
-    extern void *fn_801B2EC0();
+    extern void *getDeitySlot();
     extern void fn_8017B3A8(void *, float *, float *);
     extern void fn_8018F9B4(void *);
     extern float PSVECMag(float *);
@@ -2521,7 +2521,7 @@ void fn_80176040(char *self, int a, int b) {
         *(float *)(o + 0x190) = zero;
         if (n >= 1) {
             *(float *)(o + 0x188) = zero;
-            p = (char *)fn_801B2EC0(c);
+            p = (char *)getDeitySlot(c);
             ((Fn80176040Obj *)p)->vt->m30(p, a);
             fn_80171D94(c);
             f31 = lbl_8055E3C8;

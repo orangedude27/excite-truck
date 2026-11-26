@@ -20,7 +20,7 @@ extern s32 lbl_8055E67C;
 extern s32 lbl_8055E6A8;
 extern u8 lbl_8055E691;
 extern u8 lbl_8055E692;
-extern void *fn_801B2EC0(s32);
+extern void *getDeitySlot(s32);
 extern s32 fn_80128668(void);
 void *fn_801B2118(void *, s32);
 extern void *fn_801B21B8(void *);
@@ -1977,7 +1977,7 @@ extern "C" void fn_801B2D28(void *raceState) {
 
 #pragma scheduling on
 /* Return the 0x80-byte deity (AI truck) slot at slotIndex from the slot table. */
-void *fn_801B2EC0(s32 slotIndex) {
+void *getDeitySlot(s32 slotIndex) {
 #define sDeitySlotBase lbl_8055E684
     return (void *)((u8 *)sDeitySlotBase + (slotIndex << 7));
 #undef sDeitySlotBase
@@ -1987,7 +1987,7 @@ void *fn_801B2EC0(s32 slotIndex) {
 #pragma dont_inline on
 /* Tail-call wrapper that returns the deity slot for the given slot index. */
 void *fn_801B2ED0(s32 slotIndex) {
-    return fn_801B2EC0(slotIndex);
+    return getDeitySlot(slotIndex);
 }
 #pragma dont_inline reset
 

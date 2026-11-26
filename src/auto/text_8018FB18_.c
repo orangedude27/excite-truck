@@ -85,7 +85,7 @@ extern s32 lbl_8055A478;
 extern u8 lbl_8055E528;
 extern void *fn_801284F8(s32, const void *);
 extern void *getOrCreateDriverInterface(s32);
-extern void *fn_801B2EC0(s32);
+extern void *getDeitySlot(s32);
 extern s32 fn_80019B78(void);
 #pragma scheduling invalid_target
 extern s32 fn_8012850C(s32, void *);
@@ -339,7 +339,7 @@ extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
     // arg0: allocates the inner "repl_di" (replay driver interface) object, which
     // wraps the per-mode DriverInterface (getOrCreateDriverInterface) and the "replaypkt" buffer
     // (lbl_804349B0[mode]) and caches four of the driver's flags; then records the
-    // racer slot (fn_801B2EC0(car+0x1EC)), the owner car and the mode word
+    // racer slot (getDeitySlot(car+0x1EC)), the owner car and the mode word
     // (car+0x260 & 3). arg2+0x5C supplies a sign/zero pair stored at +0x25/+0x26.
     class ResultMethods {
     public:
@@ -432,7 +432,7 @@ extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
     }
     temp_r3_6 = *(s32 *)((u8 *)arg1 + 0x1EC);
     *(s32 *)((u8 *)arg0 + 0x1C) = temp_r3_6;
-    method18Obj = (Method18 *)fn_801B2EC0(temp_r3_6);
+    method18Obj = (Method18 *)getDeitySlot(temp_r3_6);
     *(void **)((u8 *)arg0 + 0x14) = method18Obj;
     *(s32 *)((u8 *)arg0 + 0x18) = method18Obj->get18();
     method0C1Obj = *(Method0C1 **)((u8 *)arg0 + 8);

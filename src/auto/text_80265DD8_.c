@@ -211,7 +211,7 @@ extern double sin(float);
 extern float PSVECSquareDistance(void *, void *);
 typedef struct { float *p; float f; } Res_80266388;
 extern void fn_80136594(Res_80266388 *, void *, void *);
-extern void *fn_801B2EC0(int);
+extern void *getDeitySlot(int);
 typedef double (*DblFn_80266388)(int, float, float);
 void fn_8026A2C8(void);
 extern void fn_80274F74(void);
@@ -539,7 +539,7 @@ void fn_80266388(int unused, int mode, float *matrix, void *pos, void *owner) {
         zero = lbl_80563C20;
         sel = 0;
         for (i = 0; i < count; i++) {
-            VObj_80266388 *ob = (VObj_80266388 *)fn_801B2EC0(i);
+            VObj_80266388 *ob = (VObj_80266388 *)getDeitySlot(i);
             o = (char *)ob->vt->m20(ob);
             opos = (float *)(o + 0x60);
             tq0 = opos[0]; tq2 = opos[2];
@@ -638,7 +638,7 @@ void fn_80266A0C(float *fs, int unused, void *pos) {
         zero = lbl_80563C20;
         sel = 0;
         for (i = 0; i < count; i++) {
-            VObj_80266388 *ob = (VObj_80266388 *)fn_801B2EC0(i);
+            VObj_80266388 *ob = (VObj_80266388 *)getDeitySlot(i);
             o = (char *)ob->vt->m20(ob);
             opos = (float *)(o + 0x60);
             tq0 = opos[0]; tq2 = opos[2];

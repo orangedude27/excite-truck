@@ -329,7 +329,7 @@ extern "C" f32 lbl_80561584;
 
 extern "C" u8 lbl_8032CAC0;
 extern "C" s32 fn_8013D224(f32, f32);
-extern "C" u8 *fn_801B2EC0(s32);
+extern "C" u8 *getDeitySlot(s32);
 extern "C" f32 __fabsf(f32);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -769,7 +769,7 @@ extern "C" u32 fn_8013D18C(u32 arg0) {
     return values[index];
 }
 
-/* Look up entry info through the accessor returned by fn_801B2EC0 and return
+/* Look up entry info through the accessor returned by getDeitySlot and return
  * its 32-bit field at +0x10. */
 extern "C" s32 fn_8013D1F0(s32 index) {
     struct TEntryInfoAccessor {
@@ -777,7 +777,7 @@ extern "C" s32 fn_8013D1F0(s32 index) {
         virtual void d1();
         virtual u8 *getInfo();
     };
-    TEntryInfoAccessor *accessor = (TEntryInfoAccessor *)((void *(*)(void))fn_801B2EC0)();
+    TEntryInfoAccessor *accessor = (TEntryInfoAccessor *)((void *(*)(void))getDeitySlot)();
     u8 *info = accessor->getInfo();
     return *(s32 *)(info + 0x10);
 }
@@ -4006,7 +4006,7 @@ extern "C" void fn_80142D4C(void *arg0) {
     *(u8 *)(self + 0x258) = 0;
 }
 #pragma use_lmw_stmw reset
-extern "C" u8 *fn_801B2EC0(s32);
+extern "C" u8 *getDeitySlot(s32);
 
 /* C-linkage adapter: call virtual slot v4C() on the TObj4C object. */
 extern "C" void fn_80143128(u8 *obj) {
@@ -4024,7 +4024,7 @@ extern "C" void fn_80143138(u8 *self, u8 *out) {
         virtual void d1();
         virtual u8 *v10();
     };
-    /* Copies header/state fields into out and serializes per-entry data for each element (count at +0xBC, stride 0x12C/0x14) using fn_801B2EC0 entry info and table at +0xB8. */
+    /* Copies header/state fields into out and serializes per-entry data for each element (count at +0xBC, stride 0x12C/0x14) using getDeitySlot entry info and table at +0xB8. */
     *(s32 *)out = *(s32 *)(self + 0xBC);
     *(s32 *)(out + 4) = *(s32 *)(self + 0x130);
     *(u8 *)(out + 0xD) = ((TObj24 *)self)->v24();
@@ -4037,7 +4037,7 @@ extern "C" void fn_80143138(u8 *self, u8 *out) {
     entryOffset = 0;
     while (index < *(s32 *)(self + 0xBC)) {
         *(u8 *)(entryOut + 0x10) = zero;
-        u8 *entryInfo = ((TObj10Local *)fn_801B2EC0(index))->v10();
+        u8 *entryInfo = ((TObj10Local *)getDeitySlot(index))->v10();
         index++;
         *(s32 *)(entryOut + 4) = *(s32 *)(entryInfo + 4);
         *(s32 *)(entryOut + 8) = *(s32 *)(*(u8 **)(self + 0xB8) + entryOffset + 0x10C);
