@@ -172,7 +172,7 @@ extern "C" void *__AXFXGetLfoSinTable_801769CC(void);
 /* Set up an audio placement for start modes 1/2: derive the interpolation from
    the slot and active league, apply it through fn_801B78EC, then set the
    placement's three output coefficients. */
-extern "C" void fn_801B79D4(void *placement, unsigned int slot, int startType) {
+extern "C" void setupStartAudioPlacement(void *placement, unsigned int slot, int startType) {
     struct V1 {
         virtual void v0(); virtual void v1(); virtual void v2();
         virtual void v3(); virtual void v4(); virtual int v5();
@@ -249,7 +249,7 @@ void fn_801B7BA8(float *arg0, float *arg1, float *arg2) {
     b[0] = u;
     b[1] = w;
     b[2] = v;
-    PSVECCrossProduct(a, b, c);
+    do { PSVECCrossProduct(a, b, c); } while (0);
     PSVECCrossProduct(c, a, b);
     PSVECNormalize(c, c);
     PSVECNormalize(a, a);
@@ -428,7 +428,7 @@ void fn_801B8100(void *placement, int slot, int startType) {
             return;
         case 1:
         case 2:
-            fn_801B79D4(placement, slot, startType);
+            setupStartAudioPlacement(placement, slot, startType);
             return;
         default:
             sPanic(sUnknownStartModeFmt, mode);
