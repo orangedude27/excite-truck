@@ -113,7 +113,7 @@ extern char lbl_8055E5D4;
  * gInputBindingCount; callers use it as "make sure the table is ready". */
 #pragma push
 #pragma scheduling invalid_target
-void initInputBindings(void) {
+/* Fill the input-binding table's per-key flags from the HID key codes once, then publish the table base pointer and entry count. */ void initInputBindings(void) {
     extern const char **gInputBindingTable;
     extern int gInputBindingCount;
 #define gBindings ((InputBinding *)lbl_803342D0)
