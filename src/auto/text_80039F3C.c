@@ -704,7 +704,7 @@ int fn_8003AD88(void *buffer, int length, int input, void *callback) {
 #pragma opt_propagation off
 /* DVDLow async raw-DI read: queue command 0xE3 in the next command-buffer slot and
  * dispatch it through IOS_IoctlAsync, reporting the IOS error if the dispatch fails. */
-int fn_8003AF1C(int arg0, int arg1, int arg2) {
+int DVDLowRawReadAsync(int arg0, int arg1, int arg2) {
     const char *msg = lbl_80302848;
     unsigned int one = 1;
     unsigned char *context;

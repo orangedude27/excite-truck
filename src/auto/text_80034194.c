@@ -169,7 +169,7 @@ extern void fn_8003B380(s32);
 extern void fn_8003B38C(void *);
   extern void fn_80035B88(u32);
   extern void __DVDHandleDriveError(s32);
-  extern void fn_8003AF1C(s32, s32, void *);
+  extern void DVDLowRawReadAsync(s32, s32, void *);
   
   extern s32 lbl_80558E04;
 extern s32 lbl_8055D84C;
@@ -1405,7 +1405,7 @@ void fn_80035B88(u32 dvdStatus) {
 /* After a DVD error code is stored, re-arm the drive with a low-level command,
  * using the fatal-command handler fn_80035B88 as its completion callback. */
 void fn_80035C64(void) {
-    fn_8003AF1C(0, 0, fn_80035B88);
+    DVDLowRawReadAsync(0, 0, fn_80035B88);
 }
 
 extern s32 lbl_8055D890;
@@ -1485,7 +1485,7 @@ s32 fn_80035CB4(u32 arg0) {
 }
 
 void fn_80035DA8(s32 arg0) {
-    /* Record a DVD error (command 0x10) in the next __ErrorInfo slot, then invoke fn_8003AF1C with callback __DVDHandleDriveError. */
+    /* Record a DVD error (command 0x10) in the next __ErrorInfo slot, then invoke DVDLowRawReadAsync with callback __DVDHandleDriveError. */
     s32 enabled;
     u32 tick;
     u8 *info;
@@ -1501,7 +1501,7 @@ void fn_80035DA8(s32 arg0) {
     *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;
     *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
     OSRestoreInterrupts(enabled);
-    fn_8003AF1C(0, 0, __DVDHandleDriveError);
+    DVDLowRawReadAsync(0, 0, __DVDHandleDriveError);
     #pragma unused(arg0)
 }
 
@@ -1561,7 +1561,7 @@ static inline void HandleErrorCategory(u32 kind, u32 error) {
     } else if (kind == 0) {
         if (error - 0x00050000 == 0x3000) {
             fn_800356F4(0x10, 0, 0);
-            fn_8003AF1C(0, 0, (void *)__DVDHandleMotorError);
+            DVDLowRawReadAsync(0, 0, (void *)__DVDHandleMotorError);
         } else {
             fn_8003A1A0(0x1234567, fn_80035C64);
         }
@@ -1588,7 +1588,7 @@ static inline void StateCoverClosed(void) {
     *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;
     *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
     OSRestoreInterrupts(interrupts);
-    fn_8003AF1C(0, 0, (void *)__DVDHandleMotorError);
+    DVDLowRawReadAsync(0, 0, (void *)__DVDHandleMotorError);
 }
 
 #pragma dont_inline off
@@ -1687,7 +1687,7 @@ void fn_80035E6C(u32 arg0) {
             *(s32 *)(localInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = localTick;
             *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
             OSRestoreInterrupts(localInterrupts);
-            fn_8003AF1C(0, 0, (void *)__DVDHandleMotorError);
+            DVDLowRawReadAsync(0, 0, (void *)__DVDHandleMotorError);
             return;
         }
         fn_8003A1A0(0x1234567, fn_80035C64);
@@ -1731,7 +1731,7 @@ extern void fn_80036550(u32);
         *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;
         *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
         OSRestoreInterrupts(interrupts);
-        fn_8003AF1C(0, 0, __DVDHandleDriveError);
+        DVDLowRawReadAsync(0, 0, __DVDHandleDriveError);
         return;
     }
 
@@ -1771,7 +1771,7 @@ void fn_80036550(u32 errorCode) {
 }
 #pragma pop
 
-/* Drive error handler run on the DVD thread (queued through fn_8003AF1C with the
+/* Drive error handler run on the DVD thread (queued through DVDLowRawReadAsync with the
  * error code as its argument).  The code goes into the last __ErrorInfo entry;
  * the codes the NAND error report of fn_8003A1A0 deals with end the handling
  * here, and any other code finishes the cancel that is in flight: the command
@@ -1893,13 +1893,13 @@ void fn_8003684C(void) {
             fn_8003AD88(idBase + 0xA0, 0x20, 0x10000, (u32)__DVDHandleCommandStatus);
         } else {
             LOG_ENTRY(0x10, 0, 0);
-            fn_8003AF1C(0, 0, __DVDHandleMotorError);
+            DVDLowRawReadAsync(0, 0, __DVDHandleMotorError);
         }
         break;
     default:
         if (memcmp(idBase + 0x80, (void *)IDShouldBe_8055D8C4, 0x20) != 0) {
             LOG_ENTRY(0x10, 0, 0);
-            fn_8003AF1C(0, 0, __DVDHandleMotorError);
+            DVDLowRawReadAsync(0, 0, __DVDHandleMotorError);
         } else {
             lbl_8055D860 = 0;
             fn_8003BCDC(0);
@@ -2817,11 +2817,11 @@ extern void (*lbl_80558E08)(void *, void *);
      ((int (*)(void *, u32, u32, void *))DVDLowReadAsync)(*(u8 **)(blockBytes+0x18)+*(u32 *)(blockBytes+0x20), *(u32 *)(blockBytes+0x1c), *(u32 *)(blockBytes+0x10)+(*(u32 *)(blockBytes+0x20)>>2), fn_80038870);
    } break;
  case 2: fn_8003BCDC(0); fn_8003B9CC(*(u32 *)(blockBytes+0x10),fn_80038870); break;                  /* clear cover; DVDLowSeek */
- case 3: fn_8003AF1C(0,0,fn_80038870); break;                                                       /* DVDLowStopMotor */
- case 15: fn_8003AF1C(0,0,fn_80038870); break;                                                      /* DVDLowStopMotor */
+ case 3: DVDLowRawReadAsync(0,0,fn_80038870); break;                                                       /* DVDLowStopMotor */
+ case 15: DVDLowRawReadAsync(0,0,fn_80038870); break;                                                      /* DVDLowStopMotor */
  case 13: fn_8003BCDC(0); fn_8003B508(*(u32 *)(blockBytes+0x10),*(u32 *)(blockBytes+0x14),fn_80038870); break; /* DVDLowAudioBufferConfig */
  case 14: fn_8003BCDC(0); *(int *)(blockBytes+0x1c)=0x20; fn_8003B0B0(*(void **)(blockBytes+0x18),fn_80038870); break; /* DVDLowInquiry */
- case 16: fn_8003BCDC(0); fn_8003AF1C(0,0,fn_80038870); break;                                      /* DVDLowStopMotor */
+ case 16: fn_8003BCDC(0); DVDLowRawReadAsync(0,0,fn_80038870); break;                                      /* DVDLowStopMotor */
  case 34: fn_8003B380(1); fn_8003B38C(fn_80038870); break;                                          /* spin up; DVDLowReset */
  case 37:                            /* COMMAND_SET_MAX_ROTATION -> DVDLowUnencryptedRead */
    if (*(int *)(blockBytes+0x14) == 0) {
