@@ -3569,7 +3569,7 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
 #pragma push
 #pragma dont_inline on
 #pragma use_lmw_stmw off
-extern "C" void fn_801A0F10(void* group) {
+extern "C" void stepPhysicsGroup(void* group) {
     /* Per-frame pass of a physics group: tick its children, run each child's own
        update, and then -- when the group drives a car and the "track.msh" mesh is
        loaded -- push the car's four physics corners out of the track mesh points
