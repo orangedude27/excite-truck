@@ -20,7 +20,7 @@ extern int fn_801D049C(void);
 extern int lbl_8055E99C;
 extern int lbl_8055E9A0;
 extern unsigned short lbl_80442708[];
-extern float lbl_804424B0[];
+extern float terrainWeights[];
 extern double lbl_80562B78;
 extern int fn_801DB348();
 extern float fn_801DB398(float grid[4][4], float, float);
@@ -116,7 +116,7 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
     layer = next >= 0 ? *(char **)((char *)lbl_8055E990 + 0x20) + next * 0x810 : 0;
     while (layer != 0) {
         next = *(int *)(layer + 0x80C);
-        h += lbl_804424B0[*(int *)(layer + 0x808)] * (*(float *)(layer + 0) + *(float *)(layer + 4) * (float)*(unsigned short *)(layer + (remX * 64 + remZ * 2) + 8));
+        h += terrainWeights[*(int *)(layer + 0x808)] * (*(float *)(layer + 0) + *(float *)(layer + 4) * (float)*(unsigned short *)(layer + (remX * 64 + remZ * 2) + 8));
         layer = next >= 0 ? *(char **)((char *)lbl_8055E990 + 0x20) + next * 0x810 : 0;
     }
     type_p = *(unsigned char **)((char *)lbl_8055E990 + 0x30) + *(int *)(node + 0x810 + remZ * 4);
@@ -664,10 +664,10 @@ float fn_801DCEC0(void) {
     return lbl_80562B70;
 }
 
-extern float lbl_804424B0[];
+extern float terrainWeights[];
 /* Sets the ground-layer blend weight at the given table index. */
 void fn_801DCEC8(int index, float weight) {
-    lbl_804424B0[index] = weight;
+    terrainWeights[index] = weight;
 }
 
 extern float lbl_804425DC[];
@@ -803,7 +803,7 @@ float fn_801DCF48(void *arg0, float farg0, float farg1) {
             do {
                 base = *(float *)(layer + 0);
                 slope = *(float *)(layer + 4);
-                weight = lbl_804424B0[*(int *)(layer + 0x808)];
+                weight = terrainWeights[*(int *)(layer + 0x808)];
                 var_f31 += weight * (base + slope * (float)*(unsigned short *)(layer + deltaX + deltaZ + 8));
                 var_f7 += weight * (base + slope * (float)*(unsigned short *)(layer + otherX + deltaZ + 8));
                 var_f8 += weight * (base + slope * (float)*(unsigned short *)(layer + deltaX + otherZ + 8));
@@ -834,7 +834,7 @@ float fn_801DCF48(void *arg0, float farg0, float farg1) {
         if (next >= 0) {
             layer = (char *)*(char **)((char *)*(volatile int *)&lbl_8055E990 + 0x20) + next * 0x810;
             do {
-                weight = lbl_804424B0[*(int *)(layer + 0x808)];
+                weight = terrainWeights[*(int *)(layer + 0x808)];
                 var_f31 += weight * (*(float *)(layer + 0) +
                     *(float *)(layer + 4) * (float)*(unsigned short *)(deltaX + deltaZ + layer + 8));
                 next = *(int *)(layer + 0x80C);
@@ -867,18 +867,18 @@ void fn_801DD3BC(float *value, int flag, float x, float z) {
     {
         float reset = lbl_80562B84;
     for (i=0; i<72; i+=8) {
-      saved[i+0] = lbl_804424B0[i+0]; lbl_804424B0[i+0] = reset;
-      saved[i+1] = lbl_804424B0[i+1]; lbl_804424B0[i+1] = reset;
-      saved[i+2] = lbl_804424B0[i+2]; lbl_804424B0[i+2] = reset;
-      saved[i+3] = lbl_804424B0[i+3]; lbl_804424B0[i+3] = reset;
-      saved[i+4] = lbl_804424B0[i+4]; lbl_804424B0[i+4] = reset;
-      saved[i+5] = lbl_804424B0[i+5]; lbl_804424B0[i+5] = reset;
-      saved[i+6] = lbl_804424B0[i+6]; lbl_804424B0[i+6] = reset;
-      saved[i+7] = lbl_804424B0[i+7]; lbl_804424B0[i+7] = reset;
+      saved[i+0] = terrainWeights[i+0]; terrainWeights[i+0] = reset;
+      saved[i+1] = terrainWeights[i+1]; terrainWeights[i+1] = reset;
+      saved[i+2] = terrainWeights[i+2]; terrainWeights[i+2] = reset;
+      saved[i+3] = terrainWeights[i+3]; terrainWeights[i+3] = reset;
+      saved[i+4] = terrainWeights[i+4]; terrainWeights[i+4] = reset;
+      saved[i+5] = terrainWeights[i+5]; terrainWeights[i+5] = reset;
+      saved[i+6] = terrainWeights[i+6]; terrainWeights[i+6] = reset;
+      saved[i+7] = terrainWeights[i+7]; terrainWeights[i+7] = reset;
     }
     }
     zero = lbl_80562B84;
-    p = lbl_804424B0;
+    p = terrainWeights;
     q = saved;
     p += i;
     q += i;
@@ -898,7 +898,7 @@ void fn_801DD3BC(float *value, int flag, float x, float z) {
     *(int *)(slot+16)=count; *(float *)(slot+20)=lbl_80562B84;
     *(int *)(slot+24)=count; *(float *)(slot+28)=lbl_80562B84;
     pair=slot; zero=lbl_80562B84; one=lbl_80562B70;
-    weights = lbl_804424B0;
+    weights = terrainWeights;
     for(flag=0;flag<75;flag++, weights++) {
         *weights=one;
         delta=((float (*)(float,float))fn_801DCF0C)(x,z)-base;
@@ -926,36 +926,36 @@ void fn_801DD3BC(float *value, int flag, float x, float z) {
         *weights=zero;
     }
     for (i=0;i<72;i+=24) {
-      lbl_804424B0[i+0]=saved[i+0];
-      lbl_804424B0[i+1]=saved[i+1];
-      lbl_804424B0[i+2]=saved[i+2];
-      lbl_804424B0[i+3]=saved[i+3];
-      lbl_804424B0[i+4]=saved[i+4];
-      lbl_804424B0[i+5]=saved[i+5];
-      lbl_804424B0[i+6]=saved[i+6];
-      lbl_804424B0[i+7]=saved[i+7];
-      lbl_804424B0[i+8]=saved[i+8];
-      lbl_804424B0[i+9]=saved[i+9];
-      lbl_804424B0[i+10]=saved[i+10];
-      lbl_804424B0[i+11]=saved[i+11];
-      lbl_804424B0[i+12]=saved[i+12];
-      lbl_804424B0[i+13]=saved[i+13];
-      lbl_804424B0[i+14]=saved[i+14];
-      lbl_804424B0[i+15]=saved[i+15];
-      lbl_804424B0[i+16]=saved[i+16];
-      lbl_804424B0[i+17]=saved[i+17];
-      lbl_804424B0[i+18]=saved[i+18];
-      lbl_804424B0[i+19]=saved[i+19];
-      lbl_804424B0[i+20]=saved[i+20];
-      lbl_804424B0[i+21]=saved[i+21];
-      lbl_804424B0[i+22]=saved[i+22];
-      lbl_804424B0[i+23]=saved[i+23];
+      terrainWeights[i+0]=saved[i+0];
+      terrainWeights[i+1]=saved[i+1];
+      terrainWeights[i+2]=saved[i+2];
+      terrainWeights[i+3]=saved[i+3];
+      terrainWeights[i+4]=saved[i+4];
+      terrainWeights[i+5]=saved[i+5];
+      terrainWeights[i+6]=saved[i+6];
+      terrainWeights[i+7]=saved[i+7];
+      terrainWeights[i+8]=saved[i+8];
+      terrainWeights[i+9]=saved[i+9];
+      terrainWeights[i+10]=saved[i+10];
+      terrainWeights[i+11]=saved[i+11];
+      terrainWeights[i+12]=saved[i+12];
+      terrainWeights[i+13]=saved[i+13];
+      terrainWeights[i+14]=saved[i+14];
+      terrainWeights[i+15]=saved[i+15];
+      terrainWeights[i+16]=saved[i+16];
+      terrainWeights[i+17]=saved[i+17];
+      terrainWeights[i+18]=saved[i+18];
+      terrainWeights[i+19]=saved[i+19];
+      terrainWeights[i+20]=saved[i+20];
+      terrainWeights[i+21]=saved[i+21];
+      terrainWeights[i+22]=saved[i+22];
+      terrainWeights[i+23]=saved[i+23];
     }
     {
         float threshold = lbl_80558DC4[0];
         int any=0;
         float magnitude = (float)fabs(*(float *)(slot+12));
-        p = lbl_804424B0 + i;
+        p = terrainWeights + i;
         q = saved + i;
         p[0] = q[0];
         p[1] = q[1];
@@ -972,7 +972,7 @@ extern int fn_801DC9B0(void);
 extern int fn_801DCA60(void);
 void fn_801DD808(void) {
     /* Write out computed float values for each 0x20-byte entry by combining a base
-       value with three indexed terms from lbl_804424B0. */
+       value with three indexed terms from terrainWeights. */
     unsigned char *entry = lbl_80446F18;
     int i = 0;
     while (i < (int)lbl_8055E9A8) {
@@ -980,9 +980,9 @@ void fn_801DD808(void) {
         int index1 = *(int *)(entry + 0x10);
         int index2 = *(int *)(entry + 0x18);
         float value = *(float *)(entry + 4);
-        value += *(float *)(entry + 0xC) * lbl_804424B0[index0];
-        value += *(float *)(entry + 0x14) * lbl_804424B0[index1];
-        value += *(float *)(entry + 0x1C) * lbl_804424B0[index2];
+        value += *(float *)(entry + 0xC) * terrainWeights[index0];
+        value += *(float *)(entry + 0x14) * terrainWeights[index1];
+        value += *(float *)(entry + 0x1C) * terrainWeights[index2];
         *(float *)*(int *)entry = value;
         entry += 0x20;
         i++;
@@ -1001,25 +1001,25 @@ float fn_801DD88C(float x, float z) {
     int i, j;
 
     for (i = 0; i < 72; i += 8) {
-        savedWeights[i + 0] = lbl_804424B0[i + 0];
-        lbl_804424B0[i + 0] = 0.0f;
-        savedWeights[i + 1] = lbl_804424B0[i + 1];
-        lbl_804424B0[i + 1] = 0.0f;
-        savedWeights[i + 2] = lbl_804424B0[i + 2];
-        lbl_804424B0[i + 2] = 0.0f;
-        savedWeights[i + 3] = lbl_804424B0[i + 3];
-        lbl_804424B0[i + 3] = 0.0f;
-        savedWeights[i + 4] = lbl_804424B0[i + 4];
-        lbl_804424B0[i + 4] = 0.0f;
-        savedWeights[i + 5] = lbl_804424B0[i + 5];
-        lbl_804424B0[i + 5] = 0.0f;
-        savedWeights[i + 6] = lbl_804424B0[i + 6];
-        lbl_804424B0[i + 6] = 0.0f;
-        savedWeights[i + 7] = lbl_804424B0[i + 7];
-        lbl_804424B0[i + 7] = 0.0f;
+        savedWeights[i + 0] = terrainWeights[i + 0];
+        terrainWeights[i + 0] = 0.0f;
+        savedWeights[i + 1] = terrainWeights[i + 1];
+        terrainWeights[i + 1] = 0.0f;
+        savedWeights[i + 2] = terrainWeights[i + 2];
+        terrainWeights[i + 2] = 0.0f;
+        savedWeights[i + 3] = terrainWeights[i + 3];
+        terrainWeights[i + 3] = 0.0f;
+        savedWeights[i + 4] = terrainWeights[i + 4];
+        terrainWeights[i + 4] = 0.0f;
+        savedWeights[i + 5] = terrainWeights[i + 5];
+        terrainWeights[i + 5] = 0.0f;
+        savedWeights[i + 6] = terrainWeights[i + 6];
+        terrainWeights[i + 6] = 0.0f;
+        savedWeights[i + 7] = terrainWeights[i + 7];
+        terrainWeights[i + 7] = 0.0f;
     }
     {
-        float *p = lbl_804424B0 + i;
+        float *p = terrainWeights + i;
         float *q = savedWeights + i;
         q[0] = p[0];
         p[0] = 0.0f;
@@ -1032,33 +1032,33 @@ float fn_801DD88C(float x, float z) {
     ((float (*)(float, float))fn_801DCF0C)(x, z);
 
     for (j = 0; j < 72; j += 24) {
-        lbl_804424B0[j + 0] = savedWeights[j + 0];
-        lbl_804424B0[j + 1] = savedWeights[j + 1];
-        lbl_804424B0[j + 2] = savedWeights[j + 2];
-        lbl_804424B0[j + 3] = savedWeights[j + 3];
-        lbl_804424B0[j + 4] = savedWeights[j + 4];
-        lbl_804424B0[j + 5] = savedWeights[j + 5];
-        lbl_804424B0[j + 6] = savedWeights[j + 6];
-        lbl_804424B0[j + 7] = savedWeights[j + 7];
-        lbl_804424B0[j + 8] = savedWeights[j + 8];
-        lbl_804424B0[j + 9] = savedWeights[j + 9];
-        lbl_804424B0[j + 10] = savedWeights[j + 10];
-        lbl_804424B0[j + 11] = savedWeights[j + 11];
-        lbl_804424B0[j + 12] = savedWeights[j + 12];
-        lbl_804424B0[j + 13] = savedWeights[j + 13];
-        lbl_804424B0[j + 14] = savedWeights[j + 14];
-        lbl_804424B0[j + 15] = savedWeights[j + 15];
-        lbl_804424B0[j + 16] = savedWeights[j + 16];
-        lbl_804424B0[j + 17] = savedWeights[j + 17];
-        lbl_804424B0[j + 18] = savedWeights[j + 18];
-        lbl_804424B0[j + 19] = savedWeights[j + 19];
-        lbl_804424B0[j + 20] = savedWeights[j + 20];
-        lbl_804424B0[j + 21] = savedWeights[j + 21];
-        lbl_804424B0[j + 22] = savedWeights[j + 22];
-        lbl_804424B0[j + 23] = savedWeights[j + 23];
+        terrainWeights[j + 0] = savedWeights[j + 0];
+        terrainWeights[j + 1] = savedWeights[j + 1];
+        terrainWeights[j + 2] = savedWeights[j + 2];
+        terrainWeights[j + 3] = savedWeights[j + 3];
+        terrainWeights[j + 4] = savedWeights[j + 4];
+        terrainWeights[j + 5] = savedWeights[j + 5];
+        terrainWeights[j + 6] = savedWeights[j + 6];
+        terrainWeights[j + 7] = savedWeights[j + 7];
+        terrainWeights[j + 8] = savedWeights[j + 8];
+        terrainWeights[j + 9] = savedWeights[j + 9];
+        terrainWeights[j + 10] = savedWeights[j + 10];
+        terrainWeights[j + 11] = savedWeights[j + 11];
+        terrainWeights[j + 12] = savedWeights[j + 12];
+        terrainWeights[j + 13] = savedWeights[j + 13];
+        terrainWeights[j + 14] = savedWeights[j + 14];
+        terrainWeights[j + 15] = savedWeights[j + 15];
+        terrainWeights[j + 16] = savedWeights[j + 16];
+        terrainWeights[j + 17] = savedWeights[j + 17];
+        terrainWeights[j + 18] = savedWeights[j + 18];
+        terrainWeights[j + 19] = savedWeights[j + 19];
+        terrainWeights[j + 20] = savedWeights[j + 20];
+        terrainWeights[j + 21] = savedWeights[j + 21];
+        terrainWeights[j + 22] = savedWeights[j + 22];
+        terrainWeights[j + 23] = savedWeights[j + 23];
     }
     {
-        float *p = lbl_804424B0 + j;
+        float *p = terrainWeights + j;
         float *q = savedWeights + j;
         p[0] = q[0];
         p[1] = q[1];

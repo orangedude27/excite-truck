@@ -114,7 +114,7 @@ long fn_80177988(void) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 /* Zero-initialize the four parallel 75-entry weight tables: lbl_80430700 and
-   lbl_804305D4 directly, lbl_804424B0 / lbl_804425DC via the setters. */
+   lbl_804305D4 directly, terrainWeights / lbl_804425DC via the setters. */
 void fn_80177990(void) {
     float zero = 0.0f;
     float *weightA = &lbl_80430700[0];
@@ -972,7 +972,7 @@ void fn_80178CAC(void *carA, void *carB)
   fn_801EAA94((int) carB, field1F0A);
 }
 /* Stores weight at index in both parallel tables: lbl_804305D4 here and
-   lbl_804424B0 through fn_801DCEC8. */
+   terrainWeights through fn_801DCEC8. */
 void fn_80178DBC(int index, float weight) {
     lbl_804305D4[index] = weight;
     fn_801DCEC8(index, weight);
@@ -981,7 +981,7 @@ void fn_80178DBC(int index, float weight) {
 #pragma dont_inline on
 /* Tail-call wrapper for external callers of fn_80177990: zero the four parallel
  * 75-entry weight tables (lbl_80430700 / lbl_804305D4 and, through the setters,
- * lbl_804424B0 / lbl_804425DC). */
+ * terrainWeights / lbl_804425DC). */
 void fn_80178DD0(void) {
     fn_80177990();
 }
