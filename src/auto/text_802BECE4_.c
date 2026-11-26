@@ -750,7 +750,7 @@ extern "C" void *fn_802BFA58(void *object, int shouldDelete) {
  * water plane, its field of view widened for split-screen, and a quad is
  * rendered into each face from the camera position, followed by the sun
  * billboard and the world and water-environment models. */
-extern "C" void fn_802BFB70(void *arg0, float *worldMtx, float angle) {
+extern "C" void WaterEnvMap_Render(void *arg0, float *worldMtx, float angle) {
 #define kOne lbl_80564D80       /* 1.0f */
 #define kZero lbl_80564D90      /* 0.0f */
 #define kWideFovFactor lbl_80564DB4 /* 1.5f, two-player split screen */
