@@ -19,7 +19,7 @@ extern void fn_802E30C8(void *);
 extern void fn_802E8664(int);
 /* Initialize the four-entry player-to-control-slot map (mapping[i] = i). */
 extern void fn_80137D10(void);
-#pragma dont_inline fn_8023D6FC
+#pragma dont_inline getControlScheme
 
 /* One row of the configurable-control table at lbl_802FA190 (17 rows): the name of a
    control action ("steer_left", "throttle", "e_brake", ...) and the input binding it
@@ -172,7 +172,7 @@ void fn_8023D4B8(int arg0)
   fn_8023DBCC();
   fn_8022D7C4(ctx, 0);
 }
-void* fn_8023D6FC(void) {
+void* getControlScheme(void) {
 #define controlScheme lbl_8055F18C
     /* RealName: GetControlScheme - return the currently selected control scheme (0..3). */
     return controlScheme;
@@ -229,7 +229,7 @@ void fn_8023D70C(void) {
 void fn_8023D7CC(void) {
 #define sOptionData          gControlOptions
 #define ApplyControlDefaults fn_8023DA64
-#define GetControlScheme     (((void* (*)(void))fn_8023D6FC)())
+#define GetControlScheme     (((void* (*)(void))getControlScheme)())
 #define SetControlOption     fn_8013358C
     char *optionData = sOptionData;
     int slotIndex;

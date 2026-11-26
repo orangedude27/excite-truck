@@ -1545,7 +1545,7 @@ extern s32 fn_80161A70(void);
 extern s32 fn_80005930(void);
 extern s32 fn_8000545C(void);
 extern s32 fn_80005460(void);
-extern s32 fn_8023D6FC(void);
+extern s32 getControlScheme(void);
 extern s32 fn_800053CC(void);
 extern s32 fn_800217E4(void);
 #pragma dont_inline fn_800057BC
@@ -1581,7 +1581,7 @@ done:
     ((void (*)(s32))fn_80005B70)(0);
     fn_8000545C();
     fn_80005460();
-    if (fn_8023D6FC() == 3) {
+    if (getControlScheme() == 3) {
         fn_800053CC();
     }
     fn_80005B74();
