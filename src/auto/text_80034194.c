@@ -1778,7 +1778,7 @@ void fn_80036550(u32 errorCode) {
  * the drive was running is completed with DVD_RESULT_CANCELED.  When nothing
  * was being cancelled the dummy block is marked as needing attention instead
  * and the periodic cover/motor poll is armed. */
-void __DVDHandleDriveError(s32 errorCode) {
+/* Handle a DVD drive error on the DVD thread: record the code, finish any in-flight cancel, or arm the periodic disk-error/cover poll. */ void __DVDHandleDriveError(s32 errorCode) {
     register u32 code = errorCode;
     s32 interrupts;
     s32 complete;
