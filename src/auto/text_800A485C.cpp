@@ -5588,90 +5588,90 @@ block_21:
  * when a read failed.  The caller (fn_800ADA24) starts at the volume's
  * next-free-cluster hint and writes the found run into the FAT.
  */
-extern "C" s32 findFreeFatRun(void *volume, s32 cluster, s32 last, s32 needed, u32 *outFirst, u32 *outLast) {
-    s32 entry;     /* the FAT entry of the cluster just looked at; 0 = free */
+/* Find `needed` consecutive free clusters in a volume's FAT between `cluster` and `last`, wrapping once to the front; return the longest run found if none is long enough. */ extern "C" s32 findFreeFatRun(void *volume, s32 cluster, s32 lastCluster, s32 neededCount, u32 *outRunStart, u32 *outRunEnd) {
+    s32 fatEntry;     /* the FAT entry of the cluster just looked at; 0 = free */
     s32 pageIndex; /* which page of the cache was handed out */
-    void *page;    /* the page the FAT is read through */
-    s32 r;         /* result of each step */
-    u32 limit;     /* one past the last cluster of the volume */
-    u32 run;       /* free clusters seen since the last one in use */
-    s32 bestStart; /* the longest run found so far */
-    u32 bestLen;
-    s32 wrapped;   /* the search has wrapped to the front of the heap */
-    u32 start;     /* the cluster the search started from */
-    *outFirst = -1;
-    *outLast = -1;
-    limit = VF_VOL_CLUSTER_COUNT(volume) + VF_FAT_FIRST_CLUSTER;
-    wrapped = 0;
-    run = 0;
-    bestStart = -1;
-    bestLen = 0;
-    if ((u32)cluster < VF_FAT_FIRST_CLUSTER || (u32)cluster >= limit) cluster = VF_FAT_FIRST_CLUSTER;
-    if ((u32)last < VF_FAT_FIRST_CLUSTER || (u32)last >= limit) last = limit - 1;
-    start = cluster;
-    r = ((s32 (*)(void *, s32, void **, s32 *))VFiPFCACHE_ClaimPage)(volume, -1, &page, &pageIndex);
-    if (r != 0) return r;
-    r = VFiPFFAT_ReadClusterSector(volume, page, cluster);
-    if (r != 0) {
-        VFiPFCACHE_FreeFATPage_800A8E10(volume, page);
-        return r;
+    void *fatPage;    /* the page the FAT is read through */
+    s32 result;         /* result of each step */
+    u32 clusterLimit;     /* one past the last cluster of the volume */
+    u32 freeRun;       /* free clusters seen since the last one in use */
+    s32 bestRunStart; /* the longest run found so far */
+    u32 bestRunLen;
+    s32 didWrap;   /* the search has wrapped to the front of the heap */
+    u32 startCluster;     /* the cluster the search started from */
+    *outRunStart = -1;
+    *outRunEnd = -1;
+    clusterLimit = VF_VOL_CLUSTER_COUNT(volume) + VF_FAT_FIRST_CLUSTER;
+    didWrap = 0;
+    freeRun = 0;
+    bestRunStart = -1;
+    bestRunLen = 0;
+    if ((u32)cluster < VF_FAT_FIRST_CLUSTER || (u32)cluster >= clusterLimit) cluster = VF_FAT_FIRST_CLUSTER;
+    if ((u32)lastCluster < VF_FAT_FIRST_CLUSTER || (u32)lastCluster >= clusterLimit) lastCluster = clusterLimit - 1;
+    startCluster = cluster;
+    result = ((s32 (*)(void *, s32, void **, s32 *))VFiPFCACHE_ClaimPage)(volume, -1, &fatPage, &pageIndex);
+    if (result != 0) return result;
+    result = VFiPFFAT_ReadClusterSector(volume, fatPage, cluster);
+    if (result != 0) {
+        VFiPFCACHE_FreeFATPage_800A8E10(volume, fatPage);
+        return result;
     }
-    *(s16 *)((u8 *)page + 2) = 0; /* the page is not to be written back */
+    *(s16 *)((u8 *)fatPage + 2) = 0; /* the page is not to be written back */
     goto test;
 loop:
     {
     void *pg;
-    if (limit <= (u32)cluster) cluster = VF_FAT_FIRST_CLUSTER; /* past the heap: start over */
-    pg = page;
+    if (clusterLimit <= (u32)cluster) cluster = VF_FAT_FIRST_CLUSTER; /* past the heap: start over */
+    pg = fatPage;
     switch (VF_VOL_FAT_TYPE((u8 *)volume)) {
     case VF_FAT_TYPE_12:
-        r = ((s32 (*)(void *, u16, s32 *, void *))VFiPFFAT_GetEntry12)(volume, (u16)cluster, &entry, pg);
+        result = ((s32 (*)(void *, u16, s32 *, void *))VFiPFFAT_GetEntry12)(volume, (u16)cluster, &fatEntry, pg);
         break;
     case VF_FAT_TYPE_16:
-        r = ((s32 (*)(void *, s32, s32 *, void *))VFiPFFAT_GetEntry16)(volume, cluster, &entry, pg);
+        result = ((s32 (*)(void *, s32, s32 *, void *))VFiPFFAT_GetEntry16)(volume, cluster, &fatEntry, pg);
         break;
     case VF_FAT_TYPE_32:
-        r = ((s32 (*)(void *, s32, s32 *, void *))VFiPFFAT_GetEntry32)(volume, cluster, &entry, pg);
+        result = ((s32 (*)(void *, s32, s32 *, void *))VFiPFFAT_GetEntry32)(volume, cluster, &fatEntry, pg);
         break;
     default:
-        r = 0xF;
+        result = 0xF;
         break;
     }
     }
-    if (r != 0) return r;
-    if (entry == 0) {
-        if ((u32)(*outFirst + 0x10000) == 0xFFFF) *outFirst = cluster; /* a free run starts here */
-        run++;
-        if (run >= (u32)needed) { /* long enough: this is the run */
-            *outLast = cluster;
-            VFiPFCACHE_FreeFATPage_800A8E10(volume, page);
+    if (result != 0) return result;
+    if (fatEntry == 0) {
+        if ((u32)(*outRunStart + 0x10000) == 0xFFFF) *outRunStart = cluster; /* a free run starts here */
+        freeRun++;
+        if (freeRun >= (u32)neededCount) { /* long enough: this is the run */
+            *outRunEnd = cluster;
+            VFiPFCACHE_FreeFATPage_800A8E10(volume, fatPage);
             return 0;
         }
     } else {
-        if (bestLen < run) { /* the run ended; keep it if it is the best so far */
-            bestStart = *outFirst;
-            bestLen = run;
+        if (bestRunLen < freeRun) { /* the run ended; keep it if it is the best so far */
+            bestRunStart = *outRunStart;
+            bestRunLen = freeRun;
         }
-        *outFirst = -1;
-        run = 0;
+        *outRunStart = -1;
+        freeRun = 0;
     }
     cluster++;
-    if (wrapped == 0 && run == 0 && (u32)cluster > VF_FAT_FIRST_CLUSTER && (u32)cluster == (u32)last) {
-        last = start; /* nothing free to the end: cover the front of the heap once */
+    if (didWrap == 0 && freeRun == 0 && (u32)cluster > VF_FAT_FIRST_CLUSTER && (u32)cluster == (u32)lastCluster) {
+        lastCluster = startCluster; /* nothing free to the end: cover the front of the heap once */
         cluster = VF_FAT_FIRST_CLUSTER;
-        wrapped = 1;
+        didWrap = 1;
     }
 test:
-    if ((u32)cluster <= (u32)last) goto loop;
-    if (bestLen < run) {
-        bestStart = *outFirst;
-        bestLen = run;
+    if ((u32)cluster <= (u32)lastCluster) goto loop;
+    if (bestRunLen < freeRun) {
+        bestRunStart = *outRunStart;
+        bestRunLen = freeRun;
     }
-    if (bestLen != 0) { /* no run of `needed`: hand back the longest one */
-        *outFirst = bestStart;
-        *outLast = bestLen + bestStart - 1;
+    if (bestRunLen != 0) { /* no run of `needed`: hand back the longest one */
+        *outRunStart = bestRunStart;
+        *outRunEnd = bestRunLen + bestRunStart - 1;
     }
-    VFiPFCACHE_FreeFATPage_800A8E10(volume, page);
+    VFiPFCACHE_FreeFATPage_800A8E10(volume, fatPage);
     return 0;
 }
 #pragma pop
