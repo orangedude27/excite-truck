@@ -2096,11 +2096,10 @@ static inline float HudEase(float t) {
 #pragma use_lmw_stmw off
 #pragma dont_inline off
 extern "C" int updateCrushResultsHud(void *overlay, int player) {
-   /* Update the crush-mode results HUD. `overlay` holds the scene manager at +0x1A8
-     and a per-frame value at +0x19C; `player` selects the player whose score is shown.
-     lbl_80561AB8/AE0/AE4/AE8 are the score-window and time-window fade timing constants. During
-     the score window the score line is formatted and faded/slid in; during the time
-     window the remaining seconds are formatted and faded/slid in, using a cubic ease. */
+  /* Refresh the crush-mode results HUD: format and fade/slide the player's score
+     line and the remaining-time line into their panels during their timed windows.
+     `overlay` holds the scene manager at +0x1A8 and a per-frame value at +0x19C;
+     lbl_80561AB8/AE0/AE4/AE8 are the score/time window fade timing constants. */
  struct TextRect { int a; float b; int c,d; float e; int f,g,h; };
  struct SceneManager { virtual void *unused(); virtual void *get(const char *); };
  struct Frame { TextRect rect2; char text2[24]; TextRect rect1; char text1[20]; } frame;
