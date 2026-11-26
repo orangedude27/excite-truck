@@ -18,7 +18,7 @@ extern unsigned char lbl_8055F67C;
 extern float lbl_80563AE8;
 extern void fn_80216D28(void);
 extern void fn_80214D50(int);
-extern unsigned char *fn_8001EFAC(int, int);
+extern unsigned char *getAchievementLevelName(int, int);
 extern int fn_801345D8(char *, int, const char *, int);
 extern const char lbl_80344F08[];
 extern char lbl_8055C38C;
@@ -129,7 +129,7 @@ __declspec(section ".sdata") extern char lbl_8055C28C[];
 __declspec(section ".rodata") extern int lbl_80345158;
 extern "C" int fn_80259224(void **arg0) {
     extern float lbl_80563AE4;
-    extern unsigned char *fn_8001EFAC(int, int);
+    extern unsigned char *getAchievementLevelName(int, int);
     extern int fn_801345D8(char *, int, const char *, int);
     extern int getAchievementLevelValue(int, int);
     extern int fn_8001EF9C(int, int, int, const void *, const void *);
@@ -204,7 +204,7 @@ extern "C" int fn_80259224(void **arg0) {
 
     size = *(int *)((char *)arg0 + 0xC8);
     *(volatile int *)(((char *)frame + 0x10C - 8)) = size;
-    src = fn_8001EFAC(*(int *)((char *)arg0 + 0x18), size);
+    src = getAchievementLevelName(*(int *)((char *)arg0 + 0x18), size);
     if (src != 0) {
         dst = (unsigned char *)(((char *)frame + 0xC4 - 8));
         count = 0x32;
@@ -435,7 +435,7 @@ int fn_8025978C(void **arg0) {
     FS(int, 0xDC) = *(int *)((char *)arg0 + 0xC8);
     size = *(int *)((char *)arg0 + 0xC8);
     FS(int, 0x200) = size;
-    src = fn_8001EFAC(*(int *)((char *)arg0 + 0x18), size);
+    src = getAchievementLevelName(*(int *)((char *)arg0 + 0x18), size);
     if (src != 0) {
         dst = (unsigned char *)&FS(u8, 0x1B8);
         i = 0x32;
@@ -456,7 +456,7 @@ int fn_8025978C(void **arg0) {
     }
     size2 = *(int *)((char *)arg0 + 0xC8);
     FS(int, 0x154) = size2;
-    src = fn_8001EFAC(*(int *)((char *)arg0 + 0x18), size2);
+    src = getAchievementLevelName(*(int *)((char *)arg0 + 0x18), size2);
     if (src != 0) {
         dst = (unsigned char *)&FS(u8, 0x10C);
         i = 0x32;
@@ -834,7 +834,7 @@ int fn_8025A1C4(int object, int deleteFlag) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_8025A204(void) {
-    extern unsigned char *fn_8001EFAC(int, int);
+    extern unsigned char *getAchievementLevelName(int, int);
     struct State {
         char pad0[0x0C]; volatile int state; volatile int object; volatile int selected; volatile int next;
         volatile int index; float number; char shortText[0x14]; char spareText[0x14];
@@ -896,7 +896,7 @@ void fn_8025A204(void) {
                 if (count <= 0) { dst[-1] = (char)zero; break; }
             }
         }
-        src = (char *)fn_8001EFAC(state.object, state.saved);
+        src = (char *)getAchievementLevelName(state.object, state.saved);
         if (src != 0 && changed != 0) {
             dst = state.title;
             count = 0x32;
@@ -947,7 +947,7 @@ extern void Abend_Panic(const char *, int);
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_8025A50C(void) {
-    extern unsigned char *fn_8001EFAC(int, int);
+    extern unsigned char *getAchievementLevelName(int, int);
     struct State {
         char pad0[0x0C]; volatile int state; volatile int object; volatile int selected; volatile int next;
         volatile int index; float number; char shortText[0x14]; char spareText[0x14];
@@ -1007,7 +1007,7 @@ void fn_8025A50C(void) {
                 if (count <= 0) { dst[-1] = (char)zero; break; }
             }
         }
-        src = (char *)fn_8001EFAC(state.object, state.saved);
+        src = (char *)getAchievementLevelName(state.object, state.saved);
         if (src != 0 && changed != 0) {
             dst = state.title;
             count = 0x32;
@@ -1439,7 +1439,7 @@ void fn_8025B134(void) {
 
 void fn_8025B138(void *arg0) {
     /* Update this object's cached text/labels from a resource string: copy up to 0x32
-     * chars from fn_8001EFAC(id,size) into the child buffer, set a "Level %d" label
+     * chars from getAchievementLevelName(id,size) into the child buffer, set a "Level %d" label
      * when size > 0, then format the display string at arg0+0x20. */
     typedef void (*FormatFn)(char *, int, const char *, ...);
     void *tmp = arg0;
@@ -1455,7 +1455,7 @@ void fn_8025B138(void *arg0) {
     resourceId = *(int *)((char *)arg0 + 0x70);
     *(int *)((char *)arg0 + 0x74) = textSize;
     *(int *)((char *)child + 0x4C) = textSize;
-    src = fn_8001EFAC(resourceId, textSize);
+    src = getAchievementLevelName(resourceId, textSize);
     if (src == 0)
         goto noSource;
     dst = (unsigned char *)child + 4;
@@ -1480,7 +1480,7 @@ copyDone:
         ((FormatFn)fn_801345D8)((char *)child + 0x36, 0x14, lbl_80344F08, textSize);
     else
         *((unsigned char *)child + 0x36) = 0;
-    ((FormatFn)fn_801345D8)((char *)arg0 + 0x20, 0x50, &lbl_8055C38C, fn_8001EFAC(*(int *)((char *)arg0 + 0x70), *(int *)((char *)arg0 + 0x74)));
+    ((FormatFn)fn_801345D8)((char *)arg0 + 0x20, 0x50, &lbl_8055C38C, getAchievementLevelName(*(int *)((char *)arg0 + 0x70), *(int *)((char *)arg0 + 0x74)));
 }
 
 extern int fn_80214A9C(int);
@@ -1573,7 +1573,7 @@ typedef struct LevelButton {
             achievement = button->achievement;
             dialog = button->dialog;
             dialog->level = level;
-            nameSrc = fn_8001EFAC(achievement, level);
+            nameSrc = getAchievementLevelName(achievement, level);
             if (nameSrc == 0) goto prev_else;
             nameDst = (unsigned char *)(dialog->rankName);
             nameLeft = 0x32;
@@ -1597,7 +1597,7 @@ prev_done:
                 dialog->levelText[0] = 0;  // below the first threshold: no level
             }
             ((Fmt)fn_801345D8)(button->description, 0x50, &lbl_8055C38C,
-                        fn_8001EFAC(button->achievement, button->level));
+                        getAchievementLevelName(button->achievement, button->level));
         } else {
             fn_80216D28();
             fn_80214D50(1);
@@ -1616,7 +1616,7 @@ prev_done:
             achievement2 = button->achievement;
             dialog2 = button->dialog;
             dialog2->level = level2;
-            nameSrc2 = fn_8001EFAC(achievement2, level2);
+            nameSrc2 = getAchievementLevelName(achievement2, level2);
             if (nameSrc2 == 0) goto next_else;
             nameDst2 = (unsigned char *)(dialog2->rankName);
             nameLeft2 = 0x32;
@@ -1640,7 +1640,7 @@ next_done:
                 dialog2->levelText[0] = 0;
             }
             ((Fmt)fn_801345D8)(button->description, 0x50, &lbl_8055C38C,
-                        fn_8001EFAC(button->achievement, button->level));
+                        getAchievementLevelName(button->achievement, button->level));
         } else {
             fn_80216D28();
             fn_80214D50(1);
@@ -1757,7 +1757,7 @@ goal_copy:
         if ((signed char)goalC != 0) goto goal_next;
 goal_done:;
     }
-    nameSrc = fn_8001EFAC(row->achievement, row->rank);
+    nameSrc = getAchievementLevelName(row->achievement, row->rank);
     if (nameSrc != 0 && showName != 0) {
         nameDst = (unsigned char *)(row->rankName);
         nameLeft = 0x32;
@@ -1934,7 +1934,7 @@ goal_copy:
         if ((signed char)goalC != 0) goto goal_next;
 goal_done:;
     }
-    rankSrc = fn_8001EFAC(row->achievement, row->rank);
+    rankSrc = getAchievementLevelName(row->achievement, row->rank);
     if (rankSrc != 0 && showName != 0) {
         rankDst = (unsigned char *)(row->rankName);
         rankLeft = 0x32;
@@ -2039,7 +2039,7 @@ int fn_8025BBFC(void *self, int input) {
     return 1;
 }
 
-extern unsigned char *fn_8001EFAC(int, int);
+extern unsigned char *getAchievementLevelName(int, int);
 extern int fn_801345D8(char *, int, const char *, int);
 extern const char lbl_80344F08[];
 void fn_8025BE0C(void *arg0) {
@@ -2058,7 +2058,7 @@ void fn_8025BE0C(void *arg0) {
     textId = *(int *)((char *)arg0 + 0x20);
     obj = *(void **)((char *)request + 0x18);
     *(int *)((char *)obj + 0x4C) = level;
-    src = fn_8001EFAC(textId, level);
+    src = getAchievementLevelName(textId, level);
     if (src == 0)
         goto else_copy;
     dst = (unsigned char *)obj + 4;
@@ -2113,7 +2113,7 @@ void fn_8025BED0(void *arg0) {
         textId = *(int *)((char *)self + 0x20);
         child = *(void **)((char *)request + 0x18);
         *(int *)((char *)child + 0x4C) = level;
-        src = fn_8001EFAC(textId, level);
+        src = getAchievementLevelName(textId, level);
         if (src == 0)
             goto else_copy;
         dst = (unsigned char *)child + 4;
