@@ -1478,7 +1478,7 @@ extern void fn_8016E15C();
 #pragma opt_loop_invariants off
 #pragma opt_common_subs off
 #pragma scheduling invalid_target
-void fn_8016DA0C(void *obj) {
+void resetChallengeState(void *obj) {
     /* Reset this object's ring/set collections, sub-state and UI/sound handles to
        their initial values (clear per-entry fields, rebuild/reinit the active set,
        clear the 0x10-byte status entries, reset flags/timers and release/prime the
