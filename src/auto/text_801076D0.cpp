@@ -1962,7 +1962,7 @@ extern "C" s32 GetFont__Q36nw4hbm2ut10CharWriterCFv_8010DB5C(s32 writer) {
 extern "C" f32 fn_8010F81C(void *writer, s32 arg1, s32 arg2);
 extern "C" f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(void *);
 extern "C" f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(void *);
-extern "C" f32 fn_8010DC74(void *writer, const char *fmt, ...) {
+extern "C" f32 CharWriter_Printf(void *writer, const char *fmt, ...) {
     extern void SetCursor__Q36nw4hbm2ut10CharWriterFff(void *, f32, f32);
     va_list args;
     char *buf;

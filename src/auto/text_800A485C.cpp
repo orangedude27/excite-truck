@@ -21719,7 +21719,7 @@ extern "C" const char lbl_8031EA4C[];
 extern "C" void fn_800D2E3C(s32, s32, s32, s32);
 extern "C" void Console_DrawDirectLines(void*, s32);
 extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597E0[]; }
-extern "C" void fn_8010DC74(s32, const char *, ...);
+extern "C" void CharWriter_Printf(s32, const char *, ...);
 extern "C" void db_DirectPrint(void *arg0, void *arg1, s32 arg2, const char *fmt, ...);
 extern void* lbl_8055DDBC;
 extern "C" void fn_800D2098(const char *, s32, const char *, va_list);
@@ -27435,7 +27435,7 @@ extern "C" void Console_DrawDirectLines(void *consoleHead, s32 charWriter)
         if (line == console->writeLine && console->partial == 0) break;
         text = console->lines + (console->lineWidth + 1) * (u16)line;
         if (charWriter != 0) {
-            fn_8010DC74(charWriter, lbl_805597E0, text);
+            CharWriter_Printf(charWriter, lbl_805597E0, text);
         } else {
             /* One line feed of the console's text is 10 pixels. */
             db_DirectPrint((void *)(s32)console->drawX,
