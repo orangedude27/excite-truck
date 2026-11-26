@@ -1467,7 +1467,7 @@ extern char lbl_80349024[];
 extern char lbl_80349078[];
 extern unsigned char lbl_8055F74C;
 #pragma cplusplus on
-void appendParticleEntry(void *emitterPtr, int basePosAddr, float *generatedPos, float angle, float scale) {
+void appendParticleEntry(void *emitterPtr, int basePosAddr, float *generatedPos, float rotation, float scale) {
     /* Append one particle entry to the emitter's ring buffer: pack the base/generated position pair and the mode-dependent color/rotation byte, warn once if called outside the particle update window. */
     EfEntry2 entry;
     EfEntry2 *dst;
@@ -1494,7 +1494,7 @@ void appendParticleEntry(void *emitterPtr, int basePosAddr, float *generatedPos,
         break;
     case 2:
         entry.c2 = emitter->en38 ? fn_80287B5C(0xff) : 0;
-        entry.f0 = angle;
+        entry.f0 = rotation;
         break;
     default:
         Abend_Panic(lbl_80349078, emitter->mode);
