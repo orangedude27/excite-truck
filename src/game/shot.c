@@ -213,12 +213,12 @@ u8 isKeyPressed(s32 keyCode) {
 }
 
 extern unsigned char gHasSavedInputState;
-extern unsigned char lbl_804FC3B0[];
+extern unsigned char gSavedInputStateBuffer[];
 /* Restores a saved 0x61-byte input/telemetry snapshot into out when one is available:
  * copies the record from the saved-state buffer and returns 1, or returns 0 if none is saved. */
 int restoreSavedInputState(void *out) {
 #define hasSavedState gHasSavedInputState
-#define savedStateBuffer lbl_804FC3B0
+#define savedStateBuffer gSavedInputStateBuffer
     unsigned char *dst = (unsigned char *)out;
     if (hasSavedState != 0) {
         volatile unsigned char *src = savedStateBuffer;
