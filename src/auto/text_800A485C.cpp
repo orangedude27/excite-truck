@@ -17465,7 +17465,7 @@ extern "C" void fn_800C18A0(void *input, void *output) {
 
 extern "C" s32 lbl_802F4018[];
 extern "C" s32 lbl_802F4060[];
-extern "C" void fn_800C1A80(void *, void *, s32 *);
+extern "C" void decodeInterleavedSampleBlocks(void *, void *, s32 *);
 extern "C" void fn_800C1984(s32 *arg0, s32 *arg1) {
     s32 combined[9];
     s32 filtered[9];
@@ -17487,11 +17487,11 @@ extern "C" void fn_800C1984(s32 *arg0, s32 *arg1) {
         *combinedOut++ = forward + reverse;
         *filteredOut++ = fixedMul20(c, delta);
     }
-    fn_800C1A80(combined, filtered, arg1);
+    decodeInterleavedSampleBlocks(combined, filtered, arg1);
 }
 
 extern "C" void fn_800C1C1C(void *, s32 *);
-extern "C" void fn_800C1A80(void *arg0, void *arg1, s32 *out) {
+extern "C" void decodeInterleavedSampleBlocks(void *arg0, void *arg1, s32 *out) {
     /* Decode two 9-sample blocks and emit 18 interleaved differential output values. */
     s32 samples[19];
     s32 delta;
