@@ -549,7 +549,7 @@ extern "C" s32 fn_80129D18(s32, s32);
  * names that go with it, formats the two "value/record" strings at base + 0x3C
  * and 0x50 and finally tells the icon object (base + 0x4C) which entry to show.
  */
-extern "C" s32 updateEntryInfo(void) {
+/* Refresh the entry-list info panel for the entry under the cursor: copy its name/description into the screen, load its parameter record and five part names, format the value/record strings, and set the icon object's entry. */ extern "C" s32 updateEntryInfo(void) {
     typedef signed char s8;
     // One of the five per-entry tables of the parameter block (base + 0x38 + 0x2C).
     class EntryTable {
