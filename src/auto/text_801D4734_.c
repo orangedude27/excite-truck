@@ -2530,7 +2530,7 @@ extern char lbl_8055AD08;
  * The element is then handed the request with accept(); an element that
  * refuses the request is destroyed and nothing is returned.
  */
-/* Build the action-sequence element named by the request's "type" string, initialize it, and return it only if the element accepts the request. */ extern "C" void *createASEElement(void *arg0) {
+extern "C" void *createASEElement(void *requestObject) {
     extern char lbl_80338460;
     extern char lbl_8055ACF4;
     struct Request {
@@ -2546,12 +2546,12 @@ extern char lbl_8055AD08;
         virtual int accept(void *);
     };
     char *strings = (char *)&lbl_80338460;
-    Request *request = (Request *)arg0;
-    const char *name = request->getString(field_type);
+    Request *request = (Request *)requestObject;
+    const char *typeName = request->getString(field_type);
     void *element = 0;
     register void *object;
 
-    if (stricmp(name, type_obstacle) == 0) {
+    if (stricmp(typeName, type_obstacle) == 0) {
         object = fn_801284F8(0x17C, alloc_Obstacle_ASE);
         if (object != 0) {
             object = ((void *(*)(void *))initObstacleASE)(object); /* Obstacle_ASE ctor */
@@ -2559,7 +2559,7 @@ extern char lbl_8055AD08;
         element = object;
         goto done;
     }
-    if (stricmp(name, type_world_morph) == 0) {
+    if (stricmp(typeName, type_world_morph) == 0) {
         object = fn_801284F8(0x2C, alloc_WorldMorph_ASE);
         if (object != 0) {
             ((WorldMorph_ASE *)object)->vtable = vtable_WorldMorph_ASE;
@@ -2568,7 +2568,7 @@ extern char lbl_8055AD08;
         element = object;
         goto done;
     }
-    if (stricmp(name, type_phys_path) == 0) {
+    if (stricmp(typeName, type_phys_path) == 0) {
         object = fn_801284F8(0x44, alloc_PhysPath_ASE);
         if (object != 0) {
             ((PhysPath_ASE *)object)->vtable = vtable_PhysPath_ASE;
@@ -2577,7 +2577,7 @@ extern char lbl_8055AD08;
         element = object;
         goto done;
     }
-    if (stricmp(name, type_camera_shake) == 0) {
+    if (stricmp(typeName, type_camera_shake) == 0) {
         object = fn_801284F8(0x20, alloc_CameraShake_ASE);
         if (object != 0) {
             object = ((void *(*)(void *))initCameraShakeASE)(object); /* CameraShake_ASE ctor */
@@ -2585,7 +2585,7 @@ extern char lbl_8055AD08;
         element = object;
         goto done;
     }
-    if (stricmp(name, type_track_effect) == 0) {
+    if (stricmp(typeName, type_track_effect) == 0) {
         object = fn_801284F8(0x34, alloc_TrackEffect_ASE);
         if (object != 0) {
             object = ((void *(*)(void *))initTrackEffectASE)(object); /* TrackEffect_ASE ctor */
@@ -2593,7 +2593,7 @@ extern char lbl_8055AD08;
         element = object;
         goto done;
     }
-    if (stricmp(name, type_sound_effect) == 0) {
+    if (stricmp(typeName, type_sound_effect) == 0) {
         object = fn_801284F8(0x34, alloc_SoundEffect_ASE);
         if (object != 0) {
             object = ((void *(*)(void *))initSoundEffectASE)(object); /* SoundEffect_ASE ctor */
@@ -2601,7 +2601,7 @@ extern char lbl_8055AD08;
         element = object;
         goto done;
     }
-    if (stricmp(name, type_text) == 0) {
+    if (stricmp(typeName, type_text) == 0) {
         object = fn_801284F8(0x8C, alloc_Text_ASE);
         if (object != 0) {
             object = ((void *(*)(void *))initTextASE)(object); /* Text_ASE ctor */
@@ -2609,7 +2609,7 @@ extern char lbl_8055AD08;
         element = object;
         goto done;
     }
-    if (stricmp(name, type_surfchange) == 0) {
+    if (stricmp(typeName, type_surfchange) == 0) {
         object = fn_801284F8(0x1B0, alloc_SurfChange_ASE);
         if (object != 0) {
             *(void **)object = vtable_SurfChange_ASE;
@@ -2621,7 +2621,7 @@ extern char lbl_8055AD08;
         element = object;
         goto done;
     }
-    if (stricmp(name, type_embedded_effect) == 0) {
+    if (stricmp(typeName, type_embedded_effect) == 0) {
         object = fn_801284F8(0x18, alloc_EmbeddedEffect_ASE);
         if (object != 0) {
             *(void **)object = vtable_EmbeddedEffect_ASE;
@@ -2630,7 +2630,7 @@ extern char lbl_8055AD08;
         element = object;
         goto done;
     }
-    if (stricmp(name, type_ring_set) == 0) {
+    if (stricmp(typeName, type_ring_set) == 0) {
         object = fn_801284F8(0x3C, alloc_RingMaster_ASE);
         if (object != 0) {
             object = ((void *(*)(void *))initRingMasterASE)(object); /* RingMaster_ASE ctor */
@@ -2638,7 +2638,7 @@ extern char lbl_8055AD08;
         element = object;
         goto done;
     }
-    if (stricmp(name, type_trigger) == 0) {
+    if (stricmp(typeName, type_trigger) == 0) {
         object = fn_801284F8(0x24, alloc_Trigger_ASE);
         if (object != 0) {
             *(void **)object = vtable_Trigger_ASE;
@@ -2647,7 +2647,7 @@ extern char lbl_8055AD08;
         element = object;
         goto done;
     }
-    if (stricmp(name, type_lightning) == 0) {
+    if (stricmp(typeName, type_lightning) == 0) {
         object = fn_801284F8(0x1C, alloc_Lightning_ASE);
         if (object != 0) {
             *(int *)((char *)object + 4) = 0;
@@ -2657,7 +2657,7 @@ extern char lbl_8055AD08;
     }
 done:
     if (!element) goto fail;
-    if (((Element *)element)->accept(arg0) != 0) return element;
+    if (((Element *)element)->accept(requestObject) != 0) return element;
     if (element != 0) ((Element *)element)->destroy(1);
 fail:
     return 0;
