@@ -229,7 +229,7 @@ void fn_8000F2EC(void) {
 /* Load the resources the two bottom-of-screen banners are drawn from, the same
  * ones fn_8000F384 releases again: the sprite sheet fn_8000FC8C and fn_8000FDF0
  * draw as their end caps, opened as a refcounted archive file handle
- * (ArtSetGet; fn_80235EF0 / fn_80235F64 give one of its frames' size), and the
+ * (ArtSetGet; getPictureWidth / fn_80235F64 give one of its frames' size), and the
  * gText font taken twice, once per banner, so each holds a reference of its own
  * (fn_802328D4 drops one).  The names come from the string table at
  * lbl_802FC2A8 -- "interlude.art" and, for both font slots, the "uifnt.gtx" UI
@@ -491,7 +491,7 @@ void fn_8000F884(void) {
     extern s32 fn_800167F4(void);
     extern s32 fn_80145E70(s32);
     extern s32 fn_80235FD8(s32);
-    extern f32 fn_80235EF0(s32, s32);
+    extern f32 getPictureWidth(s32, s32);
     extern f32 fn_80235F64(s32, s32);
     extern void fn_802E30C8(const char *, ...);
     extern char lbl_802FC5CC[];
@@ -536,7 +536,7 @@ void fn_8000F884(void) {
             if (len < 8) n = len;
             p = (u8 *)lbl_80351738 + n * 8;
             while (p -= 8, n-- > 0) {
-                *(f32 *)(p + 0x10) = fn_80235EF0(lbl_80351738[0x14], n);
+                *(f32 *)(p + 0x10) = getPictureWidth(lbl_80351738[0x14], n);
                 *(f32 *)(p + 0x14) = fn_80235F64(lbl_80351738[0x14], n);
             }
             c = lbl_805602E8;
@@ -561,7 +561,7 @@ void fn_8000F884(void) {
             if (len < 8) n = len;
             p = (u8 *)lbl_80351738 + n * 8;
             while (p -= 8, n-- > 0) {
-                *(f32 *)(p + 0x10) = fn_80235EF0(lbl_80351738[0x14], n);
+                *(f32 *)(p + 0x10) = getPictureWidth(lbl_80351738[0x14], n);
                 *(f32 *)(p + 0x14) = fn_80235F64(lbl_80351738[0x14], n);
             }
             c = lbl_805602EC;
@@ -656,7 +656,7 @@ void fn_8000FC8C(s32 value, s32 arg1) {
     extern s32 fn_80232B70(s32);
     extern f32 fn_80011E54(void);
     extern f32 fn_80011E70(void);
-    extern f32 fn_80235EF0(s32, s32);
+    extern f32 getPictureWidth(s32, s32);
     extern f32 fn_80235F64(s32, s32);
     extern void fn_80010E94(f32, f32, f32, f32, s32, s32);
     extern void fn_802337A0(f32, s32, f32, s32, f32, f32, s32, f32, const char *, ...);
@@ -678,8 +678,8 @@ void fn_8000FC8C(s32 value, s32 arg1) {
     baseX = fn_80011E70();
     baseY = fn_80011E54();
     if (lbl_8055D4C0 != 0) {
-        iconWidth = fn_80235EF0(lbl_8055D4C0, 0);
-        totalIconWidth = iconWidth + fn_80235EF0(lbl_8055D4C0, 1);
+        iconWidth = getPictureWidth(lbl_8055D4C0, 0);
+        totalIconWidth = iconWidth + getPictureWidth(lbl_8055D4C0, 1);
         iconX = baseX - (lbl_8056025C * totalIconWidth);
         iconY = (baseY - lbl_80560304) + (lbl_8056025C * fn_80235F64(lbl_8055D4C0, 0));
         ((void (*)(s32, s32, f32, f32, f32, f32))fn_80010E94)(lbl_8055D4C0, 0, iconX, iconY, lbl_80560280, lbl_80560280);
@@ -736,7 +736,7 @@ void fn_8000FDF0(const char *text) {
     extern f32 fn_80011E70(void);
     extern f32 fn_8023293C(s32, f32);
     extern f32 fn_80235F64(s32, s32);
-    extern f32 fn_80235EF0(s32, s32);
+    extern f32 getPictureWidth(s32, s32);
     extern void fn_80010E94(f32, f32, f32, f32, s32, s32);
     /* Scale the UI font so a line is INTERLUDE_TEXT_HEIGHT pixels tall, and lay
      * the text out centred on the screen's horizontal middle. */
@@ -756,7 +756,7 @@ void fn_8000FDF0(const char *text) {
         f32 capY = baseY + (HALF_PIXEL * fn_80235F64(INTERLUDE_ART, INTERLUDE_END_CAP));
         ((void (*)(s32, s32, f32, f32, f32, f32))fn_80010E94)(
             INTERLUDE_ART, INTERLUDE_END_CAP,
-            (left - fn_80235EF0(INTERLUDE_ART, INTERLUDE_END_CAP)) - INTERLUDE_SIDE_PAD,
+            (left - getPictureWidth(INTERLUDE_ART, INTERLUDE_END_CAP)) - INTERLUDE_SIDE_PAD,
             capY, DEFAULT_SCALE, DEFAULT_SCALE);
         ((void (*)(s32, s32, f32, f32, f32, f32))fn_80010E94)(
             INTERLUDE_ART, INTERLUDE_END_CAP,
@@ -1548,7 +1548,7 @@ void fn_80011278(s32 color) {
     ((void (*)(s32, s32))fn_80011280)(color, lbl_8055D4D4);
 }
 
-extern f32 fn_80235EF0(s32, s32);
+extern f32 getPictureWidth(s32, s32);
 #pragma scheduling invalid_target
 void fn_80011280(s32 arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3) {
     volatile f32 spC;
@@ -1574,52 +1574,52 @@ void fn_80011280(s32 arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3)
     f32 temp_f2;
     f32 temp_f5;
 
-    temp_f26 = fn_80235EF0(arg1, 0);
+    temp_f26 = getPictureWidth(arg1, 0);
     temp_f5 = fn_80235F64(arg1, 0);
     sp8 = farg0;
     spC = farg1;
     fn_802354A0(arg1, 0, arg0, (f32)(f64)farg0, (f32)(f64)farg1, lbl_80560280, temp_f26, temp_f5);
-    temp_f1 = fn_80235EF0(arg1, 1);
+    temp_f1 = getPictureWidth(arg1, 1);
     spC = farg1;
     sp8 = (farg0 + farg2) - temp_f1;
     fn_802354A0(arg1, 1, arg0, sp8, (f32)(f64)farg1, lbl_80560280, temp_f1, fn_80235F64(arg1, 1));
-    temp_f26_2 = fn_80235EF0(arg1, 2);
+    temp_f26_2 = getPictureWidth(arg1, 2);
     temp_f1_2 = fn_80235F64(arg1, 2);
     sp8 = farg0;
     spC = temp_f1_2 + (farg1 - farg3);
     fn_802354A0(arg1, 2, arg0, farg0, spC, lbl_80560280, temp_f26_2, fn_80235F64(arg1, 2));
-    temp_f1_3 = fn_80235EF0(arg1, 3);
+    temp_f1_3 = getPictureWidth(arg1, 3);
     sp8 = (farg0 + farg2) - temp_f1_3;
     temp_f2 = fn_80235F64(arg1, 3);
     spC = temp_f2 + (farg1 - farg3);
     fn_802354A0(arg1, 3, arg0, sp8, spC, lbl_80560280, temp_f1_3, fn_80235F64(arg1, 3));
-    temp_f1_4 = fn_80235EF0(arg1, 0);
+    temp_f1_4 = getPictureWidth(arg1, 0);
     temp_f0 = farg0 + temp_f1_4;
     spC = farg1;
     sp8 = temp_f0;
-    temp_f26_3 = farg2 - (temp_f1_4 + fn_80235EF0(arg1, 1));
+    temp_f26_3 = farg2 - (temp_f1_4 + getPictureWidth(arg1, 1));
     fn_802354A0(arg1, 4, arg0, sp8, (f32)(f64)farg1, lbl_80560280, temp_f26_3, fn_80235F64(arg1, 0));
-    temp_f1_5 = fn_80235EF0(arg1, 2);
+    temp_f1_5 = getPictureWidth(arg1, 2);
     sp8 = farg0 + temp_f1_5;
-    temp_f26_4 = farg2 - (temp_f1_5 + fn_80235EF0(arg1, 3));
+    temp_f26_4 = farg2 - (temp_f1_5 + getPictureWidth(arg1, 3));
     temp_f1_6 = fn_80235F64(arg1, 2);
     temp_f2 = temp_f1_6 + (farg1 - farg3);
     spC = temp_f2;
     fn_802354A0(arg1, 5, arg0, sp8, temp_f2, lbl_80560280, temp_f26_4, temp_f1_6);
-    temp_f26_5 = fn_80235EF0(arg1, 0);
+    temp_f26_5 = getPictureWidth(arg1, 0);
     temp_f1_7 = fn_80235F64(arg1, 0);
     temp_f0_2 = farg1 - temp_f1_7;
     sp8 = farg0;
     spC = temp_f0_2;
     fn_802354A0(arg1, 6, arg0, farg0, spC, lbl_80560280, temp_f26_5, farg3 - (temp_f1_7 + fn_80235F64(arg1, 2)));
-    temp_f26_5 = fn_80235EF0(arg1, 1);
+    temp_f26_5 = getPictureWidth(arg1, 1);
     sp8 = (farg0 + farg2) - temp_f26_5;
     temp_f1_9 = fn_80235F64(arg1, 1);
     spC = farg1 - temp_f1_9;
     fn_802354A0(arg1, 7, arg0, sp8, spC, lbl_80560280, temp_f26_5, farg3 - (temp_f1_9 + fn_80235F64(arg1, 3)));
-    temp_f1_10 = fn_80235EF0(arg1, 0);
+    temp_f1_10 = getPictureWidth(arg1, 0);
     sp8 = farg0 + temp_f1_10;
-    temp_f27 = (farg2 - temp_f1_10) - fn_80235EF0(arg1, 1);
+    temp_f27 = (farg2 - temp_f1_10) - getPictureWidth(arg1, 1);
     temp_f1_11 = fn_80235F64(arg1, 0);
     spC = farg1 - temp_f1_11;
     fn_802354A0(arg1, 8, arg0, sp8, spC, lbl_80560280, temp_f27, (farg3 - temp_f1_11) - fn_80235F64(arg1, 2));
@@ -2363,7 +2363,7 @@ void fn_8000E3B4(s32 arg0) {
     extern s32 fn_8000DFA8(s32);
     extern s32 fn_8000DFC0(s32);
     extern f32 fn_80235F64(s32, s32);
-    extern f32 fn_80235EF0(s32, s32);
+    extern f32 getPictureWidth(s32, s32);
     extern f32 fn_80011EC8(s32);
     extern s32 fn_8000E2D8(s32);
     extern s32 fn_8000E338(s32);
@@ -2396,11 +2396,11 @@ void fn_8000E3B4(s32 arg0) {
     for (i = 0; i < *(s32 *)(end + 0x288); entry += 0x40, i++) {
         a = fn_8000DFA8(*(s32 *)(entry + 0x38));
         b = fn_8000DFC0(*(s32 *)(entry + 0x38));
-        aWidth = fn_80235EF0(lbl_80350F88, a) + inset;
+        aWidth = getPictureWidth(lbl_80350F88, a) + inset;
         h = fn_80235F64(lbl_80350F88, a);
         x = 5.0f + (f32)lbl_8055CFF0;
         x += *(f32 *)(entry + 0x3c) * (width - x);
-        fn_80235EF0(lbl_80350F88, b);
+        getPictureWidth(lbl_80350F88, b);
         x1 = 9.0f + x;
         x2 = 5.0f + x;
         x += aWidth;
@@ -2457,8 +2457,8 @@ void fn_8000E3B4(s32 arg0) {
     }
     a = fn_8000DFA8(0);
     b = fn_8000DFC0(0);
-    fn_80235EF0(lbl_80350F88, a);
-    fn_80235EF0(lbl_80350F88, b);
+    getPictureWidth(lbl_80350F88, a);
+    getPictureWidth(lbl_80350F88, b);
     fn_80235F64(lbl_80350F88, a);
 }
 
@@ -2501,11 +2501,11 @@ void fn_8000E874(s32 arg0) {
     for (i = 0; i < *(s32 *)(end + 0x288); entry += 0x40, i++) {
         a = fn_8000DFA8(*(s32 *)(entry + 0x38));
         b = fn_8000DFC0(*(s32 *)(entry + 0x38));
-        aWidth = fn_80235EF0(lbl_80351214, a) + inset;
+        aWidth = getPictureWidth(lbl_80351214, a) + inset;
         h = fn_80235F64(lbl_80351214, a);
         x = 5.0f + (f32)lbl_8055CFF0;
         x += *(f32 *)(entry + 0x3c) * (width - x);
-        fn_80235EF0(lbl_80351214, b);
+        getPictureWidth(lbl_80351214, b);
         x1 = 9.0f + x;
         x2 = 5.0f + x;
         x += aWidth;
@@ -2562,8 +2562,8 @@ void fn_8000E874(s32 arg0) {
     }
     a = fn_8000DFA8(0);
     b = fn_8000DFC0(0);
-    fn_80235EF0(lbl_80351214, a);
-    fn_80235EF0(lbl_80351214, b);
+    getPictureWidth(lbl_80351214, a);
+    getPictureWidth(lbl_80351214, b);
     fn_80235F64(lbl_80351214, a);
 }
 #pragma opt_common_subs reset

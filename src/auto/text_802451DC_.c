@@ -522,10 +522,8 @@ extern "C" void fn_80245D74(void *arg0, void *arg1) {
         unsigned int pad2C;
         int pad28;
         unsigned int i30;
-        char pad37;
-        unsigned char c35;
-        char pad36;
         unsigned char c34;
+        unsigned char c35;
     };
     struct Frame {
         unsigned int args[5];
@@ -550,7 +548,6 @@ extern "C" void fn_80245D74(void *arg0, void *arg1) {
     char *name2;
     long len1;
     unsigned long len2;
-    int has8;
     int *s;
     register int *d;
     if (*(unsigned char *)((char *)a0 + 0x1D) == 0) {
@@ -559,30 +556,29 @@ extern "C" void fn_80245D74(void *arg0, void *arg1) {
     }
     s = (int *)a1;
     d = &frame.buf[0];
-    *(void **)((char *)a0 + 0x20) = a1;
-    count = s[5];
-    i = 0;
-    if (0 < count) {
-        while (count > i) {
-            d[0] = s[6];
-            d[1] = s[7];
-            d += 2;
-            s += 2;
-            i++;
+    {
+        struct Pair8 {
+            int a;
+            int b;
+        };
+        int n = s[5];
+        i = 0;
+        *(void **)((char *)a0 + 0x20) = a1;
+#pragma unroll 8
+        for (; i < n; i++) {
+            ((struct Pair8 *)frame.buf)[i] = ((struct Pair8 *)a1)[3 + i];
+        }
+#pragma unroll 8
+        for (; i < 4; i++) {
+            ((struct Pair8 *)frame.buf)[i].a = 0;
+            ((struct Pair8 *)frame.buf)[i].b = 0;
         }
     }
-    while (i < 4) {
-        d[0] = 0;
-        d[1] = 0;
-        i++;
-        d += 2;
-    }
     frame.state.c34 = 1;
-    frame.state.i30 = 0;
     frame.state.p1C = (void *)lbl_80343148;
-    has8 = ((int *)a1)[2];
+    frame.state.i30 = 0;
     frame.state.c35 = 1;
-    if (has8) {
+    if (((int *)a1)[2]) {
         frame.state.c35 = 0;
     }
     frame.cfg[1] = 5;
@@ -659,14 +655,13 @@ extern "C" void fn_80245D74(void *arg0, void *arg1) {
     frame.args[2] = (unsigned int)lbl_802FA364[2];
     frame.args[3] = (unsigned int)lbl_802FA364[3];
     frame.args[4] = (unsigned int)lbl_802FA364[4];
-    if (has8) {
-        frame.args[0] = (unsigned int)has8;
-    } else {
-        frame.args[0] = (unsigned int)(base + 0xCC);
+    {
+        int id = ((int *)a1)[2];
+        frame.args[0] = id ? (unsigned int)id : (unsigned int)(base + 0xCC);
     }
     frame.args[1] = (unsigned int)&frame.cfg[0];
     fn_80216CA8();
-    if (has8) {
+    if (((int *)a1)[2]) {
         fn_80214D50(5);
     }
     fn_802146BC((int *)frame.args, -999, -999, 1);
@@ -889,7 +884,7 @@ struct BarWidget {
 
 extern void fn_80230C30(float *, float *, int, int);
 extern void fn_80230924(int, float, float, float, float, float);
-extern float fn_80235EF0(int, int);
+extern float getPictureWidth(int, int);
 extern float fn_80235F64(int, int);
 extern void fn_802353F4(int, int, float, float, float);
 extern void fn_802354A0(int, int, int, float, float, float, float, float);
@@ -920,8 +915,8 @@ void fn_802465A4(struct BarWidget *widget) {
     image = widget->image;
     if (image) {
         /* the caps keep their width; the middle takes the rest of the box */
-        leftWidth = fn_80235EF0(image, BAR_PIECE_FRAME_LEFT);
-        rightWidth = fn_80235EF0(widget->image, BAR_PIECE_FRAME_RIGHT);
+        leftWidth = getPictureWidth(image, BAR_PIECE_FRAME_LEFT);
+        rightWidth = getPictureWidth(widget->image, BAR_PIECE_FRAME_RIGHT);
         midWidth = (width-leftWidth)-rightWidth;
         totalWidth = rightWidth+(leftWidth+midWidth);
         barHeight = fn_80235F64(widget->image, BAR_PIECE_FRAME_LEFT);

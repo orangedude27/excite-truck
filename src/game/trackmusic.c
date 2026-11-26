@@ -613,7 +613,7 @@ extern signed char lbl_8055EEEC, lbl_8055EEED;
     }
 }
 
-extern float fn_80235EF0(long, long);
+extern float getPictureWidth(long, long);
 extern void fn_80147940(void *, void *, long, long);
 #pragma cplusplus on
 struct Dummy_802101F8 {
@@ -660,10 +660,10 @@ struct Record_802101F8 {
     do {
         long entryIndex = baseStep + step;
         if (step == 1) {
-            float lastStepValue = fn_80235EF0(widgetResourceSet, baseStep + 2);
-            rec.f10 = (record->f10 - fn_80235EF0(widgetResourceSet, baseStep)) - lastStepValue;
+            float lastStepValue = getPictureWidth(widgetResourceSet, baseStep + 2);
+            rec.f10 = (record->f10 - getPictureWidth(widgetResourceSet, baseStep)) - lastStepValue;
         } else {
-            rec.f10 = fn_80235EF0(widgetResourceSet, entryIndex);
+            rec.f10 = getPictureWidth(widgetResourceSet, entryIndex);
         }
         fn_80147940(widget, &rec, resource, entryIndex);
         step++;

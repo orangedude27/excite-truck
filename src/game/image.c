@@ -5,7 +5,7 @@
 extern void fn_80235380(void);
 extern int fn_80235FD8(void);
 typedef float f32;
-extern f32 fn_80235EF0(int);
+extern f32 getPictureWidth(int);
 extern f32 lbl_80564EE8;
 extern f32 lbl_80564EEC;
 extern int ArtSetGet(char*);
@@ -49,7 +49,7 @@ int gxGetImageWidth(void* image) {
     f32 imageWidth;
     f32 roundedWidth;
     if (image != 0) {
-        imageWidth = ((f32 (*)(void*, int))fn_80235EF0)(image, 0);
+        imageWidth = ((f32 (*)(void*, int))getPictureWidth)(image, 0);
         if (imageWidth < ZERO_F) roundedWidth = imageWidth - ROUND_HALF;
         else roundedWidth = ROUND_HALF + imageWidth;
         return (int)roundedWidth;

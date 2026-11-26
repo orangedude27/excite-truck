@@ -654,7 +654,7 @@ void fn_80235CBC(ArtSet *artSet, int pictureIndex, int rgba, float x, float y, f
     DrawList_RestoreNormalMode();
 }
 #pragma pop
-float fn_80235EF0(int resourceSet, int index) {
+float getPictureWidth(int resourceSet, int index) {
     /* Return the float value at +0x14 for the looked-up node, or 0.0f if missing. */
     void *node;
 

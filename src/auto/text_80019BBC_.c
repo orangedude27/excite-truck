@@ -15,7 +15,7 @@ extern void fn_802C8DB8(void *, int, unsigned short *, int);
 extern void DrawList_RestoreNormalMode(void);
 extern float PSVECDotProduct(const void *, const void *);
 extern float lbl_80560444, lbl_80560448, lbl_8056044C;
-extern float fn_80235EF0(void *, int);
+extern float getPictureWidth(void *, int);
 extern void fn_80235AFC(void *, int, unsigned int, float, float, float, float, float, float);
 extern void fn_802354A0(void *, int, int, float, float, float, float, float);
 extern void *fn_80156A40(void);
@@ -568,7 +568,7 @@ subtractCheck:
         result = PSVECDotProduct((u8 *)&frame + 0x54, (u8 *)&frame + 0x54);
         if (result < (width * lbl_80560420) * (width * lbl_80560420)) {
             color = index == *(s32 *)((u8 *)s.data + 0x48) ? 1 : 3;
-            angle = (f32)fn_80235EF0(*(void **)s.data, color);
+            angle = (f32)getPictureWidth(*(void **)s.data, color);
             ratio = 1.0f - result / ((width * lbl_80560420) * (width * lbl_80560420));
             if (ratio >= lbl_80560440) {
                 if (ratio > lbl_80560424) ratio = lbl_80560424;
@@ -608,7 +608,7 @@ subtractCheck:
                 *(f32 *)((u8 *)&frame + 0x3C) *= ratio;
                 *(f32 *)((u8 *)&frame + 0x40) *= ratio;
                 *(f32 *)((u8 *)&frame + 0x44) *= ratio;
-                angle = (f32)fn_80235EF0(record, 0);
+                angle = (f32)getPictureWidth(record, 0);
                 result = angle * lbl_80560420;
                 fn_802354A0(record, *(s32 *)((u8 *)record + 4), -1,
                             x + width * lbl_80560420 + *(f32 *)((u8 *)&frame + 0x3C) - result,
@@ -621,7 +621,7 @@ subtractCheck:
     }
     s.data = *(s32 **)((u8 *)obj + 0x10);
     color = s.resource == *(s32 *)((u8 *)s.data + 0x48) ? 1 : 3;
-    angle = (f32)fn_80235EF0(*(void **)s.data, color);
+    angle = (f32)getPictureWidth(*(void **)s.data, color);
     result = angle * lbl_80560424;
     fn_80235AFC(*(void **)s.data, color, 0xFFFFFFFF,
                 x + width * lbl_80560420, y - height * lbl_80560420,
@@ -643,7 +643,7 @@ subtractCheck:
     *(f32 *)((u8 *)&frame + 0x38) *= ratio;
     result = PSVECDotProduct((u8 *)&frame + 0x30, (u8 *)&frame + 0x30);
     if (result < (width * lbl_80560420) * (width * lbl_80560420)) {
-        angle = (f32)fn_80235EF0(*(void **)s.data, 0);
+        angle = (f32)getPictureWidth(*(void **)s.data, 0);
         ratio = 1.0f - PSVECDotProduct((u8 *)&frame + 0x30, (u8 *)&frame + 0x30) /
                 ((width * lbl_80560420) * (width * lbl_80560420));
         if (ratio >= lbl_80560440) {

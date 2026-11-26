@@ -1,9 +1,9 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-float fn_80235EF0(int, int);
+float getPictureWidth(int, int);
 extern float lbl_80563AD0;
-extern float fn_80235EF0(int, int);
+extern float getPictureWidth(int, int);
 extern float fn_80235F64(int, int);
 extern void fn_802354A0(int, int, int, float, float, float, float);
 extern float lbl_80563ACC;
@@ -167,7 +167,7 @@ extern int ArtSetGet(void *);
  * 0x20 entries of 0x48 bytes; fn_80258550 adds them and fn_8025878C,
  * fn_802588C8, fn_80258A00, fn_80258AB0, fn_80258B60 and fn_80258C08 look them
  * up by name).  The pair at +0x40 says which item of an art set the object
- * shows: fn_80235EF0 and fn_80235F64 read that item's two floats, which the
+ * shows: getPictureWidth and fn_80235F64 read that item's two floats, which the
  * callers use as the x and y offset to draw at. */
 typedef struct UIObjectEntry {
     char name[0x20];    /* +0x00 what callers look the object up by */
@@ -316,7 +316,7 @@ void fn_8025878C(void *arg0, const char *arg1, int flags, int arg3, float x, flo
   }
 
   index = (int) ((*((unsigned int *) (((char *) arg0) + 4))) + (index * 0x48));
-  cosine = fn_80235EF0(*((int *) (index + new_var)), *((int *) (index + 0x44)));
+  cosine = getPictureWidth(*((int *) (index + new_var)), *((int *) (index + 0x44)));
   sine = fn_80235F64(*((int *) (index + new_var)), *((int *) (index + 0x44)));
   if (flags & 2)
   {
@@ -379,7 +379,7 @@ void fn_802588C8(void *arg0, const char *arg1, int flags, int arg3, float x, flo
 
   index = (*((int *) (((char *) arg0) + 4))) + (index * 0x48);
   new_var = flags & 0x10;
-  c = scale * fn_80235EF0(*((int *) (index + 0x40)), *((int *) (index + 0x44)));
+  c = scale * getPictureWidth(*((int *) (index + 0x40)), *((int *) (index + 0x44)));
   s = scale * fn_80235F64(*((int *) (index + 0x40)), *((int *) (index + 0x44)));
   if (flags & 2)
   {
@@ -404,7 +404,7 @@ void fn_802588C8(void *arg0, const char *arg1, int flags, int arg3, float x, flo
   }
   ((void (*)(int, int, int, float, float, float, float, float)) fn_802354A0)(*((int *) (index + 0x40)), *((int *) (index + 0x44)), arg3, x, y, lbl_80563AD0, c, s);
 }
-/* Look up a named entry in a 0x48-byte stride table and return its value via fn_80235EF0, or 0.0f if not found. */
+/* Look up a named entry in a 0x48-byte stride table and return its value via getPictureWidth, or 0.0f if not found. */
 float fn_80258A00(void *table, int name) {
     int index = 0;
     int offset = 0;
@@ -424,7 +424,7 @@ check:
 found:
     if (index >= 0) {
         unsigned int entry = *(unsigned int *)((char *)table + 4) + index * 0x48;
-        return fn_80235EF0(*(unsigned int *)(entry + 0x40), *(unsigned int *)(entry + 0x44));
+        return getPictureWidth(*(unsigned int *)(entry + 0x40), *(unsigned int *)(entry + 0x44));
     }
     return lbl_80563AD0;
 }

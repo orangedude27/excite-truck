@@ -63,7 +63,7 @@ extern void fn_80131818(void *);
 extern void *ArtSetGet(const char *);
 extern void *RegisterTextureByName(const char *, s32);
 extern s32 fn_8002B1D8(const char *, const char *, s32);
-extern f32 fn_80235EF0(s32, s32);
+extern f32 getPictureWidth(s32, s32);
 extern f32 fn_80235F64(s32, s32);
 
 /* ---- gText: the 'GETX' font texture blocks and the cache they are held in ----
@@ -232,7 +232,7 @@ static inline s32 fn_80231AF0_escape(char *text, f32 w, f32 *adv) {
                 e = &table->entries[i];
                 if (e->unkC != 0) {
                     f32 r = w / fn_80235F64(e->unkC, e->unk10);
-                    *adv = e->scale * (r * fn_80235EF0(e->unkC, e->unk10)) + e->scale * (e->unk18 * r);
+                    *adv = e->scale * (r * getPictureWidth(e->unkC, e->unk10)) + e->scale * (e->unk18 * r);
                 } else {
                     *adv = w * e->scale;
                 }
@@ -261,7 +261,7 @@ static inline s32 fn_80231AF0_escape(char *text, f32 w, f32 *adv) {
                 if (e->unkC != 0) {
                     f32 q = w / fn_80235F64(e->unkC, e->unk10);
                     r->w = w * e->scale;
-                    r->w2 = q * e->scale * fn_80235EF0(e->unkC, e->unk10);
+                    r->w2 = q * e->scale * getPictureWidth(e->unkC, e->unk10);
                     extra = e->scale * (e->unk18 * q);
                 } else {
                     r->w2 = w * e->scale;
@@ -522,7 +522,7 @@ void fn_80231AF0(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 
                     e = (Fn80231AF0_Entry *)((u8 *)((Fn80231AF0_Table *)lbl_80497F14)->entries + eo);
                     if (e->unkC != 0) {
                         f32 r = w / fn_80235F64(e->unkC, e->unk10);
-                        f32 t = r * fn_80235EF0(e->unkC, e->unk10);
+                        f32 t = r * getPictureWidth(e->unkC, e->unk10);
                         adv = e->scale * t + e->scale * (e->unk18 * r);
                     } else {
                         adv = w * e->scale;
@@ -976,7 +976,7 @@ char_body:
                 entry = *(u8 **)lbl_80497F14 + (u32)tokenIndex * 0x1C;
                 if (*(s32 *)(entry + 0xC) != 0) {
                     escapeScale /= fn_80235F64(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10));
-                    escapeWidth = *(f32 *)(entry + 4) * (escapeScale * fn_80235EF0(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10)))
+                    escapeWidth = *(f32 *)(entry + 4) * (escapeScale * getPictureWidth(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10)))
                                 + *(f32 *)(entry + 4) * (*(f32 *)(entry + 0x18) * escapeScale);
                 } else {
                     escapeWidth = escapeScale * *(f32 *)(entry + 4);
@@ -1570,7 +1570,7 @@ char_body:
                 entry = *(u8 **)lbl_80497F14 + (u32)tokenIndex * 0x1C;
                 if (*(s32 *)(entry + 0xC) != 0) {
                     escapeScale /= fn_80235F64(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10));
-                    escapeWidth = *(f32 *)(entry + 4) * (escapeScale * fn_80235EF0(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10)))
+                    escapeWidth = *(f32 *)(entry + 4) * (escapeScale * getPictureWidth(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10)))
                                 + *(f32 *)(entry + 4) * (*(f32 *)(entry + 0x18) * escapeScale);
                 } else {
                     escapeWidth = escapeScale * *(f32 *)(entry + 4);
@@ -1800,7 +1800,7 @@ s32 fn_80234654(void) {
 }
 
 extern s32 fn_8002B1D8(const char *, const char *, s32);
-extern f32 fn_80235EF0(s32, s32);
+extern f32 getPictureWidth(s32, s32);
 extern f32 fn_80235F64(s32, s32);
 extern void fn_802C8BD0(s32);
 #pragma cplusplus reset
@@ -1891,7 +1891,7 @@ f24 = f28 / fn_80235F64(*(s32 *)(glyphDef + 0x0C),
 *(f32 *)(render + 0x10) = f28 * *(f32 *)(glyphDef + 4);
 *(f32 *)(render + 0x14) =
 f24 * *(f32 *)(glyphDef + 4) *
-fn_80235EF0(*(s32 *)(glyphDef + 0x0C),
+getPictureWidth(*(s32 *)(glyphDef + 0x0C),
 *(s32 *)(glyphDef + 0x10));
 f24 = *(f32 *)(glyphDef + 4) *
 (*(f32 *)(glyphDef + 0x18) * f24);

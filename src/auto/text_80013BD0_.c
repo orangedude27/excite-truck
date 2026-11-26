@@ -1006,7 +1006,7 @@ extern "C" s32 fn_800151DC(void *arg0) {
     return result;
 }
 #pragma pop
-extern f32 fn_80235EF0(void *, s32);
+extern f32 getPictureWidth(void *, s32);
 extern f32 fn_80235F64(void *, s32);
 extern void fn_80010E94(void *, s32, f32, f32, f32, f32);
 #pragma push
@@ -1020,7 +1020,7 @@ void fn_8001529C(void *arg0, u32 arg1, f32 a, f32 b, f32 c, f32 d, f32 e) {
     f32 width, height, half, left, y, bottom, x;
     s32 negative;
     s32 positive = (arg1 >> 31) ^ 1;
-    width = fn_80235EF0(*(void **)((u8 *)arg0 + 0x38), 0);
+    width = getPictureWidth(*(void **)((u8 *)arg0 + 0x38), 0);
     height = fn_80235F64(*(void **)((u8 *)arg0 + 0x38), 0);
     negative = positive == 0;
     half = width * lbl_805603BC;
