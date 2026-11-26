@@ -478,7 +478,7 @@ void fn_80135B24(void *sample, void *follower, float distance)
   *((s32 *) (((char *) sample) + 8)) = 0;
 }
 #pragma scheduling on
-void advancePathFollower(PathCursor *cursor, PathVec *posOut, PathVec *dirOut, float *valueOut, PathSample *sampleOut, float amount) {
+/* Advance a path follower by `amount` world units, carrying leftover distance across stretch boundaries, and sample the resulting position, unit direction, interpolated node value and new place into whichever outputs are non-null; with no start node, outputs fall back to (0,0)/(0,1). */ void advancePathFollower(PathCursor *cursor, PathVec *posOut, PathVec *dirOut, float *valueOut, PathSample *sampleOut, float amount) {
     /* Move the follower's place along its path by `amount` world units and read
      * the path there.  Every output is optional: posOut gets the position,
      * dirOut the path direction scaled to unit length, valueOut the node value
@@ -487,15 +487,15 @@ void advancePathFollower(PathCursor *cursor, PathVec *posOut, PathVec *dirOut, f
      * into the next nodes; with no node to work from the outputs fall back to
      * position (0, 0) and direction (0, 1). */
     extern double fn_8002F234(float);  // sqrt
-    float step;
+    float stretchLength;
     register float fraction;
     float remaining;
-    float length;
+    float dirLenSq;
     float dx;
     float dy;
     float scale;
-    float temp;
-    int id;
+    float distancePastEnd;
+    int sampleTag;
     PathNode *node;
 
     node = cursor->sample.node;
@@ -515,17 +515,17 @@ void advancePathFollower(PathCursor *cursor, PathVec *posOut, PathVec *dirOut, f
         }
         return;
     }
-    step = node->length;
+    stretchLength = node->length;
     fraction = cursor->sample.fraction;
-    remaining = amount / step;
+    remaining = amount / stretchLength;
     if (fraction + remaining > lbl_80561324) {  // past the end of this stretch
-        temp = lbl_80561324 - fraction;
+        distancePastEnd = lbl_80561324 - fraction;
         node = PATH_NEXT(node);
-        remaining = amount - temp * step;
+        remaining = amount - distancePastEnd * stretchLength;
         while (remaining > node->length) {  // walk whole stretches off
-            step = node->length;
+            stretchLength = node->length;
             node = PATH_NEXT(node);
-            remaining -= step;
+            remaining -= stretchLength;
         }
         fraction = remaining / node->length;
     } else {
@@ -542,16 +542,16 @@ void advancePathFollower(PathCursor *cursor, PathVec *posOut, PathVec *dirOut, f
         dirOut->x = node->dirX + fraction * dx;
         dy = PATH_NEXT(node)->dirY - node->dirY;
         dirOut->y = node->dirY + fraction * dy;
-        length = (dirOut->x * dirOut->x) + (dirOut->y * dirOut->y);
-        scale = lbl_80561324 / (float)fn_8002F234(length);
+        dirLenSq = (dirOut->x * dirOut->x) + (dirOut->y * dirOut->y);
+        scale = lbl_80561324 / (float)fn_8002F234(dirLenSq);
         dirOut->x *= scale;
         dirOut->y *= scale;
     }
     if (sampleOut != 0) {
-        id = cursor->sample.tag;
+        sampleTag = cursor->sample.tag;
         sampleOut->node = node;
         sampleOut->fraction = fraction;
-        sampleOut->tag = id;
+        sampleOut->tag = sampleTag;
     }
     if (valueOut != 0) {  // the node value across the same stretch
         float endValue;
