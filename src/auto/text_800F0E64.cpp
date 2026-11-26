@@ -3466,7 +3466,8 @@ extern "C" void DetachSound__Q34nw4hbm3snd11SoundHandleFv(void **);
 extern "C" void detail_AttachSound__Q36nw4hbm3snd11SoundHandleFPQ46nw4hbm3snd6detail10BasicSound(void **, void *);
 extern "C" void fn_800E9BA4(void *, s32);
 extern "C" void *allocSeqSound(s32, s32, s32, s32, s32, s32, void *);
-extern "C" void *fn_800F9200(s32, s32, s32, s32, s32, s32, void *);
+#define allocStreamSound fn_800F9200
+extern "C" void *allocStreamSound(s32, s32, s32, s32, s32, s32, void *);
 extern "C" void *fn_800F975C(s32, s32, s32, s32, s32, s32, void *);
 extern "C" const char lbl_80325870[];
 extern "C" const char lbl_80325894[];
