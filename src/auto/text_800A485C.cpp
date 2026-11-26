@@ -13557,7 +13557,7 @@ static inline void fn800B960CSetSlotError(u32 key, s32 err) {
         }
     }
 }
-/* prfile2: read blockCount blocks of blockSize bytes from the NAND image file held open in the file-state slot tagged fileId, starting at block blockIndex, into the buffer at dst; answers 0 with blockCount in *blocksRead, -0x16 past end of file, or a NAND error from the slot's error field. */ extern "C" s32 prfile2ReadBlocks(s32 blockCount, s32 dst, s32 blockIndex, s32 blockSize, s32 *blocksRead, s32 fileId) {
+extern "C" s32 prfile2ReadBlocks(s32 blockCount, s32 dst, s32 blockIndex, s32 blockSize, s32 *blocksRead, s32 fileId) {
     /* prfile2: read blockCount blocks of blockSize bytes out of the NAND image file
      * held open in the file-state slot tagged fileId, starting at block blockIndex,
      * into the buffer at dst.  The slot's NAND handle is seeked to the start
