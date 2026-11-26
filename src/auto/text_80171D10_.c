@@ -567,7 +567,7 @@ extern void fn_801CB648(int, int, float);
    earns ("-" when it earns none).  The round then walks its animation cue -
    start, pause, resume, pause again - asking the round's sounds to play as it
    goes, and the animation player is advanced at the end. */
-void updateCrushRoundResults(CrushRoundState *round, int totalScore, int bonusScore, int timeBonus, int scale) {
+/* Refresh every text cell of the crush-mode results overlay (bonus, counting time bonus, caption, totals and grade), drive the round's results animation cue sequence and sounds, then advance the animation player. */ void updateCrushRoundResults(CrushRoundState *round, int totalScore, int bonusScore, int timeBonus, int scale) {
     extern void fn_802ADFF4(void *, int);  /* ArtAnimManager::StartAnim(manager, cue) */
     extern void fn_802AE02C(void *, int);  /* ArtAnimManager::PauseAnim(manager, cue) */
     extern void fn_802AE0B8(void *, int);  /* ArtAnimManager::ResumeAnim(manager, cue) */
