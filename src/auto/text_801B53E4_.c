@@ -216,7 +216,7 @@ void quadTreeAddObject(void *object, s32 index, void *node, s32 depth, f32 x0, f
     Rect r[4];
     u8 hit[4];
     s32 count;
-    s32 last;
+    s32 lastHit;
     s32 i;
     s32 j;
     f32 mx, my, w, h;
@@ -230,13 +230,13 @@ void quadTreeAddObject(void *object, s32 index, void *node, s32 depth, f32 x0, f
     r[1].x0 = mx; r[1].y0 = y0; r[1].x1 = x1; r[1].y1 = my;
     r[2].x0 = x0; r[2].y0 = my; r[2].x1 = mx; r[2].y1 = y1;
     r[3].x0 = mx; r[3].y0 = my; r[3].x1 = x1; r[3].y1 = y1;
-    last = -1;
+    lastHit = -1;
     *(s32 *)hit = 0;
     for (i = 0; i < 4; i++) {
         if (ObjectBox[0] < r[i].x1 && ObjectBox[2] > r[i].x0
             && ObjectBox[1] < r[i].y1 && ObjectBox[3] > r[i].y0) {
             hit[i] = 1;
-            last = i;
+            lastHit = i;
             count++;
         }
     }
@@ -248,8 +248,8 @@ void quadTreeAddObject(void *object, s32 index, void *node, s32 depth, f32 x0, f
         if (square->children == 0) {
             square->children = (QuadSquare *)NewArray(AllocBlock(0x40, CHILDREN_TAG), Square_Init, Square_Destroy, 0xC, 4);
         }
-        ((AddObject)quadTreeAddObject)(object, index, (char *)square->children + last * 0xC, depth + 1,
-                           r[last].x0, r[last].y0, r[last].x1, r[last].y1);
+        ((AddObject)quadTreeAddObject)(object, index, (char *)square->children + lastHit * 0xC, depth + 1,
+                           r[lastHit].x0, r[lastHit].y0, r[lastHit].x1, r[lastHit].y1);
         return;
     }
     w = x1 - x0;
