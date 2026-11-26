@@ -563,7 +563,7 @@ extern void *fn_8001285C(s32);
  * then copy up to `count` pairs from the end of the source list towards its front
  * (last driver/vehicle first). The entry count comes from the per-slot state via
  * fn_800183C0. */
-void buildReversedEntryPairs(EntryPairList *dst, s32 slotIndex, const EntryPairList *src)
+/* Build a reversed copy of a driver/vehicle pairing list: clear the destination, then copy up to the active entry count of pairs from the source list's end toward its front. */ void buildReversedEntryPairs(EntryPairList *dst, s32 slotIndex, const EntryPairList *src)
 {
   s32 count;
   s32 i;
