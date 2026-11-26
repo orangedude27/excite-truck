@@ -14825,53 +14825,59 @@ extern "C" void IPCSetBufferLo(void *);
 extern "C" s32 iosCreateHeap(void *, s32);
 extern "C" void OSInitMutex(void *);
 extern "C" void *lbl_8055DD84;
-/* Initializes the IPC/IOS heap and allocates shared buffers/mutex and device path strings for this subsystem; returns 0 on success or -22 on failure. */
+/* One-time IPC/IOS setup: create the shared heap, its mutex and buffers, copy
+ * the device path strings, and report -22 if any allocation fails. */
 extern "C" s32 IPC_initHeap(void) {
-    const char *str = lbl_8031B838;
+#define gIpcErrorText  lbl_8031B838
+#define gIpcMutex      lbl_80407560
+#define gIpcPaths      lbl_80407580
+#define gIpcBufferBase lbl_8055DD84
+#define gIpcHeap       lbl_80559248
+    const char *messages = gIpcErrorText;
     s32 result = 0;
-    s32 ints = OSDisableInterrupts();
+    s32 irqState = OSDisableInterrupts();
 
-    if (lbl_80559248 >= 0) {
-        OSRestoreInterrupts(ints);
+    if (gIpcHeap >= 0) {
+        OSRestoreInterrupts(irqState);
     } else {
-        OSRestoreInterrupts(ints);
+        OSRestoreInterrupts(irqState);
         lbl_8055DD6C = 0;
-        OSInitMutex(lbl_80407560);
-        lbl_8055DD84 = IPCGetBufferLo();
+        OSInitMutex(gIpcMutex);
+        gIpcBufferBase = IPCGetBufferLo();
         IPCGetBufferHi();
-        lbl_80559248 = iosCreateHeap(lbl_8055DD84, 0x800);
-        if (lbl_80559248 < 0) {
+        gIpcHeap = iosCreateHeap(gIpcBufferBase, 0x800);
+        if (gIpcHeap < 0) {
             result = -22;
         } else {
-            lbl_8055DD70 = (s32 *)iosAlloc(lbl_80559248, 0x20);
+            lbl_8055DD70 = (s32 *)iosAlloc(gIpcHeap, 0x20);
             if (lbl_8055DD70 == 0) {
-                OSReport(str + 0x4F8);
+                OSReport(messages + 0x4F8);
                 result = -22;
             } else {
-                lbl_8055DD74 = iosAlloc(lbl_80559248, 0x20);
+                lbl_8055DD74 = iosAlloc(gIpcHeap, 0x20);
                 if (lbl_8055DD74 == 0) {
-                    OSReport(str + 0x510);
+                    OSReport(messages + 0x510);
                     result = -22;
                 } else {
-                    lbl_8055DD78 = (s32)iosAlloc(lbl_80559248, 0x20);
+                    lbl_8055DD78 = (s32)iosAlloc(gIpcHeap, 0x20);
                     if (lbl_8055DD78 == 0) {
-                        OSReport(str + 0x528);
+                        OSReport(messages + 0x528);
                         result = -22;
                     } else {
-                        lbl_8055DD7C = iosAlloc(lbl_80559248, 0x20);
+                        lbl_8055DD7C = iosAlloc(gIpcHeap, 0x20);
                         if (lbl_8055DD7C == 0) {
-                            OSReport(str + 0x540);
+                            OSReport(messages + 0x540);
                             result = -22;
                         } else {
-                            lbl_8055DD80 = iosAlloc(lbl_80559248, 0x60);
+                            lbl_8055DD80 = iosAlloc(gIpcHeap, 0x60);
                             if (lbl_8055DD80 == 0) {
-                                OSReport(str + 0x558);
+                                OSReport(messages + 0x558);
                                 result = -22;
                             } else {
-                                IPCSetBufferLo((u8 *)lbl_8055DD84 + 0x800);
-                                strcpy((char *)lbl_80407580, str + 0x570);
-                                strcpy((char *)lbl_80407580 + 0x20, str + 0x580);
-                                strcpy((char *)lbl_80407580 + 0x40, str + 0x590);
+                                IPCSetBufferLo((u8 *)gIpcBufferBase + 0x800);
+                                strcpy((char *)gIpcPaths, messages + 0x570);
+                                strcpy((char *)gIpcPaths + 0x20, messages + 0x580);
+                                strcpy((char *)gIpcPaths + 0x40, messages + 0x590);
                             }
                         }
                     }
@@ -14880,6 +14886,11 @@ extern "C" s32 IPC_initHeap(void) {
         }
     }
     return result;
+#undef gIpcHeap
+#undef gIpcBufferBase
+#undef gIpcPaths
+#undef gIpcMutex
+#undef gIpcErrorText
 }
 
 #pragma push
