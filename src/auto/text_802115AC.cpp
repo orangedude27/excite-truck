@@ -16,7 +16,7 @@ extern "C" void fn_80216710(void);
 extern "C" s32 ArtSetGet(const char *);
 extern "C" void *fn_8022D228(void *, s32, s32);
 extern "C" void fn_8022D350(s32, const char *, s32);
-extern "C" void *fn_8022D458(void *, s32, s32, s32 *);
+extern "C" void *uiCreateTable(void *, s32, s32, s32 *);
 extern "C" void fn_8022D894(s32, s32, s32, const char *, s32);
 extern "C" void *fn_8022DB50(void *, const char *, const char *, s32, s32);
 extern "C" void *fn_8022DCC4(void *, s32 *, s32, s32);
@@ -370,7 +370,7 @@ extern "C" void fn_80211690(s32 arg0) {
         }
         sp8 = lbl_80563430;
         p = fn_801284F8(0x30, base + 0x194);
-        if (p != 0) p = fn_8022D458(p, 0x14, 1, &sp8);
+        if (p != 0) p = uiCreateTable(p, 0x14, 1, &sp8);
         lbl_8055EF2C = (s32)p;
         for (i = 0; i < *(s32 *)(lbl_8055EF2C + 0xC); i++) {
             sprintf(buf18, base + 0x1A4, i + 1);

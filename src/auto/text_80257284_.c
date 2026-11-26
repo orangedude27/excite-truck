@@ -6,7 +6,7 @@ void *fn_80257470(void *);
 void *fn_8022D850(void *, int, int, int);
 void fn_8022D894(void *, int, int, void *, int);
 void fn_80257A6C(int *, int, int);
-void fn_8022D458(int, int, int *);
+void uiCreateTable(int, int, int *);
 void fn_8022D7C4(int, int);
 int fn_80128668(int);
 extern int lbl_80563AB8;
@@ -49,105 +49,124 @@ public:
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_80257284(void) {
-#pragma scheduling invalid_target
-    typedef struct { int v[5]; } Header;
-    typedef struct { int label; int type; int value; int flags; int id; } Entry;
-    typedef struct { Header header; Entry entries[9]; int object[0x74]; } Frame;
-    Frame frame;
-    int result;
-    register int zero asm("r31") = 0;
-    register int arg_label asm("r22");
-    register int six asm("r23");
-    register int setting asm("r24");
-    register int minus_one asm("r25") = -1;
-    register int mask asm("r26") = 0x1B;
-    register int number asm("r27");
-    register int second_label asm("r28");
-    register int handler asm("r29");
-    register int second_count asm("r30") = 0;
-    register int *table asm("r7");
-    int *p0, *p7, *p21, *p99;
-
-    if (fn_80247624()) { fn_80012794(); fn_80012780(); }
-    fn_80257470(frame.object);
-
-    p0 = &frame.object[0];
-    p7 = &frame.object[7];
-    p21 = &frame.object[21];
-    p99 = &frame.object[99];
-    frame.entries[0].value = (int)p0;
-    frame.entries[0].type = 5;
-    frame.entries[0].label = 0;
-    frame.entries[0].flags = 0;
-    frame.entries[0].id = 0;
-    frame.entries[1].type = 13;
-    frame.entries[1].label = (int)&lbl_8055C1D8;
-    frame.entries[1].value = (int)p7;
-    frame.entries[1].flags = 0;
-    frame.entries[1].id = 0;
-    frame.entries[2].type = 13;
-    frame.entries[2].label = (int)&lbl_8055C1E0;
-    frame.entries[2].value = (int)p21;
-    frame.entries[2].flags = 0;
-    frame.entries[2].id = 0;
-    frame.entries[3].type = 13;
-    frame.entries[3].label = (int)&lbl_8055C1E8;
-    frame.entries[3].value = (int)p99;
-    frame.entries[3].flags = 0;
-    frame.entries[3].id = 0;
-    frame.entries[4].type = 13;
-    frame.entries[4].label = (int)&lbl_8055C1F0;
-    frame.entries[4].value = (int)p99;
-    frame.entries[4].flags = 1;
-    frame.entries[4].id = 0;
-
-    fn_8000DA10((int)p99, (int)p21, (int)p7, 13,
-                &lbl_8055C1D8, &lbl_8055C1E0, &lbl_8055C1E8, &lbl_8055C1F0);
-    result = fn_8000DB34();
-    frame.entries[5].value = result;
-
-    table = (int *)((char *)&lbl_802FA5E0 - 4);
-    frame.header.v[0] = *++table;
-    frame.header.v[1] = (int)frame.entries;
-    frame.header.v[2] = table[2];
-    frame.header.v[3] = table[3];
-    frame.header.v[4] = table[4];
-
-    arg_label = (int)&lbl_80344CD4;
-    number = 3;
-    six = 6;
-    setting = (int)&lbl_8055B860;
-    minus_one = -1;
-    mask = 0x1B;
-    second_label = (int)&lbl_8055BAB8;
-    handler = (int)fn_80236914;
-
-    frame.entries[5].label = arg_label;
-    frame.entries[5].type = number;
-    frame.entries[5].flags = second_count;
-    frame.entries[5].id = zero;
-    frame.entries[6].label = setting;
-    frame.entries[6].type = six;
-    frame.entries[6].value = zero;
-    frame.entries[6].flags = minus_one;
-    frame.entries[6].id = mask;
-    number = 8;
-    frame.entries[7].label = second_label;
-    frame.entries[7].type = number;
-    frame.entries[7].value = handler;
-    frame.entries[7].flags = 2;
-    frame.entries[7].id = zero;
-    frame.entries[8].label = *(int *)&lbl_80498E38;
-    frame.entries[8].type = *(int *)((char *)&lbl_80498E38 + 4);
-    frame.entries[8].value = *(int *)((char *)&lbl_80498E38 + 8);
-    frame.entries[8].flags = *(int *)((char *)&lbl_80498E38 + 12);
-    frame.entries[8].id = *(int *)((char *)&lbl_80498E38 + 16);
-
-    if (fn_802146BC((int *)&frame.header, -999, -999, 1) == -1) {
-        if (fn_80247624()) { fn_80012794(); fn_80012778(); }
+void fn_80257284(void)
+{
+  typedef struct 
+  {
+    int v[5];
+  } Header;
+  typedef struct 
+  {
+    int label;
+    int type;
+    int value;
+    int flags;
+    int id;
+  } Entry;
+  typedef struct 
+  {
+    Header header;
+    Entry entries[9];
+    int object[0x74];
+  } Frame;
+  Frame frame;
+  int result;
+  register int zero asm("r31") = 0;
+  register int arg_label asm("r22");
+  register int six asm("r23");
+  register int setting asm("r24");
+  register int minus_one asm("r25") = -1;
+  register int mask asm("r26") = 0x1B;
+  register int number asm("r27");
+  register int second_label asm("r28");
+  register int handler asm("r29");
+  register int second_count asm("r30") = 0;
+  register int *table asm("r7");
+  int *p0;
+  int *p7;
+  int *p21;
+  int *p99;
+  if (fn_80247624())
+  {
+    fn_80012794();
+    fn_80012780();
+  }
+  fn_80257470(frame.object);
+  p0 = &frame.object[0];
+  p7 = &frame.object[7];
+  p21 = &frame.object[21];
+  p99 = &frame.object[99];
+  frame.entries[0].value = (int) p0;
+  frame.entries[0].type = 5;
+  frame.entries[0].label = 0;
+  frame.entries[0].flags = 0;
+  frame.entries[0].id = 0;
+  frame.entries[1].type = 13;
+  frame.entries[1].label = (int) (&lbl_8055C1D8);
+  frame.entries[1].value = (int) p7;
+  frame.entries[1].flags = 0;
+  frame.entries[1].id = 0;
+  frame.entries[2].type = 13;
+  frame.entries[2].label = (int) (&lbl_8055C1E0);
+  frame.entries[2].value = (int) p21;
+  frame.entries[2].flags = 0;
+  frame.entries[2].id = 0;
+  frame.entries[3].type = 13;
+  frame.entries[3].label = (int) (&lbl_8055C1E8);
+  frame.entries[3].value = (int) p99;
+  frame.entries[3].flags = 0;
+  frame.entries[3].id = 0;
+  frame.entries[4].type = 13;
+  frame.entries[4].label = (int) (&lbl_8055C1F0);
+  frame.entries[4].value = (int) p99;
+  frame.entries[4].flags = 1;
+  frame.entries[4].id = 0;
+  fn_8000DA10((int) p99, (int) p21, (int) p7, (float) 13, &lbl_8055C1D8, &lbl_8055C1E0, &lbl_8055C1E8, &lbl_8055C1F0);
+  result = fn_8000DB34();
+  frame.entries[5].value = result;
+  table = (int *) (((char *) (&lbl_802FA5E0)) - 4);
+  frame.header.v[0] = *(++table);
+  frame.header.v[1] = (int) frame.entries;
+  frame.header.v[2] = table[2];
+  frame.header.v[3] = table[3];
+  frame.header.v[4] = table[4];
+  arg_label = (int) (&lbl_80344CD4);
+  number = 3;
+  six = 6;
+  setting = (int) (&lbl_8055B860);
+  minus_one = -1;
+  mask = 0x1B;
+  second_label = (int) (&lbl_8055BAB8);
+  handler = (int) fn_80236914;
+  frame.entries[5].label = arg_label;
+  frame.entries[5].type = number;
+  frame.entries[5].flags = second_count;
+  frame.entries[5].id = zero;
+  frame.entries[6].label = setting;
+  frame.entries[6].type = six;
+  frame.entries[6].value = zero;
+  frame.entries[6].flags = minus_one;
+  frame.entries[6].id = mask;
+  number = 8;
+  frame.entries[7].label = second_label;
+  frame.entries[7].type = number;
+  frame.entries[7].value = handler;
+  frame.entries[7].flags = 2;
+  frame.entries[7].id = zero;
+  frame.entries[8].label = *((int *) (&lbl_80498E38));
+  frame.entries[8].type = *((int *) (((char *) (&lbl_80498E38)) + 4));
+  frame.entries[8].value = *((int *) (((char *) (&lbl_80498E38)) + 8));
+  frame.entries[8].flags = *((int *) (((char *) (&lbl_80498E38)) + 12));
+  frame.entries[8].id = *((int *) (((char *) (&lbl_80498E38)) + 16));
+  if (fn_802146BC((int *) (&frame.header), -999, -999, 1) == (-1))
+  {
+    if (fn_80247624() & 0xFFFF)
+    {
+      fn_80012794();
+      fn_80012778();
     }
-    fn_802574E0((int)frame.object, -1);
+  }
+  fn_802574E0((int) frame.object, -1);
 }
 #pragma pop
 
@@ -157,7 +176,7 @@ void *fn_80257470(void *arg0) {
     #define kVTable lbl_80344CF0
     #define kSubTableSizesA lbl_80563AA8
     #define kSubTableSizesB lbl_80563AB0
-    #define InitSubTable fn_8022D458
+    #define InitSubTable uiCreateTable
     #define InitValueTable fn_80257B7C
 
     *(int *)arg0 = (int)&kVTable;
@@ -281,11 +300,10 @@ extern "C" void fn_80257558(void *arg0, void *arg1) {
 extern "C" void fn_802576EC(void *arg0) {
     char *self = (char *)arg0;
     char *entry;
-    int pos;
+    register int pos;
     char *key;
     int i;
     int mode;
-    int zeroA = 0, zeroB = 0;
     char *name;
     MatchDispatch *obj;
 
@@ -320,10 +338,10 @@ extern "C" void fn_802576EC(void *arg0) {
         *(unsigned char *)(self + 0x88) = 0;
     }
     mode = *(int *)(self + 0x18) == 0 ? 1 : 2;
-    fn_8022D894(self + 0x1C, *(int *)(self + 0x4C), zeroA, fn_8022D850(self + 0x1C, *(int *)(self + 0x4C), zeroA, zeroB), mode);
+    fn_8022D894(self + 0x1C, *(int *)(self + 0x4C), 0, fn_8022D850(self + 0x1C, *(int *)(self + 0x4C), 0, 0), mode);
     if (*(int *)(self + 0x5C) > 0) {
         mode = *(int *)(self + 0x18) == 1 ? 1 : 2;
-        fn_8022D894(self + 0x54, *(int *)(self + 0x84), zeroA, fn_8022D850(self + 0x54, *(int *)(self + 0x84), zeroA, zeroB), mode);
+        fn_8022D894(self + 0x54, *(int *)(self + 0x84), 0, fn_8022D850(self + 0x54, *(int *)(self + 0x84), 0, 0), mode);
     }
 }
 #pragma scheduling on
@@ -388,7 +406,7 @@ extern char lbl_80344CE4[];
 
 /* A "UITB" text table: rows of strings packed into one character buffer, each
    row rowSize bytes and each column a fixed offset/size inside it.
-   Built by fn_8022D458, cleared by fn_8022D76C, cells written by fn_8022D894
+   Built by uiCreateTable, cleared by fn_8022D76C, cells written by fn_8022D894
    and read back by fn_8022D850. */
 struct UITable {
     char *text;               /* 0x00 every cell's string */
@@ -447,7 +465,7 @@ void fn_80257A8C(struct UITable *table) {
 
 #pragma scheduling invalid_target
 int fn_80257B7C(int table) {
-#define InitSubTable fn_8022D458
+#define InitSubTable uiCreateTable
 #define kValueColumnWidths lbl_80563AB8
 #define VALUE_TABLE_ROWS 7
 #define VALUE_TABLE_COLUMNS 2

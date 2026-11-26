@@ -120,7 +120,7 @@ extern void fn_8022D76C(void *);
  * rows * rowSize bytes. Allocates the column size and column offset tables and the
  * cell buffer (tags "column_wids", "column_offs" and "UITable:buf"), lays the columns
  * out back to back in a row, and clears the buffer. Returns the table. */
-void *fn_8022D458(UITable *table, int rows, int columns, const int *__restrict columnWidths) {
+void *uiCreateTable(UITable *table, int rows, int columns, const int *__restrict columnWidths) {
     char *tagStrings;
     int tableBytes;
     int column;
@@ -205,7 +205,7 @@ void fn_8022D924(volatile int *p, int arg1) {
     p[0x10 / 4] = arg1;
     p[0x24 / 4] = cnt + 1;
     if (v < 0) return;
-    if (v >= 0) { arg1 = v; goto divide; }
+    if (v >= 0) { int t = v; arg1 = t; goto divide; }
     return;
 store:
     cnt = p[0x24 / 4];

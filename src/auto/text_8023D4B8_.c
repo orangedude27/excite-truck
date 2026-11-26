@@ -650,13 +650,13 @@ extern int lbl_8055F194;
 extern void fn_8023E16C(void *, int);
 extern void fn_8023E0DC(void *, int, int);
 extern int lbl_80563748;
-extern void *fn_8022D458(void *, int, int, int *);
+extern void *uiCreateTable(void *, int, int, int *);
 extern int fn_80137C98(int);
 extern int getOrCreateDriverInterface(void);
 extern void fn_8023E1FC(void *);
 /* Initialize a request/context object: run the base initializer, store the parameter, cache the related object, and finish setup. */
 void *fn_8023E078(void *object, int param) {
-    fn_8022D458(object, 0x12, 2, &lbl_80563748);
+    uiCreateTable(object, 0x12, 2, &lbl_80563748);
     *(int *)((char *)object + 0x30) = param;
     fn_80137C98(param);
     *(int *)((char *)object + 0x34) = getOrCreateDriverInterface();
