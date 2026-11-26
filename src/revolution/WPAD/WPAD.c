@@ -89,7 +89,7 @@ typedef struct {
     Cmd64 extCopy;
 } WPADManageFrame;
 void WPADiSendOutputReport(s32 chan, WPADGameInfo *info);
-s32 fn_8005D234(s32 chan, WPADGameInfo* pInfo);
+s32 WPADiSendGameInfoReport(s32 chan, WPADGameInfo* pInfo);
 
 typedef struct WPADCB_8011_View {
     u8 _unk0[0x7F8];
@@ -734,7 +734,7 @@ void fn_8005E298(void) {
                         frame.extCopy.d[3] = frame.ext.d[3];
                         frame.extCopy.d[4] = frame.ext.d[4];
                         frame.extCopy.d[5] = frame.ext.d[5];
-                        if (fn_8005D234(var_r26, (WPADGameInfo*)&frame.extCopy) == 0) {
+                        if (WPADiSendGameInfoReport(var_r26, (WPADGameInfo*)&frame.extCopy) == 0) {
                             temp_r25_2 = OSDisableInterrupts();
                             temp_state2 = OSDisableInterrupts();
                             var_r29_2 = *(u8*)((u8*)temp_r30 + 0x5ED) - *(u8*)((u8*)temp_r30 + 0x5EC);
@@ -789,7 +789,7 @@ block_18:
                     frame.stdCopy.d[3] = frame.std.d[3];
                     frame.stdCopy.d[4] = frame.std.d[4];
                     frame.stdCopy.d[5] = frame.std.d[5];
-                    if (fn_8005D234(var_r26, (WPADGameInfo*)&frame.stdCopy) == 0) {
+                    if (WPADiSendGameInfoReport(var_r26, (WPADGameInfo*)&frame.stdCopy) == 0) {
                         temp_r30_3 = OSDisableInterrupts();
                         temp_state2 = OSDisableInterrupts();
                         var_r22_2 = *(u8*)((u8*)temp_r29 + 0x161) - *(u8*)((u8*)temp_r29 + 0x160);
@@ -3378,7 +3378,7 @@ BOOL fn_8005D0DC(BOOL final, s32 event) {
  * deadline that belongs to a 0xFF delay request (+0x850) only reports
  * WPAD_ERR_TRANSFER instead.  The status for the caller is returned. */
 #pragma opt_propagation off
-s32 fn_8005D234(s32 chan, WPADGameInfo *pInfo)
+s32 WPADiSendGameInfoReport(s32 chan, WPADGameInfo *pInfo)
 {
 #define s_wpadControlBlocks lbl_8038F4F0
 #define s_wpadTimeout lbl_8055DC1A
