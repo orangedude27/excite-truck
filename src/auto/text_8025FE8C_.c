@@ -1434,10 +1434,10 @@ static inline void Selector_Repaint(void) {
     }
 }
 #pragma scheduling invalid_target
-extern "C" void Selector_buildWidgetLists(s32 *arg0) {
+extern "C" void Selector_buildWidgetLists(s32 *view) {
     /* Build both widget lists of the challenge-difficulty selector.
      *
-     * arg0 is the screen's frame header, which becomes lbl_8055F420 (SELECTOR).
+     * view is the screen's frame header, which becomes lbl_8055F420 (SELECTOR).
      * For every group of the data source (at most 3) one SelectorGroupRow is
      * allocated and pushed on the group list at 0x3C, and for every one of its
      * items (at most 6) one SelectorItem is allocated and pushed on the item
@@ -1451,23 +1451,23 @@ extern "C" void Selector_buildWidgetLists(s32 *arg0) {
     u8 *groupList;
     s32 groupIndex;
     s32 itemIndex;
-    s32 i;
-    s32 j;
-    s32 count;
-    s32 max;
+    s32 rowIndex;
+    s32 widgetOffset;
+    s32 entryCount;
+    s32 limit;
     void *object;
     void *item;
     float targetValue;
-    SelectorView *base;
+    SelectorView *selector;
 
     stringBase = (u8 *)&lbl_80345B40;
-    ((SelectorView *)arg0)->item_count = 0;
-    ((SelectorView *)arg0)->group_count = ((SelectorData *)lbl_8055F3E4)->groupCount();
-    memset((char *)arg0 + 0x60, 0, 0x18);
-    memset((char *)arg0 + 0x54, 0, 0xC);
-    ((SelectorView *)arg0)->item_widget_count = 0;
-    ((SelectorView *)arg0)->group_widget_count = 0;
-    groupList = (u8 *)arg0;
+    ((SelectorView *)view)->item_count = 0;
+    ((SelectorView *)view)->group_count = ((SelectorData *)lbl_8055F3E4)->groupCount();
+    memset((char *)view + 0x60, 0, 0x18);
+    memset((char *)view + 0x54, 0, 0xC);
+    ((SelectorView *)view)->item_widget_count = 0;
+    ((SelectorView *)view)->group_widget_count = 0;
+    groupList = (u8 *)view;
     groupIndex = 0;
     goto outerCheck;
 outerBody:
@@ -1489,17 +1489,17 @@ outerBody:
         ((SelectorGroupRow *)object)->font = fn_80232578(stringBase + 0x15C);
     }
     {
-        void **array = (void **)((SelectorView *)arg0)->group_widgets;
-        count = ((SelectorView *)arg0)->group_widget_count;
-        ((SelectorView *)arg0)->group_widget_count = count + 1;
-        array[count] = object;
+        void **array = (void **)((SelectorView *)view)->group_widgets;
+        entryCount = ((SelectorView *)view)->group_widget_count;
+        ((SelectorView *)view)->group_widget_count = entryCount + 1;
+        array[entryCount] = object;
     }
     itemIndex = 0;
     goto innerCheck;
 innerBody:
     item = (void *)((SelectorDataGroup *)*(void **)(groupList + 0x54))->item(itemIndex);
-    count = ((SelectorView *)arg0)->item_count;
-    ((SelectorView *)arg0)->group_item_data[count] = (s32)item;
+    entryCount = ((SelectorView *)view)->item_count;
+    ((SelectorView *)view)->group_item_data[entryCount] = (s32)item;
     item = fn_801284F8(0x28, stringBase + 0x168); /* one SelectorItem */
     if (item != 0) {
         object = ((SelectorData *)lbl_8055F3E4)->group(groupIndex);
@@ -1514,30 +1514,30 @@ innerBody:
         ((SelectorItem *)item)->font = fn_80232578(stringBase + 0x15C);
     }
     {
-        void **array = (void **)((SelectorView *)arg0)->item_widgets;
-        count = ((SelectorView *)arg0)->item_widget_count;
-        ((SelectorView *)arg0)->item_widget_count = count + 1;
-        array[count] = item;
+        void **array = (void **)((SelectorView *)view)->item_widgets;
+        entryCount = ((SelectorView *)view)->item_widget_count;
+        ((SelectorView *)view)->item_widget_count = entryCount + 1;
+        array[entryCount] = item;
     }
     itemIndex++;
-    ((SelectorView *)arg0)->item_count += 1;
+    ((SelectorView *)view)->item_count += 1;
 innerCheck:
     /* a group shows at most six of its items */
-    count = ((SelectorDataGroup *)*(void **)(groupList + 0x54))->itemCount();
-    max = 6;
-    if (count < 6) max = count;
-    if (itemIndex < max) goto innerBody;
+    entryCount = ((SelectorDataGroup *)*(void **)(groupList + 0x54))->itemCount();
+    limit = 6;
+    if (entryCount < 6) limit = entryCount;
+    if (itemIndex < limit) goto innerBody;
     groupList += 4;
     groupIndex++;
 outerCheck:
     /* and the screen offers at most three groups */
-    count = ((SelectorData *)lbl_8055F3E4)->groupCount();
-    max = 3;
-    if (count < 3) max = count;
-    if (groupIndex < max) goto outerBody;
+    entryCount = ((SelectorData *)lbl_8055F3E4)->groupCount();
+    limit = 3;
+    if (entryCount < 3) limit = entryCount;
+    if (groupIndex < limit) goto outerBody;
 
     object = fn_80207848(stringBase + 0x178, 0);
-    ((SelectorView *)arg0)->value_widget = object;
+    ((SelectorView *)view)->value_widget = object;
     if (object != 0) {
         targetValue = lbl_80563B88;
         if (targetValue != *(float *)((char *)object + 8)) {
@@ -1548,51 +1548,51 @@ outerCheck:
         Abend_Panic(stringBase + 0x188);
     }
 
-    i = 0;
-    j = 0;
+    rowIndex = 0;
+    widgetOffset = 0;
     goto firstCheck;
 firstBody:
     if (SELECTOR_IN_ITEMS == 0) {
-        object = *(void **)(base->item_widgets + j);
+        object = *(void **)(selector->item_widgets + widgetOffset);
         ((SelectorWidget *)object)->setDim();
-        object = *(void **)(SELECTOR->item_widgets + j);
+        object = *(void **)(SELECTOR->item_widgets + widgetOffset);
         ((SelectorWidget *)object)->clearCursor();
-    } else if (i == base->cursor) {
-        object = *(void **)(base->item_widgets + j);
+    } else if (rowIndex == selector->cursor) {
+        object = *(void **)(selector->item_widgets + widgetOffset);
         ((SelectorWidget *)object)->setCursor();
-    } else if (i == base->group * 2 || i == base->group * 2 + 1) {
-        object = *(void **)(base->item_widgets + j);
+    } else if (rowIndex == selector->group * 2 || rowIndex == selector->group * 2 + 1) {
+        object = *(void **)(selector->item_widgets + widgetOffset);
         ((SelectorWidget *)object)->clearDim();
-        object = *(void **)(SELECTOR->item_widgets + j);
+        object = *(void **)(SELECTOR->item_widgets + widgetOffset);
         ((SelectorWidget *)object)->clearCursor();
     } else {
-        object = *(void **)(base->item_widgets + j);
+        object = *(void **)(selector->item_widgets + widgetOffset);
         ((SelectorWidget *)object)->clearCursor();
     }
-    j += 4;
-    i++;
+    widgetOffset += 4;
+    rowIndex++;
 firstCheck:
-    base = SELECTOR;
-    if (i < base->item_count) goto firstBody;
+    selector = SELECTOR;
+    if (rowIndex < selector->item_count) goto firstBody;
 
-    i = 0;
-    for (j = 0; base = SELECTOR, i < base->group_count; i++) {
+    rowIndex = 0;
+    for (widgetOffset = 0; selector = SELECTOR, rowIndex < selector->group_count; rowIndex++) {
         if (SELECTOR_IN_ITEMS == 0) {
-            if (i == base->group) {
-                ((SelectorWidget *)*(void **)(base->group_widgets + j))->setCursor();
+            if (rowIndex == selector->group) {
+                ((SelectorWidget *)*(void **)(selector->group_widgets + widgetOffset))->setCursor();
             } else {
-                ((SelectorWidget *)*(void **)(base->group_widgets + j))->clearDim();
-                ((SelectorWidget *)*(void **)(SELECTOR->group_widgets + j))->clearCursor();
+                ((SelectorWidget *)*(void **)(selector->group_widgets + widgetOffset))->clearDim();
+                ((SelectorWidget *)*(void **)(SELECTOR->group_widgets + widgetOffset))->clearCursor();
             }
-        } else if (i == base->group) {
-            ((SelectorWidget *)*(void **)(base->group_widgets + j))->setCursor();
-            base = SELECTOR;
-            ((SelectorWidget **)base->group_widgets)[base->group]->setExpanded();
+        } else if (rowIndex == selector->group) {
+            ((SelectorWidget *)*(void **)(selector->group_widgets + widgetOffset))->setCursor();
+            selector = SELECTOR;
+            ((SelectorWidget **)selector->group_widgets)[selector->group]->setExpanded();
         } else {
-            ((SelectorWidget *)*(void **)(base->group_widgets + j))->setDim();
-            ((SelectorWidget *)*(void **)(SELECTOR->group_widgets + j))->clearCursor();
+            ((SelectorWidget *)*(void **)(selector->group_widgets + widgetOffset))->setDim();
+            ((SelectorWidget *)*(void **)(SELECTOR->group_widgets + widgetOffset))->clearCursor();
         }
-        j += 4;
+        widgetOffset += 4;
     }
 }
 #pragma scheduling on
