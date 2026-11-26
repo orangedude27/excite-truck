@@ -11,7 +11,7 @@ struct Text80204 {
 extern void fn_80230B5C(void *), DrawList_loadMatrix(void *);
 extern void fn_802C974C(float, float, float);
 extern void fn_80011A2C(void), fn_801476C4(void);
-extern int fn_801298E8(void *, int);
+extern int copyPadStateRecord(void *, int);
 extern void fn_80147230(void *, const char *, ...);
 extern void fn_801473F8(int, const char *, ...);
 extern char lbl_8055B428[8], lbl_8055B430[8], lbl_8055B438[8], lbl_8055B440[8];
@@ -190,7 +190,7 @@ extern "C" int fn_802044E8(void) {
  } else {
   ((Gui80204 *)lbl_8055ED44)->v1(base+0x38);
   fn_801476C4();
-  if (fn_801298E8(input,0) && input[0x25]) fn_80204330();
+  if (copyPadStateRecord(input,0) && input[0x25]) fn_80204330();
  }
  fn_80011A2C();
  return result;

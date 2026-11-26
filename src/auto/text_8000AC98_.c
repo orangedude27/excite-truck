@@ -803,7 +803,7 @@ call_key:
 }
 #pragma pop
 extern int fn_80019BA8(void);
-extern int fn_801298E8(void *, int);
+extern int copyPadStateRecord(void *, int);
 extern int KERNEL_GetTimeMs(void);
 extern int lbl_8055D3D8;
 int fn_8000BB08(void) {
@@ -815,7 +815,7 @@ int fn_8000BB08(void) {
         var_r30 = 0;
         var_r29 = 0;
         do {
-            if (fn_801298E8(sp8, var_r29) != 0) {
+            if (copyPadStateRecord(sp8, var_r29) != 0) {
                 if (sp8[0x20]) var_r30 = 1;
                 if (sp8[0x21]) var_r30 = 1;
                 if (sp8[0x22]) var_r30 = 1;

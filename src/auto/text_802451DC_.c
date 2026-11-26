@@ -951,7 +951,7 @@ extern void fn_80235758(int, int, int, float, float, float, float, float, float,
 }
 #pragma pop
 extern int fn_80129AF4(void);
-extern int fn_801298E8(void *, int);
+extern int copyPadStateRecord(void *, int);
 extern int fn_80214FD8(const char *, const char *);
 extern char lbl_80343210[];
 extern char lbl_80343224[];
@@ -967,12 +967,12 @@ void fn_8024683C(void) {
     if (currentChan == -1) {
         chan = 0;
         do {
-            if (fn_801298E8(status + 0x64, chan) != 0 && (*(unsigned int *)(status + 0xB4) & 1) != 0) {
+            if (copyPadStateRecord(status + 0x64, chan) != 0 && (*(unsigned int *)(status + 0xB4) & 1) != 0) {
                 isWireless = 1;
             }
             chan++;
         } while (chan < 4);
-    } else if (fn_801298E8(status, currentChan) != 0 && (*(unsigned int *)(status + 0x50) & 1) != 0) {
+    } else if (copyPadStateRecord(status, currentChan) != 0 && (*(unsigned int *)(status + 0x50) & 1) != 0) {
         isWireless = 1;
     }
     if (isWireless != 0) {

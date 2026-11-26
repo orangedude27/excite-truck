@@ -210,7 +210,7 @@ void fn_80008618(s32 mask) {
 #pragma dont_inline reset
 
 extern s32 fn_8000865C(void);
-extern s32 fn_801298E8(void *, s32);
+extern s32 copyPadStateRecord(void *, s32);
 extern s32 fn_802ECC10(void);
 extern s32 lbl_805589EC;
 extern u8 lbl_8055D37A;
@@ -228,13 +228,13 @@ s32 fn_80008C5C(void) {
     s32 allowed;
     /* Update UI/menu state (lbl_805589EC) from controller 0 input: if not
        blocked (lbl_8055D37A) and home-button flag fn_802ECC10() is clear, read
-       pad state via fn_801298E8 into sp and map button bits at sp+0x40 to
+       pad state via copyPadStateRecord into sp and map button bits at sp+0x40 to
        states (8/2 toggle 0xC/0xD based on fn_8000865C, 4->7, 1->0xE). Allowed
        inputs mask 0x8B; if input not allowed and idle timer lbl_8055D394 exceeds
        threshold lbl_805601B8 while not in state 4, force state 4. On state
        change reset timer to lbl_805601BC unless reverting from 4, else restore
        old; always advance timer by lbl_805601D0. Returns current state. */
-    if (*(volatile u8 *)&lbl_8055D37A == 0 && fn_802ECC10() == 0 && fn_801298E8(sp, 0) != 0) {
+    if (*(volatile u8 *)&lbl_8055D37A == 0 && fn_802ECC10() == 0 && copyPadStateRecord(sp, 0) != 0) {
         input = *(u32 *)(sp + 0x40);
         if (input == 8) {
             s32 flag = fn_8000865C();

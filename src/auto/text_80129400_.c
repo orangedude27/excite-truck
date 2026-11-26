@@ -8,7 +8,7 @@ extern u8 lbl_804223A0[0x20];
 void fn_80129690(void *arg0, s32 arg1, void *arg2);
 s32 RjoyIsPadConnected(s32);
 
-void *fn_801298E8(void *arg0, int arg1);
+void *copyPadStateRecord(void *arg0, int arg1);
 extern u8 lbl_804223C0[];
 extern u8 lbl_8032A5B0[];
 extern u8 lbl_8055DFD0;
@@ -211,7 +211,7 @@ void *__AXFXGetLfoSinTable_801297F4(void) { return lbl_804223C0; }
 u8 fn_80129800(void *recordId, int fieldIndex) {
     u8 buffer[0x70];
     s32 offset;
-    if (fn_801298E8(buffer, (int)recordId) != 0) {
+    if (copyPadStateRecord(buffer, (int)recordId) != 0) {
         offset = ((s32 *)lbl_804223C0)[fieldIndex];
         if (offset >= 0) return buffer[offset + 0x20];
     }
@@ -239,7 +239,7 @@ s32 fn_80129890(void) {
 
 // Copies a 0x64-byte record for the given index from the table at lbl_80422180 (stride 0x80)
 // into dst when present, otherwise clears dst; returns nonzero if found.
-void *fn_801298E8(void *dst, int index) {
+void *copyPadStateRecord(void *dst, int index) {
     s32 found;
     volatile u8 *src;
     u8 *out;
@@ -294,9 +294,9 @@ void *fn_801298E8(void *dst, int index) {
     return (void *)found;
 }
 
-// Thin wrapper: copies controllerIndex's 0x64-byte config record into dst (see fn_801298E8).
+// Thin wrapper: copies controllerIndex's 0x64-byte config record into dst (see copyPadStateRecord).
 void *fn_80129AE8(void *dst, int controllerIndex) {
-#define copyControllerConfig fn_801298E8
+#define copyControllerConfig copyPadStateRecord
     return copyControllerConfig(dst, controllerIndex);
 #undef copyControllerConfig
 }

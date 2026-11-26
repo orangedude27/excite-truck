@@ -222,7 +222,7 @@ struct Di718 {
 };
 extern void fn_8017E930(void *);
 extern s32 __AXGetStackHead_80137CFC(s32);
-extern s32 fn_801298E8(void *, s32);
+extern s32 copyPadStateRecord(void *, s32);
 extern f32 fn_801429D0(f32, f32);
 extern f32 fn_801429E0(f32, f32);
 extern f32 fn_80144C80(f32, f32, f32);
@@ -407,7 +407,7 @@ void fn_8017ED00(f32 dt) {
 #define PanicPrint        Abend_Panic
 #define PollInput         fn_801A7844
 #define ControllerType    fn_802E85B0   /* rjoy stub: always reports 3 */
-#define ReadController    fn_801298E8   /* snapshot of one controller's status */
+#define ReadController    copyPadStateRecord   /* snapshot of one controller's status */
 #define SceneFrames       fn_80179300
 #define UpdateDriverSound fn_8017F628
 #define ResetDriverLevels fn_8017F718
@@ -1008,7 +1008,7 @@ void fn_8017F718(void *arg0) {
         v->slot[41].value = head;
         {
             char buf[96];
-            if (fn_801298E8(buf, head) != 0 && ((*(int *)(buf + 0x50) & 0x10) != 0)) {
+            if (copyPadStateRecord(buf, head) != 0 && ((*(int *)(buf + 0x50) & 0x10) != 0)) {
                 *(volatile unsigned char *)((char *)v + 0x344) = 1;
                 *(volatile unsigned char *)((char *)v + 0x344) = 1u;
             }
@@ -1101,7 +1101,7 @@ void fn_8017FF4C(f32 dt) {
                 useAltA = 0;
                 useAltB = 0;
             }
-            if (fn_801298E8(&ctrlInfo, slotValue) != 0) {
+            if (copyPadStateRecord(&ctrlInfo, slotValue) != 0) {
                 if (ctrlInfo.flags & 2) {
                     player->flag343 = 1;
                     useAltA = 0;
@@ -1666,7 +1666,7 @@ void fn_801808DC(void) {
             v->flag344 = 0;
             {
                 char buf[96];
-                if (fn_801298E8(buf, head) != 0 && ((*(int *)(buf + 0x50) & 0x10) != 0)) {
+                if (copyPadStateRecord(buf, head) != 0 && ((*(int *)(buf + 0x50) & 0x10) != 0)) {
                     *(volatile unsigned char *)((char *)v + 0x344) = 1;
                     *(volatile unsigned char *)((char *)v + 0x344) = 1u;
                 }

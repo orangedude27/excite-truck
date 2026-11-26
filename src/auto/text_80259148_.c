@@ -1186,7 +1186,7 @@ void fn_8025A8B8(void *arg0, char *arg1) {
 #undef kFloatZero
 }
 
-extern int fn_801298E8(void *, int);
+extern int copyPadStateRecord(void *, int);
 extern void fn_8001BA68();
 extern void fn_8025AD88(void);
 extern void fn_80144DAC(void *, void *);
@@ -1228,7 +1228,7 @@ void fn_8025AA90(void *arg0, float farg0) {
 #pragma peephole off
         if (((unsigned char *)arg0)[0x4A] != 0) {
 #pragma peephole on
-            if (fn_801298E8(info, 0) != 0) {
+            if (copyPadStateRecord(info, 0) != 0) {
                 flags40 = *(int *)(info + 0x40);
                 color0 = (flags40 & 2) ? lbl_80563AE0 : lbl_80563AE4;
                 color1 = (flags40 & 8) ? lbl_80563AEC : lbl_80563AE4;

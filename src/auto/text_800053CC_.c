@@ -3,7 +3,7 @@
 
 #include <types.h>
 
-extern s32 fn_801298E8(f32 *, s32);
+extern s32 copyPadStateRecord(f32 *, s32);
 extern s32 fn_801769B8(void);
 extern s32 fn_801EA994(void);
 extern u8 lbl_8034EE84[];
@@ -35,7 +35,7 @@ void fn_800053CC(void) {
     /* If a player-0 state record is available, compute the squared magnitude of
        its first two floats and queue a small blue debug marker at (300*x, 200*y). */
     float buf[25];
-    if (fn_801298E8(buf, 0) != 0) {
+    if (copyPadStateRecord(buf, 0) != 0) {
         float xSquared = buf[0] * buf[0];
         float ySquared = buf[1] * buf[1];
         float sumSquares = xSquared + ySquared;

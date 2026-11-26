@@ -169,7 +169,7 @@ int fn_80171D38(int arg0) {
     unsigned char record[0x68];
     int lfoIndex;
     int result = 0;
-    if (fn_801298E8(record, arg0) != 0) {
+    if (copyPadStateRecord(record, arg0) != 0) {
         lfoIndex = *(int *)(__AXFXGetLfoSinTable_801297F4() + 0x30);
         if (*(record + 0x20 + lfoIndex) != 0)
             result = 1;

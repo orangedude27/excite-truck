@@ -44,7 +44,7 @@ extern f32 lbl_80563D8C;
 extern f32 lbl_80563D9C;
 extern s32 KERNEL_GetTimeMs(void);
 extern s32 isKeyPressed();
-extern s32 fn_801298E8(f32 *, s32);
+extern s32 copyPadStateRecord(f32 *, s32);
 extern void fn_80015A20();
 extern f32 lbl_80563D90;
 extern f32 lbl_80563DA4;
@@ -135,7 +135,7 @@ void fn_8026B8A0(void) {
     right.y = lbl_80563D78;
     fwd = *(V3 *)((f32 *)lbl_80499050 + 6);
     fwd.y = lbl_80563D78;
-    if (fn_801298E8(in, 0) != 0) {
+    if (copyPadStateRecord(in, 0) != 0) {
         f32 t, s, k, u;
         k = lbl_80563D90;
         t = (in[7] - lbl_80563D98) * lbl_80563D9C;
@@ -248,7 +248,7 @@ BOOL fn_8026BFF0(s32 mode) {
 
 extern s32 isTileCaptureActive(void);
 extern s32 __AXGetStackHead_80137CFC(s32);
-extern s32 fn_801298E8(f32 *, s32);
+extern s32 copyPadStateRecord(f32 *, s32);
 extern u8 *__AXFXGetLfoSinTable_801297F4(void);
 extern s32 lbl_8055F4EC;
 extern u8 lbl_8055F500;
@@ -545,7 +545,7 @@ void fn_8026C014(s32 arg0, void *arg1) {
         } else {
             var_r3 = 0;
         }
-        if (fn_801298E8(&(*(f32 *)(localFrame + (0x2a4 - 0x10))), var_r3) != 0) {
+        if (copyPadStateRecord(&(*(f32 *)(localFrame + (0x2a4 - 0x10))), var_r3) != 0) {
             temp_r0 = (*(s32 *)((u8 *)(__AXFXGetLfoSinTable_801297F4()) + (0x28)));
             if (temp_r0 >= 0) {
                 temp_r5 = *((u8 *)(localFrame + 0x2b4) + temp_r0);
