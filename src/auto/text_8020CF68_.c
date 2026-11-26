@@ -620,7 +620,7 @@ void fn_8020DABC(void) {
    A-button (increase volume with a short sound), B-button (decrease volume),
    exit/back (calls the registered callback), and ignores unhandled messages.
    Returns 1 if the message was consumed, 0 otherwise. */
-int fn_8020DB0C(int arg0) {
+int volumeMenuHandleMessage(int arg0) {
     int var_r31 = 1;
 
     switch (arg0) {
