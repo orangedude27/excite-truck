@@ -236,7 +236,7 @@ void fn_800328F0(void *arg0) {
  * depopulated, silenced, stopped and queued for its callback instead.  The
  * stack of voices that are not playing (priority 0) is only depopulated and
  * silenced. */
-void __AXSyncPBs_80032EAC(int baseCycles) {
+/* Once per audio frame, total the DSP cycles of all live voices by priority, copying each voice's parameter block into the DSP AXPB array while it fits the budget and stopping/queuing callbacks for those that would exceed it. */ void __AXSyncPBs_80032EAC(int baseCycles) {
     unsigned int cycles;
     int priority;
     AXVPB *vpb;
