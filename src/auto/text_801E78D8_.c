@@ -413,7 +413,7 @@ extern long fn_801EA994(void);
 extern void fn_801EA9DC(long, void *);
 extern void *fn_801E87A8(void);
 extern void fn_801E8CE4(void);
-extern void fn_801E8A84(void);
+extern void updateWind(void);
 #pragma processor 750
 #pragma paired_single off
 #pragma use_lmw_stmw off
@@ -486,7 +486,7 @@ void fn_801E7E48(void) {
     fn_801EA400();
     fn_801EF0AC((char *)obj + 0xee0);
     fn_801EF0AC((char *)obj + 0x1ee4);
-    fn_801E8A84();
+    updateWind();
     updateStageDistanceAnims();
     fn_801F4DC4();
     for (i = 0, j = 0; i < lbl_8055EB34; i++, j += 4) {
@@ -1078,7 +1078,7 @@ void fn_801E89FC(void) {
  * The zComponent index assignment and the "push + 0" at the end produce no
  * instructions; they are what the original build keeps live, and dropping them
  * rotates the float registers the two correction paths use. */
-void fn_801E8A84(void)
+void updateWind(void)
 {
   #define gWind          lbl_804881D8 /* unit direction [0..2], strength [3] */
   #define WIND_MAX_SLOPE 0.33f        /* steepest vertical the wind may point */
