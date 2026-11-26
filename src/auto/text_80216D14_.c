@@ -1238,7 +1238,7 @@ extern void *fn_8022EDC4(void);
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void fn_80218574(void *arg0) {
+extern "C" void UiMenu_RenderChildren(void *arg0) {
     /* Render active child UI elements with the appropriate draw-context, alpha, and optional per-element callback. */
     struct State { struct UiRenderMatrix m; float a, b, c; };
     struct VObj;

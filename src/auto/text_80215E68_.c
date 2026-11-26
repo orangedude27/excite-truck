@@ -26,7 +26,7 @@ extern s32 DrawList_beginFrame(void);
 extern s32 fn_80216244(void);
 extern s32 lbl_8055CFF0, lbl_8055CFF4;
 extern void fn_802184D0(void);
-extern void fn_80218574(void *);
+extern void UiMenu_RenderChildren(void *);
 extern void fn_80230B5C(void *);
 extern void fn_8023108C(s32);
 extern void DrawList_loadMatrix(void *);
@@ -320,7 +320,7 @@ s32 fn_80216244(void) {
             matrix[11] += pos[2];
             DrawList_loadMatrix(matrix);
             fn_8023108C(obj == lbl_8055EF88);
-            fn_80218574(obj);
+            UiMenu_RenderChildren(obj);
         }
     }
     fn_8023108C(1);
