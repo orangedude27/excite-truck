@@ -51,11 +51,11 @@ void *loadLayout(const char *name) {
     unsigned int size;
     unsigned char firstLoad;
     char *layout;
-    char *entry;
-    char *src;
-    char ch;
-    int remaining;
-    char *dst;
+    char *currentEntry;
+    char *stringSource;
+    char character;
+    int charsLeft;
+    char *stringDst;
     char t;
 
     layout = fn_8012C370((int)name, LAYT_TAG, &version, &size, 0, &firstLoad);
@@ -64,59 +64,59 @@ void *loadLayout(const char *name) {
             Abend_Panic(lbl_803401F8, name, version, LAYT_VERSION);
         }
         if (firstLoad != 0) {
-            entry = layout + 0x68;
-            *(char **)(layout + 0x64) = entry;
+            currentEntry = layout + 0x68;
+            *(char **)(layout + 0x64) = currentEntry;
             SWAP_BE32(layout, 0x0); // layout id
             for (;;) {
-                SWAP_BE32(entry, 0x00); // type
-                SWAP_BE32(entry, 0x04); // mode / id
-                SWAP_BE32(entry, 0x08); // x
-                SWAP_BE32(entry, 0x0c); // y
-                SWAP_BE32(entry, 0x10);
-                SWAP_BE32(entry, 0x14); // width
-                SWAP_BE32(entry, 0x18); // height
-                SWAP_BE32(entry, 0x1c); // scale
+                SWAP_BE32(currentEntry, 0x00); // type
+                SWAP_BE32(currentEntry, 0x04); // mode / id
+                SWAP_BE32(currentEntry, 0x08); // x
+                SWAP_BE32(currentEntry, 0x0c); // y
+                SWAP_BE32(currentEntry, 0x10);
+                SWAP_BE32(currentEntry, 0x14); // width
+                SWAP_BE32(currentEntry, 0x18); // height
+                SWAP_BE32(currentEntry, 0x1c); // scale
                 // The name at +0x20 and the text at +0x40 are byte strings and
                 // are left alone; the appearance words follow at +0x80..+0xb3.
-                SWAP_BE32(entry, 0x80);
-                SWAP_BE32(entry, 0x84);
-                SWAP_BE32(entry, 0x88);
-                SWAP_BE32(entry, 0x8c);
-                SWAP_BE32(entry, 0x90);
-                SWAP_BE32(entry, 0x94);
-                SWAP_BE32(entry, 0x98);
-                SWAP_BE32(entry, 0x9c); // colour
-                SWAP_BE32(entry, 0xa0);
-                SWAP_BE32(entry, 0xa4);
-                SWAP_BE32(entry, 0xa8);
-                SWAP_BE32(entry, 0xac);
-                SWAP_BE32(entry, 0xb0);
-                if (*(unsigned int *)entry == 0) {
+                SWAP_BE32(currentEntry, 0x80);
+                SWAP_BE32(currentEntry, 0x84);
+                SWAP_BE32(currentEntry, 0x88);
+                SWAP_BE32(currentEntry, 0x8c);
+                SWAP_BE32(currentEntry, 0x90);
+                SWAP_BE32(currentEntry, 0x94);
+                SWAP_BE32(currentEntry, 0x98);
+                SWAP_BE32(currentEntry, 0x9c); // colour
+                SWAP_BE32(currentEntry, 0xa0);
+                SWAP_BE32(currentEntry, 0xa4);
+                SWAP_BE32(currentEntry, 0xa8);
+                SWAP_BE32(currentEntry, 0xac);
+                SWAP_BE32(currentEntry, 0xb0);
+                if (*(unsigned int *)currentEntry == 0) {
                     break; // a type of 0 ends the entry list
                 }
-                if (entry[0x40] == '|') {
+                if (currentEntry[0x40] == '|') {
                     // "|name": replace the reference with the string it names.
-                    src = fn_80131234(entry + 0x41);
-                    dst = entry + 0x40;
-                    remaining = 0x40;
+                    stringSource = fn_80131234(currentEntry + 0x41);
+                    stringDst = currentEntry + 0x40;
+                    charsLeft = 0x40;
                     goto copy_character;
                 copy_more:
-                    remaining--;
-                    if (remaining > 0) {
+                    charsLeft--;
+                    if (charsLeft > 0) {
                         goto copy_character;
                     }
-                    dst[-1] = 0; // too long: cut the text short
+                    stringDst[-1] = 0; // too long: cut the text short
                     goto copy_done;
                 copy_character:
-                    ch = *src++;
-                    *dst++ = ch;
-                    if (ch != 0) {
+                    character = *stringSource++;
+                    *stringDst++ = character;
+                    if (character != 0) {
                         goto copy_more;
                     }
                 copy_done:
                     ;
                 }
-                entry += LAYT_ENTRY_SIZE;
+                currentEntry += LAYT_ENTRY_SIZE;
             }
         }
     } else {
