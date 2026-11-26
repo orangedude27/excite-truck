@@ -1478,16 +1478,16 @@ extern void fn_8016E15C();
 #pragma opt_loop_invariants off
 #pragma opt_common_subs off
 #pragma scheduling invalid_target
-void resetChallengeState(void *obj) {
+/* Reset a challenge-mode state object: clear its ring/set entries and 16-byte status records, reinitialize the active set, then reset its UI/sound handles, flags and timers to their initial values. */ void resetChallengeState(void *obj) {
     /* Reset this object's ring/set collections, sub-state and UI/sound handles to
        their initial values (clear per-entry fields, rebuild/reinit the active set,
        clear the 0x10-byte status entries, reset flags/timers and release/prime the
        handle slots). */
-    s32 i, j, n;
+    s32 entryIdx, j, n;
     void *p;
 
-    for (i = 0; i < M2C_FIELD(obj, s32 *, 8); i++) {
-        p = ((void **) M2C_FIELD(obj, void **, 4))[i];
+    for (entryIdx = 0; entryIdx < M2C_FIELD(obj, s32 *, 8); entryIdx++) {
+        p = ((void **) M2C_FIELD(obj, void **, 4))[entryIdx];
         M2C_FIELD(p, s32 *, 0) = 0;
         M2C_FIELD(p, s8 *, 8) = 0;
         M2C_FIELD(p, f32 *, 0xC) = 0.0f;
@@ -1513,8 +1513,8 @@ void resetChallengeState(void *obj) {
     for (j = 0; j < M2C_FIELD(obj, s32 *, 0x6C); j++)
         fn_8016E15C((void *) fn_8016E1A4((s32 *) M2C_FIELD(obj, s32 *, 0x48), j));
     fn_8016E118((u8 *) obj + 0x30);
-    i = M2C_FIELD(obj, s32 *, 0x5C);
-    if (i >= 0 && i < M2C_FIELD(obj, s32 *, 0x68)) {
+    entryIdx = M2C_FIELD(obj, s32 *, 0x5C);
+    if (entryIdx >= 0 && entryIdx < M2C_FIELD(obj, s32 *, 0x68)) {
         fn_8016E06C((u8 *) obj + 0x30);
         fn_8016DFB8((u8 *) obj + 0x30);
         fn_8016DE20((u8 *) obj + 0x30);
