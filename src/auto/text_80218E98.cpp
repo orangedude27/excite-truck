@@ -174,7 +174,7 @@ extern f32 lbl_805634E4;
 extern "C" void *fn_8021525C(void);
 extern "C" void fn_80218FEC(void *, s32, s32, s32, s32, s32);
 
-extern "C" s32 fn_8022F8CC(s32);
+extern "C" s32 drawOverlayQuad(s32);
 extern "C" s32 fn_8022FFE8(s32);
 
 class Fn80229AE4Dispatch {
@@ -1526,7 +1526,7 @@ extern "C" void fn_8021A6A8(void *arg0) {
     s32 cachedObject = *(s32 *)((u8 *)arg0 + 0x244);
     if (cachedObject != 0) {
         fn_8022FFE8(cachedObject);
-        fn_8022F8CC(*(s32 *)((u8 *)arg0 + 0x244));
+        drawOverlayQuad(*(s32 *)((u8 *)arg0 + 0x244));
     }
 }
 
@@ -1562,7 +1562,7 @@ extern "C" void *fn_8021A77C(void *self, s32 x, s32 y, s32 cursorId, s32 cursorP
 }
 
 extern "C" s32 fn_8022F638(s32, s32, s32, s32, f32);
-extern "C" s32 fn_8022F8CC(s32);
+extern "C" s32 drawOverlayQuad(s32);
 extern "C" s32 fn_8022FFE8(s32);
 extern f32 lbl_805634E4;
 #pragma dont_inline on

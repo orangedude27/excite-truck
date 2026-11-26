@@ -6,7 +6,7 @@
 /* --- Named overlay quads -------------------------------------------
  * A list of 0xB4-byte textured quads hangs off lbl_8055F014: fn_8022F638
  * creates one from a texture name, fn_8022F2FC finds it by name,
- * fn_8022F364/fn_8022F77C add and remove list nodes, and fn_8022F8CC draws
+ * fn_8022F364/fn_8022F77C add and remove list nodes, and drawOverlayQuad draws
  * one.  lbl_80497E3C holds the "current" settings a quad is copied in and
  * out of (fn_8022F418 / fn_8022F548).
  */
@@ -380,7 +380,7 @@ void fn_8022F868(void *dst, void *src) {
  * entry and texture coordinates running from (0, 0) to (texScale, texScale),
  * points the texture matrix at the quad's transform composed with the current
  * one, then pushes the quad as two triangles through the GX FIFO. */
-void fn_8022F8CC(OverlayQuad *quad) {
+void drawOverlayQuad(OverlayQuad *quad) {
     extern void fn_80230A68(QuadVtx *, int, f32, f32, f32, f32, f32);
     extern int fn_80230B9C(int);
     extern void fn_8022F868(void *, void *);
