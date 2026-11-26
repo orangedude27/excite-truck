@@ -192,13 +192,13 @@ typedef struct NearObject {
    and still flagged is reported to each 3D water pool (lbl_804B5010,
    lbl_8055F7F0 of them) and to each shallow water area (lbl_804B5030,
    lbl_8055F7F4 of them); when the splash effect system is up (fn_802BF4F0)
-   splash particles are also emitted from the object (fn_8029CD48).
+   splash particles are also emitted from the object (emitWaterSplashes).
    Nothing happens while the frame time is zero (game standing still). */
 void fn_8029C450(void *arg0, int arg1) {
     extern float fn_801E7E24(void);
     extern void fn_8029D7D0(int, void **);
     extern void fn_8029EA34(void *, void **);
-    extern void fn_8029CD48(void *);
+    extern void emitWaterSplashes(void *);
     extern int fn_802BF4F0(void);
     extern int lbl_8055F7F0, lbl_8055F7F4;
     extern int lbl_804B5010[], lbl_804B5030[];
@@ -232,7 +232,7 @@ void fn_8029C450(void *arg0, int arg1) {
                     shallow++;
                 }
                 if (fn_802BF4F0() != 0) {
-                    fn_8029CD48(record->object);
+                    emitWaterSplashes(record->object);
                 }
             }
             record++;
@@ -588,7 +588,7 @@ void fn_8029CD14(void) {
  * local point is transformed into world space; points above the water surface
  * are skipped, and a jittered line of particles is emitted toward an offset
  * target, with the count scaling with horizontal distance from the origin. */
-void fn_8029CD48(void *object) {
+void emitWaterSplashes(void *object) {
     extern double fn_8002F234(float); /* sqrt */
     extern float fn_80287BC8(float, float); /* random float in [min, max] */
     extern float fn_802BF590(void); /* water surface Y */
@@ -689,30 +689,30 @@ void *fn_8029D148(void *arg0, void *arg1, float *arg2, int arg3) {
     extern double fn_8002F234(float);
     extern void *fn_8012850C(int, const char *);
     extern void *memset(void *, int, unsigned int);
-    extern void Abend_Panic(const char *, ...);
+    extern void fn_802E317C(const char *, ...);
     extern float PSQUATMultiply(float *, float *);
-    extern void *RegisterTextureByName(int, int);
-    extern void fn_8014E740(float *, float, float, float, float, float, float, float, float, float, float, float, float, float, float);
     extern char lbl_80349560[];
+    extern void *fn_802CAC28(int, int);
+    extern void fn_8014E740(float *, float, float, float, float, float, float, float, float, float, float, float, float, float, float);
     extern float lbl_80564628, lbl_80564658, lbl_8056465C, lbl_80564678;
     int dimX, dimY, twice, initId, data, end;
-    unsigned char flag0, flag1;
     float sqX0, sqX1, sqY0, sqY1, rootX, rootY, ySquared;
+    unsigned char flag0, flag1;
     float stepX, stepY;
-    float f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12;
     float init0, init1, rx;
-    float a08, a0c, a10, a14, c28;
+    float f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12;
     float scratch[3];
+    float a08, a0c, a10, a14, c28;
     char *base = lbl_80349560;
 
     memset((char *)arg0 + 0x14, 0, 0x20);
     sqX0 = arg2[4];
     sqX1 = arg2[3];
     rootX = (float)fn_8002F234(sqX1 * sqX1 + sqX0 * sqX0);
-    sqY0 = arg2[5];
     sqY1 = arg2[6];
-    ySquared = sqY0 * sqY0 + sqY1 * sqY1;
+    sqY0 = arg2[5];
     dimX = (int)(lbl_80564678 * rootX);
+    ySquared = sqY0 * sqY0 + sqY1 * sqY1;
     *(int *)((char *)arg0 + 0xC) = dimX;
     rootY = (float)fn_8002F234(ySquared);
     dimY = (int)(lbl_80564678 * rootY);
@@ -720,7 +720,7 @@ void *fn_8029D148(void *arg0, void *arg1, float *arg2, int arg3) {
     if (*(int *)((char *)arg0 + 0xC) < 3 ||
         *(int *)((char *)arg0 + 0x10) < 3 ||
         *(int *)((char *)arg0 + 0xC) * *(int *)((char *)arg0 + 0x10) > 0x200)
-        Abend_Panic(base + 0x148, *(int *)((char *)arg0 + 0x10));
+        fn_802E317C(base + 0x148, *(int *)((char *)arg0 + 0x10));
     *(void **)arg0 = fn_8012850C(*(int *)((char *)arg0 + 0x10) * (*(int *)((char *)arg0 + 0xC) * 2) * 2, base + 0x16C);
     memset(*(void **)arg0, 0, *(int *)((char *)arg0 + 0x10) * (*(int *)((char *)arg0 + 0xC) * 4));
 
@@ -729,8 +729,8 @@ void *fn_8029D148(void *arg0, void *arg1, float *arg2, int arg3) {
     data = *(int *)arg0;
     end = data + *(int *)((char *)arg0 + 0xC) * *(int *)((char *)arg0 + 0x10) * 2;
     initId = *(int *)((char *)arg1 + 0x18);
-    f10 = *(float *)((char *)arg2 + 4);
     f11 = *(float *)arg2;
+    f10 = *(float *)((char *)arg2 + 4);
     f8 = *(float *)((char *)arg2 + 8);
     rx = *(float *)((char *)arg2 + 0xC);
     f7 = rx;
@@ -747,24 +747,24 @@ void *fn_8029D148(void *arg0, void *arg1, float *arg2, int arg3) {
     f0 = f11 + (lbl_8056465C * (rx + f5));
     f8 = f9 + f1;
     init0 = *(float *)arg1;
-    init1 = *(float *)((char *)arg1 + 4);
     a08 = *(float *)((char *)arg1 + 8);
-    a0c = *(float *)((char *)arg1 + 0xC);
+    init1 = *(float *)((char *)arg1 + 4);
     a10 = *(float *)((char *)arg1 + 0x10);
-    a14 = *(float *)((char *)arg1 + 0x14);
+    a0c = *(float *)((char *)arg1 + 0xC);
     c28 = lbl_80564628;
+    a14 = *(float *)((char *)arg1 + 0x14);
     flag0 = *((unsigned char *)arg1 + 0x1C);
     flag1 = *((unsigned char *)arg1 + 0x1D);
     *(int *)((char *)arg0 + 4) = data;
     *(int *)((char *)arg0 + 8) = end;
-    *(int *)((char *)arg0 + 0x2C) = initId;
     *(float *)((char *)arg0 + 0x14) = init0;
-    *(float *)((char *)arg0 + 0x18) = init1;
+    *(int *)((char *)arg0 + 0x2C) = initId;
     *(float *)((char *)arg0 + 0x1C) = a08;
+    *(float *)((char *)arg0 + 0x18) = init1;
     *(float *)((char *)arg0 + 0x20) = a0c;
     *(float *)((char *)arg0 + 0x24) = a10;
     *(float *)((char *)arg0 + 0x28) = a14;
-    *(unsigned char *)((char *)arg0 + 0x30) = flag0;
+    *(unsigned char *)((char *)arg0 + 0x30) = (unsigned)flag0;
     *(unsigned char *)((char *)arg0 + 0x31) = flag1;
     *(int *)((char *)arg0 + 0x2C) = initId & 0xFFFFFF;
     *(float *)((char *)arg0 + 0x34) = c28;
@@ -773,8 +773,8 @@ void *fn_8029D148(void *arg0, void *arg1, float *arg2, int arg3) {
     *(float *)((char *)arg0 + 0x40) = f9;
     *(float *)((char *)arg0 + 0x44) = f6;
     *(float *)((char *)arg0 + 0x48) = f7;
-    *(float *)((char *)arg0 + 0x4C) = f4;
     *(float *)((char *)arg0 + 0x50) = f3;
+    *(float *)((char *)arg0 + 0x4C) = f4;
     *(float *)((char *)arg0 + 0x54) = f0;
     *(float *)((char *)arg0 + 0x58) = f10;
     *(float *)((char *)arg0 + 0x5C) = f8;
@@ -782,7 +782,7 @@ void *fn_8029D148(void *arg0, void *arg1, float *arg2, int arg3) {
 
     twice = *(int *)((char *)arg0 + 0xC) << 1;
     *(void **)((char *)arg0 + 0x70) = fn_8012850C(twice * 0x18, base + 0x178);
-    *(void **)((char *)arg0 + 0x74) = RegisterTextureByName(arg3, 0);
+    *(void **)((char *)arg0 + 0x74) = fn_802CAC28(arg3, 0);
 
     f12 = *(float *)((char *)arg2 + 0xC);
     f7 = lbl_8056465C;
@@ -791,17 +791,17 @@ void *fn_8029D148(void *arg0, void *arg1, float *arg2, int arg3) {
     f2 = f12 * f7;
     f1 = *(float *)arg2;
     f9 = *(float *)((char *)arg2 + 0x14);
-    f6 = f1 + f2;
     f8 = *(float *)((char *)arg2 + 0x18);
+    f6 = f1 + f2;
     f3 = f10 * f7;
-    f0 = *(float *)((char *)arg2 + 4);
     f5 = f11 * f7;
-    f4 = *(float *)((char *)arg2 + 8) + f3;
+    f0 = *(float *)((char *)arg2 + 4);
     f1 = f6 + f9 * f7;
+    f4 = *(float *)((char *)arg2 + 8) + f3;
     f0 = f0 + f5;
     scratch[0] = f1;
-    scratch[1] = f0 + f5;
     scratch[2] = f4 + f8 * f7;
+    scratch[1] = f0 + f5;
     fn_8014E740(scratch, *(float *)((char *)arg0 + 0x60), f1, f4, f0, f5, f6, f7, f8, f9, f10, f11, f12, f11, f12);
     return arg0;
 }
@@ -1463,9 +1463,9 @@ void fn_8029E8E0(float *arg0, int arg1) {
     int i;
     int a, b;
     fn_802C8BD0(*(int *)((char *)arg0 + 0x40));
-    if (beginDrawListPass(4) != 0) {
+    if (fn_802C8DBC(4) != 0) {
         struct ReverseVec3 *view;
-        view = (struct ReverseVec3 *)((char *)DrawList_getCurrentMatrix() + 0x24);
+        view = (struct ReverseVec3 *)((char *)fn_802C86DC() + 0x24);
         center = *view;
         f30 = lbl_80564658;
         i = 0;
@@ -1478,8 +1478,8 @@ void fn_8029E8E0(float *arg0, int arg1) {
             diff.x = arg0[0] - cz;
             diff.z = arg0[2] - cx;
             sp8.x = diff.x;
-            sp8.y = -diff.y;
             sp8.z = diff.z;
+            sp8.y = -diff.y;
             PSVECNormalize((float *)&sp8, (float *)&sp8);
             {
                 float z2 = sp8.z * sp8.z;
@@ -1500,9 +1500,9 @@ void fn_8029E8E0(float *arg0, int arg1) {
             i++;
             arg0 += 3;
         } while ((unsigned int)i < 4);
-        DrawList_endMeshPass();
+        fn_802C8E48();
     }
-    DrawList_RestoreNormalMode();
+    fn_802C8D74();
 }
 #pragma pop
 extern void fn_8029EC64(void *, void *, int);
