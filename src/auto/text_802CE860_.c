@@ -4,7 +4,7 @@
 extern int endMeshPass();
 extern int beginMeshPass(int);
 /* Tail-call beginMeshPass with the index converted to a word byte offset (index * 4); the callee ignores the argument. */
-void fn_802CE860(int index) { beginMeshPass(index * 4); }
+void canDrawParticles(int index) { beginMeshPass(index * 4); }
 
 /* Finish the particle system's dynamic mesh pass: flush the accumulated
  * vertex/index buffers and drop the mesh mode back to idle (endMeshPass). */

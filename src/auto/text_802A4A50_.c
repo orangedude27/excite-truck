@@ -15,7 +15,7 @@ extern s32 fn_80287B5C(s32);
 extern f32 fn_80287BC8(f32, f32);
 extern s32 fn_8028E584(s32, f32 *, f32 *, f32, f32);
 extern void fn_802C8BD0(s32);
-extern s32 fn_802CE860(s32);
+extern s32 canDrawParticles(s32);
 extern void endParticleDraw(void);
 extern void drawBillboardParticle(void *, s32, f32, double, double, double);
 extern f32 lbl_805648D8;
@@ -1951,7 +1951,7 @@ s32 fn_802A79CC(s32 arg0) {
         rate = fn_802C9A4C(*(f32 *)(object + 0x30));
         fn_802C8BD0(*(s32 *)(object + 0x2C));
 
-        if (fn_802CE860(*(s32 *)(object + 4)) != 0) {
+        if (canDrawParticles(*(s32 *)(object + 4)) != 0) {
             radius = *(f32 *)(object + 0x18);
             radiusSquared = radius * radius;
             alphaScale = (f32)alpha / radiusSquared;

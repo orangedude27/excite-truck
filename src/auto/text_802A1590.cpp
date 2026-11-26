@@ -18,7 +18,7 @@ static inline void MtxMultVecLocal(const unsigned char *m, const f32 *src, f32 *
 extern "C" f32 fn_802C9A4C(f32);
 extern "C" void fn_802C8BD0(void*);
 extern "C" void DrawList_RestoreNormalMode(void);
-extern "C" int fn_802CE860(void*);
+extern "C" int canDrawParticles(void*);
 extern "C" void endParticleDraw(void);
 extern "C" void drawBillboardParticle(unsigned int, int, f32, f32, f32, f32);
 extern "C" f32 lbl_8056483C;
@@ -1875,7 +1875,7 @@ extern "C" s32 drawParticleSystem(void *arg0) {
     if (*(s32 *)(system + 4) >= 1) {
         savedState = fn_802C9A4C(*(f32 *)(system + 0x64));
         fn_802C8BD0((void *)*(s32 *)(system + 0x60));
-        if (fn_802CE860((void *)*(s32 *)(system + 4))) {
+        if (canDrawParticles((void *)*(s32 *)(system + 4))) {
             now = ((f32 (*)())fn_801E7E18)();
             minValue = lbl_80564744;
             alphaScale = lbl_8056483C;
