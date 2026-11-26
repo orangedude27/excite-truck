@@ -409,7 +409,7 @@ public:
     virtual void setParam(void *);        /* +0x5C the block queued at Sound3D+0x50 */
 };
 
-/* What VoiceSnd::state() answers; fn_80206824 runs its play/mute bookkeeping
+/* What VoiceSnd::state() answers; Sound3D_update runs its play/mute bookkeeping
  * off these. */
 enum VoiceSndState {
     VOICE_STATE_PLAYING = 1,
@@ -424,7 +424,7 @@ enum VoiceSndState {
  * Mix values are queued here with a dirty flag each (the setters set both);
  * the update virtuals push the flagged ones to the VoiceSnd and clear them.
  * The flags at +0x48.. are requests queued on the sound by the game, which
- * fn_80206824 carries out on the VoiceSnd on the next pass. */
+ * Sound3D_update carries out on the VoiceSnd on the next pass. */
 struct Sound3D {
     void *vtable;                /* at 0x00 */
     float rate;                  /* at 0x04 -> VoiceSnd::setRate, flag at 0x4E */
@@ -433,7 +433,7 @@ struct Sound3D {
     int slot10;                  /* at 0x10 -100 until the sound is placed */
     int auxFlags;                /* at 0x14 -> VoiceSnd slot +0x50, flag 0x4F */
     unsigned char audible;       /* at 0x18 fn_802067C8: playing, and audible this pass */
-    unsigned char playing;       /* at 0x19 fn_80206824 keeps it up while the sound runs */
+    unsigned char playing;       /* at 0x19 Sound3D_update keeps it up while the sound runs */
     char pad1A[0x28 - 0x1A];
     float unused2c;              /* at 0x28 -> VoiceSnd::setUnused2c */
     float unused30;              /* at 0x2C -> VoiceSnd::setUnused30 */
@@ -463,7 +463,7 @@ struct Sound3D {
  * takes the sound out of play, and a muted sound is unmuted once the mute is
  * lifted.  Whatever was queued at +0x50 then goes to the sound, and a sound
  * that is not muted runs its own virtual update. */
-extern "C" void fn_80206824(void *object, int context, int arg) {
+extern "C" void Sound3D_update(void *object, int context, int arg) {
     /* The sound's own update: vtable slot +0x0C, fn_80206B14 in the base class. */
     struct SoundBase { virtual void dispose(); virtual void update(int, int); };
     Sound3D *self = (Sound3D *)object;

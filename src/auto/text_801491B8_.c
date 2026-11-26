@@ -2753,7 +2753,7 @@ s32 fn_8014F088(s32, s32);
  * flag saying that sound has been started. */
 void fn_80150B60(void *object) {
     /* One of the game's Sound objects (created by fn_80207848, pool tag
-     * "Sound"); its update fn_80206824 stops the sound when +0x4A is set. */
+     * "Sound"); its update Sound3D_update stops the sound when +0x4A is set. */
     struct Sound {
         char pad_0[0x4A];
         u8 stopRequested; /* +0x4A */

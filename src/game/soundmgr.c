@@ -317,7 +317,7 @@ typedef struct SlotLimits { signed long total; signed long lim[9]; signed long p
 
 /* SoundManager per-frame update: run the audibility pass (fn_802067C8) over
  * every tracked sound, flush the queued mix values (fn_8020835C/fn_80207F34),
- * run each sound's own update (fn_80206824), then finish with
+ * run each sound's own update (Sound3D_update), then finish with
  * fn_8020815C/fn_80207E70. */
 void SoundMgr_refreshSounds(void *soundMgr) {
     /* The manager's view of its tracked sounds (the full object is laid out in
@@ -347,7 +347,7 @@ void SoundMgr_refreshSounds(void *soundMgr) {
     index = 0;
     byteOffset = 0;
     while (index < mgr->soundCount) {
-        fn_80206824(*(int *)((char *)mgr->soundIds + byteOffset), (void *)mgr->context, mgr->updateArg);
+        Sound3D_update(*(int *)((char *)mgr->soundIds + byteOffset), (void *)mgr->context, mgr->updateArg);
         byteOffset += 4;
         ++index;
     }

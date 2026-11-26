@@ -38,7 +38,7 @@ extern float PSQUATMultiply(void *, void *);
 extern void *fn_8017960C();
 extern void fn_802AE0E0();
 extern float lbl_80561A50;
-/* A Sound object (created by fn_80207848). Its update (fn_80206824) acts on
+/* A Sound object (created by fn_80207848). Its update (Sound3D_update) acts on
    the request flags below and keeps +0x19 set while the sound is running, so
    callers ask for a sound by testing +0x19 and then setting +0x49. */
 typedef struct Sound {

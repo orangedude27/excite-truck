@@ -1081,7 +1081,7 @@ void fn_8020BCB0(void) {
 
 /* "SndVoice" (the voice backend's Sound object, vtable lbl_8033C3F4), vtable
  * slot +0x5C setParam(void *paramBlock): receive the parameter block a Sound3D
- * queued at Sound3D+0x50, handed over once by Sound3D::update (fn_80206824),
+ * queued at Sound3D+0x50, handed over once by Sound3D::update (Sound3D_update),
  * which clears the queue right after.  A voice sound takes its mix values from
  * its sound group and the per-frame mixer fn_8020AC2C instead, so the block is
  * ignored here -- as it is in the null backend's "Null Sound" (fn_8020940C). */

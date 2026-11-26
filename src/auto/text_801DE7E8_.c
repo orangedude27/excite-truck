@@ -58,7 +58,7 @@ struct PopupQueue {
 
 /* The sound object fn_80207848 builds (0x70 bytes, see src/auto/text_802062E8.cpp).
    Each flag below queues the matching call on the sound at +0xC when it is next
-   updated; fn_80206824 is what starts, loops and stops it. */
+   updated; Sound3D_update is what starts, loops and stops it. */
 struct SoundObject {
     void *vtable;                /* 0x00 */
     float volume2;               /* 0x04: second volume, queued by flag 0x4E */

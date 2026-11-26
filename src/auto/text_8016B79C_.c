@@ -250,7 +250,7 @@ extern "C" f32 lbl_8055E3C8, lbl_80561984, lbl_80561988; /* game time, 1.0f (cou
 extern "C" f64 lbl_80561990;              /* 4503599627370496.0: float->int conversion bias */
 extern "C" u8 lbl_8043036C[];             /* the CachedMessage8016B964 holding the caption */
 
-/* A Sound object (created by fn_80207848). Its update (fn_80206824) acts on the
+/* A Sound object (created by fn_80207848). Its update (Sound3D_update) acts on the
    request flags below and keeps +0x19 set while the sound is running, so callers
    ask for a sound by testing +0x19 and then setting +0x49. */
 typedef struct Sound8016B964 {
