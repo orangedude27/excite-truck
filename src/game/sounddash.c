@@ -115,7 +115,7 @@ extern void closeFileHandle(int *);
     return 0;
 }
 
-void fn_8020BF58(void) {
+void drawSoundDash(void) {
     struct { char sp8[64]; char sp48[64]; char padding[0xD0]; } scratch;
     int soundIndex;
     int drawSlot;
