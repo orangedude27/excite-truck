@@ -1672,68 +1672,70 @@ extern "C" void fn_80158A84(Unk801577F0 *player) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma processor 750
-extern "C" f32 BonusTracker_updateFromPlayer(void* arg0, void* arg1) {
-#define playerProgress   (*(f32*)((u8*)arg0 + 0x25C))
-#define playerProgressY  (*(f32*)((u8*)arg0 + 0x260))
-#define playerProgressZ  (*(f32*)((u8*)arg0 + 0x264))
-#define playerLevel      (*(f32*)((u8*)arg0 + 0x24C))
-#define playerTime       (*(f32*)((u8*)arg0 + 0x258))
-#define playerObject     (*(void**)((u8*)arg0 + 0x26C))
-#define flag272          (*((u8*)arg0 + 0x272))
-#define flag273          (*((u8*)arg0 + 0x273))
-#define flag270          (*((u8*)arg0 + 0x270))
-#define flag271          (*((u8*)arg0 + 0x271))
-    /* Advance player progress/timers for this update and emit a value when a step completes. */
-    f32 result = 0.0f;
-    class Iface {
+extern "C" f32 BonusTracker_updateFromPlayer(void* tracker, void* player) {
+#define playerProgress   (*(f32*)((u8*)tracker + 0x25C))
+#define playerProgressY  (*(f32*)((u8*)tracker + 0x260))
+#define playerProgressZ  (*(f32*)((u8*)tracker + 0x264))
+#define playerLevel      (*(f32*)((u8*)tracker + 0x24C))
+#define playerTime       (*(f32*)((u8*)tracker + 0x258))
+#define playerObject     (*(void**)((u8*)tracker + 0x26C))
+#define flag272          (*((u8*)tracker + 0x272))
+#define flag273          (*((u8*)tracker + 0x273))
+#define flag270          (*((u8*)tracker + 0x270))
+#define flag271          (*((u8*)tracker + 0x271))
+    /* Advance a bonus tracker's three progress counters by the player's speed for one frame,
+     * using its virtual hooks for level/idle/advance events, and emit the current record's
+     * value when the tracker reaches its last record. */
+    f32 emitted = 0.0f;
+    class BonusTrackerVtbl {
     public:
         virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
         virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7();
         virtual void m8(); virtual void m9(); virtual void m10(); virtual void m11();
         virtual void m12(); virtual void m13(); virtual void m14(); virtual void m15();
         virtual void m16(); virtual void m17(); virtual void m18(); virtual void m19();
-        virtual void m20(); virtual s32 m23();
+        virtual void m20(); virtual s32 recordIndex();
         virtual void m24(); virtual void m25(); virtual void m26(); virtual void m27();
         virtual void m28(); virtual void m29(); virtual void m30(); virtual void m31();
-        virtual void m32(); virtual void m33(); virtual void m34(); virtual void m35();
-        virtual void m36(); virtual s32 m37(void*);
+        virtual void onLevelReached(); virtual void onIdleFrame(); virtual void onProgressUpdated(); virtual void m35();
+        virtual void m36(); virtual s32 canTrackPlayer(void*);
     };
-    Iface* self = (Iface*)arg0;
+    BonusTrackerVtbl* self = (BonusTrackerVtbl*)tracker;
     flag272 = 0;
-    fn_8014AEC8(arg1);
-    if (((s32 (*)(void))fn_80141F7C)() != 0 && self->m37(arg1) != 0) {
-        if (playerProgress > playerLevel) self->m32();
-        f32 speed = fn_80158E80(arg1);
+    fn_8014AEC8(player);
+    if (((s32 (*)(void))fn_80141F7C)() != 0 && self->canTrackPlayer(player) != 0) {
+        if (playerProgress > playerLevel) self->onLevelReached();
+        f32 speed = fn_80158E80(player);
         f32 scale = lbl_8056177C;
         f32 delta = scale * speed;
-        f32 x = playerProgress + delta;
-        f32 y = playerProgressY + delta;
-        f32 z = playerProgressZ + delta;
-        playerProgress = x;
-        playerProgressY = y;
-        playerProgressZ = z;
-        self->m34();
-        if (playerProgress > playerLevel && self->m23() > 0) {
+        f32 newProgress = playerProgress + delta;
+        f32 newProgressY = playerProgressY + delta;
+        f32 newProgressZ = playerProgressZ + delta;
+        playerProgress = newProgress;
+        playerProgressY = newProgressY;
+        playerProgressZ = newProgressZ;
+        self->onProgressUpdated();
+        if (playerProgress > playerLevel && self->recordIndex() > 0) {
             playerTime = 0.0f;
-            void* object = playerObject;
-            if (object != 0) fn_80158E74(object);
+            void* listener = playerObject;
+            if (listener != 0) fn_80158E74(listener);
         }
-        result = 0.0f;
+        emitted = 0.0f;
     } else if (((s32 (*)(f32))fn_80141F7C)(playerTime) != 0) {
-        result = fn_80158D60(arg0, arg1);
+        emitted = fn_80158D60(tracker, player);
     } else {
-        self->m33();
-        f32 old = playerTime;
-        playerTime = old + lbl_8056177C;
-        fn_80158D0C(arg0);
+        self->onIdleFrame();
+        f32 previousTime = playerTime;
+        playerTime = previousTime + lbl_8056177C;
+        fn_80158D0C(tracker);
     }
-    if (self->m23() == fn_80158D04(arg0) - 1) {
-        result = fn_80158D60(arg0, arg1);
+    if (self->recordIndex() == fn_80158D04(tracker) - 1) {
+        emitted = fn_80158D60(tracker, player);
     }
     flag273 = (flag272 != 0 && flag271 != 0);
     flag270 = 0;
     flag271 = 0;
-    return result;
+    return emitted;
 #undef playerProgress
 #undef playerProgressY
 #undef playerProgressZ
