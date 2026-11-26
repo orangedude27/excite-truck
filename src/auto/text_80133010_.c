@@ -13,7 +13,7 @@
 #define OPTIONS_MAX_ENTRIES 500 // options the table holds (0x1F4)
 #define OPTIONS_LINE_SIZE 0x100 // line buffer readOptionsFile reads into
 
-// The "[SECTION]" an option was written under.  fn_80133B24 turns a section
+// The "[SECTION]" an option was written under.  optionSectionFromName turns a section
 // name into one of these (the 17 names are in lbl_802F9308) and answers
 // OPTIONS_SECTION_NONE for a name it doesn't know; readOptionsFile takes
 // OPTIONS_SECTION_NONE for its section argument to mean "every section".
@@ -91,7 +91,7 @@ typedef struct OptionTable {
 
 extern void *getResourceData(int, int, int *, int *, int, int);
 extern void fn_8012C4D8(void *);
-extern int fn_80133B24(char *);
+extern int optionSectionFromName(char *);
 extern char *strchr(const char *, int);
 extern char *strcpy(char *, const char *);
 extern int sscanf(const char *, const char *, ...);
@@ -541,7 +541,7 @@ int fn_80133AD8(int sectionIndex) {
 #pragma dont_inline on
 /* Looks up an options section name (case-insensitively) among the 17 known section names (0..16),
  * or logs "Can't get section for %s" (lbl_8032B9FC) and returns 0x12 if not found. */
-int fn_80133B24(char *sectionName) {
+int optionSectionFromName(char *sectionName) {
     int sectionIndex = 0;
 
     do {
@@ -562,7 +562,7 @@ int fn_80133B24(char *sectionName) {
  * readOptionsFile - read an options file into the option table.
  *
  * Asks the resource manager for the "BOPT" file called `path` and reads it
- * line by line.  "[SECTION]" lines pick the section (fn_80133B24 knows the 17
+ * line by line.  "[SECTION]" lines pick the section (optionSectionFromName knows the 17
  * names), ';' '#' and empty lines are skipped, and any other line inside the
  * file is "key value": the text after the first space is stored under that
  * section and key, together with its int, float and true/false readings
@@ -605,7 +605,7 @@ int readOptionsFile(int path, int ignoreVersion, int wantSection) {
                 newSection = OPTIONS_SECTION_NONE;
                 if (sep != 0) {
                     *sep = 0;
-                    newSection = fn_80133B24(buf + 1);
+                    newSection = optionSectionFromName(buf + 1);
                 }
                 if (newSection != OPTIONS_SECTION_NONE) {
                     section = newSection;
