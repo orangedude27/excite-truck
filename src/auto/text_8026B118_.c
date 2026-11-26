@@ -172,7 +172,7 @@ extern "C" void fn_8026B260(void) {
 #pragma processor 750
 #pragma push
 #pragma opt_common_subs off
-void updateJumpCamSlot(int arg0) {
+/* Update one JumpCam slot: toggle or refresh it from the shared per-player table when JumpCam mode is active, otherwise detect the player's circle and enable the slot when close enough to the centre. */ void updateJumpCamSlot(int arg0) {
     /* JumpCam per-slot update.  When the JumpCam mode is active (fn_80178CA4()==1)
      * and the local player is in JumpCam state (truck +0x1F0 == 0x50), refresh
      * this slot's state from the shared per-player table lbl_8049A0E8 (eight
