@@ -3609,7 +3609,7 @@ extern "C" s32 fn_800F65F0(void *arg0, void **arg1, u32 arg2, s32 arg3, s32 arg4
             return 6;
         }
         ((DummyStrmLoadStream *)stream)->f4();
-        sound = fn_800F9200((s32)sound, soundCount, loop, arg3, arg4, arg2, (u8 *)arg0 + 0x88);
+        sound = allocStreamSound((s32)sound, soundCount, loop, arg3, arg4, arg2, (u8 *)arg0 + 0x88);
         if (sound == 0) {
             return 1;
         }
