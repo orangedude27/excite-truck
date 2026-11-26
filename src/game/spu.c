@@ -133,7 +133,7 @@ return_null:
  * voice, stream the next half of its sample buffer (or wrap to the start at the
  * loop point), flushing the cache; write silence instead while the disc drive
  * is active, and flag completion when done. */
-void fn_802E4F98(void) {
+void SpuVoiceRefillCallback(void) {
     extern char lbl_8055FFA4;
     extern char lbl_8055FFA5;
     extern char lbl_8055FFA6;
@@ -391,7 +391,7 @@ extern void SpuSpeaker_SetVolume(int, float);
 #define gSpuChannels    lbl_8055FF94   /* "SpuChannel": the 32 voice channels */
 #define gSoundSlotTable gSpuSoundSlotTable   /* "Spucache" */
 #define gSoundSlotCount gSpuSoundSlotCount   /* entries of it in use */
-#define gSpuRunning     lbl_8055FFA5   /* the voice refill (fn_802E4F98) may run */
+#define gSpuRunning     lbl_8055FFA5   /* the voice refill (SpuVoiceRefillCallback) may run */
 #define gSpuResetPending lbl_8055FFB5  /* set by the reset callback, forces a re-init */
 
 enum {
@@ -406,7 +406,7 @@ enum {
 /* Start the SPU voice layer (logs "SpuBegin"): reserve all of ARAM as the mix
  * buffer and invalidate its cache mirror, allocate the SpuSample slots, the 32
  * SpuChannel entries and the Spucache, clear ARAM by copying in a zeroed buffer,
- * register fn_802E4F98 as the AI DMA refill callback, and arm the periodic alarm
+ * register SpuVoiceRefillCallback as the AI DMA refill callback, and arm the periodic alarm
  * whose callback fn_802E52EC feeds the Wii Remote speakers. */
 void Spu_Init(void) {
     extern char lbl_8034D210[];
@@ -479,7 +479,7 @@ void Spu_Init(void) {
     memset(buf, 0, SPU_ARAM_SIZE);
     ((void (*)(void *, void *, int, int))fn_802E4D84)((void *)gAramLastEnd, buf, SPU_ARAM_SIZE, 1);
     fn_80128670((int)buf);
-    AIRegisterDMACallback((void *)fn_802E4F98);
+    AIRegisterDMACallback((void *)SpuVoiceRefillCallback);
     fn_802E6B04();
     OSCreateAlarm(lbl_804FC690);
     now = OSGetTime();
