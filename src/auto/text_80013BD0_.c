@@ -802,7 +802,7 @@ extern s32 fn_8027AA48(void *, f32, f32);
  * list, the counters over the map and this player's mark on the track map.
  * A screen whose entry in the 4-slot pool at lbl_80499E60 is in use shows the
  * arena-event master's own state instead of the race readouts. */
-extern "C" void updateRaceHudPerScreen(RaceOverlay *overlay) {
+/* Per-frame update of one screen's race HUD: when the session HUD mask is set, re-arm on racer change, then refresh the mask-selected readouts (place, lap, speed/boost, damage and arena-incident markers, lap info and warnings, standings, map counters and track-map marker); during an arena event, show the arena master's state instead. */ extern "C" void updateRaceHudPerScreen(RaceOverlay *overlay) {
     /* The overlay's own slot 0xC, which this class leaves empty. */
     class Overlay {
     public:
