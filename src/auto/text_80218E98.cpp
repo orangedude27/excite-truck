@@ -7102,7 +7102,7 @@ extern "C" double sin(double);
 /* --- Intensity fade ----------------------------------------------------
  * fn_8022435C builds one of these (vtable lbl_8033E248) from a resource whose
  * +0x9C word gives the fade rate, its sign picking the mode.  fn_80224864
- * starts a fade when the effect starts or stops playing, fn_802245C8 runs it
+ * starts a fade when the effect starts or stops playing, updateIntensityFade runs it
  * every frame and fn_802248FC hands the value to the effect slot at +0x284,
  * whose +0x30 float scales what is drawn through it.  Only the fields the fade
  * uses are named; the ones around them belong to the functions here.
@@ -7136,7 +7136,7 @@ extern f32 lbl_8056353C, lbl_80563540;
  * fade started at that same rate down to the mode's resting level, and clears
  * the flag once it is within a hair of it.  fn_802192AC then refreshes the
  * links this object drives. */
-extern "C" void fn_802245C8(IntensityFade *fade) {
+extern "C" void updateIntensityFade(IntensityFade *fade) {
     if (fn_8023659C() < fade->startTime)
         fade->startTime = fn_8023659C();
     switch (fade->mode) {
