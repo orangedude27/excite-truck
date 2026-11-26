@@ -30,8 +30,8 @@ void *fn_801BF214(void) {
     extern char lbl_80437D48[];
     extern int lbl_8055E7BC;
     void *p = fn_801284F8(0x278, &lbl_8055A948);
-    if (p) {
-        register unsigned int index;
+    if (p != 0) {
+        int index;
         fn_8017B0B0();
         *(char **)p = lbl_80336A90;
         *(int *)((char *)p + 0x1EC) = 0;
@@ -320,7 +320,7 @@ int fn_801BF754(int object) {
 
 /* Dot product of two 3-vectors handed over as six scalars: (ax,ay,az) . (bx,by,bz),
  * summed as (az*bz) + ((ax*bx) + (ay*by)). */
-extern float fn_80144514(float, float, float, float, float, float);
+extern float dotProduct3(float, float, float, float, float, float);
 #pragma push
 #pragma processor 750
 /* out = a^-1 composed with b, for two 4x3 column-major rigid transforms: the 3x3
@@ -354,15 +354,15 @@ void fn_801BF75C(float *out, const float *b, const float *a, int unused) {
     t[5] = t[7];
     t[7] = e5;
     if (out == b || out == rotT.values) {
-        m00 = fn_80144514(t[0], b[0], t[3], b[1], t[6], b[2]);
-        m01 = fn_80144514(t[0], b[3], t[3], b[4], t[6], b[5]);
-        m02 = fn_80144514(t[0], b[6], t[3], b[7], t[6], b[8]);
-        m10 = fn_80144514(t[1], b[0], t[4], b[1], t[7], b[2]);
-        m11 = fn_80144514(t[1], b[3], t[4], b[4], t[7], b[5]);
-        m12 = fn_80144514(t[1], b[6], t[4], b[7], t[7], b[8]);
-        m20 = fn_80144514(t[2], b[0], t[5], b[1], t[8], b[2]);
-        m21 = fn_80144514(t[2], b[3], t[5], b[4], t[8], b[5]);
-        m22 = fn_80144514(t[2], b[6], t[5], b[7], t[8], b[8]);
+        m00 = dotProduct3(t[0], b[0], t[3], b[1], t[6], b[2]);
+        m01 = dotProduct3(t[0], b[3], t[3], b[4], t[6], b[5]);
+        m02 = dotProduct3(t[0], b[6], t[3], b[7], t[6], b[8]);
+        m10 = dotProduct3(t[1], b[0], t[4], b[1], t[7], b[2]);
+        m11 = dotProduct3(t[1], b[3], t[4], b[4], t[7], b[5]);
+        m12 = dotProduct3(t[1], b[6], t[4], b[7], t[7], b[8]);
+        m20 = dotProduct3(t[2], b[0], t[5], b[1], t[8], b[2]);
+        m21 = dotProduct3(t[2], b[3], t[5], b[4], t[8], b[5]);
+        m22 = dotProduct3(t[2], b[6], t[5], b[7], t[8], b[8]);
         out[0] = m00;
         out[3] = m01;
         out[6] = m02;
@@ -373,15 +373,15 @@ void fn_801BF75C(float *out, const float *b, const float *a, int unused) {
         out[5] = m21;
         out[8] = m22;
     } else {
-        out[0] = fn_80144514(t[0], b[0], t[3], b[1], t[6], b[2]);
-        out[3] = fn_80144514(t[0], b[3], t[3], b[4], t[6], b[5]);
-        out[6] = fn_80144514(t[0], b[6], t[3], b[7], t[6], b[8]);
-        out[1] = fn_80144514(t[1], b[0], t[4], b[1], t[7], b[2]);
-        out[4] = fn_80144514(t[1], b[3], t[4], b[4], t[7], b[5]);
-        out[7] = fn_80144514(t[1], b[6], t[4], b[7], t[7], b[8]);
-        out[2] = fn_80144514(t[2], b[0], t[5], b[1], t[8], b[2]);
-        out[5] = fn_80144514(t[2], b[3], t[5], b[4], t[8], b[5]);
-        out[8] = fn_80144514(t[2], b[6], t[5], b[7], t[8], b[8]);
+        out[0] = dotProduct3(t[0], b[0], t[3], b[1], t[6], b[2]);
+        out[3] = dotProduct3(t[0], b[3], t[3], b[4], t[6], b[5]);
+        out[6] = dotProduct3(t[0], b[6], t[3], b[7], t[6], b[8]);
+        out[1] = dotProduct3(t[1], b[0], t[4], b[1], t[7], b[2]);
+        out[4] = dotProduct3(t[1], b[3], t[4], b[4], t[7], b[5]);
+        out[7] = dotProduct3(t[1], b[6], t[4], b[7], t[7], b[8]);
+        out[2] = dotProduct3(t[2], b[0], t[5], b[1], t[8], b[2]);
+        out[5] = dotProduct3(t[2], b[3], t[5], b[4], t[8], b[5]);
+        out[8] = dotProduct3(t[2], b[6], t[5], b[7], t[8], b[8]);
     }
     dx = b[9] - a[9];
     out[9] = dx;
@@ -970,7 +970,7 @@ void fn_801C092C(void *outMtx, void *inMtx, void *multMtx, int unused) {
      * Every matrix here is twelve floats: the 3x3 part in column-major order
      * (the element of row r, column c at c * 3 + r, so m<col><row> below) and
      * the translation column at [9..11].  The 3x3 part is the plain product
-     * row(matrix) . col(input), each element through fn_80144514() (the
+     * row(matrix) . col(input), each element through dotProduct3() (the
      * three-term dot product ax*bx + ay*by + az*bz), and the translation is
      * matrix applied to input's translation plus matrix's own translation.
      *
@@ -1009,15 +1009,15 @@ void fn_801C092C(void *outMtx, void *inMtx, void *multMtx, int unused) {
     out[11] += matrix[11];
     if (out == input || out == matrix) {
         /* Output aliases one of the operands: take every product first. */
-        r0c0 = fn_80144514(matrix[0], input[0], matrix[3], input[1], matrix[6], input[2]);
-        r0c1 = fn_80144514(matrix[0], input[3], matrix[3], input[4], matrix[6], input[5]);
-        r0c2 = fn_80144514(matrix[0], input[6], matrix[3], input[7], matrix[6], input[8]);
-        r1c0 = fn_80144514(matrix[1], input[0], matrix[4], input[1], matrix[7], input[2]);
-        r1c1 = fn_80144514(matrix[1], input[3], matrix[4], input[4], matrix[7], input[5]);
-        r1c2 = fn_80144514(matrix[1], input[6], matrix[4], input[7], matrix[7], input[8]);
-        r2c0 = fn_80144514(matrix[2], input[0], matrix[5], input[1], matrix[8], input[2]);
-        r2c1 = fn_80144514(matrix[2], input[3], matrix[5], input[4], matrix[8], input[5]);
-        r2c2 = fn_80144514(matrix[2], input[6], matrix[5], input[7], matrix[8], input[8]);
+        r0c0 = dotProduct3(matrix[0], input[0], matrix[3], input[1], matrix[6], input[2]);
+        r0c1 = dotProduct3(matrix[0], input[3], matrix[3], input[4], matrix[6], input[5]);
+        r0c2 = dotProduct3(matrix[0], input[6], matrix[3], input[7], matrix[6], input[8]);
+        r1c0 = dotProduct3(matrix[1], input[0], matrix[4], input[1], matrix[7], input[2]);
+        r1c1 = dotProduct3(matrix[1], input[3], matrix[4], input[4], matrix[7], input[5]);
+        r1c2 = dotProduct3(matrix[1], input[6], matrix[4], input[7], matrix[7], input[8]);
+        r2c0 = dotProduct3(matrix[2], input[0], matrix[5], input[1], matrix[8], input[2]);
+        r2c1 = dotProduct3(matrix[2], input[3], matrix[5], input[4], matrix[8], input[5]);
+        r2c2 = dotProduct3(matrix[2], input[6], matrix[5], input[7], matrix[8], input[8]);
         out[0] = r0c0;
         out[3] = r0c1;
         out[6] = r0c2;
@@ -1028,15 +1028,15 @@ void fn_801C092C(void *outMtx, void *inMtx, void *multMtx, int unused) {
         out[5] = r2c1;
         out[8] = r2c2;
     } else {
-        out[0] = fn_80144514(matrix[0], input[0], matrix[3], input[1], matrix[6], input[2]);
-        out[3] = fn_80144514(matrix[0], input[3], matrix[3], input[4], matrix[6], input[5]);
-        out[6] = fn_80144514(matrix[0], input[6], matrix[3], input[7], matrix[6], input[8]);
-        out[1] = fn_80144514(matrix[1], input[0], matrix[4], input[1], matrix[7], input[2]);
-        out[4] = fn_80144514(matrix[1], input[3], matrix[4], input[4], matrix[7], input[5]);
-        out[7] = fn_80144514(matrix[1], input[6], matrix[4], input[7], matrix[7], input[8]);
-        out[2] = fn_80144514(matrix[2], input[0], matrix[5], input[1], matrix[8], input[2]);
-        out[5] = fn_80144514(matrix[2], input[3], matrix[5], input[4], matrix[8], input[5]);
-        out[8] = fn_80144514(matrix[2], input[6], matrix[5], input[7], matrix[8], input[8]);
+        out[0] = dotProduct3(matrix[0], input[0], matrix[3], input[1], matrix[6], input[2]);
+        out[3] = dotProduct3(matrix[0], input[3], matrix[3], input[4], matrix[6], input[5]);
+        out[6] = dotProduct3(matrix[0], input[6], matrix[3], input[7], matrix[6], input[8]);
+        out[1] = dotProduct3(matrix[1], input[0], matrix[4], input[1], matrix[7], input[2]);
+        out[4] = dotProduct3(matrix[1], input[3], matrix[4], input[4], matrix[7], input[5]);
+        out[7] = dotProduct3(matrix[1], input[6], matrix[4], input[7], matrix[7], input[8]);
+        out[2] = dotProduct3(matrix[2], input[0], matrix[5], input[1], matrix[8], input[2]);
+        out[5] = dotProduct3(matrix[2], input[3], matrix[5], input[4], matrix[8], input[5]);
+        out[8] = dotProduct3(matrix[2], input[6], matrix[5], input[7], matrix[8], input[8]);
     }
 }
 /* Initialize the 3x3 matrix at out to the identity (1.0 on the diagonal, 0.0 elsewhere). */

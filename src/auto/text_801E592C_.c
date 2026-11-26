@@ -2,7 +2,7 @@
 #include <revolution/MTX/mtxtypes.h> /* Vec */
 
 extern void *fn_802C6C34(void);
-extern float fn_80144514(float, float, float, float, float, float);
+extern float dotProduct3(float, float, float, float, float, float);
 extern void fn_801BFD34(void *, void *, void *);
 extern void fn_80015B20(void *, void *, void *);
 extern void fn_802C7A38(s32, void *, s32);
@@ -45,7 +45,7 @@ s32 fn_801E5990(void *header) {
 }
 
 #pragma scheduling on
-void fn_801E5998(void *src, void *dst, s32 *outCount) {
+void fn_801E5998(const void *src, const void *dst, s32 *outCount) {
     s32 count = ((s32 *)src)[2];
     s32 i;
     for (i = 0; i < count; i++) {
@@ -76,13 +76,14 @@ s32 fn_801E5E24(s32 arg0, void *arg1, s32 arg2, void *arg3) {
     float tmpR[12];
     s32 i;
     s32 idx;
-    register s32 *pBase = (s32 *)arg0;
-    register float *curQ = (float *)arg1;
-    register s32 count = arg2;
-    register float *pOut = (float *)arg3;
-    register float *curRec = (float *)(arg0 + 0x10);
-    register float *curDst = bufB;
-    for (i = 0; i < count; i++) {
+    s32 *pBase = (s32 *)arg0;
+    float *curQ = (float *)arg1;
+    s32 count = arg2;
+    float *pOut = (float *)arg3;
+    float *curRec = (float *)(arg0 + 0x10);
+    float *curDst = bufB;
+    if (count > 0) {
+      for (i = 0; i < count; i++) {
         qx = curQ[4];
         qy = curQ[5];
         qz = curQ[6];
@@ -120,15 +121,15 @@ s32 fn_801E5E24(s32 arg0, void *arg1, s32 arg2, void *arg3) {
             c10 = src[3]; c11 = src[4]; c12 = src[5];
             c20 = src[6]; c21 = src[7]; c22 = src[8];
         }
-        t0 = fn_80144514(m00, a00, m01, a10, m02, a20);
-        t1 = fn_80144514(m00, a01, m01, a11, m02, a21);
-        t2 = fn_80144514(m00, a02, m01, a12, m02, a22);
-        s0 = fn_80144514(m10, a00, m11, a10, m12, a20);
-        s1 = fn_80144514(m10, a01, m11, a11, m12, a21);
-        s2 = fn_80144514(m10, a02, m11, a12, m12, a22);
-        v0 = fn_80144514(m20, a00, m21, a10, m22, a20);
-        v1 = fn_80144514(m20, a01, m21, a11, m22, a21);
-        v2 = fn_80144514(m20, a02, m21, a12, m22, a22);
+        t0 = dotProduct3(m00, a00, m01, a10, m02, a20);
+        t1 = dotProduct3(m00, a01, m01, a11, m02, a21);
+        t2 = dotProduct3(m00, a02, m01, a12, m02, a22);
+        s0 = dotProduct3(m10, a00, m11, a10, m12, a20);
+        s1 = dotProduct3(m10, a01, m11, a11, m12, a21);
+        s2 = dotProduct3(m10, a02, m11, a12, m12, a22);
+        v0 = dotProduct3(m20, a00, m21, a10, m22, a20);
+        v1 = dotProduct3(m20, a01, m21, a11, m22, a21);
+        v2 = dotProduct3(m20, a02, m21, a12, m22, a22);
         tmpR[0] = t0; tmpR[1] = s0; tmpR[2] = v0;
         tmpR[3] = t1; tmpR[4] = s1; tmpR[5] = v1;
         tmpR[6] = t2; tmpR[7] = s2; tmpR[8] = v2;
@@ -143,6 +144,7 @@ s32 fn_801E5E24(s32 arg0, void *arg1, s32 arg2, void *arg3) {
         curRec += 14;
         curQ += 4;
         curDst += 12;
+      }
     }
     if (pOut != 0) {
         for (i = 0; i < 12; i++) ((s32 *)pOut)[i] = ((s32 *)bufB)[i];

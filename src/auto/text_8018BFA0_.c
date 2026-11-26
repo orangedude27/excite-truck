@@ -249,7 +249,7 @@ static inline void matVecMixW_8018(const Vec_8018 *v, const float *m, Vec_8018 *
 
 #pragma push
 #pragma processor 750
-extern float fn_80144514(float, float, float, float, float, float);
+extern float dotProduct3(float, float, float, float, float, float);
 #pragma scheduling 603
 void composeTransform34(void *outMatrix, float *a, int *bMatrix, int arg3, float arg4, float arg5) {
     /* Compose two 3x4 transforms: multiply the 3x3 rotations and rebuild the
@@ -259,26 +259,26 @@ void composeTransform34(void *outMatrix, float *a, int *bMatrix, int arg3, float
     float m00, m01, m02, m10, m11, m12, m20, m21, m22;
     float transformed[3];
     if (out == b || out == a) {
-        m00 = fn_80144514(a[0], b[0], a[3], b[1], a[6], b[2]);
-        m01 = fn_80144514(a[0], b[3], a[3], b[4], a[6], b[5]);
-        m02 = fn_80144514(a[0], b[6], a[3], b[7], a[6], b[8]);
-        m10 = fn_80144514(a[1], b[0], a[4], b[1], a[7], b[2]);
-        m11 = fn_80144514(a[1], b[3], a[4], b[4], a[7], b[5]);
-        m12 = fn_80144514(a[1], b[6], a[4], b[7], a[7], b[8]);
-        m20 = fn_80144514(a[2], b[0], a[5], b[1], a[8], b[2]);
-        m21 = fn_80144514(a[2], b[3], a[5], b[4], a[8], b[5]);
-        m22 = fn_80144514(a[2], b[6], a[5], b[7], a[8], b[8]);
+        m00 = dotProduct3(a[0], b[0], a[3], b[1], a[6], b[2]);
+        m01 = dotProduct3(a[0], b[3], a[3], b[4], a[6], b[5]);
+        m02 = dotProduct3(a[0], b[6], a[3], b[7], a[6], b[8]);
+        m10 = dotProduct3(a[1], b[0], a[4], b[1], a[7], b[2]);
+        m11 = dotProduct3(a[1], b[3], a[4], b[4], a[7], b[5]);
+        m12 = dotProduct3(a[1], b[6], a[4], b[7], a[7], b[8]);
+        m20 = dotProduct3(a[2], b[0], a[5], b[1], a[8], b[2]);
+        m21 = dotProduct3(a[2], b[3], a[5], b[4], a[8], b[5]);
+        m22 = dotProduct3(a[2], b[6], a[5], b[7], a[8], b[8]);
         out[0] = m00; out[3] = m01; out[6] = m02; out[1] = m10; out[4] = m11; out[7] = m12; out[2] = m20; out[5] = m21; out[8] = m22;
     } else {
-        out[0] = fn_80144514(a[0], b[0], a[3], b[1], a[6], b[2]);
-        out[3] = fn_80144514(a[0], b[3], a[3], b[4], a[6], b[5]);
-        out[6] = fn_80144514(a[0], b[6], a[3], b[7], a[6], b[8]);
-        out[1] = fn_80144514(a[1], b[0], a[4], b[1], a[7], b[2]);
-        out[4] = fn_80144514(a[1], b[3], a[4], b[4], a[7], b[5]);
-        out[7] = fn_80144514(a[1], b[6], a[4], b[7], a[7], b[8]);
-        out[2] = fn_80144514(a[2], b[0], a[5], b[1], a[8], b[2]);
-        out[5] = fn_80144514(a[2], b[3], a[5], b[4], a[8], b[5]);
-        out[8] = fn_80144514(a[2], b[6], a[5], b[7], a[8], b[8]);
+        out[0] = dotProduct3(a[0], b[0], a[3], b[1], a[6], b[2]);
+        out[3] = dotProduct3(a[0], b[3], a[3], b[4], a[6], b[5]);
+        out[6] = dotProduct3(a[0], b[6], a[3], b[7], a[6], b[8]);
+        out[1] = dotProduct3(a[1], b[0], a[4], b[1], a[7], b[2]);
+        out[4] = dotProduct3(a[1], b[3], a[4], b[4], a[7], b[5]);
+        out[7] = dotProduct3(a[1], b[6], a[4], b[7], a[7], b[8]);
+        out[2] = dotProduct3(a[2], b[0], a[5], b[1], a[8], b[2]);
+        out[5] = dotProduct3(a[2], b[3], a[5], b[4], a[8], b[5]);
+        out[8] = dotProduct3(a[2], b[6], a[5], b[7], a[8], b[8]);
     }
     matVecDotS_8018((Vec_8018 *)transformed, a, b + 9);
     out[9] = a[9] + transformed[0];

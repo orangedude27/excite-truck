@@ -5,7 +5,7 @@ extern float lbl_80563058, lbl_8056305C, lbl_8056306C, lbl_80563070, lbl_8056306
 extern float PSVECMag(float *);
 extern void PSVECCrossProduct(const float *, const float *, float *);
 extern double sin(double), cos(double);
-extern float fn_80144514(float, float, float, float, float, float);
+extern float dotProduct3(float, float, float, float, float, float);
 extern int fn_801E2CCC();
 extern int fn_802E30C8(const char *, ...);
 extern int lbl_8055ECA8;
@@ -388,28 +388,28 @@ void fn_802009CC(M802009CC *out, const float *verts, int *tri, int count, const 
                     s.R[6] = kZero; s.R[7] = kZero; s.R[8] = kOne;
                 }
                 if (s.res == s.R || s.res == B) {
-                    float r0 = fn_80144514(B[0], s.R[0], B[3], s.R[1], B[6], s.R[2]);
-                    float r3 = fn_80144514(B[0], s.R[3], B[3], s.R[4], B[6], s.R[5]);
-                    float r6 = fn_80144514(B[0], s.R[6], B[3], s.R[7], B[6], s.R[8]);
-                    float r1 = fn_80144514(B[1], s.R[0], B[4], s.R[1], B[7], s.R[2]);
-                    float r4 = fn_80144514(B[1], s.R[3], B[4], s.R[4], B[7], s.R[5]);
-                    float r7 = fn_80144514(B[1], s.R[6], B[4], s.R[7], B[7], s.R[8]);
-                    float r2 = fn_80144514(B[2], s.R[0], B[5], s.R[1], B[8], s.R[2]);
-                    float r5 = fn_80144514(B[2], s.R[3], B[5], s.R[4], B[8], s.R[5]);
-                    float r8 = fn_80144514(B[2], s.R[6], B[5], s.R[7], B[8], s.R[8]);
+                    float r0 = dotProduct3(B[0], s.R[0], B[3], s.R[1], B[6], s.R[2]);
+                    float r3 = dotProduct3(B[0], s.R[3], B[3], s.R[4], B[6], s.R[5]);
+                    float r6 = dotProduct3(B[0], s.R[6], B[3], s.R[7], B[6], s.R[8]);
+                    float r1 = dotProduct3(B[1], s.R[0], B[4], s.R[1], B[7], s.R[2]);
+                    float r4 = dotProduct3(B[1], s.R[3], B[4], s.R[4], B[7], s.R[5]);
+                    float r7 = dotProduct3(B[1], s.R[6], B[4], s.R[7], B[7], s.R[8]);
+                    float r2 = dotProduct3(B[2], s.R[0], B[5], s.R[1], B[8], s.R[2]);
+                    float r5 = dotProduct3(B[2], s.R[3], B[5], s.R[4], B[8], s.R[5]);
+                    float r8 = dotProduct3(B[2], s.R[6], B[5], s.R[7], B[8], s.R[8]);
                     s.res[0] = r0; s.res[3] = r3; s.res[6] = r6;
                     s.res[1] = r1; s.res[4] = r4; s.res[7] = r7;
                     s.res[2] = r2; s.res[5] = r5; s.res[8] = r8;
                 } else {
-                    s.res[0] = fn_80144514(B[0], s.R[0], B[3], s.R[1], B[6], s.R[2]);
-                    s.res[3] = fn_80144514(B[0], s.R[3], B[3], s.R[4], B[6], s.R[5]);
-                    s.res[6] = fn_80144514(B[0], s.R[6], B[3], s.R[7], B[6], s.R[8]);
-                    s.res[1] = fn_80144514(B[1], s.R[0], B[4], s.R[1], B[7], s.R[2]);
-                    s.res[4] = fn_80144514(B[1], s.R[3], B[4], s.R[4], B[7], s.R[5]);
-                    s.res[7] = fn_80144514(B[1], s.R[6], B[4], s.R[7], B[7], s.R[8]);
-                    s.res[2] = fn_80144514(B[2], s.R[0], B[5], s.R[1], B[8], s.R[2]);
-                    s.res[5] = fn_80144514(B[2], s.R[3], B[5], s.R[4], B[8], s.R[5]);
-                    s.res[8] = fn_80144514(B[2], s.R[6], B[5], s.R[7], B[8], s.R[8]);
+                    s.res[0] = dotProduct3(B[0], s.R[0], B[3], s.R[1], B[6], s.R[2]);
+                    s.res[3] = dotProduct3(B[0], s.R[3], B[3], s.R[4], B[6], s.R[5]);
+                    s.res[6] = dotProduct3(B[0], s.R[6], B[3], s.R[7], B[6], s.R[8]);
+                    s.res[1] = dotProduct3(B[1], s.R[0], B[4], s.R[1], B[7], s.R[2]);
+                    s.res[4] = dotProduct3(B[1], s.R[3], B[4], s.R[4], B[7], s.R[5]);
+                    s.res[7] = dotProduct3(B[1], s.R[6], B[4], s.R[7], B[7], s.R[8]);
+                    s.res[2] = dotProduct3(B[2], s.R[0], B[5], s.R[1], B[8], s.R[2]);
+                    s.res[5] = dotProduct3(B[2], s.R[3], B[5], s.R[4], B[8], s.R[5]);
+                    s.res[8] = dotProduct3(B[2], s.R[6], B[5], s.R[7], B[8], s.R[8]);
                 }
             } else {
                 s.res[0] = kOne; s.res[1] = kZero; s.res[2] = kZero;
@@ -436,7 +436,7 @@ extern float lbl_80563070, lbl_80563074, lbl_80563078, lbl_80563080;
 extern float lbl_80563074;
 extern float PSVECMag(float *);
 extern double sin(double), cos(double);
-extern float fn_80144514(float, float, float, float, float, float);
+extern float dotProduct3(float, float, float, float, float, float);
 extern float lbl_80563070, lbl_80563074, lbl_80563078, lbl_80563080, lbl_80563084;
 extern void fn_801E3284(void *, void *, int);
 extern void fn_801C2694(void *, int *, float *, float *, float *, float *, float *, float, float);
@@ -581,28 +581,28 @@ void fn_80201018(void *object, const float *input, int enabled) {
     }
     if (((float *)((unsigned char *)object + 0x94)) != rotation) {
         if (((float *)((unsigned char *)object + 0x94)) != ((float *)((unsigned char *)object + 0x34))) {
-            float a0 = fn_80144514(((float *)((unsigned char *)object + 0x34))[0], rotation[0], ((float *)((unsigned char *)object + 0x34))[3], rotation[1], ((float *)((unsigned char *)object + 0x34))[6], rotation[2]);
-            float a1 = fn_80144514(((float *)((unsigned char *)object + 0x34))[0], rotation[3], ((float *)((unsigned char *)object + 0x34))[3], rotation[4], ((float *)((unsigned char *)object + 0x34))[6], rotation[5]);
-            float a2 = fn_80144514(((float *)((unsigned char *)object + 0x34))[0], rotation[6], ((float *)((unsigned char *)object + 0x34))[3], rotation[7], ((float *)((unsigned char *)object + 0x34))[6], rotation[8]);
-            float b0 = fn_80144514(((float *)((unsigned char *)object + 0x34))[1], rotation[0], ((float *)((unsigned char *)object + 0x34))[4], rotation[1], ((float *)((unsigned char *)object + 0x34))[7], rotation[2]);
-            float b1 = fn_80144514(((float *)((unsigned char *)object + 0x34))[1], rotation[3], ((float *)((unsigned char *)object + 0x34))[4], rotation[4], ((float *)((unsigned char *)object + 0x34))[7], rotation[5]);
-            float b2 = fn_80144514(((float *)((unsigned char *)object + 0x34))[1], rotation[6], ((float *)((unsigned char *)object + 0x34))[4], rotation[7], ((float *)((unsigned char *)object + 0x34))[7], rotation[8]);
-            float c0 = fn_80144514(((float *)((unsigned char *)object + 0x34))[2], rotation[0], ((float *)((unsigned char *)object + 0x34))[5], rotation[1], ((float *)((unsigned char *)object + 0x34))[8], rotation[2]);
-            float c1 = fn_80144514(((float *)((unsigned char *)object + 0x34))[2], rotation[3], ((float *)((unsigned char *)object + 0x34))[5], rotation[4], ((float *)((unsigned char *)object + 0x34))[8], rotation[5]);
-            float c2 = fn_80144514(((float *)((unsigned char *)object + 0x34))[2], rotation[6], ((float *)((unsigned char *)object + 0x34))[5], rotation[7], ((float *)((unsigned char *)object + 0x34))[8], rotation[8]);
+            float a0 = dotProduct3(((float *)((unsigned char *)object + 0x34))[0], rotation[0], ((float *)((unsigned char *)object + 0x34))[3], rotation[1], ((float *)((unsigned char *)object + 0x34))[6], rotation[2]);
+            float a1 = dotProduct3(((float *)((unsigned char *)object + 0x34))[0], rotation[3], ((float *)((unsigned char *)object + 0x34))[3], rotation[4], ((float *)((unsigned char *)object + 0x34))[6], rotation[5]);
+            float a2 = dotProduct3(((float *)((unsigned char *)object + 0x34))[0], rotation[6], ((float *)((unsigned char *)object + 0x34))[3], rotation[7], ((float *)((unsigned char *)object + 0x34))[6], rotation[8]);
+            float b0 = dotProduct3(((float *)((unsigned char *)object + 0x34))[1], rotation[0], ((float *)((unsigned char *)object + 0x34))[4], rotation[1], ((float *)((unsigned char *)object + 0x34))[7], rotation[2]);
+            float b1 = dotProduct3(((float *)((unsigned char *)object + 0x34))[1], rotation[3], ((float *)((unsigned char *)object + 0x34))[4], rotation[4], ((float *)((unsigned char *)object + 0x34))[7], rotation[5]);
+            float b2 = dotProduct3(((float *)((unsigned char *)object + 0x34))[1], rotation[6], ((float *)((unsigned char *)object + 0x34))[4], rotation[7], ((float *)((unsigned char *)object + 0x34))[7], rotation[8]);
+            float c0 = dotProduct3(((float *)((unsigned char *)object + 0x34))[2], rotation[0], ((float *)((unsigned char *)object + 0x34))[5], rotation[1], ((float *)((unsigned char *)object + 0x34))[8], rotation[2]);
+            float c1 = dotProduct3(((float *)((unsigned char *)object + 0x34))[2], rotation[3], ((float *)((unsigned char *)object + 0x34))[5], rotation[4], ((float *)((unsigned char *)object + 0x34))[8], rotation[5]);
+            float c2 = dotProduct3(((float *)((unsigned char *)object + 0x34))[2], rotation[6], ((float *)((unsigned char *)object + 0x34))[5], rotation[7], ((float *)((unsigned char *)object + 0x34))[8], rotation[8]);
             ((float *)((unsigned char *)object + 0x94))[0]=a0; ((float *)((unsigned char *)object + 0x94))[3]=a1; ((float *)((unsigned char *)object + 0x94))[6]=a2;
             ((float *)((unsigned char *)object + 0x94))[1]=b0; ((float *)((unsigned char *)object + 0x94))[4]=b1; ((float *)((unsigned char *)object + 0x94))[7]=b2;
             ((float *)((unsigned char *)object + 0x94))[2]=c0; ((float *)((unsigned char *)object + 0x94))[5]=c1; ((float *)((unsigned char *)object + 0x94))[8]=c2;
         } else {
-            ((float *)((unsigned char *)object + 0x94))[0] = fn_80144514(((float *)((unsigned char *)object + 0x34))[0], rotation[0], ((float *)((unsigned char *)object + 0x34))[3], rotation[1], ((float *)((unsigned char *)object + 0x34))[6], rotation[2]);
-            ((float *)((unsigned char *)object + 0x94))[3] = fn_80144514(((float *)((unsigned char *)object + 0x34))[0], rotation[3], ((float *)((unsigned char *)object + 0x34))[3], rotation[4], ((float *)((unsigned char *)object + 0x34))[6], rotation[5]);
-            ((float *)((unsigned char *)object + 0x94))[6] = fn_80144514(((float *)((unsigned char *)object + 0x34))[0], rotation[6], ((float *)((unsigned char *)object + 0x34))[3], rotation[7], ((float *)((unsigned char *)object + 0x34))[6], rotation[8]);
-            ((float *)((unsigned char *)object + 0x94))[1] = fn_80144514(((float *)((unsigned char *)object + 0x34))[1], rotation[0], ((float *)((unsigned char *)object + 0x34))[4], rotation[1], ((float *)((unsigned char *)object + 0x34))[7], rotation[2]);
-            ((float *)((unsigned char *)object + 0x94))[4] = fn_80144514(((float *)((unsigned char *)object + 0x34))[1], rotation[3], ((float *)((unsigned char *)object + 0x34))[4], rotation[4], ((float *)((unsigned char *)object + 0x34))[7], rotation[5]);
-            ((float *)((unsigned char *)object + 0x94))[7] = fn_80144514(((float *)((unsigned char *)object + 0x34))[1], rotation[6], ((float *)((unsigned char *)object + 0x34))[4], rotation[7], ((float *)((unsigned char *)object + 0x34))[7], rotation[8]);
-            ((float *)((unsigned char *)object + 0x94))[2] = fn_80144514(((float *)((unsigned char *)object + 0x34))[2], rotation[0], ((float *)((unsigned char *)object + 0x34))[5], rotation[1], ((float *)((unsigned char *)object + 0x34))[8], rotation[2]);
-            ((float *)((unsigned char *)object + 0x94))[5] = fn_80144514(((float *)((unsigned char *)object + 0x34))[2], rotation[3], ((float *)((unsigned char *)object + 0x34))[5], rotation[4], ((float *)((unsigned char *)object + 0x34))[8], rotation[5]);
-            ((float *)((unsigned char *)object + 0x94))[8] = fn_80144514(((float *)((unsigned char *)object + 0x34))[2], rotation[6], ((float *)((unsigned char *)object + 0x34))[5], rotation[7], ((float *)((unsigned char *)object + 0x34))[8], rotation[8]);
+            ((float *)((unsigned char *)object + 0x94))[0] = dotProduct3(((float *)((unsigned char *)object + 0x34))[0], rotation[0], ((float *)((unsigned char *)object + 0x34))[3], rotation[1], ((float *)((unsigned char *)object + 0x34))[6], rotation[2]);
+            ((float *)((unsigned char *)object + 0x94))[3] = dotProduct3(((float *)((unsigned char *)object + 0x34))[0], rotation[3], ((float *)((unsigned char *)object + 0x34))[3], rotation[4], ((float *)((unsigned char *)object + 0x34))[6], rotation[5]);
+            ((float *)((unsigned char *)object + 0x94))[6] = dotProduct3(((float *)((unsigned char *)object + 0x34))[0], rotation[6], ((float *)((unsigned char *)object + 0x34))[3], rotation[7], ((float *)((unsigned char *)object + 0x34))[6], rotation[8]);
+            ((float *)((unsigned char *)object + 0x94))[1] = dotProduct3(((float *)((unsigned char *)object + 0x34))[1], rotation[0], ((float *)((unsigned char *)object + 0x34))[4], rotation[1], ((float *)((unsigned char *)object + 0x34))[7], rotation[2]);
+            ((float *)((unsigned char *)object + 0x94))[4] = dotProduct3(((float *)((unsigned char *)object + 0x34))[1], rotation[3], ((float *)((unsigned char *)object + 0x34))[4], rotation[4], ((float *)((unsigned char *)object + 0x34))[7], rotation[5]);
+            ((float *)((unsigned char *)object + 0x94))[7] = dotProduct3(((float *)((unsigned char *)object + 0x34))[1], rotation[6], ((float *)((unsigned char *)object + 0x34))[4], rotation[7], ((float *)((unsigned char *)object + 0x34))[7], rotation[8]);
+            ((float *)((unsigned char *)object + 0x94))[2] = dotProduct3(((float *)((unsigned char *)object + 0x34))[2], rotation[0], ((float *)((unsigned char *)object + 0x34))[5], rotation[1], ((float *)((unsigned char *)object + 0x34))[8], rotation[2]);
+            ((float *)((unsigned char *)object + 0x94))[5] = dotProduct3(((float *)((unsigned char *)object + 0x34))[2], rotation[3], ((float *)((unsigned char *)object + 0x34))[5], rotation[4], ((float *)((unsigned char *)object + 0x34))[8], rotation[5]);
+            ((float *)((unsigned char *)object + 0x94))[8] = dotProduct3(((float *)((unsigned char *)object + 0x34))[2], rotation[6], ((float *)((unsigned char *)object + 0x34))[5], rotation[7], ((float *)((unsigned char *)object + 0x34))[8], rotation[8]);
         }
     }
     obj[0xB8 / 4] = obj[0x58 / 4];

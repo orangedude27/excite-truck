@@ -202,7 +202,7 @@ extern int lbl_804999A0[];
 extern float fn_80129DC4(int, float, float);
 extern int fn_80129D90(int, int, int);
 extern float PSVECMag(void*);
-extern float fn_80144514(float,float,float,float,float,float);
+extern float dotProduct3(float,float,float,float,float,float);
 extern float lbl_8055C4CC, lbl_8055C4D0, lbl_8055C4D4, lbl_8055C4D8, lbl_8055C4DC, lbl_8055F49C;
 extern unsigned char lbl_8055C4C8, lbl_8055F498;
 extern float lbl_80563C40;
@@ -227,28 +227,28 @@ typedef struct VObj_80266388 { VTab_80266388 *vt; } VObj_80266388;
 static inline void fn_80266388_multiply(float *out, const float *a, const float *b) {
  float t0,t1,t2,t3,t4,t5,t6,t7,t8;
  if (out == a || out == b) {
- t0 = fn_80144514(b[0], a[0], b[3], a[1], b[6], a[2]);
- t3 = fn_80144514(b[0], a[3], b[3], a[4], b[6], a[5]);
- t6 = fn_80144514(b[0], a[6], b[3], a[7], b[6], a[8]);
- t1 = fn_80144514(b[1], a[0], b[4], a[1], b[7], a[2]);
- t4 = fn_80144514(b[1], a[3], b[4], a[4], b[7], a[5]);
- t7 = fn_80144514(b[1], a[6], b[4], a[7], b[7], a[8]);
- t2 = fn_80144514(b[2], a[0], b[5], a[1], b[8], a[2]);
- t5 = fn_80144514(b[2], a[3], b[5], a[4], b[8], a[5]);
- t8 = fn_80144514(b[2], a[6], b[5], a[7], b[8], a[8]);
+ t0 = dotProduct3(b[0], a[0], b[3], a[1], b[6], a[2]);
+ t3 = dotProduct3(b[0], a[3], b[3], a[4], b[6], a[5]);
+ t6 = dotProduct3(b[0], a[6], b[3], a[7], b[6], a[8]);
+ t1 = dotProduct3(b[1], a[0], b[4], a[1], b[7], a[2]);
+ t4 = dotProduct3(b[1], a[3], b[4], a[4], b[7], a[5]);
+ t7 = dotProduct3(b[1], a[6], b[4], a[7], b[7], a[8]);
+ t2 = dotProduct3(b[2], a[0], b[5], a[1], b[8], a[2]);
+ t5 = dotProduct3(b[2], a[3], b[5], a[4], b[8], a[5]);
+ t8 = dotProduct3(b[2], a[6], b[5], a[7], b[8], a[8]);
  out[0] = t0; out[3] = t3; out[6] = t6;
  out[1] = t1; out[4] = t4; out[7] = t7;
  out[2] = t2; out[5] = t5; out[8] = t8;
  } else {
- out[0] = fn_80144514(b[0], a[0], b[3], a[1], b[6], a[2]);
- out[3] = fn_80144514(b[0], a[3], b[3], a[4], b[6], a[5]);
- out[6] = fn_80144514(b[0], a[6], b[3], a[7], b[6], a[8]);
- out[1] = fn_80144514(b[1], a[0], b[4], a[1], b[7], a[2]);
- out[4] = fn_80144514(b[1], a[3], b[4], a[4], b[7], a[5]);
- out[7] = fn_80144514(b[1], a[6], b[4], a[7], b[7], a[8]);
- out[2] = fn_80144514(b[2], a[0], b[5], a[1], b[8], a[2]);
- out[5] = fn_80144514(b[2], a[3], b[5], a[4], b[8], a[5]);
-  out[8] = fn_80144514(b[2], a[6], b[5], a[7], b[8], a[8]);
+ out[0] = dotProduct3(b[0], a[0], b[3], a[1], b[6], a[2]);
+ out[3] = dotProduct3(b[0], a[3], b[3], a[4], b[6], a[5]);
+ out[6] = dotProduct3(b[0], a[6], b[3], a[7], b[6], a[8]);
+ out[1] = dotProduct3(b[1], a[0], b[4], a[1], b[7], a[2]);
+ out[4] = dotProduct3(b[1], a[3], b[4], a[4], b[7], a[5]);
+ out[7] = dotProduct3(b[1], a[6], b[4], a[7], b[7], a[8]);
+ out[2] = dotProduct3(b[2], a[0], b[5], a[1], b[8], a[2]);
+ out[5] = dotProduct3(b[2], a[3], b[5], a[4], b[8], a[5]);
+  out[8] = dotProduct3(b[2], a[6], b[5], a[7], b[8], a[8]);
  }
  }
   /* Zero a state block via NoiseWalk_Reset and return its pointer (camera block initializer). */
@@ -1778,7 +1778,7 @@ void fn_80268E00(void) {
 #pragma processor 750
 extern int fn_8026B0C0(int);
 extern float lbl_80563C40, lbl_80563CA0, lbl_80563CA4, lbl_80563CA8, lbl_80563CAC, lbl_80563CB0, lbl_80563CB4, lbl_80563CB8;
- extern float fn_80144514(float,float,float,float,float,float);
+ extern float dotProduct3(float,float,float,float,float,float);
    #pragma inline_depth(3)
   #pragma always_inline on
   #pragma inline_max_size 10000
@@ -1786,15 +1786,15 @@ extern float lbl_80563C40, lbl_80563CA0, lbl_80563CA4, lbl_80563CA8, lbl_80563CA
   static __inline void fn_80268E94_multiply(float *out, const float *a, const float *b) {
  float t0,t1,t2,t3,t4,t5,t6,t7,t8;
  if (out == a || out == b) {
- t0 = fn_80144514(b[0], a[0], b[3], a[1], b[6], a[2]);
- t3 = fn_80144514(b[0], a[3], b[3], a[4], b[6], a[5]);
- t6 = fn_80144514(b[0], a[6], b[3], a[7], b[6], a[8]);
- t1 = fn_80144514(b[1], a[0], b[4], a[1], b[7], a[2]);
- t4 = fn_80144514(b[1], a[3], b[4], a[4], b[7], a[5]);
- t7 = fn_80144514(b[1], a[6], b[4], a[7], b[7], a[8]);
- t2 = fn_80144514(b[2], a[0], b[5], a[1], b[8], a[2]);
- t5 = fn_80144514(b[2], a[3], b[5], a[4], b[8], a[5]);
- t8 = fn_80144514(b[2], a[6], b[5], a[7], b[8], a[8]);
+ t0 = dotProduct3(b[0], a[0], b[3], a[1], b[6], a[2]);
+ t3 = dotProduct3(b[0], a[3], b[3], a[4], b[6], a[5]);
+ t6 = dotProduct3(b[0], a[6], b[3], a[7], b[6], a[8]);
+ t1 = dotProduct3(b[1], a[0], b[4], a[1], b[7], a[2]);
+ t4 = dotProduct3(b[1], a[3], b[4], a[4], b[7], a[5]);
+ t7 = dotProduct3(b[1], a[6], b[4], a[7], b[7], a[8]);
+ t2 = dotProduct3(b[2], a[0], b[5], a[1], b[8], a[2]);
+ t5 = dotProduct3(b[2], a[3], b[5], a[4], b[8], a[5]);
+ t8 = dotProduct3(b[2], a[6], b[5], a[7], b[8], a[8]);
  out[0] = t0;
  out[3] = t3;
  out[6] = t6;
@@ -1805,15 +1805,15 @@ extern float lbl_80563C40, lbl_80563CA0, lbl_80563CA4, lbl_80563CA8, lbl_80563CA
  out[5] = t5;
  out[8] = t8;
  } else {
- out[0] = fn_80144514(b[0], a[0], b[3], a[1], b[6], a[2]);
- out[3] = fn_80144514(b[0], a[3], b[3], a[4], b[6], a[5]);
- out[6] = fn_80144514(b[0], a[6], b[3], a[7], b[6], a[8]);
- out[1] = fn_80144514(b[1], a[0], b[4], a[1], b[7], a[2]);
- out[4] = fn_80144514(b[1], a[3], b[4], a[4], b[7], a[5]);
- out[7] = fn_80144514(b[1], a[6], b[4], a[7], b[7], a[8]);
- out[2] = fn_80144514(b[2], a[0], b[5], a[1], b[8], a[2]);
- out[5] = fn_80144514(b[2], a[3], b[5], a[4], b[8], a[5]);
- out[8] = fn_80144514(b[2], a[6], b[5], a[7], b[8], a[8]);
+ out[0] = dotProduct3(b[0], a[0], b[3], a[1], b[6], a[2]);
+ out[3] = dotProduct3(b[0], a[3], b[3], a[4], b[6], a[5]);
+ out[6] = dotProduct3(b[0], a[6], b[3], a[7], b[6], a[8]);
+ out[1] = dotProduct3(b[1], a[0], b[4], a[1], b[7], a[2]);
+ out[4] = dotProduct3(b[1], a[3], b[4], a[4], b[7], a[5]);
+ out[7] = dotProduct3(b[1], a[6], b[4], a[7], b[7], a[8]);
+ out[2] = dotProduct3(b[2], a[0], b[5], a[1], b[8], a[2]);
+ out[5] = dotProduct3(b[2], a[3], b[5], a[4], b[8], a[5]);
+ out[8] = dotProduct3(b[2], a[6], b[5], a[7], b[8], a[8]);
  }
 }
 #pragma push
@@ -1862,26 +1862,26 @@ void fn_80268E94(void *arg0, int arg1) {
    float *b = rot;
    register float t0,t1,t2,t3,t4,t5,t6,t7,t8;
    if (out == a || out == b) {
-     t0 = fn_80144514(b[0], a[0], b[3], a[1], b[6], a[2]);
-     t3 = fn_80144514(b[0], a[3], b[3], a[4], b[6], a[5]);
-     t6 = fn_80144514(b[0], a[6], b[3], a[7], b[6], a[8]);
-     t1 = fn_80144514(b[1], a[0], b[4], a[1], b[7], a[2]);
-     t4 = fn_80144514(b[1], a[3], b[4], a[4], b[7], a[5]);
-     t7 = fn_80144514(b[1], a[6], b[4], a[7], b[7], a[8]);
-     t2 = fn_80144514(b[2], a[0], b[5], a[1], b[8], a[2]);
-     t5 = fn_80144514(b[2], a[3], b[5], a[4], b[8], a[5]);
-     t8 = fn_80144514(b[2], a[6], b[5], a[7], b[8], a[8]);
+     t0 = dotProduct3(b[0], a[0], b[3], a[1], b[6], a[2]);
+     t3 = dotProduct3(b[0], a[3], b[3], a[4], b[6], a[5]);
+     t6 = dotProduct3(b[0], a[6], b[3], a[7], b[6], a[8]);
+     t1 = dotProduct3(b[1], a[0], b[4], a[1], b[7], a[2]);
+     t4 = dotProduct3(b[1], a[3], b[4], a[4], b[7], a[5]);
+     t7 = dotProduct3(b[1], a[6], b[4], a[7], b[7], a[8]);
+     t2 = dotProduct3(b[2], a[0], b[5], a[1], b[8], a[2]);
+     t5 = dotProduct3(b[2], a[3], b[5], a[4], b[8], a[5]);
+     t8 = dotProduct3(b[2], a[6], b[5], a[7], b[8], a[8]);
      out[0]=t0; out[3]=t3; out[6]=t6; out[1]=t1; out[4]=t4; out[7]=t7; out[2]=t2; out[5]=t5; out[8]=t8;
    } else {
-     out[0] = fn_80144514(b[0], a[0], b[3], a[1], b[6], a[2]);
-     out[3] = fn_80144514(b[0], a[3], b[3], a[4], b[6], a[5]);
-     out[6] = fn_80144514(b[0], a[6], b[3], a[7], b[6], a[8]);
-     out[1] = fn_80144514(b[1], a[0], b[4], a[1], b[7], a[2]);
-     out[4] = fn_80144514(b[1], a[3], b[4], a[4], b[7], a[5]);
-     out[7] = fn_80144514(b[1], a[6], b[4], a[7], b[7], a[8]);
-     out[2] = fn_80144514(b[2], a[0], b[5], a[1], b[8], a[2]);
-     out[5] = fn_80144514(b[2], a[3], b[5], a[4], b[8], a[5]);
-     out[8] = fn_80144514(b[2], a[6], b[5], a[7], b[8], a[8]);
+     out[0] = dotProduct3(b[0], a[0], b[3], a[1], b[6], a[2]);
+     out[3] = dotProduct3(b[0], a[3], b[3], a[4], b[6], a[5]);
+     out[6] = dotProduct3(b[0], a[6], b[3], a[7], b[6], a[8]);
+     out[1] = dotProduct3(b[1], a[0], b[4], a[1], b[7], a[2]);
+     out[4] = dotProduct3(b[1], a[3], b[4], a[4], b[7], a[5]);
+     out[7] = dotProduct3(b[1], a[6], b[4], a[7], b[7], a[8]);
+     out[2] = dotProduct3(b[2], a[0], b[5], a[1], b[8], a[2]);
+     out[5] = dotProduct3(b[2], a[3], b[5], a[4], b[8], a[5]);
+     out[8] = dotProduct3(b[2], a[6], b[5], a[7], b[8], a[8]);
    }
  }
  } } } }

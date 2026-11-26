@@ -13,8 +13,8 @@ extern f32 lbl_805615CC;  // -2.0f
 
 extern double cos(double);
 extern double sin(double);
-extern float fn_80144514(float, float, float, float, float, float);
-#define D6(a, b, c, d, e, f) fn_80144514(a, b, c, d, e, f)
+extern float dotProduct3(float, float, float, float, float, float);
+#define D6(a, b, c, d, e, f) dotProduct3(a, b, c, d, e, f)
 static f32 *volatile g_alias_probe;
 #define M33CAT(a, b, ab)                                                   \
     { f32 *M33A = (a); f32 *M33B = (b); f32 *M33R = (ab);                  \
@@ -56,7 +56,7 @@ void fn_80144504(void **object) {
 }
 
 /* Dot product of two 3D vectors: (ax,ay,az) . (bx,by,bz). */
-float fn_80144514(float ax, float bx, float ay, float by, float az, float bz) {
+float dotProduct3(float ax, float bx, float ay, float by, float az, float bz) {
     return (az * bz) + ((ax * bx) + (ay * by));
 }
 
@@ -244,29 +244,30 @@ f32 fn_80144CC8(f32 value) {
 }
 
 #pragma processor 7400
-void fn_80144CD0(float *out, float *vec, float (*m)[4]) {
-    float x = vec[0] - m[2][1];
-    float y = vec[1] - m[2][2];
-    float a0 = x * m[0][0];
-    float b0 = y * m[0][1];
-    float a1 = x * m[0][3];
-    float b1 = y * m[1][0];
-    float a2 = x * m[1][2];
-    float b2 = y * m[1][3];
-    float o0 = a0 + b0;
-    float o1 = a1 + b1;
-    float m5v = m[1][1];
-    float z = vec[2] - m[2][3];
-    float o2 = a2 + b2;
-    float c1 = z * m5v;
-    float c0 = z * m[0][2];
-    float c2 = z * m[2][0];
-    o1 += c1;
-    o0 += c0;
-    o2 += c2;
-    out[1] = o1;
-    out[0] = o0;
-    out[2] = o2;
+void fn_80144CD0(float *out, float *vec, float (*m)[4])
+{
+  float x = vec[0] - m[2][1];
+  float y = vec[1] - m[2][2];
+  float a0 = x * m[0][0];
+  float b0 = y * m[0][1];
+  float a2 = x * m[1][2];
+  float a1 = ((0, m[0][3])) * x;
+  float b1 = y * m[1][0];
+  float b2 = y * m[1][3];
+  float o1 = a1 + b1;
+  float z = vec[2] - m[2][3];
+  float m5v = m[1][1];
+  float c1 = z * m5v;
+  float o2 = a2 + b2;
+  float o0 = ((double) a0) + b0;
+  float c0 = z * m[0][2];
+  float c2 = z * m[2][0];
+  o1 += c1;
+  o0 = o0 + c0;
+  o2 += c2;
+  out[1] = o1;
+  out[0] = o0;
+  out[2] = o2;
 }
 /* Copy three consecutive s32 words from src to dst.  The source is read through
  * a volatile pointer into staged locals so all three loads precede any store. */

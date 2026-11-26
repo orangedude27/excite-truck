@@ -1950,34 +1950,34 @@ void *fn_801F4614(void *object, int shouldDelete) {
 }
 
 extern double sin(double);
-extern float fn_80144514(float, float, float, float, float, float);
+extern float dotProduct3(float, float, float, float, float, float);
 /* In-place 3x3 matrix product dst = right * left; when dst aliases either
  * input the nine dot products are buffered first so nothing is overwritten. */
 static inline void CombineMtx_801F4684(float *dst, const float *left, const float *right) {
     float v0, v1, v2, v3, v4, v5, v6, v7, v8;
     if (dst == left || dst == right) {
-        v0 = fn_80144514(right[0], left[0], right[3], left[1], right[6], left[2]);
-        v1 = fn_80144514(right[0], left[3], right[3], left[4], right[6], left[5]);
-        v2 = fn_80144514(right[0], left[6], right[3], left[7], right[6], left[8]);
-        v3 = fn_80144514(right[1], left[0], right[4], left[1], right[7], left[2]);
-        v4 = fn_80144514(right[1], left[3], right[4], left[4], right[7], left[5]);
-        v5 = fn_80144514(right[1], left[6], right[4], left[7], right[7], left[8]);
-        v6 = fn_80144514(right[2], left[0], right[5], left[1], right[8], left[2]);
-        v7 = fn_80144514(right[2], left[3], right[5], left[4], right[8], left[5]);
-        v8 = fn_80144514(right[2], left[6], right[5], left[7], right[8], left[8]);
+        v0 = dotProduct3(right[0], left[0], right[3], left[1], right[6], left[2]);
+        v1 = dotProduct3(right[0], left[3], right[3], left[4], right[6], left[5]);
+        v2 = dotProduct3(right[0], left[6], right[3], left[7], right[6], left[8]);
+        v3 = dotProduct3(right[1], left[0], right[4], left[1], right[7], left[2]);
+        v4 = dotProduct3(right[1], left[3], right[4], left[4], right[7], left[5]);
+        v5 = dotProduct3(right[1], left[6], right[4], left[7], right[7], left[8]);
+        v6 = dotProduct3(right[2], left[0], right[5], left[1], right[8], left[2]);
+        v7 = dotProduct3(right[2], left[3], right[5], left[4], right[8], left[5]);
+        v8 = dotProduct3(right[2], left[6], right[5], left[7], right[8], left[8]);
         dst[0] = v0; dst[3] = v1; dst[6] = v2;
         dst[1] = v3; dst[4] = v4; dst[7] = v5;
         dst[2] = v6; dst[5] = v7; dst[8] = v8;
     } else {
-        dst[0] = fn_80144514(right[0], left[0], right[3], left[1], right[6], left[2]);
-        dst[3] = fn_80144514(right[0], left[3], right[3], left[4], right[6], left[5]);
-        dst[6] = fn_80144514(right[0], left[6], right[3], left[7], right[6], left[8]);
-        dst[1] = fn_80144514(right[1], left[0], right[4], left[1], right[7], left[2]);
-        dst[4] = fn_80144514(right[1], left[3], right[4], left[4], right[7], left[5]);
-        dst[7] = fn_80144514(right[1], left[6], right[4], left[7], right[7], left[8]);
-        dst[2] = fn_80144514(right[2], left[0], right[5], left[1], right[8], left[2]);
-        dst[5] = fn_80144514(right[2], left[3], right[5], left[4], right[8], left[5]);
-        dst[8] = fn_80144514(right[2], left[6], right[5], left[7], right[8], left[8]);
+        dst[0] = dotProduct3(right[0], left[0], right[3], left[1], right[6], left[2]);
+        dst[3] = dotProduct3(right[0], left[3], right[3], left[4], right[6], left[5]);
+        dst[6] = dotProduct3(right[0], left[6], right[3], left[7], right[6], left[8]);
+        dst[1] = dotProduct3(right[1], left[0], right[4], left[1], right[7], left[2]);
+        dst[4] = dotProduct3(right[1], left[3], right[4], left[4], right[7], left[5]);
+        dst[7] = dotProduct3(right[1], left[6], right[4], left[7], right[7], left[8]);
+        dst[2] = dotProduct3(right[2], left[0], right[5], left[1], right[8], left[2]);
+        dst[5] = dotProduct3(right[2], left[3], right[5], left[4], right[8], left[5]);
+        dst[8] = dotProduct3(right[2], left[6], right[5], left[7], right[8], left[8]);
     }
 }
 extern void MlistSetObjectDraw(int, int, float *);

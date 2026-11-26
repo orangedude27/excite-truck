@@ -23,7 +23,7 @@ extern void fn_8012A5E8(void *);
 extern void Abend_Panic(const char *);
 extern void fn_802E30C8(char *);
 extern void fn_8022ED50(s32);
-extern f32 fn_80144514(f32, f32, f32, f32, f32, f32); /* matrix multiply-accumulate */
+extern f32 dotProduct3(f32, f32, f32, f32, f32, f32); /* matrix multiply-accumulate */
 extern void fn_80128668(void *);  /* free */
 extern void *fn_8022EC7C(void);
 extern void *fn_8022ECC0(s32);
@@ -308,28 +308,28 @@ void fn_8022EEF8(UIContext *dst, const UIContext *left, const UIContext *right) 
     dst->scale = left->scale * right->scale;
     dst->rate = left->rate * right->rate;
     if (dst == left || dst == right) {
-        m00 = fn_80144514(right->mtx[0][0], left->mtx[0][0], right->mtx[1][0], left->mtx[0][1], right->mtx[2][0], left->mtx[0][2]);
-        m10 = fn_80144514(right->mtx[0][0], left->mtx[1][0], right->mtx[1][0], left->mtx[1][1], right->mtx[2][0], left->mtx[1][2]);
-        m20 = fn_80144514(right->mtx[0][0], left->mtx[2][0], right->mtx[1][0], left->mtx[2][1], right->mtx[2][0], left->mtx[2][2]);
-        m01 = fn_80144514(right->mtx[0][1], left->mtx[0][0], right->mtx[1][1], left->mtx[0][1], right->mtx[2][1], left->mtx[0][2]);
-        m11 = fn_80144514(right->mtx[0][1], left->mtx[1][0], right->mtx[1][1], left->mtx[1][1], right->mtx[2][1], left->mtx[1][2]);
-        m21 = fn_80144514(right->mtx[0][1], left->mtx[2][0], right->mtx[1][1], left->mtx[2][1], right->mtx[2][1], left->mtx[2][2]);
-        m02 = fn_80144514(right->mtx[0][2], left->mtx[0][0], right->mtx[1][2], left->mtx[0][1], right->mtx[2][2], left->mtx[0][2]);
-        m12 = fn_80144514(right->mtx[0][2], left->mtx[1][0], right->mtx[1][2], left->mtx[1][1], right->mtx[2][2], left->mtx[1][2]);
-        m22 = fn_80144514(right->mtx[0][2], left->mtx[2][0], right->mtx[1][2], left->mtx[2][1], right->mtx[2][2], left->mtx[2][2]);
+        m00 = dotProduct3(right->mtx[0][0], left->mtx[0][0], right->mtx[1][0], left->mtx[0][1], right->mtx[2][0], left->mtx[0][2]);
+        m10 = dotProduct3(right->mtx[0][0], left->mtx[1][0], right->mtx[1][0], left->mtx[1][1], right->mtx[2][0], left->mtx[1][2]);
+        m20 = dotProduct3(right->mtx[0][0], left->mtx[2][0], right->mtx[1][0], left->mtx[2][1], right->mtx[2][0], left->mtx[2][2]);
+        m01 = dotProduct3(right->mtx[0][1], left->mtx[0][0], right->mtx[1][1], left->mtx[0][1], right->mtx[2][1], left->mtx[0][2]);
+        m11 = dotProduct3(right->mtx[0][1], left->mtx[1][0], right->mtx[1][1], left->mtx[1][1], right->mtx[2][1], left->mtx[1][2]);
+        m21 = dotProduct3(right->mtx[0][1], left->mtx[2][0], right->mtx[1][1], left->mtx[2][1], right->mtx[2][1], left->mtx[2][2]);
+        m02 = dotProduct3(right->mtx[0][2], left->mtx[0][0], right->mtx[1][2], left->mtx[0][1], right->mtx[2][2], left->mtx[0][2]);
+        m12 = dotProduct3(right->mtx[0][2], left->mtx[1][0], right->mtx[1][2], left->mtx[1][1], right->mtx[2][2], left->mtx[1][2]);
+        m22 = dotProduct3(right->mtx[0][2], left->mtx[2][0], right->mtx[1][2], left->mtx[2][1], right->mtx[2][2], left->mtx[2][2]);
         dst->mtx[0][0] = m00; dst->mtx[1][0] = m10; dst->mtx[2][0] = m20;
         dst->mtx[0][1] = m01; dst->mtx[1][1] = m11; dst->mtx[2][1] = m21;
         dst->mtx[0][2] = m02; dst->mtx[1][2] = m12; dst->mtx[2][2] = m22;
     } else {
-        dst->mtx[0][0] = fn_80144514(right->mtx[0][0], left->mtx[0][0], right->mtx[1][0], left->mtx[0][1], right->mtx[2][0], left->mtx[0][2]);
-        dst->mtx[1][0] = fn_80144514(right->mtx[0][0], left->mtx[1][0], right->mtx[1][0], left->mtx[1][1], right->mtx[2][0], left->mtx[1][2]);
-        dst->mtx[2][0] = fn_80144514(right->mtx[0][0], left->mtx[2][0], right->mtx[1][0], left->mtx[2][1], right->mtx[2][0], left->mtx[2][2]);
-        dst->mtx[0][1] = fn_80144514(right->mtx[0][1], left->mtx[0][0], right->mtx[1][1], left->mtx[0][1], right->mtx[2][1], left->mtx[0][2]);
-        dst->mtx[1][1] = fn_80144514(right->mtx[0][1], left->mtx[1][0], right->mtx[1][1], left->mtx[1][1], right->mtx[2][1], left->mtx[1][2]);
-        dst->mtx[2][1] = fn_80144514(right->mtx[0][1], left->mtx[2][0], right->mtx[1][1], left->mtx[2][1], right->mtx[2][1], left->mtx[2][2]);
-        dst->mtx[0][2] = fn_80144514(right->mtx[0][2], left->mtx[0][0], right->mtx[1][2], left->mtx[0][1], right->mtx[2][2], left->mtx[0][2]);
-        dst->mtx[1][2] = fn_80144514(right->mtx[0][2], left->mtx[1][0], right->mtx[1][2], left->mtx[1][1], right->mtx[2][2], left->mtx[1][2]);
-        dst->mtx[2][2] = fn_80144514(right->mtx[0][2], left->mtx[2][0], right->mtx[1][2], left->mtx[2][1], right->mtx[2][2], left->mtx[2][2]);
+        dst->mtx[0][0] = dotProduct3(right->mtx[0][0], left->mtx[0][0], right->mtx[1][0], left->mtx[0][1], right->mtx[2][0], left->mtx[0][2]);
+        dst->mtx[1][0] = dotProduct3(right->mtx[0][0], left->mtx[1][0], right->mtx[1][0], left->mtx[1][1], right->mtx[2][0], left->mtx[1][2]);
+        dst->mtx[2][0] = dotProduct3(right->mtx[0][0], left->mtx[2][0], right->mtx[1][0], left->mtx[2][1], right->mtx[2][0], left->mtx[2][2]);
+        dst->mtx[0][1] = dotProduct3(right->mtx[0][1], left->mtx[0][0], right->mtx[1][1], left->mtx[0][1], right->mtx[2][1], left->mtx[0][2]);
+        dst->mtx[1][1] = dotProduct3(right->mtx[0][1], left->mtx[1][0], right->mtx[1][1], left->mtx[1][1], right->mtx[2][1], left->mtx[1][2]);
+        dst->mtx[2][1] = dotProduct3(right->mtx[0][1], left->mtx[2][0], right->mtx[1][1], left->mtx[2][1], right->mtx[2][1], left->mtx[2][2]);
+        dst->mtx[0][2] = dotProduct3(right->mtx[0][2], left->mtx[0][0], right->mtx[1][2], left->mtx[0][1], right->mtx[2][2], left->mtx[0][2]);
+        dst->mtx[1][2] = dotProduct3(right->mtx[0][2], left->mtx[1][0], right->mtx[1][2], left->mtx[1][1], right->mtx[2][2], left->mtx[1][2]);
+        dst->mtx[2][2] = dotProduct3(right->mtx[0][2], left->mtx[2][0], right->mtx[1][2], left->mtx[2][1], right->mtx[2][2], left->mtx[2][2]);
     }
     dst->pos[0] = left->pos[0] + right->pos[0];
     dst->pos[1] = left->pos[1] + right->pos[1];

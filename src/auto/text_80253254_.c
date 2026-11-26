@@ -877,7 +877,7 @@ void fn_802545C4(void *arg0, s32 arg1, s32 arg2) {
 
 void fn_80254938(void *arg0v, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 farg0, f32 farg1) {
     extern double atan(double), ceil(double), cos(double), sin(double);
-    extern float fn_80144514(float, float, float, float, float, float);
+    extern float dotProduct3(float, float, float, float, float, float);
     extern float fn_801DCF48(s32);
     extern void fn_80253004(s32, void *);
     extern void fn_802545C4(void *, int, int);
@@ -996,15 +996,15 @@ loop_27:
         M2C_FIELD(arg0, f32 *, 0xC4) = temp_f27_2;
         M2C_FIELD(arg0, f32 *, 0xC8) = temp_f15_4;
         if (temp_r27 != (u8 *)&sp70) {
-            temp_f15_5 = fn_80144514(M2C_FIELD(arg0, f32 *, 0xA8), sp70, M2C_FIELD(temp_r27, f32 *, 0xC), sp74, M2C_FIELD(temp_r27, f32 *, 0x18), sp78);
-            temp_f16 = fn_80144514(M2C_FIELD(arg0, f32 *, 0xA8), sp7C, M2C_FIELD(temp_r27, f32 *, 0xC), sp80, M2C_FIELD(temp_r27, f32 *, 0x18), sp84);
-            temp_f17 = fn_80144514(M2C_FIELD(arg0, f32 *, 0xA8), sp88, M2C_FIELD(temp_r27, f32 *, 0xC), sp8C, M2C_FIELD(temp_r27, f32 *, 0x18), sp90);
-            temp_f18 = fn_80144514(M2C_FIELD(temp_r27, f32 *, 4), sp70, M2C_FIELD(temp_r27, f32 *, 0x10), sp74, M2C_FIELD(temp_r27, f32 *, 0x1C), sp78);
-            temp_f19 = fn_80144514(M2C_FIELD(temp_r27, f32 *, 4), sp7C, M2C_FIELD(temp_r27, f32 *, 0x10), sp80, M2C_FIELD(temp_r27, f32 *, 0x1C), sp84);
-            temp_f20 = fn_80144514(M2C_FIELD(temp_r27, f32 *, 4), sp88, M2C_FIELD(temp_r27, f32 *, 0x10), sp8C, M2C_FIELD(temp_r27, f32 *, 0x1C), sp90);
-            temp_f25_2 = fn_80144514(M2C_FIELD(temp_r27, f32 *, 8), sp70, M2C_FIELD(temp_r27, f32 *, 0x14), sp74, M2C_FIELD(temp_r27, f32 *, 0x20), sp78);
-            temp_f24_3 = fn_80144514(M2C_FIELD(temp_r27, f32 *, 8), sp7C, M2C_FIELD(temp_r27, f32 *, 0x14), sp80, M2C_FIELD(temp_r27, f32 *, 0x20), sp84);
-            temp_f1_3 = fn_80144514(M2C_FIELD(temp_r27, f32 *, 8), sp88, M2C_FIELD(temp_r27, f32 *, 0x14), sp8C, M2C_FIELD(temp_r27, f32 *, 0x20), sp90);
+            temp_f15_5 = dotProduct3(M2C_FIELD(arg0, f32 *, 0xA8), sp70, M2C_FIELD(temp_r27, f32 *, 0xC), sp74, M2C_FIELD(temp_r27, f32 *, 0x18), sp78);
+            temp_f16 = dotProduct3(M2C_FIELD(arg0, f32 *, 0xA8), sp7C, M2C_FIELD(temp_r27, f32 *, 0xC), sp80, M2C_FIELD(temp_r27, f32 *, 0x18), sp84);
+            temp_f17 = dotProduct3(M2C_FIELD(arg0, f32 *, 0xA8), sp88, M2C_FIELD(temp_r27, f32 *, 0xC), sp8C, M2C_FIELD(temp_r27, f32 *, 0x18), sp90);
+            temp_f18 = dotProduct3(M2C_FIELD(temp_r27, f32 *, 4), sp70, M2C_FIELD(temp_r27, f32 *, 0x10), sp74, M2C_FIELD(temp_r27, f32 *, 0x1C), sp78);
+            temp_f19 = dotProduct3(M2C_FIELD(temp_r27, f32 *, 4), sp7C, M2C_FIELD(temp_r27, f32 *, 0x10), sp80, M2C_FIELD(temp_r27, f32 *, 0x1C), sp84);
+            temp_f20 = dotProduct3(M2C_FIELD(temp_r27, f32 *, 4), sp88, M2C_FIELD(temp_r27, f32 *, 0x10), sp8C, M2C_FIELD(temp_r27, f32 *, 0x1C), sp90);
+            temp_f25_2 = dotProduct3(M2C_FIELD(temp_r27, f32 *, 8), sp70, M2C_FIELD(temp_r27, f32 *, 0x14), sp74, M2C_FIELD(temp_r27, f32 *, 0x20), sp78);
+            temp_f24_3 = dotProduct3(M2C_FIELD(temp_r27, f32 *, 8), sp7C, M2C_FIELD(temp_r27, f32 *, 0x14), sp80, M2C_FIELD(temp_r27, f32 *, 0x20), sp84);
+            temp_f1_3 = dotProduct3(M2C_FIELD(temp_r27, f32 *, 8), sp88, M2C_FIELD(temp_r27, f32 *, 0x14), sp8C, M2C_FIELD(temp_r27, f32 *, 0x20), sp90);
             M2C_FIELD(arg0, f32 *, 0xA8) = temp_f15_5;
             M2C_FIELD(temp_r27, f32 *, 0xC) = temp_f16;
             M2C_FIELD(temp_r27, f32 *, 0x18) = temp_f17;
@@ -1015,21 +1015,21 @@ loop_27:
             M2C_FIELD(temp_r27, f32 *, 0x14) = temp_f24_3;
             M2C_FIELD(temp_r27, f32 *, 0x20) = temp_f1_3;
         } else {
-            temp_f1_4 = fn_80144514(temp_f15_4, sp70, temp_f27_2, sp74, temp_f27_2, sp78);
+            temp_f1_4 = dotProduct3(temp_f15_4, sp70, temp_f27_2, sp74, temp_f27_2, sp78);
             M2C_FIELD(arg0, f32 *, 0xA8) = temp_f1_4;
-            temp_f1_5 = fn_80144514((f32)temp_f1_4, sp7C, M2C_FIELD(temp_r27, f32 *, 0xC), sp80, M2C_FIELD(temp_r27, f32 *, 0x18), sp84);
+            temp_f1_5 = dotProduct3((f32)temp_f1_4, sp7C, M2C_FIELD(temp_r27, f32 *, 0xC), sp80, M2C_FIELD(temp_r27, f32 *, 0x18), sp84);
             M2C_FIELD(temp_r27, f32 *, 0xC) = temp_f1_5;
-            M2C_FIELD(temp_r27, f32 *, 0x18) = fn_80144514(M2C_FIELD(arg0, f32 *, 0xA8), sp88, (f32)temp_f1_5, sp8C, M2C_FIELD(temp_r27, f32 *, 0x18), sp90);
-            temp_f1_6 = fn_80144514(M2C_FIELD(temp_r27, f32 *, 4), sp70, M2C_FIELD(temp_r27, f32 *, 0x10), sp74, M2C_FIELD(temp_r27, f32 *, 0x1C), sp78);
+            M2C_FIELD(temp_r27, f32 *, 0x18) = dotProduct3(M2C_FIELD(arg0, f32 *, 0xA8), sp88, (f32)temp_f1_5, sp8C, M2C_FIELD(temp_r27, f32 *, 0x18), sp90);
+            temp_f1_6 = dotProduct3(M2C_FIELD(temp_r27, f32 *, 4), sp70, M2C_FIELD(temp_r27, f32 *, 0x10), sp74, M2C_FIELD(temp_r27, f32 *, 0x1C), sp78);
             M2C_FIELD(temp_r27, f32 *, 4) = temp_f1_6;
-            temp_f1_7 = fn_80144514((f32)temp_f1_6, sp7C, M2C_FIELD(temp_r27, f32 *, 0x10), sp80, M2C_FIELD(temp_r27, f32 *, 0x1C), sp84);
+            temp_f1_7 = dotProduct3((f32)temp_f1_6, sp7C, M2C_FIELD(temp_r27, f32 *, 0x10), sp80, M2C_FIELD(temp_r27, f32 *, 0x1C), sp84);
             M2C_FIELD(temp_r27, f32 *, 0x10) = temp_f1_7;
-            M2C_FIELD(temp_r27, f32 *, 0x1C) = fn_80144514(M2C_FIELD(temp_r27, f32 *, 4), sp88, (f32)temp_f1_7, sp8C, M2C_FIELD(temp_r27, f32 *, 0x1C), sp90);
-            temp_f1_8 = fn_80144514(M2C_FIELD(temp_r27, f32 *, 8), sp70, M2C_FIELD(temp_r27, f32 *, 0x14), sp74, M2C_FIELD(temp_r27, f32 *, 0x20), sp78);
+            M2C_FIELD(temp_r27, f32 *, 0x1C) = dotProduct3(M2C_FIELD(temp_r27, f32 *, 4), sp88, (f32)temp_f1_7, sp8C, M2C_FIELD(temp_r27, f32 *, 0x1C), sp90);
+            temp_f1_8 = dotProduct3(M2C_FIELD(temp_r27, f32 *, 8), sp70, M2C_FIELD(temp_r27, f32 *, 0x14), sp74, M2C_FIELD(temp_r27, f32 *, 0x20), sp78);
             M2C_FIELD(temp_r27, f32 *, 8) = temp_f1_8;
-            temp_f1_9 = fn_80144514((f32)temp_f1_8, sp7C, M2C_FIELD(temp_r27, f32 *, 0x14), sp80, M2C_FIELD(temp_r27, f32 *, 0x20), sp84);
+            temp_f1_9 = dotProduct3((f32)temp_f1_8, sp7C, M2C_FIELD(temp_r27, f32 *, 0x14), sp80, M2C_FIELD(temp_r27, f32 *, 0x20), sp84);
             M2C_FIELD(temp_r27, f32 *, 0x14) = temp_f1_9;
-            M2C_FIELD(temp_r27, f32 *, 0x20) = fn_80144514(M2C_FIELD(temp_r27, f32 *, 8), sp88, (f32)temp_f1_9, sp8C, M2C_FIELD(temp_r27, f32 *, 0x20), sp90);
+            M2C_FIELD(temp_r27, f32 *, 0x20) = dotProduct3(M2C_FIELD(temp_r27, f32 *, 8), sp88, (f32)temp_f1_9, sp8C, M2C_FIELD(temp_r27, f32 *, 0x20), sp90);
         }
         temp_f9 = M2C_FIELD(&lbl_80498E18, f32 *, 0) + (M2C_FIELD(arg0, f32 *, 0xC0) * temp_f28_2);
         M2C_FIELD(arg0, f32 *, 0xCC) = temp_f9;

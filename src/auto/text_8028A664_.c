@@ -16,7 +16,7 @@ extern f32 lbl_80564328, lbl_8056432C, lbl_80564334, lbl_80564338, lbl_8056433C;
 extern f32 lbl_80564340, lbl_80564344, lbl_80564348, lbl_80564350, lbl_80564354;
 extern f32 lbl_80564358, lbl_8056435C, lbl_80564360;
 extern f32 lbl_80564364, lbl_805643BC, lbl_805643C0, lbl_805643C4;
-extern f32 fn_80144514(f32, f32, f32, f32, f32, f32);
+extern f32 dotProduct3(f32, f32, f32, f32, f32, f32);
 extern s32 beginDrawListPass(s32);
 extern void fn_802C8E00();
 extern void DrawList_endMeshPass(void);
@@ -1101,42 +1101,50 @@ void fn_8028BD60(s32 arg0) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_8028BED4(void *arg0, s32 arg1, void *arg2, void *arg3, f32 farg0) {
-    struct Ring {
-        void *data;
-        s32 head;
-        s32 tail;
-    } *ring = (struct Ring *)arg0;
-    f32 *src = (f32 *)arg2;
-    f32 *vel = (f32 *)arg3;
-    s32 count;
-    s32 limit;
-    s32 i;
-    s32 j;
-    f32 now;
-    f32 temp_y;
-    f32 temp_z;
-    f32 temp_x;
-    f32 *dst;
-    now = fn_801E7E18();
-    count = ring->tail - ring->head;
-    limit = arg1 & ((-arg1 & ~arg1) >> 31);
-    if (limit < count) count = limit;
-    for (i = 0; i < count; i++) {
-        dst = (f32 *)((u8 *)ring->data + (ring->head + i) * 0x1C);
-        for (j = 0; j < 3; j++) {
-            f32 t = src[j];
-            dst[j] = t;
-        }
-        temp_z = vel[2] + fn_80287BC8(-farg0, farg0);
-        temp_y = vel[1] + fn_80287BC8(-farg0, farg0);
-        temp_x = vel[0] + fn_80287BC8(-farg0, farg0);
-        dst[3] = temp_x;
-        dst[4] = temp_y;
-        dst[5] = temp_z;
-        dst[6] = now;
+void fn_8028BED4(void *arg0, s32 arg1, void *arg2, void *arg3, f32 farg0)
+{
+  struct Ring
+  {
+    void *data;
+    s32 head;
+    s32 tail;
+  } *ring = (struct Ring *) arg0;
+  f32 *src = (f32 *) arg2;
+  f32 *vel = (f32 *) arg3;
+  s32 count;
+  s32 limit;
+  s32 i;
+  s32 j;
+  f32 now;
+  f32 temp_y;
+  f32 temp_z;
+  f32 temp_x;
+  f32 *dst;
+  now = fn_801E7E18();
+  count = ring->tail - ring->head;
+  limit = arg1 & (((-arg1) & (~arg1)) >> 31);
+  if (limit < count)
+  {
+    count = limit;
+  }
+  for (i = 0; i < count; i++)
+  {
+    dst = (f32 *) (((u8 *) ring->data) + (((ring->head + i) * ((0, 0x1C))) & 0xFF));
+    for (j = 0; j < 3; j++)
+    {
+      dst[j] = src[j];
     }
-    ring->head += count;
+
+    temp_z = vel[2] + fn_80287BC8(-farg0, farg0);
+    temp_y = vel[1] + fn_80287BC8(-farg0, farg0);
+    temp_x = vel[0] + fn_80287BC8(-farg0, farg0);
+    dst[3] = temp_x;
+    dst[4] = temp_y;
+    dst[5] = temp_z;
+    dst[6] = now;
+  }
+
+  ring->head += count;
 }
 #pragma pop
 
@@ -1218,25 +1226,25 @@ void fn_8028C11C(void *arg0, s32 *arg1, s32 *arg2) {
         a = s.m[5]; s.m[5] = s.m[7]; s.m[7] = a;
     }
     if (&s.m[0] == a1 || &s.m[0] == &s.m[0]) {
-        s.m[0] = fn_80144514(s.m[0], a1[0], s.m[3], a1[1], s.m[6], a1[2]);
-        s.m[3] = fn_80144514(s.m[0], a1[3], s.m[3], a1[4], s.m[6], a1[5]);
-        s.m[6] = fn_80144514(s.m[0], a1[6], s.m[3], a1[7], s.m[6], a1[8]);
-        s.m[1] = fn_80144514(s.m[1], a1[0], s.m[4], a1[1], s.m[7], a1[2]);
-        s.m[4] = fn_80144514(s.m[1], a1[3], s.m[4], a1[4], s.m[7], a1[5]);
-        s.m[7] = fn_80144514(s.m[1], a1[6], s.m[4], a1[7], s.m[7], a1[8]);
-        s.m[2] = fn_80144514(s.m[2], a1[0], s.m[5], a1[1], s.m[8], a1[2]);
-        s.m[5] = fn_80144514(s.m[2], a1[3], s.m[5], a1[4], s.m[8], a1[5]);
-        s.m[8] = fn_80144514(s.m[2], a1[6], s.m[5], a1[7], s.m[8], a1[8]);
+        s.m[0] = dotProduct3(s.m[0], a1[0], s.m[3], a1[1], s.m[6], a1[2]);
+        s.m[3] = dotProduct3(s.m[0], a1[3], s.m[3], a1[4], s.m[6], a1[5]);
+        s.m[6] = dotProduct3(s.m[0], a1[6], s.m[3], a1[7], s.m[6], a1[8]);
+        s.m[1] = dotProduct3(s.m[1], a1[0], s.m[4], a1[1], s.m[7], a1[2]);
+        s.m[4] = dotProduct3(s.m[1], a1[3], s.m[4], a1[4], s.m[7], a1[5]);
+        s.m[7] = dotProduct3(s.m[1], a1[6], s.m[4], a1[7], s.m[7], a1[8]);
+        s.m[2] = dotProduct3(s.m[2], a1[0], s.m[5], a1[1], s.m[8], a1[2]);
+        s.m[5] = dotProduct3(s.m[2], a1[3], s.m[5], a1[4], s.m[8], a1[5]);
+        s.m[8] = dotProduct3(s.m[2], a1[6], s.m[5], a1[7], s.m[8], a1[8]);
     } else {
-        f32 r0 = fn_80144514(s.m[0], a1[0], s.m[3], a1[1], s.m[6], a1[2]);
-        f32 r1 = fn_80144514(s.m[0], a1[3], s.m[3], a1[4], s.m[6], a1[5]);
-        f32 r2 = fn_80144514(s.m[0], a1[6], s.m[3], a1[7], s.m[6], a1[8]);
-        f32 r3 = fn_80144514(s.m[1], a1[0], s.m[4], a1[1], s.m[7], a1[2]);
-        f32 r4 = fn_80144514(s.m[1], a1[3], s.m[4], a1[4], s.m[7], a1[5]);
-        f32 r5 = fn_80144514(s.m[1], a1[6], s.m[4], a1[7], s.m[7], a1[8]);
-        f32 r6 = fn_80144514(s.m[2], a1[0], s.m[5], a1[1], s.m[8], a1[2]);
-        f32 r7 = fn_80144514(s.m[2], a1[3], s.m[5], a1[4], s.m[8], a1[5]);
-        f32 r8 = fn_80144514(s.m[2], a1[6], s.m[5], a1[7], s.m[8], a1[8]);
+        f32 r0 = dotProduct3(s.m[0], a1[0], s.m[3], a1[1], s.m[6], a1[2]);
+        f32 r1 = dotProduct3(s.m[0], a1[3], s.m[3], a1[4], s.m[6], a1[5]);
+        f32 r2 = dotProduct3(s.m[0], a1[6], s.m[3], a1[7], s.m[6], a1[8]);
+        f32 r3 = dotProduct3(s.m[1], a1[0], s.m[4], a1[1], s.m[7], a1[2]);
+        f32 r4 = dotProduct3(s.m[1], a1[3], s.m[4], a1[4], s.m[7], a1[5]);
+        f32 r5 = dotProduct3(s.m[1], a1[6], s.m[4], a1[7], s.m[7], a1[8]);
+        f32 r6 = dotProduct3(s.m[2], a1[0], s.m[5], a1[1], s.m[8], a1[2]);
+        f32 r7 = dotProduct3(s.m[2], a1[3], s.m[5], a1[4], s.m[8], a1[5]);
+        f32 r8 = dotProduct3(s.m[2], a1[6], s.m[5], a1[7], s.m[8], a1[8]);
         s.m[0] = r0; s.m[3] = r1; s.m[6] = r2;
         s.m[1] = r3; s.m[4] = r4; s.m[7] = r5;
         s.m[2] = r6; s.m[5] = r7; s.m[8] = r8;
