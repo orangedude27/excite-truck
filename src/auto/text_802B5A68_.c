@@ -685,7 +685,7 @@ extern void fn_80147230(void *, const char *, ...);
 // Formats a UI/debug text entry, updates its highlight/state color and selection fields in
 // the shared UI state (lbl_804BFF80) based on the formatted text/name, then forwards the
 // formatted string for rendering.
-void formatDebugTextEntry(void *arg0, const char *fmt, ...) {
+/* Format a debug-menu text line, color it by the shared selection state, run the matched control's action, and forward the text for rendering. */ void formatDebugTextEntry(void *arg0, const char *fmt, ...) {
     char formattedText[256];
     va_list args;
     Struct804BFF80 *uiState;
