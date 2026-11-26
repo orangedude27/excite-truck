@@ -5067,7 +5067,7 @@ extern "C" void* allocSeqSound(s32 player, s32 priority, s32 requestedPriority, 
      * is full it takes the sound with the lowest priority away from that list
      * (stopping it first) if the new sound outranks it, and gives up otherwise.
      * The new sound is then built up: the player's first free frame heap, a copy
-     * of the ambient arg with its update callback, its priority (+0x74) and
+     * of the the ambient arg with its update callback, its priority (+0x74) and
      * ambient priority offset (+0x40), and links into the manager's priority
      * list (+0x4, node +0xB8), the player's sound list (+0x00, node +0xC0), the
      * player's priority list (+0x0C, node +0xC8) and the external player's sound
@@ -5164,8 +5164,8 @@ extern "C" void* allocSeqSound(s32 player, s32 priority, s32 requestedPriority, 
         {
             /* BasicSound::CalcPriority_(): own priority (+0x74) plus offset (+0x40). */
             s32 lowestPrio = *(u8 *)(lowest + 0x74) + *(s32 *)(lowest + 0x40);
-            s32 clamped = ClampS32_E(lowestPrio, 0, 0x7F);
-            if (listPriority < clamped) {
+            s32 lowestListPriority = ClampS32_E(lowestPrio, 0, 0x7F);
+            if (listPriority < lowestListPriority) {
                 OSRestoreInterrupts(irq);
                 sound = 0;
                 goto allocation_done;
@@ -5271,11 +5271,11 @@ allocation_done:
             if (insertPos == 0) {
                 PANIC(lbl_80326348, 0x23D, lbl_80326324);
             }
-            s32 entryPrio = *(u8 *)((u8 *)insertPos - 0x54) + *(s32 *)((u8 *)insertPos - 0x88);
-            s32 entryListPrio = ClampS32_E(entryPrio, 0, 0x7F);
-            s32 newPrio = *(u8 *)((u8 *)sound + 0x74) + *(s32 *)((u8 *)sound + 0x40);
-            s32 newListPrio = ClampS32_E(newPrio, 0, 0x7F);
-            if (newListPrio < entryListPrio) {
+            s32 entryPriority = *(u8 *)((u8 *)insertPos - 0x54) + *(s32 *)((u8 *)insertPos - 0x88);
+            s32 entryListPriority = ClampS32_E(entryPriority, 0, 0x7F);
+            s32 newPriority = *(u8 *)((u8 *)sound + 0x74) + *(s32 *)((u8 *)sound + 0x40);
+            s32 newListPriority = ClampS32_E(newPriority, 0, 0x7F);
+            if (newListPriority < entryListPriority) {
                 break;
             }
             insertPos = *(void **)insertPos;
