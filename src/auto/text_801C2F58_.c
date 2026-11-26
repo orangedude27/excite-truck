@@ -135,7 +135,7 @@ extern s32 lbl_80437E24[];
 extern void *fn_801C3C80(void);
 extern void qsort(void *base, size_t count, size_t size, int (*compare)(const void *, const void *));
 extern s32 fn_801C3B7C(const void *, const void *);
-extern s32 fn_801C3524(char *);
+extern s32 parseInterludeWhoMask(char *);
 extern char *strcpy(char *, const char *);
 extern char lbl_80437FC0[304];
 extern char lbl_80336EC8[];
@@ -282,7 +282,7 @@ s32 fn_801C3508(s32 mask, s32 player) {
 // Turns one "who" token of an interlude (cutscene script) command into a mask of
 // player bits: the words below, or a player number ("3", "-2" counts back from
 // the last player). fn_801C3954 ORs the tokens of a whole list together.
-s32 fn_801C3524(char *who) {
+s32 parseInterludeWhoMask(char *who) {
     extern char lbl_8055A95C[7];  // "nobody"
     extern char lbl_8055A964[7];  // "all"
     extern char lbl_8055A968[5];  // "last"
@@ -343,7 +343,7 @@ s32 fn_801C3954(s32 arg0) {
         while ((c = *p) != ' ' && c != 0) p++;
         if (c == 0) isLastToken = 1;
         *p = 0;
-        result |= fn_801C3524(token);
+        result |= parseInterludeWhoMask(token);
         if (isLastToken) break;
         p++;
         token = p;
