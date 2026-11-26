@@ -456,16 +456,16 @@ extern "C" void shutdownUISubsystem(int mode) {
     struct Obj { virtual ~Obj(); };
     struct SoundSlot { char pad[8]; Obj *sounds[4]; }; /* the Ent18 fn_80211690 fills */
     int j;
-    bool minimalMode;
+    bool isMinimalShutdown;
     int i;
-    int heapBytes;
+    int heapBytesInUse;
 
 #define s_soundSlots      lbl_80490558 /* 8 x {name, f32, 4 sound objects} = 0xC0 bytes */
 #define s_artSets         lbl_80490528 /* 3 x 4 art sets loaded by name, 0 when not loaded */
 #define s_heapBytesAtInit lbl_8055EF18 /* heap in use when fn_80211690 set the UI up */
 
     fn_802ECC18(0); /* home-menu mode: the normal shutdown message */
-    minimalMode = (mode == 0);
+    isMinimalShutdown = (mode == 0);
     for (i = 0; i < 8; i++) {
         for (j = 0; j < 4; j++) {
             Obj *sound = ((SoundSlot *)s_soundSlots)[i].sounds[j];
@@ -483,7 +483,7 @@ extern "C" void shutdownUISubsystem(int mode) {
     fn_8021676C();
     fn_8022A7D0();
     fn_8020A550();
-    if (!minimalMode) {
+    if (!isMinimalShutdown) {
         if (lbl_8055EF1C != 0) fn_80235380(lbl_8055EF1C); /* the two menu-arrow art sets */
         lbl_8055EF1C = 0;
         if (lbl_8055EF20 != 0) fn_80235380(lbl_8055EF20);
@@ -503,8 +503,8 @@ extern "C" void shutdownUISubsystem(int mode) {
         fn_802C519C(s_artSets[9]); /* "blinkerrt.img" */
         s_artSets[9] = 0;
     }
-    heapBytes = fn_80128314(0);
-    if (heapBytes != s_heapBytesAtInit) fn_802E30C8(lbl_8033CD88, heapBytes, s_heapBytesAtInit); /* "UI overlap: %d K vs %d K" */
+    heapBytesInUse = fn_80128314(0);
+    if (heapBytesInUse != s_heapBytesAtInit) fn_802E30C8(lbl_8033CD88, heapBytesInUse, s_heapBytesAtInit); /* "UI overlap: %d K vs %d K" */
     fn_802E1058(); /* SimpleHeap_Destroy */
 
 #undef s_soundSlots
