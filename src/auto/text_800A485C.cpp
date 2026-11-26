@@ -327,7 +327,7 @@ extern "C" s32 fn_800A4AD0(u8 *, u8 *);
 extern "C" s32 fn_800A4D74(void *, u32);
 extern "C" s16 fn_800B4D5C(void *, u32, u32);
 extern "C" u8 lbl_80559210, lbl_80559214, lbl_80559230, lbl_80559231;
-extern "C" u16 fn_800B25CC(void *, s32);
+extern "C" u16 VFiPFPATH_readNextChar(void *, s32);
 extern "C" u32 VFiPFPATH_DoMatchFileNameWithPattern(u16, s32 *, u16, s32 *, s32);
 extern "C" s32 fn_800A4E80(void *, s32, u32);
 extern "C" void fn_800A4D4C(void *, void *);
@@ -9338,7 +9338,7 @@ static inline u16 Fn800B25CCUpperSjis(u16 *c, u16 *out) {
  * says whether the result should be Unicode (otherwise OEM/CP932).  Invalid
  * name characters become '_', and ASCII and fullwidth lowercase letters are
  * upper-cased; a zero code ends the path. */
-extern "C" u16 fn_800B25CC(void *path, s32 wantUnicode) {
+extern "C" u16 VFiPFPATH_readNextChar(void *path, s32 wantUnicode) {
     u8 scratch[0x14];
     s32 lowerAscii;
     u32 code;
@@ -9448,14 +9448,14 @@ loop_top:
         if (c0 == 0) return 0;
         goto adv_both;
     case 0x2A:
-        tok = fn_800B25CC(file, flag);
+        tok = VFiPFPATH_readNextChar(file, flag);
         break;
     default:
         if (c0 != tok) return 0;
         goto adv_both;
     }
 star_skip:
-    if (tok == 0x2A || tok == 0x3F) { tok = fn_800B25CC(file, flag); goto star_skip; }
+    if (tok == 0x2A || tok == 0x3F) { tok = VFiPFPATH_readNextChar(file, flag); goto star_skip; }
     if (tok == 0) return 1;
 match_loop:
     if (c0 == 0) return 0;
@@ -9492,7 +9492,7 @@ match_loop:
                 nc = cc;
             }
         }
-        tok = fn_800B25CC(&sp_file, flag);
+        tok = VFiPFPATH_readNextChar(&sp_file, flag);
         if (VFiPFPATH_DoMatchFileNameWithPattern(nc, (s32 *)&sp_pat, tok, (s32 *)&sp_file, flag) != 0) return 1;
     }
 adv_pat:
@@ -9546,7 +9546,7 @@ adv_both:
             c0 = cc;
         }
     }
-    tok = fn_800B25CC(file, flag);
+    tok = VFiPFPATH_readNextChar(file, flag);
     goto loop_top;
 }
 #pragma opt_propagation reset
@@ -9997,7 +9997,7 @@ var_r31_2 = (u16)var_r29_2;
 }
 }
 }
-u16 r5v = fn_800B25CC(frame.sp10, arg2);
+u16 r5v = VFiPFPATH_readNextChar(frame.sp10, arg2);
 var_r31 = VFiPFPATH_DoMatchFileNameWithPattern(var_r31_2, (s32 *)&frame.sp20, r5v, frame.sp10, arg2);
 }
 return var_r31;
