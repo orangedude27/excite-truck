@@ -297,7 +297,7 @@ __declspec(section ".sdata") extern const char lbl_8055B4B8[];
  * and if neither has it as the plain "<name>" in both.  A setting none of them
  * has is reported with the 'Difficulty: "%s" was not found' message and reads as
  * off.  The string the lookup returns is the flag: only "yes" and "true" are on. */
-extern "C" int isDifficultySettingOn(const char *name) {
+/* Report whether the current scene's difficulty setting `name` is on (via the stage/scene difficulty sets, then the plain name). */ extern "C" int isDifficultySettingOn(const char *settingName) {
     #define DIFFICULTY_INFO lbl_8055ED5C  /* the published difficulty info block */
     #define KEY_FORMAT      lbl_8055B4AC  /* "%s_%s" */
     #define NOT_FOUND_MSG   lbl_8033BBF4  /* Difficulty: "%s" was not found */
@@ -326,7 +326,7 @@ extern "C" int isDifficultySettingOn(const char *name) {
     info = (DifficultyInfo *)DIFFICULTY_INFO;
     setting = 0;
     if (info->contestName != 0) {
-        fn_801345D8(key, 0x64, KEY_FORMAT, info->contestName, name);
+        fn_801345D8(key, 0x64, KEY_FORMAT, info->contestName, settingName);
         if (info->stageSet != 0) {
             if (info->stageSet->has(key)) {
                 text = info->stageSet->get(key);
@@ -343,20 +343,20 @@ extern "C" int isDifficultySettingOn(const char *name) {
     }
     if (setting == 0) {
         if (info->stageSet != 0) {
-            if (info->stageSet->has(name)) {
-                text = info->stageSet->get(name);
+            if (info->stageSet->has(settingName)) {
+                text = info->stageSet->get(settingName);
                 goto done2;
             }
         }
-        if (info->sceneSet->has(name)) {
-            text = info->sceneSet->get(name);
+        if (info->sceneSet->has(settingName)) {
+            text = info->sceneSet->get(settingName);
         } else {
             text = 0;
         }
     done2:
         setting = text;
     }
-    if (setting == 0) Abend_Panic(NOT_FOUND_MSG, name);
+    if (setting == 0) Abend_Panic(NOT_FOUND_MSG, settingName);
     text = setting;
     on = 0;
     if (stricmp((const char *)text, YES_STRING) == 0 ||
