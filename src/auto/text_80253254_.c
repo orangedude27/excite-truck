@@ -789,12 +789,12 @@ struct Info545C4 {
 void fn_802545C4(void *arg0, s32 arg1, s32 arg2) {
     extern void *memset(void *, int, unsigned long);
     extern void PSVECCrossProduct(float *, float *, float *);
-    extern void PSVECNormalize(float *, float *);
     extern float fn_801F159C(s32);
-    extern float lbl_80498E18[3];
+    extern void PSVECNormalize(float *, float *);
     extern float lbl_80563A04, lbl_80563A14, lbl_80563A18;
-    extern float lbl_80563A30, lbl_80563A34, lbl_80563A38, lbl_80563A3C;
+    extern float lbl_80498E18[3];
     extern char lbl_8055C178[], lbl_8055C180[], lbl_8055C188[];
+    extern float lbl_80563A30, lbl_80563A34, lbl_80563A38, lbl_80563A3C;
     extern void fn_80254568(void *, s32, const char *);
     struct Stack {
         float sp8[3];
@@ -846,13 +846,13 @@ void fn_802545C4(void *arg0, s32 arg1, s32 arg2) {
         lbl_80498E18[2] += v->v14 * lbl_80563A38;
         if (inf->flag0 != 0) {
             float distance = fn_801F159C(inf->id18);
-            float scale = -(lbl_80563A3C + inf->f440);
+            register float scale = -(lbl_80563A3C + inf->f440);
             float lateral = lbl_80563A04 + (-v->v44 + (-inf->f43C + distance));
-            v->v24 = stack.sp8[0] + v->v18 * scale;
             v->v28 = stack.sp8[1] + v->v1C * scale;
-            v->v2C = stack.sp8[2] + v->v20 * scale;
+            v->v24 = stack.sp8[0] + v->v18 * scale;
             v->v24 += v->vC * lateral;
             v->v28 += v->v10 * lateral;
+            v->v2C = stack.sp8[2] + v->v20 * scale;
             v->v2C += v->v14 * lateral;
         } else {
             v->v24 = lbl_80498E18[0];
@@ -860,8 +860,8 @@ void fn_802545C4(void *arg0, s32 arg1, s32 arg2) {
             v->v2C = lbl_80498E18[2];
         }
     } else {
-        v->v4 = lbl_80563A04;
         v->v0 = lbl_80563A14;
+        v->v4 = lbl_80563A04;
         v->v8 = lbl_80563A04;
         v->vC = lbl_80563A04;
         v->v10 = lbl_80563A14;
@@ -1273,7 +1273,7 @@ void fn_80255604(s32 mode) {
     fn_80203C50(mode != 0);            /* env/ambient/illumination map textures */
     fn_801EFF4C();                     /* wheelmod class table */
     lbl_8055F330 = 0;
-    fn_802AB9E8();                     /* the two UI cameras */
+    initUiStunParts();                     /* the two UI cameras */
 }
 
 void fn_8025567C(void) {
