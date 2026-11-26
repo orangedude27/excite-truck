@@ -1643,7 +1643,7 @@ enum {
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_8023423C(s32 entryIndex, s32 flags) {
+void adjustTextEntryPosition(s32 entryIndex, s32 flags) {
     /* Shifts a queued text entry's x/y position by glyph metrics for alignment. */
     register unsigned int entryOffset = entryIndex * TEXTQ_STRIDE;
     u8 *font = (u8 *)gActiveFont;
@@ -1735,7 +1735,7 @@ void fn_802344C4(u8 value) {
 
 extern s32 fn_80231718(s32);
 extern void fn_80232024(u8 **);
-extern void fn_8023423C(s32, s32);
+extern void adjustTextEntryPosition(s32, s32);
 extern void fn_802346C8(void);
 extern f32 lbl_805636A8;
 #pragma push
@@ -1769,7 +1769,7 @@ void fn_802344CC(s32 text, s32 fontSet, s32 color, s32 fontId, f32 x, f32 y, f32
             *(f32 *)((u8 *)lbl_8055F06C + queueState[1] * 0x58 + 0x54) = lbl_805636A8 * scale;
         else
             *(f32 *)((u8 *)lbl_8055F06C + queueState[1] * 0x58 + 0x54) = scale;
-        fn_8023423C(queueState[1], color);
+        adjustTextEntryPosition(queueState[1], color);
         {
             register s32 *nextQueueState = (s32 *)&lbl_8055F058;
             nextQueueState[1] = nextQueueState[1] + 1;
