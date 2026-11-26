@@ -27395,11 +27395,9 @@ extern "C" void fn_800D2480(void) {
 
 /* Prints the debug console's stored lines from its scroll position on: through the
    nw4hbm::ut::CharWriter in charWriter, or straight onto the screen through
-   db_directPrint (fn_800D2FDC) when that is 0. At most viewLines lines are drawn,
-   stopping at the line being written (which is shown only once terminated).
-   Console_DrawDirect__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHead calls it
-   under the console mutex; rename_symbol refuses game symbols, so it keeps its
-   placeholder name. */
+   db_directPrint when that is 0. At most viewLines lines are drawn, stopping at the
+   line being written (which is shown only once terminated). Called by
+   Console_DrawDirect under the console mutex. */
 extern "C" void Console_DrawDirectLines(void *consoleHead, s32 charWriter)
 {
     nw4hbm::db::detail::ConsoleHead *console = (nw4hbm::db::detail::ConsoleHead *)consoleHead;
