@@ -2098,7 +2098,7 @@ static inline float HudEase(float t) {
 extern "C" int fn_80175238(void *overlay, int player) {
    /* Update the crush-mode results HUD. `overlay` holds the scene manager at +0x1A8
      and a per-frame value at +0x19C; `player` selects the player whose score is shown.
-     lbl_80561AB8/AE0/AE4/AE8 are the result-window and fade timing constants. During
+     lbl_80561AB8/AE0/AE4/AE8 are the score-window and time-window fade timing constants. During
      the score window the score line is formatted and faded/slid in; during the time
      window the remaining seconds are formatted and faded/slid in, using a cubic ease. */
  struct TextRect { int a; float b; int c,d; float e; int f,g,h; };
