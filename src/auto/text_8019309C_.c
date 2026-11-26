@@ -534,32 +534,32 @@ public:
 
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void initDriver(void *arg0, void *arg1) {
+/* Initialize the driver object (link it to its vehicle, register it in the slot table, and seed shared tuning state on first init). */ extern "C" void initDriver(void *driver, void *arg1) {
     /* Initialize a player/vehicle-related runtime object, register it, and one-time init shared tuning/state. */
     char *table = lbl_80333158;
     int zero = 0;
     int id;
     DummyClass_80193AEC *obj;
 
-    *(void **)((char *)arg0 + 0x294) = arg1;
-    *(int *)((char *)arg0 + 0x214) = 2;
-    *(unsigned char *)((char *)arg0 + 0x2A4) = zero;
+    *(void **)((char *)driver + 0x294) = arg1;
+    *(int *)((char *)driver + 0x214) = 2;
+    *(unsigned char *)((char *)driver + 0x2A4) = zero;
     id = *(int *)((char *)arg1 + 0x1EC);
-    *(int *)((char *)arg0 + 0x290) = id;
-    fn_80134CD4(id, (char *)arg0 + 0x2AC);
+    *(int *)((char *)driver + 0x290) = id;
+    fn_80134CD4(id, (char *)driver + 0x2AC);
 
-    *(void **)((char *)arg0 + 0x298) = (char *)*(void **)((char *)arg0 + 0x294) + 0x23AC;
-    lbl_804349C0[*(int *)((char *)arg0 + 0x290)] = arg0;
-    obj = *(DummyClass_80193AEC **)((char *)*(void **)((char *)arg0 + 0x294) + 0x270);
-    *(DummyClass_80193AEC **)((char *)arg0 + 0x28C) = obj;
-    *(void **)((char *)arg0 + 0x164) = obj->vfunc4();
+    *(void **)((char *)driver + 0x298) = (char *)*(void **)((char *)driver + 0x294) + 0x23AC;
+    lbl_804349C0[*(int *)((char *)driver + 0x290)] = driver;
+    obj = *(DummyClass_80193AEC **)((char *)*(void **)((char *)driver + 0x294) + 0x270);
+    *(DummyClass_80193AEC **)((char *)driver + 0x28C) = obj;
+    *(void **)((char *)driver + 0x164) = obj->vfunc4();
 
     if (lbl_8055E550++ == 0) {
         lbl_8055A488 = *(float *)fn_80137C54(-1);
         lbl_8055A48C = *(float *)((char *)fn_80137C54(-1) + 4);
         lbl_8055E580 = 1;
         lbl_8055E540 = ((int *)__AXFXGetLfoSinTable_801769CC())[1] != 0x180304;
-        lbl_8055E554 = *(float *)((char *)*(void **)((char *)*(void **)((char *)arg0 + 0x164) + 0x2C) + 8);
+        lbl_8055E554 = *(float *)((char *)*(void **)((char *)*(void **)((char *)driver + 0x164) + 0x2C) + 8);
         lbl_8055E56C = fn_80134B58(table + 0x70, lbl_80562140);
         lbl_8055E568 = fn_80134B58(table + 0x80, lbl_80562140);
         lbl_8055E564 = fn_80134B58(table + 0x94, lbl_80562140);
@@ -575,7 +575,7 @@ extern "C" void initDriver(void *arg0, void *arg1) {
         lbl_8055E588 = fn_80134B58(table + 0x11C, lbl_8056219C);
         lbl_8055E578 = zero;
     }
-    fn_80193D30(arg0);
+    fn_80193D30(driver);
 }
 #pragma scheduling reset
 #pragma cplusplus reset
