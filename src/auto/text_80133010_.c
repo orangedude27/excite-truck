@@ -98,7 +98,7 @@ extern int sscanf(const char *, const char *, ...);
 extern char lbl_8032B868[];
 extern int fn_802E30C8(const char *, ...);
 extern int fn_801338D8(const char *);
-extern float fn_80133960(const char *);
+extern float optionStringToFloat(const char *);
 extern int fn_80133844(const char *);
 extern unsigned long strlen(const char *);
 extern const char lbl_8032B8F8[];
@@ -309,7 +309,7 @@ int fn_8013358C(int section, int key, char *valueStr) {
     strncpy((char *)entry + 0x14, valueStr, 0x10);
     *((char *)entry + 0x23) = 0;
     *(int *)((char *)entry + 0xC) = fn_801338D8((char *)entry + 0x14);
-    *(float *)((char *)entry + 0x10) = fn_80133960((char *)entry + 0x14);
+    *(float *)((char *)entry + 0x10) = optionStringToFloat((char *)entry + 0x14);
     *((unsigned char *)entry + 8) = fn_80133844((char *)entry + 0x14);
     *(int *)entry = 3;
     if (strlen(valueStr) > 15) {
@@ -460,7 +460,7 @@ extern int fn_802E30C8(const char *, ...);
 extern double atof(const char *);
 #pragma scheduling invalid_target
 #pragma dont_inline on
-float fn_80133960(const char *arg0) {
+float optionStringToFloat(const char *arg0) {
     char *p = fn_801337E4((char *)arg0);
     unsigned char c = *p;
     int value = 0;
@@ -628,7 +628,7 @@ int readOptionsFile(int path, int ignoreVersion, int wantSection) {
                                 ((OptionEntry *)entry)->intValue =
                                     fn_801338D8(((OptionEntry *)entry)->text);
                                 ((OptionEntry *)entry)->floatValue =
-                                    fn_80133960(((OptionEntry *)entry)->text);
+                                    optionStringToFloat(((OptionEntry *)entry)->text);
                                 ((OptionEntry *)entry)->boolValue =
                                     fn_80133844(((OptionEntry *)entry)->text);
                                 ((OptionEntry *)entry)->valueType =
