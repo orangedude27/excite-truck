@@ -2653,7 +2653,7 @@ typedef struct DvdStream {
     u32 discOffset;        /* 0xB4 base offset the reads are relative to */
     s32 endOffset;         /* 0xB8 offset the stream ends at */
     s32 rate;              /* 0xBC bytes/second to pace the reads at, 0 = no pacing */
-    s32 waitTicks;         /* 0xC0 pacing debt still to sleep off (fn_8011A45C) */
+    s32 waitTicks;         /* 0xC0 pacing debt still to sleep off (dvdStreamPaceRead) */
     s32 cancelling;        /* 0xC4 a DVDCancel is in progress */
     s32 timeModeUsed;      /* 0xC8 timeMode as it was when the current read was queued */
     s32 readStart;         /* 0xCC tick the current read was queued at, then its duration */
@@ -2716,7 +2716,7 @@ u32 fn_8011A388(void *arg0, s32 arg1, s32 arg2, u32 arg3) {
 }
 
 #pragma unroll reset
-void fn_8011A45C(void *arg0, s32 arg1, s32 arg2) {
+void dvdStreamPaceRead(void *arg0, s32 arg1, s32 arg2) {
     /* Accumulate pacing debt from the requested work and sleep until the elapsed time catches up. */
     s32 temp_r0;
     s32 scaledTicks;
@@ -2782,7 +2782,7 @@ void dvdStreamReadCallback(s32 transferSize, DVDFileInfo *fileInfo) {
         if (stream->fill > stream->peakFill)
             stream->peakFill = stream->fill;
         if (stream->rate != 0)
-            fn_8011A45C(stream, size, stream->readStart);
+            dvdStreamPaceRead(stream, size, stream->readStart);
         elapsed = fn_80116D30() - stream->readStart;
         stream->readStart = elapsed;
         stream->readTime += elapsed;
@@ -2903,7 +2903,7 @@ s32 fn_8011A870(void *stream, s32 flags) {
 }
 #pragma pop
 extern u32 fn_8011A240(void *, u32, s32, u32);
-extern void fn_8011A45C(void *, s32, s32);
+extern void dvdStreamPaceRead(void *, s32, s32);
 extern void fn_8011A1A0(u32 *, u32);
 u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
     DvdStream *stream = (DvdStream *)arg0;
@@ -2972,7 +2972,7 @@ u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
                 direct->totalRead = bytesRead + total;
             }
             if (rate != 0)
-                fn_8011A45C(arg0, total, work);
+                dvdStreamPaceRead(arg0, total, work);
         }
         {
             u32 now = fn_80116D30();
