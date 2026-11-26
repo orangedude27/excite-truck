@@ -512,7 +512,7 @@ extern const char lbl_8055C5A0[];
 #pragma cplusplus on
 #pragma scheduling invalid_target
 /* Load camera and region definitions from a parsed node tree into the camera/region tables. */
-extern "C" void fn_802712F8(void *rootNode) {
+extern "C" void loadCameraRegionDefs(void *rootNode) {
     class Item { public: virtual const char *getName(); };
     class Iterator { public: virtual void unused(); virtual Item *next(int); };
     extern char lbl_80346B00[];
@@ -593,11 +593,11 @@ extern "C" void fn_802712F8(void *rootNode) {
 
 #pragma scheduling on
 extern char lbl_80346E90[];
-void fn_802712F8(void *);
+void loadCameraRegionDefs(void *);
 /* Populate the camera and region tables by traversing the "camera3.val"
-   resource (fn_802712F8 resets the tables, then collects its entries). */
+   resource (loadCameraRegionDefs resets the tables, then collects its entries). */
 void fn_8027156C(void) {
-    fn_802712F8(lbl_80346E90);
+    loadCameraRegionDefs(lbl_80346E90);
 }
 
 typedef signed int s32;
