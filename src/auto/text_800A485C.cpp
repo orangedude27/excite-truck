@@ -7477,69 +7477,69 @@ extern "C" s32 fn_800AF734(void *fatCtx, s32 clusterIndex, s32 entryValue) {
 
 #pragma use_lmw_stmw off
 /* Write a 12-bit FAT entry for a cluster into the cached FAT page, reloading/flushing sectors as needed. */
-extern "C" s32 VFiPFFAT_SetEntry12Page(void *fatCtx, s32 cluster, u32 entryValue, void *page) {
+extern "C" s32 VFiPFFAT_SetEntry12Page(void *fatCtx, s32 clusterNum, u32 newValue, void *fatPage) {
     extern s32 fn_800B5260(void *, void *, u32, u32, s32);
     extern s32 fn_800B5618(void *, void *, u32, u32, s32);
-    s32 byteOffset = (cluster + (cluster >> 1)) & 0xFFFF;
-    u32 sector = (*(u32 *)((char *)fatCtx + 0x28) + (byteOffset >> *(u8 *)((char *)fatCtx + 0x20))) & 0xFFFF;
-    u16 pageOffset = byteOffset & (*(u16 *)fatCtx - 1);
+    s32 entryByteOffset = (clusterNum + (clusterNum >> 1)) & 0xFFFF;
+    u32 fatSector = (*(u32 *)((char *)fatCtx + 0x28) + (entryByteOffset >> *(u8 *)((char *)fatCtx + 0x20))) & 0xFFFF;
+    u16 byteOffsetInPage = entryByteOffset & (*(u16 *)fatCtx - 1);
     u32 nextSector;
-    u32 readResult = 0;
-    s32 savedError = 0;
-    u16 i;
+    u32 status = 0;
+    s32 firstError = 0;
+    u16 fatCopyIndex;
 
-    if (*(u32 *)((char *)page + 0x18) != sector) {
-        for (i = 0; (s32)i < *(u8 *)((char *)fatCtx + 0x22); i++) {
-            s32 r = fn_800B5618(fatCtx, *(void **)((char *)page + 8),
-                *(u32 *)((char *)page + 0x18) + (s32)i * *(s32 *)((char *)fatCtx + 0xC),
+    if (*(u32 *)((char *)fatPage + 0x18) != fatSector) {
+        for (fatCopyIndex = 0; (s32)fatCopyIndex < *(u8 *)((char *)fatCtx + 0x22); fatCopyIndex++) {
+            s32 writeStatus = fn_800B5618(fatCtx, *(void **)((char *)fatPage + 8),
+                *(u32 *)((char *)fatPage + 0x18) + (s32)fatCopyIndex * *(s32 *)((char *)fatCtx + 0xC),
                 0, *(u16 *)fatCtx);
-            if (r != 0 && savedError == 0) savedError = r;
+            if (writeStatus != 0 && firstError == 0) firstError = writeStatus;
         }
-        readResult = fn_800B5260(fatCtx, *(void **)((char *)page + 8), sector, 0, *(u16 *)fatCtx);
-        if (readResult != 0) return readResult;
-        *(u32 *)((char *)page + 0x18) = sector;
+        status = fn_800B5260(fatCtx, *(void **)((char *)fatPage + 8), fatSector, 0, *(u16 *)fatCtx);
+        if (status != 0) return status;
+        *(u32 *)((char *)fatPage + 0x18) = fatSector;
     }
-    if (cluster & 1) {
-        *(u8 *)((u8 *)*(s32 *)((char *)page + 8) + pageOffset) =
-            (*(u8 *)((u8 *)*(s32 *)((char *)page + 8) + pageOffset) & 0xF) | ((entryValue & 0xF) << 4);
-        if ((u32)pageOffset == (u32)*(u16 *)fatCtx - 1) {
-            for (i = 0; (s32)i < *(u8 *)((char *)fatCtx + 0x22); i++) {
-                s32 r = fn_800B5618(fatCtx, *(void **)((char *)page + 8),
-                    *(u32 *)((char *)page + 0x18) + i * *(s32 *)((char *)fatCtx + 0xC),
+    if (clusterNum & 1) {
+        *(u8 *)((u8 *)*(s32 *)((char *)fatPage + 8) + byteOffsetInPage) =
+            (*(u8 *)((u8 *)*(s32 *)((char *)fatPage + 8) + byteOffsetInPage) & 0xF) | ((newValue & 0xF) << 4);
+        if ((u32)byteOffsetInPage == (u32)*(u16 *)fatCtx - 1) {
+            for (fatCopyIndex = 0; (s32)fatCopyIndex < *(u8 *)((char *)fatCtx + 0x22); fatCopyIndex++) {
+                s32 writeStatus = fn_800B5618(fatCtx, *(void **)((char *)fatPage + 8),
+                    *(u32 *)((char *)fatPage + 0x18) + fatCopyIndex * *(s32 *)((char *)fatCtx + 0xC),
                     0, *(u16 *)fatCtx);
-                if (r != 0 && savedError == 0) savedError = r;
+                if (writeStatus != 0 && firstError == 0) firstError = writeStatus;
             }
-            nextSector = sector + 1;
-            readResult = fn_800B5260(fatCtx, *(void **)((char *)page + 8), nextSector, 0, *(u16 *)fatCtx);
-            if (readResult != 0) return readResult;
-            *(u32 *)((char *)page + 0x18) = nextSector;
-            *(u8 *)*(s32 *)((char *)page + 8) = (u8)(entryValue >> 4);
+            nextSector = fatSector + 1;
+            status = fn_800B5260(fatCtx, *(void **)((char *)fatPage + 8), nextSector, 0, *(u16 *)fatCtx);
+            if (status != 0) return status;
+            *(u32 *)((char *)fatPage + 0x18) = nextSector;
+            *(u8 *)*(s32 *)((char *)fatPage + 8) = (u8)(newValue >> 4);
         } else {
-            u8 *addr = (u8 *)(*(s32 *)((char *)page + 8) + pageOffset + 1);
-            *addr = (u8)(entryValue >> 4);
+            u8 *nextByteAddr = (u8 *)(*(s32 *)((char *)fatPage + 8) + byteOffsetInPage + 1);
+            *nextByteAddr = (u8)(newValue >> 4);
         }
     } else {
-        *(u8 *)((u8 *)*(s32 *)((char *)page + 8) + pageOffset) = (u8)entryValue;
-        if ((u32)pageOffset == (u32)*(u16 *)fatCtx - 1) {
-            for (i = 0; (s32)i < *(u8 *)((char *)fatCtx + 0x22); i++) {
-                s32 r = fn_800B5618(fatCtx, *(void **)((char *)page + 8),
-                    *(u32 *)((char *)page + 0x18) + (s32)i * *(s32 *)((char *)fatCtx + 0xC),
+        *(u8 *)((u8 *)*(s32 *)((char *)fatPage + 8) + byteOffsetInPage) = (u8)newValue;
+        if ((u32)byteOffsetInPage == (u32)*(u16 *)fatCtx - 1) {
+            for (fatCopyIndex = 0; (s32)fatCopyIndex < *(u8 *)((char *)fatCtx + 0x22); fatCopyIndex++) {
+                s32 writeStatus = fn_800B5618(fatCtx, *(void **)((char *)fatPage + 8),
+                    *(u32 *)((char *)fatPage + 0x18) + (s32)fatCopyIndex * *(s32 *)((char *)fatCtx + 0xC),
                     0, *(u16 *)fatCtx);
-                if (r != 0 && savedError == 0) savedError = r;
+                if (writeStatus != 0 && firstError == 0) firstError = writeStatus;
             }
-            nextSector = sector + 1;
-            readResult = fn_800B5260(fatCtx, *(void **)((char *)page + 8), nextSector, 0, *(u16 *)fatCtx);
-            if (readResult) return readResult;
-            *(u32 *)((char *)page + 0x18) = nextSector;
-            *(u8 *)*(s32 *)((char *)page + 8) =
-                (*(u8 *)*(s32 *)((char *)page + 8) & 0xF0) | (u8)(entryValue >> 8);
+            nextSector = fatSector + 1;
+            status = fn_800B5260(fatCtx, *(void **)((char *)fatPage + 8), nextSector, 0, *(u16 *)fatCtx);
+            if (status) return status;
+            *(u32 *)((char *)fatPage + 0x18) = nextSector;
+            *(u8 *)*(s32 *)((char *)fatPage + 8) =
+                (*(u8 *)*(s32 *)((char *)fatPage + 8) & 0xF0) | (u8)(newValue >> 8);
         } else {
-            *(u8 *)((u8 *)(pageOffset + 1 + *(s32 *)((char *)page + 8))) =
-                (*(u8 *)((u8 *)(pageOffset + 1 + *(s32 *)((char *)page + 8))) & 0xF0) | (u8)(entryValue >> 8);
+            *(u8 *)((u8 *)(byteOffsetInPage + 1 + *(s32 *)((char *)fatPage + 8))) =
+                (*(u8 *)((u8 *)(byteOffsetInPage + 1 + *(s32 *)((char *)fatPage + 8))) & 0xF0) | (u8)(newValue >> 8);
         }
     }
-    if (readResult != 0) savedError = readResult;
-    return savedError;
+    if (status != 0) firstError = status;
+    return firstError;
 }
 #pragma push
 #pragma opt_propagation on
