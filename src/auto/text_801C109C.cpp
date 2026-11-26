@@ -860,85 +860,89 @@ check:
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-extern "C" void ImpactEffect_calcHitAndNormal(void *obj, int mtx, float *pos, void *mat, int arg4, int first, int count, int draw, int out) {
-    float v5C[3], v50[3], v44[3], v38[3], v2C[3], v20[3], v14[3], v8[3];
-    int limit, idx, off, i;
+/* Compute the averaged impact position and accumulated impact normal from the
+ * visible elements of an effect list: transform each element into view space,
+ * cull it against a frustum box, then weight its position into hitPos and its
+ * direction into outNormal.  A negative count processes the whole list. */
+extern "C" void ImpactEffect_calcHitAndNormal(void *effect, int mtx, float *origin, void *vecA, int vecB, int first, int count, int hitPos, int outNormal) {
+    float dirVec[3], matVec[3], scaledVec[3], worldVec[3], viewPos[3], localPos[3], normalSum[3], hitSum[3];
+    int end, vecIdx, vecOff, i;
     float f31, f30, f29, f28, f27, f26, f25, f24, f23, f22;
 
-    limit = count;
+    end = count;
     if (count < 0)
-        limit = *(int *)((char *)obj + 0x14);
-    GXInitLightAttnA_80144B44(v8, lbl_80562904, lbl_80562904, lbl_80562904);
-    GXInitLightAttnA_80144B44(v14, lbl_80562904, lbl_80562904, lbl_80562904);
+        end = *(int *)((char *)effect + 0x14);
+    GXInitLightAttnA_80144B44(hitSum, lbl_80562904, lbl_80562904, lbl_80562904);
+    GXInitLightAttnA_80144B44(normalSum, lbl_80562904, lbl_80562904, lbl_80562904);
     f30 = lbl_80562904;
-    off = first * 0xC;
+    vecOff = first * 0xC;
     f31 = lbl_80562934;
     f26 = f30;
     f25 = lbl_80562938;
     f27 = f30;
     f28 = f30;
     f29 = lbl_80562940;
-    idx = first * 4;
+    vecIdx = first * 4;
     i = first;
-    for (; i < limit; idx += 4, off += 0xC, i++) {
-        if (*(int *)(*(int *)((char *)obj + 0x38) + idx) == 0)
+    for (; i < end; vecIdx += 4, vecOff += 0xC, i++) {
+        if (*(int *)(*(int *)((char *)effect + 0x38) + vecIdx) == 0)
             continue;
         {
-            float f3 = *(float *)(*(int *)((char *)obj + 0x30) + idx);
+            float radius = *(float *)(*(int *)((char *)effect + 0x30) + vecIdx);
             float x, y, z;
-            x = pos[0] + f3;
-            y = pos[1] + f3;
-            z = pos[2] + f3;
+            x = origin[0] + radius;
+            y = origin[1] + radius;
+            z = origin[2] + radius;
             f22 = f31 + x;
             f23 = f31 + y;
             f24 = f31 + z;
-            fn_80144D64((int *)v20, (int *)(*(int *)((char *)obj + 0x24) + off));
-            fn_8001BA68(v2C);
-            fn_80144CD0(v2C, v20, mtx);
-            fn_8001BA68(v38);
-            fn_8001BA68(v44);
-            fn_80144D64((int *)v50, (int *)mat);
-            fn_801C2B9C(v44, (float *)(*(int *)((char *)obj + 0x28) + off), v50, lbl_80562900);
-            fn_80144CD0(v38, v44, mtx);
-            if (!(fn_8017F70C(v2C[0]) < f22))
+            fn_80144D64((int *)localPos, (int *)(*(int *)((char *)effect + 0x24) + vecOff));
+            fn_8001BA68(viewPos);
+            fn_80144CD0(viewPos, localPos, mtx);
+            fn_8001BA68(worldVec);
+            fn_8001BA68(scaledVec);
+            fn_80144D64((int *)matVec, (int *)vecA);
+            fn_801C2B9C(scaledVec, (float *)(*(int *)((char *)effect + 0x28) + vecOff), matVec, lbl_80562900);
+            fn_80144CD0(worldVec, scaledVec, mtx);
+            if (!(fn_8017F70C(viewPos[0]) < f22))
                 continue;
-            if (!(fn_8017F70C(v2C[1]) < f23))
+            if (!(fn_8017F70C(viewPos[1]) < f23))
                 continue;
-            if (!(fn_8017F70C(v2C[2]) < f24))
+            if (!(fn_8017F70C(viewPos[2]) < f24))
                 continue;
-            if (fn_8017F70C(v38[0]) > f25 + f22) {
-                if (v2C[0] >= f26) {
+            if (fn_8017F70C(worldVec[0]) > f25 + f22) {
+                if (viewPos[0] >= f26) {
                     f22 = f22;
                 } else {
                     f22 = -f22;
                 }
-                v2C[0] = f22;
+                viewPos[0] = f22;
             }
-            if (fn_8017F70C(v38[1]) >= f25 + f23) {
-                if (v2C[1] > f27)
-                    v2C[1] = f23;
+            if (fn_8017F70C(worldVec[1]) >= f25 + f23) {
+                if (viewPos[1] > f27)
+                    viewPos[1] = f23;
                 else
-                    v2C[1] = -f23;
+                    viewPos[1] = -f23;
             }
-            if (fn_8017F70C(v38[2]) >= f25 + f24) {
-                if (v2C[2] > f28)
-                    v2C[2] = f24;
+            if (fn_8017F70C(worldVec[2]) >= f25 + f24) {
+                if (viewPos[2] > f28)
+                    viewPos[2] = f24;
                 else
-                    v2C[2] = -f24;
+                    viewPos[2] = -f24;
             }
-            fn_801BFD34((int *)(*(int *)((char *)obj + 0x24) + off), v2C, mtx);
-            fn_8001BA68(v5C);
-            fn_801C0E60(v5C, v20, (int *)(*(int *)((char *)obj + 0x24) + off));
-            f24 = fn_801429D0(fn_801C0E44(v5C), lbl_8056293C);
-            fn_801C2B9C(v14, v14, v5C, f29 * *(float *)(*(int *)((char *)obj + 0x34) + idx));
-            fn_801C2B9C(v8, v8, (float *)(*(int *)((char *)obj + 0x24) + off), f24);
+            fn_801BFD34((int *)(*(int *)((char *)effect + 0x24) + vecOff), viewPos, mtx);
+            fn_8001BA68(dirVec);
+            fn_801C0E60(dirVec, localPos, (int *)(*(int *)((char *)effect + 0x24) + vecOff));
+            f24 = fn_801429D0(fn_801C0E44(dirVec), lbl_8056293C);
+            fn_801C2B9C(normalSum, normalSum, dirVec, f29 * *(float *)(*(int *)((char *)effect + 0x34) + vecIdx));
+            fn_801C2B9C(hitSum, hitSum, (float *)(*(int *)((char *)effect + 0x24) + vecOff), f24);
             f30 += f24;
         }
     }
-    if (draw != 0)
-        fn_801C0124(draw, v8, lbl_8056290C / fn_801429D0(f30, lbl_80562944));
-    if (out != 0)
-        fn_80144DAC((void *)out, v14);
+    if (hitPos != 0)
+        fn_801C0124(hitPos, hitSum, lbl_8056290C / fn_801429D0(f30, lbl_80562944));
+    if (outNormal != 0)
+        fn_80144DAC((void *)outNormal, normalSum);
 }
 #pragma pop
 /* Computes out = base + delta * scale component-wise for a 3D vector (Vec3 scale-and-add). */
