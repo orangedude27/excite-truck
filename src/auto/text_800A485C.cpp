@@ -3804,7 +3804,7 @@ extern "C" s32 VFiPFPATH_cmpName(void *, s32, s32);
 #pragma push
 #pragma use_lmw_stmw off
 // Checks a directory/path entry against requested name, attributes and state; returns 0 if it matches, 1 if rejected.
-extern "C" s32 VFiPFDIR_CheckEntry(u8 *entry, u8 *source, s32 compareArg, s32 attrMask, u32 requiredAttr, s32 excludedAttr, s32 *matchCount, s32 arg_sp0) {
+/* Check a FAT directory entry against a requested name and attribute filter; returns 0 on match, 1 when rejected. */ extern "C" s32 VFiPFDIR_CheckEntry(u8 *entry, u8 *source, s32 compareArg, s32 attrMask, u32 requiredAttr, s32 excludedAttr, s32 *matchCount, s32 arg_sp0) {
  s32 isVolumeLabel;
  s32 reject = 1, attrValid = 1;
  u8 shortName[13];
