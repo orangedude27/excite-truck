@@ -237,61 +237,60 @@ s32 fn_80129890(void) {
     return connectedCount;
 }
 
-// Copies a 0x64-byte record for the given index from the table at lbl_80422180 (stride 0x80)
-// into dst when present, otherwise clears dst; returns nonzero if found.
-void *copyPadStateRecord(void *dst, int index) {
-    s32 found;
-    volatile u8 *src;
+/* Copy the 0x64-byte state record for pad `padIndex` from lbl_80422180 (stride 0x80) into `dst` when the pad is connected; zero `dst` otherwise. Returns nonzero when the pad was connected. */
+void *copyPadStateRecord(void *dst, int padIndex) {
+    s32 connected;
+    volatile u8 *record;
     u8 *out;
-    u8 a, b;
+    u8 second, first;
     u32 wordA, wordB;
-    found = RjoyIsPadConnected(index);
-    if (found) {
-        src = lbl_80422180 + (index << 7);
+    connected = RjoyIsPadConnected(padIndex);
+    if (connected) {
+        record = lbl_80422180 + (padIndex << 7);
         out = dst;
-        *(f32 *)(out + 0x00) = *(f32 *)(src + 0x1C);
-        *(f32 *)(out + 0x04) = *(f32 *)(src + 0x20);
-        *(f32 *)(out + 0x08) = *(f32 *)(src + 0x24);
-        *(f32 *)(out + 0x0C) = *(f32 *)(src + 0x28);
-        *(f32 *)(out + 0x10) = *(f32 *)(src + 0x2C);
-        *(f32 *)(out + 0x14) = *(f32 *)(src + 0x30);
-        *(f32 *)(out + 0x18) = *(f32 *)(src + 0x34);
-        *(f32 *)(out + 0x1C) = *(f32 *)(src + 0x38);
-        b = src[0x3C]; a = src[0x3D]; out[0x20] = b; out[0x21] = a;
-        b = src[0x3E]; a = src[0x3F]; out[0x22] = b; out[0x23] = a;
-        b = src[0x40]; a = src[0x41]; out[0x24] = b; out[0x25] = a;
-        b = src[0x42]; a = src[0x43]; out[0x26] = b; out[0x27] = a;
-        b = src[0x44]; a = src[0x45]; out[0x28] = b; out[0x29] = a;
-        b = src[0x46]; a = src[0x47]; out[0x2A] = b; out[0x2B] = a;
-        b = src[0x48]; a = src[0x49]; out[0x2C] = b; out[0x2D] = a;
-        b = src[0x4A]; a = src[0x4B]; out[0x2E] = b; out[0x2F] = a;
-        b = src[0x4C]; a = src[0x4D]; out[0x30] = b; out[0x31] = a;
-        b = src[0x4E]; a = src[0x4F]; out[0x32] = b; out[0x33] = a;
-        b = src[0x50]; a = src[0x51]; out[0x34] = b; out[0x35] = a;
-        b = src[0x52]; a = src[0x53]; out[0x36] = b; out[0x37] = a;
-        b = src[0x54]; a = src[0x55]; out[0x38] = b; out[0x39] = a;
-        b = src[0x56]; a = src[0x57]; out[0x3A] = b; out[0x3B] = a;
-        b = src[0x58]; a = src[0x59]; out[0x3C] = b; out[0x3D] = a;
-        b = src[0x5A]; a = src[0x5B]; out[0x3E] = b; out[0x3F] = a;
-        *(u32 *)(out + 0x40) = *(u32 *)(src + 0x5C);
-        wordB = *(volatile u32 *)(src + 0x60);
-        wordA = *(volatile u32 *)(src + 0x64);
+        *(f32 *)(out + 0x00) = *(f32 *)(record + 0x1C);
+        *(f32 *)(out + 0x04) = *(f32 *)(record + 0x20);
+        *(f32 *)(out + 0x08) = *(f32 *)(record + 0x24);
+        *(f32 *)(out + 0x0C) = *(f32 *)(record + 0x28);
+        *(f32 *)(out + 0x10) = *(f32 *)(record + 0x2C);
+        *(f32 *)(out + 0x14) = *(f32 *)(record + 0x30);
+        *(f32 *)(out + 0x18) = *(f32 *)(record + 0x34);
+        *(f32 *)(out + 0x1C) = *(f32 *)(record + 0x38);
+        first = record[0x3C]; second = record[0x3D]; out[0x20] = first; out[0x21] = second;
+        first = record[0x3E]; second = record[0x3F]; out[0x22] = first; out[0x23] = second;
+        first = record[0x40]; second = record[0x41]; out[0x24] = first; out[0x25] = second;
+        first = record[0x42]; second = record[0x43]; out[0x26] = first; out[0x27] = second;
+        first = record[0x44]; second = record[0x45]; out[0x28] = first; out[0x29] = second;
+        first = record[0x46]; second = record[0x47]; out[0x2A] = first; out[0x2B] = second;
+        first = record[0x48]; second = record[0x49]; out[0x2C] = first; out[0x2D] = second;
+        first = record[0x4A]; second = record[0x4B]; out[0x2E] = first; out[0x2F] = second;
+        first = record[0x4C]; second = record[0x4D]; out[0x30] = first; out[0x31] = second;
+        first = record[0x4E]; second = record[0x4F]; out[0x32] = first; out[0x33] = second;
+        first = record[0x50]; second = record[0x51]; out[0x34] = first; out[0x35] = second;
+        first = record[0x52]; second = record[0x53]; out[0x36] = first; out[0x37] = second;
+        first = record[0x54]; second = record[0x55]; out[0x38] = first; out[0x39] = second;
+        first = record[0x56]; second = record[0x57]; out[0x3A] = first; out[0x3B] = second;
+        first = record[0x58]; second = record[0x59]; out[0x3C] = first; out[0x3D] = second;
+        first = record[0x5A]; second = record[0x5B]; out[0x3E] = first; out[0x3F] = second;
+        *(u32 *)(out + 0x40) = *(u32 *)(record + 0x5C);
+        wordB = *(volatile u32 *)(record + 0x60);
+        wordA = *(volatile u32 *)(record + 0x64);
         *(u32 *)(out + 0x44) = wordB;
         *(u32 *)(out + 0x48) = wordA;
-        wordA = *(volatile u32 *)(src + 0x68);
-        wordB = *(volatile u32 *)(src + 0x6C);
+        wordA = *(volatile u32 *)(record + 0x68);
+        wordB = *(volatile u32 *)(record + 0x6C);
         *(u32 *)(out + 0x4C) = wordA;
         *(u32 *)(out + 0x50) = wordB;
-        wordA = *(volatile u32 *)(src + 0x70);
-        wordB = *(volatile u32 *)(src + 0x74);
+        wordA = *(volatile u32 *)(record + 0x70);
+        wordB = *(volatile u32 *)(record + 0x74);
         *(u32 *)(out + 0x54) = wordA;
         *(u32 *)(out + 0x58) = wordB;
-        *(u32 *)(out + 0x5C) = *(u32 *)(src + 0x78);
-        out[0x60] = src[0x7C];
+        *(u32 *)(out + 0x5C) = *(u32 *)(record + 0x78);
+        out[0x60] = record[0x7C];
     } else {
         memset(dst, 0, 0x64);
     }
-    return (void *)found;
+    return (void *)connected;
 }
 
 // Thin wrapper: copies controllerIndex's 0x64-byte config record into dst (see copyPadStateRecord).
