@@ -103,14 +103,14 @@ extern void KERNEL_WaitMilliseconds(s32);
 extern f32 fn_8017970C(void);
 extern f32 fn_8002FD54(u32, u32);
 extern void *fn_80179824(void);
-extern s32 fn_801773E4(void);
+extern s32 stepFaderAndApplyVolume(void);
 extern void fn_801C6AD0(s32 *);
 extern f32 lbl_8055E3D0;
 extern f32 lbl_80561B30;
 extern f32 lbl_80561B34;
 extern f32 lbl_80561B40;
 /* The phys-fader.  A physics mode change that is not applied at once first
- * fades the game out: the request arms this block, stepPhysFade and fn_801773E4
+ * fades the game out: the request arms this block, stepPhysFade and stepFaderAndApplyVolume
  * move `alpha` towards 0xFF every tick, and once it has sat there for `hold`
  * ticks the mode goes to FADE_MODE_DONE (or FADE_MODE_IDLE when fading back
  * in) and `onDone` runs -- that is where the pending command is applied. */
@@ -609,7 +609,7 @@ void fn_80177138(void) {
  * faded.  The mixer volume handle the physics module opened is set to the
  * inverse of that level, and fn_80176A70 stores the level in the physics
  * object it returns. */
-s32 fn_801773E4(void) {
+s32 stepFaderAndApplyVolume(void) {
     f32 speed;
     s32 elapsed, ramp, value;
     u8 fade;
@@ -745,7 +745,7 @@ void *fn_80176A70(void) {
     /* Wait/pump loop during physics init: snapshots generation and start time, then
        runs fn_80176610 until state==2/cancelled/generation changed/isTileCaptureActive!=0.
        After >10000ms logs progress via base+0x190/0x1C8; on 16-bit wrap via +0x204.
-       Updates smoothed elapsed in lbl_8055E3D0, stores fn_801773E4() at +0xDB0 of
+       Updates smoothed elapsed in lbl_8055E3D0, stores stepFaderAndApplyVolume() at +0xDB0 of
        fn_80179824()'s result, notifies fn_801C6AD0, and returns it. */
     char *base;
     s32 generationSnap;
@@ -787,7 +787,7 @@ done:
     elapsedScaled = lbl_80561B30 * fn_8002FD54((u32)(elapsedTicks >> 32), (u32)elapsedTicks);
     lbl_8055E3D0 = elapsedScaled + lbl_80561B34 * (lbl_8055E3D0 - elapsedScaled);
     physicsObj = fn_80179824();
-    ((s32 *)physicsObj)[0x36C] = fn_801773E4();
+    ((s32 *)physicsObj)[0x36C] = stepFaderAndApplyVolume();
     fn_801C6AD0(&((s32 *)physicsObj)[0x36C]);
     return physicsObj;
 }
