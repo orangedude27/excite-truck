@@ -1,7 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-void fn_8012C4D8(void);
+void releaseResource(void);
 void fn_80128670(int);
 void fn_80128668(void *);
 void *getResourceData(int, unsigned int, unsigned int *, unsigned int *, int, unsigned char *);
@@ -126,10 +126,10 @@ void *loadLayout(const char *name) {
 }
 #pragma scheduling on
 /* Release one reference to a resource handle: the handle arrives in r3 and is
- * forwarded unchanged to fn_8012C4D8, which drops the reference without a
+ * forwarded unchanged to releaseResource, which drops the reference without a
  * release callback. */
 void fn_8022E4BC(void) {
-    fn_8012C4D8();
+    releaseResource();
 }
 
 void *memset(void *, int, unsigned int);

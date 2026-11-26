@@ -426,7 +426,7 @@ void *fn_801CFEAC(void *path) {
 #pragma scheduling on
 /* Release a resource reference (tail-calls the resource manager's release path). */
 void fn_801CFF14(void) {
-    fn_8012C4D8();
+    releaseResource();
 }
 
 extern void DrawList_copyCurrentMatrix(float *);

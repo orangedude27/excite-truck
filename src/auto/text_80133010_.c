@@ -90,7 +90,7 @@ typedef struct OptionTable {
 //                  options have been reloaded so its module reads them again
 
 extern void *getResourceData(int, int, int *, int *, int, int);
-extern void fn_8012C4D8(void *);
+extern void releaseResource(void *);
 extern int optionSectionFromName(char *);
 extern char *strchr(const char *, int);
 extern char *strcpy(char *, const char *);
@@ -650,7 +650,7 @@ int readOptionsFile(int path, int ignoreVersion, int wantSection) {
                 }
             }
         }
-        fn_8012C4D8(data);
+        releaseResource(data);
     } else {
         // "Couldn't open options file: %s"
         fn_802E30C8(strings + 0x208, path);

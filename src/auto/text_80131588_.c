@@ -136,7 +136,7 @@ void fn_80131810(s32 data) {
 /* Release the parsed value-file table in `table` (loaded by fn_80131588 /
  * fn_80131808) by forwarding it to the resource decref/release path. */
 void fn_80131818(void *table) {
-    fn_8012C4D8(table);
+    releaseResource(table);
 }
 
 extern void fn_802E30C8(const char*, ...);

@@ -511,7 +511,7 @@ void RegisterTextureWithResource(int textureName, int resourceHandle) {
     fn_802CA898(name, 0, 0, category);
 }
 
-extern void fn_8012C4D8(void *);
+extern void releaseResource(void *);
 extern void fn_802CB82C(int);
 extern void fn_802CAD28(int);
 extern char lbl_8034B8E0[];
@@ -546,7 +546,7 @@ void fn_802CAC54(int arg0)
   if ((entry[0] == 0) && (entry[0x2C / 4] != 0))
   {
     fn_802CB82C(arg0);
-    fn_8012C4D8((void *) entry[0x2C / 4]);
+    releaseResource((void *) entry[0x2C / 4]);
     entry[0x2C / 4] = 0;
     ((void (*)(int)) fn_802D8FB4)(entry[0x28 / 4]);
   }

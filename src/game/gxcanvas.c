@@ -23,7 +23,7 @@ void fn_802C5024(s32, s32, s32, s32);
 #define CANVAS_CHAR_UNKNOWN '#'  /* drawn for anything outside printable ASCII */
 #define DrawCanvasChar      fn_802C5024 /* one character at (x,y) in a colour; empty in this build */
 
-extern void fn_8012C4D8(void);
+extern void releaseResource(void);
 
 /* One drawing canvas, the object every gxCanvas* routine in this file works
    on.  The one being drawn on is the pointer kept in lbl_8055FC00
@@ -177,8 +177,8 @@ void *gxCanvasLoad(s32 path) {
 #pragma scheduling on
 void fn_802C2FC4(void) {
     /* Drop one reference on a resource handle: tail-call the shared
-       resource-manager release (fn_8012C4D8), leaving the handle in r3. */
-    ((void (*)(void))fn_8012C4D8)();
+       resource-manager release (releaseResource), leaving the handle in r3. */
+    ((void (*)(void))releaseResource)();
 }
 
 #pragma push
@@ -1270,7 +1270,7 @@ ret0:
     if (stamp == NULL) {
         return;
     }
-    fn_8012C4D8();
+    releaseResource();
 }
 
 #pragma push

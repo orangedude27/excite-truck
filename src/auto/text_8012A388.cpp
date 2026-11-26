@@ -73,7 +73,7 @@ extern "C" void fn_8012DBD0(void);
 extern "C" s32 lbl_8055DFFC;
 extern "C" const char lbl_8032AE60[];
 extern "C" const char lbl_8032A8E8[];
-extern "C" void fn_8012C4D8(void *);
+extern "C" void releaseResource(void *);
 extern "C" s32 fn_80128668(void *);
 struct Fn8012AFE0Ent { u8 pad[0x34]; u32 flags; u8 pad2[0xC]; };
 /* 13-word resource block header copied into a load request at +0x6C. */
@@ -841,7 +841,7 @@ done2:
                         n += 0x44;
                         *(u32 *)(e + 0x34) = fl & ~0xF;
                     }
-                    if (*(s32 *)(node + 0x64) != 0) fn_8012C4D8(*(void **)(node + 0x64));
+                    if (*(s32 *)(node + 0x64) != 0) releaseResource(*(void **)(node + 0x64));
                     if (*(s32 *)(node + 0xA0) != 0) fn_80128660(*(s32 *)(node + 0xA0));
                     node[0xAC] = 0;
                 }
@@ -1258,7 +1258,7 @@ extern "C" void fn_8012BA1C(void *resource) {
 }
 #pragma pop
 extern "C" void fn_8012BC24(void **, void *);
-extern "C" void fn_8012C4D8(void *);
+extern "C" void releaseResource(void *);
 extern "C" s32 fn_80128668(void *);
 /* Always-true gate used by fn_8012BB20: it is called through a u32(void*) pointer
  * with a resource-set pointer, ignores that argument, and never vetoes cleanup. */
@@ -1292,7 +1292,7 @@ extern "C" void fn_8012BB20(s32 listHead, void *node) {
             *(u32 *)(entry + 0x34) = flags & 0xFFFFFFF0;
         }
         if (*(s32 *)((u8 *)node + 0x64) != 0) {
-            fn_8012C4D8(*(void **)((u8 *)node + 0x64));
+            releaseResource(*(void **)((u8 *)node + 0x64));
         }
         if (*(s32 *)((u8 *)node + 0xA0) != 0) {
             fn_80128660(*(s32 *)((u8 *)node + 0xA0));
@@ -1432,7 +1432,7 @@ extern "C" void fn_802E3A14(s32, s32);
 extern "C" s32 fn_802E3804(s32, void *, s32);
 extern "C" s32 fn_802E3C24(s32, char *, s32);
 extern "C" void FileFind_Close(s32);
-extern "C" void fn_8012C4D8(void *);
+extern "C" void releaseResource(void *);
 extern "C" s32 lbl_802F8E50[3];
 extern "C" const char lbl_8032AF4C[];
 extern "C" const char lbl_8032AF0C[];
@@ -1528,7 +1528,7 @@ suffix_done_2:
                                     fn_802E3804(inner, data+0x14, header[3]*0x44);
                                 } else fn_802E30C8(lbl_8032AF0C, filename);
                             }
-                            fn_8012C4D8(data);
+                            releaseResource(data);
                         } else fn_802E30C8(lbl_8032AEF4, filename);
                     } else {
                         fn_802E30C8(lbl_8032AED4, filename); closeFileHandle(&inner); goto read_rest;
@@ -1610,7 +1610,7 @@ extern "C" void fn_8012C41C(s32 (*callback)(void *, void *, void *, s32), s32 us
 }
 #pragma pop
 // Drop one reference to a loaded resource object; no callback when it is freed.
-extern "C" void fn_8012C4D8(void *resource) {
+extern "C" void releaseResource(void *resource) {
     fn_8012BC50(resource, 0, 0);
 }
 
@@ -1686,7 +1686,7 @@ extern "C" s32 fn_8012CC24(void *arg0, void *arg1) {
         if (count < *(s32 *)(self + 0x8C))
             goto record_body_two;
         if (*(s32 *)(self + 0x68) != 0)
-            fn_8012C4D8((void *)*(s32 *)(self + 0x68));
+            releaseResource((void *)*(s32 *)(self + 0x68));
         if (*(s32 *)(self + 0xA4) != 0)
             fn_80128660(*(s32 *)(self + 0xA4));
         *(u8 *)(self + 0xB0) = 0;
@@ -1713,7 +1713,7 @@ extern "C" s32 fn_8012CC24(void *arg0, void *arg1) {
         if (count < *(s32 *)(self + 0x8C))
             goto record_body_three;
         if (*(s32 *)(self + 0x68) != 0)
-            fn_8012C4D8((void *)*(s32 *)(self + 0x68));
+            releaseResource((void *)*(s32 *)(self + 0x68));
         if (*(s32 *)(self + 0xA4) != 0)
             fn_80128660(*(s32 *)(self + 0xA4));
         *(u8 *)(self + 0xB0) = 0;
@@ -2014,7 +2014,7 @@ extern "C" void fn_8012D1A8(s32 arg0) {
             r[0x34 / 4] &= ~0xF;
         }
         if (*(s32 *)(self + 0x68) != 0) {
-            fn_8012C4D8((void *)*(s32 *)(self + 0x68));
+            releaseResource((void *)*(s32 *)(self + 0x68));
         }
         if (*(s32 *)(self + 0xA4) != 0) {
             fn_80128660(*(s32 *)(self + 0xA4));
@@ -2033,7 +2033,7 @@ extern "C" void fn_8012D1A8(s32 arg0) {
             r[0x34 / 4] &= ~0xF;
         }
         if (*(s32 *)(self + 0x68) != 0) {
-            fn_8012C4D8((void *)*(s32 *)(self + 0x68));
+            releaseResource((void *)*(s32 *)(self + 0x68));
         }
         if (*(s32 *)(self + 0xA4) != 0) {
             fn_80128660(*(s32 *)(self + 0xA4));
@@ -2166,7 +2166,7 @@ extern "C" void fn_8012D40C(s32 arg0) {
         if (count < object[0x8C / 4])
             goto record_body_two;
         if (object[0x68 / 4] != 0)
-            fn_8012C4D8((void *)object[0x68 / 4]);
+            releaseResource((void *)object[0x68 / 4]);
         if (object[0xA4 / 4] != 0)
             fn_80128660(object[0xA4 / 4]);
         *(u8 *)(self + 0xB0) = 0;
@@ -2190,7 +2190,7 @@ extern "C" void fn_8012D40C(s32 arg0) {
         if (count < object[0x8C / 4])
             goto record_body_three;
         if (object[0x68 / 4] != 0)
-            fn_8012C4D8((void *)object[0x68 / 4]);
+            releaseResource((void *)object[0x68 / 4]);
         if (object[0xA4 / 4] != 0)
             fn_80128660(object[0xA4 / 4]);
         *(u8 *)(self + 0xB0) = 0;
@@ -2438,7 +2438,7 @@ name_test:
     if (nameIndex < *(u32 *)(toc + 0xC)) goto name_loop;
 name_found:
     if (hasName != 0) matched = mount;
-    fn_8012C4D8(toc);  // release the ETOC resource again
+    releaseResource(toc);  // release the ETOC resource again
     mount = mount->next;
 mount_test:
     if (mount != 0 && matched == 0) goto mount_loop;
@@ -2768,7 +2768,7 @@ entries_test:
     }
     if (data == 0) Abend_Panic(lbl_8032ADDC, origPath);
     ret = (void *)(*(s32 *)((char *)data + 0x10) + 0x80);
-    fn_8012C4D8(data);
+    releaseResource(data);
     return ret;
 }
 
@@ -3202,7 +3202,7 @@ name_test:
     if (nameIndex < *(u32 *)(toc + 0xC)) goto name_loop;
 name_found:
     if (hasName != 0) matched = mount;
-    fn_8012C4D8(toc);  // release the ETOC resource again
+    releaseResource(toc);  // release the ETOC resource again
     mount = mount->next;
 mount_test:
     if (mount != 0 && matched == 0) goto mount_loop;
@@ -3728,7 +3728,7 @@ extern "C" void *fn_8012CB44(void *resourceSet, s32 shouldFree) {
                 *(u32 *)((char *)entry + 0x34) = flags & 0xFFFFFFF0;
             }
             base = *(void **)((char *)resourceSet + 0x64);
-            if (base != 0) fn_8012C4D8(base);
+            if (base != 0) releaseResource(base);
             base = *(void **)((char *)resourceSet + 0xA0);
             if (base != 0) fn_80128660((s32)base);
             *(u8 *)((char *)resourceSet + 0xAC) = 0;

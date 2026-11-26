@@ -5,7 +5,7 @@
 
 extern s32 getResourceData(s32, s32, s32, s32, s32, s32);
 extern void fn_8012E96C(s32);
-extern void fn_8012C4D8(void *);
+extern void releaseResource(void *);
 extern void Abend_Panic(const char *, ...);
 extern char lbl_8034AC68[];
 extern char lbl_8034AC74[];
@@ -126,7 +126,7 @@ void loadFanInfo(void) {
         } else {
             Abend_Panic(lbl_8034AC74, loadInfo[2]);
         }
-        fn_8012C4D8(fileData);
+        releaseResource(fileData);
     }
 }
 #pragma scheduling on

@@ -963,7 +963,7 @@ void fn_802BDC3C(void* alarm) {
 }
 
 void fn_802BCF04(void);
-void fn_8012C4D8(void);
+void releaseResource(void);
 void fn_802C13A4(void);
 void deleteThreads__6SystemFv_802BDCA4(void **);
 void fn_802BDC60(void) {
@@ -971,7 +971,7 @@ void fn_802BDC60(void) {
 #define activeHandle lbl_8055FAB8
 #define systemThreadSlot lbl_8055FABC
 #define Subsystem_Finalize fn_802BCF04
-#define Handle_Release fn_8012C4D8
+#define Handle_Release releaseResource
 #define Subsystem_Cleanup fn_802C13A4
 #define System_DeleteThreadSlot deleteThreads__6SystemFv_802BDCA4
 

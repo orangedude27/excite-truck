@@ -48,11 +48,11 @@ extern int lbl_8055FF98;
 extern char lbl_8034D584[];
 extern char lbl_8034D528[];
 extern void fn_80128670(int);
-extern void fn_8012C4D8(void);
+extern void releaseResource(void);
 extern void fn_8012BF24(void *);
 #define sSampleStillInUseFmt lbl_8034D528
 #define Abend_panic Abend_Panic
-#define Resource_release(res) ((void (*)(void *))fn_8012C4D8)(res)
+#define Resource_release(res) ((void (*)(void *))releaseResource)(res)
 
 enum {
     SPU_SAMPLE_REF_COUNT_OFFSET       = 0x94,

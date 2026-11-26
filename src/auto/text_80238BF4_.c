@@ -411,7 +411,7 @@ void fn_8023986C(void *arg0) {
             byteOffset += 0x14;
             entryIndex++;
         }
-        fn_8012C4D8(*(void **)((u8 *)arg0 + 0x14));
+        releaseResource(*(void **)((u8 *)arg0 + 0x14));
         *(u32 *)((u8 *)arg0 + 0x14) = 0;
     }
 }

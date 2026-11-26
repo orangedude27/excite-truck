@@ -84,7 +84,7 @@ void *fn_8012F150(s32 resource) {
 #pragma unroll reset
 #pragma scheduling on
 void fn_8012F2E4(void) {
-    fn_8012C4D8();
+    releaseResource();
 }
 
 /* Return the value pointed to: the row count of the most recently loaded STAB table. */

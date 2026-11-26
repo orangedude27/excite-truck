@@ -827,7 +827,7 @@ void fn_801310B4(char *buffer, int bufferSize, int number) {
 }
 
 extern void *getResourceData(const char *, unsigned int, unsigned int *, int *, int, void **);
-extern void fn_8012C4D8(void *);
+extern void releaseResource(void *);
 extern void fn_8012BEF0(void *);
 extern void fn_802E30C8(const char *, ...);
 extern void fn_8012FAB8(void *);
@@ -858,7 +858,7 @@ void fn_8013111C(int langIndex) {
     if (buffer != 0) {
         data = (char *)&lbl_804230D0;
         memcpy(data + 8, buffer, size);
-        fn_8012C4D8(buffer);
+        releaseResource(buffer);
         if (status == 1) {
             fn_801301E0((unsigned char *)(data + 8));
         } else {

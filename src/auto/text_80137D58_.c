@@ -656,7 +656,7 @@ typedef struct IdealResLoadInfo {
 #define sIdealBadVersionMsg lbl_8032BF70
 
 extern void *getResourceData(int, int, unsigned int *, int *, void **, unsigned char *);
-extern void fn_8012C4D8(void *);
+extern void releaseResource(void *);
 extern void fn_801381B4(void *);
 extern void fn_80138594(void *);
 extern int fn_8013BFE8(int);
@@ -707,7 +707,7 @@ void *fn_80138968(int resourceName) {
             }
         }
         if (!accepted) {
-            fn_8012C4D8(res);
+            releaseResource(res);
             res = 0;
         }
     }
@@ -720,7 +720,7 @@ void fn_80138AD8(void **objectSlot) {
     /* Release one reference to a cached object, free it, and clear the slot. */
     void *object = *objectSlot;
     CacheTable_releaseResource(*(int *)((char *)object + 0x28), object);
-    fn_8012C4D8(*objectSlot);
+    releaseResource(*objectSlot);
     *objectSlot = 0;
 }
 

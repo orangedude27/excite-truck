@@ -484,7 +484,7 @@ int fn_801DC9B0(void) {
 #pragma paired_single reset
 /* Release a resource reference (tail-calls the resource manager's release path). */
 void fn_801DCA5C(void) {
-    fn_8012C4D8();
+    releaseResource();
 }
 
 extern char lbl_80339444[], lbl_80339458[];

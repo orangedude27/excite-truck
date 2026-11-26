@@ -320,7 +320,7 @@ int rmemcardRecover(void) {
 
 #pragma dont_inline reset
 
-extern int fn_8012C4D8(int);
+extern int releaseResource(int);
 extern int fn_802E88D8(void);
 /* After a corrupt NAND read, poll request 4 until it completes and reset the
  * console to the home menu; bail out if request 0 completes first. */
@@ -393,7 +393,7 @@ void fn_802E8D7C(void* saveInterface) {
 }
 
 typedef unsigned int u32;
-extern int fn_8012C4D8(int);
+extern int releaseResource(int);
 extern int fn_802E88D8(void);
 extern int NANDDelete(const char *);
 extern char sRmemcardDeletingMsg[];
@@ -628,7 +628,7 @@ void fn_802E9118(void *saveState) {
 #define mField268 ((char *)saveState + 0x268)
 #define mField26C ((char *)saveState + 0x26C)
 #define mState ((int *)saveState)
-#define ReleaseHandle fn_8012C4D8
+#define ReleaseHandle releaseResource
     /* Finish the async NAND save: release the stored handle, clear the request fields, and set the state word to 0. */
     ReleaseHandle(*(int *)mHandle);
     *(int *)mHandle = 0;
@@ -646,7 +646,7 @@ void fn_802E9118(void *saveState) {
 
 /* Abort the async NAND save: release the stored handle, clear the request fields, and set the state word to 1 (idle). */ void fn_802E9160(void *saveState) {
     /* Abort/fail the async NAND save: release its buffer, clear state fields, and mark state 1. */
-    fn_8012C4D8(*(int*)((char*)saveState+0x260));
+    releaseResource(*(int*)((char*)saveState+0x260));
     *(int*)((char*)saveState+0x260)=0;
     *(int*)((char*)saveState+0x264)=0;
     *(int*)((char*)saveState+0x268)=0;

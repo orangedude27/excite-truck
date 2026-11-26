@@ -636,7 +636,7 @@ void fn_801EBB7C(void *word, s32 base) {
 extern s32 lbl_8055AFB8;
 extern s32 lbl_8055AFBC;
 extern s32 *lbl_8055EBA0;
-extern s32 fn_8012C4D8(s32);
+extern s32 releaseResource(s32);
 extern void fn_802AE9D0(void);
 extern void fn_802AEA44(void);
 extern void fn_802C6CF8(s32);
@@ -652,7 +652,7 @@ void fn_801EBBB4(void) {
     if (lbl_8055EBA0 != 0) {
         fn_801EB824(*lbl_8055EBA0);
         fn_801EB8BC();
-        fn_8012C4D8((s32)lbl_8055EBA0);
+        releaseResource((s32)lbl_8055EBA0);
         lbl_8055EBA0 = 0;
         return;
     }

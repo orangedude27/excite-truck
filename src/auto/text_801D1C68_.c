@@ -260,7 +260,7 @@ void *fn_801D2008(void *arg0) {
     }
     return result;
 }
-/* Tail-call trampoline into fn_8012C4D8. */
+/* Tail-call trampoline into releaseResource. */
 void fn_801D21B4(void) {
-    fn_8012C4D8();
+    releaseResource();
 }

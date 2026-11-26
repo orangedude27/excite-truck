@@ -65,9 +65,9 @@ void *fn_801D9CC4(void *arg0)
   return (void *) base;
 }
 #pragma opt_propagation reset
-/* Forward to fn_8012C4D8. */
+/* Forward to releaseResource. */
 void fn_801D9F24(void) {
-    fn_8012C4D8();
+    releaseResource();
 }
 
 void fn_801D9F28(void *player) {

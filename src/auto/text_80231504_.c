@@ -212,7 +212,7 @@ extern void *fn_8012850C(s32, const char *);
 extern char *strcpy(char *, const char *);
 extern char lbl_80340440[];
 extern void fn_802CAC54(void *);
-extern void fn_8012C4D8(void *);
+extern void releaseResource(void *);
 extern void fn_80128670(void *);
 extern void *lbl_8055F060;
 extern s32 lbl_8055F058;
@@ -344,7 +344,7 @@ s32 fn_802315FC(s32 arg0) {
      * moving the last one into its place and shortening the table. */
     if ((entry->useCount -= 1) < 1) {
         fn_802CAC54(*(void **)entry->block);
-        fn_8012C4D8((void *)entry->block);
+        releaseResource((void *)entry->block);
         fn_80128670((void *)entry->name);
         base = gTexBlockTable;
         last = *(s32 *)(base + 0x168) - 1;
@@ -777,7 +777,7 @@ void fn_802324D8(void) {
         u8 *entry = gTexBlockTable + offset;
         ((void (*)(const char *, ...))fn_802E30C8)(gTexMsgFontGone, ((GTexCacheEntry *)entry)->name);
         fn_802CB228(((GTexCacheEntry *)entry)->block->resourceIndex);
-        fn_8012C4D8(((GTexCacheEntry *)entry)->block);
+        releaseResource(((GTexCacheEntry *)entry)->block);
         fn_80128670(((GTexCacheEntry *)entry)->name);
         offset += 0xC;
         i++;
