@@ -693,7 +693,7 @@ extern u8 lbl_8055DC11;
 extern u8 lbl_803934C0[];
 extern u8 lbl_8055DC48;
 extern u8 lbl_8055DC49;
-extern void fn_8006C00C(s32, void *);
+extern void btaDmSearchCallback(s32, void *);
 extern s32 fn_80069178(void);
 extern s32 fn_800692D0(void);
 extern void fn_8006B488(void);
@@ -1554,7 +1554,7 @@ void fn_80069408(void) {
         }
         lbl_8055DC49 = 0;
         memset(base + 0xB60, 0, 0x108);
-        BTA_DmSearch(sp30, 0, (u32)fn_8006C00C);
+        BTA_DmSearch(sp30, 0, (u32)btaDmSearchCallback);
         state->b[0xC] = 3;
         return;
     }
@@ -29751,7 +29751,7 @@ void fn_8006BAD8(u32 event, u8 *data)
 /* WUD's BTA device-search callback: handles the tBTA_DM_SEARCH_EVT passed to
  * BTA_DmSearch - logs each event, records the found device's address/name/RSSI
  * and the number of results, and lowers the HCI page timeout during a search. */
-void fn_8006C00C(s32 searchEvent, void *arg) {
+void btaDmSearchCallback(s32 searchEvent, void *arg) {
     register char *fmt = (char *)lbl_803130C8;
     u8 foundCount;
     u8 *pResult = (u8 *)arg;
