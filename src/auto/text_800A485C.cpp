@@ -6424,7 +6424,7 @@ extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4,
 #pragma optimize_for_size reset
 extern "C" s32 VFiPFFAT_ReadClusterPage(void *, u32, s32, s32 *, s32 *, void *);
 extern "C" s32 VFiPFFAT_WriteCluster(void *, s32, s32, s32, s32);
-extern "C" s32 fn_800AE7A8(void *, s32, s32, s32);
+extern "C" s32 VFiPFFreeClusters(void *, s32, s32, s32);
 /* Follow a file's cluster chain to one of its clusters, and give the file more
  * clusters when its chain ends before there (what would be
  * VFiPFFAT_FollowClusterChain).
@@ -6445,7 +6445,7 @@ extern "C" s32 fn_800AE7A8(void *, s32, s32, s32);
  * fn_800ADA24 takes that many on and links them: the first of them becomes the
  * file's first cluster when it had none and goes into the FAT entry of the
  * cluster before it otherwise, and a run that cannot be finished is handed back
- * to the volume (fn_800AE7A8).
+ * to the volume (VFiPFFreeClusters).
  *
  * The cluster the position lands on comes back in outCluster and the first
  * cluster of a run taken on for it in outNewCluster; both stay -1 when the file
@@ -6570,7 +6570,7 @@ extern "C" s32 fn_800ADD84(void *walk, s32 clusterIndex, s32 mode, s32 clustersN
         mode = allocResult;
         if (allocResult != 0) {
             if ((u32)(*outNewCluster + 0x10000) != 0xFFFFU) {
-                ((s32 (*)(void *, s32, s32, s32))fn_800AE7A8)(walk, *outNewCluster, chainPos, -1);
+                ((s32 (*)(void *, s32, s32, s32))VFiPFFreeClusters)(walk, *outNewCluster, chainPos, -1);
             }
             *outNewCluster = -1;
             next = -1;
@@ -6858,7 +6858,7 @@ extern "C" s32 fn_800AE664(void *arg0, u32 arg1, u32 arg2, s32 *clusterOffset, s
  * linking; the open code calls it with no chain position, to free what a file
  * is cut down to.
  */
-extern "C" s32 fn_800AE7A8(void *walk, s32 firstCluster, s32 chainPos, s32 bytes) {
+extern "C" s32 VFiPFFreeClusters(void *walk, s32 firstCluster, s32 chainPos, s32 bytes) {
     u8 *volume = (u8 *)VF_CHAIN_VOLUME((u8 *)walk);
     s32 nextCluster;
     s32 pageIndex;
@@ -8609,7 +8609,7 @@ extern "C" void fn_800B36C4(s32, s32, s32);
                 return 0x17;
             if (openExisting) {
                 if (frame.output514 >= 2 && frame.output514 + 0x10000 != 0xFFFF && frame.record508 != 0)
-                    ((s32 (*)(void *, u32, s32, u32))fn_800AE7A8)(frame.temp70 + 8, frame.output514, -1, frame.record508);
+                    ((s32 (*)(void *, u32, s32, u32))VFiPFFreeClusters)(frame.temp70 + 8, frame.output514, -1, frame.record508);
                 frame.output514 = 0;
                 frame.record508 = 0;
                 ((void (*)(u16 *, u16 *))fn_800AB2F4)(&frame.name506, &frame.name504);
@@ -22646,117 +22646,66 @@ extern "C" s32 GetIndTexSRTAry__Q36nw4hbm3lyt8MaterialFv(void *);
 extern "C" void SetColorElement__Q36nw4hbm3lyt8MaterialFUls(void *, s32, s16);
 extern "C" const char lbl_8031F274[], lbl_8031F23C[], lbl_8031F2B8[], lbl_8031F280[];
 #pragma opt_propagation off
-void nw4hbm::lyt::AnimTransformBasic::Animate(unsigned long arg1, nw4hbm::lyt::Material *arg2) {
-    u8 *entries;
-    u8 *animation;
-    u8 *block;
-    u8 *record;
-    u8 *offsetEntry;
-    u8 *itemOffsets;
-    s32 blockIndex;
-    f32 half;
-    const char *file;
-    file = lbl_8031EE58;
-    entries = (u8 *)*(void **)((u8 *)this + 0xC);
-    animation = entries + *(s32 *)(entries + 0x10);
-    block = entries + *(s32 *)(animation + arg1 * 4);
-    offsetEntry = block + 0x18;
-    blockIndex = 0;
-    half = lbl_80560E64;
+void nw4hbm::lyt::AnimTransformBasic::Animate(unsigned long arg1, nw4hbm::lyt::Pane *arg2) {
+    struct PaneAnimationDispatch {
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+        virtual void f8(); virtual void f9(); virtual void setVertexColor(u8, u8);
+    };
+    const char *file = lbl_8031EE58;
+    u8 *entries = (u8 *)*(void **)((u8 *)this + 0xC);
+    u8 *animation = entries + *(s32 *)(entries + 0x10);
+    u8 *block = animation + *(s32 *)(animation + arg1 * 4);
+    u8 *blockOffsets = block + 0x18;
+    u8 *offsetEntry = blockOffsets;
+    s32 blockIndex = 0;
+    f32 half = lbl_80560E64;
     while (blockIndex < block[0x14]) {
-        record = block + *(s32 *)offsetEntry;
+        u8 *record = block + *(s32 *)offsetEntry;
         s32 type = *(s32 *)record;
-        itemOffsets = record + 8;
+        u8 *itemOffsets = record + 8;
         switch (type) {
-        case 0x524C4D43: {
-            s32 itemIndex = 0;
+        case 0x524C5041: {
             f32 frame = *(f32 *)((u8 *)this + 0x10);
-            if ((s32)record[4] <= 0) break;
+            s32 itemIndex = 0;
             while (itemIndex < record[4]) {
                 u8 *item = record + *(s32 *)itemOffsets;
-                if (item[1] >= 0x20)
-                    Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x106, file + 0x180);
-                if (item[2] != 2)
-                    Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x107, file + 0xB0);
-                f32 result = fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
-                result += half;
-                s16 value = (s16)result;
-                value = (value < -0x400) ? -0x400 : value;
-                value = (value > 0x3FF) ? 0x3FF : value;
-                SetColorElement__Q36nw4hbm3lyt8MaterialFUls(arg2, item[1], value);
+                if (item[1] >= 0xA) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xC5, file + 0x6C);
+                if (item[2] != 2) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xC6, file + 0xB0);
+                f32 value = fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
+                u32 index = item[1];
+                if (index >= 0xA) Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597F0, 0xFA, lbl_8031F208);
+                *(f32 *)((u8 *)arg2 + index * 4 + 0x2C) = value;
                 itemOffsets += 4;
                 itemIndex++;
             }
             break;
         }
-        case 0x524C5453: {
+        case 0x524C5649: {
             f32 frame = *(f32 *)((u8 *)this + 0x10);
             s32 itemIndex = 0;
             while (itemIndex < record[4]) {
-                volatile u8 *item = record + *(s32 *)itemOffsets;
-                if (item[0] >= 0xA)
-                    Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x11F, file + 0x1C8);
-                if (item[0] < ((*(u32 *)((u8 *)arg2 + 0x4C) >> 24) & 0xF)) {
-                    if (item[1] >= 5)
-                        Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x122, file + 0x1FC);
-                    if (item[2] != 2)
-                        Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x123, file + 0xB0);
-                    f32 value = fn_800D4220((const void *)(item + *(s32 *)(item + 8)), *(u16 *)(item + 4), frame);
-                    s32 index = item[0];
-                    s32 sub = item[1];
-                    if (index >= ((*(u32 *)((u8 *)arg2 + 0x50) >> 24) & 0xF))
-                        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F274, 0x125, lbl_8031F23C);
-                    s32 base = fn_800D9330(arg2);
-                    *(f32 *)(base + index * 0x14 + sub * 4) = value;
-                }
+                u8 *item = record + *(s32 *)itemOffsets;
+                if (item[1] >= 0xA) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xD9, file + 0x6C);
+                if (item[2] != 1) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xDA, file + 0xF4);
+                u16 found = fn_800D4138(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
                 itemOffsets += 4;
                 itemIndex++;
+                u8 flags = *((u8 *)arg2 + 0xCF);
+                *((u8 *)arg2 + 0xCF) = (flags & 0x7F) | (u8)(((-(s32)found | found) >> 30) << 7);
             }
             break;
         }
-        case 0x524C5450: {
-            void **palettes = *(void ***)((u8 *)this + 0x14);
-            if (palettes != 0) {
-                f32 frame = *(f32 *)((u8 *)this + 0x10);
-                s32 itemIndex = 0;
-                while (itemIndex < record[4]) {
-                    volatile u8 *item = record + *(s32 *)itemOffsets;
-                    if (item[0] >= 8)
-                        Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x137, file + 0x240);
-                    if (item[0] < (*(u32 *)((u8 *)arg2 + 0x50) >> 28)) {
-                        if (item[2] != 1)
-                            Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x13A, file + 0xF4);
-                        if (item[1] == 0) {
-                            u16 paletteIndex = fn_800D4138((const void *)(item + *(s32 *)(item + 8)), *(u16 *)(item + 4), frame);
-                            SetTextureNoWrap__Q36nw4hbm3lyt8MaterialFUcP10TPLPalette(arg2, item[0], palettes[paletteIndex]);
-                        }
-                    }
-                    itemOffsets += 4;
-                    itemIndex++;
-                }
-            }
-            break;
-        }
-        case 0x524C494D: {
-            f32 frame = *(f32 *)((u8 *)this + 0x10);
+        case 0x524C5643: {
             s32 itemIndex = 0;
+            f32 frame = *(f32 *)((u8 *)this + 0x10);
+            if (record[4] <= 0) break;
             while (itemIndex < record[4]) {
-                volatile u8 *item = record + *(s32 *)itemOffsets;
-                if (item[0] >= 3)
-                    Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x151, file + 0x278);
-                if (item[0] < ((*(u32 *)((u8 *)arg2 + 0x4C) >> 18) & 3)) {
-                    if (item[1] >= 5)
-                        Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x154, file + 0x1FC);
-                    if (item[2] != 2)
-                        Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x155, file + 0xB0);
-                    f32 value = fn_800D4220((const void *)(item + *(s32 *)(item + 8)), *(u16 *)(item + 4), frame);
-                    s32 index = item[0];
-                    s32 sub = item[1];
-                    if (index >= ((*(u32 *)((u8 *)arg2 + 0x50) >> 18) & 3))
-                        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2B8, 0x135, lbl_8031F280);
-                    s32 base = GetIndTexSRTAry__Q36nw4hbm3lyt8MaterialFv(arg2);
-                    *(f32 *)(base + index * 0x14 + sub * 4) = value;
-                }
+                u8 *item = record + *(s32 *)itemOffsets;
+                if (item[1] >= 0x11) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xED, file + 0x138);
+                if (item[2] != 2) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xEE, file + 0xB0);
+                u8 value = __OSf32tou8(fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame) + half);
+                ((PaneAnimationDispatch *)arg2)->setVertexColor(item[1], value);
                 itemOffsets += 4;
                 itemIndex++;
             }
