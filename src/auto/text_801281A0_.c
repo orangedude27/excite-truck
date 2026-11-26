@@ -651,55 +651,55 @@ extern "C" void *fn_801288AC(void *arg0, s32 arg1, char *arg2, s32 arg3) {
 u32 fn_801281A0(s32);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void freeRingHeapBlock(void *heap, u8 *pBlock, s32 allocSource, s32 arg3) {
-    /* Validate a ring-buffer allocation's 0x40-byte header and data region, report any
+void freeRingHeapBlock(void *heap, u8 *blockData, s32 allocSource, s32 unused) {
+    /* Validate a ring-heap allocation's 0x40-byte header and data region, report any
        corruption to the panic logger, then walk the heap's free list to recompute its
-       used offset. pBlock points just past the header; arg3 is unused by callers. */
+       used offset. blockData points just past the header; unused is not used by callers. */
     #define STKA_SIGNATURE 0x53544B41
     #define HEAP_FILL_PATTERN 0xE3
-    u8 *p;
-    char *msgs;
+    u8 *fillByte;
+    char *panicMsgs;
     u8 *header;
     u32 signature;
-    u8 *entry;
-    header = pBlock - 0x40;
-    msgs = lbl_8032A000;
+    u8 *freeEntry;
+    header = blockData - 0x40;
+    panicMsgs = lbl_8032A000;
     signature = *(u32 *)header;
     if (signature != STKA_SIGNATURE)
-        ((s32 (*)(void *, ...))Abend_Panic)(msgs + 0x228, header);
-    if (*(u32 *)(pBlock + ((s32 (*)(s32, s32))fn_801281F4)(*(s32 *)(pBlock - 0x14), 4)) != STKA_SIGNATURE)
-        ((s32 (*)(void *, ...))Abend_Panic)(msgs + 0x244, header + 4);
-    p = pBlock + *(s32 *)(header + 0x2C);
-    while (p < pBlock + ((s32 (*)(s32, s32))fn_801281F4)(*(s32 *)(header + 0x2C), 4)) {
-        if (*p != HEAP_FILL_PATTERN)
+        ((s32 (*)(void *, ...))Abend_Panic)(panicMsgs + 0x228, header);
+    if (*(u32 *)(blockData + ((s32 (*)(s32, s32))fn_801281F4)(*(s32 *)(blockData - 0x14), 4)) != STKA_SIGNATURE)
+        ((s32 (*)(void *, ...))Abend_Panic)(panicMsgs + 0x244, header + 4);
+    fillByte = blockData + *(s32 *)(header + 0x2C);
+    while (fillByte < blockData + ((s32 (*)(s32, s32))fn_801281F4)(*(s32 *)(header + 0x2C), 4)) {
+        if (*fillByte != HEAP_FILL_PATTERN)
             ((s32 (*)(void *, ...))Abend_Panic)(
-                msgs + 0x278, p, p - (pBlock + *(s32 *)(header + 0x2C)), header + 4, *p, HEAP_FILL_PATTERN);
-        p++;
+                panicMsgs + 0x278, fillByte, fillByte - (blockData + *(s32 *)(header + 0x2C)), header + 4, *fillByte, HEAP_FILL_PATTERN);
+        fillByte++;
     }
     if (*(u32 *)(header + 0x3C) != STKA_SIGNATURE)
-        ((s32 (*)(void *, ...))Abend_Panic)(msgs + 0x2C8, header + 4, *(u32 *)(header + 0x3C));
+        ((s32 (*)(void *, ...))Abend_Panic)(panicMsgs + 0x2C8, header + 4, *(u32 *)(header + 0x3C));
     if (header[0x24] == 0)
-        ((s32 (*)(void *, ...))Abend_Panic)(msgs + 0x304, header + 4);
+        ((s32 (*)(void *, ...))Abend_Panic)(panicMsgs + 0x304, header + 4);
     if (*(s32 *)(header + 0x30) != allocSource) {
         u32 newname = ((u32 (*)(s32))fn_801281A0)(allocSource);
         u32 oldname = ((u32 (*)(s32))fn_801281A0)(*(s32 *)(header + 0x30));
-        ((s32 (*)(void *, ...))Abend_Panic)(msgs + 0x31C, header + 4, oldname, newname);
+        ((s32 (*)(void *, ...))Abend_Panic)(panicMsgs + 0x31C, header + 4, oldname, newname);
     }
     header[0x24] = 0;
     goto check;
 loop:
-    if (*(u8 *)((u8 *)entry + 0x24) != 0)
+    if (*(u8 *)((u8 *)freeEntry + 0x24) != 0)
         goto done;
-    *(void **)((u8 *)heap + 0x10) = *(void **)((u8 *)entry + 0x34);
-    *(void **)((u8 *)entry + 0x34) = 0;
+    *(void **)((u8 *)heap + 0x10) = *(void **)((u8 *)freeEntry + 0x34);
+    *(void **)((u8 *)freeEntry + 0x34) = 0;
 check:
-    entry = *(u8 **)((u8 *)heap + 0x10);
-    if (entry != 0)
+    freeEntry = *(u8 **)((u8 *)heap + 0x10);
+    if (freeEntry != 0)
         goto loop;
 done:
-    if (entry != 0) {
-        unsigned int offset = (unsigned int)entry - *(unsigned int *)((u8 *)heap + 0xC);
-        unsigned int value = *(unsigned int *)(entry + 0x28);
+    if (freeEntry != 0) {
+        unsigned int offset = (unsigned int)freeEntry - *(unsigned int *)((u8 *)heap + 0xC);
+        unsigned int value = *(unsigned int *)(freeEntry + 0x28);
         value += offset;
         *(unsigned int *)((u8 *)heap + 4) = value + 0x40;
     } else
