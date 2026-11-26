@@ -73,7 +73,7 @@ extern void gxResetFrameCopyState(int);
 extern void fn_802DB03C(void *);
 extern void fn_802C2B18(void);
 #pragma opt_propagation off
-void fn_802D9A50(void) {
+void monitorDvdDriveAndPower(void) {
     extern unsigned char lbl_8055FFB4;
     extern unsigned char lbl_8055FE38;
     extern unsigned char lbl_8055FE39;

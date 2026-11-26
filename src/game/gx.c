@@ -630,7 +630,7 @@ void fn_802CF600(void) {
     extern unsigned short lbl_8055FD0A;
     extern void *lbl_8055FD68, *gGxDirtyStateMask;
     extern unsigned long lbl_8055FDAC;
-    extern void fn_802CF830(void), fn_802CF10C(void), fn_802D9A50(void), gxDrawDoneCallback(void);
+    extern void fn_802CF830(void), fn_802CF10C(void), monitorDvdDriveAndPower(void), gxDrawDoneCallback(void);
     extern void fn_80127468(void), fn_8005954C(void), fn_801282EC(int), fn_801282F4(void);
     extern void fn_802D8D1C(void), drVertexFormatCacheInit(void), fn_802CF850(void), fn_802D0BD8(void);
     extern void HomeMenu_endFrame(void), fn_802DACD4(void), fn_802D9C18(void), fn_802DA2F4(void);
@@ -706,7 +706,7 @@ void fn_802CF600(void) {
     fn_802DD4FC();
     lbl_8055FD40 = negative;
     fn_80127468();
-    fn_80127C90(fn_802D9A50, &lbl_8055D104);
+    fn_80127C90(monitorDvdDriveAndPower, &lbl_8055D104);
     fn_802DB168();
     lbl_8055FD48 = zero;
     VISetBlack(zero);
@@ -915,13 +915,13 @@ void fn_802CF850(void) {
 
 /* Shuts the graphics subsystem down.  Called from the engine's exit sequence
  * (KERNEL_Shutdown) after that sequence has dropped its own alarm: drops the
- * draw-sync alarm fn_802D9A50, the AI DMA callback and the VI retrace callback,
+ * draw-sync alarm monitorDvdDriveAndPower, the AI DMA callback and the VI retrace callback,
  * reports the GX dynamic-data high-water mark and any visibility tests still in
  * use, blanks the screen over two retraces while waiting for GX to catch up,
  * then frees every buffer fn_802CF600 allocated and empties the frame-buffer
  * block. */
 void fn_802CFBA8(void) {
-    extern void fn_802D9A50(void);
+    extern void monitorDvdDriveAndPower(void);
     extern void fn_80127D58(void (*)(void));
     extern void fn_800591AC(int);
     extern void fn_802E30C8(const char *, ...);
@@ -936,7 +936,7 @@ void fn_802CFBA8(void) {
     extern void fn_802DAE18(void);
     extern void drTexCacheShutdown(void);
     extern char lbl_8034C038[];
-    fn_80127D58(fn_802D9A50);          /* remove the draw-sync alarm */
+    fn_80127D58(monitorDvdDriveAndPower);          /* remove the draw-sync alarm */
     fn_802D9C4C();                     /* AIRegisterDMACallback(0) */
     fn_800591AC(0);                    /* VISetPreRetraceCallback(0) */
     fn_802E30C8(lbl_8034C038, GX_DYNAMIC_HIGH_WATER);   /* "gx: max dynamic data used = %d" */
