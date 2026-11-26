@@ -585,14 +585,14 @@ extern "C" s32 gxCanvasLoad(s32);
 extern "C" void *fn_802228B0(void *, s32, s32, s32);
 extern "C" void *fn_802226D4(s32);
 #pragma use_lmw_stmw off
-extern "C" void *makeImageFromPath(char *path, s32 countDivisor, s32 imgArgA, s32 imgArgB, s32 unused) {
+extern "C" void *makeImageFromPath(char *path, s32 countDivisor, s32 width, s32 height, s32 unused) {
     extern int lbl_8033D528[];
     extern char lbl_8033D504[];
     extern const char lbl_8033CDA4[];
     struct StampImage { void *vtable; void *value; };
     struct CanvasImage { void *vtable; void *value; s32 count; s32 divisor; };
-    /* make_image: allocate and initialize an image object from a resource path by its
-     * extension (the char after the last '.'): stp=stamp, cvs=canvas, img, art; else panic. */
+    /* Allocate an image object chosen by the path's extension (the text after the
+       last '.'): stp -> stamp, cvs -> canvas, img -> image, art -> art; else panic. */
     char *dot = (char *)fn_80029004(path, 0x2e);
     StampImage *stamp;
     CanvasImage *canvas;
@@ -624,7 +624,7 @@ extern "C" void *makeImageFromPath(char *path, s32 countDivisor, s32 imgArgA, s3
     if (stricmp(dot + 1, lbl_8055B738) == 0) {
         obj = fn_801284F8(16, lbl_8055B73C);
         if (obj)
-            return fn_802228B0(obj, (s32)path, imgArgA, imgArgB);
+            return fn_802228B0(obj, (s32)path, width, height);
         return obj;
     }
     if (stricmp(dot + 1, lbl_8055B744) == 0) {
