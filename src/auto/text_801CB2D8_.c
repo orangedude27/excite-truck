@@ -19,7 +19,7 @@ extern f32 lbl_80562A08;
 /* The award stat handler kept in lbl_8055E884 (its heap name strings at
  * lbl_80337AC8 read "StatHandler::Create: ..." and "award_int"/"award_real").
  * fn_801CC470 allocates the 0x618 bytes, resetStatHandler initialises them and
- * fn_801CC918 resets them between races.  Only the fields the functions in this
+ * resetAwardHandler resets them between races.  Only the fields the functions in this
  * file reach are named; the node pool at 0x44 holds the 0x14-byte stat nodes the
  * free list at 0x29C hands out. */
 typedef struct {
@@ -98,7 +98,7 @@ void fn_801CE6A4(Struct_801CE670*, s32, s32);
 void fn_801CE6D0(Struct_801CE670*, s32, s32);
 extern void fn_801CB3F8(void);
 extern void fn_801CC470(void);
-extern void fn_801CC918(void);
+extern void resetAwardHandler(void);
 void fn_801CB2D8(void) {
     /* When not blocked and in the default state, mark active and run setup handlers. */
     if (fn_80019BA8() == 0) {
@@ -118,7 +118,7 @@ void fn_801CB320(void) {
     /* Unless a global pause/block guard is set, reset the stats handler state
        and refresh the flags of every active participant. */
     if (fn_80019BA8() || fn_80161C38()) return;
-    fn_801CC918();
+    resetAwardHandler();
     fn_801CB3F8();
 }
 
@@ -204,7 +204,7 @@ void fn_801CB55C(int playerIndex, int param) {
     }
 }
 
-extern void fn_801CC918(void);
+extern void resetAwardHandler(void);
 extern void fn_801CC470(void);
 extern void fn_801CD5B4(int, int, int);
 #pragma scheduling invalid_target
@@ -791,7 +791,7 @@ void fn_801CC470(void) {
  * its queued award and the ten float groups at the end of it to their starting
  * values.  The record pool the award objects share is cleared and those three
  * objects are told to start over.  fn_801CC470 (StatHandler::Create) calls it on
- * the new handler before lbl_8055E884 points at it; fn_801CC918 is the same
+ * the new handler before lbl_8055E884 points at it; resetAwardHandler is the same
  * reset once the handler is installed.  Nothing happens while it is paused.
  * The reset values are written through volatile pointers, so the compiler keeps
  * every one of them, in this order, in the handler. */
@@ -972,7 +972,7 @@ void fn_801CC8FC(void *object) {
  * groups at the end of it to their starting values.  The three objects it draws
  * the awards with are told to start over, and the record pool they share is
  * cleared.  Nothing happens while the handler is paused. */
-void fn_801CC918(void) {
+void resetAwardHandler(void) {
     void *entry;
     f32 one;
     f32 zero;
@@ -2144,7 +2144,7 @@ int fn_801CE75C(void) {
 extern unsigned int fn_801CE898(void);
 extern void fn_802ADE60(void *, int);
 /* The one stat/awards manager (0x618 bytes): made by fn_801CC470, reset by
-   resetStatHandler / fn_801CC918 and freed by fn_801CCCAC.  Its stat block starts at
+   resetStatHandler / resetAwardHandler and freed by fn_801CCCAC.  Its stat block starts at
    +0x2C0; the four pointers below the block's state word are the stat objects
    the manager owns. */
 #define sStatManager lbl_8055E884
