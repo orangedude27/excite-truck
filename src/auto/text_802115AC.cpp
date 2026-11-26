@@ -68,7 +68,7 @@ extern "C" s32 lbl_8055EF30;
 extern "C" s32 lbl_8055EF34;
 extern "C" void fn_80127A24(void);
 extern "C" void *fn_8022E4C0(void *);
-extern "C" void *fn_8022E0EC(const void *);
+extern "C" void *loadLayout(const void *);
 extern "C" void fn_80276D3C(void *, s32);
 extern "C" void DrawList_RestoreNormalMode(void);
 extern "C" void DrawList_endMeshPass(void);
@@ -87,7 +87,7 @@ extern "C" s32 lbl_8055CFF4;
 extern "C" void *lbl_8055EF44;
 extern "C" void *lbl_8055EF38;
 extern "C" void *fn_8022E4C0(void *);
-extern "C" void *fn_8022E0EC(const void *);
+extern "C" void *loadLayout(const void *);
 extern "C" void fn_80276D3C(void *, s32);
 extern "C" void DrawList_RestoreNormalMode(void);
 extern "C" void DrawList_endMeshPass(void);
@@ -425,14 +425,16 @@ extern "C" void fn_80211690(s32 arg0) {
     if (notZero != 0) fn_800125D4(base + 0x274, 0);
     {
         const char *src = lbl_8055B6B0;
-        char *dst = (char *)lbl_8033CAE8;
+        char *dst = (char *)base;
         s32 n = 0x64;
-        while (1) {
+        for (;;) {
             char c = *src++;
             *dst++ = c;
             if (c != 0) {
-                if (--n <= 0) { dst[-1] = 0; break; }
-            } else break;
+                if (--n > 0) continue;
+                dst[-1] = 0;
+            }
+            break;
         }
     }
     r25 = (const char *)&lbl_8055B718;
@@ -1514,7 +1516,7 @@ void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5
         if (fn_80211678((u8 *)*(void **)arg1) != 0) {
             fn_8022E4C0(arg1);
         }
-        node = fn_8022E0EC(*(void **)arg1);
+        node = loadLayout(*(void **)arg1);
         *(void **)((u8 *)arg1 + 0xC) = node;
         lbl_8055EF44 = *(void **)arg1;
     }
@@ -1568,7 +1570,7 @@ void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5
             pu.i += 0x134;
     }
     if ((s8)((u8 *)node)[0x24] != 0) {
-        top = fn_8022E0EC((const void *)(base + 0x6d0));
+        top = loadLayout((const void *)(base + 0x6d0));
         *(void **)((u8 *)arg1 + 0x10) = top;
         {
             union PU { u32 i; u8 *p; } pu;

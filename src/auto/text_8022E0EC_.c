@@ -10,7 +10,7 @@ void Abend_Panic(char *, ...);
 extern char lbl_803401F8[];
 extern char lbl_80340220[];
 
-// "LAYT" layout resource.  fn_8022E0EC loads one through the resource manager
+// "LAYT" layout resource.  loadLayout loads one through the resource manager
 // (fn_8012C370) and byte-swaps it; fn_8022E4C0 builds the same records in
 // memory for the fallback dialog, and fn_802123B8 turns each entry into a
 // message-window node.  The block is big-endian: a 0x68-byte header followed
@@ -21,7 +21,7 @@ extern char lbl_80340220[];
 // +0x1c scale), a name string (+0x20, 0x20 bytes) and a text string (+0x40,
 // 0x40 bytes); +0x80..+0xb3 are the appearance words (colour at +0x9c).  A
 // text starting with '|' is a reference to the string-table entry named by
-// the rest of it, which fn_8022E0EC resolves in place.
+// the rest of it, which loadLayout resolves in place.
 #define LAYT_TAG 0x4C415954 // 'LAYT'
 #define LAYT_VERSION 5
 #define LAYT_ENTRY_SIZE 0x134
@@ -46,7 +46,7 @@ extern char lbl_80340220[];
    text may be a "|name" reference into the string table; those are resolved in
    place.  Returns the layout, whose +0x64 points at its first entry, or 0 when
    the resource is missing. */
-void *fn_8022E0EC(const char *name) {
+void *loadLayout(const char *name) {
     unsigned int version;
     unsigned int size;
     unsigned char firstLoad;
