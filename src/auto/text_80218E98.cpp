@@ -1221,7 +1221,7 @@ extern char lbl_8033D8B8[];
  * answers its width through vtable slot 0x70 (VfObj::vf28). */
 #pragma push
 #pragma processor 750
-extern "C" void initArtWidget(void *widget, s32 kind, s32 text, s32 idleValue, s32 watched, s32 style, s32 ownSize) {
+/* Configure a dynamic text-label (ArtWidget): copy its string, load its font or art set, and compute the scale that fits the text in the widget's box. */ extern "C" void initArtWidget(void *widget, s32 kind, s32 text, s32 idleValue, s32 watched, s32 style, s32 ownSize) {
     /* Set up one dynamic text label (fn_80219A28 builds the object this runs on):
      * remember what it draws -- the string `text`, the value or font name it
      * follows, where to put it -- and work out the scale to draw the string at so
