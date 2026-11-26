@@ -1006,228 +1006,261 @@ extern unsigned char lbl_8055A2D0;
 extern unsigned char lbl_8055A2D4;
 extern unsigned char lbl_8055A2D8;
 extern float lbl_80561AB4;
-void fn_8017353C(unsigned char *arg0, void *arg_sp0) {
-    union Word { int i; void *p; } stack[94];
-    extern char lbl_80330F48[];
-    char *var_r4;
-    int temp_r0;
-    int temp_r0_2;
-    int temp_r10;
-    int temp_r10_2;
-    int temp_r11;
-    int temp_r11_2;
-    int temp_r12;
-    int temp_r4;
-    int temp_r5;
-    int temp_r6;
-    int temp_r7;
-    int temp_r7_2;
-    int temp_r8;
-    int temp_r9;
-    int var_ctr;
-    int var_r24;
-    int var_r6;
-    int var_r6_2;
-    unsigned char *var_r22;
-    unsigned char *var_r4_2;
-    unsigned char *var_r5;
-    unsigned char *var_r5_2;
-    unsigned char *var_r7;
-    unsigned char *var_r7_2;
-    unsigned char temp_r4_2;
-    unsigned char temp_r4_3;
-    unsigned char temp_r5_2;
-    void *temp_r23;
-    void *temp_r24;
-    void *temp_r24_2;
-    void *temp_r25;
-    void *temp_r25_2;
-    void *temp_r26;
-    void *temp_r26_2;
-    void *temp_r27;
-    void *temp_r28;
-    void *temp_r29;
-    var_ctr = 0x18;
-    var_r4 = (char *)&stack[45].i;
-    do {
-        *(int *)(var_r4 + 4) = 0;
-        var_r4 += 8;
-        *(int *)var_r4 = 0;
-    } while (--var_ctr != 0);
-    temp_r0 = (int)(arg0 + 0xF8);
-    stack[44].i = temp_r0;
-    temp_r29 = lbl_80330F48 + 0x32C;
-    stack[48].i = temp_r0;
-    temp_r26 = lbl_80330F48 + 0x338;
-    temp_r28 = lbl_80330F48 + 0x320;
-    stack[30].i = 1;
-    temp_r11 = (int)(arg0 + 0xFC);
-    temp_r10 = (int)(arg0 + 0x100);
-    stack[42].i = 3;
-    temp_r7 = (int)(arg0 + 0x104);
-    temp_r25 = lbl_80330F48 + 0x344;
-    stack[43].p = temp_r28;
-    temp_r6 = (int)(arg0 + 0x30);
-    temp_r5 = (int)(arg0 + 0x44);
-    stack[46].i = 3;
-    temp_r24 = lbl_80330F48 + 0x350;
-    temp_r4 = (int)(arg0 + 0x58);
-    stack[47].p = temp_r28;
-    temp_r0_2 = (int)(arg0 + 0x6C);
-    stack[39].i = 3;
-    temp_r8 = (int)(arg0 + 0x80);
-    stack[40].p = temp_r29;
-    stack[41].i = temp_r11;
-    stack[49].i = 3;
-    stack[50].p = temp_r29;
-    stack[51].i = temp_r11;
-    stack[36].i = 3;
-    stack[37].p = &lbl_8055A2C8;
-    stack[38].i = temp_r10;
-    stack[52].i = 3;
-    stack[53].p = &lbl_8055A2C8;
-    stack[54].i = temp_r10;
-    stack[33].i = 3;
-    stack[34].p = temp_r26;
-    stack[35].i = temp_r7;
-    stack[55].i = 3;
-    stack[56].p = temp_r26;
-    stack[57].i = temp_r7;
-    stack[31].p = temp_r25;
-    stack[32].i = temp_r6;
-    stack[58].i = 1;
-    stack[59].p = temp_r25;
-    stack[60].i = temp_r6;
-    stack[27].i = 1;
-    stack[28].p = temp_r29;
-    stack[29].i = temp_r5;
-    stack[61].i = 1;
-    stack[62].p = temp_r29;
-    stack[63].i = temp_r5;
-    stack[24].i = 1;
-    stack[25].p = temp_r24;
-    stack[26].i = temp_r4;
-    stack[64].i = 1;
-    stack[65].p = temp_r24;
-    stack[66].i = temp_r4;
-    stack[21].i = 1;
-    stack[22].p = temp_r26;
-    stack[23].i = temp_r0_2;
-    stack[67].i = 1;
-    stack[68].p = temp_r26;
-    stack[69].i = temp_r0_2;
-    stack[18].i = 1;
-    stack[19].p = &lbl_8055A2C8;
-    stack[20].i = temp_r8;
-    stack[70].i = 1;
-    var_r4_2 = arg0 + 0x8A;
-    temp_r24_2 = lbl_80330F48 + 0x368;
-    temp_r12 = (int)(arg0 + 0x9E);
-    temp_r25_2 = lbl_80330F48 + 0x384;
-    stack[71].p = &lbl_8055A2C8;
-    temp_r11_2 = (int)(arg0 + 0xB2);
-    temp_r23 = lbl_80330F48 + 0x39C;
-    stack[72].i = temp_r8;
-    temp_r10_2 = (int)(arg0 + 0xC6);
-    temp_r26_2 = lbl_80330F48 + 0x3B4;
-    stack[15].i = 1;
-    temp_r9 = (int)(arg0 + 0xDA);
-    temp_r27 = lbl_80330F48 + 0x3C8;
-    stack[16].p = temp_r24_2;
-    temp_r7_2 = (int)(arg0 + 0xF0);
-    stack[74].p = temp_r24_2;
-    var_r22 = &lbl_8055A2D0;
-    stack[17].p = var_r4_2;
-    var_r24 = 0x14;
-    stack[73].i = 1;
-    stack[75].p = var_r4_2;
-    stack[12].i = 1;
-    stack[13].p = temp_r28;
-    stack[14].i = temp_r12;
-    stack[76].i = 1;
-    stack[77].p = temp_r28;
-    stack[78].i = temp_r12;
-    stack[9].i = 1;
-    stack[10].p = temp_r25_2;
-    stack[11].i = temp_r11_2;
-    stack[79].i = 1;
-    stack[80].p = temp_r25_2;
-    stack[81].i = temp_r11_2;
-    stack[6].i = 1;
-    stack[7].p = temp_r23;
-    stack[8].i = temp_r10_2;
-    stack[82].i = 1;
-    stack[83].p = temp_r23;
-    stack[84].i = temp_r10_2;
-    stack[3].i = 1;
-    stack[4].p = temp_r26_2;
-    stack[5].i = temp_r9;
-    stack[85].i = 1;
-    stack[86].p = temp_r26_2;
-    stack[87].i = temp_r9;
-    stack[0].i = 2;
-    stack[1].p = temp_r27;
-    stack[2].i = temp_r7_2;
-    stack[88].i = 2;
-    stack[89].p = temp_r27;
-    stack[90].i = temp_r7_2;
-    stack[91].i = *(int *)((char *)(&lbl_802FAA40) + (0));
-    stack[92].i = *(int *)((char *)(&lbl_802FAA40) + (4));
-    stack[93].i = *(int *)((char *)(&lbl_802FAA40) + (8));
-loop_5:
-    temp_r5_2 = *var_r22;
-    var_r22 += 1;
-    *var_r4_2 = temp_r5_2;
-    var_r4_2 += 1;
-    if ((signed char) temp_r5_2 != 0) {
-        var_r24 -= 1;
-        if (var_r24 <= 0) {
-            *(signed char *)((char *)(var_r4_2) + (-1)) = 0;
-        } else {
-            goto loop_5;
-        }
+void fn_8017353C(unsigned char *arg0, void *arg_sp0)
+{
+  union Word
+  {
+    int i;
+    void *p;
+  } stack[94];
+  extern char lbl_80330F48[];
+  char *var_r4;
+  int temp_r0;
+  int temp_r0_2;
+  int temp_r10;
+  int temp_r11;
+  int temp_r12;
+  int temp_r4;
+  int temp_r10_2;
+  int temp_r5;
+  void *temp_r25_2;
+  int temp_r7;
+  int temp_r7_2;
+  int temp_r8;
+  int temp_r9;
+  int var_ctr;
+  int var_r24;
+  volatile short var_r6;
+  int var_r6_2;
+  unsigned char *var_r22;
+  unsigned char *var_r4_2;
+  unsigned char *var_r5;
+  unsigned char *var_r5_2;
+  unsigned char *var_r7;
+  unsigned char temp_r4_2;
+  unsigned char temp_r4_3;
+  int temp_r6;
+  unsigned char temp_r5_2;
+  unsigned char *var_r7_2;
+  void *temp_r27;
+  void *temp_r24;
+  void *temp_r24_2;
+  void *temp_r23;
+  void *temp_r26;
+  void *temp_r25;
+  void *temp_r26_2;
+  void *temp_r28;
+  void *temp_r29;
+  var_ctr = 0x18;
+  var_r4 = (char *) (&stack[45].i);
+  do
+  {
+    *((int *) (var_r4 - (-4))) = 0;
+    var_r4 += 8;
+    *((int *) var_r4) = 0;
+  }
+  while ((--var_ctr) != 0);
+  temp_r0 = (int) (arg0 + 0xF8);
+  stack[44].i = temp_r0;
+  stack[48].i = temp_r0;
+  temp_r26 = lbl_80330F48 + 0x338;
+  temp_r28 = lbl_80330F48 + 0x320;
+  stack[30].i = 1;
+  temp_r11 = (int) (arg0 + 0xFC);
+  ;
+  stack[42].i = 3;
+  temp_r7 = (int) (arg0 + 0x104);
+  temp_r25 = lbl_80330F48 + 0x344;
+  stack[43].p = temp_r28;
+  temp_r6 = (int) (arg0 + 0x30);
+  temp_r5 = (int) (arg0 + 0x44);
+  stack[46].i = 3;
+  temp_r24 = lbl_80330F48 + 0x350;
+  temp_r4 = (int) (arg0 + 0x58);
+  stack[47].p = temp_r28;
+  temp_r0_2 = (int) (arg0 + 0x6C);
+  stack[39].i = 3;
+  temp_r8 = (int) (arg0 + (0x80 & 0xFFFF));
+  temp_r29 = lbl_80330F48 + 0x32C;
+  stack[40].p = temp_r29;
+  stack[41].i = temp_r11;
+  stack[49].i = 3;
+  stack[50].p = temp_r29;
+  stack[51].i = temp_r11;
+  stack[36].i = 3;
+  stack[37].p = &lbl_8055A2C8;
+  stack[38].i = (int) (arg0 + 0x100);
+  stack[52].i = 3;
+  stack[53].p = &lbl_8055A2C8;
+  stack[54].i = (int) (arg0 + 0x100);
+  stack[33].i = 3;
+  stack[34].p = temp_r26;
+  stack[35].i = temp_r7;
+  stack[55].i = 3;
+  stack[56].p = temp_r26;
+  stack[57].i = temp_r7;
+  stack[31].p = temp_r25;
+  stack[32].i = temp_r6;
+  stack[58].i = 1;
+  stack[59].p = temp_r25;
+  stack[60].i = temp_r6;
+  stack[27].i = 1;
+  stack[28].p = temp_r29;
+  stack[29].i = temp_r5;
+  stack[61].i = 1;
+  stack[62].p = temp_r29;
+  stack[63].i = temp_r5;
+  stack[24].i = 1;
+  stack[25].p = temp_r24;
+  stack[26].i = temp_r4;
+  stack[64].i = 1;
+  stack[65].p = temp_r24;
+  stack[66].i = temp_r4;
+  stack[21].i = 1;
+  stack[22].p = temp_r26;
+  stack[23].i = temp_r0_2;
+  stack[67].i = 1;
+  stack[68].p = temp_r26;
+  stack[69].i = temp_r0_2;
+  stack[18].i = 1;
+  stack[19].p = &lbl_8055A2C8;
+  stack[20].i = temp_r8;
+  stack[70].i = 1;
+  var_r4_2 = arg0 + 0x8A;
+  temp_r24_2 = lbl_80330F48 + 0x368;
+  temp_r12 = (int) (arg0 + 0x9E);
+  temp_r25_2 = lbl_80330F48 + 0x384;
+  stack[71].p = &lbl_8055A2C8;
+  temp_r11 = (int) (arg0 + 0xB2);
+  temp_r23 = lbl_80330F48 + 0x39C;
+  stack[72].i = temp_r8;
+  temp_r10_2 = (int) (arg0 + 0xC6);
+  temp_r26_2 = lbl_80330F48 + 0x3B4;
+  stack[15].i = 1;
+  temp_r9 = (int) (arg0 + 0xDA);
+  temp_r27 = lbl_80330F48 + 0x3C8;
+  stack[16].p = temp_r24_2;
+  temp_r7_2 = (int) (arg0 + 0xF0);
+  stack[74].p = temp_r24_2;
+  var_r22 = &lbl_8055A2D0;
+  stack[17].p = var_r4_2;
+  var_r24 = 0x14;
+  stack[73].i = 1;
+  stack[75].p = var_r4_2;
+  stack[12].i = 1;
+  stack[13].p = temp_r28;
+  stack[14].i = temp_r12;
+  stack[76].i = 1;
+  stack[77].p = temp_r28;
+  stack[78].i = temp_r12;
+  stack[9].i = 1;
+  stack[10].p = temp_r25_2;
+  stack[11].i = temp_r11;
+  stack[79].i = 1;
+  stack[80].p = temp_r25_2;
+  stack[81].i = temp_r11;
+  stack[6].i = 1;
+  stack[7].p = temp_r23;
+  stack[8].i = temp_r10_2;
+  stack[82].i = 1 & 0xFFFFFFFFu;
+  stack[83].p = temp_r23;
+  stack[84].i = temp_r10_2;
+  stack[3].i = 1;
+  stack[4].p = temp_r26_2;
+  stack[5].i = temp_r9;
+  stack[85].i = 1;
+  stack[86].p = temp_r26_2;
+  stack[87].i = temp_r9;
+  stack[0].i = 2;
+  stack[1].p = temp_r27;
+  stack[2].i = temp_r7_2;
+  stack[88].i = 2;
+  stack[89].p = temp_r27;
+  stack[90].i = temp_r7_2;
+  stack[91].i = *((int *) (((char *) (&lbl_802FAA40)) + 0));
+  stack[92].i = *((int *) (((char *) (&lbl_802FAA40)) + 4));
+  stack[93].i = *((int *) (((char *) (&lbl_802FAA40)) + 8));
+  loop_5:
+  temp_r5_2 = *var_r22;
+
+  var_r22 += 1;
+  *var_r4_2 = temp_r5_2;
+  var_r4_2 += 1;
+  if (((signed char) temp_r5_2) != 0)
+  {
+    var_r24 -= 1;
+    if (var_r24 <= 0)
+    {
+      *((signed char *) (((char *) var_r4_2) + (-1))) = 0;
     }
-    var_r7 = arg0 + 0x44;
-    var_r5 = &lbl_8055A2D4;
-    var_r6 = 0x14;
-loop_9:
-    temp_r4_2 = *var_r5;
-    var_r5 += 1;
-    *var_r7 = temp_r4_2;
-    var_r7 += 1;
-    if ((signed char) temp_r4_2 != 0) {
-        var_r6 -= 1;
-        if (var_r6 <= 0) {
-            *(signed char *)((char *)(var_r7) + (-1)) = 0;
-        } else {
-            goto loop_9;
-        }
+    else
+    {
+      goto loop_5;
     }
+  }
+  var_r7 = arg0 + 0x44;
+  var_r5 = &lbl_8055A2D4;
+  var_r6 = 0x14;
+  loop_9:
+  temp_r4_2 = *var_r5;
+
+  var_r5 += 1;
+  *var_r7 = temp_r4_2;
+  var_r7 += 1;
+  if (((signed char) temp_r4_2) != 0)
+  {
+    var_r6 -= 1;
+    if (var_r6 <= 0)
+    {
+      *((signed char *) (((char *) var_r7) + (-1))) = 0;
+    }
+    else
+    {
+      goto loop_9;
+    }
+  }
+  if (!(lbl_80330F48 || temp_r5))
+  {
     var_r7_2 = arg0 + 0x6C;
     var_r5_2 = &lbl_8055A2D8;
     var_r6_2 = 0x14;
-loop_13:
-    temp_r4_3 = *var_r5_2;
-    var_r5_2 += 1;
-    *var_r7_2 = temp_r4_3;
-    var_r7_2 += 1;
-    if ((signed char) temp_r4_3 != 0) {
-        var_r6_2 -= 1;
-        if (var_r6_2 <= 0) {
-            *(signed char *)((char *)(var_r7_2) + (-1)) = 0;
-        } else {
-            goto loop_13;
-        }
+  }
+  else
+  {
+    var_r7_2 = arg0 + 0x6C;
+    var_r5_2 = &lbl_8055A2D8;
+    var_r6_2 = 0x14;
+  }
+  loop_13:
+  temp_r4_3 = *var_r5_2;
+
+  var_r5_2 += 1;
+  *var_r7_2 = temp_r4_3;
+  var_r7_2 += 1;
+  if (((signed char) temp_r4_3) != 0)
+  {
+    var_r6_2 -= 1;
+    if (var_r6_2 <= 0)
+    {
+      *((signed char *) (((char *) var_r7_2) + (-1))) = 0;
     }
-    fn_80130980(arg0 + 0x9E, 0x14, 2, lbl_80561AB4);
-    *(int *)((char *)(arg0) + (0xF0)) = (int) (fn_80204CF0() + 1);
-    *(int *)((char *)(arg0) + (0xF4)) = fn_802ADF34((void *)*(int *)((char *)(arg0) + (0xC)), lbl_80330F48 + 0x3DC, &stack[46].i);
-    *(int *)((char *)(arg0) + (0x14)) = fn_80207848(lbl_80330F48 + 0x3F0, 1);
-    *(int *)((char *)(arg0) + (0x18)) = fn_80207848(lbl_80330F48 + 0x404, 1);
-    *(int *)((char *)(arg0) + (0x1C)) = fn_80207848(lbl_80330F48 + 0x420, 1);
-    *(int *)((char *)(arg0) + (0x24)) = fn_80207848(lbl_80330F48 + 0x434, 1);
-    *(int *)((char *)(arg0) + (0x28)) = fn_80207848(lbl_80330F48 + 0x448, 1);
-    *(int *)((char *)(arg0) + (0x2C)) = fn_80207848(lbl_80330F48 + 0x454, 1);
+    else
+    {
+      if (1)
+      {
+      }
+      goto loop_13;
+    }
+  }
+  fn_80130980(arg0 + 0x9E, 0x14, 2, lbl_80561AB4);
+  *((int *) (((char *) arg0) + 0xF0)) = (int) (fn_80204CF0() + 1);
+  *((int *) (((char *) arg0) + 0xF4)) = fn_802ADF34((void *) (*((int *) (((char *) arg0) + 0xC))), lbl_80330F48 + 0x3DC, &stack[46].i);
+  *((int *) (((char *) arg0) + 0x14)) = fn_80207848(lbl_80330F48 + 0x3F0, 1);
+  *((int *) (((char *) arg0) + 0x18)) = fn_80207848(lbl_80330F48 + 0x404, 1);
+  *((int *) (((char *) arg0) + 0x1C)) = fn_80207848(lbl_80330F48 + 0x420, 1);
+  *((int *) (((char *) arg0) + 0x24)) = fn_80207848(lbl_80330F48 + 0x434, 1);
+  *((int *) (((char *) arg0) + 0x28)) = fn_80207848(lbl_80330F48 + 0x448, 1);
+  *((int *) (((char *) arg0) + 0x2C)) = fn_80207848(lbl_80330F48 + 0x454, 1);
 }
 
 extern void fn_802ADE60(int, int);
@@ -1484,7 +1517,7 @@ extern void fn_802AE0E0(void);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 /* Resets the "crushmaster" object to its idle state (the counterpart of the
- * builder fn_80173058): every one of its 0x1C-byte records at +0x90 is re-enabled
+ * builder initCrushMaster): every one of its 0x1C-byte records at +0x90 is re-enabled
  * with its per-record value back to -1 and its three ints and 8-byte tail cleared;
  * the round (CrushRoundState at +0x1AC, built by fn_8017353C) is put to idle -
  * state 0, time -1.0, and its sound, counter and text fields zeroed - clearing all
@@ -2606,7 +2639,7 @@ extern float lbl_80561AA4, lbl_80561AA8, lbl_80561AAC, lbl_80561AB0;
 /* Initialise a freshly allocated crushmaster from the config file: set up the
    per-car radar records, load the crush tuning values into lbl_8043038C, read
    the radar pair overrides, make the round's DSA player and reset the round. */
-extern "C" void fn_80173058(unsigned char *crush) {
+extern "C" void initCrushMaster(unsigned char *crush) {
     struct { const char *p; } labelsBox;
     labelsBox.p = lbl_80330F48;
     const char *&labels = labelsBox.p;
