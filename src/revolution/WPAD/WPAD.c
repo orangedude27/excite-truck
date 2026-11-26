@@ -3378,34 +3378,34 @@ BOOL fn_8005D0DC(BOOL final, s32 event) {
  * deadline that belongs to a 0xFF delay request (+0x850) only reports
  * WPAD_ERR_TRANSFER instead.  The status for the caller is returned. */
 #pragma opt_propagation off
-/* Send a game-info output report on a Wiimote channel when the read status allows it, clearing a stale transfer status or dropping a timed-out busy HID link. */ s32 WPADiSendGameInfoReport(s32 chan, WPADGameInfo *pInfo)
+s32 WPADiSendGameInfoReport(s32 chan, WPADGameInfo *pCommand)
 {
 #define s_wpadControlBlocks lbl_8038F4F0
 #define s_wpadTimeout lbl_8055DC1A
   s32 status;
-  s32 cbOffset = chan * 4;
-  WPADCB *cb;
-  WPADCB **cbTable = s_wpadControlBlocks;
-  WPADCB *cbDeadline;
-  BOOL enabled;
-  u8 statusReqPending;
-  u32 cmdWords[12];
-  cb = *(WPADCB **)((u8 *)cbTable + cbOffset);
-  enabled = OSDisableInterrupts();
-  status = cb->readStatus;
-  OSRestoreInterrupts(enabled);
+  s32 controlOffset = chan * 4;
+  WPADCB *controlBlock;
+  WPADCB **controlBlocks = s_wpadControlBlocks;
+  WPADCB *deadlineBlock;
+  BOOL irqState;
+  u8 statusRequestPending;
+  u32 commandWords[12];
+  controlBlock = *(WPADCB **)((u8 *)controlBlocks + controlOffset);
+  irqState = OSDisableInterrupts();
+  status = controlBlock->readStatus;
+  OSRestoreInterrupts(irqState);
   if (status == WPAD_ERR_OK)
   {
-    enabled = OSDisableInterrupts();
-    statusReqPending = cb->statusReqPending;
-    OSRestoreInterrupts(enabled);
-    if (statusReqPending != 0)
+    irqState = OSDisableInterrupts();
+    statusRequestPending = controlBlock->statusReqPending;
+    OSRestoreInterrupts(irqState);
+    if (statusRequestPending != 0)
     {
       status = WPAD_ERR_BUSY;
     }
     else
     {
-      u32 *src = (u32 *) pInfo;
+      u32 *source = (u32 *) pCommand;
       u32 w11;
       u32 w10;
       u32 w9;
@@ -3418,31 +3418,31 @@ BOOL fn_8005D0DC(BOOL final, s32 event) {
       u32 w0;
       u32 w1;
       u32 w2;
-      w0 = src[0];
-      w1 = src[1];
-      w2 = src[2];
-      w3 = src[3];
-      w4 = src[4];
-      w5 = src[5];
-      w6 = src[6];
-      w7 = src[7];
-      w8 = src[8];
-      w9 = src[9];
-      w10 = src[10];
-      w11 = src[11];
-      cmdWords[0] = w0;
-      cmdWords[1] = w1;
-      cmdWords[2] = w2;
-      cmdWords[3] = w3;
-      cmdWords[4] = w4;
-      cmdWords[5] = w5;
-      cmdWords[6] = w6;
-      cmdWords[7] = w7;
-      cmdWords[8] = w8;
-      cmdWords[9] = w9;
-      cmdWords[10] = w10;
-      cmdWords[11] = w11;
-      WPADiSendOutputReport(chan, (WPADGameInfo *) cmdWords);
+      w0 = source[0];
+      w1 = source[1];
+      w2 = source[2];
+      w3 = source[3];
+      w4 = source[4];
+      w5 = source[5];
+      w6 = source[6];
+      w7 = source[7];
+      w8 = source[8];
+      w9 = source[9];
+      w10 = source[10];
+      w11 = source[11];
+      commandWords[0] = w0;
+      commandWords[1] = w1;
+      commandWords[2] = w2;
+      commandWords[3] = w3;
+      commandWords[4] = w4;
+      commandWords[5] = w5;
+      commandWords[6] = w6;
+      commandWords[7] = w7;
+      commandWords[8] = w8;
+      commandWords[9] = w9;
+      commandWords[10] = w10;
+      commandWords[11] = w11;
+      WPADiSendOutputReport(chan, (WPADGameInfo *) commandWords);
     }
   }
   else
@@ -3450,44 +3450,44 @@ BOOL fn_8005D0DC(BOOL final, s32 event) {
   {
     if (status == WPAD_ERR_TRANSFER)
   {
-      enabled = OSDisableInterrupts();
-      cb->readStatus = WPAD_ERR_OK;
-      OSRestoreInterrupts(enabled);
-    }
+    irqState = OSDisableInterrupts();
+    controlBlock->readStatus = WPAD_ERR_OK;
+    OSRestoreInterrupts(irqState);
+  }
   }
   else
-    if ((((s32) ((__OSGetSystemTime() - (*((s64 *) (((u8 *) cb) + 0x848)))) / ((*((u32 *) 0x800000F8)) / 4))) > 1) && (s_wpadTimeout != 0))
+    if ((((s32) ((__OSGetSystemTime() - (*((s64 *) (((u8 *) controlBlock) + 0x848)))) / ((*((u32 *) 0x800000F8)) / 4))) > 1) && (s_wpadTimeout != 0))
   {
-    if ((*((u8 *) (((u8 *) cb) + 0x850))) == 0)
+    if ((*((u8 *) (((u8 *) controlBlock) + 0x850))) == 0)
     {
-      s32 cbStatus;
-      WPADCB *cbAgain;
-      cbDeadline = cb;
-      *((s64 *) (((u8 *) cbDeadline) + 0x848)) = __OSGetSystemTime();
-      cbAgain = *(WPADCB **)((u8 *)cbTable + cbOffset);
-      enabled = OSDisableInterrupts();
-      cbStatus = cbAgain->readStatus;
-      OSRestoreInterrupts(enabled);
-      if (cbStatus != WPAD_ERR_NO_CONTROLLER)
+      s32 controlStatus;
+      WPADCB *controlAgain;
+      deadlineBlock = controlBlock;
+      *((s64 *) (((u8 *) deadlineBlock) + 0x848)) = __OSGetSystemTime();
+      controlAgain = *(WPADCB **)((u8 *)controlBlocks + controlOffset);
+      irqState = OSDisableInterrupts();
+      controlStatus = controlAgain->readStatus;
+      OSRestoreInterrupts(irqState);
+      if (controlStatus != WPAD_ERR_NO_CONTROLLER)
       {
-        enabled = OSDisableInterrupts();
-        if (((u8 *) cbAgain)[0x8C6])
+        irqState = OSDisableInterrupts();
+        if (((u8 *) controlAgain)[0x8C6])
         {
-          OSRestoreInterrupts(enabled);
+          OSRestoreInterrupts(irqState);
         }
         else
         {
-          ((u8 *) cbAgain)[0x8C6] = TRUE;
-          OSRestoreInterrupts(enabled);
-          BTA_HhClose(((u8 *) cbAgain)[0x803]);
+          ((u8 *) controlAgain)[0x8C6] = TRUE;
+          OSRestoreInterrupts(irqState);
+          BTA_HhClose(((u8 *) controlAgain)[0x803]);
         }
       }
     }
     else
     {
-      enabled = OSDisableInterrupts();
-      cb->readStatus = WPAD_ERR_TRANSFER;
-      OSRestoreInterrupts(enabled);
+      irqState = OSDisableInterrupts();
+      controlBlock->readStatus = WPAD_ERR_TRANSFER;
+      OSRestoreInterrupts(irqState);
     }
   }
   return status;
