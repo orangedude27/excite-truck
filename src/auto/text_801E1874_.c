@@ -40,7 +40,7 @@ extern unsigned char lbl_80339860[], lbl_8033986C[];
 extern float lbl_80562CA8;
 
 /* Keys of the level's weather parameters, read out of the parameter archive by
- * fn_801E1894 (pooled string literals). */
+ * loadWeatherState (pooled string literals). */
 #define KEY_WEATHER     lbl_8055AE60 /* "weather": the archive object */
 #define KEY_FOG         lbl_8055AE68 /* "fog": its value group */
 #define KEY_PRECIP      lbl_8055AE6C /* "precip" */
@@ -59,7 +59,7 @@ extern float lbl_80562CA8;
 #define PRECIP_RAIN 1
 #define PRECIP_SNOW 2
 
-/* Weather state block: cleared by fn_801E1874, filled by fn_801E1894 and handed
+/* Weather state block: cleared by fn_801E1874, filled by loadWeatherState and handed
  * out by fn_801E1F44. */
 typedef struct WeatherState {
     int precipType;               /* 0x00: PRECIP_* */
@@ -114,7 +114,7 @@ typedef struct WeatherSound {
  * flashes with it, whether it is night, and the "fog" group's colour, start,
  * stop and density.  fn_801E1F44 calls it the first time the weather is asked
  * for, and fn_801E1D20/fn_801E1D2C clear gWeatherLoaded to make it run again. */
-extern "C" int fn_801E1894(void) {
+extern "C" int loadWeatherState(void) {
  struct Vec3 { float x,y,z; };
  /* A named group of values inside the parameter object.  This ABI keeps the
   * two destructor slots first, so the first method declared here is the one at
@@ -282,7 +282,7 @@ void fn_801E1E30(void) {
     *((float *)&lbl_804874B8 + 3) = lbl_80562CC8;
 }
 
-extern int fn_801E1894(void);
+extern int loadWeatherState(void);
 extern float lbl_80562CCC;
 extern float lbl_80562CD0;
 extern float lbl_80562CD4;
@@ -301,13 +301,17 @@ void fn_801E1E64(void) {
         fn_801E1B30();
 }
 
-void fn_801E1EA4(void *arg0) {
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_801E1EA4(void *arg0) {
     void *var_r6;
     int var_r7;
-    float c0 = lbl_80562CAC;
-    float c1 = lbl_80562CD4;
-    float c3 = lbl_80562CD0;
-    float c2 = lbl_80562CCC;
+    float c1;
+    float c3;
+    float c2;
+    c1 = (0.0f, lbl_80562CD4);
+    c2 = lbl_80562CCC;
+    c3 = lbl_80562CD0;
     var_r6 = (char *)arg0 + 4;
     var_r7 = 0;
     goto check;
@@ -319,14 +323,14 @@ loop:
         *(float *)((char *)var_r6 + 0xDC) = *(float *)((char *)&lbl_804874B8 + 0x10);
         break;
     case 3:
-        *(float *)((char *)var_r6 + 0xD4) = c0;
+        *(float *)((char *)var_r6 + 0xD4) = 0.0f;
         *(float *)((char *)var_r6 + 0xD8) = c1 * *(float *)((char *)&lbl_804874B8 + 4);
-        *(float *)((char *)var_r6 + 0xDC) = c0;
+        *(float *)((char *)var_r6 + 0xDC) = 0.0f;
         break;
     default:
-        *(float *)((char *)var_r6 + 0xD4) = c0;
-        *(float *)((char *)var_r6 + 0xD8) = c0;
-        *(float *)((char *)var_r6 + 0xDC) = c0;
+        *(float *)((char *)var_r6 + 0xD4) = 0.0f;
+        *(float *)((char *)var_r6 + 0xD8) = 0.0f;
+        *(float *)((char *)var_r6 + 0xDC) = 0.0f;
         break;
     }
     var_r6 = (char *)var_r6 + 0xE0;
@@ -335,11 +339,11 @@ check:
     if (var_r7 < *(int *)((char *)arg0 + 0x394))
         goto loop;
 }
-
+#pragma pop
 int *fn_801E1F44(void) {
     /* Return the weather state, loading the level's weather parameters on first use. */
     if ((unsigned char)gWeatherLoaded == 0)
-        fn_801E1894();
+        loadWeatherState();
     return (int *)&gWeatherState;
 }
 
