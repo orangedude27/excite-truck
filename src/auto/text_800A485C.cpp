@@ -6451,7 +6451,7 @@ extern "C" s32 VFiPFFreeClusters(void *, s32, s32, s32);
  * cluster of a run taken on for it in outNewCluster; both stay -1 when the file
  * already reached that far.
  */
-extern "C" s32 followFileClusterChain(void *walk, s32 clusterIndex, s32 mode, s32 clustersNeeded, u32 *outNewCluster, s32 *outCluster) {
+/* Follow a file's FAT cluster chain to clusterIndex, allocating (mode 1) or a run of clustersNeeded (mode 2) when the chain ends early; returns the landing cluster in outCluster and any newly allocated run in outNewCluster. */ extern "C" s32 followFileClusterChain(void *walk, s32 clusterIndex, s32 mode, s32 clustersNeeded, u32 *outNewCluster, s32 *outCluster) {
     s32 next;
     s32 cachedCluster;
     s32 pageIndex;
