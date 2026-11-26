@@ -1629,7 +1629,7 @@ threshold_test:
 }
 #pragma pop
 
-void fn_801D628C(void *object) {
+void initCameraShakeASE(void *object) {
     /* CameraShake_ASE constructor: install the vtable at +0 and clear the fields at +4 and +0x14. */
     *(int *)((char *)object + 4) = 0;
     *(char **)((char *)object + 0) = lbl_80338C78;
@@ -2580,7 +2580,7 @@ extern "C" void *createASEElement(void *arg0) {
     if (stricmp(name, type_camera_shake) == 0) {
         object = fn_801284F8(0x20, alloc_CameraShake_ASE);
         if (object != 0) {
-            object = ((void *(*)(void *))fn_801D628C)(object); /* CameraShake_ASE ctor */
+            object = ((void *(*)(void *))initCameraShakeASE)(object); /* CameraShake_ASE ctor */
         }
         element = object;
         goto done;
