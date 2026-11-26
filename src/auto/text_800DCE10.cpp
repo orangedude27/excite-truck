@@ -306,13 +306,10 @@ extern "C" void *__dt__Q36nw4hbm3lyt7TextBoxFv(void *arg0, s32 arg1) {
             goto set_default_font;
         }
         {
-            s32 first = ((FontMetrics *)*(void **)(self + 0xE0))->method0();
-            f32 firstFloat;
-            f32 *firstPtr = &firstFloat;
-            *firstPtr = (f32)first;
-            s32 second = ((FontMetrics *)*(void **)(self + 0xE0))->method1();
-            *(f32 *)(self + 0xE8) = *firstPtr;
-            *(f32 *)(self + 0xE4) = (f32)second;
+            f32 w = (f32)((FontMetrics *)*(void **)(self + 0xE0))->method0();
+            f32 h = (f32)((FontMetrics *)*(void **)(self + 0xE0))->method1();
+            *(f32 *)(self + 0xE4) = h;
+            *(f32 *)(self + 0xE8) = w;
         }
         goto font_ready;
       set_default_font:
@@ -445,7 +442,7 @@ extern "C" void SetTextColor__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4h
 extern "C" void SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(void *, u32 *, u32 *);
 extern "C" void SetFont__Q36nw4hbm2ut10CharWriterFRCQ36nw4hbm2ut4Font_80112200(void *, void *);
 extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *);
-extern "C" void fn_80112528(void *, const u16 *, s32);
+extern "C" void textWriterPrint(void *, const u16 *, s32);
 extern "C" void fn_80112960(void *, void *);
 extern "C" void fn_800DF208(f32 *arg0, u8 *arg1, void *arg2);
 extern "C" void fn_800DD70C(register u8 *self) {
@@ -514,7 +511,7 @@ extern "C" void fn_800DD70C(register u8 *self) {
         used = fn_800DDDF4(line, &w2, str, n, &flag, mx);
         __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80111BB8(&w2, -1);
         SetCursorX__Q36nw4hbm2ut10CharWriterFf(&w, bounds[0] + fa * ((bounds[2] - bounds[0]) - (line[2] - line[0])));
-        fn_80112528(&w, str, used);
+        textWriterPrint(&w, str, used);
         if (flag) fn_80112960(&w, &lbl_80559800);
         n -= used;
         str += used;

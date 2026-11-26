@@ -6046,7 +6046,7 @@ extern "C" const char lbl_80329530[];
  * (SetCursor), so the call leaves the writer's own font, spacing and tab state
  * as they were; the copy is then destroyed without freeing it (the deleting
  * flag fn_801033F0 is given is 0). */
-extern "C" f32 fn_80112528(void *writer, const char *str, s32 length) {
+extern "C" f32 textWriterPrint(void *writer, const char *str, s32 length) {
     extern f32 fn_801142F8(void *, s32, s32);
     extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(s32); /* the writer's cursor Y */
     extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(s32); /* the writer's cursor X */
@@ -6218,7 +6218,7 @@ extern "C" f32 fn_80112528(void *writer, const char *str, s32 length) {
     return width;
 }
 /* nw4hbm::ut::CharWriter::Write(const char16 *) of the ut_TextWriterBase.cpp copy of
- * the text writer: the NUL-terminated form of fn_80112528 above.  It takes the
+ * the text writer: the NUL-terminated form of textWriterPrint above.  It takes the
  * string's length with the UTF-16 strlen fn_8002AEE8 and prints through a stack copy
  * of the writer, so only the cursor the copy ends up with is committed back
  * (SetCursor) and the writer's own font, spacing and tab state stay as they were.
