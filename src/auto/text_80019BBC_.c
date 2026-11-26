@@ -201,7 +201,7 @@ extern "C" float fn_80019FD4(void *arg0, int arg1, float farg0) {
  * textures are released - the render target at +0x04 and the five named textures -
  * each id left at -2 so a second call cannot release it again, and the TruckDraw
  * at +0x10 is deleted. */
-extern "C" void fn_8001A04C(int *record) {
+extern "C" void TruckDraw_destroyRecord(int *record) {
 #define gTrackMarker      lbl_8055D5B4 /* the TrackMarker every truck-draw record shares */
 #define gTrackMarkerRefs  lbl_8055D5B8 /* how many records are alive and using it */
 #define gMapMarkerRecords lbl_803583C8 /* the 16 ring-challenge map markers, 0x14 bytes each */

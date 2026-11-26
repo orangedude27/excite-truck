@@ -366,7 +366,7 @@ void fn_80014638(void *arg0) {
 }
 #pragma scheduling reset
 extern u8 lbl_802FCE18[];
-extern void fn_8001A04C(void *);
+extern void TruckDraw_destroyRecord(void *);
 extern void fn_802CAC54(s32);
 extern void fn_80235380(void *);
 extern void fn_80128668(void *);
@@ -387,7 +387,7 @@ extern "C" void *fn_80014664(void *object, s32 deleting) {
         if (child != 0) {
             ((Obj *)child)->v0(1);
         }
-        fn_8001A04C(*(void **)((u8 *)object + 0x48));
+        TruckDraw_destroyRecord(*(void **)((u8 *)object + 0x48));
         *(void **)((u8 *)object + 0x48) = 0;
         fn_802CAC54(*(s32 *)((u8 *)object + 0x44));
         *(s32 *)((u8 *)object + 0x44) = -2;
