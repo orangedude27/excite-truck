@@ -1109,7 +1109,7 @@ extern void *fn_802076A0(void *, s32, s32, s32);
 extern s32 fn_80204CF0(void);
 #pragma push
 #pragma optimization_level 4
-void *constructRingSetController(void *controller) {
+/* Construct the ring-set controller: install its vtable, load the obstacle table, gem art and challenge sounds, and initialise its ring/marker/difficulty state. */ void *constructRingSetController(void *controller) {
     /* Construct the ring-set controller the RingChallengeMaster (lbl_8055E378)
        carries at +0x30: link it as the current object of its kind, install its
        vtable, load the obstacle table, the gem art set and the seven sound
@@ -1117,8 +1117,8 @@ void *constructRingSetController(void *controller) {
        map marker and the difficulty the game is currently on. */
     char *const base = lbl_803306D0; /* this module's strings */
     f32 zero;
-    void *failSfx;
-    void *ringHitSfx;
+    void *failSound;
+    void *ringHitSound;
     fn_802C2914(controller);                                  /* links it as the current one */
     *(void **)((u8 *)controller + 4) = lbl_80330A90;          /* the controller's vtable */
     *(void **)((u8 *)controller + 0x14) = fn_80131808(base + 0x1E0);      /* "race.res/obstacle.val" */
@@ -1129,10 +1129,10 @@ void *constructRingSetController(void *controller) {
     *(void **)((u8 *)controller + 0x54) = fn_802076A0(base + 0x22C, 1, 0, 0); /* "longcheer.sfx" */
     *(void **)((u8 *)controller + 0x5C) = fn_802076A0(base + 0x23C, 1, 0, 0); /* "missflag.sfx" */
     *(void **)((u8 *)controller + 0x60) = fn_802076A0(base + 0x24C, 1, 0, 0); /* "levelup.sfx" */
-    failSfx = fn_802076A0(base + 0x258, 1, 0, 0);              /* "rcfail.sfx" */
-    ringHitSfx = *(void **)((u8 *)controller + 0x4C);
+    failSound = fn_802076A0(base + 0x258, 1, 0, 0);              /* "rcfail.sfx" */
+    ringHitSound = *(void **)((u8 *)controller + 0x4C);
     zero = 0.0f;
-    *(void **)((u8 *)controller + 0x64) = failSfx;
+    *(void **)((u8 *)controller + 0x64) = failSound;
     *(s32 *)((u8 *)controller + 0x24) = -1;                    /* no map marker queued */
     *(u8 *)((u8 *)controller + 0x48) = 0;
     *(u8 *)((u8 *)controller + 0x49) = 0;
@@ -1140,7 +1140,7 @@ void *constructRingSetController(void *controller) {
     *(f32 *)((u8 *)controller + 0x28) = zero;
     *(s32 *)((u8 *)controller + 0x38) = 0;
     *(s32 *)((u8 *)controller + 0x3C) = 0;                     /* no ring sets yet */
-    SetNodeF8(ringHitSfx);                                     /* the seven sounds start at full scale */
+    SetNodeF8(ringHitSound);                                     /* the seven sounds start at full scale */
     SetNodeF8(*(void **)((u8 *)controller + 0x50));
     SetNodeF8(*(void **)((u8 *)controller + 0x58));
     SetNodeF8(*(void **)((u8 *)controller + 0x54));
