@@ -673,37 +673,37 @@ extern "C" void setRaceEffectEntryEnabled(void *container, void *entryIndex, int
     char *entry = *(char **)container + byteOffset;
     if ((unsigned)enabled != (unsigned)(unsigned char)entry[kActiveFlag]) {
         if (enabled != 0) {
-            float now = fn_801E7E18();
-            char *stamped = *(char **)container + byteOffset;
-            *(float *)(stamped + kStartTime) = now;
-            float *pose = (float *)((void *(*)(int, void *))fn_80287B24)((int)entryIndex, (void *)stamped);
+            float currentTime = fn_801E7E18();
+            char *entryStamped = *(char **)container + byteOffset;
+            *(float *)(entryStamped + kStartTime) = currentTime;
+            float *objectPose = (float *)((void *(*)(int, void *))fn_80287B24)((int)entryIndex, (void *)entryStamped);
             float *local = (float *)(*(char **)container + byteOffset);
-            float world[3];
+            float worldPos[3];
             /* The rotation below is the game's shared pose transform, which copes
              * with source and destination being the same buffer.  The destination
              * here is this scratch array, so the plain path is the one taken. */
-            if (world == local) {
+            if (worldPos == local) {
                 float x, y, z;
                 float m00, m10, m20, m01, m11, m21, m02, m12, m22;
-                m10 = pose[3]; m11 = pose[4]; m12 = pose[5];
-                m00 = pose[0]; m01 = pose[1]; m02 = pose[2];
-                m20 = pose[6]; m21 = pose[7]; m22 = pose[8];
+                m10 = objectPose[3]; m11 = objectPose[4]; m12 = objectPose[5];
+                m00 = objectPose[0]; m01 = objectPose[1]; m02 = objectPose[2];
+                m20 = objectPose[6]; m21 = objectPose[7]; m22 = objectPose[8];
                 x = local[0]; y = local[1]; z = local[2];
-                world[0] = z * m20 + (x * m00 + y * m10);
-                world[1] = z * m21 + (x * m01 + y * m11);
-                world[2] = z * m22 + (x * m02 + y * m12);
+                worldPos[0] = z * m20 + (x * m00 + y * m10);
+                worldPos[1] = z * m21 + (x * m01 + y * m11);
+                worldPos[2] = z * m22 + (x * m02 + y * m12);
             } else {
                 float m00, m01, m02, m10, m11, m12, m20, m21, m22;
-                m10 = pose[3]; m00 = pose[0]; m20 = pose[6];
-                world[0] = local[2] * m20 + (local[0] * m00 + local[1] * m10);
-                m11 = pose[4]; m01 = pose[1]; m21 = pose[7];
-                world[1] = local[2] * m21 + (local[0] * m01 + local[1] * m11);
-                m12 = pose[5]; m02 = pose[2]; m22 = pose[8];
-                world[2] = local[2] * m22 + (local[0] * m02 + local[1] * m12);
+                m10 = objectPose[3]; m00 = objectPose[0]; m20 = objectPose[6];
+                worldPos[0] = local[2] * m20 + (local[0] * m00 + local[1] * m10);
+                m11 = objectPose[4]; m01 = objectPose[1]; m21 = objectPose[7];
+                worldPos[1] = local[2] * m21 + (local[0] * m01 + local[1] * m11);
+                m12 = objectPose[5]; m02 = objectPose[2]; m22 = objectPose[8];
+                worldPos[2] = local[2] * m22 + (local[0] * m02 + local[1] * m12);
             }
-            world[0] += pose[9];
-            world[1] += pose[10];
-            world[2] += pose[11];
+            worldPos[0] += objectPose[9];
+            worldPos[1] += objectPose[10];
+            worldPos[2] += objectPose[11];
         }
         char *target = *(char **)container + byteOffset;
         target[kActiveFlag] = (char)enabled;
