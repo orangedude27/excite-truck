@@ -44,7 +44,7 @@ void fn_802C6CF8(long);
 #pragma use_lmw_stmw off
 void fn_80128668(void*);
 void fn_801E323C(void);
-void fn_801ECCE0(long, long);
+void drawVehiclesForPass(long, long);
 long fn_801E866C(long);
 long fn_801E89C8(long);
 float fn_802C99E8(void *, float);
@@ -67,7 +67,7 @@ extern float lbl_80558DC4[];
 void fn_801EC1D4(void) {
     /* Seed the saved render state with the UI's default light colours: a muted
      * blue-gray diffuse and a warm cream ambient, applied (and later restored)
-     * around the vehicle-render effect pass in fn_801ECCE0. */
+     * around the vehicle-render effect pass in drawVehiclesForPass. */
     ((unsigned int *)lbl_80488668)[0] = UI_LIGHT_DIFFUSE_MODE0;
     ((unsigned int *)lbl_80488668)[1] = UI_LIGHT_AMBIENT;
 }
@@ -513,7 +513,7 @@ void fn_801ECC70(void *vehicleRender) {
 long fn_801ECC8C(unsigned int vehicleRender) {
     /* Which update group a vehicle render object (the pointers kept in the
      * lbl_80488648[] table) belongs to: 1 for the ones that take the
-     * per-player effect pass of fn_801ECCE0 (called there with key 0) - the
+     * per-player effect pass of drawVehiclesForPass (called there with key 0) - the
      * player's own car, remembered in lbl_8055EBC8 when the 'PCAR' object is
      * created, plus any vehicle whose owner data (+0x3C) still has the float
      * at +0x2D4 above the global threshold lbl_80558DC4 - and 0 for the plain
@@ -525,7 +525,7 @@ long fn_801ECC8C(unsigned int vehicleRender) {
 }
 
 #pragma dont_inline on
-void fn_801ECCE0(long renderObj, long pass) {
+void drawVehiclesForPass(long renderObj, long pass) {
     void *otherVehicles[8];
     void *selected;
     unsigned selectedIndex;
@@ -870,14 +870,14 @@ void fn_801ED46C(void *self) {
 }
 #pragma pop
 
-/* Wrapper: run the plain/class-0 vehicle render pass (fn_801ECCE0 with group key 1). */
+/* Wrapper: run the plain/class-0 vehicle render pass (drawVehiclesForPass with group key 1). */
 void fn_801ED68C(long renderObj) {
-    fn_801ECCE0(renderObj, 1);
+    drawVehiclesForPass(renderObj, 1);
 }
 
-/* Wrapper: run the effect/class-1 vehicle render pass (fn_801ECCE0 with group key 0). */
+/* Wrapper: run the effect/class-1 vehicle render pass (drawVehiclesForPass with group key 0). */
 void fn_801ED694(long renderObj) {
-    fn_801ECCE0(renderObj, 0);
+    drawVehiclesForPass(renderObj, 0);
 }
 
 /* If this vehicle is the active camera target and the interior view flag is set,
