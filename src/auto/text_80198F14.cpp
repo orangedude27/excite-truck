@@ -3569,7 +3569,7 @@ extern "C" void fn_801A0464(void *arg0, void *arg1) {
 #pragma push
 #pragma dont_inline on
 #pragma use_lmw_stmw off
-extern "C" void stepPhysicsGroup(void* group) {
+/* Per-frame physics-group pass: tick and update children, then push a driven car's four physics corners out of nearby track-mesh points. */ extern "C" void stepPhysicsGroup(void* group) {
     /* Per-frame pass of a physics group: tick its children, run each child's own
        update, and then -- when the group drives a car and the "track.msh" mesh is
        loaded -- push the car's four physics corners out of the track mesh points
@@ -3577,7 +3577,7 @@ extern "C" void stepPhysicsGroup(void* group) {
     s32 count;
     Vec corner;
     Vec points[0x40];
-    u8* car;
+    u8* carObj;
     s32 i;
     u8* entry;
     fn_801A0160(group);                                  /* the children's once-per-frame tick */
@@ -3587,10 +3587,10 @@ extern "C" void stepPhysicsGroup(void* group) {
         entry += 4;
     }
     if (trackMesh != 0) {                             /* the cached "track.msh" mesh */
-        car = *(u8**)((u8*)group + 4);                   /* the object this group drives */
+        carObj = *(u8**)((u8*)group + 4);                   /* the object this group drives */
         s32 isCar;
-        if (car == 0) goto set0;
-        switch (*(s32*)(car + 0x10)) {                   /* its type tag: NCAR, CAR , ACAR, PCAR */
+        if (carObj == 0) goto set0;
+        switch (*(s32*)(carObj + 0x10)) {                   /* its type tag: NCAR, CAR , ACAR, PCAR */
         case 0x4E434152:
         case 0x43415220:
         case 0x41434152:
@@ -3602,16 +3602,16 @@ extern "C" void stepPhysicsGroup(void* group) {
         isCar = 0;
     done:
         if (isCar != 0) {
-            s32 body = *(s32*)(car + 0x1EC);             /* the car's physics body */
+            s32 body = *(s32*)(carObj + 0x1EC);             /* the car's physics body */
             s32 k = 0;                                   /* its four corners */
             f32 one = lbl_805622E0;                      /* 1.0f */
             f32 minDist = lbl_805622D4;                  /* 0.001f: what counts as a hit */
             do {
                 fn_801BEAEC(body, k, &corner);           /* where corner k is this frame */
                 Vec v = corner;
-                v.x += *(f32*)(car + 0x48) * one;        /* dragged along by the car's velocity */
-                v.y += *(f32*)(car + 0x4C) * one;
-                v.z += *(f32*)(car + 0x50) * one;
+                v.x += *(f32*)(carObj + 0x48) * one;        /* dragged along by the car's velocity */
+                v.y += *(f32*)(carObj + 0x4C) * one;
+                v.z += *(f32*)(carObj + 0x50) * one;
                 count = 0x40;
                 fn_801CF080(trackMesh, &v, points, &count, 0, lbl_8056234C);  /* mesh points near it */
                 for (s32 j = 0; j < count; j++) {
