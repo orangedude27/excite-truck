@@ -23345,7 +23345,7 @@ extern "C" void fn_800C7E6C(void *arg0) {
     self[0x8E] = 1;
 }
 
-extern "C" s32 lbl_80559718;
+extern "C" s32 transPaneName;
 #pragma push
 #pragma dont_inline off
 extern "C" void fn_800C7F8C(void *arg0, s32 arg1) {
@@ -23359,7 +23359,7 @@ extern "C" void fn_800C7F8C(void *arg0, s32 arg1) {
     for (i = 0; i < 4; i++, state += 4, cursor += 4, info += 0x18) {
         if (*state) {
             if (*(s32 *)(*(u8 **)(self + 4) + 0x20) == 0) {
-                pane = (void *)((PaneFindDispatch *)*(void **)((u8 *)*(void **)(cursor + 0x1E4) + 0x10))->find(lbl_80559718, 1);
+                pane = (void *)((PaneFindDispatch *)*(void **)((u8 *)*(void **)(cursor + 0x1E4) + 0x10))->find(transPaneName, 1);
                 ((u8 *)pane)[0xCF] = (((u8 *)pane)[0xCF] & 0xFE) | 1;
             }
             j = findEventSlot(i + 0x1F, 0x11);
@@ -23370,7 +23370,7 @@ extern "C" void fn_800C7F8C(void *arg0, s32 arg1) {
             ((s32 (*)(void *, void *))getInfoAsync__Q210homebutton10ControllerFP8WPADInfo)(*(void **)(cursor + 0x254), info);
         } else {
             if (*(s32 *)(*(u8 **)(self + 4) + 0x20) == 0) {
-                pane = (void *)((PaneFindDispatch *)*(void **)((u8 *)*(void **)(cursor + 0x1E4) + 0x10))->find(lbl_80559718, 1);
+                pane = (void *)((PaneFindDispatch *)*(void **)((u8 *)*(void **)(cursor + 0x1E4) + 0x10))->find(transPaneName, 1);
                 ((u8 *)pane)[0xCF] = ((u8 *)pane)[0xCF] & 0xFE;
             }
             j = findEventSlot(i + 0x1F, 0x10);
@@ -24312,7 +24312,7 @@ extern "C" void fn_800CA264(void *arg0, void *arg1) {
                         }
                         fn_800D1054(*(void **)(s + 0x254), in + i * 0x10, j);
                         if (*(s32 *)(SYS + 0x20) == 0) {
-                            pane = V3(s, lbl_80559718, 1);
+                            pane = V3(s, transPaneName, 1);
                             ((u8 *)pane)[0xCF] = (((u8 *)pane)[0xCF] & 0xFE) | 1;
                         }
                     }
@@ -24330,7 +24330,7 @@ extern "C" void fn_800CA264(void *arg0, void *arg1) {
             } else {
                 fn_800D11E0(*(void **)(s + 0x254));
                 if (*(s32 *)(SYS + 0x20) == 0) {
-                    pane = V3(s, lbl_80559718, 1);
+                    pane = V3(s, transPaneName, 1);
                     ((u8 *)pane)[0xCF] = ((u8 *)pane)[0xCF] & 0xFE;
                 }
             }
@@ -24391,7 +24391,7 @@ extern "C" void fn_800CA264(void *arg0, void *arg1) {
                     b = *(f32 *)((u8 *)lay + 8) * rect[2];
                     a = *(f32 *)((u8 *)lay + 0xC);
                     ang = a * rect[3];
-                    pane = V3(s, lbl_80559718, 1, a, b);
+                    pane = V3(s, transPaneName, 1, a, b);
                     *(f32 *)((u8 *)pane + 0x2C) = b;
                     *(f32 *)((u8 *)pane + 0x30) = ang;
                     *(f32 *)((u8 *)pane + 0x34) = z;
@@ -24411,7 +24411,7 @@ extern "C" void fn_800CA264(void *arg0, void *arg1) {
                 for (j = 0; j < 4; j++)
                     ((u8 *)VB(self, ids[j], 1))[0xCF] = ((u8 *)VB(self, ids[j], 1))[0xCF] & 0xFE;
                 if (*(s32 *)(SYS + 0x20) == 0) {
-                    pane = V3(s, lbl_80559718, 1);
+                    pane = V3(s, transPaneName, 1);
                     ((u8 *)pane)[0xCF] = ((u8 *)pane)[0xCF] & 0xFE;
                 }
                 *(s32 *)(s + 0x54) = 0;
