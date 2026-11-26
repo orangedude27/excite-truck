@@ -574,19 +574,19 @@ extern f32 lbl_805604A4;
 extern u32 lbl_80558D0C;
 #pragma use_lmw_stmw off
 #pragma processor 603
-extern "C" void updatePlayerHudSlot(void *arg0v, s32 arg1, s32 arg2) {
-    /* Per-player HUD slot update.  arg0v is the overlay's slot array, arg1 the
-     * player index (each slot is 4 floats: [0]=start time, [1]=last level,
-     * [2]=progress, [3]=last warn level) and arg2 the slot's id.  It picks the
-     * betalyt layout variant, scales a "bar" pane by the player's shared
-     * progress (fn_8001DAF0), then renders the slot's text line - fading it in
-     * over the first second after the player's level rose - and stores the
-     * resolved id back into the slot. */
+extern "C" void updatePlayerHudSlot(void *slots, s32 playerIndex, s32 slotId) {
+    /* Per-player HUD slot update.  `slots` is the overlay's slot array,
+     * `playerIndex` the player index (each slot is 4 floats: [0]=start time,
+     * [1]=last level, [2]=progress, [3]=last warn level) and `slotId` the
+     * slot's id.  Picks the betalyt layout variant, scales a "bar" pane by the
+     * player's shared progress (fn_8001DAF0), then renders the slot's text
+     * line - fading it in over the first second after the player's level
+     * rose - and stores the resolved id back into the slot. */
     struct Slot { u8 pad[0x28]; f32 startTime; f32 lastLevel; f32 progress; f32 lastWarn; };
-    Slot *slot = (Slot *)arg0v;
+    Slot *slot = (Slot *)slots;
     PaneData barPane;
     PaneData textPane;
-    register char *strings = lbl_802FDB68;
+    register char *stringTable = lbl_802FDB68;
     register PaneContainer *layout;
     register s32 value;
     s32 pick;
@@ -600,17 +600,17 @@ extern "C" void updatePlayerHudSlot(void *arg0v, s32 arg1, s32 arg2) {
     u32 color;
     f32 t;
 
-    value = fn_801609C4(arg2);
+    value = fn_801609C4(slotId);
     if (fn_801E85A4() == 2) {
         layout = (PaneContainer *)lbl_8055D5F8;
     } else {
         layout = (PaneContainer *)lbl_8055D5F4;
     }
     if (layout != 0) {
-        fn_8014784C(layout, strings + 0x248, strings + 0x258, 0);
+        fn_8014784C(layout, stringTable + 0x248, stringTable + 0x258, 0);
         if (value > 4) goto done;
         if (value < 0) goto done;
-        pick = *(s32 *)((u8 *)slot + arg1 * 4 + 4);
+        pick = *(s32 *)((u8 *)slot + playerIndex * 4 + 4);
         if (value != pick) {
             if (value == 4) {
                 slot->lastWarn = ((f32 (*)(void *))fn_8001DAE8)(&slot->progress);
@@ -619,7 +619,7 @@ extern "C" void updatePlayerHudSlot(void *arg0v, s32 arg1, s32 arg2) {
             }
         }
         scaled = lbl_80560494 - fn_8001DAF0(&slot->progress);
-        src = (PaneData *)layout->getPane(strings + 0x26C);
+        src = (PaneData *)layout->getPane(stringTable + 0x26C);
         if (src != 0) {
             barPane.w0 = src->w0;
             a4 = ((volatile PaneData *)src)->w4;
@@ -651,14 +651,14 @@ extern "C" void updatePlayerHudSlot(void *arg0v, s32 arg1, s32 arg2) {
                 textPane.w14 = src->w14;
                 textPane.w18 = src->w18;
                 textPane.w1c = src->w1c;
-                strings = (char *)__AXGetStackHead(value, a4);
+                stringTable = (char *)__AXGetStackHead(value, a4);
                 t = ((f32 (*)(void *))fn_8001DAE8)(&slot->startTime) - slot->lastLevel;
                 fadingIn = 0;
                 if ((t >= lbl_80560474) && (t < slot->startTime)) {
                     fadingIn = 1;
                 }
                 if (fadingIn != 0) {
-                    strings = (char *)((s32 (*)(s32))__AXGetStackHead)(value);
+                    stringTable = (char *)((s32 (*)(s32))__AXGetStackHead)(value);
                     if (fn_8001DAF0(&slot->startTime) > lbl_80560464) {
                         t = (fn_8001DAF0(&slot->startTime) - lbl_80560470) / lbl_80560498;
                         t = (lbl_80560470 < t) ? lbl_80560470 : t;
@@ -677,12 +677,12 @@ extern "C" void updatePlayerHudSlot(void *arg0v, s32 arg1, s32 arg2) {
                         textPane.w18 = fn_80147C50(color2 & 0xFFFFFF, color2, fn_8001DAF0(&slot->progress));
                     }
                 }
-                fn_80147230(&textPane, strings);
+                fn_80147230(&textPane, stringTable);
             }
         }
     }
 done:
-    *(s32 *)((u8 *)slot + arg1 * 4 + 4) = value;
+    *(s32 *)((u8 *)slot + playerIndex * 4 + 4) = value;
 }
 extern "C" void fn_8001E964(void* object) {
     #define INVALID_VALUE lbl_80560490 /* -999.0f */
