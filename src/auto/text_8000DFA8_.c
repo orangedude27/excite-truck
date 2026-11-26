@@ -730,7 +730,7 @@ extern f32 lbl_805602B0, lbl_805602E8;
  * INTERLUDE_TEXT_HEIGHT pixels and centred on the screen's middle, white over a
  * black shadow. Called from fn_801C6B70 while an interlude message is pending.
  * The original took a second, unused argument. */
-void drawInterludeBanner(const char *text) {
+/* Draws a bottom-screen interlude text banner: a translucent panel with end caps and centred, shadowed text. */ void drawInterludeBanner(const char *text) {
     extern f32 fn_80011E60(void);
     extern f32 fn_80011E70(void);
     extern f32 fn_8023293C(s32, f32);
