@@ -1367,7 +1367,7 @@ extern "C" int fn_801D5BBC(void *out, void *object) {
     return result;
 }
 
-extern "C" s32 fn_801D5E94(void *object) {
+extern "C" s32 startObstacleActionSequenceEvent(void *object) {
     /* ObstacleActionSequenceEvent's start step: hand every obstacle of the
      * event's group a random throw.
      *
