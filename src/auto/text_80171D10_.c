@@ -60,7 +60,7 @@ typedef struct CachedMessage {
     unsigned int tag;           /* +0x08: the table stamp, ~it while unresolved */
 } CachedMessage;
 
-/* Crush-mode round state, embedded in the "crushmaster" object (fn_80172C28)
+/* Crush-mode round state, embedded in the "crushmaster" object (createCrushMaster)
    at +0x1AC and built by fn_8017353C.  The ten text cells are the results
    overlay's fields; updateCrushRoundResults refills them every frame and fn_80173ACC
    writes the last three. */
@@ -101,7 +101,7 @@ class Destroyable {
 public:
     virtual void destroy(int deleteFlag);
 };
-/* The "crushmaster" object: 0x2BC bytes allocated by fn_80172C28 under the name
+/* The "crushmaster" object: 0x2BC bytes allocated by createCrushMaster under the name
    "crushmaster", vtable lbl_80331018.  It runs crush mode - the results overlay
    (round), its two textures and the prerace sound.  Only the fields the code in
    this file names are given here. */
@@ -804,7 +804,7 @@ extern void fn_801CB648(int, int, float);
 // Allocates and initializes a 0x2BC-byte object: sets vtable/data fields and counters,
 // initializes several float/word fields, clears/initializes fixed-size byte/string regions,
 // caches related resource IDs/handles, and returns the object (or NULL on allocation failure).
-void *fn_80172C28(void) {
+void *createCrushMaster(void) {
     extern void *fn_801284F8(unsigned int, void *);
     extern void fn_8001DAE0(void *, float);
     extern int fn_80139D4C(void *);
@@ -885,7 +885,7 @@ int fn_80172E24(int object, int deleteFlag) {
 
 #pragma cplusplus on
 extern "C" void *fn_80172E64(CrushMaster *self, int deleteFlag) {
-    /* Destructor of the "crushmaster" object (fn_80172C28): drops the prerace
+    /* Destructor of the "crushmaster" object (createCrushMaster): drops the prerace
        sound, the shared "crush_nogo.val" forbidden-zone set and both overlay
        textures, then releases the round's animation set and its six sounds and
        clears the subtask header.  deleteFlag > 0 also frees the object. */
