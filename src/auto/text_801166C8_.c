@@ -5553,56 +5553,60 @@ void fn_801254E4(s32, f32 *, s32, f32 *);
    fn_80120B6C build those tables, fn_80120CA4/fn_80120E14 are the forward/
    inverse complex-FFT stages, and fn_801250CC/fn_801252D8/fn_801254E4 are the
    real-FFT folds; the surrounding two-point passes apply the DCT symmetry. */
-void oouraDct(s32 n, s32 isgn, f32 *a, s32 ip, s32 w) {
-    /* Ooura DCT/FFT driver: size the twiddle and cosine tables in the work
-       buffers, then run the sign-selected butterfly and stage transforms in place. */
+/* Ooura in-place real FFT/DCT of count floats in data: sign >= 0 is forward,
+ * sign < 0 is inverse.  info holds the twiddle/cosine table sizes and a
+ * bit-reversal map; work holds the tables.  fn_80120834/fn_80120B6C build them,
+ * fn_80120CA4/fn_80120E14 are the complex-FFT stages, and fn_801250CC/
+ * fn_801252D8/fn_801254E4 are the real-FFT folds; the two-point passes apply
+ * the DCT symmetry. */
+void fftDct(s32 count, s32 sign, f32 *data, s32 info, s32 work) {
     s32 twiddleLen;
     s32 cosLen;
     s32 i;
     f32 endValue;
     f32 first;
 
-    twiddleLen = *(s32 *)ip;
-    if (n > twiddleLen * 4) {
-        twiddleLen = n >> 2;
-        fn_80120834(twiddleLen, (s32 *)ip, (f32 *)w);
+    twiddleLen = *(s32 *)info;
+    if (count > twiddleLen * 4) {
+        twiddleLen = count >> 2;
+        fn_80120834(twiddleLen, (s32 *)info, (f32 *)work);
     }
-    cosLen = *(s32 *)(ip + 4);
-    if (n > cosLen) {
-        cosLen = n;
-        fn_80120B6C(n, (s32 *)ip, (f32 *)w + twiddleLen);
+    cosLen = *(s32 *)(info + 4);
+    if (count > cosLen) {
+        cosLen = count;
+        fn_80120B6C(count, (s32 *)info, (f32 *)work + twiddleLen);
     }
-    if (isgn < 0) {
-        endValue = *(f32 *)((u8 *)a + (n - 1) * 4);
-        for (i = n - 2; i >= 2; i -= 2) {
-            a[i + 1] = a[i] - a[i - 1];
-            a[i] = a[i] + a[i - 1];
+    if (sign < 0) {
+        endValue = *(f32 *)((u8 *)data + (count - 1) * 4);
+        for (i = count - 2; i >= 2; i -= 2) {
+            data[i + 1] = data[i] - data[i - 1];
+            data[i] = data[i] + data[i - 1];
         }
-        first = a[0];
-        a[1] = first - endValue;
-        a[0] = first + endValue;
-        if (n > 4) {
-            fn_801252D8(n, a, cosLen, (f32 *)w + twiddleLen);
-            fn_80120E14(n, a, ip + 8, twiddleLen, (void *)w);
-        } else if (n == 4) {
-            fn_80120E14(n, a, ip + 8, twiddleLen, (void *)w);
+        first = data[0];
+        data[1] = first - endValue;
+        data[0] = first + endValue;
+        if (count > 4) {
+            fn_801252D8(count, data, cosLen, (f32 *)work + twiddleLen);
+            fn_80120E14(count, data, info + 8, twiddleLen, (void *)work);
+        } else if (count == 4) {
+            fn_80120E14(count, data, info + 8, twiddleLen, (void *)work);
         }
     }
-    fn_801254E4(n, a, cosLen, (f32 *)w + twiddleLen);
-    if (isgn >= 0) {
-        if (n > 4) {
-            fn_80120CA4(n, a, ip + 8, twiddleLen, (void *)w);
-            fn_801250CC(n, (s32)a, cosLen, (s32)((f32 *)w + twiddleLen));
-        } else if (n == 4) {
-            fn_80120CA4(n, a, ip + 8, twiddleLen, (void *)w);
+    fn_801254E4(count, data, cosLen, (f32 *)work + twiddleLen);
+    if (sign >= 0) {
+        if (count > 4) {
+            fn_80120CA4(count, data, info + 8, twiddleLen, (void *)work);
+            fn_801250CC(count, (s32)data, cosLen, (s32)((f32 *)work + twiddleLen));
+        } else if (count == 4) {
+            fn_80120CA4(count, data, info + 8, twiddleLen, (void *)work);
         }
-        endValue = a[0] - a[1];
-        a[0] = a[0] + a[1];
-        for (i = 2; i < n; i += 2) {
-            a[i - 1] = a[i] - a[i + 1];
-            a[i] = a[i] + a[i + 1];
+        endValue = data[0] - data[1];
+        data[0] = data[0] + data[1];
+        for (i = 2; i < count; i += 2) {
+            data[i - 1] = data[i] - data[i + 1];
+            data[i] = data[i] + data[i + 1];
         }
-        *(f32 *)((u8 *)a + (n - 1) * 4) = endValue;
+        *(f32 *)((u8 *)data + (count - 1) * 4) = endValue;
     }
 }
 
