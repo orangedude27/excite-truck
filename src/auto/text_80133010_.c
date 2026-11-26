@@ -740,7 +740,7 @@ extern char lbl_8042F558[], lbl_8032BAC8[];
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-void optionsRecordCallback(long stage, long unusedArg) {
+void optionsRecordCallback(long stage, long unused) {
     /* Memory-card call-back for the options record ('OPTS' = 0x4F505473), which
      * fn_80133024 registers with the save system.  src/game/memcard.c calls it
      * with a SaveRecordStage around the memcpy of the record's bytes: after a
@@ -753,7 +753,7 @@ void optionsRecordCallback(long stage, long unusedArg) {
     typedef struct { long a, b; } Pair;
     char *slot;    /* a table slot; the OptionEntry it holds starts 8 later */
     char *staged;  /* an entry of lbl_8042F558, then a slot of lbl_8042F718 */
-    long slotOff;
+    long slotOffset;
     long i, j;
     unsigned char key0, key1, key2, key3, key4, key5, key6, key7;
     unsigned char key8, key9, key10, key11, key12, key13, key14, key15;
@@ -761,9 +761,9 @@ void optionsRecordCallback(long stage, long unusedArg) {
     if (stage == SAVE_RECORD_AFTER_LOAD) {
         staged = lbl_8042F558;
         for (i = 0; i < lbl_8055E080; staged += sizeof(OptionEntry), i++) {
-            for (j = 0, slotOff = 0; j < *(long *)((char *)lbl_8055E07C + 4); /* the table's entry count */
-                 slotOff += sizeof(OptionEntry), j++) {
-                slot = (char *)lbl_8055E07C + slotOff;
+            for (j = 0, slotOffset = 0; j < *(long *)((char *)lbl_8055E07C + 4); /* the table's entry count */
+                 slotOffset += sizeof(OptionEntry), j++) {
+                slot = (char *)lbl_8055E07C + slotOffset;
                 if (*(long *)(staged + 4) == *(long *)(slot + 0xC) && /* section */
                     stricmp(staged + 0x24, slot + 0x2C) == 0) {       /* key */
                     /* the staged entry over the slot's whole entry: its value
