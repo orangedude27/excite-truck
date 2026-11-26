@@ -5241,7 +5241,7 @@ static inline BOOL ScrollBarDrag(s32 *child, f32 scale, s32 base, s32 pos, s32 *
 }
 
 #pragma scheduling invalid_target
-extern "C" void fn_80220F90(void *scrollBar, s32 mouseX, s32 mouseY) {
+extern "C" void scrollBarOnPress(void *scrollBar, s32 mouseX, s32 mouseY) {
     /* On a scroll-bar press: if the pointer lands on the thumb, remember the grab
        offset (so dragging can track the pointer); if it lands on the track, page
        the scroll position toward the pointer and clamp it, clearing the drag flag. */
