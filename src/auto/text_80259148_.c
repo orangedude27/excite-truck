@@ -364,7 +364,7 @@ void fn_80259740(int mode, float value) {
 
 #pragma push
 #pragma use_lmw_stmw off
-extern int fn_8001EFA0(int, int);
+extern int getAchievementLevel(int, int);
 extern void fn_8001EFB0(void *);
 extern int fn_80131234(void *);
 extern void fn_80236910(void *);
@@ -491,7 +491,7 @@ int fn_8025978C(void **arg0) {
             FS(int, 8) = v;
             fn_8001EFB0((void *)&FS(int, 8));
             sel = (*(int *)((char *)arg0 + 0x18) > v) ? FS(int, 0x10) : FS(int, 0xC);
-            *(int *)((char *)frame + 0x44 - 8 + i * 4) = fn_8001EFA0(v, sel);
+            *(int *)((char *)frame + 0x44 - 8 + i * 4) = getAchievementLevel(v, sel);
             *(void **)((char *)frame + 0x28 - 8 + i * 4) = (char *)frame + 0x44 - 8 + i * 4;
         }
     }
@@ -817,7 +817,7 @@ extern float lbl_80563AF4;
 extern float lbl_80563AF8;
 extern float lbl_80563AEC;
 extern float lbl_80563AF0;
-extern int fn_8001EFA0(int, int);
+extern int getAchievementLevel(int, int);
 extern int fn_8001EFA4(int, int);
 extern void fn_8001EFB0(void *);
 extern void fn_80130FCC(void *, int, int);
@@ -872,8 +872,8 @@ void fn_8025A204(void) {
         fn_8001EFB0((void *)&state.object);
         if (lbl_8055F67C != 0) {
             state.next = state.selected + 0x32;
-            firstResult = fn_8001EFA0(state.object, state.next);
-            secondResult = fn_8001EFA0(state.object, state.selected);
+            firstResult = getAchievementLevel(state.object, state.next);
+            secondResult = getAchievementLevel(state.object, state.selected);
         }
         state.difference = (firstResult != secondResult);
         state.number = (float)(int)state.selected;
@@ -882,7 +882,7 @@ void fn_8025A204(void) {
         changed = 1;
         if (state.dialog != 0 && state.flag == 0 && state.difference == 0)
             changed = zero;
-        current = fn_8001EFA0(state.object, current);
+        current = getAchievementLevel(state.object, current);
         state.saved = current;
         result = fn_8001EFA4(state.object, current + 1);
         if (result >= 0) {
@@ -936,7 +936,7 @@ int fn_8025A4CC(int object, int deleteFlag) {
     return object;
 }
 
-extern int fn_8001EFA0(int, int);
+extern int getAchievementLevel(int, int);
 extern int fn_8001EFA4(int, int);
 extern void fn_8001EFB0(void *);
 extern void fn_80130FCC(void *, int, int);
@@ -983,8 +983,8 @@ void fn_8025A50C(void) {
         fn_8001EFB0((void *)&state.object);
         if (lbl_8055F67C != 0) {
             state.next = state.selected + 0x32;
-            firstResult = fn_8001EFA0(state.object, state.next);
-            secondResult = fn_8001EFA0(state.object, state.selected);
+            firstResult = getAchievementLevel(state.object, state.next);
+            secondResult = getAchievementLevel(state.object, state.selected);
         }
         state.difference = (firstResult != secondResult);
         state.number = (float)(int)state.selected;
@@ -993,7 +993,7 @@ void fn_8025A50C(void) {
         changed = 1;
         if (state.dialog != 0 && state.flag == 0 && state.difference == 0)
             changed = zero;
-        current = fn_8001EFA0(state.object, current);
+        current = getAchievementLevel(state.object, current);
         state.saved = current;
         result = fn_8001EFA4(state.object, current + 1);
         if (result >= 0) {
@@ -1736,7 +1736,7 @@ extern char lbl_80344E20[];
             showName = 0;
         }
     }
-    result = fn_8001EFA0(row->achievement, value);
+    result = getAchievementLevel(row->achievement, value);
     row->rank = result;
     result = fn_8001EFA4(row->achievement, result + 1);
     if (result >= 0) {
@@ -1913,7 +1913,7 @@ shown_done:;
             showName = 0;
         }
     }
-    result = fn_8001EFA0(row->achievement, value);
+    result = getAchievementLevel(row->achievement, value);
     row->rank = result;
     result = fn_8001EFA4(row->achievement, result + 1);
     if (result >= 0) {
