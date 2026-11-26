@@ -350,13 +350,11 @@ loop_start:
         goto done;
     }
     length = *(float *)((char *)node + 0x18);
-    if (dot > length) {
-        do {
-            dot -= length;
-            node = *(void **)((char *)node + 0x14);
-            st->node = node;
-            length = *(float *)((char *)node + 0x18);
-        } while (dot > length);
+    while (dot > length) {
+        dot -= length;
+        node = *(void **)((char *)node + 0x14);
+        st->node = node;
+        length = *(float *)((char *)node + 0x18);
     }
     st->frac = dot / length;
     ++arg2;
@@ -366,13 +364,13 @@ done:
 }
 
 #pragma ctrloop on
-s32 fn_801357A4(Unk_80135278 *self, float *point) {
+s32 fn_801357A4(Unk_80135278 *self, const float *point) {
     extern double fn_8002F234(float);
     extern float lbl_80561334;
     extern float lbl_80561338;
-    s32 result, count;
+    s32 result, count, count2;
     char *node;
-    float t, d, inv, dx, dy, x, y;
+    float x, y, dx, dy, inv, d, t;
     if (fn_801355B8((void *)self, (void *)point, (void *)&self->unk_4, (void *)&self->unk_8) == 0) {
         node = (char *)self->unk_4;
         result = 2;
@@ -393,7 +391,7 @@ s32 fn_801357A4(Unk_80135278 *self, float *point) {
         if (t+d > lbl_80561324) {
             t=lbl_80561320;
             count=1000;
-            do {
+            while (count--) {
                 result=2;
                 node=*(char **)(node+0x14);
                 if (*(s32 *)(node+0x10)==0) result=0;
@@ -406,14 +404,14 @@ s32 fn_801357A4(Unk_80135278 *self, float *point) {
                 self->unk_18=dx; self->unk_1c=dy;
                 d=(self->unk_10*dx+self->unk_14*dy)/ *(float *)(node+0x18);
                 if (d < lbl_80561324) {
-                    if (!(t>d)) t=d;
+                    t = (t > d) ? t : d;
                     break;
                 }
-            } while (--count);
+            }
         } else {
             t+=d;
             if (t < lbl_80561320) {
-                result=3; count=10;
+                result=3; count2=10;
                 if (*(u8 *)(node+0x34)==0) {
                     while(t < lbl_80561320) {
                         char *data=(char *)self->unk_2c;
@@ -423,7 +421,7 @@ s32 fn_801357A4(Unk_80135278 *self, float *point) {
                             result=1;
                             node=*(char **)(data+0x1c)+(*(unsigned long *)(data+0x18)>>16)*0x3c-0x3c;
                         }
-                        if (--count==0) { t=lbl_80561320; break; }
+                        if (--count2==0) { t=lbl_80561320; break; }
                     }
                 } else t=lbl_80561320;
             }
@@ -480,7 +478,7 @@ void fn_80135B24(void *sample, void *follower, float distance)
   *((s32 *) (((char *) sample) + 8)) = 0;
 }
 #pragma scheduling on
-void fn_80135B9C(PathCursor *cursor, PathVec *posOut, PathVec *dirOut, float *valueOut, PathSample *sampleOut, float amount) {
+void advancePathFollower(PathCursor *cursor, PathVec *posOut, PathVec *dirOut, float *valueOut, PathSample *sampleOut, float amount) {
     /* Move the follower's place along its path by `amount` world units and read
      * the path there.  Every output is optional: posOut gets the position,
      * dirOut the path direction scaled to unit length, valueOut the node value
@@ -683,11 +681,7 @@ void fn_80135F64(int arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
   a*=c;
   f=v[2]; g=v[5];
   d*=f;
-  obj->unk_5c=0;
-  h=g*b;
-  obj->unk_60=0;
-  e+=d;
-  a=h+a;
+  obj->unk_5c = 0, h = g*b, obj->unk_60 = 0, e += d, a = h+a;
   obj->unk_48=e;
   obj->unk_40=a;
  }
@@ -715,7 +709,6 @@ int fn_80136068(void *arg0, void *arg1, int arg2) {
     unsigned int end;
     int keep;
     char *head;
-    float total;
     float length;
     float old48;
     float old40;
@@ -740,8 +733,8 @@ int fn_80136068(void *arg0, void *arg1, int arg2) {
     if (status == 0) {
         if (arg2 != 0) {
         char *walk = locals.node;
+        float total = lbl_80561324 - locals.fraction;
         unsigned int index;
-        total = lbl_80561324 - locals.fraction;
         base2 = *(volatile int *)(self + 0x34);
         goto kpad_cond;
 kpad_body:

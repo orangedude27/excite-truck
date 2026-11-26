@@ -31,7 +31,7 @@ extern int lbl_8055E0D0;
 typedef float (*Fn931AC)(void *, void *, void *, float, float, float, float);
 typedef float (*Fn948B0)(void *, int, float);
 typedef float (*Fn94FC8)(void *);
-extern void fn_80135B9C(void *, void *, void *, void *, void *, float);
+extern void advancePathFollower(void *, void *, void *, void *, void *, float);
 #define F80194FD0(p, o) (*(float *)((unsigned char *)(p) + (o)))
 #define P80194FD0(p, o) (*(void **)((unsigned char *)(p) + (o)))
 #pragma cplusplus on
@@ -1257,7 +1257,7 @@ void fn_80194FD0(unsigned char *self, float *out, float dt)
   s0.a = 0;
   s0.c = 0x2710;
   s0.b = 0.0f;
-  fn_80135B9C(P80194FD0(self, 0x164), 0, 0, 0, &s0, F80194FD0(cfg, 0x70) + (F80194FD0(cfg, 0x6C) * F80194FD0(self, 0x270)));
+  advancePathFollower(P80194FD0(self, 0x164), 0, 0, 0, &s0, F80194FD0(cfg, 0x70) + (F80194FD0(cfg, 0x6C) * F80194FD0(self, 0x270)));
   {
     void *e1 = s0.a;
     void *e2 = s0.a;
@@ -1280,8 +1280,8 @@ void fn_80194FD0(unsigned char *self, float *out, float dt)
     b2.a = 0;
     b2.c = 0x2710;
     b2.b = 0.0f;
-    fn_80135B9C(self + 0x168, p0_2, q0_2, &r_2[0], &a2, f30);
-    fn_80135B9C(self + 0x19C, p1_2, q1_2, &r_2[1], &b2, f30);
+    advancePathFollower(self + 0x168, p0_2, q0_2, &r_2[0], &a2, f30);
+    advancePathFollower(self + 0x19C, p1_2, q1_2, &r_2[1], &b2, f30);
     if ((out + 2) != 0)
     {
       k = (f31 - F80194FD0(self, 0x1D0)) / 1.5f;
@@ -1314,12 +1314,12 @@ void fn_80194FD0(unsigned char *self, float *out, float dt)
     sc.a = 0;
     sc.c = 0x2710;
     sc.b = 0.0f;
-    fn_80135B9C(self + 0x19C, out, 0, out + 2, &sc, f30);
+    advancePathFollower(self + 0x19C, out, 0, out + 2, &sc, f30);
     F80194FD0(self, 8) = F80194FD0(sc.a, 0x2C) + (sc.b * (F80194FD0(P80194FD0(sc.a, 0x14), 0x2C) - F80194FD0(sc.a, 0x2C)));
   }
   else
   {
-    fn_80135B9C(self + 0x19C, out, 0, out + 2, 0, f30);
+    advancePathFollower(self + 0x19C, out, 0, out + 2, 0, f30);
   }
   f31 = F80194FD0(self, 0x26C);
   F80194FD0(self, 0xC) = out[0];
@@ -1334,8 +1334,8 @@ void fn_80194FD0(unsigned char *self, float *out, float dt)
     b3.a = 0;
     b3.c = 0x2710;
     b3.b = 0.0f;
-    fn_80135B9C(self + 0x168, p0_3, q0_3, &r_3[0], &a3, lbl_805621F0 * f30);
-    fn_80135B9C(self + 0x19C, p1_3, q1_3, &r_3[1], &b3, lbl_805621F0 * f30);
+    advancePathFollower(self + 0x168, p0_3, q0_3, &r_3[0], &a3, lbl_805621F0 * f30);
+    advancePathFollower(self + 0x19C, p1_3, q1_3, &r_3[1], &b3, lbl_805621F0 * f30);
     if ((out + 2) != 0)
     {
       k = (f31 - F80194FD0(self, 0x1D0)) / 1.5f;
@@ -1344,7 +1344,7 @@ void fn_80194FD0(unsigned char *self, float *out, float dt)
   }
   else
   {
-    fn_80135B9C(self + 0x19C, 0, 0, out + 2, 0, lbl_805621F0 * f30);
+    advancePathFollower(self + 0x19C, 0, 0, out + 2, 0, lbl_805621F0 * f30);
   }
   out[2] = out[2] * ((Fn94FC8) fn_80194FC8)(self);
   if ((*((unsigned char *) (self + 0x2A6))) != 0)
@@ -1857,7 +1857,7 @@ extern "C" void fn_80195D80(void *arg0, float arg1) {
     }
 }
 #pragma opt_lifetimes reset
-extern "C" void fn_80135B9C(void *, void *, void *, void *, void *, float);
+extern "C" void advancePathFollower(void *, void *, void *, void *, void *, float);
 extern "C" int fn_802E30C8(const char *, ...);
 void fn_80195F6C(void *arg0, void *arg1) {
     extern float lbl_8055A488, lbl_8055A48C, lbl_8056215C, lbl_805621DC, lbl_80562210, lbl_8056221C;
@@ -1912,7 +1912,7 @@ void fn_80195F6C(void *arg0, void *arg1) {
         sp18.p = 0;
         sp18.i = 0x2710;
         sp18.f = lbl_80562144;
-        fn_80135B9C(*(void **)(self + 0x164), 0, 0, self + 0x50, &sp18, m);
+        advancePathFollower(*(void **)(self + 0x164), 0, 0, self + 0x50, &sp18, m);
         *(float *)(self + 0x54) = keep;
         *(void **)(self + 0x68) = sp18.p;
         *(float *)(self + 0x6C) = sp18.f;

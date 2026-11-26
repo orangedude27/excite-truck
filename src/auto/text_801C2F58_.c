@@ -1009,7 +1009,7 @@ void fn_8018ADB4(void *, float);
 void fn_8018ADBC(void *, float);
 void *fn_801B2ED0(s32);
 void fn_801353C4(void *, float *);
-void fn_80135B9C(void *, float *, float *, void *, void *, float);
+void advancePathFollower(void *, float *, float *, void *, void *, float);
 float fn_80139030(float *, float, float);
 extern float lbl_805629AC;
 extern float lbl_805629B8;
@@ -1081,7 +1081,7 @@ void fn_801C56AC(void) {
                 float k;
                 amount = *(float *)(cfg + 0x10);
                 if (cB4 > amount) amount = cB4;
-                fn_80135B9C(vobj, &buf[4], &buf[2], 0, 0, amount);
+                advancePathFollower(vobj, &buf[4], &buf[2], 0, 0, amount);
                 k = *(float *)(cfg + 0xC);
                 buf[4] = buf[4] + buf[2] * k;
                 buf[5] = buf[5] + buf[3] * k;
