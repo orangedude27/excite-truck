@@ -398,27 +398,23 @@ extern float dotProduct3(float, float, float, float, float, float);
 }
 #pragma pop
 void fn_801BFD34(float *, float *, const float *);
-/* Builds an orthonormal basis from four indexed points in the point array:
- * origin at index *(int*)(base+0x21C), axes from (idx 0x224-0x220) and
- * (idx 0x22C-0x228). Falls back to identity axes when the cross product is
- * degenerate (dot <= lbl_805628CC), then stores the resulting transform parts
- * via fn_801BFD34/fn_80015B20. */
+/* Build a 3x4 basis matrix from four indexed points in `points` (indices held in `base` at 0x21C/0x220/0x224/0x228): orthonormalize the two edge vectors when their cross product is non-degenerate, else use identity axes, then store the translation and rotation through fn_801BFD34/fn_80015B20. */
 void buildOrthonormalBasis(char *base, float *out, FV3 *points) {
     float normal[3], axis1[3], axis0[3];
     float basis[12];
-    FV3 *pA, *pB;
+    FV3 *ptA, *ptB;
     float z, y, x;
 
-    pA = &points[*(int *)(base + 0x21C)];
-    x = pA->x; y = pA->y; z = pA->z;
+    ptA = &points[*(int *)(base + 0x21C)];
+    x = ptA->x; y = ptA->y; z = ptA->z;
     basis[9] = x; basis[10] = y; basis[11] = z;
-    pA = &points[*(int *)(base + 0x220)];
-    pB = &points[*(int *)(base + 0x224)];
-    x = pB->x - pA->x; y = pB->y - pA->y; z = pB->z - pA->z;
+    ptA = &points[*(int *)(base + 0x220)];
+    ptB = &points[*(int *)(base + 0x224)];
+    x = ptB->x - ptA->x; y = ptB->y - ptA->y; z = ptB->z - ptA->z;
     basis[0] = x; basis[1] = y; basis[2] = z;
-    pA = &points[*(int *)(base + 0x228)];
-    pB = &points[*(int *)(base + 0x22C)];
-    x = pB->x - pA->x; y = pB->y - pA->y; z = pB->z - pA->z;
+    ptA = &points[*(int *)(base + 0x228)];
+    ptB = &points[*(int *)(base + 0x22C)];
+    x = ptB->x - ptA->x; y = ptB->y - ptA->y; z = ptB->z - ptA->z;
     basis[3] = x; basis[4] = y; basis[5] = z;
     PSVECCrossProduct(&basis[0], &basis[3], &basis[6]);
     if (PSVECDotProduct(&basis[6], &basis[6]) > lbl_805628CC) {
