@@ -4144,6 +4144,7 @@ void fn_8006022C(s32 chan)
 }
 
 /* Requests a controller status report on a ready channel: builds a RPTID_REQUEST_STATUS command with statusOut as its WPADInfo output and callback as its completion callback, then queues it on the channel's standard command queue. */
+#define WPADiRequestStatus fn_800604E8
 #pragma push
 #pragma opt_propagation off
 s32 fn_800604E8(s32 chan, s32 statusOut, void* callback) {
