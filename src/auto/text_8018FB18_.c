@@ -334,14 +334,13 @@ int fn_8018FF84(int object, int deleteFlag) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void createReplayDriver(void *arg0, void *arg1, void *arg2) {
-    // RealName: ReplayDriverCtor. Builds the 0x24-byte replay driver wrapper in
-    // arg0: allocates the inner "repl_di" (replay driver interface) object, which
-    // wraps the per-mode DriverInterface (getOrCreateDriverInterface) and the "replaypkt" buffer
-    // (lbl_804349B0[mode]) and caches four of the driver's flags; then records the
-    // racer slot (getDeitySlot(car+0x1EC)), the owner car and the mode word
-    // (car+0x260 & 3). arg2+0x5C supplies a sign/zero pair stored at +0x25/+0x26.
-    class ResultMethods {
+extern "C" void createReplayDriver(void *self, void *car, void *options) {
+    /* Build the 0x24-byte replay-driver wrapper on self: allocate the inner
+     * "repl_di" object, wire it to the mode's DriverInterface and replay-packet
+     * buffer and cache four of its flags, then record the racer's deity slot,
+     * the owning car and the mode. options+0x5C supplies the sign/zero pair
+     * stored at +0x25/+0x26. */
+    class DriverInterface {
     public:
         virtual u8 f0();
         virtual u8 f1();
@@ -369,7 +368,7 @@ extern "C" void createReplayDriver(void *arg0, void *arg1, void *arg2) {
         virtual u8 get64();
         virtual u8 get68();
     };
-    class Method18 {
+    class DeitySlot {
     public:
         virtual s32 f0();
         virtual s32 f1();
@@ -377,68 +376,68 @@ extern "C" void createReplayDriver(void *arg0, void *arg1, void *arg2) {
         virtual s32 f3();
         virtual s32 get18();
     };
-    class Method0C1 {
+    class Callback8 {
     public:
         virtual void f0();
         virtual void call(void *, void *);
     };
-    class Method0C2 {
+    class CallbackC {
     public:
         virtual void f0();
         virtual void call(void *, void *);
     };
-    s32 temp_r0;
-    s32 temp_r27;
-    s32 temp_r3_6;
-    void *temp_r3;
-    ResultMethods *resultObj;
-    Method18 *method18Obj;
-    Method0C1 *method0C1Obj;
-    Method0C2 *method0C2Obj;
+    s32 replayPkt;
+    s32 mode;
+    s32 racerSlot;
+    void *replDi;
+    DriverInterface *driver;
+    DeitySlot *deity;
+    Callback8 *callback8;
+    CallbackC *callbackC;
 
-    *(s32 *)((u8 *)arg0 + 0x28) = *(u8 *)((u8 *)arg1 + 0x260) & 3;
-    temp_r3 = fn_801284F8(0x24, &lbl_8055A478);
-    if (temp_r3 != 0) {
-        temp_r27 = *(s32 *)((u8 *)arg0 + 0x28);
-        *(void **)temp_r3 = lbl_80332F40;
-        *(s32 *)((u8 *)temp_r3 + 0x20) = temp_r27;
+    *(s32 *)((u8 *)self + 0x28) = *(u8 *)((u8 *)car + 0x260) & 3;
+    replDi = fn_801284F8(0x24, &lbl_8055A478);
+    if (replDi != 0) {
+        mode = *(s32 *)((u8 *)self + 0x28);
+        *(void **)replDi = lbl_80332F40;
+        *(s32 *)((u8 *)replDi + 0x20) = mode;
         fn_80137C74();
-        *(s32 *)((u8 *)temp_r3 + 0x1C) = 0x8CA0;
-        temp_r0 = ((s32 *)lbl_804349B0)[temp_r27];
-        *(s32 *)((u8 *)temp_r3 + 0x18) = temp_r0;
-        *(s32 *)((u8 *)temp_r3 + 8) = temp_r0;
-        *(void **)((u8 *)temp_r3 + 4) = getOrCreateDriverInterface(temp_r27);
-        *(s32 *)((u8 *)temp_r3 + 0xC) = 0;
+        *(s32 *)((u8 *)replDi + 0x1C) = 0x8CA0;
+        replayPkt = ((s32 *)lbl_804349B0)[mode];
+        *(s32 *)((u8 *)replDi + 0x18) = replayPkt;
+        *(s32 *)((u8 *)replDi + 8) = replayPkt;
+        *(void **)((u8 *)replDi + 4) = getOrCreateDriverInterface(mode);
+        *(s32 *)((u8 *)replDi + 0xC) = 0;
         lbl_8055E524 = 0;
         if (fn_801CF050() != 0) {
-            resultObj = *(ResultMethods **)((u8 *)temp_r3 + 4);
-            *(u8 *)((u8 *)temp_r3 + 0x11) = resultObj->get5c();
-            resultObj = *(ResultMethods **)((u8 *)temp_r3 + 4);
-            *(u8 *)((u8 *)temp_r3 + 0x12) = resultObj->get64();
-            resultObj = *(ResultMethods **)((u8 *)temp_r3 + 4);
-            *(u8 *)((u8 *)temp_r3 + 0x13) = resultObj->get60();
-            resultObj = *(ResultMethods **)((u8 *)temp_r3 + 4);
-            *(u8 *)((u8 *)temp_r3 + 0x14) = resultObj->get68();
+            driver = *(DriverInterface **)((u8 *)replDi + 4);
+            *(u8 *)((u8 *)replDi + 0x11) = driver->get5c();
+            driver = *(DriverInterface **)((u8 *)replDi + 4);
+            *(u8 *)((u8 *)replDi + 0x12) = driver->get64();
+            driver = *(DriverInterface **)((u8 *)replDi + 4);
+            *(u8 *)((u8 *)replDi + 0x13) = driver->get60();
+            driver = *(DriverInterface **)((u8 *)replDi + 4);
+            *(u8 *)((u8 *)replDi + 0x14) = driver->get68();
         }
     }
-    *(void **)((u8 *)arg0 + 4) = temp_r3;
-    *(void **)((u8 *)*(void **)((u8 *)arg0 + 0xC) + 0x38) = temp_r3;
-    *(bool *)((u8 *)arg0 + 0x25) = *(s32 *)((u8 *)arg2 + 0x5C) == 0;
+    *(void **)((u8 *)self + 4) = replDi;
+    *(void **)((u8 *)*(void **)((u8 *)self + 0xC) + 0x38) = replDi;
+    *(bool *)((u8 *)self + 0x25) = *(s32 *)((u8 *)options + 0x5C) == 0;
     {
-        s32 value = *(s32 *)((u8 *)arg2 + 0x5C);
+        s32 value = *(s32 *)((u8 *)options + 0x5C);
         s32 negative = -value;
-        *(void **)((u8 *)arg0 + 0x20) = arg1;
-        *(u8 *)((u8 *)arg0 + 0x26) = (u32)(negative | value) >> 31;
+        *(void **)((u8 *)self + 0x20) = car;
+        *(u8 *)((u8 *)self + 0x26) = (u32)(negative | value) >> 31;
     }
-    temp_r3_6 = *(s32 *)((u8 *)arg1 + 0x1EC);
-    *(s32 *)((u8 *)arg0 + 0x1C) = temp_r3_6;
-    method18Obj = (Method18 *)getDeitySlot(temp_r3_6);
-    *(void **)((u8 *)arg0 + 0x14) = method18Obj;
-    *(s32 *)((u8 *)arg0 + 0x18) = method18Obj->get18();
-    method0C1Obj = *(Method0C1 **)((u8 *)arg0 + 8);
-    method0C1Obj->call(arg1, arg2);
-    method0C2Obj = *(Method0C2 **)((u8 *)arg0 + 0xC);
-    method0C2Obj->call(arg1, arg2);
+    racerSlot = *(s32 *)((u8 *)car + 0x1EC);
+    *(s32 *)((u8 *)self + 0x1C) = racerSlot;
+    deity = (DeitySlot *)getDeitySlot(racerSlot);
+    *(void **)((u8 *)self + 0x14) = deity;
+    *(s32 *)((u8 *)self + 0x18) = deity->get18();
+    callback8 = *(Callback8 **)((u8 *)self + 8);
+    callback8->call(car, options);
+    callbackC = *(CallbackC **)((u8 *)self + 0xC);
+    callbackC->call(car, options);
     if (fn_80019B78() != 0) {
         lbl_8055E528 = 1;
     }
