@@ -168,9 +168,6 @@ void drawFormattedText(s32 font, s32 drawFlags, s32 align, s32 x, s32 y, const c
         fn_802C4F58(x, y, text, COLOR_TEXT);
     }
 }
-#pragma push
-#pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 /* Draw one line of a counted string -- text is not NUL-terminated, length bytes
  * of it are copied into a local buffer and closed with a NUL -- through the
  * formatted bitmap-font drawer drawFormattedText, which takes it as the argument of
