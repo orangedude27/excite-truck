@@ -784,7 +784,7 @@ __declspec(section ".sdata") extern const char lbl_8055B2A8[], lbl_8055B2B0[], l
 extern "C" int sprintf(char *, const char *, ...);
 // Allocates and initializes a 0x168-byte object: sets vtables/default fields, resolves
 // named resources and flags from the manager, and returns the initialized object.
-extern "C" void *fn_801F83E4(void *arg0) {
+extern "C" void *createManagedObject(void *arg0) {
     class Manager {
     public:
         virtual void m8();
