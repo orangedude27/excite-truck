@@ -3791,7 +3791,7 @@ void WPADiGameInfoReadRetry(s32 chan, s32 result) {
 /* WPAD's retry callback for the game-info read: when that read ends in a
  * transfer error, queue the very same read of the second game-info block
  * again, with this same callback on it.  Every other result is ignored. */
-void WPADiRetryGameInfoRead(s32 chan, s32 result) {
+/* WPAD game-info read completion callback: on a transfer error, re-queues the same game-info block read (with itself as callback) on the controller's standard command ring; all other results are ignored. */ void WPADiRetryGameInfoRead(s32 chan, s32 result) {
     WPADCB *cb = lbl_8038F4F0[chan];
     WPADCommandQueue *queue = &cb->stdCmdQueue;
     /* the WPADCommand built here (at buf + 8) and the copy of it that the
