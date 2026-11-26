@@ -13658,11 +13658,12 @@ fail:
     #undef PF2_BUF_SIZE
 }
 
-extern "C" s32 NandSlot_writeSectors(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
-    /* Write arg0*arg3 bytes from arg1 to the open NAND file slot identified by arg5
-     * at offset arg2*arg3 (buffering through a 0x200-byte aligned temp). On success
-     * stores arg0 to *arg4 and returns 0; on failure records the NAND error in the
-     * slot's error field (+0xEC) and returns a negative status. */
+extern "C" s32 NandSlot_writeSectors(s32 count, s32 data, s32 startBlock, s32 blockSize, s32 *outCount, s32 handle) {
+    /* Write count*blockSize bytes from data into the open NAND file slot with
+     * id handle at byte startBlock*blockSize, buffering through an aligned
+     * 0x200-byte temp.  On success stores count to *outCount and returns 0; on
+     * failure records the NAND error in the slot's error field (+0xEC) and
+     * returns a negative status. */
     s32 status;
     u32 slotOffset;
     u16 slotIndex;
@@ -13679,7 +13680,7 @@ extern "C" s32 NandSlot_writeSectors(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32
     slot = 0;
     for (slotIndex = 0; slotIndex < 0x17; slotIndex++) {
         slotOffset = slotIndex * 0xF0;
-        if (*(u32 *)(lbl_80405D58 + slotOffset) == (u32)arg5) {
+        if (*(u32 *)(lbl_80405D58 + slotOffset) == (u32)handle) {
             slot = lbl_80405D58 + slotOffset;
             break;
         }
@@ -13693,9 +13694,9 @@ extern "C" s32 NandSlot_writeSectors(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32
         return -0x14;
     }
 
-    bytesToWrite = arg0 * arg3;
+    bytesToWrite = count * blockSize;
     fileLength = *(u32 *)(slot + 0x54);
-    writePos = arg2 * arg3;
+    writePos = startBlock * blockSize;
 
     if (NANDGetLengthAsync(slot + 0x58, &currentPos) != 0 || currentPos != writePos) {
         nandResult = NANDSeek(slot + 0x58, writePos, 0);
@@ -13708,14 +13709,14 @@ extern "C" s32 NandSlot_writeSectors(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32
         bytesRemaining = fileLength - writePos;
         bytesWritten = 0;
         while (bytesRemaining >= 0x200) {
-            VFipf_memcpy(buf, (u8 *)arg1 + bytesWritten, 0x200);
+            VFipf_memcpy(buf, (u8 *)data + bytesWritten, 0x200);
             nandResult = NANDWrite(slot + 0x58, buf, 0x200);
             if (nandResult < 0) return -0x16;
             bytesRemaining -= nandResult;
             bytesWritten += nandResult;
         }
         if (bytesRemaining != 0) {
-            VFipf_memcpy(buf, (u8 *)arg1 + bytesWritten, bytesRemaining);
+            VFipf_memcpy(buf, (u8 *)data + bytesWritten, bytesRemaining);
             NANDWrite(slot + 0x58, buf, bytesRemaining);
         }
         return -0x16;
@@ -13723,14 +13724,14 @@ extern "C" s32 NandSlot_writeSectors(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32
 
     bytesWritten = 0;
     while (bytesToWrite >= 0x200) {
-        VFipf_memcpy(buf, (u8 *)arg1 + bytesWritten, 0x200);
+        VFipf_memcpy(buf, (u8 *)data + bytesWritten, 0x200);
         nandResult = NANDWrite(slot + 0x58, buf, 0x200);
         if (nandResult < 0) {
             u32 offset;
             u16 j;
             for (j = 0; j < 0x17; j++) {
                 offset = j * 0xF0;
-                if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
+                if (*(u32 *)(lbl_80405D58 + offset) == (u32)handle) {
                     *(s32 *)(lbl_80405D58 + offset + 0xEC) = nandResult;
                     break;
                 }
@@ -13741,14 +13742,14 @@ extern "C" s32 NandSlot_writeSectors(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32
         bytesWritten += nandResult;
     }
     if (bytesToWrite != 0) {
-        VFipf_memcpy(buf, (u8 *)arg1 + bytesWritten, bytesToWrite);
+        VFipf_memcpy(buf, (u8 *)data + bytesWritten, bytesToWrite);
         nandResult = NANDWrite(slot + 0x58, buf, bytesToWrite);
         if (nandResult < 0) {
             u32 offset;
             u16 j;
             for (j = 0; j < 0x17; j++) {
                 offset = j * 0xF0;
-                if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
+                if (*(u32 *)(lbl_80405D58 + offset) == (u32)handle) {
                     *(s32 *)(lbl_80405D58 + offset + 0xEC) = nandResult;
                     break;
                 }
@@ -13756,7 +13757,7 @@ extern "C" s32 NandSlot_writeSectors(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32
             return nandResult;
         }
     }
-    *arg4 = arg0;
+    *outCount = count;
     return 0;
 
 fail:
@@ -13765,7 +13766,7 @@ fail:
         u16 j;
         for (j = 0; j < 0x17; j++) {
             offset = j * 0xF0;
-            if (*(u32 *)(lbl_80405D58 + offset) == (u32)arg5) {
+            if (*(u32 *)(lbl_80405D58 + offset) == (u32)handle) {
                 *(s32 *)(lbl_80405D58 + offset + 0xEC) = nandResult;
                 break;
             }
