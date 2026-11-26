@@ -148,34 +148,34 @@ void *fn_8013A264(void *arg0) {
    whose on_lon is past its off_lon wraps the end of the track, so a twin node is pushed for the
    other end, covering [0, off_lon] with a short blend time. Logs how many were found.
    The third argument's incoming value is ignored: it becomes the entry counter. */
-extern "C" void buildAiExceptionList(AiExceptionConfig *config, struct Container *container, int count) {
+extern "C" void buildAiExceptionList(AiExceptionConfig *aiConfig, struct Container *exceptionContainer, int entryCount) {
     #pragma scheduling invalid_target
     const char *keys = (const char *)lbl_8032C118;
-    if (container != 0) {
+    if (exceptionContainer != 0) {
         f32 wrapOnT;
         f32 minLon;
         f32 maxLon;
         struct Entry *entry;
 
         maxLon = AI_LON_MAX;
-        count = 0;
+        entryCount = 0;
         minLon = AI_LON_MIN;
         wrapOnT = AI_WRAP_ON_T;
 
-        for (; (entry = container->GetEntry(count)) != 0; count++) {
+        for (; (entry = exceptionContainer->GetEntry(entryCount)) != 0; entryCount++) {
             if (stricmp(entry->GetName(), keys + AI_KEY_EXCEPTION) == 0) {
                 AiException &node = *(AiException *)fn_801284F8(sizeof(AiException), keys + AI_EXCEPTION_TAG);
                 node.onLon = entry->GetFloat(AI_KEY_ON_LON);
                 node.offLon = entry->GetFloat(AI_KEY_OFF_LON);
-                node.params.onT = entry->GetFloatDef(AI_KEY_ON_T, config->params.onT);
-                node.params.moveout = entry->GetFloatDef(AI_KEY_MOVEOUT, config->params.moveout);
-                node.params.passout = entry->GetFloatDef(AI_KEY_PASSOUT, config->params.passout);
-                node.params.pushSensitivity = entry->GetFloatDef(keys + AI_KEY_PUSH_SENSITIVITY, config->params.pushSensitivity);
-                node.params.lookahead = entry->GetFloatDef(keys + AI_KEY_LOOKAHEAD_F, config->params.lookahead);
-                node.params.checks = entry->GetFloatDef(AI_KEY_CHECKS, config->params.checks);
-                node.params.landing = entry->GetFloatDef(keys + AI_KEY_LANDING_F, config->params.landing);
-                node.next = config->list;
-                config->list = &node;
+                node.params.onT = entry->GetFloatDef(AI_KEY_ON_T, aiConfig->params.onT);
+                node.params.moveout = entry->GetFloatDef(AI_KEY_MOVEOUT, aiConfig->params.moveout);
+                node.params.passout = entry->GetFloatDef(AI_KEY_PASSOUT, aiConfig->params.passout);
+                node.params.pushSensitivity = entry->GetFloatDef(keys + AI_KEY_PUSH_SENSITIVITY, aiConfig->params.pushSensitivity);
+                node.params.lookahead = entry->GetFloatDef(keys + AI_KEY_LOOKAHEAD_F, aiConfig->params.lookahead);
+                node.params.checks = entry->GetFloatDef(AI_KEY_CHECKS, aiConfig->params.checks);
+                node.params.landing = entry->GetFloatDef(keys + AI_KEY_LANDING_F, aiConfig->params.landing);
+                node.next = aiConfig->list;
+                aiConfig->list = &node;
 
                 if (node.onLon > node.offLon) {
                     AiException *wrap = (AiException *)fn_801284F8(sizeof(AiException), keys + AI_EXCEPTION_TAG);
@@ -185,13 +185,13 @@ extern "C" void buildAiExceptionList(AiExceptionConfig *config, struct Container
                     node.offLon = maxLon;
                     wrap->onLon = minLon;
                     wrap->params.onT = wrapOnT;
-                    wrap->next = config->list;
-                    config->list = wrap;
+                    wrap->next = aiConfig->list;
+                    aiConfig->list = wrap;
                 }
             }
         }
 
-        fn_802E30C8(keys + AI_FMT_EXCEPTIONS, count, (count != 1) ? AI_PLURAL_S : AI_PLURAL_NONE);
+        fn_802E30C8(keys + AI_FMT_EXCEPTIONS, entryCount, (entryCount != 1) ? AI_PLURAL_S : AI_PLURAL_NONE);
     }
 }
 #pragma pop
