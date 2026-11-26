@@ -431,7 +431,7 @@ void fn_8029C934(void) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
-void loadShallowWaterAreas(void) {
+/* Loads shallow-water areas from the VALT parameter file, allocating each area's quad from its origin/edge vectors and registering its texture. */ void loadShallowWaterAreas(void) {
     typedef struct { float x, y, z; } Vec;
     typedef struct { float x, y; } Vec2;
     /* the area's rectangle: one corner and its two edge vectors */
