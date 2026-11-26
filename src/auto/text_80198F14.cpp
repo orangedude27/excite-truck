@@ -131,7 +131,7 @@ extern f32 lbl_80562370;
 extern f32 lbl_8056232C;
 extern "C" void** fn_801B83A0(void);
 extern "C" f32 fn_8018AE7C(void*);
-extern "C" void fn_802C1A0C(void**, s32);
+extern "C" void cutTreeOnHit(void**, s32);
 
 extern "C" void fn_8019CE4C(void*, void*);
 extern "C" void fn_8019BD54(void*, void*, s32, s32);
@@ -520,7 +520,7 @@ extern "C" void fn_80199870(void* car, u32 key = 0) {
 extern f32 lbl_805622D0, lbl_805622D4, lbl_805622DC, lbl_805622E0, lbl_805622E8, lbl_805622EC, lbl_805622F0, lbl_805622F4, lbl_805622F8, lbl_805622FC, lbl_80562300, lbl_80562304, lbl_80562308, lbl_8056230C, lbl_80562310;
 extern f32 fn_8018AE7C(void*);
 extern void **fn_801B83A0();
-extern void fn_802C1A0C(void**, s32);
+extern void cutTreeOnHit(void**, s32);
 extern "C" f32 __fabsf(f32);
 #pragma dont_inline on
 extern "C" void **fn_801B83A0();
@@ -932,7 +932,7 @@ block_98:
                         sp[30] *= temp_f1_6;
                         temp_r3 = ((Fn80199894VTab30With *)arg1)->Get(temp_f2_9, temp_f3_5);
                         temp_r27_2 = ((Fn80199894TempVTab *)temp_r3)->Get();
-                        fn_802C1A0C(temp_r3, (*(s32 *)((u8 *)(temp_r29) + (0x1EC))));
+                        cutTreeOnHit(temp_r3, (*(s32 *)((u8 *)(temp_r29) + (0x1EC))));
                         temp_r3_2 = ((Fn80199894TempVTab *)temp_r3)->Get();
                         temp_r30_2 = temp_r3_2;
                         if ((temp_r27_2 != 0) && (temp_r3_2 == 0)) {

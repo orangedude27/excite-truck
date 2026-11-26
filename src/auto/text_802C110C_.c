@@ -627,7 +627,7 @@ extern void fn_801796EC(int, void *, int);
 #pragma dont_inline on
 #pragma scheduling invalid_target
 #pragma paired off
-extern "C" void fn_802C1A0C(void **hit, int player) {
+extern "C" void cutTreeOnHit(void **hit, int player) {
     /* The hit's tree reference: handle at vtable+0x24, cleared at vtable+0x18. */
     struct Dispatch {
         virtual void unk0();
