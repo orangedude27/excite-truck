@@ -505,7 +505,7 @@ extern float lbl_805637AC;
 #pragma push
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void MenuList_UpdateTextEntry(void *menu) {
+/* Update the selected menu-list entry's text field: action, character insertion, back, or finalize. */ extern "C" void MenuList_UpdateTextEntry(void *menu) {
     struct MenuListVtbl {
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
         virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
