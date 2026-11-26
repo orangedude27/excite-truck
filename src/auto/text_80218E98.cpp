@@ -3446,7 +3446,7 @@ extern "C" s32 fn_8021D8D4(void *self) {
 extern "C" s32 fn_80216D28();
 extern "C" s32 fn_80230E90(s32);
 extern "C" f32 fn_8023659C();
-extern "C" s32 fn_8021D97C(void *arg0, s32 arg1) {
+extern "C" s32 routeMenuInput(void *arg0, s32 arg1) {
     /* Handle a menu/navigation input for this object: verify its bound resource state,
      * then process command ids (0x125/0x127 trigger actions and stamp fn_8023659C time,
      * 0x126/0x128 navigate the parent list at +0x2C when allowed), returning 1 if handled. */
