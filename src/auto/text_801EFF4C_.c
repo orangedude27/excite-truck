@@ -190,7 +190,7 @@ extern "C" void fn_801F0148(void *out, void *source) {
  * keeps up to 8 level-of-detail entries at 0x28 and how many it found at 0xE8.
  * fn_801F08AC loads a record out of a .mod resource; readWheelModLods below reads
  * its lod0..lod7 parameters, each written "<distance> <flag>" ("12.5 y").
- * fn_801F0488 then loads the two remap models of every entry and fn_801F15A8
+ * loadWheelModels then loads the two remap models of every entry and fn_801F15A8
  * picks the entry whose squared distance the camera has not reached yet.
  * Names and formats the game keeps in .sdata/.data:
  */
@@ -306,7 +306,7 @@ extern int lbl_80562F20;
 extern int lbl_80562F24;
 __declspec(section ".data") extern float lbl_80558DC4;
 extern char lbl_8033A3F0[];
-/* Names fn_801F0488 reads.  The pool behind `strings` is the "detached wheel." block in
+/* Names loadWheelModels reads.  The pool behind `strings` is the "detached wheel." block in
  * .data; the formats and keys below are fixed offsets into it, so they expand to exactly
  * the address arithmetic the function does (rename_symbol cannot name game symbols). */
 #define wheelmod_string_pool lbl_8033A3F0
@@ -328,7 +328,7 @@ extern "C" int fn_802C6FC0(char *, int, int);
 extern "C" void MRModel_GetBoundingBoxArray(int, float *);
 extern double fabs(double);
 extern "C" double __fabs(double);
-extern "C" void fn_801F0488(void *arg0, void *arg1) {
+extern "C" void loadWheelModels(void *arg0, void *arg1) {
     class WheelModResource {
     public:
         virtual void unused0();
@@ -528,7 +528,7 @@ extern "C" void fn_801F08AC(int arg0, const char *arg1) {
     resource = (Fn801F08ACResource *)fn_80131808(nameBuffer);
     fn_801F0148((void *)arg0, resource->lookup(lbl_8033A4C8));
     readWheelModLods((void *)arg0, resource->lookup((const char *)&lbl_8055B108), nameBuffer);
-    ((void (*)(void *, void *))fn_801F0488)((void *)arg0, resource->lookup((const char *)&lbl_8055B0F0));
+    ((void (*)(void *, void *))loadWheelModels)((void *)arg0, resource->lookup((const char *)&lbl_8055B0F0));
     if (resource->has((const char *)&lbl_8055B10C) != 0) {
         fn_801F06DC((char *)arg0 + 0xEC, resource->lookup((const char *)&lbl_8055B10C));
     } else {
