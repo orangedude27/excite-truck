@@ -572,7 +572,7 @@ typedef int (*TestFn)(void *);
    still holds a usable entry for that row, and hides its "select" pane group
    unless one of them holds an in-use entry.  It then leaves visible only the
    pane holding the time variant selected for each of the five event rows. */
-extern "C" void refreshTimesScreenPanes(void) {
+/* Refreshes the times screen, hiding row groups without usable sequence entries and showing only the selected time pane per event row. */ extern "C" void refreshTimesScreenPanes(void) {
 #define UIHideGroup fn_80214A9C
 #define UIShowGroup fn_80214AF0
 #define dbgCtx lbl_8055F3D4
