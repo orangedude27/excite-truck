@@ -6858,7 +6858,7 @@ extern "C" s32 fn_800AE664(void *arg0, u32 arg1, u32 arg2, s32 *clusterOffset, s
  * linking; the open code calls it with no chain position, to free what a file
  * is cut down to.
  */
-extern "C" s32 VFiPFFreeClusters(void *walk, s32 firstCluster, s32 chainPos, s32 bytes) {
+/* Free a run of a file's clusters by walking its FAT chain, clearing each FAT entry and the chain cache, writing the FAT pages back to every copy, and updating the volume's free-cluster count. */ extern "C" s32 VFiPFFreeClusters(void *walk, s32 firstCluster, s32 chainPos, s32 bytes) {
     u8 *volume = (u8 *)VF_CHAIN_VOLUME((u8 *)walk);
     s32 nextCluster;
     s32 pageIndex;
