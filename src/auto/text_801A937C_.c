@@ -9,7 +9,7 @@ extern void fn_801312EC(void *, void *);
 #pragma scheduling invalid_target
 /* Register the static-destructor record for the global message cache, then bind
  * each cache slot in lbl_80435050 to its label-string key in lbl_80333D18. */
-void bindMessageCacheKeys(void) {
+/* Register the message cache's static destructor and bind each cache slot to its label-string key. */ void bindMessageCacheKeys(void) {
     unsigned char * const entries = lbl_80435050;
     unsigned char * const keys = lbl_80333D18;
     fn_8000D838(&lbl_8055E5C0);
