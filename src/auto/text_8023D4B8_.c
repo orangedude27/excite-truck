@@ -10,7 +10,7 @@ extern __declspec(section ".sdata") char gPOVAnyLabel[];
 extern __declspec(section ".sdata") char gHorn2Label[];
 extern __declspec(section ".sdata") char gJBUpLabel[];
 extern __declspec(section ".sdata") char gJBDownLabel[];
-extern __declspec(section ".sdata") int lbl_8055BC08;
+extern __declspec(section ".sdata") int gEmptyControlName;
 extern void fn_802E30C8(void *);
 extern void fn_802E8664(int);
 extern void fn_80137D10(void);
@@ -35,7 +35,7 @@ typedef struct ControlInfo {
 
 extern void fn_8013358C(int, int, void *);
 extern void fn_801A7974(const char *, int, int);
-extern int lbl_8055BC08;
+extern int gEmptyControlName;
 extern char lbl_802FA218[];
 extern char lbl_80341B8C[];
 extern void fn_8023E33C(void *);
@@ -238,9 +238,9 @@ void fn_8023D7CC(void) {
         case 0:
             fn_802E8664(1);
             SetControlOption(slotIndex + 8, (int)gHornLabel, gPOVAnyLabel);
-            SetControlOption(slotIndex + 8, (int)gHorn2Label, (void *)&lbl_8055BC08);
-            SetControlOption(slotIndex + 8, (int)(optionData + 0x1B4), (void *)&lbl_8055BC08);
-            SetControlOption(slotIndex + 8, (int)(optionData + 0x1CC), (void *)&lbl_8055BC08);
+            SetControlOption(slotIndex + 8, (int)gHorn2Label, (void *)&gEmptyControlName);
+            SetControlOption(slotIndex + 8, (int)(optionData + 0x1B4), (void *)&gEmptyControlName);
+            SetControlOption(slotIndex + 8, (int)(optionData + 0x1CC), (void *)&gEmptyControlName);
             break;
         case 2:
             ((void (*)(void *, ...))fn_802E30C8)(optionData + 0x3C0);
@@ -267,8 +267,8 @@ void fn_8023D7CC(void) {
             SetControlOption(slotIndex + 8, (int)(optionData + 0x208), optionData + 0x290);
             SetControlOption(slotIndex + 8, (int)(optionData + 0x184), gJBUpLabel);
             SetControlOption(slotIndex + 8, (int)(optionData + 0x16C), gJBDownLabel);
-            SetControlOption(slotIndex + 8, (int)(optionData + 0x1B4), (void *)&lbl_8055BC08);
-            SetControlOption(slotIndex + 8, (int)(optionData + 0x1CC), (void *)&lbl_8055BC08);
+            SetControlOption(slotIndex + 8, (int)(optionData + 0x1B4), (void *)&gEmptyControlName);
+            SetControlOption(slotIndex + 8, (int)(optionData + 0x1CC), (void *)&gEmptyControlName);
             SetControlOption(slotIndex + 8, (int)gBrakingLabel, optionData + 0x468);
             SetControlOption(slotIndex + 8, (int)gHornLabel, optionData + 0x278);
             SetControlOption(slotIndex + 8, (int)gViewLabel, optionData + 0x29C);
@@ -329,7 +329,7 @@ void fn_8023DA64(void *context, int skipLookup, int flag) {
             if (locals.sp8 == 0)
                 fn_8013358C((int)targetBase, (int)entry->name, *(void **)((char *)foundEntry + 4));
         } else {
-            fn_8013358C((int)targetBase, (int)entry->name, (void *)&lbl_8055BC08);
+            fn_8013358C((int)targetBase, (int)entry->name, (void *)&gEmptyControlName);
         }
         index++;
         entry++;
