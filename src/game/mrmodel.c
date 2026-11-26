@@ -1374,7 +1374,7 @@ void fn_802C70AC(int arg0, void *arg1, int arg2, int arg3) {
         fn_802C57B4(arg0, fn_802D0514(arg1), arg2, local.status, local.scalar);
     lbl_8055D008 = previousMask;
 }
-extern unsigned char lbl_804C13C0[];
+extern unsigned char gModelDrawContext[];
 extern float lbl_80564EF0;
 extern float PSVECSquareDistance(const float *, const float *);
 /* For each type-2 group of the model, cull it by SPHL sphere distance and submit
@@ -1394,7 +1394,7 @@ extern float PSVECSquareDistance(const float *, const float *);
     float squareDistance;
     float baseRadius;
 
-    if ((unsigned int)(*(unsigned int *)lbl_804C13C0 + 0x10000U) == 0xFFFFU)
+    if ((unsigned int)(*(unsigned int *)gModelDrawContext + 0x10000U) == 0xFFFFU)
         return;
     if (instanceId == -1)
         return;
@@ -1417,7 +1417,7 @@ extern float PSVECSquareDistance(const float *, const float *);
         if (*(int *)((char *)*(int **)((char *)groupList + 4) + groupOffset) != 2)
             continue;
         if (modelVectors != 0) {
-            squareDistance = PSVECSquareDistance((float *)(lbl_804C13C0 + 4),
+            squareDistance = PSVECSquareDistance((float *)(gModelDrawContext + 4),
                                                  (float *)distanceVector);
             if (!(squareDistance < (viewDistance + *(float *)((char *)heightVector + 0xC)) *
                                     (viewDistance + *(float *)((char *)heightVector + 0xC))))
@@ -1425,7 +1425,7 @@ extern float PSVECSquareDistance(const float *, const float *);
         }
 
         j = 0;
-        transformId = *(int *)lbl_804C13C0;
+        transformId = *(int *)gModelDrawContext;
         elementOffset = 0;
         groupEntry = (char *)*(int **)((char *)groupList + 4) + groupOffset;
         elementList = *(int **)(groupEntry + 8);
