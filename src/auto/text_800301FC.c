@@ -1266,7 +1266,7 @@ void fn_80031C9C(unsigned short mask) {
 extern u64 lbl_8035EE20[];
 extern s32 lbl_8055D788;
 extern s32 lbl_8055D754, lbl_8055D758, lbl_8055D750;
-extern void fn_80032EAC(u32);
+extern void __AXSyncPBs_80032EAC(u32);
 extern void __AXPrintStudio(void);
 extern void *gdev_cc_initialize(void);
 extern void DSPSendMailToDSP(u32);
@@ -1288,7 +1288,7 @@ void CircleBufferInitialize(u32 arg0) {
     u32 mail;
     s32 startCheck;
     lbl_8035EE20[0] = OSGetTime();
-    fn_80032EAC(arg0);
+    __AXSyncPBs_80032EAC(arg0);
     __AXPrintStudio();
     mail = (u32)gdev_cc_initialize();
     DSPSendMailToDSP(0xBABE0080);

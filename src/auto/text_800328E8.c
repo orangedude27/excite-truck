@@ -236,7 +236,7 @@ void fn_800328F0(void *arg0) {
  * depopulated, silenced, stopped and queued for its callback instead.  The
  * stack of voices that are not playing (priority 0) is only depopulated and
  * silenced. */
-void fn_80032EAC(int baseCycles) {
+void __AXSyncPBs_80032EAC(int baseCycles) {
     unsigned int cycles;
     int priority;
     AXVPB *vpb;
@@ -364,6 +364,7 @@ extern void DCFlushRange(void *, unsigned int);
 #pragma ctrloop on
 void fn_800331A0(void) {
     unsigned int i;
+    int j;
     s32 *p;
     s32 ctr;
     lbl_8055D7E8 = *(unsigned int *)0x800000F8 / 667;
