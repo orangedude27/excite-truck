@@ -1468,7 +1468,7 @@ extern "C" void fn_802B7884(void *arg0) {
 
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void fn_802B7918(void) {
+extern "C" void setupBrushColumn(void) {
     /* Refresh the brush column of the "tedash.val" debug panel.
      *
      * lbl_8055FA48 is the panel root; virtual +0x04 looks a pane up by name and
@@ -1728,17 +1728,17 @@ s32 fn_802B7B08(void) {
 
 extern void lbl_8034A898(void);
 void fn_802B7884(void *);
-void fn_802B7918(void);
+void setupBrushColumn(void);
 void fn_802B7CF0(void) {
     /* Build the "Save Road-Opacity Map" debug panel: wire the save control, then set up the record list. */
     fn_802B7884(lbl_8034A898);
-    fn_802B7918();
+    setupBrushColumn();
 }
 
 void fn_802B7D1C(void) {
     /* Build the "tedash.val" debug panel: wire the Save-Material-Maps control, then set up the brush and layer columns. */
     fn_802B7884(lbl_8034A8B0);
-    fn_802B7918();
+    setupBrushColumn();
     fn_802B7B08();
 }
 
