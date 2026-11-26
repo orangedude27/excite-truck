@@ -65,7 +65,7 @@ extern void *fn_801D9F28(void);
 extern int fn_801D9CC4(int);
 extern void fn_801D9F84(int, int);
 extern char *fn_801DA03C(int, int);
-extern float fn_801DD88C(int, int, int);
+extern float sampleBaseGroundHeight(int, int, int);
 extern int fn_8029F458(unsigned char *, int);
 extern char lbl_8055ADA0;
 extern char lbl_8055ADA8;
@@ -86,8 +86,9 @@ void fn_801DA758(int arg0, unsigned char *arg1, int arg2) {
     int i;
     int entryAddress;
     char *text;
-    register unsigned char flag;
+    unsigned char flag;
     float result;
+    float fv;
 
     space = (char *)lbl_8055E984;
     i = *(int *)(space + 0x5808);
@@ -130,13 +131,14 @@ copied:
     record[0x18] = record[0x19];
     flag = record[0x19];
     if (flag != 0) {
-        *(float *)(record + 0x1C) = lbl_80562B50;
+        fv = lbl_80562B50;
+        *(float *)(record + 0x1C) = fv;
         record[0x10] = 0;
     } else {
         zero[0] = flag;
         zero[2] = flag;
         zero[1] = flag;
-        result = ((float (*)(void))fn_801DD88C)();
+        result = ((float (*)(void))sampleBaseGroundHeight)();
         *(float *)(record + 0x14) = (*(float *)&zero[1]) - result;
         goto finished;
     }
@@ -159,16 +161,15 @@ void *fn_801DA8C8(const char *arg0, const char *arg1) {
     const char *text;
     char *entry;
     char *result;
-    int count;
-    int off;
-    int i;
+    struct { int count; int offset; } c;
     int matchAll;
+    int i;
 
     space = lbl_8055E984;
     name = arg0;
     text = arg1;
-    count = 0;
-    off = 0;
+    c.count = 0;
+    c.offset = 0;
     result = 0;
     matchAll = strcmp(name, lbl_8055ADB0) == 0;
     entry = (char *)space + 8;
@@ -177,35 +178,35 @@ void *fn_801DA8C8(const char *arg0, const char *arg1) {
             if (strcmp(entry, name) != 0) goto next;
         }
         if (fn_801D9FC4((char **)*(void **)((char *)entry + 0x28), text) != 0) {
-            *(char **)((char *)stack + off) = entry;
-            count++;
-            off += 4;
+            *(char **)((char *)stack + c.offset) = entry;
+            c.count++;
+            c.offset += 4;
         }
     next:
         entry += 0x2C;
     }
-    if (count > 0) {
+    if (c.count > 0) {
         char *dst;
         int len;
-        unsigned char c;
+        unsigned char c2;
         unsigned char *src;
         result = fn_801284F8(0x20, lbl_80339240);
         if (result != 0) {
             *(void **)result = lbl_80339288;
             dst = (char *)result + 0x10;
             len = 0x10;
-            *(int *)((char *)result + 0xC) = count;
+            *(int *)((char *)result + 0xC) = c.count;
             while (--len > 0) {
             }
             dst[-1] = 0;
             src = (unsigned char *)text;
             do {
-                c = *src++;
-                *dst++ = c;
-            } while ((signed char)c != 0);
+                c2 = *src++;
+                *dst++ = c2;
+            } while ((signed char)c2 != 0);
             *(int *)((char *)result + 8) = 0;
             *(void **)((char *)result + 4) = (void *)fn_8012850C(*(int *)((char *)result + 0xC) * 4, lbl_8033924C);
-            for (i = 0; i < count; i++) {
+            for (i = 0; i < c.count; i++) {
                 void **arr;
                 int pos;
                 arr = *(void ***)((char *)result + 4);
@@ -243,17 +244,17 @@ void *__dt__14CollisionSpaceFv_801DAB70(void *this_, int flag) {
 float fn_801DABD4(void *arg0) {
     float value;
     float max = 0.0f;
-    register int i = 0;
-    register int offset = 0;
-
+    struct { int i; int offset; } c;
+    c.offset = 0;
+    c.i = 0;
     goto check;
 loop:
-    value = fn_801DA6B8(*(int *)((char *)(*(void ***)((char *)arg0 + 4))[offset / 4] + 0x28));
+    value = fn_801DA6B8(*(int *)((char *)(*(void ***)((char *)arg0 + 4))[c.offset / 4] + 0x28));
     max = (max > value) ? max : value;
-    i++;
-    offset += 4;
+    c.i++;
+    c.offset += 4;
 check:
-    if (i < *(int *)((char *)arg0 + 8))
+    if (c.i < *(int *)((char *)arg0 + 8))
         goto loop;
     return max;
 }
@@ -470,9 +471,11 @@ int fn_801DB13C(void *arg0, const char *arg1) {
         char *entry;
         matchAll = strcmp(key, lbl_8055ADB0) == 0;
         value = lbl_80562B50;
+        entry = (char *)arg0 + 8;
         found = 0;
+        i = 0;
         one = 1;
-        for (i = 0, entry = (char *)arg0 + 8; i < *(int *)((char *)arg0 + 0x5808); entry += 0x2C, i++) {
+        while (i < *(int *)((char *)arg0 + 0x5808)) {
             if ((matchAll != 0 || strcmp(entry, key) == 0) &&
                 ((int (*)(int, void *))fn_801DA064)(*(int *)(entry + 0x28), text) != 0) {
                 fn_801DA198(*(int *)(entry + 0x28), lbl_80562B54);
@@ -480,6 +483,8 @@ int fn_801DB13C(void *arg0, const char *arg1) {
                 found = 1;
                 *(float *)(entry + 0x1C) = value;
             }
+            entry += 0x2C;
+            i++;
         }
         if (found != 0)
             DBPrintf_8013B490(messageBase + 0x110, key, text);
@@ -494,7 +499,7 @@ int fn_801DB13C(void *arg0, const char *arg1) {
         float value;
         char *entry;
         empty = lbl_8055ADB0;
-        matchAll = strcmp(empty, empty) == 0;
+        matchAll = strcmp(empty, lbl_8055ADB0) == 0;
         value = lbl_80562B50;
         entry = (char *)arg0 + 8;
         found = 0;

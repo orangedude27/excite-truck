@@ -268,7 +268,7 @@ extern void fn_80160B7C(Vec2_801E0890 *, Vec2_801E0890 *, Vec2_801E0890 *);
 extern void fn_80160B18(Vec2_801E0890 *);
 extern void fn_80160B14(void *);
 extern void fn_80160230(void *, Vec2_801E0890 *);
-extern f32 fn_801DD88C(f32, f32);
+extern f32 sampleBaseGroundHeight(f32, f32);
 extern void fn_801EA1E0(f32 *, s32, f32, f32);
 extern void *fn_8012850C(s32, void *);
 extern void fn_802E30C8(const char *, ...);
@@ -424,7 +424,7 @@ void fn_801E0890(void *arg0) {
                         fn_80160288(&sp38, &t3);
                         cell = &rec->cells[i * rec->nu + j];
                         fn_80160230(cell, &sp38);
-                        cell->y = fn_801DD88C(cell->x, cell->z);
+                        cell->y = sampleBaseGroundHeight(cell->x, cell->z);
                         fn_801EA1E0(&cell->y, 0, cell->x, cell->z);
                         cell->id = -1;
                         cell->u = w;
@@ -443,7 +443,7 @@ void fn_801E0890(void *arg0) {
                 t4 = fn_80139C5C(rec->quad);
                 fn_80160288(&sp40, &t4);
                 fn_80160230(&rec->cx, &sp40);
-                rec->cy = fn_801DD88C(rec->cx, rec->cz);
+                rec->cy = sampleBaseGroundHeight(rec->cx, rec->cz);
                 ok = 1;
             } else {
                 fn_802E30C8((const char *)(ref + 0x58), ((s32 (*)(void *))(*(void ***)item)[2])(item));
