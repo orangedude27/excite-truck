@@ -379,16 +379,25 @@ void fn_802E9EB8(void) {
 // the directory it was found in (0x200), its file name (0x208) and that name
 // with every non-ASCII byte replaced by '?' (0x208). lbl_8056007C counts them.
 int scanSongDirectory(void *dirPath, int maxDepth) {
+    /* Recursively scan a directory for .mp3 files and append each one to the
+       100-entry song table: directory, file name, and an ASCII-safe name copy. */
+    #define songCount      lbl_8056007C
+    #define songTable      lbl_80508818
+    #define findPatternFmt lbl_8055D284 /* "%s/*" */
+    #define curDirName     lbl_8055D28C /* "." */
+    #define parentDirName  lbl_8055D290 /* ".." */
+    #define childPathFmt   lbl_8055D294 /* "%s/%s" */
+    #define mp3Extension   lbl_8055D29C /* ".mp3" */
     extern void fn_801345D8(char *, long, const char *, ...);
     extern int fn_800B7C90(char *, int, char *);
-    extern int fn_800B7CBC(char *);
+    extern int fn_802B7CBC(char *);
     extern char *fn_80029004(char *, int);
     extern int strcmp(const char *, const char *);
     extern int stricmp(const char *, const char *);
     extern unsigned long strlen(const char *);
     extern char *strncpy(char *, const char *, unsigned long);
-    extern char lbl_8055D284, lbl_8055D28C, lbl_8055D290, lbl_8055D294, lbl_8055D29C;
-    extern char lbl_80508818[];
+    extern char findPatternFmt, curDirName, parentDirName, childPathFmt, mp3Extension;
+    extern char songTable[];
     char pattern[0x100];
     char childPath[0x200];
     char findData[0x448];
@@ -399,32 +408,32 @@ int scanSongDirectory(void *dirPath, int maxDepth) {
     char *destEntry;
     int result;
 
-    fn_801345D8(pattern, 0x100, &lbl_8055D284, (char *)dirPath);
+    fn_801345D8(pattern, 0x100, &findPatternFmt, (char *)dirPath);
     result = fn_800B7C90(pattern, 0x71, findData);
     if (result == 0) {
         baseName = findData + 0x22D;
         do {
-            if (lbl_8056007C < 100) {
+            if (songCount < 100) {
                 entryName = findData + 0x22D;
                 if (findData[0x23A] != 0) entryName = findData + 0x23A;
                 if ((findData[0x22C] & 0x10) && maxDepth > 0) {
-                    if (*entryName != 0 && strcmp(entryName, &lbl_8055D28C) != 0 && strcmp(entryName, &lbl_8055D290) != 0) {
+                    if (*entryName != 0 && strcmp(entryName, &curDirName) != 0 && strcmp(entryName, &parentDirName) != 0) {
                         if (strlen(baseName) + strlen((char *)dirPath) + 1 < 0x200) {
-                            fn_801345D8(childPath, 0x200, &lbl_8055D294, (char *)dirPath, baseName);
+                            fn_801345D8(childPath, 0x200, &childPathFmt, (char *)dirPath, baseName);
                             scanSongDirectory(childPath, maxDepth - 1);
                         } else {
                             ((long (*)(char *, ...))fn_802E30C8)(strings + 0x230);
                         }
                     }
-                } else if ((ext = fn_80029004(entryName, 0x2E)) != 0 && stricmp(ext, &lbl_8055D29C) == 0) {
-                    destEntry = lbl_80508818 + lbl_8056007C * 0x610;
+                } else if ((ext = fn_80029004(entryName, 0x2E)) != 0 && stricmp(ext, &mp3Extension) == 0) {
+                    destEntry = songTable + songCount * 0x610;
                     if (strlen(findData + 0x22D) < 0x208 && strlen((char *)dirPath) < 0x200) {
                         strncpy(destEntry + 0x200, findData + 0x22D, 0x207);
                         destEntry[0x407] = 0;
                         fn_802E9E54((unsigned char *)(destEntry + 0x408), (unsigned char *)entryName, 0x208);
                         strncpy(destEntry, (char *)dirPath, 0x1FF);
                         destEntry[0x1FF] = 0;
-                        lbl_8056007C++;
+                        songCount++;
                     } else {
                         ((long (*)(char *, ...))fn_802E30C8)(strings + 0x250);
                     }
