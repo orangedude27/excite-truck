@@ -4,7 +4,7 @@
 #include <types.h>
 extern f32 fn_801E8738(s32);
 extern void fn_801FC904(void);
-extern void fn_801EBF00(void);
+extern void drawWeatherLayer(void);
 extern void fn_801FC908(s32);
 extern void setModelColor(s32);
 extern void fn_802C86E8(s32);
@@ -136,7 +136,7 @@ void fn_801EA404(s32 arg0, s32 arg1) {
     fn_801EA210(-1, savedProgress);
     fn_801FC904();
     fn_801EA28C(-1, savedProgress);
-    fn_801EBF00();
+    drawWeatherLayer();
     fn_801EA210(-1, savedProgress);
     fn_801FC908(arg1);
 }

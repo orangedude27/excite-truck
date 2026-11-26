@@ -842,7 +842,7 @@ extern double __fabs(double);
 #pragma use_lmw_stmw off
 #pragma processor 750
 #pragma cplusplus on
-extern "C" void fn_801EBF00(void) {
+extern "C" void drawWeatherLayer(void) {
     /* Draw the active weather layer while the EB effect is enabled: hide the two
      * UI markers, draw model lbl_8055AFB8 with the view matrix scaled by
      * (1 - lbl_8055EBA4), then draw model lbl_8055AFBC yawed by the entry's +0xE0
@@ -918,7 +918,7 @@ extern f32 fn_801EC114(void);
 /* Read the EB ("Simple Model") subsystem's scale parameter: 0.5 unless the
  * parameter archive loaded by fn_801EB9FC supplies another value. The sun /
  * lens-flare mover scales its offset by it (fn_8029231C) and the weather draw
- * shrinks the model translation by 1 - it (fn_801EBF00). */
+ * shrinks the model translation by 1 - it (drawWeatherLayer). */
 f32 fn_801EC114(void) {
     return gEBDefaultValue;
 }

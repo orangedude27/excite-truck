@@ -1587,7 +1587,7 @@ s32 fn_802B04D4(void *arg0) {
     return 0;
 }
 extern void fn_802C10C8(void);
-/* Fallback for the EB-disabled path of fn_801EBF00 (weather draw): tail-calls
+/* Fallback for the EB-disabled path of drawWeatherLayer (weather draw): tail-calls
  * fn_802C10C8 to run the sun/light per-frame tick (fn_802C1020) instead. */
 void fn_802B05D8(void) { fn_802C10C8(); }
 
