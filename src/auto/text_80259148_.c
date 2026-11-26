@@ -1099,7 +1099,7 @@ __declspec(section ".sdata") extern char lbl_8055C384[]; /* ".mo0" extension */
 /* Set UI motion/model for this object: free existing handle, build "*uiaction.res/<name>.mo0"
    from the input (strip extension), load if the resource exists, and reset transform/color
    floats at offsets 0x84-0xA4. */
-void fn_8025A8B8(void *arg0, char *arg1) {
+void setUiActionModel(void *arg0, char *arg1) {
     char name[0x40];
     char *input = arg1;
     void *obj = arg0;
