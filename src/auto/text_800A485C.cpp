@@ -321,7 +321,6 @@ extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_80559220[]; }
 extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_80559224[]; }
 extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_80559228[]; }
 extern "C" u32 fn_800A4C04(u8 *);
-#define fn_800B4D5C_CALL fn_800B4D5##C
 extern "C" s32 fn_800A4D44(void *);
 extern "C" s32 fn_800A4AD0(u8 *, u8 *);
 extern "C" s32 fn_800A4D74(void *, u32);
