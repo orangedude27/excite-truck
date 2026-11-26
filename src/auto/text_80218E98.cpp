@@ -7685,7 +7685,7 @@ extern "C" f32 lbl_80563548;
  * keeps going the way it was heading instead of turning back across the screen.
  * Once the time is up every row is left exactly on its target and the scroll
  * ends. */
-extern "C" void updateScrollListTween(void *arg0) {
+/* Advance one frame of a scroll list's row tween, wrapping rows inside the band and ending the scroll when the tween time is up. */ extern "C" void updateScrollListTween(void *arg0) {
     ScrollList *list = (ScrollList *)arg0;
     if (list->scrollDir == 0)
         return;
