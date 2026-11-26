@@ -7379,7 +7379,7 @@ extern "C" s32 fn_800AF584(void *volume) {
     return *(s32 *)((char *)lbl_802EEF40 + fatType * 0x14 + 8);
 }
 
-extern "C" s32 readFat12ClusterEntry(void *stream, s32 sampleIndex, s32 *outSample) {
+/* Read a 12-bit FAT entry (cluster number) from the interleaved FAT buffer, spanning two blocks and retrying through the feed callback when more data is needed. */ extern "C" s32 readFat12ClusterEntry(void *stream, s32 sampleIndex, s32 *outSample) {
     /* Read a 12-bit sample from an interleaved stream buffer, spanning two blocks when needed, retrying through the feed callback on 0x1000 (needs-more-data). */
     u8 buf[2];
     u32 index;
