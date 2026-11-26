@@ -920,7 +920,7 @@ extern "C" void Clear__Q46nw4hbm2ut6detail12LinkListImplFv(void*);
 extern "C" void Update__Q36nw4hbm3snd18SoundArchivePlayerFv(void*);
 extern "C" void updateSound__Q210homebutton10ControllerFv(void*);
 extern "C" void* fn_800C6914(void*, void* = 0);
-extern "C" void *fn_800C6A1C(void*, s32);
+extern "C" void *deleteHomeButtonController(void*, s32);
 extern "C" void fn_800C6CE8(void*);
 extern "C" void fn_800C7998(void*);
 extern "C" s32 fn_800B23F8(s32, s32, s32, s32);
@@ -19443,7 +19443,7 @@ extern "C" void fn_800C64F4(void *homeButtonInfo) {
 extern "C" void fn_800C657C(void) {
 #define s_homeButtonInstance lbl_8055DD98
 #define s_hbmAllocator lbl_80559708
-    fn_800C6A1C(s_homeButtonInstance, -1);
+    deleteHomeButtonController(s_homeButtonInstance, -1);
     MEMFreeToAllocator(s_hbmAllocator, s_homeButtonInstance);
     s_homeButtonInstance = NULL;
     MEMDestroyExpHeap((MEMiHeapHead*)s_hbmAllocator->heap);
@@ -19649,7 +19649,7 @@ extern "C" void *fn_800C6914(void *obj, void *owner) {
 
 extern "C" void *fn_800D0F1C(void *, s32);
 extern "C" s32 fn_800D67B8(s32, s32);
-/* Resources owned by the home-button controller (fn_800C6A1C).  This ABI puts
+/* Resources owned by the home-button controller (deleteHomeButtonController).  This ABI puts
    the first declared virtual at vtable +0x8 with four bytes per slot, so a
    one-method class reaches the resource's deleting destructor, which the game
    calls with -1 ("destroy the object and free its memory"). */
@@ -19682,7 +19682,7 @@ class HomeButtonSoundControl { public: virtual void d0(); virtual void d1(); vir
  * `flag` is the C++ deleting-destructor flag: with flag > 0 the controller
  * itself goes through operator delete (fn_80128668) at the end.
  */
-extern "C" void *fn_800C6A1C(void *homeButton, s32 flag) {
+extern "C" void *deleteHomeButtonController(void *homeButton, s32 flag) {
     u8 *self = (u8 *)homeButton;
     s32 index;
     u8 *slot;
