@@ -97,7 +97,7 @@ void gxPoint(int, int, unsigned int);
    denser the glyph.  The line wraps to the left margin when the word ahead no
    longer fits on the screen.  A negative x is the column to start at, taken as
    its absolute value; any other x starts at the left margin instead. */
-void drawStringToCanvas(int xStart, int yStart, char *str)
+/* Draw a string on the active canvas: every glyph texel is plotted gray by density, wrapping to the left margin when the word ahead no longer fits. */ void drawStringToCanvas(int xStart, int yStart, char *str)
 {
   int texX;        /* where the glyph starts in the sheet, across */
   int texY;        /* ... and down */
