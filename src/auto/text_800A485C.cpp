@@ -14520,7 +14520,7 @@ extern "C" s32 fn_800BB3F4(s32 arg0) {
     return result;
 }
 
-extern "C" s32 fn_800BB4E0(s32,s32,s32,s32,s32,s32);
+extern "C" s32 readSdCardBlocks(s32,s32,s32,s32,s32,s32);
 extern "C" s32 fn_800BBB58(s32, void**);
 extern "C" s32 fn_800BAD9C(void*, u32*);
 extern "C" s32 fn_800BB2C4(void*);
@@ -14533,7 +14533,7 @@ extern "C" u8 VFiPFSD_state[];
 /* Synchronous SD-card read: read "length" bytes at byte "offset" from the
  * opened "device" into "buffer", with no callback so the transfer is waited on. */
 extern "C" s32 fn_800BB4B0(s32 device, s32 offset, s32 buffer, s32 length) {
-    return fn_800BB4E0(device, offset, buffer, length, 0, 0);
+    return readSdCardBlocks(device, offset, buffer, length, 0, 0);
 }
 
 extern "C" s32 lbl_8055DD6C;
@@ -14554,9 +14554,9 @@ extern "C" s32 fn_800BB4BC(s32 device, s32 offset, s32 buffer, s32 length) {
 }
 
 /* Synchronous SD-card read: read `length` bytes into `buffer` from byte `offset`
- * of the opened `device`, via fn_800BB4E0 with no callback (so it blocks). */
+ * of the opened `device`, via readSdCardBlocks with no callback (so it blocks). */
 extern "C" s32 fn_800BB4C8(s32 device, s32 offset, s32 buffer, s32 length) {
-    return fn_800BB4E0(device,offset,buffer,length,0,0);
+    return readSdCardBlocks(device,offset,buffer,length,0,0);
 }
 
 /* Synchronous SD-card write: write "length" bytes from "buffer" at byte
@@ -14589,7 +14589,7 @@ struct SdRequest {
 
 /* The SD module takes one MMC/SD command per request through its ioctl 7
    (fn_800BB0A8 and fn_800BAE98 build that request block).  The read path
-   fn_800BB4E0 sends 7, 0x10 and 0x12; its write twin fn_800BB81C sends 0x19. */
+   readSdCardBlocks sends 7, 0x10 and 0x12; its write twin fn_800BB81C sends 0x19. */
 #define SD_BLOCK_SIZE       0x200 /* one card block, and the alignment of a transfer */
 #define SD_CMD_SEND_CSD     7     /* MMC SEND_CSD */
 #define SD_CMD_SET_BLOCKLEN 0x10  /* MMC SET_BLOCKLEN: SD_BLOCK_SIZE byte blocks */
@@ -14624,7 +14624,7 @@ struct SDCmdRequest {
 };
 
 /*
- * fn_800BB4E0 - read "length" bytes of the SD card opened in "device" starting
+ * readSdCardBlocks - read "length" bytes of the SD card opened in "device" starting
  * at the byte "offset".  Both have to be whole numbers of the card's 0x200 byte
  * blocks.  With no "callback" IOS runs the read and this waits for it; with a
  * callback the request is left running and the callback (given "callbackArg")
@@ -14642,7 +14642,7 @@ struct SDCmdRequest {
  * argument of the "%s: ..." reports is the reporting function's name, here at
  * +0x398 (its write twin fn_800BB81C uses the one at +0x438).
  */
-extern "C" s32 fn_800BB4E0(s32 device, s32 offset, s32 buffer, s32 length, s32 callback, s32 callbackArg) {
+extern "C" s32 readSdCardBlocks(s32 device, s32 offset, s32 buffer, s32 length, s32 callback, s32 callbackArg) {
 const char *messages=lbl_8031B838;
 u32 blockSize=0x200; /* size of one block of the transfer */
 if((u32)length<=0x200)blockSize=(u32)length;
@@ -14694,7 +14694,7 @@ return result;
  * lines are flushed before the card reads them, and a card a raw command left
  * unconfigured (state 2) is set up first, exactly as the read path does it.
  *
- * This is the write twin of fn_800BB4E0: same IosDevice block, same SD library
+ * This is the write twin of readSdCardBlocks: same IosDevice block, same SD library
  * mutex lbl_80407560 and "one request at a time" flag lbl_8055DD6C, same
  * message strings lbl_8031B838 - only the MMC command (0x19
  * WRITE_MULTIPLE_BLOCK), the cache operation and the name the reports print
