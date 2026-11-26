@@ -620,10 +620,10 @@ void fn_8020DABC(void) {
    A-button (increase volume with a short sound), B-button (decrease volume),
    exit/back (calls the registered callback), and ignores unhandled messages.
    Returns 1 if the message was consumed, 0 otherwise. */
-int volumeMenuHandleMessage(int arg0) {
-    int var_r31 = 1;
+/* Message handler for the volume options menu. Handles up/down navigation (0x126/0x128), volume increase/decrease with a short sound (0x125/0x127), exit/back (0x58/0xD), re-apply settings (0x53), and ignores unhandled messages. Returns 1 if the message was consumed, 0 otherwise. */ int volumeMenuHandleMessage(int msg) {
+    int consumed = 1;
 
-    switch (arg0) {
+    switch (msg) {
     case 0x126:
         fn_8020D0CC(-1);
         break;
@@ -636,21 +636,21 @@ int volumeMenuHandleMessage(int arg0) {
             if (!((float)__fabs(lbl_8055EE8C) <= lbl_80558DC4)) {
                 lbl_8055EE98 = lbl_8056332C * (float)KERNEL_GetTimeMs();
             } else {
-                var_r31 = 0;
+                consumed = 0;
             }
             break;
         case 1:
             if (!((float)__fabs(lbl_8055EE90) <= lbl_80558DC4)) {
                 lbl_8055EE98 = lbl_8056332C * (float)KERNEL_GetTimeMs();
             } else {
-                var_r31 = 0;
+                consumed = 0;
             }
             break;
         case 4:
             lbl_8055EE98 = lbl_8056332C * (float)KERNEL_GetTimeMs();
             break;
         default:
-            var_r31 = 0;
+            consumed = 0;
             break;
         }
         fn_8020CFEC(lbl_8055EE78);
@@ -661,21 +661,21 @@ int volumeMenuHandleMessage(int arg0) {
             if (lbl_8055EE8C < lbl_8056331C) {
                 lbl_8055EE9C = lbl_8056332C * (float)KERNEL_GetTimeMs();
             } else {
-                var_r31 = 0;
+                consumed = 0;
             }
             break;
         case 1:
             if (lbl_8055EE90 < lbl_8056331C) {
                 lbl_8055EE9C = lbl_8056332C * (float)KERNEL_GetTimeMs();
             } else {
-                var_r31 = 0;
+                consumed = 0;
             }
             break;
         case 4:
             lbl_8055EE9C = lbl_8056332C * (float)KERNEL_GetTimeMs();
             break;
         default:
-            var_r31 = 0;
+            consumed = 0;
             break;
         }
         fn_8020CF6C(lbl_8055EE78);
@@ -683,25 +683,25 @@ int volumeMenuHandleMessage(int arg0) {
     case 0x58:
     case 0xD:
         if (lbl_8055EE7C != 0 && lbl_8055EE78 == 2) {
-            ((void (*)(int, int))lbl_8055EE7C)(lbl_8055EE78, arg0);
+            ((void (*)(int, int))lbl_8055EE7C)(lbl_8055EE78, msg);
             fn_8020D06C();
             break;
         }
         return 0;
     case 0x53:
         if (lbl_8055EE7C != 0) {
-            ((void (*)(int, int))lbl_8055EE7C)(lbl_8055EE78, arg0);
+            ((void (*)(int, int))lbl_8055EE7C)(lbl_8055EE78, msg);
             fn_8020D06C();
         }
         break;
     case 0x1B:
     case 0x113:
-        var_r31 = 0;
+        consumed = 0;
         break;
     default:
         return 0;
     }
-    if (var_r31 != 0) {
+    if (consumed != 0) {
         fn_80012158();
     }
     return 1;
