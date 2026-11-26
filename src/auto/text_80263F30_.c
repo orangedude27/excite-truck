@@ -221,7 +221,7 @@ extern unsigned char lbl_80498F78[];
         items_[count_] = (obj); \
     } while (0)
 #pragma dont_inline on
-extern "C" void Credits_BuildItem(void *item, void *entry) {
+/* Build a credits-page item descriptor, dispatching on the entry's type to the string, firetext, delay or key constructor. */ extern "C" void Credits_BuildItem(void *item, void *entry) {
     /* Builds one 0x14-byte credits-page item descriptor from a .val entry: reads the "type"
        property and dispatches to the string, firetext, extra_delay or allow_keys constructor,
        registering constructed items in the global credits item list. */
