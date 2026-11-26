@@ -2682,7 +2682,7 @@ extern float lbl_80561F0C, lbl_80561F10, lbl_80561F14, lbl_80561F18;
  * then snaps each collected value to a multiple of its step.
  * The names come from the string blob at lbl_803322B0; the floats at
  * +0x32C..+0x440 of the car are the ones being tuned. */
-extern "C" void fn_8018A2C0(void *car, void **collector) {
+extern "C" void CarPhysics_registerTunables(void *car, void **collector) {
     /* The collector's second virtual method registers one tunable parameter. */
     struct ParamCollector {
         virtual void add_param(const char *name, void *value, const char *unit,

@@ -69,7 +69,7 @@ void fn_801DDED0(s32 name, f32* value, s32 unit, f32 min, f32 max, f32 step) {
     *(f32*)&entry[6] = step;
 }
 #pragma pop
-extern void fn_8018A2C0();
+extern void CarPhysics_registerTunables();
 extern double lbl_80562BC8;
 extern f32 lbl_80562BC0;
 extern f32 lbl_80562BC4;
@@ -90,7 +90,7 @@ void fn_801DDF0C(void) {
         lbl_8055E9C4 = 0;
         lbl_8055E9C8 = (void *)value;
         sp8 = lbl_803394A4;
-        fn_8018A2C0(&sp8);
+        CarPhysics_registerTunables(&sp8);
         thr = lbl_80562BC4;
         off = lbl_80562BC0;
         entry = (u8 *)lbl_80486F30;
@@ -254,9 +254,9 @@ extern "C" void fn_801DE154(void) {
         virtual void v4();
         virtual void v5();
     };
-    f32 pad[14];
+    f32 pad[12];
     DbgRec ra, rb, rc;
-    f32 caB, caC;
+    f32 ca[2];
     DbgRec lineA, lineC;
     s32 n, i, t;
     s32 r5, r7;
@@ -277,8 +277,8 @@ extern "C" void fn_801DE154(void) {
     p = ((Gui *)lbl_8055E9C0)->v1(lbl_8055ADC8);
     rb.a = p->a; rb.b = p->b; rb.c = p->c; rb.d = p->d;
     rb.e = p->e; rb.f = p->f; rb.g = p->g; rb.h = p->h;
-    caB = *(f32 *)&rb.b - *(f32 *)&ra.b;
-    caC = *(f32 *)&rb.c - *(f32 *)&ra.c;
+    ca[0] = *(f32 *)&rb.b - *(f32 *)&ra.b;
+    ca[1] = *(f32 *)&rb.c - *(f32 *)&ra.c;
     p = ((Gui *)lbl_8055E9C0)->v1(lbl_8055ADD0);
     rc.a = p->a; rc.b = p->b; rc.c = p->c; rc.d = p->d;
     rc.e = p->e; rc.f = p->f; rc.g = p->g; rc.h = p->h;
@@ -297,16 +297,16 @@ extern "C" void fn_801DE154(void) {
     e = (u8 *)lbl_80486F30 - 0x1C;
     for (i = -1; i < lbl_8055E9C4; i++) {
         lineA.a = ra.a;
-        *(f32 *)&lineA.b = *(f32 *)&ra.b + caB * (f32)i;
-        *(f32 *)&lineA.c = *(f32 *)&ra.c + caC * (f32)i;
+        *(f32 *)&lineA.b = *(f32 *)&ra.b + ca[0] * (f32)i;
+        *(f32 *)&lineA.c = *(f32 *)&ra.c + ca[1] * (f32)i;
         lineA.d = ra.d;
         lineA.e = ra.e;
         lineA.f = ra.f;
         lineA.g = ra.g;
         lineA.h = ra.h;
         lineC.a = rc.a;
-        *(f32 *)&lineC.b = *(f32 *)&rc.b + caB * (f32)i;
-        *(f32 *)&lineC.c = *(f32 *)&rc.c + caC * (f32)i;
+        *(f32 *)&lineC.b = *(f32 *)&rc.b + ca[0] * (f32)i;
+        *(f32 *)&lineC.c = *(f32 *)&rc.c + ca[1] * (f32)i;
         lineC.d = rc.d;
         lineC.e = rc.e;
         lineC.f = rc.f;
