@@ -1362,7 +1362,7 @@ struct TimeBonusParams {
 // by name with the default used when the key - or the whole set - is absent,
 // then the two table-only values are read through fn_80204CFC and the time
 // bonus is scaled by the table's global factor.
-extern "C" void initTimeBonusParams(void *params, void *attrs) {
+/* Fill the global TimeBonusParams block from the zone's attribute set, using documented defaults for missing keys, then read two values from the global numeric table and scale the checkpoint bonus by its factor. */ extern "C" void initTimeBonusParams(void *params, void *attrs) {
     TimeBonusParams *p = (TimeBonusParams *)params;
     const char *keys = (const char *)lbl_8032C530;
     s32 intValue;
