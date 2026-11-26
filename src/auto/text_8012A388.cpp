@@ -888,7 +888,7 @@ extern "C" s32 fn_8012B50C(void *existingEntry, void *duplicateEntry) {
 extern "C" const char lbl_8032A970[];
 extern "C" const char lbl_8032A99C[];
 extern "C" u8 lbl_805599B4;
-extern "C" void fn_8012D908(s32);
+extern "C" void reportGetBeforeWaitError(s32);
 #pragma push
 #pragma use_lmw_stmw off
 #pragma dont_inline on
@@ -938,7 +938,7 @@ extern "C" void *fn_8012B534(char *arg0, s32 *arg1, u32 arg2) {
         result = 0;
     }
     if (result == 0 && flag1 == 0) {
-        fn_8012D908((s32)arg0);
+        reportGetBeforeWaitError((s32)arg0);
     }
     return result;
 }
@@ -2237,7 +2237,7 @@ struct ResTocManager {
 // every mounted set's on-disc ETOC table whether it lists NAME; if one does,
 // the set is mounted but its resources have not been set yet, which is the
 // "Get-Before-Wait" error the res-CRIP() message reports with the set's name.
-extern "C" void fn_8012D908(s32 arg0) {
+extern "C" void reportGetBeforeWaitError(s32 arg0) {
     char tocPath[128];
     s32 tocOffset;
     u8 startedLoad;
@@ -2997,7 +2997,7 @@ extern "C" void fn_8012E96C(s32 arg0) {
 }
 
 // Which mounted resource set owns the resource name arg1?  Walks arg0's mount
-// list the way fn_8012D908 does - "<set>.toc" read as an ETOC block, its header
+// list the way reportGetBeforeWaitError does - "<set>.toc" read as an ETOC block, its header
 // and entries byte-reversed if the read just brought it in - and returns the
 // mount whose table lists arg1 (fn_8012E96C reports the set by its name at
 // +0xC), or 0 when no mounted set has it.
