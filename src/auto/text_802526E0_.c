@@ -191,7 +191,6 @@ extern double lbl_805639F0;
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-#pragma opt_propagation off
 void fn_80252C90(void) {
     int a,b,c,d,count;
     int i,j;
