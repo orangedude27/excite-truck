@@ -547,7 +547,7 @@ extern void fn_80261AA0(void);
 extern void fn_80261A40(s32);
 extern s32 selectorMoveCursorUp(void);
 extern s32 selectorMoveCursorDown(void);
-extern s32 fn_80261178(void *);
+extern s32 selectorOpenGroup(void *);
 extern s32 fn_802610C8(void);
 extern s32 selectorCloseGroup(void);
 #pragma push
@@ -653,7 +653,7 @@ extern "C" void fn_80260954(s32 arg0) {
                       fn_80261948(&sp8), 0);
           fn_80261688(&frame.objects[13], 0x126, 0, (s32)selectorMoveCursorUp);
           fn_80261688(&frame.objects[14], 0x128, 0, (s32)selectorMoveCursorDown);
-          fn_80261688(&frame.objects[15], 0xD, -2, (s32)fn_80261178);
+          fn_80261688(&frame.objects[15], 0xD, -2, (s32)selectorOpenGroup);
           fn_80261688(&frame.objects[16], 0x121, 0, (s32)fn_802610C8);
           fn_80261688(&frame.objects[17], 0x1B, -1, (s32)selectorCloseGroup);
           fn_80260E04((s32 *)&frame.objects[18], (s32 *)&lbl_80498F00);
@@ -805,13 +805,13 @@ struct SelectorWidget {
     virtual void setExpanded(); /* 0x70 */
 };
 /* Close the group the selector's cursor is inside (input event 0x1B of the
- * challenge screen, the pair of fn_80261178, which opens it).
+ * challenge screen, the pair of selectorOpenGroup, which opens it).
  *
  * Only reachable from inside a group: with the cursor still on the group list the
  * callback reports that it did nothing by returning 1, which is how the screen
  * tells a "leave" pressed there.  Otherwise the cursor steps back out to the
  * groups -- every group widget first loses its cursor -- and both widget lists are
- * repainted the way fn_80261178 does it, now with the cursor outside: the whole
+ * repainted the way selectorOpenGroup does it, now with the cursor outside: the whole
  * item list dims and loses its cursor, the group the cursor stands on gets
  * setCursor() and every other group comes out of the dim state. */
 /* Close the selector's open group on a leave press: move the cursor back to the group list and repaint both widget lists; return 1 if there was no open group. */ extern "C" s32 selectorCloseGroup(void) {
@@ -918,7 +918,7 @@ extern "C" s32 fn_802610C8(void) {
    builds on its stack, which carries the state of its cursor: a list of
    groups (the difficulties, from the data source lbl_8055F3E4) and, inside
    each group, its items.  Selector_buildWidgetLists creates the two widget arrays and
-   stores them at 0x18 and 0x3C; the input callbacks fn_80261178 (enter),
+   stores them at 0x18 and 0x3C; the input callbacks selectorOpenGroup (enter),
    selectorMoveCursorUp (up), selectorMoveCursorDown (down) and selectorCloseGroup (leave) move the
    cursor and repaint both lists, and lbl_8055F3EB says which list the
    cursor is in. */
@@ -995,7 +995,7 @@ struct SelectorDataGroup {
  * come out of the dim state, everything else is dimmed, and the open group is
  * the one widget that gets setExpanded().
  */
-extern "C" s32 fn_80261178(void *unused) {
+extern "C" s32 selectorOpenGroup(void *unused) {
     s32 offset;
     s32 i;
 
