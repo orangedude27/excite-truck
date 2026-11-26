@@ -627,7 +627,7 @@ extern void fn_801796EC(int, void *, int);
 #pragma dont_inline on
 #pragma scheduling invalid_target
 #pragma paired off
-extern "C" void cutTreeOnHit(void **hit, int player) {
+/* Resolves queued hit poses for their trees, then cuts the hit tree: spawns one drop event per class slot with event id, drops it below the world, and releases the hit's tree reference. */ extern "C" void cutTreeOnHit(void **hit, int player) {
     /* The hit's tree reference: handle at vtable+0x24, cleared at vtable+0x18. */
     struct Dispatch {
         virtual void unk0();
