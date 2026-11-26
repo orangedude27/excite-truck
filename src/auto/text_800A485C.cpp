@@ -436,7 +436,7 @@ extern "C" const char lbl_8031EA90[];
 extern "C" char lbl_804077C0[];
 extern "C" s32 VFiPFVOL_IsMediaPresent(void *);
 extern "C" const char lbl_8031F2C8[];
-extern "C" const char lbl_8031F2E4[];
+extern "C" const char sArcResourceAssertMsg[];
 extern "C" { DECL_SECTION(".sdata") extern const char sArcCurrentDir[]; }
 extern "C" { DECL_SECTION(".sdata") extern const char sArcParentDir[]; }
 extern "C" u32 fn_80116BCC(void *);
@@ -22787,17 +22787,17 @@ extern "C" s32 findArcFileByName(ARCHandle *handle, const char *name) {
     const char *panicFile;
 
     if (!ARCOpenDir(h, sArcCurrentDir, &dir))
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0x30, lbl_8031F2E4);
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0x30, sArcResourceAssertMsg);
 
     panicFile = lbl_8031F2C8;
 
     while (ARCReadDir(&dir, &entry)) {
         if (entry.isDir) {
             if (!ARCChangeDir(h, entry.name))
-                Panic__Q26nw4hbm2dbFPCciPCce(panicFile, 0x39, lbl_8031F2E4);
+                Panic__Q26nw4hbm2dbFPCciPCce(panicFile, 0x39, sArcResourceAssertMsg);
             result = findArcFileByName(h, n);
             if (!ARCChangeDir(h, sArcParentDir))
-                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0x3C, lbl_8031F2E4);
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0x3C, sArcResourceAssertMsg);
             if (result == -1) continue;
             break;
         } else if (stricmp(n, entry.name) == 0) {
@@ -22806,7 +22806,7 @@ extern "C" s32 findArcFileByName(ARCHandle *handle, const char *name) {
         }
     }
     if (!fn_80116BCC(&dir))
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0x4D, lbl_8031F2E4);
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0x4D, sArcResourceAssertMsg);
     return result;
 }
 #pragma pop
@@ -22821,14 +22821,14 @@ extern "C" s32 getArcFileAddress(long arcHandle, long dirPath, long subDirFourCC
             subDirName[0]=(u32)subDirFourCC>>24; subDirName[1]=(u32)subDirFourCC>>16; subDirName[2]=(u32)subDirFourCC>>8; subDirName[3]=subDirFourCC; subDirName[4]=0;
             if(ARCConvertPathToEntrynum(ARC,subDirName)!=-1 && ARCChangeDir(ARC,subDirName)!=0) {
                 entry=ARCConvertPathToEntrynum(ARC,(const char*)fileName);
-                if(ARCChangeDir(ARC,sArcParentDir)==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8,0x75,lbl_8031F2E4);
+                if(ARCChangeDir(ARC,sArcParentDir)==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8,0x75,sArcResourceAssertMsg);
             }
         }
-        if(ARCChangeDir(ARC,sArcParentDir)==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8,0x7B,lbl_8031F2E4);
+        if(ARCChangeDir(ARC,sArcParentDir)==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8,0x7B,sArcResourceAssertMsg);
     }
     if(entry!=-1) {
         s32 result;
-        if(ARCFastOpen(ARC,entry,&info)==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8,0x83,lbl_8031F2E4);
+        if(ARCFastOpen(ARC,entry,&info)==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8,0x83,sArcResourceAssertMsg);
         result=(s32)ARCGetStartAddrInMem(&info);
         if(outSize) *(u32*)outSize=fn_80116A30(&info);
         ARCCloseFile(&info);
