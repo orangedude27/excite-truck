@@ -3550,19 +3550,19 @@ extern "C" void fn_8015C694(void *objPtr) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-extern "C" void scoreBonusValue(Unk801577F0* arg0, f32* arg1) {
+extern "C" void scoreBonusValue(Unk801577F0* arg0, f32* scoreVal) {
     // Scores one bonus value: scale it by the "score_scale" config value and by
     // this category's multiplier, show the result on the bonus popup when one is
     // up, add it to the current record and tell the bonus listeners about it.
     char text[16];
     f32 scale = fn_80204CFC(CFG_SCORE_SCALE);
     BonusTracker* tracker = (BonusTracker*)arg0;
-    *arg1 *= scale;
-    *arg1 *= BONUS_TYPE_SCALE[arg0->m4];
-    if (*(BonusDisplay**)((u8*)arg0+0x248) && !((f32)__fabs(*arg1)<=BONUS_EPSILON[0])) {
-        (*(BonusDisplay**)((u8*)arg0+0x248))->printScore((s32)BONUS_TEXT_FMT, fn_8023139C(text,16,(u32)*arg1));
+    *scoreVal *= scale;
+    *scoreVal *= BONUS_TYPE_SCALE[arg0->m4];
+    if (*(BonusDisplay**)((u8*)arg0+0x248) && !((f32)__fabs(*scoreVal)<=BONUS_EPSILON[0])) {
+        (*(BonusDisplay**)((u8*)arg0+0x248))->printScore((s32)BONUS_TEXT_FMT, fn_8023139C(text,16,(u32)*scoreVal));
         (*(BonusDisplay**)((u8*)arg0+0x248))->setProgress(tracker->GetType());
-        (*(BonusDisplay**)((u8*)arg0+0x248))->setScore((s32)*arg1);
+        (*(BonusDisplay**)((u8*)arg0+0x248))->setScore((s32)*scoreVal);
         (*(BonusDisplay**)((u8*)arg0+0x248))->printCount((s32)BONUS_TEXT_FMT,tracker->getCount());
         (*(BonusDisplay**)((u8*)arg0+0x248))->printExtra((s32)BONUS_TEXT_FMT,tracker->getExtra());
         tracker->refresh();
@@ -3570,7 +3570,7 @@ extern "C" void scoreBonusValue(Unk801577F0* arg0, f32* arg1) {
         s32 recordCount=tracker->getRecordCount();
         if(tracker->getIndex()>=recordCount) (*(BonusDisplay**)((u8*)arg0+0x248))->setState(1);
     }
-    f32 value=*arg1;
+    f32 value=*scoreVal;
     s32 offset=tracker->getIndex()*0x38;
     ++*(s32*)(arg0->mData+offset);                                  // record.count
     if (!((f32)__fabs(value)<=BONUS_EPSILON[0])) {
@@ -3581,9 +3581,9 @@ extern "C" void scoreBonusValue(Unk801577F0* arg0, f32* arg1) {
     *(f32*)(arg0->mData+offset+12)+=value;                          // record.total
     s32 index=tracker->getIndex();
     ((void(*)(s32,s32,s32))fn_801584D4)(tracker->GetType(),arg0->m4,index);
-    if (*(BonusDisplay**)((u8*)arg0+0x248) && !((f32)__fabs(*arg1)<=BONUS_EPSILON[0]))
+    if (*(BonusDisplay**)((u8*)arg0+0x248) && !((f32)__fabs(*scoreVal)<=BONUS_EPSILON[0]))
         (*(BonusDisplay**)((u8*)arg0+0x248))->printCount((s32)BONUS_TEXT_FMT,tracker->getCount());
-    if (*(BonusDisplay**)((u8*)arg0+0x248) && !((f32)__fabs(*arg1)<=BONUS_EPSILON[0]))
+    if (*(BonusDisplay**)((u8*)arg0+0x248) && !((f32)__fabs(*scoreVal)<=BONUS_EPSILON[0]))
         (*(BonusDisplay**)((u8*)arg0+0x248))->printCount((s32)BONUS_TEXT_FMT,tracker->getCount());
 }
 #pragma pop
