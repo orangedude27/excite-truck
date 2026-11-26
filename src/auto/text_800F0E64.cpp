@@ -3466,7 +3466,7 @@ extern "C" void DetachSound__Q34nw4hbm3snd11SoundHandleFv(void **);
 extern "C" void detail_AttachSound__Q36nw4hbm3snd11SoundHandleFPQ46nw4hbm3snd6detail10BasicSound(void **, void *);
 extern "C" void fn_800E9BA4(void *, s32);
 extern "C" void *allocSeqSound(s32, s32, s32, s32, s32, s32, void *);
-#define allocStreamSound fn_800F9200
+#define allocStreamSound allocStrmSoundInstance
 extern "C" void *allocStreamSound(s32, s32, s32, s32, s32, s32, void *);
 #define allocWaveSound fn_800F975C
 extern "C" void *allocWaveSound(s32, s32, s32, s32, s32, s32, void *);
@@ -5300,10 +5300,10 @@ allocation_done:
 }
 
 /* SoundInstanceManager::Alloc(priority): take a free sound from the pool, or evict the
-   lowest-priority active one (the list is sorted, front = lowest); inlined into fn_800F9200. */
+   lowest-priority active one (the list is sorted, front = lowest); inlined into allocStrmSoundInstance. */
 #pragma push
 #pragma always_inline on
-/* Ambient priority from the optional ambient-arg info (arg3 of fn_800F9200): 0 when absent. */
+/* Ambient priority from the optional ambient-arg info (arg3 of allocStrmSoundInstance): 0 when absent. */
 /* The ambient-arg callbacks and the sound itself are called through real vtables
    (first virtual at +8, after the RTTI/offset header). */
 struct AmbientParamUpdateCallback {
@@ -5751,7 +5751,7 @@ extern "C" void *fn_800F975C(s32 player, s32 priority, s32 requestedPriority, s3
      * offset (+0x40), and links into the manager's priority list (+0x4, node
      * +0xB8), the player's sound list (+0x00, node +0xC0), the player's priority
      * list (+0x0C, node +0xC8) and the external player's sound list.  Returns the
-     * sound, or 0 when it could not be started.  fn_800F9200 does the same for
+     * sound, or 0 when it could not be started.  allocStrmSoundInstance does the same for
      * streaming sounds. */
 #define PANIC Panic__Q26nw4hbm2dbFPCciPCce
 #define LIST_INSERT Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListImpl8Iterator

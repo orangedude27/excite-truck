@@ -4273,7 +4273,7 @@ detail_InsertPriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10Bas
 detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound = .text:0x800F89E4; // type:function size:0x64
 detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv = .text:0x800F8A48; // type:function size:0x25C
 allocSeqSound = .text:0x800F8CA4; // type:function size:0x55C
-fn_800F9200 = .text:0x800F9200; // type:function size:0x55C
+allocStrmSoundInstance = .text:0x800F9200; // type:function size:0x55C
 fn_800F975C = .text:0x800F975C; // type:function size:0x55C
 SetPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFi = .text:0x800F9CB8; // type:function size:0x15C
 detail_SetPlayableSoundLimit__Q36nw4hbm3snd11SoundPlayerFi = .text:0x800F9E14; // type:function size:0x5C
