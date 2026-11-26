@@ -1357,7 +1357,7 @@ void fn_802B016C(void) {
 #define EndScene     fn_802DBECC
 
     BeginScene();
-    fn_802B14B4(matFieldData);
+    drawLitBillboardPass(matFieldData);
     fn_802BDD54();
     fn_802B2D94(matCacheData);
     fn_802B4E30();
@@ -1372,7 +1372,7 @@ void fn_802B016C(void) {
 #pragma dont_inline on
 /* Performs a timed/flagged scene/state transition sequence: brackets work with
  * begin/end helpers, chooses a mode from bit 1 of fn_801E87A8()->+0x10, toggles
- * fn_802C9C58 around fn_802B14B4, then runs finalization/update calls. */
+ * fn_802C9C58 around drawLitBillboardPass, then runs finalization/update calls. */
 void fn_802B01A8(void) {
     long temp;
     long value;
@@ -1382,7 +1382,7 @@ void fn_802B01A8(void) {
     if ((value >> 1) & 1)
         temp = 2;
     temp = fn_802C9C58(temp);
-    fn_802B14B4(lbl_8055F974);
+    drawLitBillboardPass(lbl_8055F974);
     fn_802C9C58(temp);
     fn_802DBECC();
     fn_802AE728();

@@ -659,7 +659,7 @@ void fn_802B13F8(void *arg0, int arg1, void *arg2, int arg3, float farg0) {
  * path (single or alternate based on lbl_8055FA59), walk each slot group and
  * submit non-empty node records to fn_802DC078, then tear down and run the
  * post-pass callbacks. */
-void fn_802B14B4(void *arg0) {
+void drawLitBillboardPass(void *arg0) {
     int recordCount;
     int *node;
     int isFirstInGroup;
@@ -944,7 +944,7 @@ int fn_802B1BE4(void *table) {
 }
 
 /* No-op subsystem hook called at the start of the manager's render/dispatch
- * pass (fn_802B14B4); this build leaves it empty. */
+ * pass (drawLitBillboardPass); this build leaves it empty. */
 void fn_802B1BEC(void) {
 }
 
