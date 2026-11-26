@@ -3362,7 +3362,7 @@ BOOL fn_8005D0DC(BOOL final, s32 event) {
 }
 #pragma pop
 
-/* WPADiSendData: hand one output report to the Wiimote on this channel.
+/* WPADiSendGameInfoReport: hand one output report to the Wiimote on this channel.
  * pInfo is really a WPADCommand* (the manager pops one off the channel's
  * command queue and passes it here).
  *
