@@ -1278,7 +1278,7 @@ extern signed long fn_80116D30(void);
 extern unsigned long fn_80116BD4(signed long, signed long, signed long);
 extern void fn_80117330(void*);
 extern void fn_8011B94C(void*, signed long*, signed long*, signed long, signed long*, signed long, unsigned long*, unsigned long, float, signed long);
-extern unsigned long fn_8011FC2C(void*, signed long, signed long, signed long*, signed long, signed long, signed long, signed long);
+extern unsigned long decodeCompressedFrameBands(void*, signed long, signed long, signed long*, signed long, signed long, signed long, signed long);
 extern void fn_8011C274(signed long, void*);
 extern void fn_8011C2EC(signed long, void*);
 extern signed long OSDisableInterrupts(void);
@@ -1421,7 +1421,7 @@ signed long fn_801186B8(void* arg0) {
                         ((void (*)(void*))*(void**)(m + 0x100))(m + 0xF0);
                     }
                 }
-                *(signed long*)(m + 0x2E0) = fn_8011FC2C((void*)(*(signed long*)(m + 0xB8)), *(signed long*)(m + 0xBC), *(signed long*)(m + 0xC0), (signed long*)list, *(signed long*)(*(signed long*)(m + 0xEC) + (*(signed long*)(m + 0xC) - 1) * 4) & 1, (signed long)(m + 0x300), *(signed long*)(m + 0x20), *(signed long*)(m + 0x24));
+                *(signed long*)(m + 0x2E0) = decodeCompressedFrameBands((void*)(*(signed long*)(m + 0xB8)), *(signed long*)(m + 0xBC), *(signed long*)(m + 0xC0), (signed long*)list, *(signed long*)(*(signed long*)(m + 0xEC) + (*(signed long*)(m + 0xC) - 1) * 4) & 1, (signed long)(m + 0x300), *(signed long*)(m + 0x20), *(signed long*)(m + 0x24));
             }
             if (*(signed long*)(m + 0x2E8) != 0) BinkMgr_RefillStreams(m);
             tmp2 = *(signed long*)(m + 0x258);
@@ -5317,7 +5317,7 @@ typedef struct { u32 old; u32 cur; } Idx8011FC2C;
    second size and 0x100000 set in both `flags` and `flags2` adds the optional
    group.  Returns what the last group decoded reported: the main group's byte
    count in words when the two extra groups are skipped. */
-u32 fn_8011FC2C(void *bands, s32 arg1, s32 arg2, s32 *blocks, s32 arg4, s32 streams, s32 flags, s32 flags2) {
+u32 decodeCompressedFrameBands(void *bands, s32 arg1, s32 arg2, s32 *blocks, s32 arg4, s32 streams, s32 flags, s32 flags2) {
     extern s32 *fn_8011E0B4();
     u32 result;
     Idx8011FC2C idx;
@@ -8640,7 +8640,7 @@ void fn_80125664(void *outp, void *stridep, void *inp, void *quantp) {
     s32 i;
     t = tmp;
     for (i = 0; i < 8; i++) {
-        if ((in[56] | (in[48] | (in[24] | in[8])) | (in[40] | (in[32] | in[16]))) == 0) {
+        if ((in[8] | in[24] | in[16] | in[32] | in[48] | in[40] | in[56]) == 0) {
             s32 dc = (in[0] * quant[0]) >> 11;
             in++;
             quant++;
@@ -8657,17 +8657,17 @@ void fn_80125664(void *outp, void *stridep, void *inp, void *quantp) {
             s32 s25, s26, s26b, s7, s0, s23, s24, s12, s7b, s0b, s7c, s25b, s9, s10, s11, s23b, s9b, s8, s10b, s25c, s23c, s11b, s9c, s7d;
             s32 v24 = (in[0] * quant[0]) >> 11;
             s25 = (in[16] * quant[16]) >> 11;
-            s26 = (in[32] * quant[32]) >> 11;
+            s9 = (in[24] * quant[24]) >> 11;
             s0 = (in[48] * quant[48]) >> 11;
             s25b = (in[8] * quant[8]) >> 11;
-            s9 = (in[24] * quant[24]) >> 11;
+            s26 = (in[32] * quant[32]) >> 11;
             s10 = (in[40] * quant[40]) >> 11;
             s9b = (in[56] * quant[56]) >> 11;
             in++;
             quant++;
             s7 = v24 + s26;
             s26b = v24 - s26;
-            s23 = s25 + s0;
+            s23 = (s0) + (s25);
             s24 = s7 + s23;
             s12 = s7 - s23;
             s7b = (((s25 - s0) * 0xB50) >> 11) - s23;
