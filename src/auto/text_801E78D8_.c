@@ -179,7 +179,7 @@ void fn_801E7C1C(long sceneData) {
 #pragma scheduling invalid_target
 #pragma push
 #pragma opt_propagation off
-extern "C" void endWorldCommon(void *sceneData) {
+/* WorldEndCommon: end the race by logging progress, stopping physics and effects, finalizing and freeing every world object, clearing world state, then shutting subsystems down in reverse start order and optionally freeing the scene. */ extern "C" void endWorldCommon(void *sceneData) {
     /* WorldEndCommon: the counterpart of fn_801E7984 (WorldBeginCommon).  Ends the
      * race.  Opens a "WorldEndCommon" progress record, stops the physics and the
      * effects, lets every object in the world object table run its first virtual
