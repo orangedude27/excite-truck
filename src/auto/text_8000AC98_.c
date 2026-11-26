@@ -584,7 +584,7 @@ extern char lbl_802FBFB0[];
 #pragma push
 #pragma dont_inline on
 /* Dispatch a UI/menu event for a context, gating by current screen state and invoking event-specific handlers. */
-void fn_8000B64C(int eventId, int contextId) {
+void dispatchGameLoopKey(int eventId, int contextId) {
     int playerState;
     int (*eventFilter)(int);
     int selectedValue;
@@ -731,7 +731,7 @@ extern int fn_802E47B8(void);
 extern int fn_802E46F0(void);
 extern int fn_8020DE1C(void);
 extern void fn_80176780(int, int);
-extern void fn_8000B64C(int, int);
+extern void dispatchGameLoopKey(int, int);
 extern unsigned char lbl_8055D3ED;
 #pragma push
 #pragma dont_inline on
@@ -799,7 +799,7 @@ void fn_8000B950(void) {
         return;
     }
 call_key:
-    fn_8000B64C((unsigned short)key, fn_802E4A10());
+    dispatchGameLoopKey((unsigned short)key, fn_802E4A10());
 }
 #pragma pop
 extern int fn_80019BA8(void);
