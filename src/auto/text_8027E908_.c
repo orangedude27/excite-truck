@@ -1498,7 +1498,7 @@ extern "C" int fn_802808D0(void) {
    whose key is 0 - and kept, as is this one; the entry then becomes the
    selection and its text is copied to the buffer the menu shows.  Doing nothing
    but returning 0 leaves the selection as it was; fn_80280C00 is the reverse. */
-extern "C" int goBackToListEntry(void) {
+/* Step from a page entry to the page-0 list entry, remembering the entry so the list can bring it back. */ extern "C" int goBackToListEntry(void) {
     /* What the menu keeps at +0x60 of an entry: the page the entry belongs to
        (getKey, 0 for the list itself) and the text to show for it. */
     class Object {
