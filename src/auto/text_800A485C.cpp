@@ -26955,7 +26955,7 @@ struct VFiPFDeviceInfo {
  * VF_ERR_DEVICE_RETRY so the caller can run the volume's retry handler; a boot
  * sector that is not a FAT one is 7.
  */
-extern "C" s32 VFiPFMountVolume(void *object) {
+/* Mount a FAT volume: bring up the device, copy its flags into the volume, read and parse the boot sector, load FAT32 FSInfo counts if present, and unmount the device with a retryable error on failure. */ extern "C" s32 VFiPFMountVolume(void *object) {
     u8 *p = (u8 *)object;
     VFiPFDeviceInfo info; /* flags: the device's own, value: handed back to it */
     s32 pageNo;
