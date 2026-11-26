@@ -115,7 +115,7 @@ extern void fn_80136414(void *, void *, int);
 extern int fn_801363A0(void *, void *);
 extern void fn_802E30C8(const char *, ...);
 extern int fn_80272C74(void *, void *, float *, int);
-extern int fn_802710A0(void *, int);
+extern int findBestRegion(void *, int);
 /* Zero all four components of vec (a 4-float vector). lbl_80563E78 is 0.0f. */
 void fn_80270AE8(void *vec) {
     float zero = lbl_80563E78;
@@ -429,7 +429,7 @@ int fn_80270EC4(void *arg0, int arg1) {
  *     (group = -1, the CG_ANY of the two debug strings) after complaining once;
  *     a second failure complains once more and gives up with -1.
  */
-extern "C" int fn_802710A0(void *subject, int group) {
+extern "C" int findBestRegion(void *subject, int group) {
     struct { void *region; float t; int slot; } alongRay;
     struct { void *region; float t; int slot; } alongPath;
     float score;
@@ -491,7 +491,7 @@ extern "C" int fn_802710A0(void *subject, int group) {
                 lbl_8055F559 = 1;
                 fn_802E30C8(lbl_8055C59C, lbl_80346D90);
             }
-            return fn_802710A0(subject, -1);
+            return findBestRegion(subject, -1);
         }
         if (lbl_8055F55A == 0) {
             lbl_8055F55A = 1;
@@ -756,7 +756,7 @@ extern "C" void fn_80271624(int mode, void *arg1)
     if (lbl_8055F548 > 1) {
         changed = 0;
         if (mode == 11) {
-            idx = fn_802710A0(*(void **)(o + 0x140), arg);
+            idx = findBestRegion(*(void **)(o + 0x140), arg);
             if (idx >= 0) {
                 *(int *)(o + 0x14C) = idx;
                 if (idx != *(int *)(o + 0x150)) {
