@@ -5120,15 +5120,15 @@ typedef struct {
    previous sample, while a width of zero repeats the current sample for the
    whole group. */
 void decodeBandBlock(BandState8011 *band, BitReader8011 *reader) {
-    s32 group;
+    s32 groupSize;
     u32 count;
     u32 *in;
     u32 value;
     u32 bitCount;
     s16 *out;
-    s32 val;
-    u32 width, mask, code, deltaBits, sign, signOfCode;
-    s32 run;
+    s32 sample;
+    u32 width, mask, delta, deltaBits, sampleSign, deltaSign;
+    s32 remaining;
 
     if (band->start != band->end) return;
     bitCount = reader->count;
@@ -5154,41 +5154,41 @@ void decodeBandBlock(BandState8011 *band, BitReader8011 *reader) {
             width = band->sampleBits - 1;
             if (bitCount < width) {
                 u32 next = *in++;
-                val = (value | (next << bitCount)) & (0xFFFFFFFFU >> (32 - width));
+                sample = (value | (next << bitCount)) & (0xFFFFFFFFU >> (32 - width));
                 value = next >> (width - bitCount);
                 bitCount = bitCount + 32 - width;
             } else {
-                val = value & (0xFFFFFFFFU >> (32 - width));
+                sample = value & (0xFFFFFFFFU >> (32 - width));
                 value >>= width;
                 bitCount -= width;
             }
-            if (val != 0) {
-                if (bitCount == 0) { sign = *in++; bitCount = 31; value = sign >> 1; }
-                else { sign = value; value >>= 1; bitCount--; }
-                if (sign & 1) val = -val;
+            if (sample != 0) {
+                if (bitCount == 0) { sampleSign = *in++; bitCount = 31; value = sampleSign >> 1; }
+                else { sampleSign = value; value >>= 1; bitCount--; }
+                if (sampleSign & 1) sample = -sample;
             }
         } else {
             width = band->sampleBits;
             if (bitCount < width) {
                 u32 next = *in++;
-                val = (value | (next << bitCount)) & (0xFFFFFFFFU >> (32 - width));
+                sample = (value | (next << bitCount)) & (0xFFFFFFFFU >> (32 - width));
                 value = next >> (width - bitCount);
                 bitCount = bitCount + 32 - width;
             } else {
-                val = value & (0xFFFFFFFFU >> (32 - width));
+                sample = value & (0xFFFFFFFFU >> (32 - width));
                 value >>= width;
                 bitCount -= width;
             }
         }
-        *out = val;
+        *out = sample;
         band->start = band->output;
         band->end = band->output + count;
         count--;
         out++;
         /* The remaining samples, in groups of at most eight. */
         while (count != 0) {
-            group = 8;
-            if (count <= 8) group = (s32)count;
+            groupSize = 8;
+            if (count <= 8) groupSize = (s32)count;
             /* Bits per delta in this group; zero means "repeat this sample". */
             if (bitCount < 4) {
                 u32 next = *in++;
@@ -5202,35 +5202,35 @@ void decodeBandBlock(BandState8011 *band, BitReader8011 *reader) {
             }
             if (deltaBits != 0) {
                 mask = 0xFFFFFFFFU >> (32 - deltaBits);
-                run = group;
-                while (run != 0) {
-                    run--;
+                remaining = groupSize;
+                while (remaining != 0) {
+                    remaining--;
                     if (bitCount < deltaBits) {
                         u32 next = *in++;
-                        code = (value | (next << bitCount)) & mask;
+                        delta = (value | (next << bitCount)) & mask;
                         value = next >> (deltaBits - bitCount);
                         bitCount = bitCount + 32 - deltaBits;
                     } else {
-                        code = value & mask;
+                        delta = value & mask;
                         value >>= deltaBits;
                         bitCount -= deltaBits;
                     }
                     /* A non-zero delta carries its sign in the next bit. */
-                    if (code != 0) {
-                        if (bitCount == 0) { u32 w = *in++; bitCount = 31; value = w >> 1; signOfCode = w; }
-                        else { signOfCode = value; value >>= 1; bitCount--; }
-                        if (signOfCode & 1) code = -code;
+                    if (delta != 0) {
+                        if (bitCount == 0) { u32 w = *in++; bitCount = 31; value = w >> 1; deltaSign = w; }
+                        else { deltaSign = value; value >>= 1; bitCount--; }
+                        if (deltaSign & 1) delta = -delta;
                     }
-                    val += code;
-                    *out = val;
+                    sample += delta;
+                    *out = sample;
                     out++;
                 }
             } else {
                 /* n samples of the unchanged value. */
-                fn_80116CC4((s32 *)out, (u16)val, (group + group));
-                out = (s16 *)((u8 *)out + (group << 1));
+                fn_80116CC4((s32 *)out, (u16)sample, (groupSize + groupSize));
+                out = (s16 *)((u8 *)out + (groupSize << 1));
             }
-            count -= group;
+            count -= groupSize;
         }
     } else {
         /* Empty block: nothing for the consumer to take. */
