@@ -1047,7 +1047,7 @@ extern void fn_801E2188(void);
 extern void fn_801E21BC(void);
 extern void fn_801FA978(void);
 extern void fn_8020C41C(void);
-extern void fn_80267420(void);
+extern void Camera_Init(void);
 extern void fn_8026B644(void);
  #pragma push
  #pragma use_lmw_stmw off
@@ -1133,7 +1133,7 @@ void fn_80178DD4(int arg0) {
     version = (int)lbl_8055E430;
     if (version > 1) value = version;
     lbl_8055E440 = value; lbl_8055E444 = (void *)value;
-    fn_80267420();
+    Camera_Init();
     lbl_8055E450 = fn_801284E8(table + 0x23C, lbl_8055E3CC + 0x2EE8);
     fn_801AD5EC(); fn_80127464(); fn_801B2320(); fn_801C4B10();
     field = (int *)(base + 0x2C0);

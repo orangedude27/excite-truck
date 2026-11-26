@@ -834,7 +834,7 @@ extern int fn_8026A554(int *);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-/* fn_80267420 - camera module init, run once at boot.
+/* Camera_Init - camera module init, run once at boot.
  *
  * Clears each of the CAMERA_COUNT camera records in sCameras and gives it
  * its starting state: its index, mode and subject CAMERA_MODE_NONE (nothing
@@ -848,7 +848,7 @@ extern int fn_8026A554(int *);
  * module installs its category-13 callback (fn_8026A554), and fn_80267680
  * lays the per-frame defaults on top.
  */
-void fn_80267420(void) {
+void Camera_Init(void) {
     extern void *__AXFXGetLfoSinTable_801769CC(void);
     extern float FLOAT_ZERO, FLOAT_ONE, CAMERA_VIEW_ANGLE;
     extern int sCrashVolume;
