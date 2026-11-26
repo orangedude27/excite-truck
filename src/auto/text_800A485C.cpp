@@ -13852,7 +13852,7 @@ extern "C" s32 fn_800B9CC4(s32 arg0) {
 }
 
 extern "C" u8 lbl_80407320[];
-extern "C" s32 fn_800BBCF4(void);
+extern "C" s32 IPC_initHeap(void);
 extern "C" void fn_800BBCB4(void *);
 extern "C" s32 fn_800BB3F4(s32);
 #pragma push
@@ -13878,7 +13878,7 @@ extern "C" s32 fn_800BB3F4(s32);
         if (!(*(volatile u32 *)VFiPFSD_state & 4)) {
             *(s32 *)(VFiPFSD_state + 4) = 0x200;
             fn_800A499C((const char *)lbl_80407320, 0, 0x28);
-            if (fn_800BBCF4() != 0) {
+            if (IPC_initHeap() != 0) {
                 OSReport(errorMessages + 0xBC);
                 return 0x15;
             }
@@ -14823,7 +14823,7 @@ extern "C" s32 iosCreateHeap(void *, s32);
 extern "C" void OSInitMutex(void *);
 extern "C" void *lbl_8055DD84;
 /* Initializes the IPC/IOS heap and allocates shared buffers/mutex and device path strings for this subsystem; returns 0 on success or -22 on failure. */
-extern "C" s32 fn_800BBCF4(void) {
+extern "C" s32 IPC_initHeap(void) {
     const char *str = lbl_8031B838;
     s32 result = 0;
     s32 ints = OSDisableInterrupts();
