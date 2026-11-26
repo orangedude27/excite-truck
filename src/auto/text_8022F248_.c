@@ -448,14 +448,14 @@ int fn_80129D90(int, int, int);
  * clamped to +-scrollLimit.  With driftOn, each drift velocity is first pushed
  * back by one driftStep once the quad's translation has left +-driftRange,
  * then takes a random step of +-driftStep and is clamped to +-driftLimit. */
-void updateOverlayQuadWander(OverlayQuad *quad) {
+/* Advance an overlay quad's random-walk scroll offset and drift velocities one frame, clamping each inside its configured limit. */ void updateOverlayQuadWander(OverlayQuad *quad) {
     float scale, value;
-    int range;
+    int randRange;
 
     if (quad->scrollOn != 0) {
         scale = RAND_SCALE;
-        range = (int)(quad->scrollStep * scale);
-        value = quad->scrollOffset + (float)fn_80129D90(2, -range, range + 1) / scale;
+        randRange = (int)(quad->scrollStep * scale);
+        value = quad->scrollOffset + (float)fn_80129D90(2, -randRange, randRange + 1) / scale;
         quad->scrollOffset = value;
         if (value > quad->scrollLimit) {
             quad->scrollOffset = quad->scrollLimit;
@@ -474,18 +474,18 @@ void updateOverlayQuadWander(OverlayQuad *quad) {
         } else if (quad->mtx.m[3][1] < -quad->driftRange) {
             quad->driftVelY = quad->driftVelY + quad->driftStep;
         }
-        range = (int)(quad->driftStep * RAND_SCALE);
+        randRange = (int)(quad->driftStep * RAND_SCALE);
         scale = RAND_SCALE;
-        value = quad->driftVelX + (float)fn_80129D90(2, -range, range + 1) / scale;
+        value = quad->driftVelX + (float)fn_80129D90(2, -randRange, randRange + 1) / scale;
         quad->driftVelX = value;
         if (value > quad->driftLimit) {
             quad->driftVelX = quad->driftLimit;
         } else if (value < -quad->driftLimit) {
             quad->driftVelX = -quad->driftLimit;
         }
-        range = (int)(quad->driftStep * RAND_SCALE);
+        randRange = (int)(quad->driftStep * RAND_SCALE);
         scale = RAND_SCALE;
-        value = quad->driftVelY + (float)fn_80129D90(2, -range, range + 1) / scale;
+        value = quad->driftVelY + (float)fn_80129D90(2, -randRange, randRange + 1) / scale;
         quad->driftVelY = value;
         if (value > quad->driftLimit) {
             quad->driftVelY = quad->driftLimit;
