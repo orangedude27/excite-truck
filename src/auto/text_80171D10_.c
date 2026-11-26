@@ -2620,7 +2620,7 @@ virtual Config73058 *section(const char *);
 extern void *fn_8000AC38(void);
 extern int fn_80145E70(const char *);
 extern int fn_801EA994(void);
-extern char *fn_80204EA0(const char *);
+extern char *getDifficultySettingString(const char *);
 extern void *fn_801284F8(unsigned int, void *);
 extern void *fn_802ADDD8(void *, int);
 extern void *memset(void *, int, unsigned long);
@@ -2664,7 +2664,7 @@ extern float lbl_80561AA4, lbl_80561AA8, lbl_80561AAC, lbl_80561AB0;
         *(int *)(record + 0x94) = 0;
         memset(entry + 0x10, 0, 8);
     }
-    sectionName = fn_80204EA0(labels + 0x20C);
+    sectionName = getDifficultySettingString(labels + 0x20C);
     root = *(Config73058 **)((unsigned char *)fn_8000AC38() + 0x20);
     config = root->section( sectionName);
     *(float *)(crush + 0x1A4) = config->number( lbl_8055A2B0, lbl_80561A94);

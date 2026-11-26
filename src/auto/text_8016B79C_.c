@@ -773,7 +773,7 @@ void *fn_8016C598(void *container, int entryCount, int allocTag) {
 
 #pragma cplusplus on
 extern "C" void *fn_8000AC38(void);
-extern "C" void *fn_80204EA0(const char *);
+extern "C" void *getDifficultySettingString(const char *);
 extern "C" void *fn_80131810(void);
 extern "C" void fn_801345D8(void *, s32, const char *, ...);
 extern "C" int strcmp(const char *, const char *);
@@ -804,7 +804,7 @@ extern "C" s32 fn_8016C5F0(void) {
     /* Count consecutive ring sets (set_0_, set_1_, ...) whose "name" field appears in a parsed ring_set source.
      * Walk set indices from zero, stopping at the first one with no matching entry. */
     Manager *manager = *(Manager **)((char *)fn_8000AC38() + 0x20);
-    void *keyResource = fn_80204EA0(lbl_803307C8);
+    void *keyResource = getDifficultySettingString(lbl_803307C8);
     s32 setCount = 0;
     char setPrefix[0x1E];
     if (manager->probe(keyResource) != 0) {

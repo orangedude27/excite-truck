@@ -79,7 +79,7 @@ void fn_801607F8(void) {
 
 extern void **__AXFXGetLfoSinTable_801769CC(void);
 extern void *fn_8001285C(void *);
-extern void *fn_80204EA0(const char *);
+extern void *getDifficultySettingString(const char *);
 extern void *getValueFile(const char *);
 extern void releaseValueFile(void *);
 extern void fn_802E30C8(const char *, ...);
@@ -135,7 +135,7 @@ extern "C" void fn_80160850(void) {
     succeeded = 0;
     key = (const char *)&lbl_8055A0A8;
     audio = (Audio *)*((void **)((char *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20));
-    parameter = fn_80204EA0(base + 0x1C);
+    parameter = getDifficultySettingString(base + 0x1C);
     result = audio->apply(parameter);
     if (((unsigned int)(-result | result) >> 31) != 0) {
         result = audio->apply(parameter);

@@ -68,7 +68,7 @@ extern void *fn_8001285C(int);
 extern void fn_80165FAC(void);
 extern void *getValueFile(void *);
 extern void releaseValueFile(void *);
-extern int fn_80204EA0(const char *);
+extern int getDifficultySettingString(const char *);
 extern void fn_802E30C8(char *, ...);
 extern void fn_80163550(int);
 extern void *fn_801284F8(int, void *);
@@ -319,7 +319,7 @@ extern "C" void fn_80165FAC(void) {
     void **orbitSubtable;
 
     orbitValueFile = (Obj *)getValueFile(lbl_8032FCC0 + 0x1C0);
-    orbitSubtableId = fn_80204EA0(lbl_8032FCC0 + 0x1CC);
+    orbitSubtableId = getDifficultySettingString(lbl_8032FCC0 + 0x1CC);
     fn_802E30C8(lbl_8032FCC0 + 0x1D8, orbitSubtableId);
     orbitSubtable = orbitValueFile->method(orbitSubtableId);
     ((void (*)(void))fn_80165A30)();

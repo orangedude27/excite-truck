@@ -240,7 +240,7 @@ extern "C" void Abend_Panic(const char *, ...);
  * string parsed as a number. */
 #pragma push
 #pragma scheduling invalid_target
-extern "C" int fn_80204EA0(const char *name) {
+extern "C" int getDifficultySettingString(const char *name) {
     /* A difficulty setting set: has() at +0xC, the value string get() at +0x14. */
     class DifficultySet {
     public:

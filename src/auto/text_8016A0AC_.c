@@ -78,7 +78,7 @@ extern void *fn_8016B550(void*, s32);
 extern char lbl_804302E0[];
 extern float lbl_8056195C;
 extern void *fn_8000AC38(void);
-extern void *fn_80204EA0(void*);
+extern void *getDifficultySettingString(void*);
 extern void *fn_80131810(void);
 extern void releaseValueFile(void*);
 extern float PSVECDotProduct(float*, float*, float);
@@ -587,7 +587,7 @@ s32 fn_8016AC90(s32 unused) {
     bMgr->limit = bMgr->cap;
     bMgr->count = 0;
     obj = *(void **)((char *)fn_8000AC38() + 0x20);
-    cfg = fn_80204EA0((char*)lbl_80330460 + 0x14);
+    cfg = getDifficultySettingString((char*)lbl_80330460 + 0x14);
     if (((s32 (*)(void*, void*, s32))(*(void ***)obj)[3])(obj, cfg, 0) != 0) {
         ((void *(*)(void*, void*))(*(void ***)obj)[5])(obj, cfg);
         iter = fn_80131810();
