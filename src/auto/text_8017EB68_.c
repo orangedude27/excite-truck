@@ -1715,7 +1715,7 @@ extern f32 lbl_80561C8C;
  * live in lbl_804348D8[] - and return it, or 0 when the heap has no room.
  * The object itself only gets its identity, its sound id and zeroed player
  * slots here; fn_8017F718 is what names the slots and registers the sounds. */
-s32 getOrCreateDriverInterface(s32 arg0) {
+/* Lazily allocate and initialize one driver's DriverInterface (cached in lbl_804348D8[]), returning it or 0 if the heap is full. */ s32 getOrCreateDriverInterface(s32 arg0) {
     Unk8017Object **table;
     s32 entry_offset = arg0 * 4;
     void *slot_end;
