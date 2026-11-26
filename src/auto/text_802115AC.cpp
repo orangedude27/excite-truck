@@ -585,7 +585,7 @@ extern "C" s32 gxCanvasLoad(s32);
 extern "C" void *fn_802228B0(void *, s32, s32, s32);
 extern "C" void *fn_802226D4(s32);
 #pragma use_lmw_stmw off
-extern "C" void *fn_8021203C(char *path, s32 countDivisor, s32 imgArgA, s32 imgArgB, s32 unused) {
+extern "C" void *makeImageFromPath(char *path, s32 countDivisor, s32 imgArgA, s32 imgArgB, s32 unused) {
     extern int lbl_8033D528[];
     extern char lbl_8033D504[];
     extern const char lbl_8033CDA4[];
@@ -1014,7 +1014,7 @@ extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
         void *node = fn_801284F8(0x25C, strings + 0x418);
         if (node != 0) {
             s32 value = child != 0 ? *(s32 *)((char *)child + 8) : lbl_8055EF4C;
-            void *extra = fn_8021203C((char *)arg1 + 0x40, 2, -1, -1, 0);
+            void *extra = makeImageFromPath((char *)arg1 + 0x40, 2, -1, -1, 0);
             node = (void *)fn_8021A77C(node, *(s32 *)((char *)arg1 + 8),
                 *(s32 *)((char *)arg1 + 0xC), *(s32 *)((char *)arg1 + 0x9C),
                 value, (s32)extra);
@@ -1227,7 +1227,7 @@ extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
         void *node = fn_801284F8(0x25C, strings + 0x498);
         if (node != 0) {
             s32 value = child != 0 ? *(s32 *)((char *)child + 8) : lbl_8055EF54;
-            void *extra = fn_8021203C((char *)arg1 + 0x40, 1, -1, -1, 0);
+            void *extra = makeImageFromPath((char *)arg1 + 0x40, 1, -1, -1, 0);
             node = (void *)fn_8021A808(node, *(s32 *)((char *)arg1 + 8),
                 *(s32 *)((char *)arg1 + 0xC), *(s32 *)((char *)arg1 + 0x9C),
                 value, (s32)extra);
