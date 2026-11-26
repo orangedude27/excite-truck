@@ -346,7 +346,7 @@ done:
     fn_802C9904();
 }
 #pragma pop
-extern "C" s32 fn_8000D540(s32 input) {
+extern "C" s32 handleMenuInput(s32 input) {
     /* Handle menu/controller input: dispatch to alternate handler when active,
        cycle/select the current slot for navigation keys, and run the confirm callback. */
     if (lbl_8055D405 != 0) {

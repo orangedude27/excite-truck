@@ -480,7 +480,7 @@ extern char lbl_802FBF80[];
 #pragma push
 #pragma dont_inline on
 /* Confirm callback of the four-entry game-loop menu (registered with the menu by
- * fn_8000D000(fn_8000B42C, fn_8000B3B4, entry); fn_8000D540/fn_8000C848 call it
+ * fn_8000D000(fn_8000B42C, fn_8000B3B4, entry); handleMenuInput/fn_8000C848 call it
  * with the highlighted entry, or with 0 when the menu is cancelled).
  *
  * Entry 1 restarts the run -- physics first, then the participant flags and the
