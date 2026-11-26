@@ -9193,7 +9193,7 @@ extern "C" s32 fn_800B1EB8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4) {
     return status;
 }
 
-extern "C" void *fn_800B224C(void *fileObj, void *info) {
+extern "C" void *VFiPFFILE_GetFileInfo(void *fileObj, void *info) {
     /* Retrieves file info under the volume lock, preserving/restoring cursor state and propagating errors. */
     s32 result;
     FatCopyA savedCursorA;
@@ -12262,12 +12262,12 @@ extern "C" void fn_800B74E0(OSAlarm *alarm, OSContext *ctx) {
     fn_800B73BC((s32)VFiPFFILE_p_fclose(alarm));
 }
 
-extern "C" void* fn_800B224C(void*, void*);
+extern "C" void* VFiPFFILE_GetFileInfo(void*, void*);
 extern "C" void fn_800B7504(OSAlarm *alarm, OSContext *ctx) {
     /* File-thread alarm callback: retrieve info for the file object carried in
        `alarm` into `ctx` (the info buffer), then fold the result into
        fn_800B73BC's 0/-1 status mask. */
-    fn_800B73BC((s32)fn_800B224C(alarm, ctx));
+    fn_800B73BC((s32)VFiPFFILE_GetFileInfo(alarm, ctx));
 }
 
 extern "C" s32 VFipf2_fopen(s32 path, s32 modeStr) {
