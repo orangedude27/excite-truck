@@ -120,7 +120,7 @@ extern "C" s32 fn_800B3A70(void *, void *, s32);
 extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *, u8 *);
 extern "C" s32 VFiPFPATH_transformInUnicode(s16 *, s32, s32);
 extern "C" void VFiPFPATH_getLongNameformShortName(void *, void *, s32);
-extern "C" s32 fn_800A7C20(void *, void **, u32, void **, s32 *);
+extern "C" s32 VFiPFCACHE_AcquirePage(void *, void **, u32, void **, s32 *);
 extern "C" s32 fn_800A586C(void *, s32, s32, s32, s32);
 extern "C" s32 fn_800A7B34(void *, void *);
 extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32 arg4, s32 *arg5) {
@@ -2417,7 +2417,7 @@ extern "C" s32 fn_800A7B34(void *volume, void *block) {
  * moved to the front of the list, the page is the caller's until the cache
  * hands it out again.
  */
-extern "C" s32 fn_800A7C20(void *volume, void **list, u32 sector, void **outPage, s32 *outCached) {
+extern "C" s32 VFiPFCACHE_AcquirePage(void *volume, void **list, u32 sector, void **outPage, s32 *outCached) {
     u8 *page;
     s32 r;
     /* the page covering the sector, if the list already has one */
@@ -2495,7 +2495,7 @@ extern "C" s32 fn_800A7C20(void *volume, void **list, u32 sector, void **outPage
 /* VFiPFCACHE_DoReadPage: bring the cache page covering `sector` into one of the
  * volume's page lists (`listAddr` is the address of the list head: volume+0x1630
  * for the FAT pages, volume+0x1634 for the file data pages) and hand it out
- * through `outPageAddr`.  fn_800A7C20 finds or reserves the page and reports in
+ * through `outPageAddr`.  VFiPFCACHE_AcquirePage finds or reserves the page and reports in
  * `cached` whether it was already in memory; only a page that had to be brought
  * in is read here, as one run of sectors with fn_800A586C.  A read that fails,
  * or one that comes back short without stopping at the end of the volume, drops
@@ -2510,7 +2510,7 @@ extern "C" s32 VFiPFCACHE_DoReadPage(void *volume, s32 listAddr, s32 sector, s32
     s32 cached;
     s32 result;
     void **list = (void **)listAddr;
-    result = fn_800A7C20(volume, list, (u32)sector, (void **)outPageAddr, &cached);
+    result = VFiPFCACHE_AcquirePage(volume, list, (u32)sector, (void **)outPageAddr, &cached);
     if (result != 0) return result;
     if (cached == 0) {
         result = fn_800A586C(volume, (s32)VF_PAGE_BUFFER(*(void **)outPageAddr), (s32)VF_PAGE_FIRST(*(void **)outPageAddr), (s32)VF_PAGE_SECTORS(*(void **)outPageAddr), (s32)&sectorsRead);
@@ -2622,7 +2622,7 @@ extern "C" s32 VFiPFCACHE_DoReadPage(void *volume, s32 listAddr, s32 sector, s32
     s32 result;
     void **outPage = (void **)outPageAddr;
     void **list = (void **)listAddr;
-    result = fn_800A7C20(volume, list, (u32)sector, outPage, &cached);
+    result = VFiPFCACHE_AcquirePage(volume, list, (u32)sector, outPage, &cached);
     if (result != 0) return result;
     if (cached == 0) {
         result = fn_800A586C(volume, (s32)VF_PAGE_BUFFER(*outPage), (s32)VF_PAGE_FIRST(*outPage), (s32)VF_PAGE_SECTORS(*outPage), (s32)&sectorsRead);
@@ -3109,7 +3109,7 @@ extern "C" s32 VFiPFCACHE_InitCaches(void *context) {
     return status & ((-status | status) >> 31);
 }
 
-extern "C" s32 fn_800A7C20(void *arg0, void **arg1, u32 arg2, void **arg3, s32 *arg4);
+extern "C" s32 VFiPFCACHE_AcquirePage(void *arg0, void **arg1, u32 arg2, void **arg3, s32 *arg4);
 #pragma scheduling on
 /* Returns a page from the volume's FAT-page cache for the requested sector. If the
  * volume has no FAT-page list, it initializes the base cache object from the cache
@@ -3130,10 +3130,10 @@ extern "C" s32 fn_800A8C90(void *volume, s32 sector, void **outPage, s32 *cached
         *outPage = vol->cacheObject;
         return 0;
     }
-    result = fn_800A7C20(volume, (void **)&vol->fatPageList, (u32)sector, outPage, cached);
+    result = VFiPFCACHE_AcquirePage(volume, (void **)&vol->fatPageList, (u32)sector, outPage, cached);
     return result & ((s32)(-result | result) >> 31);
 }
-extern "C" s32 fn_800A7C20(void *, void **, u32, void **, s32 *);
+extern "C" s32 VFiPFCACHE_AcquirePage(void *, void **, u32, void **, s32 *);
 /* Returns a page from the volume's data-page cache for the requested sector. If the
  * volume has no data-page list, it initializes the base cache object from the cache
  * buffer and returns that object instead. */
@@ -3153,7 +3153,7 @@ extern "C" s32 fn_800A8D08(s32 volume, void **sector, s32 *outPage, s32 cached, 
         *outPage = (s32)vol->cacheObject;
         return 0;
     }
-    result = fn_800A7C20((void *)volume, (void **)&vol->dataPageList, (u32)sector, (void **)outPage, (s32 *)cached);
+    result = VFiPFCACHE_AcquirePage((void *)volume, (void **)&vol->dataPageList, (u32)sector, (void **)outPage, (s32 *)cached);
     return result & ((s32)(-result | result) >> 31);
 }
 
@@ -15335,7 +15335,9 @@ extern "C" s32 lbl_802F33E8[];
 extern "C" void fn_800BD970(s32 arg0, s32 arg1, s8 arg2, s32 arg3, s32 *arg4) {
     s8 row, i;
     s32 i2, n = arg0 * 0x12;
-    if (arg3 & 7) {
+    s32 temp;
+    temp = arg3 & 7;
+    if (temp) {
         for (row = 0; row < arg2; ++row, arg4 = (s32 *)((u8 *)arg4 + 0x2400)) {
             for (i = 1; i < arg0; ++i) {
                 s16 k = (s16)(0x10 * i + 2 * i);
@@ -15350,14 +15352,13 @@ extern "C" void fn_800BD970(s32 arg0, s32 arg1, s8 arg2, s32 arg3, s32 *arg4) {
                     a[0] = (s32)(((s64)y * si) >> 24) + (s32)(((s64)x * co) >> 24);
                     si = d[1]; x = a[1]; co = c[1]; y = b[-1];
                     b[-1] = (s32)(((s64)y * co) >> 24) - (s32)(((s64)x * si) >> 24);
-                    a[1] = (s32)(((s64)y * si) >> 24) + (s32)(((s64)x * co) >> 24);
+                    a[1] = ((s32)(((s64)x * co) >> 24)) + ((s32)(((s64)y * si) >> 24));
                     a += 2; b -= 2; c += 2; d += 2;
                 }
             }
-            if (arg1 < n) {
-                s32 *p = (s32 *)((u8 *)arg4 + 0x1b00);
-                for (i2 = arg1; i2 < n; ++i2) p[i2] = 0;
-            }
+            if (arg1 < n)
+                for (i2 = arg1; i2 < n; ++i2)
+                    arg4[i2 + 0x6C0] = 0;
         }
     } else {
         for (row = 0; row < arg2; ++row, arg4 = (s32 *)((u8 *)arg4 + 0x2400)) {
@@ -15368,10 +15369,10 @@ extern "C" void fn_800BD970(s32 arg0, s32 arg1, s8 arg2, s32 arg3, s32 *arg4) {
             for (j = 0; j < 4; ++j) {
                 s32 si = d[0], x = a[0], co = c[0], y = b[0];
                 b[0] = (s32)(((s64)y * co) >> 24) - (s32)(((s64)x * si) >> 24);
-                a[0] = (s32)(((s64)x * co) >> 24) + (s32)(((s64)y * si) >> 24);
+                a[0] = ((s32)(((s64)y * si) >> 24)) + ((s32)(((s64)x * co) >> 24));
                 si = d[1]; x = a[1]; co = c[1]; y = b[-1];
                 b[-1] = (s32)(((s64)y * co) >> 24) - (s32)(((s64)x * si) >> 24);
-                a[1] = (s32)(((s64)x * co) >> 24) + (s32)(((s64)y * si) >> 24);
+                a[1] = ((s32)(((s64)y * si) >> 24)) + ((s32)(((s64)x * co) >> 24));
                 a += 2; b -= 2; c += 2; d += 2;
             }
         }
