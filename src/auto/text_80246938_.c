@@ -1389,10 +1389,12 @@ void fn_802487A8(void *group) {
 void updateTextElementMotion(void *element) {
     extern void fn_80214BE4(s32, s32, s32);
     extern float lbl_805638B8, lbl_805638BC, lbl_805638C0, lbl_805638C4;
-    float value, x1, x0, y1, y0, factor, pa, pb, pc;
+    float progress, endX, startX, endY, startY, easing, cubicA, cubicB, cubicC;
     s32 y, x;
-    /* Interpolate and reposition the UI element: accumulate the scaled frame
-     * delta, apply the mode's interpolation factor, then forward the new position. */
+    /* Advance a text-layout element's position interpolation by one frame. Handle
+     * a pending group/mode change and forced start/target moves, accumulate the
+     * frame delta into progress, apply the mode's easing, then forward the new
+     * position and mark a one-shot move complete when progress reaches 1. */
     if (*(s32 *)((char *)element + 0x20) != *(s32 *)((char *)element + 0x24)) {
         if (*(s32 *)((char *)element + 0x20) == 0) fn_80214AF0(*(s32 *)((char *)element + 0x1C));
         else fn_80214A9C(*(s32 *)((char *)element + 0x1C));
@@ -1406,9 +1408,9 @@ void updateTextElementMotion(void *element) {
         *(s32 *)((char *)element + 0x34) = y;
         *(s32 *)((char *)element + 0x2C) = y;
         fn_80214BE4(*(s32 *)((char *)element + 0x1C), x - *(s32 *)((char *)element + 0x4), y - *(s32 *)((char *)element + 0x8));
-        value = lbl_805638BC;
+        progress = lbl_805638BC;
         *(unsigned char *)((char *)element + 0x50) = 0;
-        *(float *)((char *)element + 0x3C) = value;
+        *(float *)((char *)element + 0x3C) = progress;
     }
     if (*(unsigned char *)((char *)element + 0x5C)) {
         *(s32 *)((char *)element + 0x28) = *(s32 *)((char *)element + 0x4);
@@ -1418,30 +1420,30 @@ void updateTextElementMotion(void *element) {
         *(float *)((char *)element + 0x3C) = 0.0f;
         *(unsigned char *)((char *)element + 0x5C) = 0;
     }
-    value = *(float *)((char *)element + 0x3C) + *(float *)((char *)element + 0x38) * fn_80214D48();
-    *(float *)((char *)element + 0x3C) = value;
+    progress = *(float *)((char *)element + 0x3C) + *(float *)((char *)element + 0x38) * fn_80214D48();
+    *(float *)((char *)element + 0x3C) = progress;
     switch (*(s32 *)((char *)element + 0x40)) {
     case 1:
-        value = value < lbl_80563898 ? value : lbl_80563898;
-        factor = value * value;
+        progress = progress < lbl_80563898 ? progress : lbl_80563898;
+        easing = progress * progress;
         break;
     case 2:
-        value = value < lbl_80563898 ? value : lbl_80563898;
-        factor = value < lbl_805638C0 ? lbl_805638C0:
-            value > lbl_80563898 ? lbl_80563898:
-            value > lbl_805638B0 ? (pa = lbl_805638C4 * value, pb = lbl_805638B8 * value, pc = pa * value, value * pc + pb * value) :
-            (pa = lbl_805638C4 * value, pb = lbl_805638B8 * value, pc = pa * value, value * pc - pb * value);
+        progress = progress < lbl_80563898 ? progress : lbl_80563898;
+        easing = progress < lbl_805638C0 ? lbl_805638C0:
+            progress > lbl_80563898 ? lbl_80563898:
+            progress > lbl_805638B0 ? (cubicA = lbl_805638C4 * progress, cubicB = lbl_805638B8 * progress, cubicC = cubicA * progress, progress * cubicC + cubicB * progress) :
+            (cubicA = lbl_805638C4 * progress, cubicB = lbl_805638B8 * progress, cubicC = cubicA * progress, progress * cubicC - cubicB * progress);
         break;
     default:
-        factor = *(float *)((char *)element + 0x3C);
-        factor = factor < lbl_80563898 ? factor : lbl_80563898;
+        easing = *(float *)((char *)element + 0x3C);
+        easing = easing < lbl_80563898 ? easing : lbl_80563898;
     }
-    x1 = (float)*(s32 *)((char *)element + 0x30);
-    x0 = (float)*(s32 *)((char *)element + 0x28);
-    y1 = (float)*(s32 *)((char *)element + 0x34);
-    y0 = (float)*(s32 *)((char *)element + 0x2C);
-    x = (s32)(x0 + factor * (x1 - x0));
-    y = (s32)(y0 + factor * (y1 - y0));
+    endX = (float)*(s32 *)((char *)element + 0x30);
+    startX = (float)*(s32 *)((char *)element + 0x28);
+    endY = (float)*(s32 *)((char *)element + 0x34);
+    startY = (float)*(s32 *)((char *)element + 0x2C);
+    x = (s32)(startX + easing * (endX - startX));
+    y = (s32)(startY + easing * (endY - startY));
     fn_80214BE4(*(s32 *)((char *)element + 0x1C), x - *(s32 *)((char *)element + 0x4), y - *(s32 *)((char *)element + 0x8));
     if (*(unsigned char *)((char *)element + 0x44)) {
         s32 done = (*(float *)((char *)element + 0x3C) >= lbl_80563898);
