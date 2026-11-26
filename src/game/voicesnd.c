@@ -62,7 +62,7 @@ extern void fn_802E6B04(void);
     extern void fn_802E6B34(void);
   typedef struct { void **vtable; } Unk8012A570;
     extern void VoiceMixerDevice_Init();
-  extern int fn_80208E90(int);
+  extern int RegisterMixerDevice(int);
   extern float lbl_805632B0, lbl_805632B4, gVoiceMasterVolume;
 
   extern void *gVoiceMixer;
@@ -97,7 +97,7 @@ typedef struct { char *callbacks; int state; } VoiceMixerDevice;
     void *mixer = (void *)fn_801284F8(0xC, lbl_8033C35C);
     if (mixer != 0)
         mixer = ((void *(*)(void *))VoiceMixerDevice_Init)(mixer);
-    ((int (*)(void *, int))fn_80208E90)(mixer, 0);
+    ((int (*)(void *, int))RegisterMixerDevice)(mixer, 0);
 }
 #pragma scheduling on
 /* Return s_voiceEntryCount (sVoiceEntryCount), the number of registered 0x24-byte voice-sound entries. */
@@ -1109,4 +1109,4 @@ extern char lbl_8033C368[];
 extern char lbl_8033C35C[];
 extern char lbl_804892D0[];
 extern void VoiceMixerDevice_Init();
-extern int fn_80208E90(int);
+extern int RegisterMixerDevice(int);

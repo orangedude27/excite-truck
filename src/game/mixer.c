@@ -306,7 +306,7 @@ extern "C" void fn_802E30C8(const char *, ...);
    the 6th, is refused with a message and destroyed.  mode 0 registers the
    device as it stands; mode 1 registers it only if its startup method (+0x18)
    succeeds, and immediately runs its shutdown method (+0x24) again. */
-extern "C" void fn_80208E90(void *devicePtr, int mode) {
+extern "C" void RegisterMixerDevice(void *devicePtr, int mode) {
     /* Sound-mixer backend interface.  CodeWarrior reserves the first two vtable
        slots for the deleting and complete destructors, so the first method
        declared here lands at +0x8; the two backends in the game implement this
