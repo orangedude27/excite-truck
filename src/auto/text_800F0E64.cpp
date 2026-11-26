@@ -5530,7 +5530,7 @@ static inline void SoundPlayer_InsertPriorityList(s32 player, void *sound) {
 #pragma push
 #pragma dont_inline off
 #pragma auto_inline off
-extern "C" void *fn_800F9200(s32 player, s32 priority, s32 requestedPriority, s32 ambientInfo, s32 externalPlayer, s32 soundId, void *manager) {
+extern "C" void *allocStreamSound(s32 player, s32 priority, s32 requestedPriority, s32 ambientInfo, s32 externalPlayer, s32 soundId, void *manager) {
     /* detail::SoundInstanceManager::Alloc for streaming sounds.  Takes a free
      * StrmSound out of the instance pool; when the pool is full it takes the
      * sound with the lowest priority away from that list (stopping it first) if
