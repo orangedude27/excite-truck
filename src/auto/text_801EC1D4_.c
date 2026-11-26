@@ -988,67 +988,67 @@ extern float __fabsf(float);
  * scale within epsilon), build a scaled copy of the 12-word transform into
  * the effect's cached slot, then re-submit each of its four effect entries.
  * The second parameter is reused as the loop counter once its scale is read. */
-void refreshVehicleEffectState(void *renderState, long data) {
-    void *object = renderState;
+/* Refresh a vehicle effect's render state from its owner: copy the base transform from the effect-data block, cache the vehicle's scale (or unit scale within epsilon), build a scaled copy of the 12-word transform into the effect's cached slot, then re-submit each of its four effect entries. The second parameter is reused as the loop counter once its scale is read. */ void refreshVehicleEffectState(void *renderState, long data) {
+    void *effect = renderState;
     long dataOffset;
-    char *slot;
+    char *entrySlot;
     float scaled3, scaled2, scaled1, scaled0;
     float scale;
     float scaled4, scaled5, scaled6, scaled7, scaled8, copied1, copied0, copied2;
 
-    fn_801EABA8(object, *(void **)((char *)object + 0x3C));
+    fn_801EABA8(effect, *(void **)((char *)effect + 0x3C));
     scale = *(float *)((char *)data + 0x2D0);
-    *(float *)((char *)object + 0x4D0) = scale;
+    *(float *)((char *)effect + 0x4D0) = scale;
     if ((float)__fabs((double)(scale - 1.0f)) <= lbl_80558DC4[0]) {
-        *(unsigned int *)((char *)object + 0x4A0) = *(unsigned int *)((char *)object + 4);
-        *(unsigned int *)((char *)object + 0x4A4) = *(unsigned int *)((char *)object + 8);
-        *(unsigned int *)((char *)object + 0x4A8) = *(unsigned int *)((char *)object + 0xC);
-        *(unsigned int *)((char *)object + 0x4AC) = *(unsigned int *)((char *)object + 0x10);
-        *(unsigned int *)((char *)object + 0x4B0) = *(unsigned int *)((char *)object + 0x14);
-        *(unsigned int *)((char *)object + 0x4B4) = *(unsigned int *)((char *)object + 0x18);
-        *(unsigned int *)((char *)object + 0x4B8) = *(unsigned int *)((char *)object + 0x1C);
-        *(unsigned int *)((char *)object + 0x4BC) = *(unsigned int *)((char *)object + 0x20);
-        *(unsigned int *)((char *)object + 0x4C0) = *(unsigned int *)((char *)object + 0x24);
-        *(unsigned int *)((char *)object + 0x4C4) = *(unsigned int *)((char *)object + 0x28);
-        *(unsigned int *)((char *)object + 0x4C8) = *(unsigned int *)((char *)object + 0x2C);
-        *(unsigned int *)((char *)object + 0x4CC) = *(unsigned int *)((char *)object + 0x30);
+        *(unsigned int *)((char *)effect + 0x4A0) = *(unsigned int *)((char *)effect + 4);
+        *(unsigned int *)((char *)effect + 0x4A4) = *(unsigned int *)((char *)effect + 8);
+        *(unsigned int *)((char *)effect + 0x4A8) = *(unsigned int *)((char *)effect + 0xC);
+        *(unsigned int *)((char *)effect + 0x4AC) = *(unsigned int *)((char *)effect + 0x10);
+        *(unsigned int *)((char *)effect + 0x4B0) = *(unsigned int *)((char *)effect + 0x14);
+        *(unsigned int *)((char *)effect + 0x4B4) = *(unsigned int *)((char *)effect + 0x18);
+        *(unsigned int *)((char *)effect + 0x4B8) = *(unsigned int *)((char *)effect + 0x1C);
+        *(unsigned int *)((char *)effect + 0x4BC) = *(unsigned int *)((char *)effect + 0x20);
+        *(unsigned int *)((char *)effect + 0x4C0) = *(unsigned int *)((char *)effect + 0x24);
+        *(unsigned int *)((char *)effect + 0x4C4) = *(unsigned int *)((char *)effect + 0x28);
+        *(unsigned int *)((char *)effect + 0x4C8) = *(unsigned int *)((char *)effect + 0x2C);
+        *(unsigned int *)((char *)effect + 0x4CC) = *(unsigned int *)((char *)effect + 0x30);
     } else {
-        scaled0 = *(float *)((char *)object + 4) * scale;
-        scaled1 = *(float *)((char *)object + 8) * scale;
-        scaled2 = *(float *)((char *)object + 0xC) * scale;
-        scaled3 = *(float *)((char *)object + 0x10) * scale;
-        scaled4 = *(float *)((char *)object + 0x14) * scale;
-        scaled5 = *(float *)((char *)object + 0x18) * scale;
-        scaled6 = *(float *)((char *)object + 0x1C) * scale;
-        scaled7 = *(float *)((char *)object + 0x20) * scale;
-        scaled8 = *(float *)((char *)object + 0x24) * scale;
-        copied0 = *(float *)((char *)object + 0x28);
-        copied1 = *(float *)((char *)object + 0x2C);
-        copied2 = *(float *)((char *)object + 0x30);
-        *(float *)((char *)object + 0x4C4) = copied0;
-        *(float *)((char *)object + 0x4C8) = copied1;
-        *(float *)((char *)object + 0x4CC) = copied2;
-        *(float *)((char *)object + 0x4A0) = scaled0;
-        *(float *)((char *)object + 0x4A4) = scaled1;
-        *(float *)((char *)object + 0x4A8) = scaled2;
-        *(float *)((char *)object + 0x4AC) = scaled3;
-        *(float *)((char *)object + 0x4B0) = scaled4;
-        *(float *)((char *)object + 0x4B4) = scaled5;
-        *(float *)((char *)object + 0x4B8) = scaled6;
-        *(float *)((char *)object + 0x4BC) = scaled7;
-        *(float *)((char *)object + 0x4C0) = scaled8;
+        scaled0 = *(float *)((char *)effect + 4) * scale;
+        scaled1 = *(float *)((char *)effect + 8) * scale;
+        scaled2 = *(float *)((char *)effect + 0xC) * scale;
+        scaled3 = *(float *)((char *)effect + 0x10) * scale;
+        scaled4 = *(float *)((char *)effect + 0x14) * scale;
+        scaled5 = *(float *)((char *)effect + 0x18) * scale;
+        scaled6 = *(float *)((char *)effect + 0x1C) * scale;
+        scaled7 = *(float *)((char *)effect + 0x20) * scale;
+        scaled8 = *(float *)((char *)effect + 0x24) * scale;
+        copied0 = *(float *)((char *)effect + 0x28);
+        copied1 = *(float *)((char *)effect + 0x2C);
+        copied2 = *(float *)((char *)effect + 0x30);
+        *(float *)((char *)effect + 0x4C4) = copied0;
+        *(float *)((char *)effect + 0x4C8) = copied1;
+        *(float *)((char *)effect + 0x4CC) = copied2;
+        *(float *)((char *)effect + 0x4A0) = scaled0;
+        *(float *)((char *)effect + 0x4A4) = scaled1;
+        *(float *)((char *)effect + 0x4A8) = scaled2;
+        *(float *)((char *)effect + 0x4AC) = scaled3;
+        *(float *)((char *)effect + 0x4B0) = scaled4;
+        *(float *)((char *)effect + 0x4B4) = scaled5;
+        *(float *)((char *)effect + 0x4B8) = scaled6;
+        *(float *)((char *)effect + 0x4BC) = scaled7;
+        *(float *)((char *)effect + 0x4C0) = scaled8;
     }
-    slot = object;
+    entrySlot = effect;
     data = 0;
     dataOffset = 0;
     do {
-        fn_801F0F78(*(long *)(slot + 0x4D4),
-                    (long)(*(char **)((char *)object + 0x3C) + dataOffset + 0x7C),
-                    (char *)object + 4,
-                    *(float *)((char *)object + 0x4D0));
+        fn_801F0F78(*(long *)(entrySlot + 0x4D4),
+                    (long)(*(char **)((char *)effect + 0x3C) + dataOffset + 0x7C),
+                    (char *)effect + 4,
+                    *(float *)((char *)effect + 0x4D0));
         data++;
         dataOffset += 0x6C;
-        slot += 4;
+        entrySlot += 4;
     } while (data < 4);
 }
 #pragma opt_loop_invariants reset
