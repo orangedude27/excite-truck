@@ -438,7 +438,7 @@ extern "C" int getDifficultyProperty(const char *propName, int typeIndex, int st
     char *typeEntry;
     int result;
     const char *value;
-    void *set;
+    void *propSet;
     void *contest;
     void *group;
 
@@ -463,15 +463,15 @@ extern "C" int getDifficultyProperty(const char *propName, int typeIndex, int st
     if (contest != 0) {
         /* "<contest>_<propName>": the contest-specific spelling of the property. */
         ((StringFormat)fn_801345D8)(keyBuf, KEY_BUF_SIZE, STAGE_KEY_FORMAT, contest, propName);
-        set = lookup.stage;
-        if (set != 0 && ((PropertySet *)set)->has(keyBuf) != 0) {
-            set = lookup.stage;
-            value = ((PropertySet *)set)->get(keyBuf);
+        propSet = lookup.stage;
+        if (propSet != 0 && ((PropertySet *)propSet)->has(keyBuf) != 0) {
+            propSet = lookup.stage;
+            value = ((PropertySet *)propSet)->get(keyBuf);
         } else {
-            set = lookup.current;
-            if (((PropertySet *)set)->has(keyBuf) != 0) {
-                set = lookup.current;
-                value = ((PropertySet *)set)->get(keyBuf);
+            propSet = lookup.current;
+            if (((PropertySet *)propSet)->has(keyBuf) != 0) {
+                propSet = lookup.current;
+                value = ((PropertySet *)propSet)->get(keyBuf);
             } else {
                 value = 0;
             }
@@ -480,15 +480,15 @@ extern "C" int getDifficultyProperty(const char *propName, int typeIndex, int st
     }
     if (result == 0) {
         /* Fall back to the plain property name. */
-        set = lookup.stage;
-        if (set != 0 && ((PropertySet *)set)->has(propName) != 0) {
-            set = lookup.stage;
-            value = ((PropertySet *)set)->get(propName);
+        propSet = lookup.stage;
+        if (propSet != 0 && ((PropertySet *)propSet)->has(propName) != 0) {
+            propSet = lookup.stage;
+            value = ((PropertySet *)propSet)->get(propName);
         } else {
-            set = lookup.current;
-            if (((PropertySet *)set)->has(propName) != 0) {
-                set = lookup.current;
-                value = ((PropertySet *)set)->get(propName);
+            propSet = lookup.current;
+            if (((PropertySet *)propSet)->has(propName) != 0) {
+                propSet = lookup.current;
+                value = ((PropertySet *)propSet)->get(propName);
             } else {
                 value = 0;
             }
