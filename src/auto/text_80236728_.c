@@ -223,9 +223,9 @@ void fn_80236910(char *fileName) {
 }
 
 void fn_80236914(int channel, float *valuesOut, float valueIn) {
-    extern void fn_80237AA0(int, float *, float);
+    extern void uiAnime_scriptGetSetValue(int, float *, float);
     /* uiAnime script callback: forward all three args to the animation-value get/set handler. */
-    fn_80237AA0(channel, valuesOut, valueIn);
+    uiAnime_scriptGetSetValue(channel, valuesOut, valueIn);
 }
 
 void fn_80236918(void* alarm) {
@@ -797,7 +797,7 @@ static unsigned char pass_flag_37AA0(int dummy, unsigned char flag, char *base) 
 
 #pragma push
 #pragma processor 750
-void fn_80237AA0(int channel, float *valuesOut, float valueIn)
+void uiAnime_scriptGetSetValue(int channel, float *valuesOut, float valueIn)
 {
     /* uiAnime script callback (fn_80236914, registered with 2 args): with no
      * channel it reads the two animated values of the current uiAnime node
