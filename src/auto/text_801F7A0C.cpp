@@ -897,7 +897,7 @@ extern "C" void *fn_801F861C(void) {
  * object in the game's object files becomes.  It allocates the object under the "ObstacleDI" tag,
  * builds the part every created object shares plus the "OBST" record at +0x10C (fn_801F8988), and
  * finally reads the obstacle-only switches and values out of the parameter node. */
-extern "C" void *createObstacle(void *node) {
+/* Object-factory creator for plain objects: allocate an obstacle, init the shared object part and OBST record, then read the obstacle-only options, effect name, event id and default-properties node out of the parameter node. */ extern "C" void *createObstacle(void *node) {
     /* What this creator adds past the part every created object shares. */
     struct Obstacle {
         u8 pad[0x108];
