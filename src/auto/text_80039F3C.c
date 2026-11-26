@@ -704,18 +704,18 @@ int fn_8003AD88(void *buffer, int length, int input, void *callback) {
 #pragma opt_propagation off
 /* DVDLow async raw-DI read: queue command 0xE3 in the next command-buffer slot and
  * dispatch it through IOS_IoctlAsync, reporting the IOS error if the dispatch fails. */
-int DVDLowRawReadAsync(int arg0, int arg1, int arg2) {
+/* Queues an async raw DI read of command 0xE3 with the given offset and length, dispatching it through IOS and reporting an error if dispatch fails. */ int DVDLowRawReadAsync(int offset, int length, int callback) {
     const char *msg = lbl_80302848;
     unsigned int one = 1;
     unsigned char *context;
     int result;
 
     lbl_8055D8E0 = one;
-    context = (unsigned char *)newContext((void *)arg2, one, msg);
+    context = (unsigned char *)newContext((void *)callback, one, msg);
     nextCommandBuf();
     *(unsigned char *)(lbl_8055D8FC + lbl_8055D8E4 * 0x20) = 0xE3;
-    *(unsigned int *)(lbl_8055D8FC + lbl_8055D8E4 * 0x20 + 4) = arg0;
-    *(unsigned int *)(lbl_8055D8FC + lbl_8055D8E4 * 0x20 + 8) = arg1;
+    *(unsigned int *)(lbl_8055D8FC + lbl_8055D8E4 * 0x20 + 4) = offset;
+    *(unsigned int *)(lbl_8055D8FC + lbl_8055D8E4 * 0x20 + 8) = length;
     result = IOS_IoctlAsync(lbl_80558E18, 0xE3, lbl_8055D8FC + lbl_8055D8E4 * 0x20,
                             0x20, lbl_8037B8A0, 0x20,
                             (void (*)(int, void *))doTransactionCallback, context);
