@@ -166,7 +166,7 @@ void fn_80177A54(void) {
     lbl_8055E3C0 = 0;
 }
 
-void fn_80177AE4(int forceShift, int arg1) {
+void expireReplayHistory(int forceShift, int arg1) {
     /* Expire the oldest record of the 8-slot timed history buffer (256-byte
      * payload, timestamp, value): shift records down when the oldest is more
      * than 5 s old, timestamped in the future, or forceShift is set while the
@@ -303,7 +303,7 @@ void fn_80177EE4(void) {
 void fn_80176A6C(void);
 void fn_80176A34(int);
 void fn_8026C014(int);
-void fn_80177AE4(int, int);
+void expireReplayHistory(int, int);
 void fn_801777B4(void);
 int isTileCaptureActive(void);
 void fn_80265D84(void);
@@ -360,7 +360,7 @@ void fn_80177F40(void) {
     fn_8026C014(1);
     lbl_8055E45D = lbl_8055E45C;
     lbl_8055E45F = lbl_8055E45E;
-    fn_80177AE4(0, lbl_8055E45C);
+    expireReplayHistory(0, lbl_8055E45C);
     saved = lbl_8055E3BD;
     active = isTileCaptureActive();
     if (active != 0) lbl_8055E3BD = 1;
