@@ -513,7 +513,7 @@ extern "C" void fn_80245D2C(void *object) {
 }
 
 #pragma push
-#pragma opt_unroll_loops reset
+#pragma opt_unroll_loops on
 extern "C" void fn_80245D74(void *arg0, void *arg1) {
     struct State {
         void *p1C;
