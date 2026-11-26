@@ -13,7 +13,7 @@ extern char lbl_8032AF84[];
 #pragma optimize_for_size on
 #pragma use_lmw_stmw off
 /* Load a STAB resource chunk and byte-swap its fields in place when the data is flagged as endian-swapped. */
-void *fn_8012F150(s32 resource) {
+void *loadStabResource(s32 resource) {
     s32 chunkType;
     u8 needsSwap;
     void *data;

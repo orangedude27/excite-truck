@@ -195,7 +195,7 @@ void *fn_80234E88(const char *name) {
 }
 
 extern double atof(const char *);
-extern void *fn_8012F150(const char *);
+extern void *loadStabResource(const char *);
 extern int fn_8012F2E4(void *);
 extern int fn_8012F2E8(void);
 extern char *fn_8012F2F0(void *, int, int);
@@ -206,7 +206,7 @@ extern void fn_80265940(void);
 /* Loads art/texture metadata rows for a named resource into a linked list at obj+0x88, or logs lbl_803406B0 when the resource is unavailable. */
 void fn_80234EF4(void *artObject, const char *resourceName) {
     if (fn_8012C33C(resourceName)) {
-        void *source = fn_8012F150(resourceName);
+        void *source = loadStabResource(resourceName);
         int count = fn_8012F2E8();
         void *last = 0;
         int i;
