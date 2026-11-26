@@ -2530,7 +2530,7 @@ extern char lbl_8055AD08;
  * The element is then handed the request with accept(); an element that
  * refuses the request is destroyed and nothing is returned.
  */
-extern "C" void *createASEElement(void *arg0) {
+/* Build the action-sequence element named by the request's "type" string, initialize it, and return it only if the element accepts the request. */ extern "C" void *createASEElement(void *arg0) {
     extern char lbl_80338460;
     extern char lbl_8055ACF4;
     struct Request {
