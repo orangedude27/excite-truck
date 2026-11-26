@@ -563,7 +563,7 @@ extern "C" s32 fn_800A98B8(void *arg0, s32 arg1, s32 arg2, void *arg3);
 extern "C" s32 fn_800A95B4(void *arg0);
 extern "C" s32 fn_800AF574(void *arg0);
 extern "C" s32 VFiPFENT_findFreeEntries(void *arg0, u32 arg1, void *arg2, void *arg3, s32 arg4, s32 *arg5);
-extern "C" s32 fn_800AA924(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 *arg6, s32 *arg7);
+extern "C" s32 findVFiPDirectoryEntry(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 *arg6, s32 *arg7);
 extern "C" s32 fn_800A7090(void *arg0, s32 arg1, s32 *arg2);
 extern "C" s32 fn_800A7610(void *);
 extern "C" s32 fn_800A76A0(void *);
@@ -3595,7 +3595,7 @@ process:
     fn_800AF530(local.input, local.temp,
                 (s32)M2C_FIELD(arg0, void **, 8),
                 (s32)(local.parsed + 0x234));
-    result = ((s32 (*)(void *, void *, s32, s32, s32, s32, s32 *, s32 *))fn_800AA924)(
+    result = ((s32 (*)(void *, void *, s32, s32, s32, s32, s32 *, s32 *))findVFiPDirectoryEntry)(
         local.input, local.parsed, (s32)M2C_FIELD(arg0, u32 *, 0x10),
         (s32)local.path, (s32)M2C_FIELD(arg0, u8 *, 0x1B), 0,
         &local.valueC, (s32 *)&local.value8);
@@ -4060,7 +4060,7 @@ extern "C" s32 fn_800B5070(s32, s32 *);
 #pragma push
 #pragma use_lmw_stmw off
 #pragma opt_common_subs off
-extern "C" s32 fn_800AA924(void *dir, void *entryInfo, s32 entryName, s32 readArg0, s32 readArg1, s32 readArg2, s32 *outValue, s32 *outIndex) {
+extern "C" s32 findVFiPDirectoryEntry(void *dir, void *entryInfo, s32 entryName, s32 readArg0, s32 readArg1, s32 readArg2, s32 *outValue, s32 *outIndex) {
     /* Search a VFiP directory for an entry: copy the directory to the stack, seek the named
      * entry (parsing a path number first when enabled), read its fields into entryInfo, and
      * return its value/index; failures report 3 with 0xF423F sentinels in both outputs. */
@@ -4140,13 +4140,13 @@ fail_main:
     #undef NO_RESULT
 }
 #pragma pop
-// Forwards the incoming argument registers to the VFiPFPATH iterator in fn_800AA924 and
+// Forwards the incoming argument registers to the VFiPFPATH iterator in findVFiPDirectoryEntry and
 // returns its two result words through out1/out2 (a-f are deliberate garbage forwarders).
 extern "C" void fn_800AABE0(void) {
     s32 out1;
     s32 out2;
     s32 a, b, c, d, e, f;
-    ((void (*)(s32, s32, s32, s32, s32, s32, void *, void *))fn_800AA924)(a, b, c, d, e, f, &out1, &out2);
+    ((void (*)(s32, s32, s32, s32, s32, s32, void *, void *))findVFiPDirectoryEntry)(a, b, c, d, e, f, &out1, &out2);
 }
 
 extern "C" s32 fn_800AE620(s32, s32, s32, s32);
