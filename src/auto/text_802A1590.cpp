@@ -336,65 +336,65 @@ extern "C" void *createTerrainTrailHandler(void *terrainObj) {
         void *item;
     };
     Receiver *receiver = (Receiver *)terrainObj;
-    char *strings = lbl_80349928;
-    void **entries;
-    s32 type;
+    char *nameStrings = lbl_80349928;
+    void **handlerSlots;
+    s32 trailType;
     s32 i;
     void *result;
 
     receiver->findType((const char *)&lbl_8055CBA4);
-    type = ((s32 (*)())fn_802A1864)();
-    entries = lbl_804BCF88;
+    trailType = ((s32 (*)())fn_802A1864)();
+    handlerSlots = lbl_804BCF88;
     i = 0;
 
     while (i < 8) {
-        void *item = *entries;
-        if (item != 0 && ((Item *)item)->getType() == (u32)type) {
-            result = fn_801284F8(8, strings + 0x2C);
+        void *slotItem = *handlerSlots;
+        if (slotItem != 0 && ((Item *)slotItem)->getType() == (u32)trailType) {
+            result = fn_801284F8(8, nameStrings + 0x2C);
             if (result != 0) {
-                void *matched = ((void **)lbl_804BCF88)[i];
+                void *matchedItem = ((void **)lbl_804BCF88)[i];
                 ((Entry *)result)->vtable = lbl_80349BA0;
-                ((Entry *)result)->item = matched;
+                ((Entry *)result)->item = matchedItem;
             }
             return result;
         }
         i++;
-        entries++;
+        handlerSlots++;
     }
 
-    switch (type) {
+    switch (trailType) {
     case 1:
-        result = fn_801284F8(0x94, strings + 0x40);
+        result = fn_801284F8(0x94, nameStrings + 0x40);
         if (result != 0)
             return fn_802A1DF4(result, (DummyReceiver_802A3314 *)terrainObj);
         return result;
     case 2:
-        result = fn_801284F8(0x0C, strings + 0x50);
+        result = fn_801284F8(0x0C, nameStrings + 0x50);
         if (result != 0)
             return fn_802A2EEC(result, (DummyReceiver_802A3314 *)terrainObj);
         return result;
     case 3:
-        result = fn_801284F8(8, strings + 0x68);
+        result = fn_801284F8(8, nameStrings + 0x68);
         if (result != 0)
             return fn_802A3314(result, (DummyReceiver_802A3314 *)terrainObj);
         return result;
     case 4:
-        result = fn_801284F8(8, strings + 0x78);
+        result = fn_801284F8(8, nameStrings + 0x78);
         if (result != 0)
             return fn_802A3610(result, (DummyReceiver_802A3314 *)terrainObj);
         return result;
     case 5:
-        result = fn_801284F8(8, strings + 0x88);
+        result = fn_801284F8(8, nameStrings + 0x88);
         if (result != 0)
             return fn_802A38D0(result, (DummyReceiver_802A3314 *)terrainObj);
         return result;
     case 6:
-        result = fn_801284F8(0x28, strings + 0x98);
+        result = fn_801284F8(0x28, nameStrings + 0x98);
         if (result != 0)
             return fn_802A3D3C(result, (DummyReceiver_802A3314 *)terrainObj);
         return result;
     default:
-        ((void (*)(const char *, ...))Abend_Panic)(strings + 0xA8, type);
+        ((void (*)(const char *, ...))Abend_Panic)(nameStrings + 0xA8, trailType);
         return 0;
     }
 }
