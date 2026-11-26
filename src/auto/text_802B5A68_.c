@@ -65,7 +65,7 @@ extern float fn_801DCF48(float *, float, float);
 extern char lbl_8034A8B0[];
 extern float lbl_80564C98;
 #define FRAME_STEP lbl_80564C98 /* 0.05: step added per frame (max clamp is 10) */
-extern void fn_802B6568(void *, const char *, ...);
+extern void formatDebugTextEntry(void *, const char *, ...);
 extern s32 fn_802B05E4(void);
 extern s32 fn_802B7B08(void);
 
@@ -685,7 +685,7 @@ extern void fn_80147230(void *, const char *, ...);
 // Formats a UI/debug text entry, updates its highlight/state color and selection fields in
 // the shared UI state (lbl_804BFF80) based on the formatted text/name, then forwards the
 // formatted string for rendering.
-void fn_802B6568(void *arg0, const char *fmt, ...) {
+void formatDebugTextEntry(void *arg0, const char *fmt, ...) {
     char formattedText[256];
     va_list args;
     Struct804BFF80 *uiState;
@@ -752,7 +752,7 @@ extern "C" void fn_802B676C(void) {
     s32 *state = ((s32 *(*)())fn_802B5B6C)();
     Dummy_802B676C *uiRoot = (Dummy_802B676C *)lbl_8055FA48;
     uiRoot = uiRoot->m1(lbl_8034A6A0);
-    fn_802B6568(uiRoot, lbl_8034A790, *state);
+    formatDebugTextEntry(uiRoot, lbl_8034A790, *state);
 }
 #pragma cplusplus reset
 
@@ -897,10 +897,10 @@ extern "C" void fn_802B69FC(void) {
     Dummy_802B69FC *manager = (Dummy_802B69FC *)lbl_8055FA48;
 
     manager = manager->m1(base + 0x134);
-    fn_802B6568(manager, base + 0x244);
+    formatDebugTextEntry(manager, base + 0x244);
     manager = (Dummy_802B69FC *)lbl_8055FA48;
     manager = manager->m1(base + 0x160);
-    fn_802B6568(manager, base + 0x258);
+    formatDebugTextEntry(manager, base + 0x258);
 }
 #pragma cplusplus reset
 
@@ -1459,11 +1459,11 @@ extern "C" void fn_802B7884(void *arg0) {
     register void *saved = arg0;
     Dummy *obj = (Dummy *)lbl_8055FA48;
     void *result = obj->call(base + 0x144);
-    fn_802B6568(result, (const char *)saved);
+    formatDebugTextEntry(result, (const char *)saved);
     char *selection = fn_802B6270() ? base + 0x288 : base + 0x294;
     obj = (Dummy *)lbl_8055FA48;
     result = obj->call(base + 0x150);
-    fn_802B6568(result, selection);
+    formatDebugTextEntry(result, selection);
 }
 
 #pragma use_lmw_stmw off
@@ -1475,7 +1475,7 @@ extern "C" void fn_802B7918(void) {
      * +0x0C looks a data object up by name.  Used here:
      *   "matmap_col" - object whose +0x14 float is one row's vertical step
      *   kBrushColumn - the column whose own 0x20-byte row is the template that
-     *                  fn_802B6568()/fn_80147230() write each line into
+     *                  formatDebugTextEntry()/fn_80147230() write each line into
      *   kBrushDropdown - the drop-down whose caption is set to "Brushes"
      * lbl_804BE7D8 is the brush list { entries; count; capacity }; every entry is
      * 0x128 bytes and starts with the file name fn_802B6AC0() read off disk.
@@ -1493,13 +1493,13 @@ extern "C" void fn_802B7918(void) {
         virtual void *findObject(const char *name); /* vtable +0x0C */
     };
     typedef struct {                /* a debug text row, copied from the column */
-        void *name;                 /* +0x00 row name, matched by fn_802B6568 */
+        void *name;                 /* +0x00 row name, matched by formatDebugTextEntry */
         s32 value;                  /* +0x04 */
         s32 unk8;                   /* +0x08 f32 row position */
         s32 unkC;                   /* +0x0C */
         f32 time;                   /* +0x10 */
         s32 unk14;                  /* +0x14 */
-        s32 unk18;                  /* +0x18 text colour, set by fn_802B6568 */
+        s32 unk18;                  /* +0x18 text colour, set by formatDebugTextEntry */
         s32 unk1C;                  /* +0x1C */
     } DebugRow;
 
@@ -1552,7 +1552,7 @@ extern "C" void fn_802B7918(void) {
     row.unk1C = *(volatile const s32 *)(rowBytes + 0x1C);
     uiRoot = (DebugUi *)kPanelRoot;
     object = uiRoot->findPane(kBrushDropdown);
-    fn_802B6568(object, kBrushesCaption);
+    formatDebugTextEntry(object, kBrushesCaption);
     elapsed = (f32)KERNEL_GetTimeMs() / kMsPerSecond -
               kBaseSeconds;
     withinWindow = elapsed < kRefSeconds;
@@ -1567,7 +1567,7 @@ extern "C" void fn_802B7918(void) {
                 ((void (*)(char *, s32, const char *, ...))fn_801345D8)(
                     label, 0x20, kRowFormat, i);
                 row.name = label;
-                fn_802B6568(&row, kFormatS,
+                formatDebugTextEntry(&row, kFormatS,
                             (void *)(*(u32 *)&kBrushList + rowOffset));
                 *(f32 *)((u8 *)&row + 8) += rowStep;
                 rowOffset += 0x128;
@@ -1614,7 +1614,7 @@ __declspec(section ".sdata") extern const char lbl_8055CEB0[];
  *   "matmap_col"   - object whose +0x14 float is one row's vertical step
  *   "layer_dropdown" - the drop-down whose caption is set to "Layers"
  *   "layer_col"    - the column whose own 0x20-byte row is the template that
- *                    fn_802B6568()/fn_80147230() write each line into
+ *                    formatDebugTextEntry()/fn_80147230() write each line into
  * lbl_8055FA08 is a pair of seconds: [1] a base stamp and [0] the reference
  * time fn_802B61E0() stores.  While (now - [1]) is still under [0] the panel
  * lists every water layer of the current entry ("layer:%d" plus the name
@@ -1630,13 +1630,13 @@ s32 fn_802B7B08(void) {
         virtual void *findObject(const char *name); /* vtable +0x0C */
     };
     typedef struct {                /* a debug text row, copied from the column */
-        void *name;                 /* +0x00 row name, matched by fn_802B6568 */
+        void *name;                 /* +0x00 row name, matched by formatDebugTextEntry */
         s32 value;                  /* +0x04 */
         s32 unk8;                   /* +0x08 f32 row position */
         s32 unkC;                   /* +0x0C */
         f32 time;                   /* +0x10 */
         s32 unk14;                  /* +0x14 */
-        s32 unk18;                  /* +0x18 text colour, set by fn_802B6568 */
+        s32 unk18;                  /* +0x18 text colour, set by formatDebugTextEntry */
         s32 unk1C;                  /* +0x1C */
     } DebugRow;
 
@@ -1674,7 +1674,7 @@ s32 fn_802B7B08(void) {
     rowStep = *(f32 *)((u8 *)object + 0x14);
     uiRoot = (DebugUi *)kPanelRoot;
     object = uiRoot->findPane(kLayerDropdown);
-    fn_802B6568(object, kLayersCaption);
+    formatDebugTextEntry(object, kLayersCaption);
     uiRoot = (DebugUi *)kPanelRoot;
     object = uiRoot->findPane(kLayerCol);
     rowBytes = (const u8 *)object;
@@ -1699,7 +1699,7 @@ s32 fn_802B7B08(void) {
             while (i < fn_802B1C14(layerSet)) {
                 ((void (*)(void *, s32, const char *, ...))fn_801345D8)(label, 0x20, kLayerFormat, i);
                 row.name = label;
-                fn_802B6568(&row, kFormatS, fn_802B1C1C(layerSet, i));
+                formatDebugTextEntry(&row, kFormatS, fn_802B1C1C(layerSet, i));
                 *(f32 *)((u8 *)&row + 8) += rowStep;
                 i++;
             }
@@ -1768,7 +1768,7 @@ extern "C" void fn_802B7D4C(void) {
 
     if (lbl_8055FA40 == 6) {
 
-        fn_802B6568(((Dummy *)lbl_8055FA48)->call(lbl_8055CE68), base + 0x32C);
+        formatDebugTextEntry(((Dummy *)lbl_8055FA48)->call(lbl_8055CE68), base + 0x32C);
         return;
     }
     object = ((void *(*)(void))fn_802B5B6C)();
@@ -1780,7 +1780,7 @@ extern "C" void fn_802B7D4C(void) {
     status = base + 0x338;
     if (*state != 0) status = lbl_8055CEB8;
 
-    fn_802B6568(((Dummy *)lbl_8055FA48)->call(base + 0x118), lbl_8055CE70, status);
+    formatDebugTextEntry(((Dummy *)lbl_8055FA48)->call(base + 0x118), lbl_8055CE70, status);
 
     object = ((Dummy *)lbl_8055FA48)->call(base + 0x344);
     first.name = *(void **)object;
@@ -1816,7 +1816,7 @@ extern "C" void fn_802B7D4C(void) {
         line.unk1C = first.unk1C;
         line.name = name;
         *(f32 *)((u8 *)&line + 8) += step * (f32)i;
-        fn_802B6568(&line, lbl_8055CE74, **(void ***)(entry + 1));
+        formatDebugTextEntry(&line, lbl_8055CE74, **(void ***)(entry + 1));
         line2.pair = second.pair;
         line2.unkC = second.unkC;
         line2.unk10 = second.unk10;
@@ -1825,7 +1825,7 @@ extern "C" void fn_802B7D4C(void) {
         line2.unk1C = second.unk1C;
         line2.name = name;
         *(f32 *)((u8 *)&line2 + 8) += step * (f32)i;
-        fn_802B6568(&line2, lbl_8055CE70, (void *)entry[0]);
+        formatDebugTextEntry(&line2, lbl_8055CE70, (void *)entry[0]);
         offset += 12;
     }
     if (fn_802B5B74(selected)) {
@@ -1834,12 +1834,12 @@ extern "C" void fn_802B7D4C(void) {
         fn_801476C4(((Dummy *)lbl_8055FA48)->call(base + 0x378));
         fn_801473F8(lbl_8055FA48, base + 0x384, lbl_8055CE70, selected[0]);
 
-        fn_802B6568(((Dummy *)lbl_8055FA48)->call(base + 0x390), lbl_8055CEC0, ((f32 *)selected[2])[0]);
+        formatDebugTextEntry(((Dummy *)lbl_8055FA48)->call(base + 0x390), lbl_8055CEC0, ((f32 *)selected[2])[0]);
 
-        fn_802B6568(((Dummy *)lbl_8055FA48)->call(base + 0x3A0), lbl_8055CEC0, ((f32 *)selected[2])[1]);
+        formatDebugTextEntry(((Dummy *)lbl_8055FA48)->call(base + 0x3A0), lbl_8055CEC0, ((f32 *)selected[2])[1]);
     }
 
-    fn_802B6568(((Dummy *)lbl_8055FA48)->call(lbl_8055CE68), base + 0x3B0, lbl_8055FA40 + 1);
+    formatDebugTextEntry(((Dummy *)lbl_8055FA48)->call(lbl_8055CE68), base + 0x3B0, lbl_8055FA40 + 1);
     workspace[0] = 0;
     workspace[1] = 0;
     workspace[2] = 0;
@@ -2221,7 +2221,7 @@ extern "C" void fn_802B8848(void) {
         if (viewMode != 2 && viewMode != 3) fn_802B6804();
         switch (viewMode) { case 0: fn_802B7D4C(); break; case 1: fn_802B69FC(); break; case 2: fn_802B7D1C(); break; case 3: fn_802B7CF0(); break; }
         label = fn_802B5B18(viewMode % 4);
-        fn_802B6568(((UiFrame *)uiFrame)->v1(lbl_8034A6C0), (const char *)label);
+        formatDebugTextEntry(((UiFrame *)uiFrame)->v1(lbl_8034A6C0), (const char *)label);
         ((UiFrame *)uiFrame)->v5();
         fn_8001123C(0); fn_80011A2C();
     }
