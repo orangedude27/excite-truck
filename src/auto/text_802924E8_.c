@@ -19,7 +19,7 @@ typedef int s32;
 extern char lbl_80349224[];
 extern unsigned char lbl_80349278[];
 extern float lbl_8056450C;
-extern void fn_80293CD0(void*, int, int, int);
+extern void loadTerrainChunkModels(void*, int, int, int);
 extern void fn_80293EB0(void*);
 extern unsigned char lbl_804B4168[];
 extern void fn_80292EA8(void *);
@@ -244,7 +244,7 @@ typedef struct ChunkSysNames {
 
 /* A chunk effect object, an nw4r::ef::Effect: the "car", "ter" and "wood" chunk
  * systems fn_802928D4 allocates.  Its chunk models -- "<model_base>1.mod" ..
- * "<model_base>8.mod" -- are loaded by fn_80293374 (car), fn_80293CD0 (ter) and
+ * "<model_base>8.mod" -- are loaded by fn_80293374 (car), loadTerrainChunkModels (ter) and
  * fn_80294530 (wood); the chunk records start just after, at +0x2C, and their
  * count is the s32 at the end of the object (+0x2FAC car, +0x4C2C ter,
  * +0x222C wood). */
@@ -765,7 +765,7 @@ process:
  * "<base>1.mod" .. "<base>8.mod" (lbl_80349250 is "%s%d.mod"), stopping at the
  * first name the resource system does not have, and leaving the slots no model
  * was found for at -1.  The car one takes no instance and remaps no texture;
- * fn_80293CD0 and fn_80294530 do the "ter" and "wood" ones. */
+ * loadTerrainChunkModels and fn_80294530 do the "ter" and "wood" ones. */
 void fn_80293374(void *object, void *modelBase) {
     char name[0x20];
     int count;
@@ -1048,7 +1048,7 @@ extern "C" void *fn_80293A00(void *object, void *effectArg, int modelBase, int i
      * its gravity_f (+0x4) to the default lbl_8056450C (2.1f), overridden by
      * effectArg->value("grav_f", default). +0x4C2C is cleared. */
     *(void **)object = lbl_80349278;
-    fn_80293CD0(object, modelBase, instance, remapTexture);
+    loadTerrainChunkModels(object, modelBase, instance, remapTexture);
     float defaultGravity = lbl_8056450C;
     *(float *)((char *)object + 4) = defaultGravity;
     if (effectArg != 0) {
@@ -1063,7 +1063,7 @@ extern "C" void *fn_80293A00(void *object, void *effectArg, int modelBase, int i
 #pragma pop
 extern unsigned char lbl_80349278[];
 extern float lbl_8056450C;
-extern void fn_80293CD0(void*, int, int, int);
+extern void loadTerrainChunkModels(void*, int, int, int);
 extern void fn_80293EB0(void*);
 void *__dt__Q34nw4r2ef6EffectFv_80293A88(void *this, int shouldDelete) {
     /* Destructor for nw4r::ef::Effect: restore vtable, release owned resources, and optionally delete. */
@@ -1186,7 +1186,7 @@ extern char lbl_80349250[];
  * fn_80294530 do the same for the "car" and "wood" chunk systems.
  * modelBase and remapTexture are the profile's "model_base" and
  * "remap_texture" strings, handed over as ints by the file's prototype. */
-void fn_80293CD0(void *object, int modelBase, int instance, int remapTexture) {
+void loadTerrainChunkModels(void *object, int modelBase, int instance, int remapTexture) {
     char name[0x20];
     int count;
     ChunkSys *chunkSys = (ChunkSys *)object;
@@ -1544,7 +1544,7 @@ void fn_80294408(void *arg0, const float *arg1, const float *arg2) {
  * is stored in the object's model table.  The slots no model was found for are
  * left at -1.
  *
- * The "wood chunk sys"; fn_80293374 and fn_80293CD0 do the same for the "car"
+ * The "wood chunk sys"; fn_80293374 and loadTerrainChunkModels do the same for the "car"
  * and "ter" ones.  modelBase and remapTexture are the strings the profile's
  * "model_base" and "remap_texture" entries give, handed over as ints by the
  * file's prototype. */
