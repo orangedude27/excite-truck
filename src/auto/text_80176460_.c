@@ -110,7 +110,7 @@ extern f32 lbl_80561B30;
 extern f32 lbl_80561B34;
 extern f32 lbl_80561B40;
 /* The phys-fader.  A physics mode change that is not applied at once first
- * fades the game out: the request arms this block, fn_801771A8 and fn_801773E4
+ * fades the game out: the request arms this block, stepPhysFade and fn_801773E4
  * move `alpha` towards 0xFF every tick, and once it has sat there for `hold`
  * ticks the mode goes to FADE_MODE_DONE (or FADE_MODE_IDLE when fading back
  * in) and `onDone` runs -- that is where the pending command is applied. */
@@ -528,7 +528,7 @@ void fn_80177138(void) {
  * 0xFA, hold re-armed) so its callback cannot fire.  Once alpha has sat at
  * 0xFF for `hold` steps, the mode becomes FADE_MODE_IDLE (faded in) or
  * FADE_MODE_DONE (faded out) and the armed onDone callback runs once. */
-void fn_801771A8(void) {
+void stepPhysFade(void) {
     f32 speed;
     s32 elapsed, ramp, value;
     if ((u32)fader.mode - 1 <= 1U) {
@@ -602,7 +602,7 @@ void fn_801771A8(void) {
 #pragma push
 #pragma opt_common_subs off
 /* RealName: Fader_StepAndApplyVolume (rename_symbol unavailable). */
-/* Step the phys-fader ramp once -- exactly as fn_801771A8 does, but without
+/* Step the phys-fader ramp once -- exactly as stepPhysFade does, but without
  * finishing the fade or running its callback -- and return where the fade
  * stands: `alpha` while fading out (mode FADE_MODE_OUT/DONE), its inverse
  * while idle or fading back in, so 0 is fully shown and FADE_FULL fully
@@ -738,7 +738,7 @@ void fn_80176A34(s32 frameCount) {
 
 /* Step the physics fade ramp once for the current frame. */
 void fn_80176A6C(void) {
-    fn_801771A8();
+    stepPhysFade();
 }
 
 void *fn_80176A70(void) {
