@@ -877,7 +877,7 @@ int fn_801C0454(void *arg0) {
     extern int fn_801E9E78(void *, float *, float *, void *, int);
     extern void fn_801C2694(int, void *, int *, float *, float *, void *, void *);
     extern float fn_80144CC8(float);
-    extern void fn_801C092C(void *, void *, void *, int);
+    extern void concatTransform34(void *, void *, void *, int);
     extern void fn_801C0D3C(void *);
     extern void fn_801C0D6C(void *);
     extern float fn_801C0E44(FV3 *v);
@@ -945,7 +945,7 @@ int fn_801C0454(void *arg0) {
                 } else {
                     fn_801C0D3C(&frame.sp100[0]);
                 }
-                ((void (*)(void *, void *, void *))fn_801C092C)(frame.sp130, (char *)arg0 + 0x230, &frame.sp100[0]);
+                ((void (*)(void *, void *, void *))concatTransform34)(frame.sp130, (char *)arg0 + 0x230, &frame.sp100[0]);
                 {
                     struct Pt *dst = (struct Pt *)((char *)arg0 + 0x3C);
                     struct Pt *src = (struct Pt *)frame.sp130;
@@ -964,7 +964,7 @@ int fn_801C0454(void *arg0) {
 
 #pragma push
 #pragma processor 750
-void fn_801C092C(void *outMtx, void *inMtx, void *multMtx, int unused) {
+void concatTransform34(void *outMtx, void *inMtx, void *multMtx, int unused) {
     /* Concatenate two 3x4 transforms: out = matrix * input.
      *
      * Every matrix here is twelve floats: the 3x3 part in column-major order
