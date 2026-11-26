@@ -2336,7 +2336,7 @@ void fn_8003773C(void) {
     }
 }
 
-void fn_80037800(void) {
+void DVDInitErrorPath(void) {
     /* Initializes a platform-specific error path, logging an error record and starting the corresponding transfer/callback. */
     s32 savedInterrupts;
 
@@ -2379,7 +2379,7 @@ extern u32 lbl_8055D8A4;
 
 extern void OSSetAlarm(void *, u64, u32, void (*)(void));
 extern u64 __OSGetSystemTime(void);
-extern void fn_80037800(void);
+extern void DVDInitErrorPath(void);
 extern void fn_80035E6C();
 #pragma push
 #pragma dont_inline on
@@ -2402,7 +2402,7 @@ void fn_800379A8(u32 status) {
         lbl_8055D85C = 0;
         OSCreateAlarm(&lbl_8037B580);
         alarmTicks = ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 100;
-        ((void (*)(void *, u32, u32, u32, void (*)(void)))OSSetAlarm)(&lbl_8037B580, 0x10624DD3, 0, alarmTicks, fn_80037800);
+        ((void (*)(void *, u32, u32, u32, void (*)(void)))OSSetAlarm)(&lbl_8037B580, 0x10624DD3, 0, alarmTicks, DVDInitErrorPath);
     } else {
         fn_800356F4(0x27, 0, 0);
         fn_8003B218(fn_80035E6C);
