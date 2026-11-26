@@ -130,7 +130,7 @@ extern "C" const char lbl_8032ADDC[];
 
 extern "C" void *fn_8012CB44(void *, s32);
 extern "C" void fn_8012CA40(void *);
-extern "C" void fn_8012E67C(s32, s32);
+extern "C" void waitForResourceLoad(s32, s32);
 extern "C" void fn_8012E5E4(void *, void *);
 extern "C" void fn_8012E630(void *);
 extern "C" s32 fn_8012E674(void *);
@@ -2906,7 +2906,7 @@ extern "C" void fn_8012E498(void *name) {
             entry = fn_8012E490((s32 *)(effect + 0xA18));
             while (entry != 0) {
                 if (stricmp((const char *)(entry + 0xC), (const char *)name) == 0) {
-                    fn_8012E67C(effect, (s32)name);
+                    waitForResourceLoad(effect, (s32)name);
                     break;
                 }
                 entry = *(s32 *)(entry + 4);
@@ -2974,7 +2974,7 @@ extern "C" s32 fn_8012E674(void *list) {
 /* Waits for the pending resource request named `name` on loader `loader` to
  * finish loading (state 2), draining the loader's request queue meanwhile, then
  * clears the resource entry's "pending" flag (+0xAD). */
-extern "C" void fn_8012E67C(s32 loader, s32 name) {
+extern "C" void waitForResourceLoad(s32 loader, s32 name) {
     u8 *self = (u8 *)loader;
     s32 start, deadline, now, done;
     void *entry;
@@ -3093,9 +3093,9 @@ extern "C" void fn_8012E96C(s32 arg0) {
         if (result == 0) {
             result = findResourceOwningMount((s32)entry, arg);
             if (result != 0)
-                fn_8012E67C((s32)entry, result + 0xC);
+                waitForResourceLoad((s32)entry, result + 0xC);
         } else {
-            fn_8012E67C((s32)entry, result);
+            waitForResourceLoad((s32)entry, result);
         }
     }
 }
