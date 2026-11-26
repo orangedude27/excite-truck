@@ -136,7 +136,7 @@ extern char lbl_804422F0[];
 extern int fn_801D56C0(void*);
     extern float PSVECDotProduct(void *, void *);
     extern void PSVECNormalize(void *, void *);
-    extern float fn_80129DC4(int, float, float);
+    extern float randFloatInRange(int, float, float);
 extern void fn_801D5328(int, int);
 extern void fn_801D5A14(int);
 extern void fn_801D5A1C(int);
@@ -1376,7 +1376,7 @@ extern "C" s32 fn_801D5E94(void *object) {
      * matches the event's own, read into +0x0C by fn_801D5BBC) gets a direction
      * drawn at random between "dir1" (+0x3C) and "dir2" (+0x48) and a speed
      * drawn between "speed1" (+0x60) and "speed2" (+0x64); both draws come from
-     * RNG slot 4 through fn_80129DC4().  A degenerate draw -- a direction of
+     * RNG slot 4 through randFloatInRange().  A degenerate draw -- a direction of
      * (almost) zero length, or a zero speed -- only tells the obstacle to stop
      * (vtable +0x20); otherwise the direction is normalised, scaled to that
      * speed and handed to the obstacle's throw method (vtable +0x24) together
@@ -1403,7 +1403,7 @@ extern "C" s32 fn_801D5E94(void *object) {
 #define kStartTick      0x6C  /* frame tick the wait began */
 #define kObstacles      0x70  /* the group's obstacles; count at +0x74 */
 #define kObstacleCount  0x74
-#define kRandomSlot     4     /* the RNG slot fn_80129DC4() draws from */
+#define kRandomSlot     4     /* the RNG slot randFloatInRange() draws from */
 #define kNearZero       lbl_80558DC4 /* 2.35e-38: bound under which it is zero */
 #define kBlendMin       lbl_80562ADC /* 0.0f */
 #define kBlendMax       lbl_80562AE0 /* 1.0f */
@@ -1422,8 +1422,8 @@ extern "C" s32 fn_801D5E94(void *object) {
         byteOffset = 0;
         while (i < *(s32 *)(self + kObstacleCount)) {
             f32 mag;
-            speed = fn_80129DC4(kRandomSlot, kBlendMin, kBlendMax);
-            blend = fn_80129DC4(kRandomSlot, kBlendMin, kBlendMax);
+            speed = randFloatInRange(kRandomSlot, kBlendMin, kBlendMax);
+            blend = randFloatInRange(kRandomSlot, kBlendMin, kBlendMax);
             d2z = *(f32 *)(self + kDir2 + 8);
             d1z = *(f32 *)(self + kDir1 + 8);
             d2y = *(f32 *)(self + kDir2 + 4);

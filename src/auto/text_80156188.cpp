@@ -476,7 +476,7 @@ s32 fn_80156920(s32 object, s32 deleteFlag) {
     return object;
 }
 
-extern f32 fn_80129DC4(s32, s32, s32, f32, f32);
+extern f32 randFloatInRange(s32, s32, s32, f32, f32);
 extern f32 lbl_8055E3C8;
 
 #pragma push
@@ -494,7 +494,7 @@ void fn_80156960(void *arg0) {
         f32 angle1 = ((f32 *)arg0)[0xDC / 4];
         f32 angle2 = ((f32 *)arg0)[0xE0 / 4];
         sampledValue = data[index * 2];
-        ((f32 *)out)[0xE4 / 4] = base + fn_80129DC4(4, divisor, (s32)(long)data, angle1, angle2);
+        ((f32 *)out)[0xE4 / 4] = base + randFloatInRange(4, divisor, (s32)(long)data, angle1, angle2);
         *(s32 *)((u8 *)out + 0xE8) = sampledValue;
         out = (u8 *)out + 8;
         count++;
@@ -672,7 +672,7 @@ extern "C" s32 fn_80156C60(void *config, s32 index) {
 extern "C" void* fn_8017960C(s32);
 extern "C" s32 fn_80139B70(s32, f32, f32);
 extern "C" s32 fn_80129D90(s32, s32, s32);
-extern "C" f32 fn_80129DC4(s32, s32, s32, f32, f32);
+extern "C" f32 randFloatInRange(s32, s32, s32, f32, f32);
 extern "C" f32 fn_801B306C(void);
 extern "C" f32 lbl_80561740;
 extern "C" f32 lbl_80561744;
@@ -713,7 +713,7 @@ extern "C" s32 fn_80156C84(void *arg0, s32 arg1) {
                 i = *(s32 *)((u8 *)table + idx * 8);
             }
             *(f32 *)(element + 0xE4) = f31 +
-                ((f32 (*)(s32, f32, f32))fn_80129DC4)(
+                ((f32 (*)(s32, f32, f32))randFloatInRange)(
                     4, *(f32 *)((u8 *)self + 0xDC), *(f32 *)((u8 *)self + 0xE0));
             *(s32 *)((u8 *)self + off + 0xE8) = i;
         } else {
@@ -753,7 +753,7 @@ extern "C" void fn_80156DCC(void *seq, s32 elementIndex) {
         p.newId = *(u32 *)((u8 *)entryTable + entryIndex * 8);
     }
     ((f32 *)seq)[elementIndex * 2 + 0x39] = gameTime +
-        ((f32 (*)(s32, f32, f32))fn_80129DC4)(
+        ((f32 (*)(s32, f32, f32))randFloatInRange)(
             4, *(f32 *)((u8 *)seq + 0xDC), *(f32 *)((u8 *)seq + 0xE0));
     *(u32 *)(p.element + 0xE8) = p.newId;
 }
@@ -805,7 +805,7 @@ extern "C" void fn_80156E74(void *arg0, s32 arg1, void *arg2) {
         f32 base;
         offset = *(s32 *)((u8 *)tbl + best * 8);
         base = lbl_8055E3C8;
-        ((f32 *)arg0)[arg1 * 2 + 0x39] = base + ((f32 (*)(s32, f32, f32))fn_80129DC4)(
+        ((f32 *)arg0)[arg1 * 2 + 0x39] = base + ((f32 (*)(s32, f32, f32))randFloatInRange)(
             4, *(f32 *)((u8 *)arg0 + 0xDC), *(f32 *)((u8 *)arg0 + 0xE0));
         *(s32 *)((u8 *)arg0 + arg1 * 8 + 0xE8) = offset;
     }
@@ -866,7 +866,7 @@ extern "C" void fn_80156F6C(void *arg0) {
         if (divisor > 0) {
             s32 index = i % divisor;
             u32 selected = values[index];
-            f32 result = ((f32 (*)(s32, f32, f32))fn_80129DC4)(
+            f32 result = ((f32 (*)(s32, f32, f32))randFloatInRange)(
                 4, *(f32 *)(base + 0xDC), *(f32 *)(base + 0xE0));
             *(f32 *)(out + 0xE4) = addValue + result;
             *(u32 *)(out + 0xE8) = selected;

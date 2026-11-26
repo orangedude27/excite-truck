@@ -23,7 +23,7 @@ extern "C" void fn_802CE868(void);
 extern "C" void fn_802CE86C(unsigned int, int, f32, f32, f32, f32);
 extern "C" f32 lbl_8056483C;
 extern "C" void fn_8028E590(int, f32 *, f32 *, f32);
-extern "C" f32 fn_80129DC4(s32, f32, f32);
+extern "C" f32 randFloatInRange(s32, f32, f32);
 extern "C" f32 lbl_80564750, lbl_8056476C, lbl_805647C4, lbl_805647DC, lbl_80564804;
 extern "C" f32 lbl_805647D4, lbl_805647F4, lbl_80564798, lbl_8056479C, lbl_80564760, lbl_805647BC, lbl_805647EC, lbl_805647AC, lbl_805647F8, lbl_805647FC, lbl_80564800, lbl_805647B4;
 extern "C" char lbl_80349A54[];
@@ -1241,8 +1241,8 @@ extern "C" void fn_802A33D4(void* arg0, void* arg1, s32 arg2) {
     p[1] = p[1] + *(f32*)(base + 0x38) * lbl_805647C4;
     p[2] = p[2] + *(f32*)(base + 0x3C) * lbl_805647C4;
     angle = lbl_80564750 * *(f32*)(base + 0x50);
-    p[0] = p[0] + fn_80129DC4(0, -angle, angle);
-    p[2] = p[2] + fn_80129DC4(0, -angle, angle);
+    p[0] = p[0] + randFloatInRange(0, -angle, angle);
+    p[2] = p[2] + randFloatInRange(0, -angle, angle);
     fn_8028E590(*(s32*)((char*)arg0 + 4), (f32*)a, p, lbl_805647DC);
 done:
     ;

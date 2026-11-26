@@ -6,7 +6,7 @@ extern f32 fn_8002F234(f32);
 extern f32 PSVECDotProduct(void *, void *);
 typedef struct { f32 x, y, z, w; } Vec4_80252;
 extern f32 lbl_805639C8, lbl_805639D0, lbl_805639D4, lbl_805639D8;
-extern f32 fn_80129DC4(s32, f32, f32);
+extern f32 randFloatInRange(s32, f32, f32);
 extern f64 cos(void);
 extern f64 sin(f32);
 extern void PSVECCrossProduct(void *, void *, void *);
@@ -40,7 +40,7 @@ void fn_802526E0(void *arg0) {
     f32 temp_f31, temp_f30, temp_f29, temp_f4, temp_f4_2, temp_f5;
     f32 temp_f1, temp_f2, temp_f3, temp_f2_2, temp_f4_3, temp_f5_2, temp_f6;
     f32 temp_f1_2;
-    temp_f29 = fn_80129DC4(0, a, b);
+    temp_f29 = randFloatInRange(0, a, b);
     temp_f31 = lbl_805639D4;
     sp8 = temp_f31;
     spC = lbl_805639CC;

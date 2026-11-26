@@ -606,7 +606,7 @@ extern "C" void fn_80264A5C(float farg0, float farg1) {
     extern float lbl_80563C0C;
     extern float fn_80214D48(void);
     extern void fn_80230C30(float *, float *, int, int);
-    extern float fn_80129DC4(int, float, float);
+    extern float randFloatInRange(int, float, float);
     extern int fn_80129D18(int, int);
     extern int fn_80235FD8(int);
     extern double cos(double);
@@ -657,12 +657,12 @@ extern "C" void fn_80264A5C(float farg0, float farg1) {
             p.elem = (void *)((char *)temp_r6 + temp_r0);
             *(float *)((char *)temp_r6 + temp_r0) = temp_f4;
             *(float *)((char *)p.elem + 4) = temp_f3;
-            temp_f30 = fn_80129DC4(6, *(float *)((char *)p.mgr + 0x1C), *(float *)((char *)p.mgr + 0x20));
-            temp_f31 = fn_80129DC4(6, *(float *)((char *)p.mgr + 0x24), *(float *)((char *)p.mgr + 0x28));
+            temp_f30 = randFloatInRange(6, *(float *)((char *)p.mgr + 0x1C), *(float *)((char *)p.mgr + 0x20));
+            temp_f31 = randFloatInRange(6, *(float *)((char *)p.mgr + 0x24), *(float *)((char *)p.mgr + 0x28));
             *(float *)((char *)p.elem + 8) = temp_f31 * (float)cos((double)temp_f30);
             *(float *)((char *)p.elem + 0xC) = temp_f31 * (float)sin((double)temp_f30);
-            *(float *)((char *)p.elem + 0x10) = fn_80129DC4(6, 0.0f, 6.283185f);
-            *(float *)((char *)p.elem + 0x14) = fn_80129DC4(6, *(float *)((char *)p.mgr + 0x34), *(float *)((char *)p.mgr + 0x38));
+            *(float *)((char *)p.elem + 0x10) = randFloatInRange(6, 0.0f, 6.283185f);
+            *(float *)((char *)p.elem + 0x14) = randFloatInRange(6, *(float *)((char *)p.mgr + 0x34), *(float *)((char *)p.mgr + 0x38));
             *(float *)((char *)p.elem + 0x18) = *(float *)((char *)p.mgr + 0x44);
             *(int *)((char *)p.elem + 0x1C) = fn_80129D18(6, fn_80235FD8(*(int *)((char *)p.mgr + 0x54)));
         }
@@ -683,12 +683,12 @@ extern "C" void fn_80264A5C(float farg0, float farg1) {
             p.elem = (void *)((char *)temp_r6_2 + temp_r0_2);
             *(float *)((char *)temp_r6_2 + temp_r0_2) = temp_f4;
             *(float *)((char *)p.elem + 4) = temp_f2;
-            temp_f30_2 = fn_80129DC4(6, *(float *)((char *)p.mgr + 0x7C), *(float *)((char *)p.mgr + 0x80));
-            temp_f31_2 = fn_80129DC4(6, *(float *)((char *)p.mgr + 0x84), *(float *)((char *)p.mgr + 0x88));
+            temp_f30_2 = randFloatInRange(6, *(float *)((char *)p.mgr + 0x7C), *(float *)((char *)p.mgr + 0x80));
+            temp_f31_2 = randFloatInRange(6, *(float *)((char *)p.mgr + 0x84), *(float *)((char *)p.mgr + 0x88));
             *(float *)((char *)p.elem + 8) = temp_f31_2 * (float)cos((double)temp_f30_2);
             *(float *)((char *)p.elem + 0xC) = temp_f31_2 * (float)sin((double)temp_f30_2);
-            *(float *)((char *)p.elem + 0x10) = fn_80129DC4(6, 0.0f, 6.283185f);
-            *(float *)((char *)p.elem + 0x14) = fn_80129DC4(6, *(float *)((char *)p.mgr + 0x94), *(float *)((char *)p.mgr + 0x98));
+            *(float *)((char *)p.elem + 0x10) = randFloatInRange(6, 0.0f, 6.283185f);
+            *(float *)((char *)p.elem + 0x14) = randFloatInRange(6, *(float *)((char *)p.mgr + 0x94), *(float *)((char *)p.mgr + 0x98));
             *(float *)((char *)p.elem + 0x18) = *(float *)((char *)p.mgr + 0xA4);
             *(int *)((char *)p.elem + 0x1C) = fn_80129D18(6, fn_80235FD8(*(int *)((char *)p.mgr + 0xB4)));
         }

@@ -50,7 +50,7 @@ extern float lbl_80562DB4, lbl_80562DD0;
 
 extern long fn_800167F4(void);
 extern void fn_801E96D8(long);
-extern float fn_80129DC4(long, float, float);
+extern float randFloatInRange(long, float, float);
 extern void PSVECNormalize(float *, float *);
 extern float lbl_80562DBC, lbl_80562DC0, lbl_80562DD4, lbl_80562DD8;
 extern float lbl_80562DDC, lbl_80562DE0;
@@ -1057,14 +1057,14 @@ void fn_801E89F4(void *phase) {
 #pragma opt_propagation off
 /* Randomizes the global wind/direction vector: XYZ from bounded random ranges, normalized, and W from [0, 3). */
 void fn_801E89FC(void) {
-    extern float fn_80129DC4(long, float, float);
+    extern float randFloatInRange(long, float, float);
     extern float lbl_804881D8[];
     extern void PSVECNormalize(float *, float *);
-    lbl_804881D8[0] = fn_80129DC4(0, -1.0f, 1.0f);
-    lbl_804881D8[1] = fn_80129DC4(0, -0.33f, 0.33f);
-    lbl_804881D8[2] = fn_80129DC4(0, -1.0f, 1.0f);
+    lbl_804881D8[0] = randFloatInRange(0, -1.0f, 1.0f);
+    lbl_804881D8[1] = randFloatInRange(0, -0.33f, 0.33f);
+    lbl_804881D8[2] = randFloatInRange(0, -1.0f, 1.0f);
     PSVECNormalize(lbl_804881D8, lbl_804881D8);
-    lbl_804881D8[3] = fn_80129DC4(0, 0.0f, 3.0f);
+    lbl_804881D8[3] = randFloatInRange(0, 0.0f, 3.0f);
 }
 #pragma opt_propagation reset
 /* Advances the global wind one step of its random walk.  gWind holds the unit
@@ -1089,9 +1089,9 @@ void updateWind(void)
   float push;
   float xAxis;
   float amount; /* the +/-1 push factor, then the new wind strength */
-  gWind[0] += fn_80129DC4(0, -0.05f, 0.05f);
-  gWind[1] += fn_80129DC4(0, -0.05f, 0.05f);
-  gWind[2] += fn_80129DC4(0, -0.05f, 0.05f);
+  gWind[0] += randFloatInRange(0, -0.05f, 0.05f);
+  gWind[1] += randFloatInRange(0, -0.05f, 0.05f);
+  gWind[2] += randFloatInRange(0, -0.05f, 0.05f);
   if (gWind[1] > WIND_MAX_SLOPE)
   {
     overshoot = gWind[1] - WIND_MAX_SLOPE;
@@ -1146,7 +1146,7 @@ void updateWind(void)
     gWind[2] = gWind[2] + (push * amount);
   }
   PSVECNormalize(gWind, gWind);
-  amount = gWind[3] + fn_80129DC4(0, -0.2f, 0.2f);
+  amount = gWind[3] + randFloatInRange(0, -0.2f, 0.2f);
   amount = (3.0f < amount) ? 3.0f : amount;
   amount = (amount > 0.0f) ? amount : 0.0f;
   gWind[3] = amount;

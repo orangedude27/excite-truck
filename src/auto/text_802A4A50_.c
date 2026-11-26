@@ -108,7 +108,7 @@ extern f32 lbl_80564840, lbl_80564844;
 extern f32 lbl_80564850, lbl_80564858, lbl_8056485C, lbl_80564888;
 void fn_802A6234();
 void fn_802A70E4(void *, f32 *);
-f32 fn_80129DC4(s32, f32, f32);
+f32 randFloatInRange(s32, f32, f32);
 extern f32 lbl_80564894, lbl_80564898, lbl_805648AC, lbl_805648B0;
 extern void fn_801E8C84(f32 *);
 extern float fn_802C9A50(void);
@@ -1005,9 +1005,9 @@ void fn_802A6234(void *arg0) {
     s32 entryPtr = (s32)arg0;
     s32 index = 0;
     do {
-        randomZ = fn_80129DC4(0, lbl_80564894, lbl_80564898);
-        randomY = fn_80129DC4(0, lbl_80564894, lbl_80564898);
-        *(f32 *)(entryPtr + 0x5C) = fn_80129DC4(0, lbl_80564894, lbl_80564898);
+        randomZ = randFloatInRange(0, lbl_80564894, lbl_80564898);
+        randomY = randFloatInRange(0, lbl_80564894, lbl_80564898);
+        *(f32 *)(entryPtr + 0x5C) = randFloatInRange(0, lbl_80564894, lbl_80564898);
         index += 1;
         *(f32 *)(entryPtr + 0x60) = randomY;
         *(f32 *)(entryPtr + 0x64) = randomZ;
@@ -1072,7 +1072,7 @@ void fn_802A62CC(void *arg0, s32 arg1) {
             (lbl_80564890 * temp_f30_2 * (temp_f6 - (temp_f2 / (lbl_80564860 * temp_f10)))))) /
         (lbl_80564860 * temp_f30_2));
 }
-f32 fn_80129DC4(s32, f32, f32);
+f32 randFloatInRange(s32, f32, f32);
 extern f32 lbl_80564894, lbl_80564898;
 f32 fn_802A4AD4(void);
 f32 fn_80287BC8(f32, f32);
@@ -1102,10 +1102,10 @@ void fn_802A6470(void *arg0, f32 *arg1, f32 *arg2, f32 farg0) {
     scale = ((f32 (*)(void))fn_802A4AD4)();
     fn_801E8C84(v);
     {
-        f32 t = 0.1f * scale;
+        f32 t = lbl_80564898 * scale;
         v[0] = v[0] * t;
         v[2] = v[2] * t;
-        v[1] = v[1] * t - 1.2f * scale;
+        v[1] = v[1] * t - lbl_805648AC * scale;
     }
     Mtx33MultVec_802A6470(arg1, v, v);
     v[0] += arg2[0] * lbl_805648B0;
@@ -1115,11 +1115,11 @@ void fn_802A6470(void *arg0, f32 *arg1, f32 *arg2, f32 farg0) {
     for (i = 0; i < *(s32 *)((u8 *)arg0 + 4); i++) {
         V3 *in = (V3 *)((u8 *)(*(V3 **)arg0) + i * 0xC);
         u8 *rec = (u8 *)arg0 + (i % 8) * 0xC;
-        f32 z = in->z + v[2] + *(f32 *)(rec + 0x64) * scale;
+        register f32 z = in->z + v[2] + *(f32 *)(rec + 0x64) * scale;
         f32 y = in->y + v[1] + *(f32 *)(rec + 0x60) * scale;
         f32 x = in->x + v[0] + *(f32 *)(rec + 0x5C) * scale + farg0 * z;
-        p[2] = z;
         p[1] = y;
+        p[2] = z;
         p[0] = x;
         if (z > *(f32 *)((u8 *)arg0 + 0x24) && z < *(f32 *)((u8 *)arg0 + 0x28)) {
             f32 a = z * ratioX;
@@ -1127,9 +1127,9 @@ void fn_802A6470(void *arg0, f32 *arg1, f32 *arg2, f32 farg0) {
                 f32 b = z * ratioY;
                 if (y * y < b * b) {
                     out->x = x;
-                    out->y = y;
                     out->z = z;
-                    out++;
+                    out->y = y;
+                    out += 1;
                 }
             }
         }

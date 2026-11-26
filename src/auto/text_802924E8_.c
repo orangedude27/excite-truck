@@ -58,7 +58,7 @@ void fn_802924E8(void) {
 }
 
 extern double fn_8002F234(float);
-extern float fn_80129DC4(int, float, float);
+extern float randFloatInRange(int, float, float);
 extern float lbl_805644D0, lbl_805644D4, lbl_805644D8, lbl_805644DC, lbl_805644E0;
 #pragma processor 750
 struct Vec_802924F4 {
@@ -69,19 +69,19 @@ static inline void init_all_802924F4(float one, float offset) {
     unsigned char *p = lbl_804B4030;
     int i;
     for (i = 0; i < 6; i++, p += 0x34) {
-        float x = fn_80129DC4(0, lbl_805644D0, lbl_805644D4);
+        float x = randFloatInRange(0, lbl_805644D0, lbl_805644D4);
         float y = (float)fn_8002F234((one - x * x) - offset);
         float z = (float)fn_8002F234((one - x * x) - offset);
-        float w = fn_80129DC4(0, -z, y);
+        float w = randFloatInRange(0, -z, y);
         float q = (float)fn_8002F234((one - x * x) - w * w);
-        float factor = (fn_80129DC4(0, lbl_805644D0, lbl_805644D4) > offset) ? lbl_805644D4 : lbl_805644D0;
+        float factor = (randFloatInRange(0, lbl_805644D0, lbl_805644D4) > offset) ? lbl_805644D4 : lbl_805644D0;
         v.x = x;
         *(float *)(p + 0) = (float)(double)x;
         *(float *)(p + 4) = (float)(double)w;
         v.y = w;
         v.z = q * factor;
         *(float *)(p + 8) = v.z;
-        *(float *)(p + 0xC) = fn_80129DC4(0, lbl_805644DC, lbl_805644E0);
+        *(float *)(p + 0xC) = randFloatInRange(0, lbl_805644DC, lbl_805644E0);
     }
 }
 void fn_802924F4(void) {
@@ -94,19 +94,19 @@ void fn_802924F4(void) {
     long i;
 
     for (i = 0; i < 6; i++, p += 0x34) {
-        register float x = fn_80129DC4(0, lbl_805644D0, lbl_805644D4);
+        register float x = randFloatInRange(0, lbl_805644D0, lbl_805644D4);
         float y = (float)fn_8002F234((one - x * x) - offset);
         float z = (float)fn_8002F234((one - x * x) - offset);
-        float w = fn_80129DC4(0, -z, y);
+        float w = randFloatInRange(0, -z, y);
         float q = (float)fn_8002F234((one - x * x) - w * w);
-        float factor = (fn_80129DC4(0, lbl_805644D0, lbl_805644D4) > offset) ? lbl_805644D4 : lbl_805644D0;
+        float factor = (randFloatInRange(0, lbl_805644D0, lbl_805644D4) > offset) ? lbl_805644D4 : lbl_805644D0;
         v.x = x;
         *(float *)(p + 0) = (float)(double)x;
         v.y = w;
         v.z = q * factor;
         *(float *)(p + 4) = (float)(double)w;
         *(float *)(p + 8) = v.z;
-        *(float *)(p + 0xC) = fn_80129DC4(0, lbl_805644DC, lbl_805644E0);
+        *(float *)(p + 0xC) = randFloatInRange(0, lbl_805644DC, lbl_805644E0);
     }
 }
 /* Teardown counterpart to fn_802924F4 in the subsystem shutdown sequence
@@ -872,23 +872,23 @@ void fn_802936C4(void *arg0) {
     extern float lbl_805644D4;
     extern float lbl_805644D8;
     extern float lbl_805644F8;
-    extern float lbl_805644FC;
     extern float lbl_80564500;
+    extern float lbl_805644FC;
     extern float lbl_80564504;
     extern float lbl_80564508;
     extern void *lbl_8055C958;
-    extern void *lbl_8055C964;
     extern unsigned char lbl_804B4030[];
+    extern void *lbl_8055C964;
     register float smallF;
     float two;
     register float dt2;
     float oneF;
     float gravF;
     float outer;
-    register float dt;
+    float dt;
     float scale2;
     register float ageDt;
-    float zeroF;
+    register float zeroF;
     float scale;
     float gravTerm;
     struct Rec *cur;
@@ -922,7 +922,7 @@ void fn_802936C4(void *arg0) {
     goto check_loop;
 body:
     {
-        float age;
+        register float age;
         age = cur->age;
         if (age < zeroF) goto next;
         if (age >= outer) goto next;
@@ -930,15 +930,15 @@ do_work:
         ageDt = age + dt;
         mode = cur->mode;
         type = cur->type;
-        gravTerm = (gravF * dt) * *(float *)((unsigned char *)arg0 + 4);
         entry = cur->idx;
+        gravTerm = (gravF * dt) * *(float *)((unsigned char *)arg0 + 4);
         tmp[0] = cur->vx * scale;
         tmp[2] = cur->vz * scale;
         tmp[1] = cur->vy * scale;
         tmp[1] = tmp[1] - gravTerm;
         ((unsigned int *)tmp)[3] = ((unsigned int *)cur)[9];
-        ((unsigned int *)tmp)[4] = ((unsigned int *)cur)[10];
         par[0] = zeroF;
+        ((unsigned int *)tmp)[4] = ((unsigned int *)cur)[10];
         ((unsigned int *)tmp)[5] = ((unsigned int *)cur)[11];
         par[1] = oneF;
         par[2] = zeroF;
@@ -991,7 +991,7 @@ write_out:
             b = src->copy[1];
             a = src->copy[0];
             out->copy[1] = b;
-            out->copy[0] = a;
+            out->copy[0] = (unsigned)a;
             a = src->copy[2];
             out->copy[2] = a;
             a = src->copy[3];
@@ -1019,7 +1019,7 @@ write_out:
         out += 1;
     }
 next:
-    ++cur;
+    cur += 1;
     iter += 1;
 check_loop:
     if (iter < *(int *)((unsigned char *)arg0 + 0x2FAC)) goto body;

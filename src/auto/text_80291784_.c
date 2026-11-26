@@ -85,7 +85,7 @@ extern int lbl_8055C948;
 extern void *fn_802AE414(int *);
 extern int RegisterTextureByName(int *, int);
 extern int fn_802D39A4(float);
-extern float fn_80129DC4(int, float, float);
+extern float randFloatInRange(int, float, float);
 extern int lbl_8055C924;
 extern int lbl_8055C930;
 extern int lbl_8055C940;
@@ -133,9 +133,9 @@ extern "C" int fn_802917C0(void *arg0, void *arg1, void *arg2) {
 loop:
     query_object = manager->getQuery();
     if (query_object == 0) goto finish;
-    result1 = fn_80129DC4(0, lbl_80564488, lbl_8056448C);
-    result2 = fn_80129DC4(0, lbl_80564490, lbl_80564494);
-    result3 = fn_80129DC4(0, lbl_80564498, lbl_80564494);
+    result1 = randFloatInRange(0, lbl_80564488, lbl_8056448C);
+    result2 = randFloatInRange(0, lbl_80564490, lbl_80564494);
+    result3 = randFloatInRange(0, lbl_80564498, lbl_80564494);
     result2 = query_object->getFloat((char *)&lbl_8055C924, result2);
     entry = (Entry *)((char *)base + *(int *)((char *)base + 0x120) * 0x24);
     entry->x = initial; entry->y = initial; entry->z = initial;
@@ -214,7 +214,7 @@ void fn_80291AC8(void) {
     {
         int effect = settings[4];
         settings[3] = -1;
-        fn_802D3A50(effect);
+        ZQueryPool_Free(effect);
     }
     settings[4] = 0;
 }

@@ -14,7 +14,7 @@ extern void fn_80195654(void *, void *);
 extern void fn_801933FC(void *, void *);
     extern double fn_8002F234(float);
     extern float lbl_8055E584, lbl_8055E588;
-    extern float fn_80129DC4(int, float, float);
+    extern float randFloatInRange(int, float, float);
     extern void fn_8013530C(void *, int);
     extern int lbl_8055E550;
     extern float lbl_8055E3C8, lbl_80562144, lbl_80562140, lbl_80562148, lbl_80562204, lbl_805621E4;
@@ -597,7 +597,7 @@ extern "C" void fn_80193CE0(void *self) {
 float fn_80193D20(void) {
 #define s_randMin lbl_8055E584
 #define s_randMax lbl_8055E588
-    return fn_80129DC4(3, s_randMin, s_randMax);
+    return randFloatInRange(3, s_randMin, s_randMax);
 #undef s_randMin
 #undef s_randMax
 }
@@ -1666,7 +1666,7 @@ void fn_80195B28(void *arg0, float arg1) {
                 float base = p[0x26C / 4];
                 float first = table[0];
                 p[0x22C / 4] = base;
-                p[0x234 / 4] = fn_80129DC4(3, first, table[1]);
+                p[0x234 / 4] = randFloatInRange(3, first, table[1]);
             }
             if (!selected)
                 p[0x234 / 4] *= lbl_8055E56C;
@@ -1679,9 +1679,9 @@ void fn_80195B28(void *arg0, float arg1) {
                 p[0x230 / 4] = last;
             }
             if (selected)
-                p[0x224 / 4] = fn_80129DC4(3, lbl_8056220C, lbl_8056215C);
+                p[0x224 / 4] = randFloatInRange(3, lbl_8056220C, lbl_8056215C);
             else
-                p[0x224 / 4] = fn_80129DC4(3, lbl_805621A4, lbl_80562140);
+                p[0x224 / 4] = randFloatInRange(3, lbl_805621A4, lbl_80562140);
             if (0.0f != arg1) {
                 raw = p[0x224 / 4];
                 value = (float)__fabs((double)raw);
@@ -2547,7 +2547,7 @@ void fn_80196C90(void *arg0) {
             }
         }
         if (timeIsUsable == 0) {
-            *(float *)(obj + 0x150) = *(float *)(obj + 0x26C) + fn_80129DC4(3, lbl_8055E548, lbl_8055E54C);
+            *(float *)(obj + 0x150) = *(float *)(obj + 0x26C) + randFloatInRange(3, lbl_8055E548, lbl_8055E54C);
         }
     }
     *(float *)(obj + 0x148) = *(float *)(obj + 0x144);
@@ -3295,7 +3295,7 @@ void fn_801981A0(void *arg0, void *arg1) {
     }
     if (*(u8 *)(o + 0x11C) != 0) {
         if (*(int *)(o + 0x138) != *(int *)(o + 0x13C)) {
-            *(float *)(o + 0x14C) = fn_80129DC4(3, lbl_8055E55C, lbl_8055E560);
+            *(float *)(o + 0x14C) = randFloatInRange(3, lbl_8055E55C, lbl_8055E560);
             *(int *)(o + 0x13C) = *(int *)(o + 0x138);
         }
         var_r4 = 1;

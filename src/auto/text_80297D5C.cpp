@@ -125,7 +125,7 @@ extern "C" void transformTwoPoints(int, int, void*);
   extern "C" void fn_8029871C(void*, void*, float);
     extern "C" void fn_8029840C(void*, int);
     extern "C" double fn_8002F234(float);
-  extern "C" float fn_80129DC4(int, float, float);
+  extern "C" float randFloatInRange(int, float, float);
     extern "C" void fn_802994C0(void*, unsigned int);
     extern "C" void fn_80299338(void*, unsigned int, void*, void*, void*, short);
     extern float lbl_80564590;
@@ -481,10 +481,10 @@ extern "C" void fn_8029871C(void *slotPool, void *slot, float deltaTime) {
         return;
     }
     *(float *)(entry + 0x24) = timeLeft - deltaTime;
-    float dirA = fn_80129DC4(0, -1.0f, 1.0f);
+    float dirA = randFloatInRange(0, -1.0f, 1.0f);
     float dirASq = dirA * dirA;
     float discRadius = (float)fn_8002F234(1.0f - dirASq);
-    float dirB = fn_80129DC4(0, -discRadius, discRadius);
+    float dirB = randFloatInRange(0, -discRadius, discRadius);
     volatile float zeroVec[3];
     volatile float spawnPos[3];
     float zero = 0.0f;
@@ -749,9 +749,9 @@ void fn_80298FBC(void *container, void *entry) {
     worldPos[0] += pose[9];
     worldPos[1] += pose[10];
     worldPos[2] += pose[11];
-    worldPos[0] += fn_80129DC4(0, -local[3], local[3]);
-    worldPos[1] += fn_80129DC4(0, -local[4], local[4]);
-    worldPos[2] += fn_80129DC4(0, -local[5], local[5]);
+    worldPos[0] += randFloatInRange(0, -local[3], local[3]);
+    worldPos[1] += randFloatInRange(0, -local[4], local[4]);
+    worldPos[2] += randFloatInRange(0, -local[5], local[5]);
     ((EmitPointFn)fn_8028E584)(*(void **)((char *)container + 4), worldPos, pose + 13);
 }
 #pragma pop
@@ -841,8 +841,8 @@ extern int fn_802996B0(int *);
 extern int lbl_8055CA70, lbl_8055CA7C;
 extern float lbl_8056459C, lbl_805645D8, lbl_805645DC;
 extern "C" int fn_802996B0(void *, int *);
-#pragma paired_single off
-#pragma scheduling invalid_target
+#pragma scheduling on
+#pragma ppc_psq_save off
 extern "C" void fn_80299338(void *arg0, unsigned int arg1, void *arg2, void *arg3, void *arg4, short arg5) {
     struct Work {
         short angle;
@@ -859,7 +859,7 @@ extern "C" void fn_80299338(void *arg0, unsigned int arg1, void *arg2, void *arg
     float *src;
     float *out;
     float step;
-    int i;
+    
 
     work.angle = arg5;
     if (fn_802996B0(arg0, &work.index) == 0)
@@ -870,17 +870,16 @@ extern "C" void fn_80299338(void *arg0, unsigned int arg1, void *arg2, void *arg
     *(int *)(dst + 0x34) = 1;
     result = fn_801E7E18();
 
-    x = ((float *)arg2)[0] + ((float *)arg3)[0];
     y = ((float *)arg2)[1] + ((float *)arg3)[1];
     z = ((float *)arg2)[2] + ((float *)arg3)[2];
-    x += ((float *)arg4)[0];
+    x = (((float *)arg2)[0] + ((float *)arg3)[0]) + ((float *)arg4)[0];
     *(float *)(dst + 0x38) = result;
     y += ((float *)arg4)[1];
     z += ((float *)arg4)[2];
     *(float *)(dst + 0x3C) = lbl_8056459C;
-    x3 = x + ((float *)arg3)[0] * lbl_805645D8;
     y3 = y + ((float *)arg3)[1] * lbl_805645D8;
     z3 = z + ((float *)arg3)[2] * lbl_805645D8;
+    x3 = x + ((float *)arg3)[0] * lbl_805645D8;
     x4 = x + ((float *)arg4)[0] * lbl_805645D8;
     y4 = y + ((float *)arg4)[1] * lbl_805645D8;
     z4 = z + ((float *)arg4)[2] * lbl_805645D8;
@@ -906,7 +905,7 @@ extern "C" void fn_80299338(void *arg0, unsigned int arg1, void *arg2, void *arg
     src = work.points;
     out = (float *)dst;
     step = lbl_805645DC;
-    i = 0;
+    arg1 = 0;
     do {
         fn_801E9E30((void *)&work.angle, src);
         src[1] = src[1] + step;
@@ -915,12 +914,10 @@ extern "C" void fn_80299338(void *arg0, unsigned int arg1, void *arg2, void *arg
         out[3] = src[2];
         src += 3;
         out += 3;
-        ++i;
-    } while (i < 4);
+        ++arg1;
+    } while (arg1 < 4);
     fn_801E9DD8();
 }
-#pragma scheduling on
-#pragma paired_single reset
   extern "C" float fn_801E7E18(void);
 extern "C" void* fn_802997F4(void*, int);
 /* Initializes an entry returned by fn_802997F4: clears id, sets state to 2, records current time. */
@@ -1274,7 +1271,7 @@ extern "C" void* fn_80299FA8(void* container, void* entry) {
     *(void**)entry = 0;
 }
 
-extern "C" float fn_80129DC4(int, float, float);
+extern "C" float randFloatInRange(int, float, float);
 extern "C" void fn_80288A58(void *, float *);
 extern float lbl_80564600;
 #pragma scheduling on
@@ -1294,7 +1291,7 @@ extern "C" void fn_80299FE0(void *unused, void *strip, float unusedTime) {
         previous[1] = lbl_8056459C;
         previous[2] = lbl_8056459C;
         while (i < *(int *)((char *)obj + 0x94)) {
-            float amount = fn_80129DC4(0, lbl_8056459C, lbl_80564590);
+            float amount = randFloatInRange(0, lbl_8056459C, lbl_80564590);
             int count = *(int *)((char *)obj + 0x94);
             int nextIndex = (i + 1) % count;
             char *next = (char *)obj + nextIndex * 0xC;

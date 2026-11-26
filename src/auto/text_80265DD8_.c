@@ -199,7 +199,7 @@ extern float lbl_8055C4E4;
 extern int lbl_8055C4E8;
 extern int lbl_8055C4EC;
 extern int lbl_804999A0[];
-extern float fn_80129DC4(int, float, float);
+extern float randFloatInRange(int, float, float);
 extern int fn_80129D90(int, int, int);
 extern float PSVECMag(void*);
 extern float dotProduct3(float,float,float,float,float,float);
@@ -279,8 +279,8 @@ void NoisePoints_Randomize(void) {
     NoisePoint *point = sNoisePoints;
     int count = 0;
     do {
-        point->x = degreesToRadians * fn_80129DC4(6, -lbl_8055C4E0, lbl_8055C4E0);
-        point->y = degreesToRadians * fn_80129DC4(6, -lbl_8055C4E4, lbl_8055C4E4);
+        point->x = degreesToRadians * randFloatInRange(6, -lbl_8055C4E0, lbl_8055C4E0);
+        point->y = degreesToRadians * randFloatInRange(6, -lbl_8055C4E4, lbl_8055C4E4);
         {
             int duration = fn_80129D90(6, lbl_8055C4E8, lbl_8055C4EC);
             count++;
@@ -573,9 +573,9 @@ void fn_80266388(int unused, int mode, float *matrix, void *pos, void *owner) {
             s1 = lbl_8055C4D8 * (ka * kb);
             s2 = lbl_8055C4DC * (ka * kb);
             if (lbl_8055F498 != 0) {
-                double c1 = ((DblFn_80266388)fn_80129DC4)(6, -s1, s1);
-                double c2 = ((DblFn_80266388)fn_80129DC4)(6, -s1, s1);
-                double c3 = ((DblFn_80266388)fn_80129DC4)(6, -s1, s1);
+                double c1 = ((DblFn_80266388)randFloatInRange)(6, -s1, s1);
+                double c2 = ((DblFn_80266388)randFloatInRange)(6, -s1, s1);
+                double c3 = ((DblFn_80266388)randFloatInRange)(6, -s1, s1);
                 w[0] = c3; w[1] = c2; w[2] = c1;
                 matrix[9] = matrix[9] + (float)c3;
                 matrix[10] = matrix[10] + (float)c2;
@@ -583,9 +583,9 @@ void fn_80266388(int unused, int mode, float *matrix, void *pos, void *owner) {
             }
             if (lbl_8055C4C8 != 0) {
                 float mag, x, y, z, sn, cs, one, scale;
-                double c1 = ((DblFn_80266388)fn_80129DC4)(6, -s2, s2);
-                double c2 = ((DblFn_80266388)fn_80129DC4)(6, -s2, s2);
-                double c3 = ((DblFn_80266388)fn_80129DC4)(6, -s2, s2);
+                double c1 = ((DblFn_80266388)randFloatInRange)(6, -s2, s2);
+                double c2 = ((DblFn_80266388)randFloatInRange)(6, -s2, s2);
+                double c3 = ((DblFn_80266388)randFloatInRange)(6, -s2, s2);
                 v[0] = c3; v[1] = c2; v[2] = c1;
                 mag = PSVECMag(&v[0]);
                 if (mag > lbl_80563C40) {
@@ -672,9 +672,9 @@ void fn_80266A0C(float *fs, int unused, void *pos) {
             s1 = lbl_8055C4D8 * (ka * kb);
             s2 = lbl_8055C4DC * (ka * kb);
             if (lbl_8055F498 != 0) {
-                double c1 = ((DblFn_80266388)fn_80129DC4)(6, -s1, s1);
-                double c2 = ((DblFn_80266388)fn_80129DC4)(6, -s1, s1);
-                double c3 = ((DblFn_80266388)fn_80129DC4)(6, -s1, s1);
+                double c1 = ((DblFn_80266388)randFloatInRange)(6, -s1, s1);
+                double c2 = ((DblFn_80266388)randFloatInRange)(6, -s1, s1);
+                double c3 = ((DblFn_80266388)randFloatInRange)(6, -s1, s1);
                 w[0] = c3; w[1] = c2; w[2] = c1;
                 fs[0x7C / 4] = fs[0x7C / 4] + (float)c3;
                 fs[0x80 / 4] = fs[0x80 / 4] + (float)c2;
@@ -682,9 +682,9 @@ void fn_80266A0C(float *fs, int unused, void *pos) {
             }
             if (lbl_8055C4C8 != 0) {
                 float mag, x, y, z, sn, cs, one, scale;
-                double c1 = ((DblFn_80266388)fn_80129DC4)(6, -s2, s2);
-                double c2 = ((DblFn_80266388)fn_80129DC4)(6, -s2, s2);
-                double c3 = ((DblFn_80266388)fn_80129DC4)(6, -s2, s2);
+                double c1 = ((DblFn_80266388)randFloatInRange)(6, -s2, s2);
+                double c2 = ((DblFn_80266388)randFloatInRange)(6, -s2, s2);
+                double c3 = ((DblFn_80266388)randFloatInRange)(6, -s2, s2);
                 v[0] = c3; v[1] = c2; v[2] = c1;
                 mag = PSVECMag(&v[0]);
                 if (mag > lbl_80563C40) {
@@ -1839,12 +1839,12 @@ void fn_80268E94(void *arg0, int arg1) {
  if (strength > lbl_80563CA0) {
  one = lbl_80563CA4;
  sn = sin(lbl_80563CA8 * (lbl_80563CAC * elapsed) * one);
- z = strength * (fn_80129DC4(0,lbl_80563CB0,lbl_80563CB4) + sn*lbl_80563CB8);
+ z = strength * (randFloatInRange(0,lbl_80563CB0,lbl_80563CB4) + sn*lbl_80563CB8);
  sn = sin(lbl_80563C50 * (lbl_80563CAC * elapsed) * one);
- y = strength * (fn_80129DC4(0,lbl_80563CB0,lbl_80563CB4) + sn*lbl_80563CB8);
+ y = strength * (randFloatInRange(0,lbl_80563CB0,lbl_80563CB4) + sn*lbl_80563CB8);
  v[1] = y; v[2] = z;
  sn = sin((lbl_80563CAC * elapsed) * one);
- v[0] = strength * (fn_80129DC4(0,lbl_80563CB0,lbl_80563CB4) + sn*lbl_80563CB8);
+ v[0] = strength * (randFloatInRange(0,lbl_80563CB0,lbl_80563CB4) + sn*lbl_80563CB8);
  mag = PSVECMag(&v[0]);
  if (mag > lbl_80563C40) {
    register float scale = lbl_80563C2C / mag;

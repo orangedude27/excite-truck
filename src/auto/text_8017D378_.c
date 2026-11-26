@@ -105,7 +105,7 @@ extern void gatherPhobLists(void *, int *, float *);
 extern float PSVECDotProduct(float *, float *);
 extern void PSVECNormalize(float *, float *);
 extern double fn_8002F234(float);
-extern float fn_80129DC4(int, float, float);
+extern float randFloatInRange(int, float, float);
 extern void fn_8017B5D4(void *, int, int, float *, float *, int, int, void *, float);
 extern float lbl_80561BF0, lbl_80561BF4, lbl_80561BF8, lbl_80561BFC, lbl_80561C00;
 #pragma push
@@ -153,11 +153,11 @@ extern "C" void fn_8017D404(float *pos, int target, float radius, float strength
                     contact[0] = *(float *)(obj+0x60) + diff[0];
                     contact[1] = *(float *)(obj+0x64) + diff[1];
                     contact[2] = *(float *)(obj+0x68) + diff[2];
-                    rand = fn_80129DC4(3, lbl_80561BF8, lbl_80561BFC);
+                    rand = randFloatInRange(3, lbl_80561BF8, lbl_80561BFC);
                     contact[0] += *(float *)(obj+0x3c)*rand;
                     contact[1] += *(float *)(obj+0x40)*rand;
                     contact[2] += *(float *)(obj+0x44)*rand;
-                    rand = fn_80129DC4(3, lbl_80561BF8, lbl_80561BFC);
+                    rand = randFloatInRange(3, lbl_80561BF8, lbl_80561BFC);
                     contact[0] += *(float *)(obj+0x54)*rand;
                     contact[1] += *(float *)(obj+0x58)*rand;
                     contact[2] += *(float *)(obj+0x5c)*rand;
@@ -752,9 +752,9 @@ void fn_8017E3C4(void *arg0, void *arg1, short *arg2) {
         sp3C[1] = q[25] + q[71] * lbl_80561C30;
         sp3C[2] = q[26] + q[72] * lbl_80561C30;
         amp10 = lbl_80561C34;
-        r1 = fn_80129DC4(4, -amp10, amp10);
+        r1 = randFloatInRange(4, -amp10, amp10);
         {
-            double r3 = fn_80129DC4(4, -amp10, amp10);
+            double r3 = randFloatInRange(4, -amp10, amp10);
             jr[0] = (float)r3; jr[1] = lbl_80561BE0; jr[2] = (float)r1;
         }
         {
@@ -768,13 +768,13 @@ void fn_8017E3C4(void *arg0, void *arg1, short *arg2) {
     veh = fn_801B2EC0(*(int *)((char *)arg0 + 0x1F8));
     ftbl = *(void ***)veh;
     p = (char *)((void *(*)(void))ftbl[6])();
-    t = fn_80129DC4(4, lbl_80561C38, lbl_80561C3C);
+    t = randFloatInRange(4, lbl_80561C38, lbl_80561C3C);
     kc.q = *(float **)(p + 4);
     kc.t = *(float *)(p + 8);
     kc.unk = *(int *)(p + 0xc);
     while (t > kc.q[6]) { t -= kc.q[6]; kc.q = *(float **)((char *)kc.q + 0x14); }
     a = kc.q[10] + kc.t * ((*(float **)((char *)kc.q + 0x14))[10] - kc.q[10]);
-    jitter = fn_80129DC4(4, -a * lbl_80561C40, a * lbl_80561C40);
+    jitter = randFloatInRange(4, -a * lbl_80561C40, a * lbl_80561C40);
     out[0] = kc.q[0] + kc.t * ((*(float **)((char *)kc.q + 0x14))[0] - kc.q[0]);
     out[1] = kc.q[1] + kc.t * ((*(float **)((char *)kc.q + 0x14))[1] - kc.q[1]);
     bd[1] = kc.q[3] + kc.t * ((*(float **)((char *)kc.q + 0x14))[3] - kc.q[3]);

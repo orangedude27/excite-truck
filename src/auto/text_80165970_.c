@@ -94,7 +94,7 @@ extern unsigned char lbl_8055E32C;
 extern float lbl_805618F0;
 #define FRAME_TIME_STEP lbl_805618F0 /* ~0.0167s, one 60 Hz frame */
 extern float lbl_8055E318;
-extern float fn_80129DC4(int, float, float, float);
+extern float randFloatInRange(int, float, float, float);
 
 extern unsigned char lbl_8055E32A;
 extern unsigned char lbl_8055E32B;
@@ -204,7 +204,7 @@ body:
         *(float *)((char *)entry + 8) = z;
         *(int *)((char *)entry + 0x10) = minusOne;
         *(float *)((char *)entry + 0xC) =
-            lbl_8055E318 - ((float (*)(int, float, float))fn_80129DC4)(3, 0.0f, 2.0f * z);
+            lbl_8055E318 - ((float (*)(int, float, float))randFloatInRange)(3, 0.0f, 2.0f * z);
     }
 next_item:
     {
@@ -505,12 +505,14 @@ void fn_801662FC(void) {
     count = lbl_8055E330;
     flag = ((unsigned char)count == 255);
     lbl_8055E330 = count + 1;
-    lbl_8055E329 = (unsigned char)flag;
-    if (flag && lbl_8055E328) {
-        if (!((float)__fabs(lbl_8055E31C - lbl_805618D0) <= lbl_80558DC4)) {
-            fn_802E30C8(lbl_8032FEC0, lbl_8055E31C, lbl_8055E320, *(float *)((char *)&lbl_8042FE38 + 0x48), fn_80166274());
-        } else {
-            fn_802E30C8(lbl_8032FF08, lbl_8055E320, *(float *)((char *)&lbl_8042FE38 + 0x48), fn_80166274());
+    lbl_8055E329 = flag;
+    if (flag) {
+        if (lbl_8055E328) {
+            if (!((float)__fabs(lbl_8055E31C - lbl_805618D0) <= lbl_80558DC4)) {
+                fn_802E30C8(lbl_8032FEC0, lbl_8055E31C, lbl_8055E320, *(float *)((char *)&lbl_8042FE38 + 0x48), fn_80166274());
+            } else {
+                fn_802E30C8(lbl_8032FF08, lbl_8055E320, *(float *)((char *)&lbl_8042FE38 + 0x48), fn_80166274());
+            }
         }
     }
 }
@@ -520,44 +522,62 @@ extern void *fn_80166754(void *);
 #pragma processor gekko
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_801663C8(int count, const void *records, const void *config) {
-    typedef struct Entry { int id; signed char flag; char pad[0x83]; } Entry;
-    typedef struct Holder { Entry *entries; int used; int count; Entry *base; } Holder;
-    typedef struct Record { int type; char pad[0x74]; } Record;
-    char *strings = lbl_8032FCC0;
-    void *obj;
-    Holder *holder;
-    void *array;
-    int i;
-    float value;
-    int notDefault;
-    lbl_8055E324 = fn_801659D0((int)config);
-    fn_80165FAC();
-    obj = *(void **)((char *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
-    value = (*(float (***)(void *, char *, float))obj)[10](obj, strings + 0x270, *(float *)((char *)&lbl_8042FE38 + 0xC));
-    *(float *)((char *)&lbl_8042FE38 + 0xC) = value;
-    fn_802E30C8(strings + 0x280, *(float *)((char *)&lbl_8042FE38 + 8), (float)(double)value, *(float *)((char *)&lbl_8042FE38 + 4), *(float *)&lbl_8042FE38);
-    holder = fn_801284F8(16, strings + 0x2A0);
-    if (holder) {
-        array = fn_8002F37C(fn_8012850C(count * 0x88 + 16, &lbl_8055A190), (void (*)(void *))fn_80166754, 0, 0x88, count);
-        *(void **)holder = array;
-        *(int *)((char *)((char *)holder + 8)) = count;
-        *(int *)((char *)((char *)holder + 4)) = 0;
-        *(void **)((char *)((char *)holder + 12)) = array;
-    }
-    *(void **)&lbl_8055E32C = holder;
-    *(int *)((char *)((char *)holder + 4)) = 0;
-    for (i = 0; i < count; i++) {
-        int type = ((Record *)records)[i].type;
-        Holder *h = *(Holder **)&lbl_8055E32C;
-        Entry *p = &h->entries[h->used++];
-        p->id = i;
-        p->flag = (signed char)(type == 0x50);
-    }
-    notDefault = *(int *)((char *)config + 4) != 0x180304;
-    lbl_8055E32B = 0;
-    lbl_8055E32A = notDefault;
-    *(int *)&lbl_8055E334 = 0;
+void fn_801663C8(int count, const void *records, const void *config)
+{
+  typedef struct Entry
+  {
+    int id;
+    signed char flag;
+    char pad[0x83];
+  } Entry;
+  typedef struct Holder
+  {
+    Entry *entries;
+    int used;
+    int count;
+    Entry *base;
+  } Holder;
+  typedef struct Record
+  {
+    int type;
+    char pad[0x74];
+  } Record;
+  char *strings = lbl_8032FCC0;
+  void *obj;
+  Holder *holder;
+  void *array;
+  int i;
+  float value;
+  int notDefault;
+  lbl_8055E324 = fn_801659D0((int) config);
+  fn_80165FAC();
+  obj = *((void **) (((char *) fn_8001285C(*__AXFXGetLfoSinTable_801769CC())) + 0x20));
+  value = (*((float (***)(void *, char *, float)) obj))[10](obj, strings + 0x270, *((float *) (((char *) (&lbl_8042FE38)) + 0xC)));
+  *((float *) (((char *) (&lbl_8042FE38)) + 0xC)) = value;
+  fn_802E30C8(strings + 0x280, *((float *) (((char *) (&lbl_8042FE38)) + 8)), (float) ((double) value), *((float *) (((char *) (&lbl_8042FE38)) + 4)), *((float *) (&lbl_8042FE38)));
+  holder = (0, fn_801284F8(16, 0x2A0 + strings));
+  if (holder)
+  {
+    array = fn_8002F37C(fn_8012850C((count * 0x88) + 16, &lbl_8055A190), (void (*)(void *)) fn_80166754, 0, 0x88, count);
+    *((void **) holder) = array;
+    *((int *) (((char *) holder) + 8)) = count;
+    *((int *) (((char *) holder) + 4)) = 0;
+    *((void **) (((char *) holder) + 12)) = array;
+  }
+  *((void **) (&lbl_8055E32C)) = holder;
+  *((int *) (((char *) holder) + 4)) = 0;
+  for (i = 0; i < count; i++)
+  {
+    int type = ((Record *) records)[i].type;
+    Holder *h = (0, *((Holder **) (&lbl_8055E32C)));
+    Entry *p = &h->entries[h->used++];
+    p->id = i;
+    p->flag = (signed char) (type == 0x50);
+  }
+
+  lbl_8055E32A = (notDefault = (*((int *) (((char *) config) + 4))) != 0x180304);
+  lbl_8055E32B = 0;
+  *((int *) (&lbl_8055E334)) = 0;
 }
 #pragma processor 750
 /* Fill one 0x88-byte LFO/automation entry of the effect list: copy the tuning
@@ -584,7 +604,7 @@ void *fn_80166754(void *entry)
   *((float *) (((char *) entry) + 0x34)) = 0.0f;
   *((float *) (((char *) entry) + 0x40)) = 0.0f;
   *((float *) (((char *) entry) + 0x3C)) = 0.0f;
-  period = ((float (*)(int, float, float)) fn_80129DC4)(3, 8.0f, 15.0f);
+  period = ((float (*)(int, float, float)) randFloatInRange)(3, 8.0f, 15.0f);
   lfoAmplitude = *((float *) (params + 0x3C));
   scale = 0.5f;
   *((float *) (((char *) entry) + 0x4C)) = lfoAmplitude;
@@ -669,7 +689,7 @@ void fn_80166898(void) {
         *(float *)(p1 + 8) = height;
         *(float *)(p1 + 0x14) = zero;
         *(float *)(p1 + 0x10) = zero;
-        *(float *)(p1 + 0x1C) = lbl_8055E318 + ((float (*)(int, float, float))fn_80129DC4)(3, arg1, arg2);
+        *(float *)(p1 + 0x1C) = lbl_8055E318 + ((float (*)(int, float, float))randFloatInRange)(3, arg1, arg2);
         *(float *)(p1 + 0x20) = zero;
         *(float *)(p1 + 0x24) = height;
         *(float *)(p1 + 0x28) = zero;
@@ -677,7 +697,7 @@ void fn_80166898(void) {
         *(float *)(p1 + 0x34) = zero;
         *(float *)(p1 + 0x40) = zero;
         *(float *)(p1 + 0x3C) = zero;
-        *(float *)(p1 + 0x54) = lbl_8055E318 - ((float (*)(int, float, float))fn_80129DC4)(3, zero, scale * *(float *)(p1 + 0x50));
+        *(float *)(p1 + 0x54) = lbl_8055E318 - ((float (*)(int, float, float))randFloatInRange)(3, zero, scale * *(float *)(p1 + 0x50));
         *(int *)(p1 + 0x58) = zeroInt;
         p1[0x5C] = zeroInt; p1[0x5E] = zeroInt; p1[0x5D] = zeroInt; p1[5] = zeroInt; p1[0x5F] = zeroInt; p1[0x60] = zeroInt; p1[0x2C] = zeroInt;
         *(float *)(p1 + 0x30) = zero;
@@ -694,7 +714,7 @@ void fn_80166898(void) {
         callArg = lbl_8056189C;
         p2 = *(unsigned char **)&lbl_8042FEB0 + offset;
         *(int *)(p2 + 0x10) = minusOne;
-        *(float *)(p2 + 0xC) = lbl_8055E318 - ((float (*)(int, float, float))fn_80129DC4)(3, callArg, scale * *(float *)(p2 + 8));
+        *(float *)(p2 + 0xC) = lbl_8055E318 - ((float (*)(int, float, float))randFloatInRange)(3, callArg, scale * *(float *)(p2 + 8));
         j++;
         offset += 0x14;
     }
@@ -907,7 +927,7 @@ void fn_80166E68(float *ramp, float newTarget)
 void fn_80166F3C(float *out) {
 #define gClock lbl_8055E318
     /* Store the global clock plus a slot-3 random offset; the caller passes the offset range in the incoming float argument registers. */
-    *out = gClock + ((float (*)(int))fn_80129DC4)(3);
+    *out = gClock + ((float (*)(int))randFloatInRange)(3);
 #undef gClock
 }
 
@@ -989,12 +1009,12 @@ extern "C" void fn_8016707C(void *arg0, register void **arg1) {
             *(int *)((char *)slot + 0x10) = -1;
         }
         entry->unk58 = (void *)0;
-        randValue = ((float (*)(int, float, float))fn_80129DC4)(3, 2.0f, 5.0f);
+        randValue = ((float (*)(int, float, float))randFloatInRange)(3, 2.0f, 5.0f);
         randMax = lbl_805618E0;
         scheduledTime = lbl_8055E318 + randValue;
         randMin = lbl_805618DC;
         entry->unk1C = scheduledTime;
-        nextRandValue = ((float (*)(int, float, float))fn_80129DC4)(3, randMin, randMax);
+        nextRandValue = ((float (*)(int, float, float))randFloatInRange)(3, randMin, randMax);
         entry->unk20 = lbl_8055E318 + nextRandValue;
         return;
     }
@@ -1015,12 +1035,12 @@ extern "C" void fn_8016707C(void *arg0, register void **arg1) {
         }
     }
     entry->unk58 = slot;
-    randValue = ((float (*)(int, float, float))fn_80129DC4)(3, lbl_805618A0, lbl_805618E4);
+    randValue = ((float (*)(int, float, float))randFloatInRange)(3, lbl_805618A0, lbl_805618E4);
     randMax = lbl_805618E0;
     scheduledTime = lbl_8055E318 + randValue;
     randMin = lbl_805618DC;
     entry->unk1C = scheduledTime;
-    nextRandValue = ((float (*)(int, float, float))fn_80129DC4)(3, randMin, randMax);
+    nextRandValue = ((float (*)(int, float, float))randFloatInRange)(3, randMin, randMax);
     entry->unk20 = lbl_8055E318 + nextRandValue;
 }
 
@@ -1320,7 +1340,7 @@ extern float lbl_805618DC;
 extern float lbl_805618E0;
 extern float lbl_8055E318;
 
-extern float fn_80129DC4(int, float, float, float);
+extern float randFloatInRange(int, float, float, float);
 extern void fn_80128670(void *);
 extern void fn_80139E18(void);
 extern unsigned char lbl_8055E32C;

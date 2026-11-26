@@ -7,7 +7,7 @@ extern float lbl_8055FB38;
 extern float lbl_80564E50, lbl_80564E54, lbl_80564E60, lbl_80564E70, lbl_80564E78, lbl_80564E7C, lbl_80564E80, lbl_80564E84, lbl_80564E88;
 extern void *fn_802C110C(int);
 extern void *fn_802C120C(void);
-extern float fn_80129DC4(int, float, float);
+extern float randFloatInRange(int, float, float);
 extern void *lbl_8055FB50;
 extern char lbl_8034AFB8[];
 extern char lbl_8034AFC8[];
@@ -77,19 +77,19 @@ void fn_802C1C34(void *arg0, void *obj, int slot) {
             for (i=0; i<info[15]; i++) {
                 effect = ((void **)info[13])[i];
                 pos[0] = ((float *)data)[9]; pos[1] = ((float *)data)[10]; pos[2] = ((float *)data)[11];
-                pos[0] += fn_80129DC4(4, lbl_80564E7C, lbl_80564E60);
-                pos[2] += fn_80129DC4(4, lbl_80564E7C, lbl_80564E60);
+                pos[0] += randFloatInRange(4, lbl_80564E7C, lbl_80564E60);
+                pos[2] += randFloatInRange(4, lbl_80564E7C, lbl_80564E60);
                 pos[1] += ((float *)info)[11];
                 mat[0]=one; mat[1]=zero; mat[2]=zero;
                 mat[3]=zero; mat[4]=one; mat[5]=zero;
                 mat[6]=zero; mat[7]=zero; mat[8]=one;
-                x = fn_80129DC4(4, lbl_80564E7C, lbl_80564E60);
-                y = bias + fn_80129DC4(4, lbl_80564E7C, lbl_80564E60);
-                vel[0] = fn_80129DC4(4, lbl_80564E7C, lbl_80564E60);
+                x = randFloatInRange(4, lbl_80564E7C, lbl_80564E60);
+                y = bias + randFloatInRange(4, lbl_80564E7C, lbl_80564E60);
+                vel[0] = randFloatInRange(4, lbl_80564E7C, lbl_80564E60);
                 vel[1]=y; vel[2]=x;
-                x = fn_80129DC4(4, lbl_80564E84, lbl_80564E88);
-                y = fn_80129DC4(4, lbl_80564E84, lbl_80564E88);
-                scale[0] = fn_80129DC4(4, lbl_80564E84, lbl_80564E88);
+                x = randFloatInRange(4, lbl_80564E84, lbl_80564E88);
+                y = randFloatInRange(4, lbl_80564E84, lbl_80564E88);
+                scale[0] = randFloatInRange(4, lbl_80564E84, lbl_80564E88);
                 scale[1]=y; scale[2]=x;
                 ((void (*)(void *, float *, float *, float *))(*(int **)effect)[10])(effect, mat, vel, scale);
             }

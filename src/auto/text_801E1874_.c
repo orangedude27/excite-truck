@@ -4,7 +4,7 @@ extern float lbl_8055E3C8;
 __declspec(section ".data") extern float lbl_80558DC4;
 extern float lbl_80562CB0, lbl_80562CB4, lbl_80562CB8, lbl_80562CBC, lbl_80562CC0, lbl_80562CC4;
 extern int fn_80129D18(int, int);
-extern float fn_80129DC4(int, float, float);
+extern float randFloatInRange(int, float, float);
 static inline float WeatherAbs(float x) { return (float)__fabs(x); }
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -182,14 +182,14 @@ void fn_801E1B30(void) {
         if (*(int *)sound == 1 || (unsigned char)gForceWeather != 0) {
             if (fn_80129D18(4, 0xA) < 6 || (unsigned char)gForceWeather != 0) {
                 *(int *)sound = 2;
-                *(float *)(sound + 0x10) = fn_80129DC4(4, lbl_80562CAC, lbl_80562CB0);
+                *(float *)(sound + 0x10) = randFloatInRange(4, lbl_80562CAC, lbl_80562CB0);
             } else {
                 *(int *)sound = 3;
-                *(float *)(sound + 0xC) = currentTime + fn_80129DC4(4, lbl_80562CB4, lbl_80562CB8);
+                *(float *)(sound + 0xC) = currentTime + randFloatInRange(4, lbl_80562CB4, lbl_80562CB8);
             }
-            *(float *)(sound + 8) = fn_80129DC4(4, lbl_80562CB8, lbl_80562CBC);
+            *(float *)(sound + 8) = randFloatInRange(4, lbl_80562CB8, lbl_80562CBC);
         } else if (*(float *)(sound + 4) > *(float *)(sound + 8)) {
-            *(float *)(sound + 8) = fn_80129DC4(4, *(float *)(sound + 4), lbl_80562CC0);
+            *(float *)(sound + 8) = randFloatInRange(4, *(float *)(sound + 4), lbl_80562CC0);
         }
     }
 
@@ -352,7 +352,7 @@ extern float lbl_8055E3C8;
 extern float lbl_80558DC4;
 extern float lbl_80562CB0, lbl_80562CB4, lbl_80562CB8, lbl_80562CBC, lbl_80562CC0, lbl_80562CC4;
 extern int fn_80129D18(int, int);
-extern float fn_80129DC4(int, float, float);
+extern float randFloatInRange(int, float, float);
 /* Request an immediate weather change: fn_801E1B30 clears this flag on its next
  * update and picks a new weather mode without waiting for the usual conditions. */
 void fn_801E1F78(void) {

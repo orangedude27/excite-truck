@@ -14,7 +14,7 @@ extern void *fn_80131810(void *);
 extern void fn_80131818(void *);
 extern void fn_801345D8(void *, int, void *, ...);
 extern int fn_802C6FC0(int, int, int);
-extern float fn_80129DC4(int, float, float);
+extern float randFloatInRange(int, float, float);
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_802C2298(void) {
@@ -70,7 +70,7 @@ extern "C" void fn_802C2298(void) {
             arg2 = lbl_80564E94;
             record->position[1] = values.y;
             record->position[2] = values.z;
-            record->angle = fn_80129DC4(0, arg1, arg2);
+            record->angle = randFloatInRange(0, arg1, arg2);
             fn_801345D8(query, 0x20, (void *)&lbl_8055CFD8, index++);
             entry = ((Iterator *)iterator)->find(query);
         }

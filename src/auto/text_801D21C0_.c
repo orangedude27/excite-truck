@@ -191,7 +191,7 @@ void fn_801D2C70(void *arg0, s32 arg1, void *arg2, s32 arg3) {
 extern f32 lbl_80562A98;
 extern f32 lbl_80562A9C;
 extern f32 lbl_80558DC4[];
-extern f32 fn_80129DC4(s32, f32, f32);
+extern f32 randFloatInRange(s32, f32, f32);
 extern void *fn_801D32E0(s32, s32, f32 *, f32 *, void *, void *);
 extern f32 PSVECDotProduct(f32 *, f32 *);
 extern void PSVECNormalize(f32 *, f32 *);
@@ -264,13 +264,13 @@ void fn_801D2E38(void *a0, void *a1, s32 a2, void *a3, f32 scale) {
             sp14[1] = *(f32 *)(e + 0x48) * d;
             sp14[2] = *(f32 *)(e + 0x4C) * d;
             (*(Vt801E **)obj)->fn48(obj, sp14, sp5C, r24, 0);
-            g3 = fn_80129DC4(4, lbl_80562A90, lbl_80562A94);
-            g2 = fn_80129DC4(4, lbl_80562A90, lbl_80562A94);
-            g1 = fn_80129DC4(4, lbl_80562A90, lbl_80562A94);
+            g3 = randFloatInRange(4, lbl_80562A90, lbl_80562A94);
+            g2 = randFloatInRange(4, lbl_80562A90, lbl_80562A94);
+            g1 = randFloatInRange(4, lbl_80562A90, lbl_80562A94);
             sp14[0] = g1; sp14[1] = g2; sp14[2] = g3;
             if (!((f32)__fabsf(PSVECDotProduct(sp14, sp14)) <= lbl_80558DC4[0])) {
                 PSVECNormalize(sp14, sp14);
-                d = fn_80129DC4(4, lbl_80562A90, *(f32 *)(e + 0x54));
+                d = randFloatInRange(4, lbl_80562A90, *(f32 *)(e + 0x54));
                 sp14[0] *= d; sp14[1] *= d; sp14[2] *= d;
                 (*(Vt801E **)obj)->fn48(obj, sp14, sp5C, r24, 0);
             }

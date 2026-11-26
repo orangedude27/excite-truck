@@ -95,7 +95,7 @@ extern float lbl_80561258;
 #pragma push
 #pragma processor 750
 #pragma dont_inline on
-float fn_80129DC4(int rngSlot, float minValue, float maxValue) {
+float randFloatInRange(int rngSlot, float minValue, float maxValue) {
     /* Returns a random float in [minValue, maxValue) using the given RNG slot. */
     float f = fn_80129D18(rngSlot, 100000);
     float diff = maxValue - minValue;

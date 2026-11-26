@@ -111,7 +111,7 @@ extern const char lbl_8033B90C[];
 void fn_80128668(void*);
 #define Mem_freeObject fn_80128668 /* frees a game object through the pool allocator */
 void fn_801FEDA4(void*);
-float fn_80129DC4(int, void*, float, float);
+float randFloatInRange(int, void*, float, float);
 extern float lbl_80563034;
 extern const char lbl_8033B790[];
 void* memset(void*, int, unsigned long);
@@ -912,7 +912,7 @@ extern "C" void fn_801FD5E8(void* arg0, float farg0) {
 }
 #pragma pop
 extern "C" void fn_801FEDA4(void*);
-extern "C" float fn_80129DC4(int, void*, float, float);
+extern "C" float randFloatInRange(int, void*, float, float);
 extern "C" float fn_801E7E24(void);
 extern "C" void* memset(void*, int, unsigned long);
 extern "C" const char lbl_8033B790[];
@@ -994,7 +994,7 @@ extern "C" void fn_801FE3B8(void *container, void *arg1) {
     entry = (char *)container + count * 8;
     second = *(float *)(source + 0x318);
     *(char **)(entry + 4) = source;
-    value = fn_80129DC4(0, entry, first, second);
+    value = randFloatInRange(0, entry, first, second);
     count = *(int *)((char *)container + 0x34);
     entry = (char *)container + count * 8;
     *(float *)(entry + 8) = value;
@@ -1017,7 +1017,7 @@ extern "C" void fn_801FE448(void *spawners) {
     #define kSpawnZero lbl_80563034
     #define getDeltaTime fn_801E7E24
     #define spawnFromPool fn_801FEB58
-    #define randomInRange fn_80129DC4
+    #define randomInRange randFloatInRange
     float deltaTime = getDeltaTime();
     /* Advances each spawner's countdown by the frame delta; when a countdown
      * expires, spawns its pool object and reschedules it with a random delay. */
@@ -1048,7 +1048,7 @@ extern "C" void fn_801FE448(void *spawners) {
 #pragma scheduling on
 #pragma pop
 extern "C" void DrawModelInstance(int);
-float fn_80129DC4(int, void *, float, float);
+float randFloatInRange(int, void *, float, float);
 extern "C" int fn_801FE88C(void *, void *);
 extern const char lbl_8033B638[];
 extern const char lbl_8033B654[];
@@ -1150,7 +1150,7 @@ extern "C" void fn_801FE7E8(void *spawners) {
             if (remaining < threshold) {
                 typedef float (*RandomInRangeFn)(int, float, float);
                 fn_801FEDA4(entry);
-                entry->nextSpawn = ((RandomInRangeFn)fn_80129DC4)(0, entry->minDelay, entry->maxDelay);
+                entry->nextSpawn = ((RandomInRangeFn)randFloatInRange)(0, entry->minDelay, entry->maxDelay);
             }
         }
         ++entry;

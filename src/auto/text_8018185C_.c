@@ -444,7 +444,7 @@ extern float lbl_80561D38;
 extern float lbl_80561D3C;
 extern float lbl_80561D0C;
 extern float lbl_80561CFC;
-extern float fn_80129DC4(int, float, float);
+extern float randFloatInRange(int, float, float);
 extern float fn_802798E8(int);
 extern void fn_802799EC(int, float);
 #pragma push
@@ -457,8 +457,8 @@ void fn_80181EAC(int object) {
     float currentValue;
     float randomUpper;
     float randomLower;
-    randomUpper = fn_80129DC4(4, lowerBound, upperBound);
-    randomLower = fn_80129DC4(4, lbl_80561D0C, lbl_80561CFC);
+    randomUpper = randFloatInRange(4, lowerBound, upperBound);
+    randomLower = randFloatInRange(4, lbl_80561D0C, lbl_80561CFC);
     currentValue = fn_802798E8(object);
     if ((currentValue > randomUpper) && (currentValue > randomLower))
         fn_802799EC(object, currentValue - randomLower);

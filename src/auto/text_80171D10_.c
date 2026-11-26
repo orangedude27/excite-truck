@@ -120,7 +120,7 @@ typedef struct CrushMaster {
 } CrushMaster;
 #pragma cplusplus reset
 extern double fn_8002F234(float), cos(double), sin(double);
-extern float fn_80129DC4(int,float,float);
+extern float randFloatInRange(int,float,float);
 extern unsigned long long fn_80171FF0(void *,int,float,float);
 extern int fn_80171EF8(const void *,const void *);
 extern float lbl_80558DC4[];
@@ -279,7 +279,7 @@ int fn_80171EF8(const void *arg0, const void *arg1) {
 #pragma processor 750
 unsigned long long fn_80171FF0(void *arg0, int arg1, float angle, float step) {
     extern float lbl_80561A44, lbl_80561A48;
-    extern float fn_80129DC4(int, float, float);
+    extern float randFloatInRange(int, float, float);
     extern double cos(double);
     extern double sin(double);
     extern int fn_80171E3C(void *);
@@ -291,7 +291,7 @@ unsigned long long fn_80171FF0(void *arg0, int arg1, float angle, float step) {
     while (arg1-- > 0) {
         off[0] = angle;
         off[1] = zero;
-        rad = fn_80129DC4(3, zero, lbl_80561A48);
+        rad = randFloatInRange(3, zero, lbl_80561A48);
         c = (float)cos(rad);
         s = (float)sin(rad);
         off[1] = off[0] * s + off[1] * c;
@@ -2355,7 +2355,7 @@ void fn_80175B0C(char *arg0) {
                 d[0] *= inv;
                 d[1] *= inv;
             }
-            rad = fn_80129DC4(3, k * a, k * b);
+            rad = randFloatInRange(3, k * a, k * b);
             dx = d[0];
             c = (float)cos(rad);
             s = (float)sin(rad);
@@ -2440,7 +2440,7 @@ extern "C" void fn_80175D40(void *arg0) {
       d[0]*=inv;
       d[1]*=inv;
      }
-     rad=fn_80129DC4(3,k*a,k*b);
+     rad=randFloatInRange(3,k*a,k*b);
      dx=d[0];
      c=(float)cos(rad);
      s=(float)sin(rad);

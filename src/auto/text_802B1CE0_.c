@@ -39,7 +39,7 @@ extern int lbl_8055F9B4;
 extern int lbl_8055F9B0;
 extern float lbl_80564C00, lbl_80564C04, lbl_80564C08;
 typedef struct { float x, y, z; } ParticleVec3;
-extern float fn_80129DC4(float, float);
+extern float randFloatInRange(float, float);
 extern double cos(float);
 extern double sin(float);
 extern char lbl_8034A288[];
@@ -537,60 +537,84 @@ void fn_802B28BC(int *, int);
 void *memset(void *, int, unsigned int);
 #pragma push
 #pragma use_lmw_stmw off
-void fn_802B257C(void *arg0) {
-    struct ArgLayout { char pad[8]; int shuffle[0x80]; int output[0x80]; };
-    int total = 0;
-    int i, idx;
-    for (i = 0; i < *(int *)((char *)arg0 + 0x40C); i++) {
-        total += *(*(int ***)((char *)arg0 + 0x408))[i];
-    }
-    if (total > 0x80) {
-        idx = fn_80129D90(0, 0, *(int *)((char *)arg0 + 0x40C));
-        while (total > 0x80) {
-            int *p = (*(int ***)((char *)arg0 + 0x408))[idx];
-            if (*p > 0) {
-                *p = *p - 1;
-                total--;
-            }
-            idx = (idx + 1) % *(int *)((char *)arg0 + 0x40C);
-        }
-    }
-    memset(((struct ArgLayout *)arg0)->output, 0, 0x200);
+void fn_802B257C(void *arg0)
+{
+  struct ArgLayout
+  {
+    char pad[8];
+    int shuffle[0x80];
+    int output[0x80];
+  };
+  int j;
+  int total = 0;
+  int i;
+  unsigned int idx;
+  for (i = 0; i < (*((int *) (((char *) arg0) + 0x40C))); i++)
+  {
+    total += *(*((int ***) (((char *) arg0) + 0x408)))[i];
+  }
+
+  if (total > 0x80)
+  {
+    idx = fn_80129D90(0, 0, *((int *) (((char *) arg0) + 0x40C)));
+    while (total > 0x80)
     {
-        int dbl;
-        int pos = 0;
-        int bytePos = 0;
-        int k;
-        i = 0x80 - total;
-        dbl = i * 2;
-        for (k = 0; k < *(int *)((char *)arg0 + 0x40C); k++) {
-            int *obj = (*(int ***)((char *)arg0 + 0x408))[k];
-            int lim0 = dbl / *(int *)((char *)arg0 + 0x40C);
-            int lim = i;
-            if (lim0 < lim)
-                lim = lim0;
-            if (lim > 0) {
-                int n = ((struct ArgLayout *)arg0)->shuffle[k & 0x7F] % lim;
-                int j;
-                for (j = 0; j < n; j++) {
-                    *(int *)((char *)arg0 + bytePos + 0x208) = 0;
-                    bytePos += 4;
-                    pos++;
-                }
-                i -= n;
-            }
-            {
-                int j;
-                for (j = 0; j < *obj; j++) {
-                    *(int **)((char *)arg0 + bytePos + 0x208) = obj;
-                    bytePos += 4;
-                    pos++;
-                }
-            }
-        }
+      int *p = (*((int ***) (((char *) arg0) + 0x408)))[idx];
+      if (((*p) - 1) >= 0)
+      {
+        *p = (*p) - 1;
+        total--;
+      }
+      idx = (idx + 1) % (*((int *) (((char *) arg0) + 0x40C)));
     }
-    if (*(unsigned char *)((char *)arg0 + 4) == 0)
-        fn_802B28BC((int *)((char *)arg0 + 0x208), 0x80);
+
+  }
+  memset(((struct ArgLayout *) arg0)->output, 0, 0x200);
+  {
+    int bytePos = ((((0 & 0xFFFFFFFFu) & 0xFFFFFFFFu) & 0xFFFFFFFFu) & 0xFFFFFFFFu) & 0xFFFFFFFFu;
+    int dbl;
+    int lim0 = dbl / (*((int *) (((char *) arg0) + 0x40C)));
+    int pos = 0;
+    int k;
+    i = 0x80 - total;
+    dbl = i * 2;
+    for (k = 0; k < (*((int *) (((char *) arg0) + 0x40C))); k++)
+    {
+      int *obj = (*((int ***) (((char *) arg0) + 0x408)))[k];
+      char lim = i;
+      if (lim0 <= (lim - 1))
+      {
+        lim = lim0;
+      }
+      if (lim > 0)
+      {
+        int n = ((struct ArgLayout *) arg0)->shuffle[k & 0x7F] % lim;
+        for (j = 0; j < n; j++)
+        {
+          *((int *) ((((char *) arg0) + bytePos) + 0x208)) = 0;
+          bytePos += 4;
+          pos++;
+        }
+
+        i -= n;
+      }
+      {
+        int j;
+        for (j = 0; j < (*obj); j++)
+        {
+          *((int **) ((((char *) arg0) + bytePos) + 0x208)) = obj;
+          bytePos += 4;
+          pos++;
+        }
+
+      }
+    }
+
+  }
+  if ((*((unsigned char *) (((char *) arg0) + 4))) == 0)
+  {
+    fn_802B28BC((int *) (((char *) arg0) + 0x208), 0x80 & 0xFFFFFFFF);
+  }
 }
 #pragma pop
 
@@ -702,8 +726,8 @@ extern "C" void *fn_802B2958(void *arg0, void *arg1) {
     zero = 0.0;
     one = 1.0;
     for (i = 0; i < 16; i++, entry += 10) {
-        entry[9] = ((float (*)(int, float, float))fn_80129DC4)(0, *(float *)(obj + 0x298), *(float *)(obj + 0x29C));
-        angle = ((float (*)(int, float, float))fn_80129DC4)(0, lbl_80564C00, lbl_80564C08);
+        entry[9] = ((float (*)(int, float, float))randFloatInRange)(0, *(float *)(obj + 0x298), *(float *)(obj + 0x29C));
+        angle = ((float (*)(int, float, float))randFloatInRange)(0, lbl_80564C00, lbl_80564C08);
         cosine = (float)cos(angle);
         sine = (float)sin(angle);
         negSine = -sine;
@@ -760,7 +784,7 @@ int fn_802B2E00(void *container) {
 extern double cos(float);
 extern double sin(float);
 extern double fn_8002EFB4(float, double);
-extern float fn_80129DC4(float, float);
+extern float randFloatInRange(float, float);
 extern float fn_801E7E18(void);
 extern void fn_801F1C24(float *);
 extern void fn_802C28C0(void);
@@ -815,10 +839,10 @@ outer_body:
             vertical = (float)dvert;
             j = 0;
             do {
-                radius = ((float (*)(int, float, float))fn_80129DC4)(
+                radius = ((float (*)(int, float, float))randFloatInRange)(
                     0, *(float *)(obj + 0x298), *(float *)(obj + 0x29C));
                 entry[9] = radius;
-                angle = ((float (*)(int, float, float))fn_80129DC4)(
+                angle = ((float (*)(int, float, float))randFloatInRange)(
                     0, lbl_80564C00, lbl_80564C08);
                 cosine = (float)cos(angle);
                 sine = (float)sin(angle);
