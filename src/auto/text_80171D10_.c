@@ -2639,7 +2639,7 @@ extern float lbl_80561AA4, lbl_80561AA8, lbl_80561AAC, lbl_80561AB0;
 /* Initialise a freshly allocated crushmaster from the config file: set up the
    per-car radar records, load the crush tuning values into lbl_8043038C, read
    the radar pair overrides, make the round's DSA player and reset the round. */
-extern "C" void initCrushMaster(unsigned char *crush) {
+/* Initialize a freshly allocated crushmaster from the config file: set up per-car radar records, load crush tuning values and radar overrides, then create the round's DSA player and reset the round. */ extern "C" void initCrushMaster(unsigned char *crush) {
     struct { const char *p; } labelsBox;
     labelsBox.p = lbl_80330F48;
     const char *&labels = labelsBox.p;
