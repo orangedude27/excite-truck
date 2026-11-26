@@ -273,58 +273,58 @@ extern "C" f32 selectCameraPitch(void *__restrict camera) {
         virtual void *getMethod();
     };
 
-    f32 temp_f31;
-    f32 f30;
-    f32 f1;
-    f32 f2;
-    f32 diff;
-    f32 t;
-    int c;
-    int flag;
+    f32 interpolatedPitch;
+    f32 pitch;
+    f32 storedAngle;
+    f32 blendBase;
+    f32 angleDelta;
+    f32 blend;
+    int elevationAllowed;
+    int elevated;
 
-    char *sub = *(char **)((char *)camera + 0x140);
-    f1 = !(*(f32 *)(sub + 0x258C) > 0.001f) ? lbl_8055F534 : lbl_8055F530;
-    f30 = fn_8026EAEC(f1);
+    char *attachedObj = *(char **)((char *)camera + 0x140);
+    storedAngle = !(*(f32 *)(attachedObj + 0x258C) > 0.001f) ? lbl_8055F534 : lbl_8055F530;
+    pitch = fn_8026EAEC(storedAngle);
 
-    f2 = lbl_8055F528;
-    diff = lbl_8055F52C - f2;
-    t = *(f32 *)((char *)camera + 0x13C);
-    temp_f31 = fn_8026EAEC(f2 + t * diff);
+    blendBase = lbl_8055F528;
+    angleDelta = lbl_8055F52C - blendBase;
+    blend = *(f32 *)((char *)camera + 0x13C);
+    interpolatedPitch = fn_8026EAEC(blendBase + blend * angleDelta);
 
-    sub = *(char **)((char *)camera + 0x140);
-    flag = 0;
-    c = 1;
-    int cond2 = *(f32 *)(sub + 0x258C) > 0.001f;
-    if (!cond2 && *(u8 *)(sub + 0x259C) == 0) {
-        c = 0;
+    attachedObj = *(char **)((char *)camera + 0x140);
+    elevated = 0;
+    elevationAllowed = 1;
+    int angleSignificant = *(f32 *)(attachedObj + 0x258C) > 0.001f;
+    if (!angleSignificant && *(u8 *)(attachedObj + 0x259C) == 0) {
+        elevationAllowed = 0;
     }
-    if (c != 0) {
-        int cond3 = *(f32 *)(sub + 0x25E0) > lbl_80563E50;
-        if (cond3 != 0) {
-            flag = 1;
+    if (elevationAllowed != 0) {
+        int aboveHalf = *(f32 *)(attachedObj + 0x25E0) > lbl_80563E50;
+        if (aboveHalf != 0) {
+            elevated = 1;
         }
     }
 
     if (*(s32 *)((char *)camera + 4) != *(s32 *)((char *)camera + 0x10)) {
-        f30 = flag ? f30 : temp_f31;
+        pitch = elevated ? pitch : interpolatedPitch;
     } else if (fn_801769F8() != 0 || fn_800216D0() != 0 || *(s32 *)(*(char **)((char *)camera + 0x140) + 0x2620) < 1) {
-        f30 = *(f32 *)((char *)camera + 0x194);
+        pitch = *(f32 *)((char *)camera + 0x194);
     } else {
-        if (flag) {
+        if (elevated) {
             void *obj = fn_801B2ED0(*(s32 *)(*(char **)((char *)camera + 0x140) + 0x1EC));
             void *res = ((Obj *)obj)->getMethod();
             if (*(s32 *)((char *)res + 0x24) != 1) {
-                f2 = *(f32 *)((char *)camera + 0x194);
-                f30 = f2 + lbl_80563E60 * (f30 - f2);
+                blendBase = *(f32 *)((char *)camera + 0x194);
+                pitch = blendBase + lbl_80563E60 * (pitch - blendBase);
                 goto end;
             }
         }
-        f2 = *(f32 *)((char *)camera + 0x194);
-        f30 = f2 + lbl_80563E64 * (temp_f31 - f2);
+        blendBase = *(f32 *)((char *)camera + 0x194);
+        pitch = blendBase + lbl_80563E64 * (interpolatedPitch - blendBase);
     }
 
 end:
-    return f30;
+    return pitch;
 }
 #pragma cplusplus reset
 #pragma pop
