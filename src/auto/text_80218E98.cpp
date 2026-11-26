@@ -5125,7 +5125,7 @@ extern "C" void fn_80220B5C(void *widget, s32 canvas) {
 
 #pragma push
 #pragma processor 750
-extern "C" void drawSliderBar(void *arg0)
+/* Draw a slider bar's groove and value-scaled fill, highlighted when the widget is focused. */ extern "C" void drawSliderBar(void *arg0)
 {
   /* Draw the slider bar fn_80220778 builds: the groove (slider1.img, +0x248) at
    * full widget width, then the fill (slider2.img, +0x24C) inset by 5px and
