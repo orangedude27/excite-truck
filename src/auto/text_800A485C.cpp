@@ -3803,8 +3803,9 @@ extern "C" s32 fn_800B317C(s32, s32);
 extern "C" s32 VFiPFPATH_cmpName(void *, s32, s32);
 #pragma push
 #pragma use_lmw_stmw off
-// Checks a directory/path entry against requested name, attributes and state; returns 0 if it matches, 1 if rejected.
-/* Check a FAT directory entry against a requested name and attribute filter; returns 0 on match, 1 when rejected. */ extern "C" s32 VFiPFDIR_CheckEntry(u8 *entry, u8 *source, s32 compareArg, s32 attrMask, u32 requiredAttr, s32 excludedAttr, s32 *matchCount, s32 arg_sp0) {
+/* Check a candidate FAT directory entry against a requested name and attribute filter.
+ * Returns 0 on match, 1 when rejected, counting each rejection in *rejectCount. */
+extern "C" s32 VFiPFDIR_CheckEntry(u8 *candidate, u8 *fatEntry, s32 searchKey, s32 attrMask, u32 requiredAttr, s32 excludedAttr, s32 *rejectCount, s32 arg_sp0) {
  s32 isVolumeLabel;
  s32 reject = 1, attrValid = 1;
  u8 shortName[13];
@@ -3818,24 +3819,24 @@ extern "C" s32 VFiPFPATH_cmpName(void *, s32, s32);
  } else if (requiredAttr != 0x7f && (u32)attrMask != requiredAttr && (!(attrMask & requiredAttr) || (attrMask & excludedAttr))) attrValid = 0;
  if (!attrValid) { reject = 1; goto done; }
  isVolumeLabel = attrMask & 8;
- if (isVolumeLabel) { *(u8*)(&entry[0x20a]) = 0; *(u16*)entry = 0; }
- fn_800B3BEC(&entry[0x20e], (u8*)source, *(u8*)((u8*)source + 0xb));
- if (*(s8*)(&entry[0x20e]) == 5) *(s8*)(&entry[0x20e]) = -27;
- if (*(u8*)(&entry[0x20a]) && *(u8*)(&entry[0x20b]) == 1) {
-  fn_800B3A70(shortName, &entry[0x20e], 0);
+ if (isVolumeLabel) { *(u8*)(&candidate[0x20a]) = 0; *(u16*)candidate = 0; }
+ fn_800B3BEC(&candidate[0x20e], (u8*)fatEntry, *(u8*)((u8*)fatEntry + 0xb));
+ if (*(s8*)(&candidate[0x20e]) == 5) *(s8*)(&candidate[0x20e]) = -27;
+ if (*(u8*)(&candidate[0x20a]) && *(u8*)(&candidate[0x20b]) == 1) {
+  fn_800B3A70(shortName, &candidate[0x20e], 0);
   checksum = 0;
   for (i = 0; i < 11; i++) {
   next = ((checksum & 0xfe) >> 1) + ((checksum & 1) ? 0x80 : 0) + shortName[i];
   checksum = next & 0xff;
  }
-  if (*(u8*)(&entry[0x20c]) == checksum) reject = fn_800B317C((s32)entry, compareArg) != 0;
+  if (*(u8*)(&candidate[0x20c]) == checksum) reject = fn_800B317C((s32)candidate, searchKey) != 0;
  }
  if (reject == 1) {
   if (((u32)lbl_803D2140[0x60/4] & 2U) == 2U && !isVolumeLabel) {
-   if (!VFiPFPATH_cmpName(&entry[0x20e], compareArg, 0)) reject = 0;
-  } else if (!VFiPFPATH_cmpName(&entry[0x20e], compareArg, 1)) reject = 0;
+   if (!VFiPFPATH_cmpName(&candidate[0x20e], searchKey, 0)) reject = 0;
+  } else if (!VFiPFPATH_cmpName(&candidate[0x20e], searchKey, 1)) reject = 0;
  }
- if (reject == 1) ++*matchCount;
+ if (reject == 1) ++*rejectCount;
 done:
  return reject;
 }
