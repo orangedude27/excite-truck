@@ -55,7 +55,7 @@ __declspec(section ".sdata") extern const char lbl_8055C6C0[];
 extern char lbl_80347690[];
 extern const char carLayoutAllocLabel[4];
 extern const char boundsResourceName[4];
-extern const char lbl_8055C6D8[4];
+extern const char minBoundKeyFormat[4];
 extern const char lbl_8055C6E0[4];
 typedef struct Vec3_80279004 { f32 x, y, z; } Vec3_80279004;
 #pragma cplusplus on
@@ -343,7 +343,7 @@ extern "C" void* loadCarResource(s32 name, s32 arg1) {
         boundsRes = ((File_Vtable_80279004*)boneFile)->getRes(boundsResourceName);
         boundsPtr = carObj;
         for (boundIndex = 0; boundIndex < 0x20; boundIndex++) {
-            sprintf(key, lbl_8055C6D8, boundIndex);
+            sprintf(key, minBoundKeyFormat, boundIndex);
             minVec = boundsRes->getVec(key);
             *(f32*)(boundsPtr + 0x2138) = minVec.x;
             *(f32*)(boundsPtr + 0x213C) = minVec.y;
