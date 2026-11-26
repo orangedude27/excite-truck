@@ -974,7 +974,7 @@ void fn_802D5B8C(void *arg0) {
 /* Build and set the GX vertex descriptor list for an indexed display list from
  * the surface attribute flags: PNMTXIDX is direct, POS/NRM/CLR0/TEX0/TEX1 are
  * INDEX8 or INDEX16 per flag, terminated by GX_VA_NULL. */
-void fn_802D5DE8(u32 flags) {
+void drSetVtxDescFromFlags(u32 flags) {
     int vtxDescList[54];
     int *desc;
     memset(vtxDescList, 0, 0xD8);
@@ -1125,13 +1125,13 @@ void fn_802D62FC(void *__restrict surface, s32 *outOffset, s32 *outSize) {
 #define vertexFormatCount   gVertexFormatCount
 #define vertexFormatDlStart gVertexFormatDlStart
 #define vertexFormatDlEnd   gVertexFormatDlEnd
-#define setVtxDescFromFlags fn_802D5DE8
+#define setVtxDescFromFlags drSetVtxDescFromFlags
     extern s32 gVertexFormatCount;
     extern s32 gVertexFormatDlStart;
     extern s32 gVertexFormatDlEnd;
     extern void GXBeginDisplayList(void *, u32);
     extern u32 GXEndDisplayList(void);
-    extern void fn_802D5DE8(u32);
+    extern void drSetVtxDescFromFlags(u32);
     register u8 *desc = (u8 *)surface;
     register CacheEntry *scan = (CacheEntry *)vertexFormatCache;
     register u8 key = desc[9];
