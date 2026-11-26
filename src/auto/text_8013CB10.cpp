@@ -2621,7 +2621,7 @@ extern "C" void fn_80140D1C(void *arg0, void *arg1, void *arg2) {
  * with the ready widget (2) and pause it again once the row's done flag
  * (+0x118) is set (3).  The animation manager is advanced afterwards, and the
  * row reports whether it is still running. */
-extern "C" u32 fn_80140F10(void *panel, void *item) {
+extern "C" u32 updateResultsOverlayRow(void *panel, void *item) {
 #define formatInt fn_801345D8
 #define formatScore fn_801308F4
 #define formatTimeMMSS fn_80130980
@@ -2878,7 +2878,7 @@ extern "C" void fn_801421D8(void *, void *);
 extern "C" s32 fn_8013CBC0(void *, s32);
 extern "C" s32 fn_8013D1F0(s32);
 extern "C" void fn_8013EB0C(void *, s32);
-extern "C" u32 fn_80140F10(void *, void *);
+extern "C" u32 updateResultsOverlayRow(void *, void *);
 extern "C" void fn_80141C84(void *, s32);
 extern "C" f32 fn_80141C9C(f32);
 extern "C" void fn_80141CC0(char *);
@@ -3075,7 +3075,7 @@ extern "C" void fn_80141574(char *arg0) {
         v = v < f0 ? f0 : v;
         *(f32 *)(self + 0x250) = v;
         if ((f32)__fabs((f64)v) <= lbl_80558DC4[0]) {
-            fn_80140F10(self + 0x134, (void *)(*(u8 **)(self + 0xB8) + fn_80179630(0) * 0x12C));
+            updateResultsOverlayRow(self + 0x134, (void *)(*(u8 **)(self + 0xB8) + fn_80179630(0) * 0x12C));
         }
     }
 }
