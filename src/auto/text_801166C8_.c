@@ -5317,14 +5317,14 @@ typedef struct { u32 old; u32 cur; } Idx8011FC2C;
    second size and 0x100000 set in both `flags` and `flags2` adds the optional
    group.  Returns what the last group decoded reported: the main group's byte
    count in words when the two extra groups are skipped. */
-u32 decodeCompressedFrameBands(void *bands, s32 arg1, s32 arg2, s32 *blocks, s32 arg4, s32 streams, s32 flags, s32 flags2) {
+/* Decode the next block of each band group in one frame of the compressed sample stream, rotating the band set and writing the decoded blocks into `outBlocks`. */ u32 decodeCompressedFrameBands(void *bandTable, s32 arg1, s32 arg2, s32 *outBlocks, s32 arg4, s32 bitStreams, s32 flags, s32 flags2) {
     extern s32 *fn_8011E0B4();
     u32 result;
     Idx8011FC2C idx;
     u32 next;
     s32 *block;
     s32 *out;
-    u32 (*ents)[12] = (u32 (*)[12])bands;
+    u32 (*ents)[12] = (u32 (*)[12])bandTable;
     idx.old = ents[0][5];
     next = idx.old ^ 1;
     if ((s32)ents[next][7] != 0) {
@@ -5332,13 +5332,13 @@ u32 decodeCompressedFrameBands(void *bands, s32 arg1, s32 arg2, s32 *blocks, s32
     }
     idx.cur = ents[0][5];
     result = 0;
-    block = blocks;
+    block = outBlocks;
     if ((flags2 & 0x100000) != 0) {
         if ((flags & 0x100000) != 0) {
             fn_8011E0B4((s32)ents[idx.cur][16], (s32)ents[idx.old][16],
                         (s32)ents[0][1], (s32)ents[0][2],
                         (s32)ents[idx.old][17],
-                        blocks + 1, arg4, arg1, arg2, 1, streams, flags, &result);
+                        outBlocks + 1, arg4, arg1, arg2, 1, bitStreams, flags, &result);
         }
         block = (s32 *)((u8 *)block + *block);
     }
@@ -5347,7 +5347,7 @@ u32 decodeCompressedFrameBands(void *bands, s32 arg1, s32 arg2, s32 *blocks, s32
     out = fn_8011E0B4((s32)ents[idx.cur][7], (s32)ents[idx.old][7],
                       (s32)ents[0][1], (s32)ents[0][2],
                       (s32)ents[idx.old][8],
-                      block, arg4, arg1, arg2, 1, streams, flags, &result);
+                      block, arg4, arg1, arg2, 1, bitStreams, flags, &result);
     if ((flags & 0x8000) == 0) {
         out = (s32 *)((u8 *)block + *(volatile s32 *)((u8 *)block - 4) - 4);
     }
@@ -5356,12 +5356,12 @@ u32 decodeCompressedFrameBands(void *bands, s32 arg1, s32 arg2, s32 *blocks, s32
         out = fn_8011E0B4((s32)ents[idx.cur][10], (s32)ents[idx.old][10],
                           (s32)ents[0][3], (s32)ents[0][4],
                           (s32)ents[idx.old][11],
-                          out, arg4, arg1, arg2, 2, streams, flags, &result);
+                          out, arg4, arg1, arg2, 2, bitStreams, flags, &result);
         result = 0;
         fn_8011E0B4((s32)ents[idx.cur][13], (s32)ents[idx.old][13],
                     (s32)ents[0][3], (s32)ents[0][4],
                     (s32)ents[idx.old][14],
-                    out, arg4, arg1, arg2, 2, streams, flags, &result);
+                    out, arg4, arg1, arg2, 2, bitStreams, flags, &result);
     }
     return result;
 }
@@ -8636,9 +8636,8 @@ void fn_80125664(void *outp, void *stridep, void *inp, void *quantp) {
     s16 *in = inp;
     s32 *quant = quantp;
     s32 tmp[64];
-    s32 *t;
+    s32 *t = tmp;
     s32 i;
-    t = tmp;
     for (i = 0; i < 8; i++) {
         if ((in[8] | in[24] | in[16] | in[32] | in[48] | in[40] | in[56]) == 0) {
             s32 dc = (in[0] * quant[0]) >> 11;
