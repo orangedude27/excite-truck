@@ -1099,7 +1099,7 @@ extern int fn_800241CC(int); /* abs(): (v >> 31) ^ v - (v >> 31) */
    see fn_800241CC = abs) moves a whole pixel at a time in `dir`, while the
    minor coordinate accumulates the slope as a float and is truncated at each
    point. */
-void gxDrawLine(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
+/* Draw a line between two canvas points with gxPoint: step single pixels for axis-aligned lines, otherwise walk the major axis with a floating-point DDA. */ void gxDrawLine(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
     s32 dx, dy, stepPos, stepInc, stepEnd, dir, x, y;
     dx = x1 - x0;
     x = x0;
