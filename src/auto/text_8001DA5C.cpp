@@ -329,7 +329,7 @@ extern "C" u32 lbl_80558D00;
  * pane - together with the "score_denominator" pane while fn_800167F4()
  * reports one of the two plain score modes.
  */
-extern "C" void fn_8001E078(void* overlay, s32 arg1, s32 value) {
+extern "C" void updateScoreOverlay(void* overlay, s32 arg1, s32 value) {
     register char *strings = lbl_802FDB68;
     register s32 colorRow;
     register s32 texHandle;
