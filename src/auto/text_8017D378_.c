@@ -459,14 +459,14 @@ done:
    placed yet it is dropped on a random spot beside a live target, upright and lifted off
    that target's height.  Afterwards the ground under it is looked up: with none below the
    body asks to be repositioned, and the rigid-body step runs. */
-void stepBallBody(void *arg0) {
+/* One simulation step of a ball body: reposition it when asked, keep it glued to its target while simulation is off, drop it beside the target when first placed, then query ground and step the rigid body. */ void stepBallBody(void *arg0) {
     BallBody *body = (BallBody *)arg0;
     struct BodyTransform { f32 rotation[9]; f32 translation[3]; } xf; /* one 12-float transform */
     f32 idlePos[3], spawnPos[3];
     WordVec3 posWords;
     f32 attn[3];
     Vec2 spot;
-    unsigned tag;
+    unsigned targetTag;
     int mode;
     int allowed;
     int flags;
@@ -501,9 +501,9 @@ void stepBallBody(void *arg0) {
         body->needsReposition = 0;
     }
     if (body->followMode == 0 && body->decideTime < fn_8017D378()) {
-        tag = *(unsigned *)((char *)fn_8017960C(body->targetId) + 0x10);
+        targetTag = *(unsigned *)((char *)fn_8017960C(body->targetId) + 0x10);
         mode = 1;
-        if (tag == FOURCC_ACAR) mode = 2;
+        if (targetTag == FOURCC_ACAR) mode = 2;
         body->followMode = mode;
     }
     flags = lbl_8055D430;
