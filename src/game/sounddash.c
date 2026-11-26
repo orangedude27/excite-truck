@@ -6,7 +6,7 @@ extern void fn_8020BCE4(void);
 extern void fn_802E30C8(const char *, ...);
 
 /* Debug-dash state: display mode and the currently selected entry index. */
-extern int soundDashMode, lbl_8055EE28;
+extern int soundDashMode, soundDashSelectedIndex;
 /* Volume step, lower clamp and upper clamp. */
 extern float lbl_805632C8, lbl_805632CC, lbl_805632D0;
 /* "writing sounds.txt..." and the "SOUND DASH" overlay title. */
@@ -77,16 +77,16 @@ extern void closeFileHandle(int *);
     case SOUND_DASH_CMD_NEXT:
         if (soundDashMode != 0) break;
         index = fn_8020A76C() - 1;
-        lbl_8055EE28 = index < lbl_8055EE28 + 1 ? index : lbl_8055EE28 + 1;
+        soundDashSelectedIndex = index < soundDashSelectedIndex + 1 ? index : soundDashSelectedIndex + 1;
         return 1;
     case SOUND_DASH_CMD_PREV:
         if (soundDashMode != 0) break;
-        index = lbl_8055EE28 - 1;
-        lbl_8055EE28 = index & ~(index >> 31);
+        index = soundDashSelectedIndex - 1;
+        soundDashSelectedIndex = index & ~(index >> 31);
         return 1;
     case SOUND_DASH_CMD_VOL_DOWN:
         if (soundDashMode != 0) break;
-        index = lbl_8055EE28;
+        index = soundDashSelectedIndex;
         if (index < fn_8020A76C()) {
             entry = (VoiceSndEntry *)voiceSndGetEntry(index);
             volume = entry->volume - lbl_805632C8;
@@ -97,7 +97,7 @@ extern void closeFileHandle(int *);
         break;
     case SOUND_DASH_CMD_VOL_UP:
         if (soundDashMode != 0) break;
-        index = lbl_8055EE28;
+        index = soundDashSelectedIndex;
         if (index < fn_8020A76C()) {
             entry = (VoiceSndEntry *)voiceSndGetEntry(index);
             volume = lbl_805632C8 + entry->volume;
@@ -181,7 +181,7 @@ void drawSoundDash(void) {
                 sprintf(scratch.sp8, (const char *)&lbl_8055B5C8, *(float *)(sourceText + 0x20));
             }
             textColor = -0x100;
-            if (entryIndex == lbl_8055EE28)
+            if (entryIndex == soundDashSelectedIndex)
                 textColor = 0xFF2D2DC8;
             valueX = 0x14;
             if (isValueColumn != 0)
