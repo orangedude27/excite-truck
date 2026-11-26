@@ -186,7 +186,7 @@ extern "C" const char lbl_8031E83C[];
 
 static inline s32 fn_800C2DBC_mul20(s32 a, s32 b) { return (s32)(((s64)a * b) >> 20); }
 /* The audio-stream context fn_800C3CDC allocates (0xED78 bytes); these are the
- * fields the stream-header reader (fn_800BEE64) fills and fn_800BEDE0 reports. */
+ * fields the stream-header reader (parseAudioStreamHeader) fills and fn_800BEDE0 reports. */
 struct VFiPFCard {
     s8 unk0;      /* channels: 1 mono, 2 stereo */
     u8 pad1[3];
@@ -578,7 +578,7 @@ extern "C" u32 lbl_802EEF40[];
 extern "C" s32 fn_800AF5A0(void *, s32, s32 *);
 extern "C" s32 fn_800AFE14(void *, s32, s32 *);
 extern "C" s32 fn_800B0258(void *, s32, s32 *);
-extern "C" s32 fn_800BEE64(void *, s32, s32);
+extern "C" s32 parseAudioStreamHeader(void *, s32, s32);
 extern "C" void fn_800C3960(s32 *, s32 *, u32, s16 *, u32, s32);
 extern "C" void fn_800C3574(void *, void *, s32, s32, s32);
 extern "C" u32 lbl_802F4088[];
@@ -15839,7 +15839,7 @@ extern s16 lbl_802F3478[];
  * pick a size out of the two tables and the rate bit and channel count a
  * second one; both go on the card.  Returns 0, or an error: 8 no sync word,
  * 0xD bad version, 0xE unusable bitrate, 0xF unusable frequency. */
-extern "C" s32 fn_800BEE64(void *arg0, s32 header, s32 unused) {
+extern "C" s32 parseAudioStreamHeader(void *arg0, s32 header, s32 unused) {
     VFiPFCard *card = (VFiPFCard *)arg0;
     s32 one;
     s32 zero = 0;
@@ -18254,7 +18254,7 @@ extern "C" s32 fn_800C3CDC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     *(s32 *)((u8 *)p + 0x9E8) = 0;
     *(u16 *)((u8 *)p + 0x27C) = 0x400;
     *(s32 *)((u8 *)p + 0x278) = arg1;
-    ((s32 (*)(void *, s32))fn_800BEE64)(p, arg0);
+    ((s32 (*)(void *, s32))parseAudioStreamHeader)(p, arg0);
     return (s32)p;
 }
 #pragma pop
