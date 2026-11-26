@@ -30,15 +30,15 @@ extern char lbl_80559CD8;
 #pragma readonly_strings off
 #pragma pool_strings off
 /* Fill a 3x4 catch-up-assist parameter table from catchup.val: one row each for Easy, Medium and Hard. */
-extern "C" void readCatchupParams(float *catchupParams, int carCount) {
-    struct List {
+extern "C" void readCatchupParams(float *outParams, int carCount) {
+    struct ValueFileList {
         virtual void v0() = 0;
         virtual void *getAt(int) = 0;
     };
-    struct Item {
+    struct ValueFileSection {
         virtual const char *getName() = 0;
     };
-    struct DataItem {
+    struct ValueFileData {
         virtual void v0() = 0;
         virtual void v1() = 0;
         virtual void v2() = 0;
@@ -48,31 +48,31 @@ extern "C" void readCatchupParams(float *catchupParams, int carCount) {
         virtual void v6() = 0;
         virtual float getFloat(const char *) = 0;
     };
-    const char **diffName;
-    float *dest;
-    void *catchupList;
+    const char **difficultyName;
+    float *paramRow;
+    void *valueTable;
     void *entry;
     int entryIndex;
     const char *sectionName;
-    unsigned int diffIndex;
-    catchupList = getValueFile((void *)"catchup.val");
-    if (catchupList == 0) goto error;
+    unsigned int difficultyIndex;
+    valueTable = getValueFile((void *)"catchup.val");
+    if (valueTable == 0) goto error;
     entryIndex = 0;
-    while ((entry = ((List *)catchupList)->getAt(entryIndex)) != 0) {
-        sectionName = ((Item *)entry)->getName();
+    while ((entry = ((ValueFileList *)valueTable)->getAt(entryIndex)) != 0) {
+        sectionName = ((ValueFileSection *)entry)->getName();
         const char *difficultyNames[3] = { "Easy", "Medium", "Hard" };
-        dest = catchupParams;
-        for (diffIndex = 0, diffName = difficultyNames; diffIndex < 3; diffIndex++, diffName++, dest += 4) {
-            if (stricmp(*diffName, sectionName) == 0) {
-                dest[0] = ((DataItem *)entry)->getFloat("begin_t");
-                dest[1] = ((DataItem *)entry)->getFloat("effect_t");
-                dest[2] = ((DataItem *)entry)->getFloat("speed_factor");
-                dest[3] = (float)carCount * ((DataItem *)entry)->getFloat("compare_car_pct");
+        paramRow = outParams;
+        for (difficultyIndex = 0, difficultyName = difficultyNames; difficultyIndex < 3; difficultyIndex++, difficultyName++, paramRow += 4) {
+            if (stricmp(*difficultyName, sectionName) == 0) {
+                paramRow[0] = ((ValueFileData *)entry)->getFloat("begin_t");
+                paramRow[1] = ((ValueFileData *)entry)->getFloat("effect_t");
+                paramRow[2] = ((ValueFileData *)entry)->getFloat("speed_factor");
+                paramRow[3] = (float)carCount * ((ValueFileData *)entry)->getFloat("compare_car_pct");
             }
         }
         entryIndex++;
     }
-    releaseValueFile(catchupList);
+    releaseValueFile(valueTable);
     return;
 error:
     ((void (*)(const char *, ...))Abend_Panic)("no catchup.val?");
