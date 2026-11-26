@@ -972,7 +972,7 @@ void fn_801CC8FC(void *object) {
  * groups at the end of it to their starting values.  The three objects it draws
  * the awards with are told to start over, and the record pool they share is
  * cleared.  Nothing happens while the handler is paused. */
-void resetAwardHandler(void) {
+/* Reset the award stat handler (lbl_8055E884) between races: release entries, clear the node pool and free list, restore counters/values/floats, and restart the three actors. */ void resetAwardHandler(void) {
     void *entry;
     f32 one;
     f32 zero;
