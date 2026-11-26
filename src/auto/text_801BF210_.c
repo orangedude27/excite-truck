@@ -332,7 +332,7 @@ extern float dotProduct3(float, float, float, float, float, float);
  * rows the nine dot products walk; when the caller passes out == b the products are
  * collected in temporaries before being stored, so writing out cannot disturb the
  * reads of b. */
-void composeTransformInv(float *out, const float *b, const float *a, int unused) {
+/* Compute out = a^-1 composed with b for two 4x3 rigid transforms, giving b expressed in a's frame (transpose a's rotation, dot it with b's, then transform the translation difference). */ void composeTransformInv(float *out, const float *b, const float *a, int unused) {
     /* a's rotation, transposed; the raw bits member keeps the copy a plain 9-float block. */
     union { unsigned int bits[9]; float values[9]; } rotT;
     register float *t = rotT.values;
