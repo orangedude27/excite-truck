@@ -764,60 +764,61 @@ check:
 }
 #pragma scheduling on
 extern float lbl_80562930;
-extern "C" void fn_801C2694(void *arg0, float *arg1, int *arg2, float *arg3, float *arg4, float *arg5) {
-    float v0 = arg5[0], v1 = arg5[1], v2 = arg5[2];
-    float scaled[3];
-    float b2 = arg4[2];
-    float b1 = arg4[1];
-    float b0 = arg4[0];
-    float a2 = arg3[2];
-    float a1 = arg3[1];
-    float a0 = arg3[0];
-    int i = 0;
-    float *p;
-    int off = 0;
-    int i2;
-    int off2;
+extern "C" unsigned int fn_801C2694(const void *arg0, float *arg1, int *arg2, const float *arg3, const float *arg4, const float *arg5)
+{
+  float scaled[3];
+  int i = 0;
+  float *p;
+  int off = 0;
+  int i2;
+  int off2;
+  scaled[0] = arg5[0] * lbl_80562930;
+  scaled[1] = arg5[1] * lbl_80562930;
+  scaled[2] = arg5[2] * lbl_80562930;
+  *((float *) (((char *) arg0) + 0x58)) = arg3[0];
+  *((float *) (((char *) arg0) + 0x5C)) = arg3[1];
+  *((float *) (((char *) arg0) + 0x60)) = arg3[2];
+  *((float *) (((char *) arg0) + 0x64)) = arg4[0];
+  *((float *) (((char *) arg0) + 0x68)) = arg4[1];
+  *((float *) (((char *) arg0) + 0x6C)) = arg4[2];
+  goto check1;
+  loop1:
+  p = (float *) ((*((char **) (((char *) arg0) + 0x2C))) + off);
 
-    scaled[0] = 0.0110053914f * v0;
-    scaled[1] = 0.0110053914f * v1;
-    scaled[2] = 0.0110053914f * v2;
-    *(float *)((char *)arg0 + 0x58) = a0;
-    *(float *)((char *)arg0 + 0x5C) = a1;
-    *(float *)((char *)arg0 + 0x60) = a2;
-    *(float *)((char *)arg0 + 0x64) = b0;
-    *(float *)((char *)arg0 + 0x68) = b1;
-    *(float *)((char *)arg0 + 0x6C) = b2;
-    goto check1;
-loop1:
-    p = (float *)(*(char **)((char *)arg0 + 0x2C) + off);
-    ++i;
-    p[0] += scaled[0];
-    off += 0xC;
-    p[1] += scaled[1];
-    p[2] += scaled[2];
-check1:
-    if (i < *(int *)((char *)arg0 + 0x14))
-        goto loop1;
+  ++i;
+  p[0] += scaled[0];
+  off += 0xC;
+  p[1] += scaled[1];
+  p[2] += scaled[2];
+  check1:
+  if (i < (*((int *) (((char *) arg0) + 0x14))))
+  {
+    goto loop1;
+  }
 
-    fn_801C1B60((int)arg0);
-    i2 = 0;
-    off2 = 0;
-    goto check2;
-loop2:
-    {
-        float *q = (float *)(*(char **)((char *)arg0 + 0x24) + off2);
-        ++i2;
-        off2 += 0xC;
-        arg1[0] = q[0];
-        arg1[1] = q[1];
-        arg1[2] = q[2];
-        arg1 += 3;
-    }
-check2:
-    if (i2 < *(int *)((char *)arg0 + 0x14))
-        goto loop2;
-    *arg2 = i2;
+  fn_801C1B60(((int) arg0) & 0xFFFFu);
+  int n = (*((int *) (((char *) arg0) + 0x14)));
+  i2 = 0;
+  off2 = 0;
+  goto check2;
+  loop2:
+  {
+    float *q = (float *) ((*((char **) (((char *) arg0) + 0x24))) + off2);
+    ++i2;
+    off2 += 0xC;
+    arg1[0] = q[0];
+    arg1[1] = q[1];
+    arg1[2] = q[2];
+    arg1 += 3;
+  }
+
+  check2:
+  if (i2 < (*((int *) (((char *) arg0) + 0x14))))
+  {
+    goto loop2;
+  }
+
+  *arg2 = n;
 }
 extern float lbl_80562930;
 extern float lbl_80562928;
@@ -859,7 +860,7 @@ check:
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-extern "C" void fn_801C28A8(void *obj, int mtx, float *pos, void *mat, int arg4, int first, int count, int draw, int out) {
+extern "C" void ImpactEffect_calcHitAndNormal(void *obj, int mtx, float *pos, void *mat, int arg4, int first, int count, int draw, int out) {
     float v5C[3], v50[3], v44[3], v38[3], v2C[3], v20[3], v14[3], v8[3];
     int limit, idx, off, i;
     float f31, f30, f29, f28, f27, f26, f25, f24, f23, f22;

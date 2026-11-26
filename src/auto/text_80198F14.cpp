@@ -1769,38 +1769,82 @@ extern "C" void PSVECCrossProduct(const Vec *, const Vec *, Vec *);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-extern "C" s32 fn_8019D484(const Vec *p0, const Vec *v0, const Vec *p1, const Vec *v1, f32 *out0, f32 *out1) {
-    extern f32 lbl_80562348;
-    volatile struct {
-        Vec normal;
-        Vec delta;
-        f32 h[9];
-    } s;
-    f32 den, cx, i1, i2;
-    f32 dx, dy, dz, nx, ny, nz, v1x, v1y, v1z, v0x, v0y, v0z;
-    s.delta.x = p1->x - p0->x;
-    s.delta.y = p1->y - p0->y;
-    s.delta.z = p1->z - p0->z;
-    PSVECCrossProduct(v0, v1, (Vec *)&s.normal);
-    den = PSVECDotProduct((Vec *)&s.normal, (Vec *)&s.normal);
-    if (den > lbl_80562348) {
-        dx = s.delta.x; dy = s.delta.y; dz = s.delta.z;
-        nx = s.normal.x; ny = s.normal.y; nz = s.normal.z;
-        v1x = v1->x; v1y = v1->y; v1z = v1->z;
-        s.h[0] = dx; s.h[1] = nx; s.h[2] = dy; s.h[3] = v1x; s.h[4] = ny;
-        s.h[5] = dz; s.h[6] = v1y; s.h[7] = v1z; s.h[8] = nz;
-        {
-            f32 q0 = dy * nz, q1 = dy * v1z, q2 = ny * dz, q3 = v1y * dz;
-            f32 q4 = ny * v1z, q5 = v1y * nz;
-            cx = q2 - q0; i1 = q1 - q3; i2 = q5 - q4;
-        }
-        *out0 = (nx * i1 + (dx * i2 + v1x * cx)) / den;
-        v0x = v0->x; v0y = v0->y; v0z = v0->z;
-        s.h[3] = v0x; s.h[6] = v0y; s.h[7] = v0z;
-        *out1 = (nx * (dy * v0z - v0y * dz) + (dx * (v0y * nz - ny * v0z) + v0x * cx)) / den;
-        return 1;
+extern "C" s32 fn_8019D484(const Vec *p0, const Vec *v0, const Vec *p1, const Vec *v1, f32 *out0, f32 *out1)
+{
+  extern f32 lbl_80562348;
+  volatile struct 
+  {
+    Vec normal;
+    Vec delta;
+    f32 h[9];
+  } s;
+  f32 den;
+  f32 cx;
+  f32 i1;
+  f32 temp3;
+  f32 i2;
+  f32 dx;
+  f32 dy;
+  f32 dz;
+  f32 nx;
+  f32 nz;
+  f32 v1x;
+  f32 ny;
+  f32 v1y;
+  f32 v1z;
+  f32 v0x;
+  f32 v0y;
+  f32 v0z;
+  s.delta.x = p1->x - p0->x;
+  s.delta.y = p1->y - p0->y;
+  s.delta.z = p1->z - p0->z;
+  PSVECCrossProduct(v0, v1, (Vec *) (&s.normal));
+  den = PSVECDotProduct((Vec *) (&s.normal), (Vec *) (&s.normal));
+  if (den > lbl_80562348)
+  {
+    f32 temp;
+    temp3 = v1->y;
+    dy = s.delta.y;
+    dx = s.delta.x;
+    temp = temp3;
+    dz = s.delta.z;
+    nx = s.normal.x;
+    ny = s.normal.y;
+    nz = s.normal.z;
+    v1x = v1->x;
+    v1y = temp;
+    v1z = v1->z;
+    s.h[0] = dx;
+    s.h[1] = nx;
+    s.h[2] = dy;
+    s.h[3] = v1x;
+    s.h[4] = ny;
+    s.h[5] = dz;
+    s.h[6] = v1y;
+    s.h[7] = v1z;
+    s.h[8] = nz;
+    {
+      f32 q0 = dy * dz;
+      f32 q3 = v1y * nz;
+      f32 q1 = (dy * dz) * v1z;
+      f32 q2 = ny;
+      f32 q4 = v1z;
+      f32 q5 = (v1y * ny) * nz;
+      cx = q2 - q0;
+      i1 = q1 - q3;
+      i2 = q5 - q4;
     }
-    return 0;
+    *out0 = ((nx * i1) + ((dx * i2) + (v1x * cx))) / den;
+    v0x = v0->x;
+    v0y = v0->y;
+    v0z = v0->z;
+    s.h[3] = v0x;
+    s.h[6] = v0y;
+    s.h[7] = v0z;
+    *out1 = ((nx * ((dy * v0z) - (v0y * dz))) + ((dx * ((v0y * nz) - (ny * v0z))) + (v0x * cx))) / den;
+    return 1;
+  }
+  return 0;
 }
 
 s32 fn_8019D618(void* arg0, void* arg1, s32 clamp, void* arg3) {
@@ -4493,7 +4537,7 @@ static inline void MtxMulVecPosInl(const f32 *m, const f32 *src, f32 *dst) {
 extern f32 lbl_805623AC;
 extern f32 lbl_805623C0;
 extern "C" int fn_80198F64(void *, int, void *, float *, void *, float *, float);
-extern "C" void fn_801C28A8(void*, void*, void*, void*, void*, s32, s32, void* = 0, void* = 0);
+extern "C" void ImpactEffect_calcHitAndNormal(void*, void*, void*, void*, void*, s32, s32, void* = 0, void* = 0);
 extern "C" void fn_801C2BDC(void*, s32*, f32**, s32*);
 extern "C" void fn_801A26FC(void* arg0, void* arg1) {
     Fn801A26FCMtx mtx;
@@ -4555,7 +4599,7 @@ extern "C" void fn_801A26FC(void* arg0, void* arg1) {
             pos68[0] = *(f32*)((u8*)obj + 0x24);
             pos68[1] = *(f32*)((u8*)obj + 0x28);
             pos68[2] = *(f32*)((u8*)obj + 0x2C);
-            fn_801C28A8(*(void**)((u8*)arg0 + 0x30), &mtx, pos68, vecA, vecB,
+            ImpactEffect_calcHitAndNormal(*(void**)((u8*)arg0 + 0x30), &mtx, pos68, vecA, vecB,
                         *(s32*)((u8*)arg0 + 0x28), *(s32*)((u8*)arg0 + 0x2C), outHit, outN);
             if (PSVECDotProduct((Vec*)outN, (Vec*)outN) > lbl_805623AC) {
                 up[0] = lbl_805622D0; up[1] = lbl_805622E0; up[2] = lbl_805622D0;
@@ -4587,7 +4631,7 @@ extern "C" void fn_801A26FC(void* arg0, void* arg1) {
             pos50[1] = *(f32*)((u8*)arg1 + 0x28);
             pos50[2] = *(f32*)((u8*)arg1 + 0x2C);
             void* r4 = other->getPos();
-            fn_801C28A8(*(void**)((u8*)arg0 + 0x30), r4, pos50, vecA2, vecB2, 0, -1, 0, 0);
+            ImpactEffect_calcHitAndNormal(*(void**)((u8*)arg0 + 0x30), r4, pos50, vecA2, vecB2, 0, -1, 0, 0);
         }
     } else if (type == 0x504F4C59U) {
         s32 off;
