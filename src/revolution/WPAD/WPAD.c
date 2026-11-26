@@ -3726,7 +3726,7 @@ void fn_8005EEC4(s32 chan, s32 result) {
  * transfer error, queue the very same read of WM_ADDR_MEM_GAME_INFO_0 again,
  * with this same callback on it, so WPAD keeps trying until the Wii Remote
  * answers.  Every other result is ignored. */
-void WPADiGameInfoReadRetry(s32 chan, s32 result) {
+/* On a transfer error, requeue the first game-info block read with this same callback so WPAD retries until the Remote answers. */ void WPADiGameInfoReadRetry(s32 chan, s32 result) {
     WPADCB *cb = lbl_8038F4F0[chan];
     WPADCommandQueue *queue = &cb->stdCmdQueue;
     /* the WPADCommand built here (at buf + 8) and the copy of it that the
