@@ -38,7 +38,7 @@ extern f32 lbl_80560EE0;
 extern f32 lbl_80560EE4;
 extern f32 lbl_80560ED0;
 extern "C" void SetCursor__Q36nw4hbm2ut10CharWriterFff(void *, f32, f32);
-extern "C" void fn_800DF81C(f32 *arg0, void *arg1, const u16 *arg2, s32 arg3, f32 arg4);
+extern "C" void textBoxMeasureString(f32 *arg0, void *arg1, const u16 *arg2, s32 arg3, f32 arg4);
 #define PTRCHECK(p, line, off) { \
     int c0 = 1, c1 = 1, c2 = 1, c3 = 1, c4 = 1, c5 = 1; \
     u32 hi = (u32)(p) & 0xFF000000; \
@@ -1163,7 +1163,7 @@ extern "C" void fn_800DF208(f32 *arg0, u8 *arg1, void *arg2) {
     tmp.f0 = ((f32 *)arg2)[0x11]; tmp.i0 = ((s32 *)arg2)[0x12];
     tmp.f1 = ((f32 *)arg2)[0x13]; tmp.f2 = ((f32 *)arg2)[0x14];
     tmp.i1 = ((s32 *)arg2)[0x15]; tmp.i2 = ((s32 *)arg2)[0x16]; tmp.i3 = ((s32 *)arg2)[0x17];
-    fn_800DF81C(arg0, &tmp, buf, len, savedY);
+    textBoxMeasureString(arg0, &tmp, buf, len, savedY);
     __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80111BB8(&tmp, -1);
     raw = GetVtxPos__Q34nw4r3lyt4PaneCFv(arg1);
     posD = *(f64 *)&raw;
@@ -1205,7 +1205,7 @@ extern "C" unsigned long lbl_80559800;
  * left and top keep the smallest, right and bottom the largest value seen.
  * A wrapped line has the line-break code measured too, so the drop to the next
  * line is part of the box. */
-extern "C" void fn_800DF81C(f32 *rect, void *textWriter, const u16 *str, s32 length, f32 maxWidth) {
+extern "C" void textBoxMeasureString(f32 *rect, void *textWriter, const u16 *str, s32 length, f32 maxWidth) {
     f32 lineRect[4];
     u8 wrapped;
     f32 curLeft, curTop, curRight, curBottom;
