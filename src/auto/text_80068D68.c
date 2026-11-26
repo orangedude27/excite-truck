@@ -29752,30 +29752,30 @@ void fn_8006BAD8(u32 event, u8 *data)
  * BTA_DmSearch - logs each event, records the found device's address/name/RSSI
  * and the number of results, and lowers the HCI page timeout during a search. */
 void btaDmSearchCallback(s32 searchEvent, void *arg) {
-    register char *fmt = (char *)lbl_803130C8;
-    u8 foundCount;
-    u8 *pResult = (u8 *)arg;
+    register char *debugFormats = (char *)lbl_803130C8;
+    u8 resultCount;
+    u8 *eventData = (u8 *)arg;
     u16 pageTimeout;
-    BOOL interrupts;
-    u8 inqState;
-    u8 rssi;
+    BOOL interruptState;
+    u8 inquiryState;
+    u8 rssiValue;
     u32 dbSearchTime;
 
     switch (searchEvent) {
     case BTA_DM_INQ_RES_EVT:
-        DBPrintf_8006CFA8(fmt + 0x96C,
-                           pResult[0], pResult[1], pResult[2], pResult[3], pResult[4], pResult[5], pResult[6],
-                           pResult[7], pResult[8], (s8)pResult[9]);
-        rssi = pResult[9];
-        inqState = lbl_80392960[0x667];
-        lbl_8055DC48 = rssi;
-        if (inqState == 1)
+        DBPrintf_8006CFA8(debugFormats + 0x96C,
+                           eventData[0], eventData[1], eventData[2], eventData[3], eventData[4], eventData[5], eventData[6],
+                           eventData[7], eventData[8], (s8)eventData[9]);
+        rssiValue = eventData[9];
+        inquiryState = lbl_80392960[0x667];
+        lbl_8055DC48 = rssiValue;
+        if (inquiryState == 1)
             goto low_timeout;
-        if (inqState == 0) {
-            interrupts = OSDisableInterrupts();
-            foundCount = lbl_80392960[0x665];
-            OSRestoreInterrupts(interrupts);
-            if (foundCount < 3) {
+        if (inquiryState == 0) {
+            interruptState = OSDisableInterrupts();
+            resultCount = lbl_80392960[0x665];
+            OSRestoreInterrupts(interruptState);
+            if (resultCount < 3) {
                 low_timeout:
                 pageTimeout = 0x12C0;
                 goto write_timeout;
@@ -29787,32 +29787,32 @@ write_timeout:
         BTM_WritePageTimeout(pageTimeout);
         break;
     case BTA_DM_INQ_CMPL_EVT:
-        DBPrintf_8006CFA8(fmt + 0x9B0);
+        DBPrintf_8006CFA8(debugFormats + 0x9B0);
         break;
     case BTA_DM_DISC_RES_EVT:
-        memcpy(lbl_803934C0, pResult, 6);
-        memcpy(lbl_803934C0 + 6, pResult + 6, 0x40);
-        dbSearchTime = *(u32 *)(pResult + 0x100);
+        memcpy(lbl_803934C0, eventData, 6);
+        memcpy(lbl_803934C0 + 6, eventData + 6, 0x40);
+        dbSearchTime = *(u32 *)(eventData + 0x100);
         *(u32 *)(lbl_803934C0 + 0x100) = dbSearchTime;
         lbl_8055DC49++;
-        DBPrintf_8006CFA8(fmt + 0x9C4,
+        DBPrintf_8006CFA8(debugFormats + 0x9C4,
                            lbl_803934C0[0], lbl_803934C0[1],
                            lbl_803934C0[2], lbl_803934C0[3],
                            lbl_803934C0[4], lbl_803934C0[5],
                            lbl_803934C0 + 6, dbSearchTime);
         break;
     case BTA_DM_DISC_CMPL_EVT:
-        DBPrintf_8006CFA8(fmt + 0xA04);
+        DBPrintf_8006CFA8(debugFormats + 0xA04);
         lbl_80392960[0xC] = 4;
         break;
     case BTA_DM_SEARCH_CANCEL_CMPL_EVT:
-        DBPrintf_8006CFA8(fmt + 0xA18);
+        DBPrintf_8006CFA8(debugFormats + 0xA18);
         lbl_8055DC49 = 0;
         memset(lbl_803934C0, 0, 0x108);
         lbl_80392960[0xC] = 4;
         break;
     default:
-        DBPrintf_8006CFA8(fmt + 0xA28);
+        DBPrintf_8006CFA8(debugFormats + 0xA28);
         break;
     }
 }
