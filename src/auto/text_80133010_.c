@@ -97,7 +97,7 @@ extern char *strcpy(char *, const char *);
 extern int sscanf(const char *, const char *, ...);
 extern char lbl_8032B868[];
 extern int fn_802E30C8(const char *, ...);
-extern int fn_801338D8(const char *);
+extern int optionStringToInt(const char *);
 extern float optionStringToFloat(const char *);
 extern int optionStringToBool(const char *);
 extern unsigned long strlen(const char *);
@@ -308,7 +308,7 @@ int fn_8013358C(int section, int key, char *valueStr) {
     findOrAddOption(&entry, savedSection, savedKey);
     strncpy((char *)entry + 0x14, valueStr, 0x10);
     *((char *)entry + 0x23) = 0;
-    *(int *)((char *)entry + 0xC) = fn_801338D8((char *)entry + 0x14);
+    *(int *)((char *)entry + 0xC) = optionStringToInt((char *)entry + 0x14);
     *(float *)((char *)entry + 0x10) = optionStringToFloat((char *)entry + 0x14);
     *((unsigned char *)entry + 8) = optionStringToBool((char *)entry + 0x14);
     *(int *)entry = 3;
@@ -429,7 +429,7 @@ check_invalid:
 #pragma dont_inline reset
 
 #pragma dont_inline on
-int fn_801338D8(const char *arg0) {
+int optionStringToInt(const char *arg0) {
     char *p = fn_801337E4((char *)arg0);
     unsigned char b = *p;
     int isnum = 0;
@@ -626,7 +626,7 @@ int readOptionsFile(int path, int ignoreVersion, int wantSection) {
                                 findOrAddOption(&entry, section, (int)buf);
                                 strcpy(((OptionEntry *)entry)->text, sep + 1);
                                 ((OptionEntry *)entry)->intValue =
-                                    fn_801338D8(((OptionEntry *)entry)->text);
+                                    optionStringToInt(((OptionEntry *)entry)->text);
                                 ((OptionEntry *)entry)->floatValue =
                                     optionStringToFloat(((OptionEntry *)entry)->text);
                                 ((OptionEntry *)entry)->boolValue =
