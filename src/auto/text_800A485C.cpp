@@ -438,7 +438,7 @@ extern "C" s32 VFiPFVOL_IsMediaPresent(void *);
 extern "C" const char lbl_8031F2C8[];
 extern "C" const char lbl_8031F2E4[];
 extern "C" { DECL_SECTION(".sdata") extern const char sArcCurrentDir[]; }
-extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597FC[]; }
+extern "C" { DECL_SECTION(".sdata") extern const char sArcParentDir[]; }
 extern "C" u32 fn_80116BCC(void *);
 extern "C" s32 fn_800B5CB4(u32, void *);
 extern "C" s32 VFiPFCODE_CP932_OEM2Unicode(s32, u16 *);
@@ -22796,7 +22796,7 @@ extern "C" s32 findArcFileByName(ARCHandle *handle, const char *name) {
             if (!ARCChangeDir(h, entry.name))
                 Panic__Q26nw4hbm2dbFPCciPCce(panicFile, 0x39, lbl_8031F2E4);
             result = findArcFileByName(h, n);
-            if (!ARCChangeDir(h, lbl_805597FC))
+            if (!ARCChangeDir(h, sArcParentDir))
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0x3C, lbl_8031F2E4);
             if (result == -1) continue;
             break;
@@ -22821,10 +22821,10 @@ extern "C" s32 getArcFileAddress(long arcHandle, long dirPath, long subDirFourCC
             subDirName[0]=(u32)subDirFourCC>>24; subDirName[1]=(u32)subDirFourCC>>16; subDirName[2]=(u32)subDirFourCC>>8; subDirName[3]=subDirFourCC; subDirName[4]=0;
             if(ARCConvertPathToEntrynum(ARC,subDirName)!=-1 && ARCChangeDir(ARC,subDirName)!=0) {
                 entry=ARCConvertPathToEntrynum(ARC,(const char*)fileName);
-                if(ARCChangeDir(ARC,lbl_805597FC)==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8,0x75,lbl_8031F2E4);
+                if(ARCChangeDir(ARC,sArcParentDir)==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8,0x75,lbl_8031F2E4);
             }
         }
-        if(ARCChangeDir(ARC,lbl_805597FC)==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8,0x7B,lbl_8031F2E4);
+        if(ARCChangeDir(ARC,sArcParentDir)==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8,0x7B,lbl_8031F2E4);
     }
     if(entry!=-1) {
         s32 result;
