@@ -9,7 +9,7 @@ extern void fn_80216CA8(void);
 extern void fn_802168BC(int);
 extern float getPictureHeight(void *, int);
 extern float getPictureWidth(void *, int);
-extern void fn_80235AFC(void *, int, unsigned int, float, float, float, float, float, float);
+extern void drawArtPictureRotated(void *, int, unsigned int, float, float, float, float, float, float);
 typedef struct SparkParticle {
     float x, y, vx, vy, a10, a14, life;
     int id;
@@ -464,73 +464,124 @@ void fn_80264618(void *obj) {
 
 #pragma push
 #pragma use_lmw_stmw off
-void *fn_802646D0(void *arg0) {
-    extern int lbl_802FA700[], lbl_80346364[], lbl_80346678[];
-    extern char lbl_8055C490[4];
-    extern float lbl_80563BFC, lbl_80563C00, lbl_80563C04, lbl_80563BF0;
-    extern void *ArtSetGet(const char *);
-    extern void *fn_8012850C(int, void *);
-    struct Desc { int a[15]; };
-    register int *vt = lbl_80346678;
-    const struct Desc *src = (const struct Desc *)lbl_802FA700;
-    char *p = (char *)arg0;
-    int zero = 0;
-    int n;
-    void *data;
-    float f;
-    int d14, d13, d12, d11, d10, d9, d8, d7, d6, d5, d4, d3, d2, d1, d0;
-    d0 = src->a[0]; d1 = src->a[1]; d2 = src->a[2];
-    d3 = src->a[3]; d4 = src->a[4]; d5 = src->a[5];
-    d6 = src->a[6]; d7 = src->a[7]; d8 = src->a[8];
-    d9 = src->a[9]; d10 = src->a[10]; d11 = src->a[11];
-    d12 = src->a[12]; d13 = src->a[13]; d14 = src->a[14];
-    *(int *)(p+0x14) = zero;
-    *(int **)(p+0) = vt;
-    *(int *)(p+0x18) = d0; *(int *)(p+0x1c) = d1; *(int *)(p+0x20) = d2;
-    *(int *)(p+0x24) = d3; *(int *)(p+0x28) = d4; *(int *)(p+0x2c) = d5;
-    *(int *)(p+0x30) = d6; *(int *)(p+0x34) = d7; *(int *)(p+0x38) = d8;
-    *(int *)(p+0x3c) = d9; *(int *)(p+0x40) = d10; *(int *)(p+0x44) = d11;
-    *(int *)(p+0x48) = d12; *(int *)(p+0x4c) = d13; *(int *)(p+0x50) = d14;
-    *(void **)(p+0x54) = ArtSetGet((const char *)d0);
-    n = src->a[9];
-    data = fn_8012850C(n*32, lbl_8055C490);
-    *(void **)(p+0x58)=data; *(int *)(p+0x60)=n; *(int *)(p+0x5c)=zero; *(void **)(p+0x64)=data;
-    f = *(float *)(p+0x44);
-    f = f < lbl_80563BFC ? lbl_80563BFC : f;
-    *(float *)(p+0x68)=lbl_80563C00/f;
-    f = *(float *)(p+0x44);
-    f = f < lbl_80563BFC ? lbl_80563BFC : f;
-    *(float *)(p+0x6c)=lbl_80563C04/f;
-    f = *(float *)(p+0x48);
-    f = f < lbl_80563BFC ? lbl_80563BFC : f;
-    *(int *)(p+0x5c)=zero;
-    *(float *)(p+0x74)=lbl_80563BF0;
-    *(float *)(p+0x70)=lbl_80563C00/f;
-    *(int *)(p+0x78) = lbl_80346364[0]; *(int *)(p+0x7c) = lbl_80346364[1];
-    *(int *)(p+0x80) = lbl_80346364[2]; *(int *)(p+0x84) = lbl_80346364[3];
-    *(int *)(p+0x88) = lbl_80346364[4]; *(int *)(p+0x8c) = lbl_80346364[5];
-    *(int *)(p+0x90) = lbl_80346364[6]; *(int *)(p+0x94) = lbl_80346364[7];
-    *(int *)(p+0x98) = lbl_80346364[8]; *(int *)(p+0x9c) = lbl_80346364[9];
-    *(int *)(p+0xa0) = lbl_80346364[10]; *(int *)(p+0xa4) = lbl_80346364[11];
-    *(int *)(p+0xa8) = lbl_80346364[12]; *(int *)(p+0xac) = lbl_80346364[13];
-    *(int *)(p+0xb0) = lbl_80346364[14];
-    *(void **)(p+0xb4) = ArtSetGet((const char *)lbl_80346364[0]);
-    n = lbl_80346364[9];
-    data = fn_8012850C(n*32, lbl_8055C490);
-    *(void **)(p+0xb8)=data; *(int *)(p+0xc0)=n; *(int *)(p+0xbc)=zero; *(void **)(p+0xc4)=data;
-    f=*(float *)(p+0xa4);
-    f = f < lbl_80563BFC ? lbl_80563BFC : f;
-    *(float *)(p+0xc8)=lbl_80563C00/f;
-    f=*(float *)(p+0xa4);
-    f = f < lbl_80563BFC ? lbl_80563BFC : f;
-    *(float *)(p+0xcc)=lbl_80563C04/f;
-    f=*(float *)(p+0xa8);
-    f = f < lbl_80563BFC ? lbl_80563BFC : f;
-    *(int *)(p+0xbc)=zero;
-    *(float *)(p+0xd4)=lbl_80563BF0;
-    *(float *)(p+0xd0)=lbl_80563C00/f;
-    lbl_8055F448=arg0;
-    return arg0;
+void *fn_802646D0(void *arg0)
+{
+  extern int lbl_802FA700[];
+  extern int lbl_80346364[];
+  extern int lbl_80346678[];
+  extern char lbl_8055C490[4];
+  extern float lbl_80563BFC;
+  extern float lbl_80563C04;
+  extern void *fn_8023512C(const char *);
+  extern void *fn_8012850C(int, void *);
+  struct Desc
+  {
+    int a[15];
+  };
+  const struct Desc *src = (const struct Desc *) lbl_802FA700;
+  char *p = (char *) arg0;
+  int n_1;
+  int n_2;
+  void *data_1;
+  void *data_2;
+  float f_2;
+  float f_3;
+  float f_4;
+  float f_5;
+  float f_6;
+  float f_8;
+  float f_9;
+  float f_10;
+  float f_11;
+  float f_12;
+  int d14;
+  int d13;
+  int d11;
+  int d10;
+  int d9;
+  int d8;
+  int d12;
+  int d7;
+  int d5;
+  int d4;
+  int d3;
+  int d2;
+  int d6;
+  int d0;
+  int d1;
+  d0 = src->a[0]; d1 = src->a[1]; d2 = src->a[2];
+  d3 = src->a[3]; d4 = src->a[4]; d5 = src->a[5];
+  d7 = src->a[7]; d6 = src->a[6]; d8 = src->a[8];
+  d9 = src->a[9]; d10 = src->a[10]; d11 = src->a[11];
+  d13 = src->a[13]; d12 = src->a[12]; d14 = src->a[14];
+  *((int *) (p + 0x14)) = 0;
+  *((int **) (p + 0)) = lbl_80346678;
+  *((int *) (p + 0x18)) = d0;
+  *((int *) (p + 0x1c)) = d1;
+  *((int *) (p + 0x20)) = d2;
+  *((int *) (p + 0x24)) = d3;
+  *((int *) (p + 0x28)) = d4;
+  *((int *) (p + 0x2c)) = d5;
+  *((int *) (p + 0x30)) = d6;
+  *((int *) (p + 0x34)) = d7;
+  *((int *) (p + 0x38)) = d8;
+  *((int *) (p + 0x3c)) = d9;
+  *((int *) (p + 0x40)) = d10;
+  *((int *) (p + 0x44)) = d11;
+  *((int *) (p + 0x4c)) = d13;
+  *((int *) (p + 0x48)) = d12;
+  *((int *) (p + 0x50)) = d14;
+  *((void **) (p + 0x54)) = fn_8023512C((const char *) d0);
+  n_1 = src->a[9];
+  data_1 = fn_8012850C(n_1 * 32, lbl_8055C490);
+  *((void **) (p + 0x58)) = data_1;
+  *((int *) (p + 0x60)) = n_1;
+  *((int *) (0x5c + p)) = 0;
+  *((void **) (p + 0x64)) = data_1;
+  f_2 = ((((float)(*((float *) (p + 0x44)))) + 1) <= lbl_80563BFC) ? (lbl_80563BFC) : (((float)(*((float *) (p + 0x44)))));
+  *((float *) (p + 0x68)) = lbl_80563C00 / f_2;
+  f_3 = *((float *) (p + 0x44));
+  f_4 = (f_3 < lbl_80563BFC) ? (lbl_80563BFC) : (f_3);
+  *((float *) (p + 0x6c)) = lbl_80563C04 / f_4;
+  f_5 = *((float *) (p + 0x48));
+  f_6 = (f_5 < lbl_80563BFC) ? (lbl_80563BFC) : (f_5);
+  *((int *) (p + 0x5c)) = 0;
+  *((float *) (p + 0x74)) = lbl_80563BF0;
+  *((float *) (p + 0x70)) = lbl_80563C00 / f_6;
+  *((int *) (p + 0x78)) = lbl_80346364[0];
+  *((int *) (p + 0x7c)) = lbl_80346364[1];
+  *((int *) (p + 0x80)) = lbl_80346364[2];
+  *((int *) (p + 0x84)) = lbl_80346364[3];
+  *((int *) (p + 0x88)) = lbl_80346364[4];
+  *((int *) (p + 0x8c)) = lbl_80346364[5];
+  *((int *) (p + 0x90)) = lbl_80346364[6];
+  *((int *) (p + 0x94)) = lbl_80346364[7];
+  *((int *) (p + 0x98)) = lbl_80346364[8];
+  *((int *) (p + 0x9c)) = lbl_80346364[9];
+  *((int *) (p + 0xa0)) = lbl_80346364[10];
+  *((int *) (p + 0xa4)) = lbl_80346364[11];
+  *((int *) (p + 0xa8)) = lbl_80346364[12];
+  *((int *) (p + 0xac)) = lbl_80346364[13];
+  *((int *) (p + 0xb0)) = lbl_80346364[14];
+  *((void **) (p + 0xb4)) = fn_8023512C((const char *) lbl_80346364[0]);
+  n_2 = lbl_80346364[9];
+  data_2 = fn_8012850C(n_2 * 32, lbl_8055C490);
+  *((void **) (p + 0xb8)) = data_2;
+  *((int *) (p + 0xc0)) = n_2;
+  *((void **) (p + 0xc4)) = data_2;
+  *((int *) (p + 0xbc)) = 0;
+  f_8 = ((((float)(*((float *) (p + 0xa4)))) + 1) <= lbl_80563BFC) ? (lbl_80563BFC) : (((float)(*((float *) (p + 0xa4)))));
+  *((float *) (p + 0xc8)) = lbl_80563C00 / f_8;
+  f_9 = *((float *) (p + 0xa4));
+  f_10 = (f_9 >= lbl_80563BFC) ? f_9 : lbl_80563BFC;
+  *((float *) (p + 0xcc)) = lbl_80563C04 / f_10;
+  f_11 = *((float *) (p + 0xa8));
+  f_12 = (f_11 < lbl_80563BFC) ? (lbl_80563BFC) : (f_11);
+  *((float *) (p + 0xd4)) = lbl_80563BF0;
+  *((int *) (p + 0xbc)) = 0;
+  *((float *) (p + 0xd0)) = lbl_80563C00 / f_12;
+  lbl_8055F448 = arg0;
+  return arg0;
 }
 #pragma pop
 
@@ -815,7 +866,7 @@ extern "C" void fn_80264FE4(void *arg0) {
         id = *(int *)(item + 0x1C);
         base = *(float *)(p + 0xAC) + *(float *)(p + 0xB0) * (limit - *(float *)(item + 0x18) * *(float *)(p + 0xC8));
         intensity = base * getPictureHeight(*(void **)(p + 0xB4), id);
-        fn_80235AFC(*(void **)(p + 0xB4), id, ((unsigned int)alpha << 24) | 0xFFFFFF,
+        drawArtPictureRotated(*(void **)(p + 0xB4), id, ((unsigned int)alpha << 24) | 0xFFFFFF,
                     *(float *)item, *(float *)(item + 4), lbl_80563BF0,
                     base * getPictureWidth(*(void **)(p + 0xB4), *(int *)(item + 0x1C)), intensity, *(float *)(item + 0x10));
         offset += 0x20;
@@ -837,7 +888,7 @@ extern "C" void fn_80264FE4(void *arg0) {
         id = *(int *)(item + 0x1C);
         base = *(float *)(p + 0x4C) + *(float *)(p + 0x50) * (limit - *(float *)(item + 0x18) * *(float *)(p + 0x68));
         intensity = base * getPictureHeight(*(void **)(p + 0x54), id);
-        fn_80235AFC(*(void **)(p + 0x54), id, ((unsigned int)alpha << 24) | 0xFFFFFF,
+        drawArtPictureRotated(*(void **)(p + 0x54), id, ((unsigned int)alpha << 24) | 0xFFFFFF,
                     *(float *)item, *(float *)(item + 4), lbl_80563BF0,
                     base * getPictureWidth(*(void **)(p + 0x54), *(int *)(item + 0x1C)), intensity, *(float *)(item + 0x10));
         offset += 0x20;

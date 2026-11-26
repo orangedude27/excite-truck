@@ -16,7 +16,7 @@ extern void DrawList_RestoreNormalMode(void);
 extern float PSVECDotProduct(const void *, const void *);
 extern float lbl_80560444, lbl_80560448, lbl_8056044C;
 extern float getPictureWidth(void *, int);
-extern void fn_80235AFC(void *, int, unsigned int, float, float, float, float, float, float);
+extern void drawArtPictureRotated(void *, int, unsigned int, float, float, float, float, float, float);
 extern void drawPictureScaled(void *, int, int, float, float, float, float, float);
 extern void *fn_80156A40(void);
 extern float lbl_80560418;
@@ -580,7 +580,7 @@ subtractCheck:
             v *= lbl_8056044C;
             if (v < lbl_80560418) v -= lbl_80560420;
             else v += lbl_80560420;
-            fn_80235AFC(*(void **)s.data, color, 0xFFFFFFFF,
+            drawArtPictureRotated(*(void **)s.data, color, 0xFFFFFFFF,
                         x + *(f32 *)((u8 *)&frame + 0x54), y + *(f32 *)((u8 *)&frame + 0x58), 0.0f,
                         v * width * lbl_80560420, angle,
                         *(f32 *)((u8 *)record + 8));
@@ -623,7 +623,7 @@ subtractCheck:
     color = s.resource == *(s32 *)((u8 *)s.data + 0x48) ? 1 : 3;
     angle = (f32)getPictureWidth(*(void **)s.data, color);
     result = angle * lbl_80560424;
-    fn_80235AFC(*(void **)s.data, color, 0xFFFFFFFF,
+    drawArtPictureRotated(*(void **)s.data, color, 0xFFFFFFFF,
                 x + width * lbl_80560420, y - height * lbl_80560420,
                 lbl_80560418, result, result,
                 *(f32 *)((u8 *)s.data + s.resource * 8 + 8));
@@ -657,7 +657,7 @@ subtractCheck:
         if (v < lbl_80560418) v -= lbl_80560420;
         else v += lbl_80560420;
         color = ((s32)v << 24) | 0x00FFFFFF;
-        fn_80235AFC(*(void **)s.data, 0, (u32)color,
+        drawArtPictureRotated(*(void **)s.data, 0, (u32)color,
                     x + *(f32 *)((u8 *)&frame + 0x30), y + *(f32 *)((u8 *)&frame + 0x34), lbl_80560418,
                     angle, angle, *(f32 *)((u8 *)actor + 0x68));
     }

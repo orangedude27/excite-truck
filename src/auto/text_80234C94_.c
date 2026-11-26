@@ -552,7 +552,7 @@ extern float lbl_805636B0;
 extern float lbl_805636B4;
 extern unsigned short lbl_802FA014[];
 #pragma paired_single off
-void fn_80235AFC(void *arg0, int texNodeIndex, int vertexFlags,
+void drawArtPictureRotated(void *arg0, int texNodeIndex, int vertexFlags,
                  float x, float y, float z,
                  float width, float height, float angle) {
     struct Frame {
