@@ -802,7 +802,7 @@ extern s32 fn_8027AA48(void *, f32, f32);
  * list, the counters over the map and this player's mark on the track map.
  * A screen whose entry in the 4-slot pool at lbl_80499E60 is in use shows the
  * arena-event master's own state instead of the race readouts. */
-extern "C" void fn_80014D04(RaceOverlay *overlay) {
+extern "C" void updateRaceHudPerScreen(RaceOverlay *overlay) {
     /* The overlay's own slot 0xC, which this class leaves empty. */
     class Overlay {
     public:
