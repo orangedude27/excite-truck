@@ -2141,7 +2141,7 @@ extern "C" s32 fn_801631E0(void *arg0) {
 // ("results1") and body line ("results2", whose text comes from the message
 // table and says why the tutorial was lost), and, once the banner is far
 // enough in, the "continue" prompt.  Returns 1 to keep the HUD object alive.
-extern "C" s32 drawTutorialResultsBanner(void *banner) {
+/* Draws the tutorial results banner: the top/bottom bars, the results_art graphic (pass or fail color), the title line (results1) and body line (results2, from the message table), and once faded in far enough, the continue prompt. Returns 1 to keep the HUD object alive. */ extern "C" s32 drawTutorialResultsBanner(void *hudBanner) {
     class HudObject {
     public:
         virtual void m08(); virtual void m0C(); virtual void m10(); virtual void m14();
@@ -2154,49 +2154,49 @@ extern "C" s32 drawTutorialResultsBanner(void *banner) {
         virtual void *getText(const char *); // vtable slot 0xC: named text element
         virtual void *getBar(const char *);  // vtable slot 0x10: named bar element
     };
-    char *names = (char *)lbl_8032F588; // pool of UI element / message names
+    char *namePool = (char *)lbl_8032F588; // pool of UI element / message names
     f32 screenX, screenY;
-    void *bar;
-    void *textElem;
-    void *barElem;
-    s32 bodyText;
+    void *artBar;
+    void *bodyTextElem;
+    void *artworkBar;
+    s32 bodyStr;
 
-    fn_801476D8((s32)(bar = ((UiManager *)lbl_8055E2E0)->getBar((const char *)&lbl_8055A0F8)), -1, lbl_8055E2E8); // "bar_top"
-    fn_801476D8((s32)(bar = ((UiManager *)lbl_8055E2E0)->getBar((const char *)&lbl_8055A100)), -1, lbl_8055E2EC); // "bar_bot"
-    if (((HudObject *)banner)->isOn() != 0) {
-        bar = ((UiManager *)lbl_8055E2E0)->getBar(names + UI_RESULTS_ART);
-        fn_801476D8((s32)bar, -1, lbl_8055E2F0); // passing artwork
-        fn_801473F8(lbl_8055E2E0, names + UI_RESULTS_TITLE,
-            fn_80131234(names + MSG_PASSED_HEAD));
-        bodyText = fn_80131234(names + MSG_PASSED_BODY);
+    fn_801476D8((s32)(artBar = ((UiManager *)lbl_8055E2E0)->getBar((const char *)&lbl_8055A0F8)), -1, lbl_8055E2E8); // "bar_top"
+    fn_801476D8((s32)(artBar = ((UiManager *)lbl_8055E2E0)->getBar((const char *)&lbl_8055A100)), -1, lbl_8055E2EC); // "bar_bot"
+    if (((HudObject *)hudBanner)->isOn() != 0) {
+        artBar = ((UiManager *)lbl_8055E2E0)->getBar(namePool + UI_RESULTS_ART);
+        fn_801476D8((s32)artBar, -1, lbl_8055E2F0); // passing artwork
+        fn_801473F8(lbl_8055E2E0, namePool + UI_RESULTS_TITLE,
+            fn_80131234(namePool + MSG_PASSED_HEAD));
+        bodyStr = fn_80131234(namePool + MSG_PASSED_BODY);
     } else {
-        bar = ((UiManager *)lbl_8055E2E0)->getBar(names + UI_RESULTS_ART);
-        fn_801476D8((s32)bar, -1, lbl_8055E2F4); // failing artwork
-        fn_801473F8(lbl_8055E2E0, names + UI_RESULTS_TITLE,
-            fn_80131234(names + MSG_FAILED_HEAD));
-        if (*(s32 *)((u8 *)banner + 8) == FAIL_REASON_STUNT)
-            bodyText = fn_80131234(names + MSG_FAILED_STUNT);
-        else if (*(s32 *)((u8 *)banner + 8) == FAIL_REASON_CRASH)
-            bodyText = fn_80131234(names + MSG_FAILED_CRASH);
+        artBar = ((UiManager *)lbl_8055E2E0)->getBar(namePool + UI_RESULTS_ART);
+        fn_801476D8((s32)artBar, -1, lbl_8055E2F4); // failing artwork
+        fn_801473F8(lbl_8055E2E0, namePool + UI_RESULTS_TITLE,
+            fn_80131234(namePool + MSG_FAILED_HEAD));
+        if (*(s32 *)((u8 *)hudBanner + 8) == FAIL_REASON_STUNT)
+            bodyStr = fn_80131234(namePool + MSG_FAILED_STUNT);
+        else if (*(s32 *)((u8 *)hudBanner + 8) == FAIL_REASON_CRASH)
+            bodyStr = fn_80131234(namePool + MSG_FAILED_CRASH);
         else
-            bodyText = fn_80131234(names + MSG_FAILED_TIME);
+            bodyStr = fn_80131234(namePool + MSG_FAILED_TIME);
     }
-    textElem = ((UiManager *)lbl_8055E2E0)->getText(names + UI_RESULTS_BODY);
-    barElem = ((UiManager *)lbl_8055E2E0)->getBar(names + UI_RESULTS_ART);
-    if (textElem != 0 && barElem != 0) {
-        f32 x = *(f32 *)((u8 *)textElem + 4);
-        f32 y = *(volatile f32 *)((u8 *)textElem + 8);
-        s32 mode = *(s32 *)((u8 *)textElem + 0xC);
+    bodyTextElem = ((UiManager *)lbl_8055E2E0)->getText(namePool + UI_RESULTS_BODY);
+    artworkBar = ((UiManager *)lbl_8055E2E0)->getBar(namePool + UI_RESULTS_ART);
+    if (bodyTextElem != 0 && artworkBar != 0) {
+        f32 x = *(f32 *)((u8 *)bodyTextElem + 4);
+        f32 y = *(volatile f32 *)((u8 *)bodyTextElem + 8);
+        s32 mode = *(s32 *)((u8 *)bodyTextElem + 0xC);
         fn_80148134(&screenX, &screenY, mode, x, y); // element position -> screen
-        f32 barFill = *(f32 *)((u8 *)barElem + 0x10);
-        f32 textScale = *(f32 *)((u8 *)textElem + 0x10);
+        f32 barFill = *(f32 *)((u8 *)artworkBar + 0x10);
+        f32 textScale = *(f32 *)((u8 *)bodyTextElem + 0x10);
         f32 fill = barFill - lbl_80561860; // 100.0f = a full bar
-        fn_800103B8(*(s32 *)((u8 *)textElem + 0x18),
-            *(s32 *)((u8 *)textElem + 0x14), (s32 *)&lbl_8055A0DC /* "%s" */, bodyText,
+        fn_800103B8(*(s32 *)((u8 *)bodyTextElem + 0x18),
+            *(s32 *)((u8 *)bodyTextElem + 0x14), (s32 *)&lbl_8055A0DC /* "%s" */, bodyStr,
             textScale, screenX, screenY, fill);
     }
-    if (*(f32 *)((u8 *)banner + 0x8C) > lbl_8056185C) { // faded in past 0.5
-        ((UiManager *)lbl_8055E2E0)->getText(names + UI_CONTINUE);
+    if (*(f32 *)((u8 *)hudBanner + 0x8C) > lbl_8056185C) { // faded in past 0.5
+        ((UiManager *)lbl_8055E2E0)->getText(namePool + UI_CONTINUE);
         fn_801476C4(); // draws it; takes the element above in r3
     }
     return 1;
