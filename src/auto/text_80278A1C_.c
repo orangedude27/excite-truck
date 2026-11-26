@@ -56,7 +56,7 @@ extern char lbl_80347690[];
 extern const char carLayoutAllocLabel[4];
 extern const char boundsResourceName[4];
 extern const char minBoundKeyFormat[4];
-extern const char lbl_8055C6E0[4];
+extern const char maxBoundKeyFormat[4];
 typedef struct Vec3_80279004 { f32 x, y, z; } Vec3_80279004;
 #pragma cplusplus on
 struct Res_80279004 {
@@ -348,7 +348,7 @@ extern "C" void* loadCarResource(s32 name, s32 arg1) {
             *(f32*)(boundsPtr + 0x2138) = minVec.x;
             *(f32*)(boundsPtr + 0x213C) = minVec.y;
             *(f32*)(boundsPtr + 0x2140) = minVec.z;
-            sprintf(key, lbl_8055C6E0, boundIndex);
+            sprintf(key, maxBoundKeyFormat, boundIndex);
             maxVec = boundsRes->getVec(key);
             *(f32*)(boundsPtr + 0x2144) = maxVec.x;
             *(f32*)(boundsPtr + 0x2148) = maxVec.y;
