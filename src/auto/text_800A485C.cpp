@@ -13850,16 +13850,16 @@ extern "C" s32 fn_800BB3F4(s32);
 #pragma opt_propagation off
 /* Lazily open the storage device and register an interrupt callback for the
    given device id: zero id -> 1, a conflicting id -> 0xB, setup failure -> 0x15. */
-extern "C" s32 openStorageDevice(u32 deviceId) {
+/* Lazily opens the storage device and registers an interrupt callback for the given device id: zero id -> 1, a conflicting id -> 0xB, setup failure -> 0x15, success -> 0. */ extern "C" s32 openStorageDevice(u32 deviceId) {
     u32 zero = 0;
     void *device;
     s32 status;
     s32 result;
-    const char *errors = lbl_8031B2B0;
+    const char *errorMessages = lbl_8031B2B0;
     if (deviceId == zero) {
         result = 1;
     } else if (*(volatile u32 *)VFiPFSD_state & 1) {
-        OSReport(errors + 0x7C);
+        OSReport(errorMessages + 0x7C);
         if (deviceId != *(volatile u32 *)(VFiPFSD_state + 0xC)) {
             result = 0xB;
         } else {
@@ -13870,21 +13870,21 @@ extern "C" s32 openStorageDevice(u32 deviceId) {
             *(s32 *)(VFiPFSD_state + 4) = 0x200;
             fn_800A499C((const char *)lbl_80407320, 0, 0x28);
             if (fn_800BBCF4() != 0) {
-                OSReport(errors + 0xBC);
+                OSReport(errorMessages + 0xBC);
                 return 0x15;
             }
             if (fn_800BB3F4(0) == 0) *(s32 *)(VFiPFSD_state + 0x10) = 1;
             device = lbl_80407320;
             status = fn_800BBB58(0, &device);
             if (status != 0) {
-                OSReport(errors + 0xF4, status);
+                OSReport(errorMessages + 0xF4, status);
                 return 0x15;
             }
             if (*(s32 *)(VFiPFSD_state + 0x10) != 0) {
                 lbl_8055DD60 = 2;
                 status = fn_800BC474((s32 *)device, (s32)fn_800B9CC4, &lbl_8055DD60);
                 if (status != 0) {
-                    OSReport(errors + 0x130, status);
+                    OSReport(errorMessages + 0x130, status);
                     fn_800BBCB4(device);
                     return 0x15;
                 }
@@ -13892,7 +13892,7 @@ extern "C" s32 openStorageDevice(u32 deviceId) {
                 lbl_8055DD60 = 1;
                 status = fn_800BC474((s32 *)device, (s32)fn_800B9BB4, &lbl_8055DD60);
                 if (status != 0) {
-                    OSReport(errors + 0x130, status);
+                    OSReport(errorMessages + 0x130, status);
                     fn_800BBCB4(device);
                     return 0x15;
                 }
