@@ -1643,7 +1643,7 @@ enum {
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void adjustTextEntryPosition(s32 entryIndex, s32 flags) {
+/* Shift a queued text entry's x/y position by glyph metrics according to the adjustment flags. */ void adjustTextEntryPosition(s32 entryIndex, s32 flags) {
     /* Shifts a queued text entry's x/y position by glyph metrics for alignment. */
     register unsigned int entryOffset = entryIndex * TEXTQ_STRIDE;
     u8 *font = (u8 *)gActiveFont;
