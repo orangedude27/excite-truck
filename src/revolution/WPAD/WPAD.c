@@ -3974,7 +3974,7 @@ s32 fn_8005FBCC(u8 devHandle) {
  * Remote, reset its control block and queue the extension/firmware probe
  * read; on disconnect, drain the channel's command queue (answering every
  * callback with WPAD_ERR_NO_CONTROLLER), tear the channel down and release it. */
-void wpadConnectionCallback(u8 devHandle, u8 open) {
+/* WPAD HID connect/disconnect callback: on connect, claim and reset a channel and queue the extension/firmware probe read; on disconnect, answer every queued command with WPAD_ERR_NO_CONTROLLER, tear down the channel and release it. */ void wpadConnectionCallback(u8 devHandle, u8 open) {
     extern void fn_8005E8E0(s32 chan);
     extern const char lbl_803120E0[];
     extern s8 lbl_80390500[];
