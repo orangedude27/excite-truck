@@ -1175,7 +1175,7 @@ struct TreeGroup {
 #pragma processor 750
 #pragma use_lmw_stmw off
 /* RealName: DrawTreeVolumeCpuLights (see the comment in the body). */
-void DrawTreeVolumeCpuLights_802BDD8C(float radius) {
+/* Queue camera-facing CPU light sprites for tree-volume frame points within radius of the player, with alpha fading over the last 50 units. */ void DrawTreeVolumeCpuLights_802BDD8C(float radius) {
 #define BeginCpuLighting   fn_802DBE4C
 #define EndCpuLighting     fn_802DBECC
 #define isDebugDrawEnabled fn_8020403C
