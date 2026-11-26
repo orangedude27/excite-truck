@@ -964,7 +964,7 @@ int fn_801C0454(void *arg0) {
 
 #pragma push
 #pragma processor 750
-void concatTransform34(void *outMtx, void *inMtx, void *multMtx, int unused) {
+/* Concatenate two 3x4 transforms: out = matrix * input, with alias-safe paths for shared translation or output/operands. */ void concatTransform34(void *outMtx, void *inMtx, void *multMtx, int unused) {
     /* Concatenate two 3x4 transforms: out = matrix * input.
      *
      * Every matrix here is twelve floats: the 3x3 part in column-major order
