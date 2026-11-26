@@ -807,13 +807,13 @@ void uiAnime_scriptGetSetValue(int channel, float *valuesOut, float valueIn)
      * channel/direction pair calls for it) to the matching manager and always
      * to the third manager at +0x30. */
     float value = valueIn;
-    float var_f1, var_f2;
+    float firstValue, var_f2;
     void *p;
     if (channel == 0) {
         p = *(void **)(lbl_8055F0C0 + 0x28);
-        if (p) var_f1 = call_get_37AA0(p);
-        else var_f1 = lbl_805636E0;
-        valuesOut[0] = var_f1;
+        if (p) firstValue = call_get_37AA0(p);
+        else firstValue = lbl_805636E0;
+        valuesOut[0] = firstValue;
         p = *(void **)(lbl_8055F0C0 + 0x2C);
         if (p) var_f2 = call_get_37AA0(p);
         else var_f2 = lbl_805636E0;
