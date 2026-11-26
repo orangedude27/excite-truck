@@ -89,7 +89,7 @@ enum {
 
 /* A loaded 'GETX' font block, as handed back by the archive manager.
  * records and texture are stored in the file as offsets from the block and are
- * turned into pointers the first time the block is loaded (see fn_80232578). */
+ * turned into pointers the first time the block is loaded (see loadFontTexture). */
 typedef struct GTexBlock {
     /* 0x00 */ s32 resourceIndex;          /* texture index in the gTex resource table */
     /* 0x04 */ s32 unk04;
@@ -388,7 +388,7 @@ s32 fn_80231718(s32 primary) {
 
 extern s32 sprintf(char *, const char *, ...);
 extern s32 fn_8012C33C(const char *);
-extern s32 fn_80232578(const char *);
+extern s32 loadFontTexture(const char *);
 extern char lbl_8055B9A0;
 #pragma push
 #pragma scheduling invalid_target
@@ -397,7 +397,7 @@ s32 fn_80231730(s32 name) {
 #define kOutlineNameFmt lbl_8055B9A0 /* "_ol_%s" */
     char buffer[0x18];
     sprintf(buffer, &kOutlineNameFmt, name);
-    if (fn_8012C33C(buffer) != 0) return fn_80232578(buffer);
+    if (fn_8012C33C(buffer) != 0) return loadFontTexture(buffer);
     return 0;
 #undef kOutlineNameFmt
 }
@@ -794,7 +794,7 @@ extern u32 lbl_8055B9D4;
 
 #pragma push
 #pragma small_data on
-s32 fn_80232578(const char *name) {
+s32 loadFontTexture(const char *name) {
     /* gText: load a font texture by archive file name (e.g. "bigtext.gtx").
      * Returns the loaded 'GETX' block, or 0.  A name already in the cache table
      * only has its use count bumped and its "_ol_<name>" variant refreshed; a
@@ -1707,7 +1707,7 @@ void fn_8023423C(s32 entryIndex, s32 flags) {
 #pragma scheduling invalid_target
 void fn_8023441C(const char *arg0) {
     lbl_8055F06C = (s32)((void *(*)(s32, const char *))fn_8012850C)(0x2100, lbl_80340614);
-    *(u64 *)&lbl_8055F058 = (u64)(u32)fn_80232578(arg0);
+    *(u64 *)&lbl_8055F058 = (u64)(u32)loadFontTexture(arg0);
 }
 #pragma pop
 void fn_80234470(void) {

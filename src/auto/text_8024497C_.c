@@ -7,7 +7,7 @@ extern char lbl_802FA338[];
 extern char lbl_80498878[];
 extern char lbl_8055BE20, lbl_8055B860, lbl_8055BAB8;
 extern void fn_80236914(void);
-extern int fn_80232578(void *);
+extern int loadFontTexture(void *);
 extern int gxGetImageArt(void *);
 extern int fn_80019088(void);
 extern int fn_80019888(void);
@@ -46,7 +46,7 @@ void fn_802449A0(void) {
     char *base = lbl_80342E38;
     f.p98 = lbl_80342ED8;
     f.spAC = 0;
-    f.sp148 = fn_80232578(base + 0xC);
+    f.sp148 = loadFontTexture(base + 0xC);
     f.sp14C = gxGetImageArt(base + 0x18);
     f.spB0 = fn_80019088();
     f.spB4 = 0;

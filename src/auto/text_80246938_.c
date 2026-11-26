@@ -287,7 +287,7 @@ extern s32 lbl_802FA3A0[5];
 extern void fn_802ECEC4(void);
 extern void fn_802ECEC0(void);
 extern int gxGetImageArt(const char *);
-extern s32 fn_80232578(const char *);
+extern s32 loadFontTexture(const char *);
 extern void *fn_801284F8(unsigned long, void *);
 extern s32 ArtSetGet();
 #pragma opt_pointer_aliasing on
@@ -324,7 +324,7 @@ s32 fn_80246E4C(void) {
         f = 1.0f;
         ((float *)p)[3] = f;
         ((float *)p)[4] = f;
-        p[0] = fn_80232578(lbl_80343938);
+        p[0] = loadFontTexture(lbl_80343938);
     }
     obj.field30 = p;
     ((float *)p)[3] = 0.7f;

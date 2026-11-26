@@ -17,7 +17,7 @@ extern void *fn_801284F8(int, void *);
 extern char lbl_8055C258[];
 __declspec(section ".sdata") extern char lbl_8055C258[];
 extern float lbl_80563AC8;
-extern int fn_80232578(void *); /* gText: font handle for a font name (used by fn_8025861C) */
+extern int loadFontTexture(void *); /* gText: font handle for a font name (used by fn_8025861C) */
 #pragma scheduling invalid_target
 /* UIObjects_Create: allocate the UI object manager and start its three fixed
  * tables.  Each is a {array, count, capacity} header whose array points at the
@@ -215,7 +215,7 @@ copied2:
 #pragma scheduling on
 /* Append a named text entry to the UI object manager's text table: copy `name`
  * into the next 0x24-byte slot, allocate and initialize a UITextObject (its
- * font handle comes from fn_80232578(`fontName`)) and store it in that slot. */
+ * font handle comes from loadFontTexture(`fontName`)) and store it in that slot. */
 void fn_8025861C(void *mgr, const char *name, void *fontName) {
     char *entry;
     int count = 0x20;
@@ -242,7 +242,7 @@ copied:
         ((int *)text)[2] = 9;
         ((float *)text)[3] = 1.0f;
         ((float *)text)[4] = 1.0f;
-        ((int *)text)[0] = fn_80232578(fontName);
+        ((int *)text)[0] = loadFontTexture(fontName);
     }
     *(void **)(entry + 0x20) = text;
 }
@@ -559,7 +559,7 @@ extern double lbl_80563AD8;
 /* The per-text object UIObjects_impl keeps (0x14 bytes, alloc name "gText";
  * created by fn_8025861C). */
 typedef struct UITextObject {
-    void *font;    /* +0x00 font block loaded by gText (fn_80232578) */
+    void *font;    /* +0x00 font block loaded by gText (loadFontTexture) */
     int value;     /* +0x04 -1 until a caller sets it */
     unsigned int flags; /* +0x08 draw flags, 9 when created */
     float scale;   /* +0x0C pixels per font unit */

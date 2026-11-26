@@ -34,7 +34,7 @@ extern f64 lbl_805602D8;
 extern s32 fn_8023441C(void);
 extern s32 fn_80232B70(s32);
 extern f32 fn_80011EDC(void);
-extern s32 fn_80232578(s32);
+extern s32 loadFontTexture(s32);
 extern char lbl_802FC414[];
 extern s32 lbl_8055D49C;
 extern f32 lbl_8056025C;
@@ -101,7 +101,7 @@ extern UnkF22C *lbl_8055D4B4; /* Sound for "321low.sfx" (each countdown step) */
 extern UnkF22C *lbl_8055D4B8; /* Sound for "321high.sfx" ("GO!") */
   extern void fn_802328D4();
   extern char lbl_802FC414[];
-extern s32 fn_80232578(s32);
+extern s32 loadFontTexture(s32);
 extern s32 lbl_80351738[0x54];
 extern s32 lbl_8055D494;
 extern char lbl_802FC518[];
@@ -241,8 +241,8 @@ void fn_8000F330(const char *artName, const char *fontName, s32 otherFontName) {
 #define VALUE_FONT lbl_8055D4C4 /* font of the value banner fn_8000FC8C */
 #define INTERLUDE_FONT lbl_8055D4C8 /* font of the interlude banner fn_8000FDF0 */
     INTERLUDE_ART = ArtSetGet(artName);
-    VALUE_FONT = fn_80232578((s32)fontName);
-    INTERLUDE_FONT = fn_80232578(otherFontName);
+    VALUE_FONT = loadFontTexture((s32)fontName);
+    INTERLUDE_FONT = loadFontTexture(otherFontName);
 #undef INTERLUDE_ART
 #undef VALUE_FONT
 #undef INTERLUDE_FONT
@@ -285,7 +285,7 @@ extern f64 lbl_80560268;
 extern s32 fn_8023441C(void);
 extern s32 fn_80232B70(s32);
 extern f32 fn_80011EDC(void);
-extern s32 fn_80232578(s32);
+extern s32 loadFontTexture(s32);
 extern char lbl_802FC414[];
 extern s32 lbl_8055D49C;
 /* Caches the ArtSet named by the resource-name string in r3: ArtSetGet opens
@@ -517,7 +517,7 @@ void fn_8000F884(void) {
     ((void (*)(s32))fn_8000F440)((s32)(base + 0x228));
     ((void (*)(s32))fn_8000F3E8)((s32)(base + 0x238));
     ((void (*)(s32))fn_8000F498)((s32)(base + 0x244));
-    lbl_8055D494 = fn_80232578((s32)(base + 0x250));
+    lbl_8055D494 = loadFontTexture((s32)(base + 0x250));
     lbl_8055D4B0 = (UnkF22C *)fn_80145E70((s32)(base + 0x260));
     count = fn_800167F4();
     if (count > 1) {
@@ -2707,7 +2707,7 @@ void fn_8000F0E4(void) {
     fontSize = (f32)fn_80232B70(fontHandle);
     uiTextScaleMetric = (s32)(uiTextScaleMultiplier * fontSize);
     *(f32 *)&uiScaleFactor = fn_80011EDC();
-    bigTextTextureHandle = fn_80232578((s32)bigTextTextureName);
+    bigTextTextureHandle = loadFontTexture((s32)bigTextTextureName);
 #undef bigTextTextureName
 #undef uiTextScaleMultiplier
 #undef bigTextTextureHandle

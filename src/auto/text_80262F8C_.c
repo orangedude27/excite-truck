@@ -135,7 +135,7 @@ void fn_8026311C(void) {
     extern s32 fn_80133460(s32, const u8 *, u8, s32);
     extern void *fn_80207848(void *, s32);
     extern s32 fn_802146BC(s32 *, s32, s32, s32, s32, s32, s32, s32);
-    extern void *fn_80232578(void *);
+    extern void *loadFontTexture(void *);
     extern s32 Abend_Panic(void *, ...);
     extern void fn_802E6FBC(void);
     extern void fn_802E8518(s32);
@@ -166,7 +166,7 @@ void fn_8026311C(void) {
     s.spBC = 0;
     s.spC8 = 1;
     s.spC9 = 0;
-    s.spB8 = (s32)fn_80232578((void *)lbl_803462C8);
+    s.spB8 = (s32)loadFontTexture((void *)lbl_803462C8);
     s.spA0 = (s32 *)lbl_803460B4;
     s.spCC = lbl_80563BD0;
     s.spE4 = 0;
@@ -174,7 +174,7 @@ void fn_8026311C(void) {
     s.spEC = 0;
     s.spF8 = 1;
     s.spF9 = 0;
-    s.spE8 = (s32)fn_80232578((void *)lbl_803462C8);
+    s.spE8 = (s32)loadFontTexture((void *)lbl_803462C8);
     s.spD0 = (s32 *)lbl_803460B4;
     s.spFC = lbl_80563BD0;
     s.sp4C = 0;
@@ -182,7 +182,7 @@ void fn_8026311C(void) {
     s.sp54 = 0;
     s.sp60 = 1;
     s.sp61 = 0;
-    s.sp50 = (s32)fn_80232578((void *)lbl_803462C8);
+    s.sp50 = (s32)loadFontTexture((void *)lbl_803462C8);
     s.sp38 = (s32 *)lbl_80346048;
     s.sp62 = 0;
     s.sp64 = 0;
@@ -203,7 +203,7 @@ void fn_8026311C(void) {
     s.sp88 = 0;
     s.sp94 = 1;
     s.sp95 = 0;
-    s.sp84 = (s32)fn_80232578((void *)lbl_803462C8);
+    s.sp84 = (s32)loadFontTexture((void *)lbl_803462C8);
     s.sp6C = (s32 *)lbl_80346048;
     s.sp96 = 0;
     s.sp98 = 0;

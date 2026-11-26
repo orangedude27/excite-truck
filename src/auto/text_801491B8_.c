@@ -1920,7 +1920,7 @@ extern void fn_801D0800(void *);
 extern void fn_80167834(void);
 extern void fn_8016A0B0(void);
 extern s32 fn_802C9A58(void);
-extern s32 fn_80232578(void *);
+extern s32 loadFontTexture(void *);
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void *fn_8014DE50(void) {
@@ -2003,7 +2003,7 @@ extern "C" void *fn_8014DE50(void) {
         *(void * *)(obj + 0x448) = fn_80207848(strings + 0x498, 1);
         *(void * *)(obj + 0x44C) = fn_80207848(strings + 0x4A8, 1);
         obj[0x450] = 0;
-        lbl_8055E250 = fn_80232578(strings + 0x4B4);
+        lbl_8055E250 = loadFontTexture(strings + 0x4B4);
         fn_80167834();
         fn_8016A0B0();
     }
@@ -2476,7 +2476,7 @@ extern "C" void *deleteBetaMaster(char *master, s32 shouldFree) {
         *(void **)(master+4) = lbl_8032D970+0x100;
         *(void **)(master+8) = lbl_8032D970+0x11c;
         *(void **)(master+12) = lbl_8032D970+0x130;
-        /* the file of fn_80232578 and the five save objects of fn_80145E70 */
+        /* the file of loadFontTexture and the five save objects of fn_80145E70 */
         fn_802328D4(lbl_8055E250);
         lbl_8055E250 = 0;
         object = (Cleanup8014E9C4 *)lbl_8055E238;

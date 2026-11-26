@@ -24,7 +24,7 @@ extern float lbl_80563758;
 extern char lbl_803425A8[];
 extern char kStatLabelFontName[];
 extern s32 ArtSetGet(char *, s32, char *, s32);
-extern s32 fn_80232578(char *, char *, s32);
+extern s32 loadFontTexture(char *, char *, s32);
 extern char gMRollPlayerSlots[];
 extern void *MRollStatLabel_init(void *);
 extern void Abend_Panic(char *, ...);
@@ -907,7 +907,7 @@ void *MRollStatLabel_init(void *statLabel) {
     *(s32 *)((u8 *)statLabel + 0x1C) = minusOne;
     *(s32 *)((u8 *)statLabel + MROLL_STAT_VALUE_PTR_OFFSET) = zero;
     *(s32 *)((u8 *)statLabel + MROLL_STAT_FLAG_OFFSET) = zero;
-    *(s32 *)((u8 *)statLabel + MROLL_STAT_FONT_OFFSET) = ((s32 (*)(char *))fn_80232578)(kStatLabelFontName);
+    *(s32 *)((u8 *)statLabel + MROLL_STAT_FONT_OFFSET) = ((s32 (*)(char *))loadFontTexture)(kStatLabelFontName);
     return statLabel;
 }
 
@@ -989,7 +989,7 @@ extern float lbl_80563758;
 extern char lbl_803425A8[];
 extern char kStatLabelFontName[];
 s32 ArtSetGet(char *, s32, char *, s32);
-s32 fn_80232578(char *, char *, s32);
+s32 loadFontTexture(char *, char *, s32);
 /* Unused no-op stub in the mroll (player-info/roll) module; this build leaves it empty. */
 void fn_80241224(void) {
 }

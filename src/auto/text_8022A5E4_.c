@@ -1303,7 +1303,7 @@ float fn_8022CA40(void *obj) {
 }
 
 void fn_8022CAA8(void *arg0, void *arg1) {
-    extern int fn_80232578(const char *);
+    extern int loadFontTexture(const char *);
     extern unsigned int fn_8022A834(unsigned int);
     extern int gxGetImageArt(const char *);
     extern int ArtSetGet(const char *);
@@ -1326,11 +1326,11 @@ void fn_8022CAA8(void *arg0, void *arg1) {
     *(int *)(dest + 8) = 0;
     name = *(char **)src;
     if (strstr(name, lbl_8055B918) != 0) {
-        *(int *)(dest + 8) = fn_80232578(lbl_8033FC40);
+        *(int *)(dest + 8) = loadFontTexture(lbl_8033FC40);
     }
     name = *(char **)src;
     if (strstr(name, lbl_8055B920) != 0) {
-        *(int *)(dest + 8) = fn_80232578(name);
+        *(int *)(dest + 8) = loadFontTexture(name);
     }
     src4 = *(float *)(src + 4);
     converted = *(int *)(src + 0x0C);

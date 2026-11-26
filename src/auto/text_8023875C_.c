@@ -21,7 +21,7 @@ extern int fn_80230B5C(void *);
 extern int fn_802C974C(float, float, float);
 extern int DrawList_loadMatrix(void *, unsigned int, float);
 extern int fn_8012C33C(int);
-extern int fn_80232578(int);
+extern int loadFontTexture(int);
 extern unsigned char lbl_8055F0D9;
 extern float lbl_8055FC88;
 extern float lbl_805636F8;
@@ -69,7 +69,7 @@ void fn_8023889C(void) {
     values[1] = lbl_8056370C;
     do {
         if (fn_8012C33C(*var_r31) != 0) {
-            lbl_8055F0D4 = fn_80232578(values[var_r30]);
+            lbl_8055F0D4 = loadFontTexture(values[var_r30]);
             return;
         }
         var_r30 += 1;

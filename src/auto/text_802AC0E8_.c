@@ -219,7 +219,7 @@ int fn_802AC4A8(const char *name, int table)
     extern int fn_802AC2B4(void **, int, float *);
     extern void *fn_802AC0E8(void *, const char *, int);
     extern void *fn_802C6FC0(int, int, int);
-    extern void *fn_80232578(const char *);
+    extern void *loadFontTexture(const char *);
     extern void fn_802E30C8(const char *, ...);
     extern void Abend_Panic(const char *, ...);
     extern float fn_802AC344(void *, void *, float *);
@@ -341,10 +341,10 @@ copied:
         } else if (strcmp(type, lbl_8055CD04) == 0) {
             rec->type = 1;
             if (strcmp(str + 0x60, ((StrFn)(*(void ***)e)[5])(e, lbl_8055CD0C)) != 0) {
-                rec->ptr = fn_80232578(((StrFn)(*(void ***)e)[5])(e, lbl_8055CD0C));
+                rec->ptr = loadFontTexture(((StrFn)(*(void ***)e)[5])(e, lbl_8055CD0C));
                 rec->w[2].f = ((FltDefFn)(*(void ***)e)[10])(e, lbl_8055CCE8, lbl_80564AB4);
             } else {
-                rec->ptr = fn_80232578(str + 0x6C);
+                rec->ptr = loadFontTexture(str + 0x6C);
                 rec->w[2].f = scale * ((FltDefFn)(*(void ***)e)[10])(e, lbl_8055CCE8, lbl_80564AB4);
             }
             rec->w[1].i = fn_802AC174(((StrDefFn)(*(void ***)e)[6])(e, lbl_8055CD14, (const char *)&lbl_8055CD1C));

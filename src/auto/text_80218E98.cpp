@@ -545,7 +545,7 @@ extern "C" void *fn_80222340(void *, s32, s32, s32, s32, s32, s32);
 extern "C" void *fn_80218F80(void *, void *);
 extern "C" char lbl_8033E560[];
 extern "C" char lbl_8033DA60[];
-extern "C" s32 fn_80232578(s32);
+extern "C" s32 loadFontTexture(s32);
 extern "C" void Abend_Panic(const char *, ...);
 extern f32 lbl_8056351C;
 extern f64 lbl_80563520;
@@ -1232,7 +1232,7 @@ extern char lbl_8033D8B8[];
      * width over the font's own height and the box's height over the width of the
      * string -- kinds 2 and 5 pair those two the other way round.  An unknown kind
      * is only reported. */
-    #define GTexLoadFont   fn_80232578 /* gText: the font texture of an archive file name */
+    #define GTexLoadFont   loadFontTexture /* gText: the font texture of an archive file name */
     #define GTexFontHeight fn_80232B70 /* gText: a font's nominal glyph height */
     #define GTexMeasure    fn_8023293C /* gText: how wide a string is in a font */
     #define ArtSetLoad     ArtSetGet /* the ArtSet picture set of a resource name */
@@ -5852,14 +5852,14 @@ extern "C" void *fn_802224B4(void *self, s32 value25C, s32 x, s32 y,
 #pragma scheduling invalid_target
 extern "C" void fn_802328D4(void*);
 extern "C" s32 lbl_8033F9E0[];
-extern "C" s32 fn_80232578(s32);
+extern "C" s32 loadFontTexture(s32);
 #pragma scheduling invalid_target
 /* Constructs a gText display item: loads the font file named by fontName through
  * the gText loader, remembers the string to draw with it, and installs the text
  * item's vtable (draw fn_802225E8, measure fn_8022264C, dtor fn_80222584). */
 extern "C" void *fn_80222530(void *self, const char *fontName, const char *text) {
     #define GTextItemVTable lbl_8033F9E0 /* this item's vtable */
-    #define GTexLoadFont fn_80232578     /* gText: load a font by archive file name */
+    #define GTexLoadFont loadFontTexture     /* gText: load a font by archive file name */
     struct GTextItem {
         void *vtable;      /* 0x0 */
         void *font;        /* 0x4: the loaded gText font block */
@@ -6063,7 +6063,7 @@ extern f64 lbl_80563520;
 #pragma scheduling invalid_target
 extern "C" void *fn_80222BDC(void *resource, void *params, s32 resourceId) {
 #define initBase          fn_80218F80
-#define loadFont          fn_80232578
+#define loadFont          loadFontTexture
 #define panic             Abend_Panic
 #define gCircleListVtable lbl_8033E560
 #define sInvalidFontMsg   lbl_8033DA60
@@ -6300,7 +6300,7 @@ extern "C" void *fn_802230A4(u8 *obj, s32 arg1, s32 arg2, u8 *input, s32 arg4) {
     *(s32 *)(obj + 0x2CC) = data;
     *(void **)obj = lbl_8033E4DC;
     *(s32 *)(obj + 0x2C8) = count;
-    texture = ((s32 (*)(const char *, const char *))fn_80232578)(
+    texture = ((s32 (*)(const char *, const char *))loadFontTexture)(
         (const char *)lbl_8033DA84, lbl_8033E4DC);
     scale = lbl_8056352C;
     i = 0;
@@ -7320,7 +7320,7 @@ extern "C" void *fn_80224B54(void *arg0, s32 arg1, void *arg2) {
     } else {
         *(s32 *)(self + 0x244) = fn_80131234((u8 *)p2 + 0x20);
     }
-    *(s32 *)(self + 0x248) = fn_80232578((s32)((u8 *)p2 + 0x40));
+    *(s32 *)(self + 0x248) = loadFontTexture((s32)((u8 *)p2 + 0x40));
     *(s32 *)(self + 0x24C) = *(s32 *)((u8 *)p2 + 0x90);
     *(s32 *)(self + 0x250) = *(s32 *)((u8 *)p2 + 4);
     {
@@ -7517,7 +7517,7 @@ extern "C" void *fn_8022553C(void *arg0, void *arg1, void *arg2)
   *((s32 *) (obj + 0x244)) = (s32) arg1;
   offset = *((s32 *) (obj + 0x244));
   *((void **) obj) = lbl_8033E140;
-  *((s32 *) (obj + 0x248)) = fn_80232578((s32) lbl_8033DA84);
+  *((s32 *) (obj + 0x248)) = loadFontTexture((s32) lbl_8033DA84);
   count = 1;
   if ((*((s32 *) (ctx + 0x9C))) > count)
   {
@@ -7609,7 +7609,7 @@ typedef struct ScrollRow {
 typedef struct ScrollList {
     u8             header[0x244];
     ScrollRowTable *rowTable;   /* 0x244 */
-    void           *fontRes;    /* 0x248: text resource, see fn_80232578 */
+    void           *fontRes;    /* 0x248: text resource, see loadFontTexture */
     s32            drawRows;    /* 0x24C: rows drawn, 1..3 */
     f32            scrollStart; /* 0x250: fn_8023659C() time the scroll began */
     f32            x;           /* 0x254 */
@@ -8531,7 +8531,7 @@ extern "C" void *fn_80227E84(void *self, s32 arg1, void *arg2, s32 arg3) {
     *(s32 *)((u8 *)self + 0x24C) = arg3;
     resource = *(s32 *)((u8 *)arg2 + 0xB0);
     *(u8 *)((u8 *)self + 0x244) = (s8)((resource - 1) == 0);
-    resource = ((s32 (*)(const char *, s32))fn_80232578)(base + 0x20C, resource);
+    resource = ((s32 (*)(const char *, s32))loadFontTexture)(base + 0x20C, resource);
     *(s32 *)((u8 *)self + 0x250) = resource;
     if (resource == 0)
         fn_802E30C8(base + 0x408);

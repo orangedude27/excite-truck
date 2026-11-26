@@ -9,7 +9,7 @@ extern int fn_80214AF0(int);
 extern int fn_80214B44(int);
 extern void *lbl_803430E8[];
 extern void *lbl_8055F244;
-extern int fn_80232578(void *);
+extern int loadFontTexture(void *);
 extern int gxGetImageArt(void *);
 extern int fn_802C519C(void *);
 extern void fn_802E30C8(const char *, ...);
@@ -81,8 +81,8 @@ int fn_80245264(struct MenuTextContext *context) {
         fn_802E30C8(desc + 0x78); /* printed once when the image is missing */
     }
     context->image2 = 0;
-    context->font2 = fn_80232578(desc + 0xB4); /* the font's .gtx name */
-    result = fn_80232578(desc + 0xB4);
+    context->font2 = loadFontTexture(desc + 0xB4); /* the font's .gtx name */
+    result = loadFontTexture(desc + 0xB4);
     value = lbl_80563830;
     context->font = result;
     context->xOffset = value;

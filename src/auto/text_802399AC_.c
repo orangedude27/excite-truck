@@ -751,7 +751,7 @@ void *fn_8023AA2C(register void *obj, register s32 value, register s32 firstItem
 #pragma pop
 __declspec(section ".data") extern s32 lbl_803412B8;
 __declspec(section ".data") extern s32 lbl_803412C8;
-extern s32 fn_80232578(s32 *);
+extern s32 loadFontTexture(s32 *);
 #pragma push
 #pragma small_data off
 extern s32 lbl_803412B8;
@@ -765,7 +765,7 @@ void *fn_8023AB78(register void *arg0, register s32 arg1, register s32 arg2, ...
     s32 offset;
     *(s32 *)((char *)arg0 + 0x14) = 0;
     *(s32 **)arg0 = &lbl_80341108;
-    *(s32 *)((char *)arg0 + 0x24) = fn_80232578(&lbl_803412C8);
+    *(s32 *)((char *)arg0 + 0x24) = loadFontTexture(&lbl_803412C8);
     *(unsigned char *)((char *)arg0 + 0x28) = 0;
     va_start(ap, arg2);
     *(s32 *)((char *)arg0 + 0x1C) = 0;

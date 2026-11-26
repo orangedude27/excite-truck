@@ -24,7 +24,7 @@ typedef struct MenuListObject {
     /* 0x14 */ s32 field_14;
     /* 0x18 */ char *text;     /* string the player is typing in */
     /* 0x1C */ s32 textLimit;  /* its buffer size, at most 11 */
-    /* 0x20 */ void *font;     /* gText font block, loaded by fn_80232578 */
+    /* 0x20 */ void *font;     /* gText font block, loaded by loadFontTexture */
     /* 0x24 */ void *image;    /* image handle, loaded by gxGetImageArt */
     /* 0x28 */ u8 edited;
     /* 0x29 */ u8 toggle;      /* flips between the two labels of a 2-char entry */
@@ -268,7 +268,7 @@ void fn_802439E8(void *arg0, s32 arg1, s32 arg2) {
 }
 #pragma scheduling on
 
-extern s32 fn_80232578(s32);
+extern s32 loadFontTexture(s32);
 extern s32 gxGetImageArt(s32);
 extern void fn_802E30C8(const char *, ...);
 extern s32 fn_80131234(const char *);
@@ -282,7 +282,7 @@ void fn_80243A38(void *arg0) {
     s32 group;
     s32 i;
 
-    *(s32 *)((u8 *)arg0 + 0x20) = fn_80232578((s32)(globalBase + 0x3C0));
+    *(s32 *)((u8 *)arg0 + 0x20) = loadFontTexture((s32)(globalBase + 0x3C0));
     *(s32 *)((u8 *)arg0 + 0x24) = gxGetImageArt((s32)(globalBase + 0x3CC));
     if (*(s32 *)((u8 *)arg0 + 0x24) == 0)
         fn_802E30C8(globalBase + 0x3D8);

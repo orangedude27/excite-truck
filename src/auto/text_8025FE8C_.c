@@ -157,7 +157,7 @@ extern "C" void fn_8001EFC8(void);
 extern "C" void *fn_8027B878(s32);
 extern "C" void *fn_801284F8(s32, void *);
 extern "C" void *ArtSetGet(void *);
-extern "C" void *fn_80232578(void *);
+extern "C" void *loadFontTexture(void *);
 extern "C" void *fn_80207848(void *, s32);
 extern "C" s32 fn_802E8D84(void);
 extern "C" void fn_802E7128(void);
@@ -280,7 +280,7 @@ outerBody:
         *(u8 *)((char *)obj + 0x1E) = 0;
         *(u8 *)((char *)obj + 0x1F) = 0;
         *(void **)((char *)obj + 0x24) = ArtSetGet(strBase + 0x150);
-        *(void **)((char *)obj + 0x28) = fn_80232578(strBase + 0x15C);
+        *(void **)((char *)obj + 0x28) = loadFontTexture(strBase + 0x15C);
     }
     count = *(s32 *)(sel + 0x40);
     {
@@ -307,7 +307,7 @@ innerBody:
             *(u8 *)((char *)w + 0x1C) = 0;
             *(u8 *)((char *)w + 0x1D) = 1;
             *(void **)((char *)w + 0x20) = ArtSetGet(strBase + 0x150);
-            *(void **)((char *)w + 0x24) = fn_80232578(strBase + 0x15C);
+            *(void **)((char *)w + 0x24) = loadFontTexture(strBase + 0x15C);
         }
         count = *(s32 *)(sel + 0x1C);
         widgets = *(void ***)(sel + 0x18);
@@ -454,7 +454,7 @@ typedef struct {
     u8    pad_0x1F;    /* 0x1F */
     s32   group;       /* 0x20 which group of the data source this row shows */
     void *art;         /* 0x24 gArt resource, from ArtSetGet */
-    void *font;        /* 0x28 gText font block, from fn_80232578 */
+    void *font;        /* 0x28 gText font block, from loadFontTexture */
 } SelectorGroupRow;
 #define SELECTOR_GROUP_VTABLE lbl_80345E28
 
@@ -496,7 +496,7 @@ typedef struct {
     u8    expanded;    /* 0x1E this row's group is open */
     u8    pad_0x1F;    /* 0x1F */
     void *art;         /* 0x20 gArt resource, from ArtSetGet */
-    void *font;        /* 0x24 gText font block, from fn_80232578 */
+    void *font;        /* 0x24 gText font block, from loadFontTexture */
 } SelectorItem;
 #define SELECTOR_ITEM_VTABLE lbl_80345EA0
 #pragma push
@@ -1396,7 +1396,7 @@ void fn_80261AF0(s32 *arg0, s32 arg1) {
 extern "C" void *fn_801284F8(s32, void *);
 extern "C" void *fn_80207848(void *, s32);
 extern "C" void *ArtSetGet(void *);
-extern "C" void *fn_80232578(void *);
+extern "C" void *loadFontTexture(void *);
 extern "C" void *memset(void *, int, unsigned int);
 /* Repaint both widget lists of the selector for its cursor state. */
 static inline void Selector_Repaint(void) {
@@ -1486,7 +1486,7 @@ outerBody:
         ((SelectorGroupRow *)object)->expanded = 0;
         ((SelectorGroupRow *)object)->pad_0x1F = 0;
         ((SelectorGroupRow *)object)->art = ArtSetGet(stringBase + 0x150);
-        ((SelectorGroupRow *)object)->font = fn_80232578(stringBase + 0x15C);
+        ((SelectorGroupRow *)object)->font = loadFontTexture(stringBase + 0x15C);
     }
     {
         void **array = (void **)((SelectorView *)view)->group_widgets;
@@ -1511,7 +1511,7 @@ innerBody:
         ((SelectorItem *)item)->on_cursor = 0;
         ((SelectorItem *)item)->dim = 1;
         ((SelectorItem *)item)->art = ArtSetGet(stringBase + 0x150);
-        ((SelectorItem *)item)->font = fn_80232578(stringBase + 0x15C);
+        ((SelectorItem *)item)->font = loadFontTexture(stringBase + 0x15C);
     }
     {
         void **array = (void **)((SelectorView *)view)->item_widgets;
