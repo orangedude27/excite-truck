@@ -895,14 +895,14 @@ extern "C" void *destroyCrushMaster(CrushMaster *self, int deleteFlag) {
     extern void fn_802CAC54(int texture);
     extern void fn_802ADE60(int entrySet, int freeHolder);
     extern void fn_80128668(void *object);
-    Destroyable *prerace;
-    void *animSet;
+    Destroyable *preraceSound;
+    void *animPlayer;
     Destroyable *sound;
     if (self != 0) {
-        prerace = self->preraceSound;
+        preraceSound = self->preraceSound;
         self->vtable = lbl_80331018;
-        if (prerace != 0) {
-            if (prerace != 0) prerace->destroy(1);
+        if (preraceSound != 0) {
+            if (preraceSound != 0) preraceSound->destroy(1);
         }
         if (lbl_8055E3A4 != 0) {
             fn_80139E18((void *)lbl_8055E3A4);
@@ -911,9 +911,9 @@ extern "C" void *destroyCrushMaster(CrushMaster *self, int deleteFlag) {
         fn_802CAC54(*(int *)&lbl_8055E3A8);
         fn_802CAC54(self->radarTexture);
         if (&self->round != 0) {
-            animSet = self->round.animPlayer;
-            if (animSet != 0) {
-                fn_802ADE60((int)animSet, 1);
+            animPlayer = self->round.animPlayer;
+            if (animPlayer != 0) {
+                fn_802ADE60((int)animPlayer, 1);
                 self->round.animPlayer = 0;
             }
             sound = (Destroyable *)self->round.sound14;
