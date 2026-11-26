@@ -4819,7 +4819,7 @@ extern "C" void fn_80147BD0(s32, s32, s32, s32, s32, f32);
  * (+0xC8 long, starting at +0xCC) the sprite grows in over the window's second
  * half; outside it, it is drawn at full size.  Its position is rewound by half
  * its size and scaled before the four corners are handed to the drawer. */
-extern "C" void drawGateStarArt(void *hud, int arg1, void *arg2) {
+/* Draw the gate_star_art sprite for a gate record, growing it in during the record's timing window and submitting its four corners to the drawer. */ extern "C" void drawGateStarArt(void *hud, int arg1, void *arg2) {
     extern char lbl_8032C978[]; /* "gate_star_art" */
     extern char lbl_8032C988[]; /* "next_gate" */
     extern void fn_801476C4();
