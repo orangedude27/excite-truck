@@ -83,7 +83,7 @@ struct PropertyReader802640C4 {
  *   +0x074 "credits: failed to push my movie (%s) onto the stack!"
  *   +0x0AC "credits_page"  - the .val entry fn_80263F30 looks for
  *   +0x0C0 "credits: failed to pop my movie from the stack!"
- *   +0x0F0 "firetext",  +0x0FC "TextWoot"    - item types fn_802640C4 builds
+ *   +0x0F0 "firetext",  +0x0FC "TextWoot"    - item types Credits_BuildItem builds
  *   +0x108 "extra_delay", +0x114 "ExtraDelay"
  *   +0x120 "allow_keys",  +0x12C "KeyEnabler"
  *   +0x138 "ValTable_UIDialogMapping: can't handle item type '%s'"
@@ -221,7 +221,7 @@ extern unsigned char lbl_80498F78[];
         items_[count_] = (obj); \
     } while (0)
 #pragma dont_inline on
-extern "C" void fn_802640C4(void *item, void *entry) {
+extern "C" void Credits_BuildItem(void *item, void *entry) {
     /* Builds one 0x14-byte credits-page item descriptor from a .val entry: reads the "type"
        property and dispatches to the string, firetext, extra_delay or allow_keys constructor,
        registering constructed items in the global credits item list. */
@@ -886,7 +886,7 @@ done:
     *(float *)((char *)item + 0xB8) = startTime;
 }
 
-/* A "firetext" credits item.  fn_802640C4 builds it under the name "TextWoot" (0xbc bytes)
+/* A "firetext" credits item.  Credits_BuildItem builds it under the name "TextWoot" (0xbc bytes)
    and fn_80265268 hands it the line to show; its class vtable is lbl_80346618 and
    fn_802652E8 is that vtable's slot 0x28 (draw the line). */
 typedef struct FireText {
@@ -1063,7 +1063,7 @@ int fn_80265688(void) {
 
 extern void *fn_8012850C(int, void *);
 extern void *fn_8002F37C(void *, int, int, int);
-extern void fn_802640C4(void *, void *);
+extern void Credits_BuildItem(void *, void *);
 extern void fn_80236910(void *);
 extern int fn_802146BC();
 extern char lbl_803464B4[], lbl_803464C8[];
@@ -1115,7 +1115,7 @@ extern "C" int fn_802656C8(void *valueList) {
     k = 0;
     while ((valueEntry = ((ValList *)valueList)->getItem(k)) != 0) {
         if (stricmp(((ValEntry *)valueEntry)->getName(), lbl_8055C498) == 0) {
-            fn_802640C4((char *)items + itemCount++ * 0x14, valueEntry);
+            Credits_BuildItem((char *)items + itemCount++ * 0x14, valueEntry);
         }
         k++;
     }
