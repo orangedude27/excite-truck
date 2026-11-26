@@ -398,7 +398,7 @@ extern "C" s32 fn_80216D28();
 extern "C" s32 fn_80217C4C(s32);
 extern "C" s32 fn_80217D84(s32);
 extern "C" s32 fn_8022EDC4(void);
-extern "C" void fn_8022EEF8(void *, s32, s32);
+extern "C" void UIContext_combine(void *, s32, s32);
 extern "C" void fn_8022ED00(void *);
 extern "C" void fn_8022EDB8(void);
 extern "C" void fn_80231220(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
@@ -2169,7 +2169,7 @@ extern "C" void fn_8021B944(void *arg0) {
     /* If this object has a local UI transform, push it onto the draw-context stack, draw, then restore. */
     u8 localContext[0x40];
     if (*(void **)((u8 *)arg0 + 0x370) != 0) {
-        fn_8022EEF8(localContext, (s32)*(void **)((u8 *)arg0 + 0x370), fn_8022EDC4());
+        UIContext_combine(localContext, (s32)*(void **)((u8 *)arg0 + 0x370), fn_8022EDC4());
         fn_8022ED00(localContext);
     }
     fn_80219660(arg0);
@@ -2252,7 +2252,7 @@ extern "C" void fn_8021BA64(void *setup, s32 width, s32 arg2, s32 buffer, s32 ar
 extern "C" void fn_8022A8E4(s32);
 extern "C" void fn_8021BA64(void *, s32, s32, s32, s32, void *, s32, s32, s32, s32, s32, s32, s32);
 extern "C" s32 fn_8022EDC4(void);
-extern "C" void fn_8022EEF8(void *, s32, s32);
+extern "C" void UIContext_combine(void *, s32, s32);
 extern "C" void fn_8022ED00(void *);
 extern "C" void fn_8022EDB8(void);
 #pragma push
@@ -6760,7 +6760,7 @@ extern "C" void fn_80223C20(void *widget) {
     u8 localContext[0x40];
     *(f32 *)((u8 *)*(void **)((u8 *)widget + 0x260) + 0x30) = 1.0f - *(f32 *)((u8 *)widget + 0x25C);
     if (*(f32 *)((u8 *)*(void **)((u8 *)widget + 0x260) + 0x30) > zero && *(s32 *)((u8 *)widget + 0x250) != 0) {
-        fn_8022EEF8(localContext, (s32)*(void **)((u8 *)widget + 0x260), fn_8022EDC4());
+        UIContext_combine(localContext, (s32)*(void **)((u8 *)widget + 0x260), fn_8022EDC4());
         fn_8022ED00(localContext);
         gxDrawPicture(*(s32 *)((u8 *)widget + 0x250), 0,
             *(f32 *)((u8 *)widget + 0x244), *(f32 *)((u8 *)widget + 0x248), zero,
@@ -7214,7 +7214,7 @@ extern "C" void fn_802248FC(void *arg0) {
         *(f32 *)(*(u8 **)(self + 0x284) + 0x30) = *(f32 *)(self + 0x268);
     else
         *(f32 *)(*(u8 **)(self + 0x284) + 0x30) = (*(s32 *)(self + 0x248) == 1) ? lbl_805634A4 : lbl_805634A8;
-    fn_8022EEF8(*(void **)(self + 0x288), fn_8022EDC4(), (s32)*(u32 *)(self + 0x284));
+    UIContext_combine(*(void **)(self + 0x288), fn_8022EDC4(), (s32)*(u32 *)(self + 0x284));
     fn_8022ED00(*(void **)(self + 0x288));
     s32 delta;
     s32 rem;
@@ -7401,7 +7401,7 @@ extern "C" void fn_80224E74(void *this_) {
     f32 yy;
     f32 half = lbl_805634C4;
     if (TB(0x299, u8) != 0) {
-        fn_8022EEF8(tmp, TB(0x29C, s32), fn_8022EDC4());
+        UIContext_combine(tmp, TB(0x29C, s32), fn_8022EDC4());
         fn_8022ED00(tmp);
     }
     s32 h = ((DummyTextBoxV *)this_)->g28();
@@ -8084,7 +8084,7 @@ extern "C" void fn_80226B6C(void *arg0) {
 
     if (*(s32 *)(p + 0x244) != 0) {
         s32 value = fn_8022EDC4();
-        fn_8022EEF8(scratch + 0x30,
+        UIContext_combine(scratch + 0x30,
                     (s32)*(void **)(p + 0x248), value);
         fn_8022ED00(scratch + 0x30);
         f32 a = *(f32 *)(p + 0x258);
@@ -8178,7 +8178,7 @@ extern "C" void fn_80226F94(void *arg0) {
     Widget *widget = (Widget *)arg0;
 
     if (widget->useMatrix != 0) {
-        fn_8022EEF8(matrixScratch, widget->matrixValue, fn_8022EDC4());
+        UIContext_combine(matrixScratch, widget->matrixValue, fn_8022EDC4());
         fn_8022ED00(matrixScratch);
     }
     fn_80230C30(&widget->x, &widget->y, widget->width, widget->height);

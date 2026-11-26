@@ -31,7 +31,7 @@ extern void *fn_8022ECC0(s32);
 /* One entry of the UI draw-context stack (pushed by fn_8022ED00, popped by
  * fn_8022EDB8, current one from fn_8022EDC4); the game names the 0x3c-byte
  * object "UIContext" (lbl_80340344) and allocates it from "UIContext::pool".
- * The matrix is 3x3 row-major; composing two contexts (fn_8022EEF8) multiplies
+ * The matrix is 3x3 row-major; composing two contexts (UIContext_combine) multiplies
  * them (left * right), adds the offsets and multiplies the three factors. */
 typedef struct UIContext {
     f32 mtx[3][3];    /* 0x00 rotation/scale */
@@ -301,7 +301,7 @@ void fn_8022EE9C(void) {
  * (fn_8022ED00) for the widget to draw in.  When `dst` is one of the inputs
  * every product goes through a temporary first, so nothing is overwritten
  * before the last row that reads it. */
-void fn_8022EEF8(UIContext *dst, const UIContext *left, const UIContext *right) {
+void UIContext_combine(UIContext *dst, const UIContext *left, const UIContext *right) {
     f32 m00, m10, m20, m01, m11, m21, m02, m12, m22;
 
     dst->brightness = left->brightness * right->brightness;
