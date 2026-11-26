@@ -4113,7 +4113,7 @@ extern "C" void *fn_8021EB9C(void *self, s32 deletingFlag) {
 extern "C" void gxCanvasSetClipRect(s32, s32, s32, s32, s32);
 extern "C" void fn_80228DC4(s32, s32, s32, s32, s32, s32);
 extern "C" void fn_8022B390(s32, s32, s32, s32*, s32*);
-extern "C" void fn_802C47B8(s32, s32, s32, s32, s32, s32);
+extern "C" void gxDrawLine(s32, s32, s32, s32, s32, s32);
 extern "C" void gxCanvasResetClipRect(s32);
 extern "C" s32 lbl_8055FBF8;
 // Renders entity onto canvas: sets the canvas clip rect from the entity's position and vtable size,
@@ -4139,7 +4139,7 @@ extern "C" void fn_8021EC1C(void* entity, s32 canvas) {
         fn_8022B390(*(s32*)((u8*)entity+0xA58),*(s32*)((u8*)entity+0xA54),*(s32*)((u8*)entity+0x250),&outX,&outY);
         drawY = outY + *(s32*)((u8*)entity+8);
         drawX = outX + *(s32*)((u8*)entity+4);
-        ((void(*)(s32,s32,s32,s32,s32))fn_802C47B8)(drawX,drawY+2,drawX,drawY+0xC,lbl_8055FBF8);
+        ((void(*)(s32,s32,s32,s32,s32))gxDrawLine)(drawX,drawY+2,drawX,drawY+0xC,lbl_8055FBF8);
     }
     gxCanvasResetClipRect(canvas);
 }
