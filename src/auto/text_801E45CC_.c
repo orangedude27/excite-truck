@@ -93,7 +93,7 @@ void fn_801E45CC(void) {
 /* Key handler of the debug overlay panel (fn_801E45CC): takes one typed key as
  * its ASCII code, adjusts the LOD factor or flips one of the debug flags, and
  * returns 0 when the key is not the panel's. */
-int fn_801E47BC(int key) {
+int handleDebugPanelKey(int key) {
     double lod;
     int handled = 1;
     int toggle;
