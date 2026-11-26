@@ -2617,7 +2617,7 @@ poll_drive:
    ring buffer to fill, fn_8011A6A0 keeps queueing 32 KiB async reads into the ring
    and fn_8011A8FC drains it.  A read is padded backwards to a 32-byte boundary, so
    its data lands padSize bytes past the write pointer and the read callback (
-   fn_8011A4F8) slides it into place. */
+   dvdStreamReadCallback) slides it into place. */
 typedef struct DvdStream {
     void *readAt;          /* 0x00 fn_8011A388: read at an absolute file offset */
     void *read;            /* 0x04 fn_8011A8FC: read the next bytes of the stream */
@@ -2746,7 +2746,7 @@ void fn_8011A45C(void *arg0, s32 arg1, s32 arg2) {
    ahead of the wanted data, so slide the chunk into the ring, update the stream's
    counters, wait off the pacing rate and queue the next read unless the stream is
    paused.  @p fileInfo is the +0x54 file info the read was started with. */
-void fn_8011A4F8(s32 transferSize, DVDFileInfo *fileInfo) {
+void dvdStreamReadCallback(s32 transferSize, DVDFileInfo *fileInfo) {
     s32 padMoved, elapsed, padSize;
     u32 writePos, newWritePos, size;
     DvdStream *stream;
@@ -2841,7 +2841,7 @@ read_valid:
         }
         DVDReadAsyncPrio((u8*)arg0 + 0x54, *(s32*)((u8*)arg0 + 0xAC), bytesRemaining,
             *(s32*)((u8*)arg0 + 0xB4) + (*(s32*)((u8*)arg0 + 0x90) - *(s32*)((u8*)arg0 + 0x94)),
-            fn_8011A4F8, 0);
+            dvdStreamReadCallback, 0);
         goto done;
     }
     *(s32*)((u8*)arg0 + 0x48) = *(s32*)((u8*)arg0 + 0x4C);
