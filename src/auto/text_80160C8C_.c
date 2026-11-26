@@ -3232,12 +3232,12 @@ extern s32 lbl_8055E4D0;
 #define selected_subtask_index lbl_8055E304
 
 /* The challenge level-select menu sub-task (vtable lbl_8032F790): the fields
- * fn_80164D38 resets, fn_80164F50 seeds and fn_80165058 edits from menu input. */
+ * fn_80164D38 resets, fn_80164F50 seeds and handleMenuNavigationInput edits from menu input. */
 struct LevelSelectMenu {
     /* 0x00 */ void *vtable;
     /* 0x04 */ u8 confirmed;   /* the player confirmed the selection */
     /* 0x05 */ u8 done;        /* the menu is over (slots 0x24..0x2C answer it) */
-    /* 0x06 */ u8 unk06;       /* input mode; fn_80165058 takes the other branch */
+    /* 0x06 */ u8 unk06;       /* input mode; handleMenuNavigationInput takes the other branch */
     /* 0x07 */ u8 popupShown;  /* help popup 8 has been asked for */
     /* 0x08 */ s32 selection;  /* the entry picked, 1..count of the sub-task list */
 };
@@ -3388,7 +3388,7 @@ unsigned char fn_80165050(void *menu) {
     return ((struct LevelSelectMenu *)menu)->done;
 }
 
-s32 fn_80165058(void *arg0, s32 arg1) {
+s32 handleMenuNavigationInput(void *arg0, s32 arg1) {
     s32 temp_r30;
     s32 temp_r29;
     /* Handle menu/navigation input (up/down/select/back/cancel) when not blocked; updates selection at +8. */
