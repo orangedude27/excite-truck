@@ -14546,11 +14546,11 @@ extern "C" s32 fn_800BB0A8(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32
 extern "C" s32 fn_800BC134(void *, s32, s32);
 extern "C" s32 IOS_Ioctl(s32, s32, void *, s32, void *, s32);
 extern "C" void DCFlushRange(void *, u32);
-extern "C" s32 fn_800BB81C(s32,s32,s32,s32,s32,s32);
+extern "C" s32 SDCard_writeBlocks(s32,s32,s32,s32,s32,s32);
 /* Synchronous SD-card write: issue the write transfer with no completion
- * callback, so fn_800BB81C waits for the card to finish before returning. */
+ * callback, so SDCard_writeBlocks waits for the card to finish before returning. */
 extern "C" s32 fn_800BB4BC(s32 device, s32 offset, s32 buffer, s32 length) {
-    return fn_800BB81C(device, offset, buffer, length, 0, 0);
+    return SDCard_writeBlocks(device, offset, buffer, length, 0, 0);
 }
 
 /* Synchronous SD-card read: read `length` bytes into `buffer` from byte `offset`
@@ -14562,7 +14562,7 @@ extern "C" s32 fn_800BB4C8(s32 device, s32 offset, s32 buffer, s32 length) {
 /* Synchronous SD-card write: write "length" bytes from "buffer" at byte
  * "offset" to the opened "device", with no callback so the transfer is waited on. */
 extern "C" s32 fn_800BB4D4(s32 device, s32 offset, s32 buffer, s32 length) {
-    return fn_800BB81C(device, offset, buffer, length, 0, 0);
+    return SDCard_writeBlocks(device, offset, buffer, length, 0, 0);
 }
 
 extern "C" s32 fn_800BAE98(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
@@ -14589,7 +14589,7 @@ struct SdRequest {
 
 /* The SD module takes one MMC/SD command per request through its ioctl 7
    (fn_800BB0A8 and fn_800BAE98 build that request block).  The read path
-   readSdCardBlocks sends 7, 0x10 and 0x12; its write twin fn_800BB81C sends 0x19. */
+   readSdCardBlocks sends 7, 0x10 and 0x12; its write twin SDCard_writeBlocks sends 0x19. */
 #define SD_BLOCK_SIZE       0x200 /* one card block, and the alignment of a transfer */
 #define SD_CMD_SEND_CSD     7     /* MMC SEND_CSD */
 #define SD_CMD_SET_BLOCKLEN 0x10  /* MMC SET_BLOCKLEN: SD_BLOCK_SIZE byte blocks */
@@ -14640,7 +14640,7 @@ struct SDCmdRequest {
  * callback runs.  lbl_8055DD70 and lbl_8055DD78 are its ioctl scratch buffers.
  * lbl_8031B838 is the base of the library's message strings; the second
  * argument of the "%s: ..." reports is the reporting function's name, here at
- * +0x398 (its write twin fn_800BB81C uses the one at +0x438).
+ * +0x398 (its write twin SDCard_writeBlocks uses the one at +0x438).
  */
 extern "C" s32 readSdCardBlocks(s32 device, s32 offset, s32 buffer, s32 length, s32 callback, s32 callbackArg) {
 const char *messages=lbl_8031B838;
@@ -14686,7 +14686,7 @@ return result;
 }
 
 /*
- * fn_800BB81C - write "length" bytes of "buffer" to the SD card opened in
+ * SDCard_writeBlocks - write "length" bytes of "buffer" to the SD card opened in
  * "device" starting at the byte "offset".  Both have to be whole numbers of
  * the card's 0x200 byte blocks.  With no "callback" IOS runs the write and
  * this waits for it; with a callback the request is left running and the
@@ -14700,7 +14700,7 @@ return result;
  * WRITE_MULTIPLE_BLOCK), the cache operation and the name the reports print
  * (messages+0x438) differ.
  */
-extern "C" s32 fn_800BB81C(s32 device, s32 offset, s32 buffer, s32 length, s32 callback, s32 callbackArg) {
+extern "C" s32 SDCard_writeBlocks(s32 device, s32 offset, s32 buffer, s32 length, s32 callback, s32 callbackArg) {
 const char *messages=lbl_8031B838;
 u32 blockSize=0x200; /* size of one block of the transfer */
 if((u32)length<=0x200)blockSize=(u32)length;
@@ -27632,7 +27632,7 @@ extern "C" s32 IOS_IoctlAsync(s32, s32, void *, s32, void *, s32, void *, void *
  * request is left running and fn_800BAA8C copies the response out, calls
  * callback(callbackArg) and frees both blocks - so this frees the request block
  * itself only when the request never got going (no response, no callback, or
- * IOS refused it).  A command that moves data (the 0x19 write of fn_800BB81C)
+ * IOS refused it).  A command that moves data (the 0x19 write of SDCard_writeBlocks)
  * describes its buffer inside the block; the read path uses the ioctlv twin
  * fn_800BAE98 instead, which hands the buffer to IOS as its own vector.
  * lbl_80559248 is the SD library's heap and lbl_8031B838 its message strings.
