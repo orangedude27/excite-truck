@@ -12,6 +12,8 @@ extern __declspec(section ".sdata") char gJBUpLabel[];
 extern __declspec(section ".sdata") char gJBDownLabel[];
 extern __declspec(section ".sdata") int gEmptyControlName;
 extern void fn_802E30C8(void *);
+/* No-op rjoy hook from control-scheme setup: passed 1 for schemes 0/2 and 0 for
+   schemes 1/3 to toggle rumble; empty in this build. */
 extern void fn_802E8664(int);
 extern void fn_80137D10(void);
 #pragma dont_inline fn_8023D6FC
