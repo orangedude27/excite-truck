@@ -4,7 +4,7 @@
 static inline s32 F2I_80159708(f32 f) { return (s32)f; }
 extern "C" void fn_8014AEC8(void*);
 extern "C" s32 fn_80141F7C(f32);
-extern "C" s32 fn_80158D04(void*);
+extern "C" s32 getBonusTrackerRecordCount(void*);
 extern "C" void fn_80158D0C(void*);
 extern "C" f32 emitBonusTrackerValue(void*, void*);
 extern "C" void fn_80158E74(void*);
@@ -1729,7 +1729,7 @@ extern "C" f32 BonusTracker_updateFromPlayer(void* tracker, void* player) {
         playerTime = previousTime + lbl_8056177C;
         fn_80158D0C(tracker);
     }
-    if (self->recordIndex() == fn_80158D04(tracker) - 1) {
+    if (self->recordIndex() == getBonusTrackerRecordCount(tracker) - 1) {
         emitted = emitBonusTrackerValue(tracker, player);
     }
     flag273 = (flag272 != 0 && flag271 != 0);
@@ -1748,9 +1748,9 @@ extern "C" f32 BonusTracker_updateFromPlayer(void* tracker, void* player) {
 #undef flag271
 }
 #pragma pop
-extern "C" s32 fn_80158D04(void* tracker) {
+extern "C" s32 getBonusTrackerRecordCount(void* tracker) {
     // Getter: number of 0x38-byte records in this bonus tracker's list (0xC).
-    // Callers use fn_80158D04(tracker) - 1 as the index of the last record.
+    // Callers use getBonusTrackerRecordCount(tracker) - 1 as the index of the last record.
     return ((Fn8015889C*)tracker)->mCount;
 }
 
@@ -2244,7 +2244,7 @@ skip_reset:
     f32 result = lbl_80561754;
     end = 0;
     if (((Fn8015889C*)a)->v39()) {
-        last = fn_80158D04(a)-1;
+        last = getBonusTrackerRecordCount(a)-1;
         s32 current = ((Fn8015889C*)a)->v23();
         if (current == last) end = 1;
     }
@@ -2594,7 +2594,7 @@ extern "C" f32 lbl_805617B4, lbl_805617B8, lbl_805617BC;
     f32 result = lbl_80561754;
     end = 0;
     if (((Fn8015889C*)tracker)->v39()) {
-        s32 last = fn_80158D04(tracker)-1;
+        s32 last = getBonusTrackerRecordCount(tracker)-1;
         s32 current = ((Fn8015889C*)tracker)->v23();
         if (current == last) end = 1;
     }
@@ -2730,7 +2730,7 @@ extern "C" f32 fn_8015AE18(void *a, const void *arg1) {
     result = lbl_80561754;
     end = 0;
     if (self->v39()) {
-        nlast = fn_80158D04(a) - 1;
+        nlast = getBonusTrackerRecordCount(a) - 1;
         cur = self->v23();
         if (cur == nlast) end = 1;
     }
@@ -3410,7 +3410,7 @@ extern "C" f32 fn_8015C264(void *arg0, void *arg1) {
     var_f31 = lbl_80561754;
     var_r28 = 0;
     if (((Fn8015889C*)arg0)->v39() != 0) {
-        temp_r0 = fn_80158D04(arg0) - 1;
+        temp_r0 = getBonusTrackerRecordCount(arg0) - 1;
         {
             s32 current = ((Fn8015889C*)arg0)->v23();
             if (current == temp_r0) {
@@ -3819,7 +3819,7 @@ extern "C" f32 updateDashBonusTracker(void *tracker, void *truck) {
     score = BONUS_NONE;
     atLastRecord = 0;
     if (((BonusTracker *)tracker)->hasRecords()) {
-        lastRecord = fn_80158D04(tracker) - 1;
+        lastRecord = getBonusTrackerRecordCount(tracker) - 1;
         s32 current = ((BonusTracker *)tracker)->getIndex();
         if (current == lastRecord) atLastRecord = 1;
     }
