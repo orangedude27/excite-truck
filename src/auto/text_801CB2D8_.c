@@ -799,19 +799,19 @@ void resetStatHandler(void *object) {
     StatHandler *handler = (StatHandler *)object;
     register s32 byteOffset;
     register s32 index;
-    s32 none;
-    void *entry;
+    s32 invalidIndex;
+    void *statEntry;
     void *actor;
     void *pool;
     f32 one;
     f32 zero;
-    f32 unset;
+    f32 unsetValue;
     if (handler->paused != 0) return;
     index = 0;
     byteOffset = 0;
     while (index < handler->entryCount) {
-        entry = *(void **)((u8 *)handler->entries + byteOffset);
-        if (entry != 0) fn_8001BE70(*(void **)entry);
+        statEntry = *(void **)((u8 *)handler->entries + byteOffset);
+        if (statEntry != 0) fn_8001BE70(*(void **)statEntry);
         byteOffset += 4;
         ++index;
     }
@@ -820,14 +820,14 @@ void resetStatHandler(void *object) {
     handler->freeList = (void *)index;
     memset(handler->nodes, index, sizeof(handler->nodes));
     zero = lbl_805629FC;
-    none = -1;
+    invalidIndex = -1;
     one = lbl_805629E4;
-    unset = lbl_80562A08;
+    unsetValue = lbl_80562A08;
     *(volatile s32 *)&handler->pendingPlace = index;
     *(volatile s32 *)&handler->newCount = index;
-    *(volatile s32 *)&handler->newEntry = none;
-    *(volatile s32 *)&handler->unknown2B4 = none;
-    *(volatile f32 *)&handler->value = unset;
+    *(volatile s32 *)&handler->newEntry = invalidIndex;
+    *(volatile s32 *)&handler->unknown2B4 = invalidIndex;
+    *(volatile f32 *)&handler->value = unsetValue;
     *(volatile u8 *)&handler->hasValue = index;
     *(volatile s32 *)&handler->state = index;
     *(volatile f32 *)&handler->unknown2C4 = zero;
