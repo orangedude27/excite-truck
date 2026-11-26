@@ -3432,7 +3432,7 @@ extern "C" void VFiPFCACHE_FreeAllCaches(void *volumeArg) {
  * cluster-chain cache (the VF_CHAIN_* fields further down are these same two
  * words at +0x14 and +0x18): which cluster of the file the position is at, and
  * the number that cluster has on the volume.  Following the chain starts from
- * them instead of from the file's first cluster (fn_800ADD84).  They are
+ * them instead of from the file's first cluster (followFileClusterChain).  They are
  * reached through the handle; the stream pointer is re-read for every write,
  * which is what the original does. */
 #define VF_HANDLE_STREAM_OF(f)          (*(void **)((u8 *)(f) + 8))   /* the stream, plain */
@@ -6451,7 +6451,7 @@ extern "C" s32 VFiPFFreeClusters(void *, s32, s32, s32);
  * cluster of a run taken on for it in outNewCluster; both stay -1 when the file
  * already reached that far.
  */
-extern "C" s32 fn_800ADD84(void *walk, s32 clusterIndex, s32 mode, s32 clustersNeeded, u32 *outNewCluster, s32 *outCluster) {
+extern "C" s32 followFileClusterChain(void *walk, s32 clusterIndex, s32 mode, s32 clustersNeeded, u32 *outNewCluster, s32 *outCluster) {
     s32 next;
     s32 cachedCluster;
     s32 pageIndex;
@@ -6635,7 +6635,7 @@ static inline s32 VFiPFFAT_FindCluster(void *arg0, u32 arg1, u32 arg2, u32 *arg3
     s32 spC;
     s32 res;
     *arg3 = (u32)-1;
-    res = fn_800ADD84(arg0, arg1, arg2 != 0, 0, &sp8, (s32 *)&spC);
+    res = followFileClusterChain(arg0, arg1, arg2 != 0, 0, &sp8, (s32 *)&spC);
     if (res != 0) return res;
     if ((u32)spC >= 2 && (u32)spC < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x34) + 0x34) + 2)
         *arg3 = spC;
@@ -6681,13 +6681,13 @@ extern "C" s32 VFiPFFAT_GetClusterSpecified(void *fileInfo, u32 startCluster, u3
     return 0;
 }
 
-extern "C" s32 fn_800ADD84(void *, s32, s32, s32, u32 *, s32 *);
+extern "C" s32 followFileClusterChain(void *, s32, s32, s32, u32 *, s32 *);
 static inline s32 fn_800AE3A8FindCluster(void *arg0, s32 arg1, s32 arg2, u32 *arg3) {
     u32 sp8;
     s32 spC;
     s32 res;
     *arg3 = (u32)-1;
-    res = fn_800ADD84(arg0, arg1, 2, arg2, &sp8, &spC);
+    res = followFileClusterChain(arg0, arg1, 2, arg2, &sp8, &spC);
     if (res != 0) return res;
     if (sp8 >= 2 && sp8 < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x34) + 0x34) + 2)
         *arg3 = sp8;
@@ -6854,7 +6854,7 @@ extern "C" s32 fn_800AE664(void *arg0, u32 arg1, u32 arg2, s32 *clusterOffset, s
  * way on an entry that is free already, or when the chain reaches a value that
  * cannot be a cluster (VF_FAT_FIRST_END).
  *
- * fn_800ADD84 calls it to hand back a run of clusters it could not finish
+ * followFileClusterChain calls it to hand back a run of clusters it could not finish
  * linking; the open code calls it with no chain position, to free what a file
  * is cut down to.
  */
