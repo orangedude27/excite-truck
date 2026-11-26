@@ -149,7 +149,7 @@ s32 fn_8001EF9C(s32 coefIndex) {
 #undef GetAchLevel
 }
 
-s32 getAchievementLevelValue(s32 counter, s32 level) {
+/* Return the value needed to reach a given level of the achievement counter. */ s32 getAchievementLevelValue(s32 counter, s32 level) {
 #define GetAchLevelValue fn_8001FA20
     /* Thunk: return the threshold value needed to reach the given level for the given counter. */
     return GetAchLevelValue(counter, level);
