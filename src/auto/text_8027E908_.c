@@ -2989,38 +2989,38 @@ extern "C" void buildAndPlaySequenceBuffer(int oldPos, int newPos, void *srcSeq,
         virtual void insert(int, int);
         virtual int getCount();
     };
-    int srcCount;
+    int sourceCount;
     if (srcSeq != 0)
-        srcCount = ((Source *)srcSeq)->getCount();
+        sourceCount = ((Source *)srcSeq)->getCount();
     else
-        srcCount = 0;
+        sourceCount = 0;
     int total = fn_80019088();
-    total += srcCount;
-    Buffer *dst = (Buffer *)fn_8025007C(total);
+    total += sourceCount;
+    Buffer *destination = (Buffer *)fn_8025007C(total);
     if (srcSeq != 0) {
         int itemType;
-        int i = 0;
-        while (i < ((Source *)srcSeq)->getCount()) {
-            dst->set(((Source *)srcSeq)->getAt(i), 1, 0);
-            itemType = ((Source *)srcSeq)->getType(i);
-            dst->insert(dst->getCount() - 1, itemType);
-            ++i;
+        int sourceIndex = 0;
+        while (sourceIndex < ((Source *)srcSeq)->getCount()) {
+            destination->set(((Source *)srcSeq)->getAt(sourceIndex), 1, 0);
+            itemType = ((Source *)srcSeq)->getType(sourceIndex);
+            destination->insert(destination->getCount() - 1, itemType);
+            ++sourceIndex;
         }
     }
-    int j = 0;
-    while (j < fn_80019088()) {
-        char **entry = (char **)fn_80019054(j);
-        if (((int (*)(const char *, const char *))stricmp)(entry[0], (const char *)&lbl_8055C860) == 0) {
-            int trigger = *(int *)((char *)entry + 8);
-            if (oldPos < trigger && newPos >= trigger)
-                dst->set(*(void **)((char *)entry + 4), 1, 0);
+    int entryIndex = 0;
+    while (entryIndex < fn_80019088()) {
+        char **carEntry = (char **)fn_80019054(entryIndex);
+        if (((int (*)(const char *, const char *))stricmp)(carEntry[0], (const char *)&lbl_8055C860) == 0) {
+            int triggerPos = *(int *)((char *)carEntry + 8);
+            if (oldPos < triggerPos && newPos >= triggerPos)
+                destination->set(*(void **)((char *)carEntry + 4), 1, 0);
         }
-        ++j;
+        ++entryIndex;
     }
-    if (dst->getCount() > 0)
-        fn_8024FBD8(dst, param);
-    if (dst != 0)
-        dst->destroy(1);
+    if (destination->getCount() > 0)
+        fn_8024FBD8(destination, param);
+    if (destination != 0)
+        destination->destroy(1);
 }
 
 extern "C" int fn_80221EA8(void);
