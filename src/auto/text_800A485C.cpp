@@ -9109,14 +9109,14 @@ extern "C" s32 fn_800B1EB8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4) {
  * does.  A failure is left in the VF instance's last error, in the volume's and
  * in the handle's, and is the return value.
  */
-extern "C" s32 vfSeekFile(void *file, u32 offset, s32 whence) {
+/* Move a VF file handle's read position: lock the volume, validate the handle, resolve the base position by whence, apply the signed offset with range checks, and refresh the handle's sector fields. */ extern "C" s32 vfSeekFile(void *file, u32 offset, s32 whence) {
     u8 *volume;
     s32 status;
     u8 *stream;
-    u32 pos;
-    u32 back;
+    u32 position;
+    u32 backDistance;
     u32 flags;
-    u8 *vol;
+    u8 *streamVolume;
     volume = file == 0 ? 0 : VF_STREAM_VOLUME(VF_HANDLE_STREAM(file));
     VFiPFLOCK_Acquire(VF_VOL_LOCK(volume));
     status = fn_800B5E14(volume);
@@ -9136,13 +9136,13 @@ extern "C" s32 vfSeekFile(void *file, u32 offset, s32 whence) {
     }
     switch (whence) {
     case VF_SEEK_CUR:
-        pos = VF_HANDLE_POS(file);
+        position = VF_HANDLE_POS(file);
         break;
     case VF_SEEK_SET:
-        pos = 0;
+        position = 0;
         break;
     case VF_SEEK_END:
-        pos = VF_STREAM_SIZE(stream);
+        position = VF_STREAM_SIZE(stream);
         break;
     default:
         VFiPFLOCK_Release(VF_VOL_LOCK(volume));
@@ -9150,32 +9150,32 @@ extern "C" s32 vfSeekFile(void *file, u32 offset, s32 whence) {
         return VF_ERR_BAD_REQUEST;
     }
     if (offset & 0x80000000) {
-        back = (~offset & 0x7FFFFFFF) + 1;
-        if (pos < back) {
+        backDistance = (~offset & 0x7FFFFFFF) + 1;
+        if (position < backDistance) {
             VFiPFLOCK_Release(VF_VOL_LOCK(volume));
             VF_SET_FILE_ERROR(file, VF_ERR_BAD_REQUEST);
             return VF_ERR_BAD_REQUEST;
         }
-        pos -= back;
+        position -= backDistance;
     } else {
-        if (offset > 0xFFFFFFFF - pos) {
+        if (offset > 0xFFFFFFFF - position) {
             VFiPFLOCK_Release(VF_VOL_LOCK(volume));
             VF_SET_FILE_ERROR(file, VF_ERR_SEEK_RANGE);
             return VF_ERR_SEEK_RANGE;
         }
-        pos += offset;
+        position += offset;
     }
     VF_HANDLE_CLUSTER(file) = -1;
     VF_HANDLE_POS(file) = 0;
-    vol = file == 0 ? 0 : VF_STREAM_VOLUME(VF_HANDLE_STREAM(file));
-    back = VF_HANDLE_POS(file);
-    VF_HANDLE_SECTOR(file) = back >> VF_VOL_SECTOR_SHIFT(vol);
-    VF_HANDLE_SECTOR_OFF(file) = back & (VF_VOL_SECTOR_SIZE(vol) - 1);
-    VF_HANDLE_POS(file) = pos;
-    vol = file == 0 ? 0 : VF_STREAM_VOLUME(VF_HANDLE_STREAM(file));
-    pos = VF_HANDLE_POS(file);
-    VF_HANDLE_SECTOR(file) = pos >> VF_VOL_SECTOR_SHIFT(vol);
-    VF_HANDLE_SECTOR_OFF(file) = pos & (VF_VOL_SECTOR_SIZE(vol) - 1);
+    streamVolume = file == 0 ? 0 : VF_STREAM_VOLUME(VF_HANDLE_STREAM(file));
+    backDistance = VF_HANDLE_POS(file);
+    VF_HANDLE_SECTOR(file) = backDistance >> VF_VOL_SECTOR_SHIFT(streamVolume);
+    VF_HANDLE_SECTOR_OFF(file) = backDistance & (VF_VOL_SECTOR_SIZE(streamVolume) - 1);
+    VF_HANDLE_POS(file) = position;
+    streamVolume = file == 0 ? 0 : VF_STREAM_VOLUME(VF_HANDLE_STREAM(file));
+    position = VF_HANDLE_POS(file);
+    VF_HANDLE_SECTOR(file) = position >> VF_VOL_SECTOR_SHIFT(streamVolume);
+    VF_HANDLE_SECTOR_OFF(file) = position & (VF_VOL_SECTOR_SIZE(streamVolume) - 1);
     VFiPFLOCK_Release(VF_VOL_LOCK(volume));
     return status;
 }
