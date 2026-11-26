@@ -4151,6 +4151,7 @@ s32 fn_800604E8(s32 chan, s32 format, void* data) {
     WPADCB* cb = lbl_8038F4F0[chan];
     s32 intrState, nestedIntrState, result, devStatus;
     s32 enqueueOk;
+    s32 head;
     s32 negTwo;
     s32 resultMask;
     u8 command[0x60] ALIGN(8);
