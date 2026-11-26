@@ -1230,8 +1230,6 @@ void Text_drawWordWrapped(char *string, s32 font, s32 color, s32 flags, s32 mode
         }
     }
 }
-
-#pragma scheduling 603
 void fn_80233354(u8 *text, u8 *ctx, s32 arg2, s32 flags, f32 x, f32 y, f32 sx, f32 z) {
     s32 sp8;
     f32 y0;
