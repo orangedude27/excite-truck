@@ -1913,7 +1913,7 @@ void fn_801D68D0(int object) {
 }
 
 #pragma scheduling invalid_target
-void fn_801D68E8(UnkStruct_801D701C *soundEffect) {
+void initSoundEffectASE(UnkStruct_801D701C *soundEffect) {
     /* SoundEffect_ASE ctor: install its type/vtable table at +0 and clear state. */
     soundEffect->name = lbl_80338BD0;
     soundEffect->state = 0;
@@ -2596,7 +2596,7 @@ extern "C" void *createASEElement(void *arg0) {
     if (stricmp(name, type_sound_effect) == 0) {
         object = fn_801284F8(0x34, alloc_SoundEffect_ASE);
         if (object != 0) {
-            object = ((void *(*)(void *))fn_801D68E8)(object); /* SoundEffect_ASE ctor */
+            object = ((void *(*)(void *))initSoundEffectASE)(object); /* SoundEffect_ASE ctor */
         }
         element = object;
         goto done;
