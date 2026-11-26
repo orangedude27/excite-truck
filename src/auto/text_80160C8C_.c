@@ -1920,7 +1920,7 @@ extern "C" void updateCheckpointChallenge(void *challengeMgr) {
     s32 allCheckpointsPassed, index, carIndex, gateIndex;
     int *carTable;
     u8 *gate;
-    int *carTable2;
+    int *introCarTable;
     s32 gateOffset;
     u8 *car;
     u8 *mgr = (u8 *)challengeMgr;
@@ -2000,18 +2000,18 @@ done:
     } else {
         if ((f32)__fabs(*(f32 *)(mgr + 0x8C)) <= *(f32 *)&lbl_80558DC4) {
             fn_80276DC8(0);
-            for (index = 0, carTable2 = lbl_804348E8; index < fn_801B2F24(); carTable2++, index++) {
+            for (index = 0, introCarTable = lbl_804348E8; index < fn_801B2F24(); introCarTable++, index++) {
                 void *manager = fn_801B83A0();
-                ((State_80162BA8 *)manager)->f37(*carTable2, index);
+                ((State_80162BA8 *)manager)->f37(*introCarTable, index);
             }
         }
         *(f32 *)(mgr + 0x8C) += lbl_80561858;
         if (mgr[0x90]) {
             if (((State_80162BA8 *)mgr)->f10() && lbl_8055E304 == fn_80160CE4()) {
-                s32 tmp = lbl_8055A0B8;
+                s32 stepCount = lbl_8055A0B8;
                 lbl_8055E2DC = 1;
-                lbl_8055A0B4 = tmp;
-                lbl_8055A0B8 = tmp + 1;
+                lbl_8055A0B4 = stepCount;
+                lbl_8055A0B8 = stepCount + 1;
             } else lbl_8055E2DC = 0;
             lbl_8055E304 = 0;
             if (*(s32 *)(lbl_8042FDEC + 4) > 0) fn_80176734();
