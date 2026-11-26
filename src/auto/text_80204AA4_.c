@@ -169,7 +169,7 @@ int fn_80204CF0(void) {
 
 extern double atof(const char *);
 __declspec(section ".sdata") extern const char sDifficultyKeyFormat[];
-extern const char lbl_8033BBF4[];
+extern const char sDifficultyNotFoundMsg[];
 #pragma cplusplus on
 extern "C" int fn_801345D8(void *, int, const char *, ...);
 extern "C" double atof(const char *);
@@ -226,7 +226,7 @@ extern "C" void Abend_Panic(const char *, ...);
         }
         setting = foundString;
     }
-    if (setting == 0) Abend_Panic(lbl_8033BBF4, name);
+    if (setting == 0) Abend_Panic(sDifficultyNotFoundMsg, name);
     valueString = setting;
     return (float)atof((const char *)valueString);
 }
@@ -283,7 +283,7 @@ extern "C" int getDifficultySettingString(const char *name) {
         }
         setting = found;
     }
-    if (setting == 0) Abend_Panic(lbl_8033BBF4, name);
+    if (setting == 0) Abend_Panic(sDifficultyNotFoundMsg, name);
     return setting;
 }
 #pragma cplusplus reset
@@ -300,7 +300,7 @@ __declspec(section ".sdata") extern const char lbl_8055B4B8[];
 /* Report whether the current scene's difficulty setting `name` is on (via the stage/scene difficulty sets, then the plain name). */ extern "C" int isDifficultySettingOn(const char *settingName) {
     #define DIFFICULTY_INFO sDifficultyInfo  /* the published difficulty info block */
     #define KEY_FORMAT      sDifficultyKeyFormat  /* "%s_%s" */
-    #define NOT_FOUND_MSG   lbl_8033BBF4  /* Difficulty: "%s" was not found */
+    #define NOT_FOUND_MSG   sDifficultyNotFoundMsg  /* Difficulty: "%s" was not found */
     #define YES_STRING      lbl_8055B4B4  /* "yes" */
     #define TRUE_STRING     lbl_8055B4B8  /* "true" */
     class DifficultySet {
@@ -424,7 +424,7 @@ extern "C" int getDifficultyProperty(const char *propName, int typeIndex, int st
 
     #define DIFFICULTY_VAL   lbl_8033BBE4 /* "difficulty.val" value group */
     #define STAGE_KEY_FORMAT sDifficultyKeyFormat /* "%s_%s" */
-    #define NOT_FOUND_PANIC  lbl_8033BBF4 /* 'Difficulty: "%s" was not found' */
+    #define NOT_FOUND_PANIC  sDifficultyNotFoundMsg /* 'Difficulty: "%s" was not found' */
     #define KEY_BUF_SIZE     0x64
 
     volatile struct {
@@ -581,7 +581,7 @@ inline DiffLookup802054EC::DiffLookup802054EC(int type, int stageIndex) {
      * stage-specific "<contest>_<propName>" key, then under the plain name, panicking if
      * no set defines it; return 1 when the value is "yes" or "true", otherwise 0. */
     #define STAGE_KEY_FORMAT sDifficultyKeyFormat /* "%s_%s" */
-    #define NOT_FOUND_PANIC  lbl_8033BBF4 /* 'Difficulty: "%s" was not found' */
+    #define NOT_FOUND_PANIC  sDifficultyNotFoundMsg /* 'Difficulty: "%s" was not found' */
     #define YES_VALUE        lbl_8055B4B4 /* "yes" */
     #define TRUE_VALUE       lbl_8055B4B8 /* "true" */
     #define KEY_BUF_SIZE     0x64
