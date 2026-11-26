@@ -5867,27 +5867,32 @@ done:
     return 0;
 }
 
-extern "C" s32 VFiPFFAT_ReadClusterNoPage(void *context, s32 index, s32 position, s32 *outCluster, s32 *ioState) {
+extern "C" s32 VFiPFFAT_ReadClusterNoPage(void *file, s32 cluster, s32 chainPos, s32 *outCluster, s32 *fromCache) {
     s32 result;
-    s32 cluster;
-    u8 *ctxBytes = (u8 *)context;
+    s32 nextCluster;
+    u8 *fileBytes = (u8 *)file;
+
+    /* Resolve the cluster at chainPos in a file's FAT chain.  A file with a cluster
+     * table (offset 0x1C) tries the cached lookup first; on a miss (or without a
+     * table) the entry is read from the volume FAT in its native width and the
+     * cluster table is extended with the cluster found. */
     *outCluster = -1;
-    if (*(s32 *)(ctxBytes + 0x1C) != 0 && *(u32 *)ioState == 1) {
-        result = fn_800ACF20(context, position, (u32 *)outCluster, (u32 *)ioState);
+    if (*(s32 *)(fileBytes + 0x1C) != 0 && *(u32 *)fromCache == 1) {
+        result = VFiPFFAT_GetChainEntry(file, chainPos, (u32 *)outCluster, (u32 *)fromCache);
         if (result != 0) {
             return result;
         }
     }
-    if (*(s32 *)(ctxBytes + 0x1C) == 0 || *ioState == 0) {
-        switch (*(s32 *)(*(u8 **)(ctxBytes + 0x34) + 0x1C)) {
-        case 0:
-            result = fn_800AF5A0(*(void **)(ctxBytes + 0x34), (u16)index, outCluster);
+    if (*(s32 *)(fileBytes + 0x1C) == 0 || *fromCache == 0) {
+        switch (VF_VOL_FAT_TYPE(*(u8 **)(fileBytes + 0x34))) {
+        case VF_FAT_TYPE_12:
+            result = fn_800AF5A0(*(void **)(fileBytes + 0x34), (u16)cluster, outCluster);
             break;
-        case 1:
-            result = fn_800AFE14(*(void **)(ctxBytes + 0x34), index, outCluster);
+        case VF_FAT_TYPE_16:
+            result = fn_800AFE14(*(void **)(fileBytes + 0x34), cluster, outCluster);
             break;
-        case 2:
-            result = fn_800B0258(*(void **)(ctxBytes + 0x34), index, outCluster);
+        case VF_FAT_TYPE_32:
+            result = fn_800B0258(*(void **)(fileBytes + 0x34), cluster, outCluster);
             break;
         default:
             result = 0xF;
@@ -5897,27 +5902,27 @@ extern "C" s32 VFiPFFAT_ReadClusterNoPage(void *context, s32 index, s32 position
         if (result != 0) {
             return result;
         }
-        cluster = *outCluster;
-        if (cluster == 0) {
+        nextCluster = *outCluster;
+        if (nextCluster == 0) {
             return 0xD;
         }
-        if ((u32)(cluster + 0x10000) == 0xFFFF) {
+        if ((u32)(nextCluster + 0x10000) == 0xFFFF) {
             return 6;
         }
-        if (*(s32 *)(ctxBytes + 0x1C) != 0) {
-            u32 *tbl = lbl_802EEF40;
-            if ((u32)cluster != tbl[*(s32 *)(*(u8 **)(ctxBytes + 0x34) + 0x1C) * 5 + 2]) {
-                u32 a = *(u32 *)(ctxBytes + 0x24);
-                u32 b = *(u32 *)(ctxBytes + 0x28);
-                if (b > a && b != 0) {
-                    if ((u32)position == a * (*(u16 *)(ctxBytes + 0x20) + 1)) {
-                        *(u16 *)(ctxBytes + 0x22) = 0;
-                        *(s32 *)(*(u8 **)(ctxBytes + 0x1C) + a * 4) = cluster;
-                        *(u32 *)(ctxBytes + 0x24) = *(u32 *)(ctxBytes + 0x24) + 1;
+        if (*(s32 *)(fileBytes + 0x1C) != 0) {
+            u32 *fatLimits = lbl_802EEF40;
+            if ((u32)nextCluster != fatLimits[VF_VOL_FAT_TYPE(*(u8 **)(fileBytes + 0x34)) * 5 + 2]) {
+                u32 page = *(u32 *)(fileBytes + 0x24);
+                u32 pageCount = *(u32 *)(fileBytes + 0x28);
+                if (pageCount > page && pageCount != 0) {
+                    if ((u32)chainPos == page * (*(u16 *)(fileBytes + 0x20) + 1)) {
+                        *(u16 *)(fileBytes + 0x22) = 0;
+                        *(s32 *)(*(u8 **)(fileBytes + 0x1C) + page * 4) = nextCluster;
+                        *(u32 *)(fileBytes + 0x24) = *(u32 *)(fileBytes + 0x24) + 1;
                     } else {
-                        *(u16 *)(ctxBytes + 0x22) = *(u16 *)(ctxBytes + 0x22) + 1;
+                        *(u16 *)(fileBytes + 0x22) = *(u16 *)(fileBytes + 0x22) + 1;
                     }
-                    *(s32 *)(ctxBytes + 0x2C) = position;
+                    *(s32 *)(fileBytes + 0x2C) = chainPos;
                 }
             }
         }
