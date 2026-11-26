@@ -601,14 +601,11 @@ void fn_80177138(void) {
 #pragma pop
 #pragma push
 #pragma opt_common_subs off
-/* RealName: Fader_StepAndApplyVolume (rename_symbol unavailable). */
-/* Step the phys-fader ramp once -- exactly as stepPhysFade does, but without
- * finishing the fade or running its callback -- and return where the fade
- * stands: `alpha` while fading out (mode FADE_MODE_OUT/DONE), its inverse
- * while idle or fading back in, so 0 is fully shown and FADE_FULL fully
- * faded.  The mixer volume handle the physics module opened is set to the
- * inverse of that level, and fn_80176A70 stores the level in the physics
- * object it returns. */
+/* Step the phys-fader ramp once -- like stepPhysFade, but without finishing the
+ * fade or running its callback -- and return where the fade stands: `alpha`
+ * while fading out, its inverse while idle or fading back in, so 0 is fully
+ * shown and 0xFF fully faded.  The mixer volume handle the physics module
+ * opened is set to the inverse of that level. */
 s32 stepFaderAndApplyVolume(void) {
     f32 speed;
     s32 elapsed, ramp, value;
