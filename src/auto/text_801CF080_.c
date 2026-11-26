@@ -68,15 +68,15 @@ static inline void fn_801CF080_rot(f32 *v, f32 *m) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_801CF080(u8 *mesh, f32 *pos, f32 *out, s32 *count, f32 *mtx, f32 radius) {
+    int nodeOff;
     Vec801CF local;
-    Vec801CF cp;
-    f32 zero;
     s32 n;
     s32 maxCount;
     s32 node;
-    s32 nodeOff;
+    register f32 zero;
+    Vec801CF cp;
 
-    if (mtx != 0) {
+    if (mtx) {
         local.x = pos[0] - mtx[9];
         local.y = pos[1] - mtx[10];
         local.z = pos[2] - mtx[11];
@@ -89,12 +89,12 @@ void fn_801CF080(u8 *mesh, f32 *pos, f32 *out, s32 *count, f32 *mtx, f32 radius)
     maxCount = *count;
     zero = lbl_80562A38;
     n = 0;
-    for (node = 0, nodeOff = 0; node < *(s32 *)(mesh + 4); node++, nodeOff += 0x18) {
+    for (node = 0, nodeOff = 0; (unsigned)node < *(s32 *)(mesh + 4); node++, nodeOff += 0x18) {
         u8 *nd = *(u8 **)mesh + nodeOff;
-        f32 sq;
+        register f32 sq;
         f32 rr;
         s32 t;
-        s32 triOff;
+        long triOff;
         sq = PSVECSquareDistance((f32 *)nd, (f32 *)&local);
         rr = *(f32 *)(nd + 0xC) + radius;
         if (sq > rr * rr) {
@@ -109,11 +109,11 @@ void fn_801CF080(u8 *mesh, f32 *pos, f32 *out, s32 *count, f32 *mtx, f32 radius)
             f32 *edge;
             Vec801CF proj;
             f32 p[3][3];
-            f32 d[3];
             s32 outs[3];
-            s32 k;
+            f32 d[3];
+            register s32 k;
             s32 nout;
-            s32 last;
+            register s32 last;
             u16 flags;
             f32 *pp;
             f32 *pe;
@@ -126,11 +126,11 @@ void fn_801CF080(u8 *mesh, f32 *pos, f32 *out, s32 *count, f32 *mtx, f32 radius)
             proj.y = local.y + *(f32 *)(tri + 0xC) * dist;
             proj.z = local.z + *(f32 *)(tri + 0x10) * dist;
             {
-                f32 *v0 = (f32 *)(*(u8 **)(mesh + 8) + *(s16 *)(tri + 2) * 0xC);
+                register f32 *v0 = (f32 *)(*(u8 **)(mesh + 8) + *(s16 *)(tri + 2) * 0xC);
                 f32 *v1 = (f32 *)(*(u8 **)(mesh + 8) + *(s16 *)(tri + 4) * 0xC);
                 f32 *v2 = (f32 *)(*(u8 **)(mesh + 8) + *(s16 *)(tri + 6) * 0xC);
-                p[0][0] = v0[0]; p[0][1] = v0[1]; p[0][2] = v0[2];
                 p[1][0] = v1[0]; p[1][1] = v1[1]; p[1][2] = v1[2];
+                p[0][0] = v0[0]; p[0][1] = v0[1]; p[0][2] = v0[2];
                 p[2][0] = v2[0]; p[2][1] = v2[1]; p[2][2] = v2[2];
             }
             nout = 0;
@@ -142,22 +142,22 @@ void fn_801CF080(u8 *mesh, f32 *pos, f32 *out, s32 *count, f32 *mtx, f32 radius)
                 f32 e[3];
                 f32 dd;
                 e[0] = (f32)proj.x - pp[0];
-                e[1] = (f32)proj.y - pp[1];
                 e[2] = (f32)proj.z - pp[2];
+                e[1] = (f32)proj.y - pp[1];
                 dd = PSVECDotProduct(e, pe);
                 if (dd > radius) {
                     goto next;
                 }
                 if (dd >= zero) {
                     outs[nout] = k;
-                    nout++;
+                    ++nout;
                 } else {
                     last = k;
                 }
                 *dp = dd;
                 pp += 3;
                 pe += 3;
-                dp++;
+                ++dp;
             }
             if (nout == 3) {
                 goto next;
@@ -165,15 +165,15 @@ void fn_801CF080(u8 *mesh, f32 *pos, f32 *out, s32 *count, f32 *mtx, f32 radius)
             flags = *(u16 *)tri;
             cp = proj;
             if (nout == 1) {
-                s32 o = outs[0];
-                s32 nx;
+                unsigned o = outs[0];
+                unsigned int nx;
                 Vec801CF a, b;
                 f32 s = -d[o];
                 f32 dAB, dA, dB;
                 cp.x = proj.x + edge[o * 3] * s;
-                nx = (o + 1) % 3;
                 cp.y = proj.y + edge[o * 3 + 1] * s;
                 a = *(Vec801CF *)p[o];
+                nx = (o + 1) % 3;
                 b = *(Vec801CF *)p[nx];
                 cp.z = proj.z + edge[o * 3 + 2] * s;
                 dAB = PSVECSquareDistance((f32 *)&a, (f32 *)&b);
@@ -189,19 +189,19 @@ void fn_801CF080(u8 *mesh, f32 *pos, f32 *out, s32 *count, f32 *mtx, f32 radius)
             }
             if (nout == 0) {
                 cp.x = proj.x;
-                cp.y = proj.y;
                 cp.z = proj.z;
-            } else if (nout == 2) {
-                s32 m = (last + 2) % 3;
+                cp.y = proj.y;
+            } else if ((int)nout == 2) {
+                register u32 m = (last + 2) % 3;
                 if (!(flags & (1 << m))) {
                     goto next;
                 }
                 cp.x = p[m][0];
                 cp.y = p[m][1];
                 cp.z = p[m][2];
-            } else if (nout == 1) {
+            } else if ((u32)nout == 1) {
                 s32 o = outs[0];
-                f32 s;
+                register f32 s;
                 if (!(flags & (1 << (o + 3)))) {
                     goto next;
                 }
@@ -213,7 +213,7 @@ void fn_801CF080(u8 *mesh, f32 *pos, f32 *out, s32 *count, f32 *mtx, f32 radius)
             if (PSVECSquareDistance((f32 *)&cp, (f32 *)&local) < radius * radius && n < maxCount) {
                 Vec801CF res;
                 f32 *dst;
-                if (mtx != 0) {
+                if (mtx) {
                     fn_801CF080_xform((f32 *)&res, (f32 *)&cp, mtx);
                     res.x += mtx[9];
                     res.y += mtx[10];
@@ -262,7 +262,7 @@ f32 fn_801CF778(const float *point, const float *origin, const float *dir) {
  * that are inside all three edge planes.  Returns 1, shortens *ioDist to the
  * distance of the closest such hit and writes the plane normal of the triangle
  * it hit to normalOut; returns 0 when the ray misses the mesh. */
-s32 MeshRayCast_801CF828(Mesh *mesh, Vec *origin, Vec *dir, f32 *ioDist, Vec *normalOut) {
+/* Ray-cast a PMSh mesh: test node bounding spheres, then triangle planes and edge planes, and return the closest hit distance and normal. */ s32 MeshRayCast_801CF828(Mesh *mesh, Vec *origin, Vec *dir, f32 *ioDist, Vec *normalOut) {
     Vec *nrm;
     s32 nodeOff;
     s32 triOff;
