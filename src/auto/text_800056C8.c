@@ -1107,36 +1107,36 @@ void drawAwardsList(void *screen) {
     f32 rowY;
     f32 textX;
     f32 bestTime;
-    s32 slot;
+    s32 carSlot;
     s32 flags;
     s32 seconds;
     s32 centis;
-    struct AwardCar *car;
+    struct AwardCar *awardCar;
     rowX = fn_80011E34();
     listTop = fn_80011E54() - lbl_80560170;
-    slot = 0;
+    carSlot = 0;
     rowGap = lbl_80560178;
     textLift = lbl_8056017C;
     zero = lbl_8056011C;
     hundred = lbl_80560188;
-    for (; slot < fn_801EA994(); slot++) {
-        car = fn_801EA9B0(slot);
-        rowY = (f32)slot;
+    for (; carSlot < fn_801EA994(); carSlot++) {
+        awardCar = fn_801EA9B0(carSlot);
+        rowY = (f32)carSlot;
         rowStep = lbl_80560174;
         nameAdvance = lbl_80560184;
         timeAdvance = lbl_8056018C;
         rowY = listTop - rowStep * rowY;
         fn_80010E94(*(s32 *)((u8 *)screen + 0x14), 0, rowX,
                     rowY - rowGap, lbl_80560118, lbl_8056017C);
-        flags = car->displayFlags;
+        flags = awardCar->displayFlags;
         textX = rowX + rowStep;
         if (flags & 1) {
             fn_8000FF88(-0x100, 0x41, (void *)lbl_80558930,
                         lbl_80560180, textX, (rowY - rowGap) - textLift,
-                        (void *)car->displayValue);
+                        (void *)awardCar->displayValue);
             textX += nameAdvance;
         } else if (flags & 2) {
-            bestTime = car->bestTime;
+            bestTime = awardCar->bestTime;
             if (bestTime < zero) {
                 fn_801345D8(timeText, 8, lbl_80558934);
             } else {
@@ -1150,12 +1150,12 @@ void drawAwardsList(void *screen) {
         } else {
             fn_8000FF88(-0x100, 0x41, (void *)&lbl_80558948,
                         lbl_80560180, textX, (rowY - rowGap) - textLift,
-                        fn_800122B4(slot + 1, rankText));
+                        fn_800122B4(carSlot + 1, rankText));
             textX += nameAdvance;
         }
         fn_8000FF88(-0x100, 0x21, (void *)&lbl_80558948,
                     lbl_80560130, textX, (rowY - rowGap) - textLift,
-                    car->name);
+                    awardCar->name);
     }
 }
 #pragma pop
