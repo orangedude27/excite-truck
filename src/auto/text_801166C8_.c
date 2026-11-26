@@ -5711,7 +5711,7 @@ extern void fn_80122E08(s32, void *, s32, void *);
 extern void fn_80122ED8(s32, void *, s32, void *);
 extern void fn_80122FA4(s32, void *, s32, void *);
 extern void fn_80123CEC(s32, void *, s32, void *);
-extern void fn_80120F84(s32, s32, void *);
+extern void fftBitReverse(s32, s32, void *);
 extern void fn_80123E98(void *, void *);
 extern void fn_80121848(void *);
 extern void fn_80124AD8(void *, void *);
@@ -5737,7 +5737,7 @@ void fn_80120CA4(register s32 count, register void *dst, register s32 mode, regi
         } else {
             fn_80123CEC(count, dst, srcIndex, src);
         }
-        fn_80120F84(count, mode, dst);
+        fftBitReverse(count, mode, dst);
     } else if (count > 8) {
         if (count == 0x20) {
             fn_80123E98(dst, (u8 *)src + (srcIndex - 8) * 4);
@@ -5828,7 +5828,7 @@ void fn_80120E14(register s32 n, register void *a, register s32 ip, register s32
  * only two blocks and one partner.  Samples at 2*k and 2*k+m2 are swapped with
  * their own partner and need no ip lookup.
  */
-void fn_80120F84(s32 n, s32 ip_arg, void *a_arg) {
+void fftBitReverse(s32 n, s32 ip_arg, void *a_arg) {
     s32 *ip = (s32 *)ip_arg; /* bit-reversal offsets, one per complex sample */
     float *a = (float *)a_arg; /* the samples, as re/im pairs */
     int j, j1, k, k1, l, m, m2;
