@@ -529,7 +529,7 @@ extern "C" s32 fn_80157278(s32 carIndex) {
 }
 #pragma scheduling on
 struct VObj;
-extern "C" void fn_80157560(VObj*);
+extern "C" void loadBonusStuntTable(VObj*);
 extern "C" s32 fn_80157558(void*);
 extern "C" s32 fn_8015782C(s32*, s32);
 extern "C" void* fn_8015783C(void*, s32, s32);
@@ -626,7 +626,7 @@ extern "C" void* BonusGroup_create(s32 configPtr, s32 courseIndex, s32 initValue
         TrackerArray_push(group + 4, (s32*)&ringTracker);
         s32 index = 0;
         while (index < fn_80157558(group + 4)) {
-            fn_80157560(*(VObj**)(u32)fn_8015782C((s32*)(group + 4), index));  /* its stunt table */
+            loadBonusStuntTable(*(VObj**)(u32)fn_8015782C((s32*)(group + 4), index));  /* its stunt table */
             index++;
         }
         *(u8*)(group + 0x54) = 1;
@@ -655,9 +655,9 @@ extern "C" void* fn_80131810(void*);
 extern "C" void* fn_80131808(void*);
 extern "C" void fn_80131818(void*);
 extern "C" void fn_801345D8(void*, s32, void*, ...);
-/* fn_80157560 is handed one of the group's bonus trackers (an Unk801577F0) as
+/* loadBonusStuntTable is handed one of the group's bonus trackers (an Unk801577F0) as
    this opaque object pointer; it casts it where it reads the tracker's fields. */
-/* The two stunt value files fn_80157560 reads a tracker's table from, and the
+/* The two stunt value files loadBonusStuntTable reads a tracker's table from, and the
    .sdata strings naming the values a stunt entry holds.  The keys are declared
    as scalars and used through &label, which keeps their addresses sda21
    relocations the way the original's do. */
@@ -701,7 +701,7 @@ struct ValueObject {
     virtual ValueObject *getEntry(s32 index);                         /* 0x60 */
 };
 
-/* One 0x38-byte stunt record of a bonus tracker's table: fn_80157560 loads it
+/* One 0x38-byte stunt record of a bonus tracker's table: loadBonusStuntTable loads it
    from a stunt value entry, fn_80158824 / fn_80158A84 clear it again, and
    fn_801589A8 reads the points back out of it. */
 struct StuntRecord {
@@ -716,7 +716,7 @@ struct StuntRecord {
 #pragma scheduling invalid_target
 #pragma processor 750
 #pragma use_lmw_stmw off
-extern "C" void fn_80157560(VObj *arg0) {
+extern "C" void loadBonusStuntTable(VObj *arg0) {
     /* Fill one bonus tracker's stunt table from the game's stunt value files.
        "stunts.val" (the per-course values) is opened first and "stuntdef.val"
        (the defaults) next; the tracker's own category name picks the group of
