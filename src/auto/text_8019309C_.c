@@ -2215,7 +2215,7 @@ typedef union GroundPoint {
 #define GROUND_DEPTH_FLOOR lbl_80562244 /* -0.01f: keeps the ground depth off zero */
 #define PITCH_CUTOFF lbl_805621EC /* 0.7f: nose-up wanted when off the ground */
 #define PITCH_CUTOFF_SWEEP lbl_80562248 /* -1.1f: how far that cut-off falls */
-void fn_801965AC(void *controller) {
+void updateGroundedBodyTilt(void *controller) {
     /* Body tilt tick for a truck controller in its grounded state (fn_801967A4
      * case 0).  The truck's position is dropped onto the terrain, which hands
      * back the ground point and the surface normal there (normal keeps the
@@ -2302,7 +2302,7 @@ void fn_801967A4(void *controller) {
     switch (state) {
     case 0:
         fn_80198530(controller);
-        fn_801965AC(controller);
+        updateGroundedBodyTilt(controller);
         return;
     case 1:
         fn_80196AA0(controller);
