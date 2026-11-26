@@ -1105,7 +1105,7 @@ extern float lbl_80563898, lbl_805638AC, lbl_805638B0, lbl_805638B4, lbl_805638B
  * by the curve read off logoCurve at its x, scaled by `remaining`, so the text
  * settles onto the position it was given; outside that one-second window the
  * clamps leave `remaining` at 0 and the glyph passes through untouched. */
-void warpTextPosition(float *outX, float *outY, float x, float y) {
+/* Shimmer-warp hook for the thankyou.lyt text: shake and offset a glyph position by the logo curve. */ void warpTextPosition(float *outX, float *outY, float x, float y) {
 #define startTime   animationStartMs /* ms stamp fn_802483E0 took at the start */
 #define one         lbl_80563898 /* 1.0f */
 #define msPerSecond lbl_805638AC /* 1000.0f */
