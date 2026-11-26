@@ -360,14 +360,13 @@ void fn_8027445C(void) {
 
 #pragma push
 #pragma processor 750
-void applyFlippedTransform(void *arg0) {
+void applyFlippedTransform(void *obj) {
 #pragma opt_common_subs off
 #pragma scheduling on
-    /* Mode-3 placement (fn_802693F4 case 3): copy the source 3x4 transform at +0xC0
-     * over the live one at +0x58, compose a half-turn about the Y axis on it
-     * (fn_80015A20 builds the Euler (0, pi, 0) rotation matrix, fn_80015B20 the
-     * 3x3 product), then add the (0, 0.8, 0) offset, rotated into the flipped
-     * basis, to the translation column at +0x7C. */
+    /* Mode-3 placement: copy the source 3x4 transform at +0xC0 over the live one at +0x58,
+     * compose a half-turn about Y into it (fn_80015A20 builds the Euler (0, pi, 0) matrix,
+     * fn_80015B20 the 3x3 product), then add the (0, 0.8, 0) offset rotated into the flipped
+     * basis to the translation column at +0x7C. */
     struct MtxWords { unsigned int word[12]; };
     struct TransformObj {
         unsigned char pad0[0x58];
@@ -383,12 +382,12 @@ void applyFlippedTransform(void *arg0) {
         float angles[3];
         float rotMtx[9];
     } work;
-    ((struct TransformObj *)arg0)->mtx = ((struct TransformObj *)arg0)->srcMtx;
+    ((struct TransformObj *)obj)->mtx = ((struct TransformObj *)obj)->srcMtx;
     work.angles[0] = 0.0f;
     work.angles[1] = 3.1415927f;
     work.angles[2] = 0.0f;
     ((void (*)(void *, float *))fn_80015A20)(work.rotMtx, work.angles);
-    fn_80015B20((char *)arg0 + 0x58, work.rotMtx, (char *)arg0 + 0x58);
+    fn_80015B20((char *)obj + 0x58, work.rotMtx, (char *)obj + 0x58);
     x = 0.0f;
     y = 0.8f;
     z = 0.0f;
@@ -403,15 +402,15 @@ void applyFlippedTransform(void *arg0) {
         if (result == vector) {
             float m00, m01, m02, m10, m11, m20, m21, m12, m22;
             float o0, o1, o2;
-            m10 = *(float *)((char *)arg0 + 0x64);
-            m00 = *(float *)((char *)arg0 + 0x58);
-            m11 = *(float *)((char *)arg0 + 0x68);
-            m01 = *(float *)((char *)arg0 + 0x5C);
-            m12 = *(float *)((char *)arg0 + 0x6C);
-            m02 = *(float *)((char *)arg0 + 0x60);
-            m20 = *(float *)((char *)arg0 + 0x70);
-            m21 = *(float *)((char *)arg0 + 0x74);
-            m22 = *(float *)((char *)arg0 + 0x78);
+            m10 = *(float *)((char *)obj + 0x64);
+            m00 = *(float *)((char *)obj + 0x58);
+            m11 = *(float *)((char *)obj + 0x68);
+            m01 = *(float *)((char *)obj + 0x5C);
+            m12 = *(float *)((char *)obj + 0x6C);
+            m02 = *(float *)((char *)obj + 0x60);
+            m20 = *(float *)((char *)obj + 0x70);
+            m21 = *(float *)((char *)obj + 0x74);
+            m22 = *(float *)((char *)obj + 0x78);
             o0 = z * m20 + (x * m00 + y * m10);
             o1 = z * m21 + (x * m01 + y * m11);
             o2 = z * m22 + (x * m02 + y * m12);
@@ -420,23 +419,23 @@ void applyFlippedTransform(void *arg0) {
             result[2] = o2;
         } else {
             float m00, m01, m02, m10, m11, m12, m20, m21, m22;
-            m10 = *(float *)((char *)arg0 + 0x64);
-            m00 = *(float *)((char *)arg0 + 0x58);
-            m20 = *(float *)((char *)arg0 + 0x70);
+            m10 = *(float *)((char *)obj + 0x64);
+            m00 = *(float *)((char *)obj + 0x58);
+            m20 = *(float *)((char *)obj + 0x70);
             result[0] = vector[2] * m20 + (vector[0] * m00 + vector[1] * m10);
-            m11 = *(float *)((char *)arg0 + 0x68);
-            m01 = *(float *)((char *)arg0 + 0x5C);
-            m21 = *(float *)((char *)arg0 + 0x74);
+            m11 = *(float *)((char *)obj + 0x68);
+            m01 = *(float *)((char *)obj + 0x5C);
+            m21 = *(float *)((char *)obj + 0x74);
             result[1] = vector[2] * m21 + (vector[0] * m01 + vector[1] * m11);
-            m12 = *(float *)((char *)arg0 + 0x6C);
-            m02 = *(float *)((char *)arg0 + 0x60);
-            m22 = *(float *)((char *)arg0 + 0x78);
+            m12 = *(float *)((char *)obj + 0x6C);
+            m02 = *(float *)((char *)obj + 0x60);
+            m22 = *(float *)((char *)obj + 0x78);
             result[2] = vector[2] * m22 + (vector[0] * m02 + vector[1] * m12);
         }
     }
-    *(float *)((char *)arg0 + 0x7C) += work.result.x;
-    *(float *)((char *)arg0 + 0x80) += work.result.y;
-    *(float *)((char *)arg0 + 0x84) += work.result.z;
+    *(float *)((char *)obj + 0x7C) += work.result.x;
+    *(float *)((char *)obj + 0x80) += work.result.y;
+    *(float *)((char *)obj + 0x84) += work.result.z;
 }
 #pragma pop
 
