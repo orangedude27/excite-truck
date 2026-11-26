@@ -364,7 +364,7 @@ extern void fn_8018A180(s32);
  * the header row puts every parameter back on its default instead.  Whatever of
  * them happened stamps the time, which is what fn_801DE154 fades the on-screen
  * text from.  Always returns 0. */
-s32 fn_801DE5C4(s32 key) {
+s32 handleGarageTuningInput(s32 key) {
     #define editRow     lbl_8055E9BC /* row the arrows select, -1 for the header */
     #define lastEditMs  lbl_8055E9CC /* ms of the last edit, see KERNEL_GetTimeMs */
     #define KEY_LEFT    0x125        /* one step down */
