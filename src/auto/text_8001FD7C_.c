@@ -387,13 +387,13 @@ struct TipsCamera_8035B758 {
    by name, plus its duration and hermite flag.  Afterwards it (re)arms the tips
    flag lbl_8055D644 from the game-option bits, unless lbl_8055D646 forces tips
    off. */
-extern "C" void Tips_LoadCameraSequence(void) {
-    int tipOptions;
+/* Load the tips camera sequence from camera3.val into the tips-camera array and arm the tips overlay from the game options */ extern "C" void Tips_LoadCameraSequence(void) {
+    int tipsEnabled;
     char *base = lbl_802FE138;
     VList_800201F0 *valFile;
     VObj_800201F0 *sequence;
     VObj_800201F0 *item;
-    int i;
+    int itemIndex;
     fn_8001FEE8();
     lbl_8055D630 = 0; /* number of entries in the sequence */
     lbl_8055D634 = 0; /* entry being shown */
@@ -402,7 +402,7 @@ extern "C" void Tips_LoadCameraSequence(void) {
         if (valFile->f10(TIPS_SEQ_NAME) != 0) {
             sequence = (VObj_800201F0 *)valFile->f8(TIPS_SEQ_NAME);
             fn_802E30C8(TIPS_MSG_GOT_SEQ);
-            for (i = 0; (item = sequence->f60(i)) != 0; i++) {
+            for (itemIndex = 0; (item = sequence->f60(itemIndex)) != 0; itemIndex++) {
                 if (strcmp(item->f8(), TIPS_ITEM_CAMERA) == 0) {
                     void *startName = item->f14(TIPS_PROP_START);
                     void *endName = item->f14(TIPS_PROP_END);
@@ -425,13 +425,13 @@ extern "C" void Tips_LoadCameraSequence(void) {
         }
         fn_80131818(valFile);
     }
-    tipOptions = 0;
+    tipsEnabled = 0;
     lbl_8055D648 = 0;
     if (fn_80019B84() != 0 || fn_80019B90() != 0 || fn_80019B3C() != 0) {
-        tipOptions = 1;
+        tipsEnabled = 1;
     }
     /* __cntlzw(x) >> 5 is just "x != 0", written as a 0/1 byte */
-    *(signed char *)&lbl_8055D644 = (unsigned int)__cntlzw(tipOptions) >> 5;
+    *(signed char *)&lbl_8055D644 = (unsigned int)__cntlzw(tipsEnabled) >> 5;
     if (lbl_8055D646 != 0) {
         lbl_8055D644 = 0;
         lbl_8055D648 = 1;
