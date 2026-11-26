@@ -7,7 +7,7 @@ extern "C" s32 fn_80141F7C(f32);
 extern "C" s32 getBonusTrackerRecordCount(void*);
 extern "C" void stepBonusTrackerAward(void*);
 extern "C" f32 emitBonusTrackerValue(void*, void*);
-extern "C" void fn_80158E74(void*);
+extern "C" void clearBonusListenerPending(void*);
 extern "C" f32 fn_80158E80(void*);
 extern f32 lbl_802F9478[];
 extern "C" f32 fn_801429D0(f32, f32);
@@ -1718,7 +1718,7 @@ extern "C" f32 BonusTracker_updateFromPlayer(void* tracker, void* player) {
         if (playerProgress > playerLevel && self->recordIndex() > 0) {
             playerTime = 0.0f;
             void* listener = playerObject;
-            if (listener != 0) fn_80158E74(listener);
+            if (listener != 0) clearBonusListenerPending(listener);
         }
         emitted = 0.0f;
     } else if (((s32 (*)(f32))fn_80141F7C)(playerTime) != 0) {
@@ -1793,7 +1793,7 @@ extern "C" f32 emitBonusTrackerValue(void* arg0, void*) {
 #pragma pop
 
 // Clear the pending-event counter at +8 of a bonus listener, marking it as having nothing pending.
-extern "C" void fn_80158E74(void* listener) {
+extern "C" void clearBonusListenerPending(void* listener) {
     *(s32*)((u8*)listener + 8) = 0;
 }
 
