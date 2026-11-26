@@ -766,7 +766,7 @@ process:
  * first name the resource system does not have, and leaving the slots no model
  * was found for at -1.  The car one takes no instance and remaps no texture;
  * loadTerrainChunkModels and loadWoodChunkModels do the "ter" and "wood" ones. */
-void loadCarChunkModels(void *object, void *modelBase) {
+/* Load the car chunk effect's MODL models from "<base>1.mod" to "<base>8.mod", stopping at the first missing resource. */ void loadCarChunkModels(void *object, void *modelBase) {
     char name[0x20];
     int count;
     ChunkSys *chunkSys = (ChunkSys *)object;
