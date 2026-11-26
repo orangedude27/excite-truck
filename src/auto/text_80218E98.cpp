@@ -577,7 +577,7 @@ extern "C" void *lbl_8033E770[];
 extern char lbl_8033F768[];
 extern "C" u32 *fn_80216708(void);
 extern "C" s32 fn_80218F34(void *, s32, s32, s32, s32, s32);
-extern "C" void fn_8022B91C(s32, s32, s32, s32, s32);
+extern "C" void UIStyle_drawText(s32, s32, s32, s32, s32);
 extern "C" s32 gxGetImageFrameCount(s32);
 extern "C" s32 gxDrawPictureAt(s32, s32, f32, f32, f32);
 extern "C" void fn_80230C30(f32 *, f32 *, s32, s32);
@@ -1035,7 +1035,7 @@ extern "C" void *fn_80219568(void *obj, s32 x, s32 y, s32 arg3, s32 arg4, s32 wi
 /* Draw this menu text widget (its draw method, vtable slot 0x24 of the widget
  * vtables lbl_8033F768 and lbl_8033FA28): first make arg1 the canvas drawing
  * happens on -- gxCanvasSwitch swaps it into gxcanvas' current-canvas global
- * lbl_8055FC00 -- then hand the text drawer fn_8022B91C the widget's +0x250
+ * lbl_8055FC00 -- then hand the text drawer UIStyle_drawText the widget's +0x250
  * field (an argument the drawer no longer uses), its own offsets +0x244 and
  * +0x248, the string vf32() (vtable 0x88) answers with, and the draw style
  * vf31() (vtable 0x84) answers with: bit 0 marks the entry the menu cursor
@@ -1046,7 +1046,7 @@ extern "C" void fn_802195DC(void *widget, s32 canvas) {
     VfObj *obj = (VfObj *)widget;
     s32 style = obj->vf31();
     s32 text = obj->vf32();
-    fn_8022B91C(*(s32 *)((u8 *)widget + 0x250), *(s32 *)((u8 *)widget + 0x244), *(s32 *)((u8 *)widget + 0x248), text, style);
+    UIStyle_drawText(*(s32 *)((u8 *)widget + 0x250), *(s32 *)((u8 *)widget + 0x244), *(s32 *)((u8 *)widget + 0x248), text, style);
 }
 
 extern "C" s32 fn_80219658(void) { return 0; }
@@ -3818,7 +3818,7 @@ body:
     }
     result = ((s32 (*)(s32, s32, s32 *))fn_8022D3F8)(
         *(s32 *)((u8 *)arg0 + 0x244), item, 0);
-    fn_8022B91C(7, xBase + 2,
+    UIStyle_drawText(7, xBase + 2,
                 yBase + index * *(s32 *)((u8 *)arg0 + 0x258) + 2,
                 result, selected | status);
     ++index;
@@ -4134,7 +4134,7 @@ extern "C" void fn_8021EC1C(void* entity, s32 canvas) {
     posX_3 = *(s32*)((u8*)entity+4);
     posY_3 = *(s32*)((u8*)entity+8);
     gxCanvasSetClipRect(canvas, posX_3, posY_3, posX_3 + ((Vf78*)entity)->get(), *(s32*)((u8*)entity+0x10));
-    fn_8022B91C(*(s32*)((u8*)entity+0xA58),*(s32*)((u8*)entity+4),*(s32*)((u8*)entity+8),*(s32*)((u8*)entity+0xA54),(*(u8*)((u8*)entity+0x19)!=0));
+    UIStyle_drawText(*(s32*)((u8*)entity+0xA58),*(s32*)((u8*)entity+4),*(s32*)((u8*)entity+8),*(s32*)((u8*)entity+0xA54),(*(u8*)((u8*)entity+0x19)!=0));
     if (*(u8*)((u8*)entity+0x19)) {
         fn_8022B390(*(s32*)((u8*)entity+0xA58),*(s32*)((u8*)entity+0xA54),*(s32*)((u8*)entity+0x250),&outX,&outY);
         drawY = outY + *(s32*)((u8*)entity+8);

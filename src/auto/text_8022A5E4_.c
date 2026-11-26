@@ -803,7 +803,7 @@ struct UIStyle {
 }
 #pragma pop
 /* Draws a UI style's picture/text at (x, y): renders the picture or animation, then draws the bitmap-font text lines with alignment and offsets unless a vector font is active. */
-void fn_8022B91C(void *unused, int x, int y, char *text, unsigned int flagsArg) {
+void UIStyle_drawText(void *unused, int x, int y, char *text, unsigned int flagsArg) {
     extern int stampGetFrameCount(int);
     extern int gxCanvasDrawStamp(int, int, int, int, int);
     extern int gxGetImageFrameCount(void);
