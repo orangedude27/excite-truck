@@ -659,7 +659,7 @@ void fn_802B13F8(void *arg0, int arg1, void *arg2, int arg3, float farg0) {
  * path (single or alternate based on lbl_8055FA59), walk each slot group and
  * submit non-empty node records to fn_802DC078, then tear down and run the
  * post-pass callbacks. */
-void drawLitBillboardPass(void *arg0) {
+/* Draw all CPU-lit billboard batches for a material set: set up lighting and texture state, walk each slot group's node lists and submit non-empty records to the batch drawer, then restore state and run the post-pass callbacks. */ void drawLitBillboardPass(void *materialSet) {
     int recordCount;
     int *node;
     int isFirstInGroup;
@@ -674,21 +674,21 @@ void drawLitBillboardPass(void *arg0) {
     int savedState;
 
     fn_802B1BEC();
-    if (fn_802B1BE4((char *)arg0 + 0x318) > 0) {
-        fn_802B1B60(arg0);
+    if (fn_802B1BE4((char *)materialSet + 0x318) > 0) {
+        fn_802B1B60(materialSet);
         savedState = fn_802C2C00(0);
         if (lbl_8055FA59 != 0) {
-            fn_802C8BD0(*(int *)((char *)arg0 + 4));
+            fn_802C8BD0(*(int *)((char *)materialSet + 4));
         } else {
             fn_802C8BD0();
             fn_802C28C0();
         }
         fn_802B05EC();
         fn_802DBF00();
-        for (slotGroupIndex = 0; slotGroupIndex < fn_802B1AF0((char *)arg0 + 0xC); slotGroupIndex++) {
-            objEntry = fn_802B1B50((int *)((char *)arg0 + 0xC), slotGroupIndex) + 4;
+        for (slotGroupIndex = 0; slotGroupIndex < fn_802B1AF0((char *)materialSet + 0xC); slotGroupIndex++) {
+            objEntry = fn_802B1B50((int *)((char *)materialSet + 0xC), slotGroupIndex) + 4;
             if (lbl_8055FA59 != 0) {
-                fn_802CADD0(*(int *)(fn_802B1B50((int *)((char *)arg0 + 0xC), slotGroupIndex) + 0x7C), 1);
+                fn_802CADD0(*(int *)(fn_802B1B50((int *)((char *)materialSet + 0xC), slotGroupIndex) + 0x7C), 1);
                 fn_802CADD0(__AXGetStackHead_802BC30C(slotGroupIndex), 2);
             } else {
                 for (objEntryIndex = 0; objEntryIndex < fn_802B1B38((void *)objEntry); objEntryIndex++) {
@@ -696,11 +696,11 @@ void drawLitBillboardPass(void *arg0) {
                 }
                 fn_802CADD0(__AXGetStackHead_802BC30C(slotGroupIndex), 3);
             }
-            cacheBase = fn_802B1B28((int *)((char *)arg0 + 0x318), 0);
-            cacheCount = fn_802B1BE4((char *)arg0 + 0x318);
+            cacheBase = fn_802B1B28((int *)((char *)materialSet + 0x318), 0);
+            cacheCount = fn_802B1BE4((char *)materialSet + 0x318);
             groupMask = 1 << slotGroupIndex;
             slotIndex = groupMask;
-            slot = (int *)((unsigned)arg0 + (groupMask << 2) + 0x934);
+            slot = (int *)((unsigned)materialSet + (groupMask << 2) + 0x934);
             for (; slotIndex < 0x41; slot++, slotIndex++) {
                 if ((slotIndex & groupMask) && fn_802B1B18(slot) == 0) {
                     isFirstInGroup = (((groupMask - 1) & slotIndex) == 0);
@@ -725,11 +725,11 @@ void drawLitBillboardPass(void *arg0) {
         CpuLight_ResetFrameState();
         DrawList_RestoreNormalMode();
         fn_802C2C00(savedState);
-        savedState = fn_802B1BE4((char *)arg0 + 0x318);
-        fn_802BB0FC(fn_802B1B28((int *)((char *)arg0 + 0x318), 0), savedState);
-        fn_802B1758(arg0);
-        savedState = fn_802B1BE4((char *)arg0 + 0x318);
-        fn_802BB3B8(fn_802B1B28((int *)((char *)arg0 + 0x318), 0), savedState);
+        savedState = fn_802B1BE4((char *)materialSet + 0x318);
+        fn_802BB0FC(fn_802B1B28((int *)((char *)materialSet + 0x318), 0), savedState);
+        fn_802B1758(materialSet);
+        savedState = fn_802B1BE4((char *)materialSet + 0x318);
+        fn_802BB3B8(fn_802B1B28((int *)((char *)materialSet + 0x318), 0), savedState);
     }
 }
 #pragma pop
