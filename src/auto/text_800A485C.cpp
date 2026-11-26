@@ -923,7 +923,7 @@ extern "C" void* fn_800C6914(void*, void* = 0);
 extern "C" void *deleteHomeButtonController(void*, s32);
 extern "C" void fn_800C6CE8(void*);
 extern "C" void fn_800C7998(void*);
-extern "C" s32 fn_800B23F8(s32, s32, s32, s32);
+extern "C" s32 VFiPFPATH_SplitDriveAndName(s32, s32, s32, s32);
 extern "C" u16 VFiPFSTR_StrNumChar(s32, s32);
 extern "C" s32 VFiPFSTR_StrNCmp(s32, const void*, s32, s32, s32);
 extern "C" void VFiPFSTR_ToUpperNStr(s32, u16, u8*);
@@ -9236,7 +9236,7 @@ extern "C" void *fn_800B224C(void *fileObj, void *info) {
  * path's character code first.  Returns 0 on success, 2 for a malformed token,
  * or the tokenizer's error code.
  */
-extern "C" s32 fn_800B23F8(s32 path, s32 outDir, s32 outName, s32 allowWildcards) {
+extern "C" s32 VFiPFPATH_SplitDriveAndName(s32 path, s32 outDir, s32 outName, s32 allowWildcards) {
     union Tok { s32 words[4]; f64 dbl[2]; };
     Tok token;
     Tok lastToken;
@@ -9854,7 +9854,7 @@ done:
 /* Split a VFiPF path into its drive/directory outputs with wildcards disabled
  * (the fn_800B36CC twin passes 1 to allow them). */
 extern "C" void fn_800B36C4(s32 path, s32 outDrive, s32 outDir) {
-    fn_800B23F8(path, outDrive, outDir, 0);
+    VFiPFPATH_SplitDriveAndName(path, outDrive, outDir, 0);
 }
 
 /* Split a VFiPF path into its drive and directory outputs, this time allowing
@@ -9862,7 +9862,7 @@ extern "C" void fn_800B36C4(s32 path, s32 outDrive, s32 outDir) {
  * Callers use it as a three-argument function; the fourth parameter is ignored
  * and the wildcard flag is hardcoded to 1. */
 extern "C" void fn_800B36CC(s32 path, s32 outDrive, s32 outDir, s32 reserved) {
-    fn_800B23F8(path, outDrive, outDir, 1);
+    VFiPFPATH_SplitDriveAndName(path, outDrive, outDir, 1);
 }
 
 /* If a string has a ':' separator at index 1, uppercase that char and apply it; otherwise reset. */
