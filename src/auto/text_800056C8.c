@@ -79,7 +79,7 @@ extern s32 fn_80007554(s32, s32, s32);
  * fills it with the overlay objects it builds by name (the names are the
  * strings in the table at lbl_802FB0C8: "IntroOverlay", "RacingOverlay",
  * ...), fn_800057D0 picks each frame which overlay every player's HUD shows
- * and fn_80005930 updates the ones it picked.  Every overlay answers slot
+ * and drawAllPlayerHuds updates the ones it picked.  Every overlay answers slot
  * 0x38 of its vtable with a "this overlay is finished" byte, which is what
  * fn_800057D0 asks the scene overlays before letting go of them.
  * lbl_8055D350 points at the per-session state block at lbl_8034EE84.
@@ -202,7 +202,7 @@ void fn_800057BC(void) {
 /* Chooses the HUD overlay every player sees this frame: one of the scene's own
  * overlays for all of them while that overlay is not finished yet (vtable slot
  * 0x38 answers its "I'm done" byte), otherwise each player's own overlay -
- * or the race's ClosureOverlay for the players already out of it.  fn_80005930
+ * or the race's ClosureOverlay for the players already out of it.  drawAllPlayerHuds
  * then updates the overlays picked here. */
 extern "C" void fn_800057D0(void) {
     struct Overlay {
@@ -276,7 +276,7 @@ extern "C" void fn_800057D0(void) {
  *
  * Second pass, per player: the same on the full screen, but with the update that is
  * given the player index (slot 0x2C). */
-extern "C" s32 fn_80005930(void) {
+extern "C" s32 drawAllPlayerHuds(void) {
     extern s32 fn_801E85A4(void);                            /* viewports on screen */
     extern void fn_801E88B4(s32 *, s32 *, s32 *, s32 *, s32); /* one player's viewport rect */
     extern s32 fn_801E89EC(void);          /* race phase: 0 before start, 1 racing, 3 finishing */
@@ -1542,7 +1542,7 @@ extern s32 fn_80161C18(void);
 extern s32 fn_80021258(void);
 extern s32 fn_801DF110(void);
 extern s32 fn_80161A70(void);
-extern s32 fn_80005930(void);
+extern s32 drawAllPlayerHuds(void);
 extern s32 fn_8000545C(void);
 extern s32 fn_80005460(void);
 extern s32 getControlScheme(void);
@@ -1574,7 +1574,7 @@ void fn_80007238(void) {
     if (fn_80021258() != 0) goto done;
     if (fn_801DF110() != 0) goto done;
     if (fn_80161A70() != 0) goto done;
-    fn_80005930();
+    drawAllPlayerHuds();
 
 done:
     fn_80005B6C();
