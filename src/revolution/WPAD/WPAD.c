@@ -3975,7 +3975,7 @@ s32 fn_8005FBCC(u8 devHandle) {
  * read; on disconnect, drain the channel's command queue (answering every
  * callback with WPAD_ERR_NO_CONTROLLER), tear the channel down and release it. */
 /* WPAD HID connect/disconnect callback: on connect, claim and reset a channel and queue the extension/firmware probe read; on disconnect, answer every queued command with WPAD_ERR_NO_CONTROLLER, tear down the channel and release it. */ void wpadConnectionCallback(u8 devHandle, u8 open) {
-    extern void fn_8005E8E0(s32 chan);
+    extern void WPADiResetChannel_8005E8E0(s32 chan);
     extern const char lbl_803120E0[];
     extern s8 lbl_80390500[];
     extern void fn_8005F3E8(s32, s32);
@@ -3998,7 +3998,7 @@ s32 fn_8005FBCC(u8 devHandle) {
         chan = fn_8005FBCC(devHandle);
         cb = lbl_8038F4F0[chan];
         lbl_80390500[devHandle] = chan;
-        fn_8005E8E0(chan);
+        WPADiResetChannel_8005E8E0(chan);
         cb->extDevHandle = devHandle;
         cb->UNK_0x801 = 0;
         cb->readFormat = WPAD_FMT_CORE_BTN;
@@ -4106,7 +4106,7 @@ s32 fn_8005FBCC(u8 devHandle) {
             if (cb->autoSamplingBuf != NULL) {
                 WPADSetAutoSamplingBuf(chan, cb->autoSamplingBuf, cb->autoSamplingSize);
             }
-            fn_8005E8E0(chan);
+            WPADiResetChannel_8005E8E0(chan);
             lbl_8055DC08[chan] = FALSE;
             if (*(WPADCallback*)((u8*)cb + 0x7E4) != NULL) {
                 (*(WPADCallback*)((u8*)cb + 0x7E4))(chan, WPAD_ERR_NO_CONTROLLER);
@@ -7366,7 +7366,7 @@ void fn_8005E8C0(OSAlarm* pAlarm, OSContext* pContext)
  * stamps the two activity timers with the current system time and zeroes the
  * channel's entry in the connection table.
  */
-void fn_8005E8E0(s32 chan)
+void WPADiResetChannel_8005E8E0(s32 chan)
 {
     WPADCB* pCB = lbl_8038F4F0[chan];
     u8* p = (u8*)pCB;
