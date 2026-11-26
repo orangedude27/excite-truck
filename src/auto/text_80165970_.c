@@ -1064,7 +1064,7 @@ unsigned char fn_801671AC(int index) {
 #pragma scheduling invalid_target
 #pragma cplusplus on
 #pragma optimization_level 2
-extern "C" float computeVehicleFactor(int arg0) {
+/* Computes a per-vehicle adjustment factor from the entry's physics record: when the system is ready and both gates pass it derives a delta from the registered vehicle or the AI truck slot, adds it to the record's value and stores it at +0x74; otherwise it stores 0 and returns 1.0. */ extern "C" float computeVehicleFactor(int arg0) {
     /* Compute and return a per-entry value: adjust by a context-dependent delta when gates pass, else store 0 and return base. */
     extern int fn_80139EC4(void *, float, float);
     extern float lbl_80561900;
