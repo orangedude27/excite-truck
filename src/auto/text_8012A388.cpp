@@ -996,54 +996,54 @@ extern "C" void reportGetBeforeWaitError(s32);
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 #pragma scheduling invalid_target
-/* Finds a resource manager/entry by parsed path and name, handling wildcards, duplicate-name
- * warnings, and flags controlling "not ready" and missing-resource behavior. */
-extern "C" void *findResourceEntry(char *arg0, s32 *arg1, u32 arg2) {
-    u8 wildcard;
+/* Resolves a resource path (optionally '*'-wildcarded) to its manager and entry index,
+ * warning on duplicate names and honoring flags for not-ready and missing-resource reporting. */
+extern "C" void *findResourceEntry(char *path, s32 *entryIndexOut, u32 flags) {
+    u8 hasWildcard;
     char name[0x100];
     char dir[0x100];
-    s32 flag0;
-    s32 flag1;
-    u8 *result;
-    s32 offset;
+    s32 allowNotReady;
+    s32 suppressErrors;
+    u8 *foundManager;
+    s32 entryOffset;
     u8 *manager;
     s32 index;
 
-    flag0 = arg2 & 1;
-    flag1 = (arg2 >> 1) & 1;
-    arg0 = (char *)fn_8012B4E4((u8 *)arg0, (s8 *)&wildcard);
-    fn_8012B3D4(dir, 0x100, name, 0x100, arg0);
-    if (wildcard != 0 && (s8)dir[0] == 0) {
-        fn_802E30C8(lbl_8032A970, arg0);
+    allowNotReady = flags & 1;
+    suppressErrors = (flags >> 1) & 1;
+    path = (char *)fn_8012B4E4((u8 *)path, (s8 *)&hasWildcard);
+    fn_8012B3D4(dir, 0x100, name, 0x100, path);
+    if (hasWildcard != 0 && (s8)dir[0] == 0) {
+        fn_802E30C8(lbl_8032A970, path);
     }
-    *arg1 = -1;
-    result = 0;
+    *entryIndexOut = -1;
+    foundManager = 0;
     for (manager = (u8 *)lbl_8055E000; manager != 0; manager = *(u8 **)(manager + 0xA8)) {
         if ((s8)dir[0] == 0 || stricmp((char *)manager, dir) == 0) {
-            for (index = 0, offset = 0; index < *(s32 *)(manager + 0x88); offset += 0x44, index++) {
-                if (stricmp((char *)(*(u8 **)(manager + 0x60) + offset), name) == 0) {
-                    if (*arg1 != -1) {
-                        fn_8012B50C((char *)*(u8 **)(result + 0x60) + *arg1 * 0x44,
-                                    (char *)*(u8 **)(manager + 0x60) + offset);
+            for (index = 0, entryOffset = 0; index < *(s32 *)(manager + 0x88); entryOffset += 0x44, index++) {
+                if (stricmp((char *)(*(u8 **)(manager + 0x60) + entryOffset), name) == 0) {
+                    if (*entryIndexOut != -1) {
+                        fn_8012B50C((char *)*(u8 **)(foundManager + 0x60) + *entryIndexOut * 0x44,
+                                    (char *)*(u8 **)(manager + 0x60) + entryOffset);
                     } else {
-                        result = manager;
-                        *arg1 = index;
+                        foundManager = manager;
+                        *entryIndexOut = index;
                     }
                 }
             }
         }
     }
-    if (result != 0 && *(u8 *)(result + 0xAD) != 0 && flag1 == 0) {
-        Abend_Panic(lbl_8032A99C, result != 0 ? (char *)result : (char *)&lbl_805599B4, arg0);
+    if (foundManager != 0 && *(u8 *)(foundManager + 0xAD) != 0 && suppressErrors == 0) {
+        Abend_Panic(lbl_8032A99C, foundManager != 0 ? (char *)foundManager : (char *)&lbl_805599B4, path);
     }
-    if (flag0 == 0 && result != 0 && wildcard == 0 &&
-        (*(u32 *)(*(u8 **)(result + 0x60) + *arg1 * 0x44 + 0x34) & 8) == 0) {
-        result = 0;
+    if (allowNotReady == 0 && foundManager != 0 && hasWildcard == 0 &&
+        (*(u32 *)(*(u8 **)(foundManager + 0x60) + *entryIndexOut * 0x44 + 0x34) & 8) == 0) {
+        foundManager = 0;
     }
-    if (result == 0 && flag1 == 0) {
-        reportGetBeforeWaitError((s32)arg0);
+    if (foundManager == 0 && suppressErrors == 0) {
+        reportGetBeforeWaitError((s32)path);
     }
-    return result;
+    return foundManager;
 }
 
 /* Base of this file's pooled string literals. */
