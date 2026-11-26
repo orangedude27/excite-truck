@@ -76,7 +76,7 @@ extern s32 fn_8024EB9C(void *obj, s32 index);
 extern void fn_8024EBAC(void *arg0, s32 arg1, s32 arg2);
 extern s32 fn_8024EBE4(s32 self);
 extern s32 fn_8024EC3C(void);
-extern s32 fn_8024ECD4(void);
+extern s32 updateEntryInfo(void);
 extern void *fn_8025007C(s32 count);
 unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
     typedef struct { s32 w[3]; } Tbl3;
@@ -198,7 +198,7 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
             m.items1[17].label = &lbl_80344170[0x114]; m.items1[17].type = 3; m.items1[17].value = m.screen + 0x3c; m.items1[17].lo = 0; m.items1[17].hi = 0;
             m.items1[18].label = &lbl_8055C0B8; m.items1[18].type = 3; m.items1[18].value = m.screen + 0x50; m.items1[18].lo = 0; m.items1[18].hi = 0;
             m.items1[19].label = 0; m.items1[19].type = 5; m.items1[19].value = m.screen; m.items1[19].lo = 0; m.items1[19].hi = 0;
-            m.items1[20].label = &lbl_8055B860; m.items1[20].type = 6; m.items1[20].value = (void *)fn_8024ECD4; m.items1[20].lo = 0; m.items1[20].hi = 0x72;
+            m.items1[20].label = &lbl_8055B860; m.items1[20].type = 6; m.items1[20].value = (void *)updateEntryInfo; m.items1[20].lo = 0; m.items1[20].hi = 0x72;
             m.items1[21].label = &lbl_8055B860; m.items1[21].type = 6; m.items1[21].value = 0; m.items1[21].lo = -1; m.items1[21].hi = 0x1b;
             m.items1[22].label = &lbl_8055B860; m.items1[22].type = 6; m.items1[22].value = (void *)fn_8024EC3C; m.items1[22].lo = -2; m.items1[22].hi = 0xd;
             m.items1[23] = *(Item *)g;
@@ -549,7 +549,7 @@ extern "C" s32 fn_80129D18(s32, s32);
  * names that go with it, formats the two "value/record" strings at base + 0x3C
  * and 0x50 and finally tells the icon object (base + 0x4C) which entry to show.
  */
-extern "C" s32 fn_8024ECD4(void) {
+extern "C" s32 updateEntryInfo(void) {
     typedef signed char s8;
     // One of the five per-entry tables of the parameter block (base + 0x38 + 0x2C).
     class EntryTable {
