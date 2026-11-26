@@ -936,7 +936,7 @@ void fn_80277A14(void *arg0, int arg1) {
 }
 
 #pragma cplusplus on
-extern "C" void initCameraEntryFromConfig(void *arg0, void *arg1, int arg2) {
+/* Fills a CameraEntry record from a camera object's named float parameters and its name string. */ extern "C" void initCameraEntryFromConfig(void *entry, void *camera, int entryIndex) {
     /* Initialize a camera/entry record by reading named float fields and a name string from a config object. */
     class FloatDummy {
     public:
@@ -960,25 +960,25 @@ extern "C" void initCameraEntryFromConfig(void *arg0, void *arg1, int arg2) {
     extern unsigned char lbl_80347378[];
     extern unsigned char lbl_8055C658;
     extern char lbl_8055C65C;
-    FloatDummy *config = (FloatDummy *)arg1;
+    FloatDummy *config = (FloatDummy *)camera;
     char *entryName;
 
-    *(float *)((char *)arg0 + 0x28) = config->get((char *)lbl_80347378 + 0x178);
-    *(float *)((char *)arg0 + 0x2C) = config->get((char *)lbl_80347378 + 0x184);
-    *(float *)((char *)arg0 + 0x30) = config->get((char *)lbl_80347378 + 0x190);
-    *(float *)((char *)arg0 + 0x04) = config->get((char *)lbl_80347378 + 0x19C);
-    *(float *)((char *)arg0 + 0x08) = config->get((char *)lbl_80347378 + 0x1A8);
-    *(float *)((char *)arg0 + 0x0C) = config->get((char *)lbl_80347378 + 0x1B4);
-    *(float *)((char *)arg0 + 0x10) = config->get((char *)lbl_80347378 + 0x1C0);
-    *(float *)((char *)arg0 + 0x14) = config->get((char *)lbl_80347378 + 0x1CC);
-    *(float *)((char *)arg0 + 0x18) = config->get((char *)lbl_80347378 + 0x1D8);
-    *(float *)((char *)arg0 + 0x1C) = config->get((char *)lbl_80347378 + 0x1E4);
-    *(float *)((char *)arg0 + 0x20) = config->get((char *)lbl_80347378 + 0x1F0);
-    *(float *)((char *)arg0 + 0x24) = config->get((char *)lbl_80347378 + 0x1FC);
-    *(float *)((char *)arg0 + 0x34) = config->get((char *)&lbl_8055C658);
-    entryName = ((NameDummy *)arg1)->getName(&lbl_8055C63C, &lbl_8055C65C);
-    strncpy((char *)arg0 + 0x38, entryName, 0x10);
-    *(unsigned char *)arg0 = 1;
+    *(float *)((char *)entry + 0x28) = config->get((char *)lbl_80347378 + 0x178);
+    *(float *)((char *)entry + 0x2C) = config->get((char *)lbl_80347378 + 0x184);
+    *(float *)((char *)entry + 0x30) = config->get((char *)lbl_80347378 + 0x190);
+    *(float *)((char *)entry + 0x04) = config->get((char *)lbl_80347378 + 0x19C);
+    *(float *)((char *)entry + 0x08) = config->get((char *)lbl_80347378 + 0x1A8);
+    *(float *)((char *)entry + 0x0C) = config->get((char *)lbl_80347378 + 0x1B4);
+    *(float *)((char *)entry + 0x10) = config->get((char *)lbl_80347378 + 0x1C0);
+    *(float *)((char *)entry + 0x14) = config->get((char *)lbl_80347378 + 0x1CC);
+    *(float *)((char *)entry + 0x18) = config->get((char *)lbl_80347378 + 0x1D8);
+    *(float *)((char *)entry + 0x1C) = config->get((char *)lbl_80347378 + 0x1E4);
+    *(float *)((char *)entry + 0x20) = config->get((char *)lbl_80347378 + 0x1F0);
+    *(float *)((char *)entry + 0x24) = config->get((char *)lbl_80347378 + 0x1FC);
+    *(float *)((char *)entry + 0x34) = config->get((char *)&lbl_8055C658);
+    entryName = ((NameDummy *)camera)->getName(&lbl_8055C63C, &lbl_8055C65C);
+    strncpy((char *)entry + 0x38, entryName, 0x10);
+    *(unsigned char *)entry = 1;
 }
 #pragma cplusplus reset
 
