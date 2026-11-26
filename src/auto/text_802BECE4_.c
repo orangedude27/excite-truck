@@ -10,7 +10,7 @@ extern int fn_802CB128(int, int, int, int);
 extern char lbl_8055CF84[4];
 extern int fn_801E85A4(void);
 extern double atan(double), fn_8002EF30(float);
-extern void fn_802BDD8C(float);
+extern void DrawTreeVolumeCpuLights_802BDD8C(float);
 extern void fn_802BFE48(void *, void *, float), fn_802C0054(void *, const void *), fn_802C00A0(void);
 extern void fn_80144DAC(void *, void *), fn_80144DC8(void *);
 extern void fn_802C10C8(void), DrawModelInstance(int), DrawList_loadMatrix(void *), DrawList_saveViewport(void *, int, int, int, int), DrawList_restoreViewport(void *, int), HomeMenu_applySavedFade(int), DrawList_copyCurrentMatrix(void *), fn_802C8B98(int, float *), DrawList_RestoreNormalMode(void), fn_802C8DB8(void *, int, unsigned short *, int), fn_802C9294(int, int), DrawList_saveProjection(void *, float, float, float), DrawList_restoreProjection(void *, int), Texture_BindRenderTarget(int);
@@ -818,7 +818,7 @@ extern "C" void *fn_802BFA58(void *object, int shouldDelete) {
         fn_802BFE48(faceTable, viewMtx, kOne); DrawList_restoreProjection(savedViewSun, -1);
     }
     DrawModelInstance(self->worldModel);
-    if (fn_801E85A4() == 1) fn_802BDD8C(kSplashRadius);
+    if (fn_801E85A4() == 1) DrawTreeVolumeCpuLights_802BDD8C(kSplashRadius);
     if (self->envModel != -1) DrawModelInstance(self->envModel);
     fn_802C9294(-2, 0); DrawList_loadMatrix(savedMtx); DrawList_restoreViewport(savedViewport, -1); DrawList_restoreProjection(savedView, -1);
 #undef kOne
