@@ -1056,7 +1056,7 @@ int HomeMenu_drawUIAndFlush(void) {
     extern unsigned char lbl_8055FD34;
     extern int lbl_8055FD40;
     extern char lbl_8034C058[];
-    extern void fn_802ECA48(void);
+    extern void HomeMenu_setupGXForOverlay(void);
     extern int KERNEL_GetTimeMs(void);
     #define sGxSyncDone lbl_8055FD3C
     #define sGxTimeout lbl_8055FD38
@@ -1068,7 +1068,7 @@ int HomeMenu_drawUIAndFlush(void) {
     int highWater;
     int flushEnd;
     int flushStart;
-    fn_802ECA48();
+    HomeMenu_setupGXForOverlay();
     highWaterCandidate = (int)GX_DYNAMIC_OFFSET + (int)sGxPendingBytes;
     highWater = (int)GX_DYNAMIC_HIGH_WATER;
     GX_DYNAMIC_HIGH_WATER = highWaterCandidate > highWater ? (unsigned int)highWaterCandidate : (unsigned int)highWater;
