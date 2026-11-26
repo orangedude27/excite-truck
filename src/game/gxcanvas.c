@@ -1282,7 +1282,7 @@ ret0:
  * bytes index the palette (the stamp's, or the caller's override pair).
  * Clipped rows and columns are stepped over; a NO_DRAW canvas, a null stamp or
  * an out-of-range frame leaves the canvas untouched. */
-void gxCanvasDrawStamp(Stamp *stamp, s32 x, s32 y, s32 frame, StampPalette *override) {
+/* Draw one RLE-encoded STMP stamp frame onto the current canvas, decoding palette indices into clipped rows. */ void gxCanvasDrawStamp(Stamp *stamp, s32 x, s32 y, s32 frame, StampPalette *override) {
     GxCanvas *canvas = (GxCanvas *)sCurrentCanvas;
     if (!(canvas->flags & CANVAS_FLAG_NO_DRAW) && stamp != 0 && frame < stamp->frames) {
         s32 endRow, endCol, left, top, firstCol;
