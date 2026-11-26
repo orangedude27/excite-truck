@@ -3524,10 +3524,10 @@ extern "C" s32 fn_8021D97C(void *arg0, s32 arg1) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 extern "C" void paintValueRows(u8 *self) {
-    /* Draw the widget's two value rows: choose each row's arrow style from the
-       ValueSource's active/selection state, slide its panel in from 10 px over
-       0.3 s while fading its alpha from opaque to clear over 0.15 s, then look
-       up text padding/alignment and emit both rows as textured quads. */
+    /* Draws the widget's two value rows: pick each row's arrow style from the
+       ValueSource's active/selection state, slide each panel in from 10 px
+       over 0.3 s while fading its alpha from opaque over 0.15 s, then emit
+       both rows as textured quads. */
     struct ValueSource {
         int a, b, c;
         virtual s32 isActive();
@@ -3541,22 +3541,22 @@ extern "C" void paintValueRows(u8 *self) {
         virtual s32 isRow0Hidden();
         virtual s32 isRow1Hidden();
     };
-    s32 selected;
+    s32 selection;
     s32 row1Style;
     f32 slide0;
     f32 slide1;
     f32 rowHeight;
-    f32 x0;
-    f32 x1;
+    f32 arrow0X;
+    f32 arrow1X;
 
     ValueSource *source = *(ValueSource **)(self + 0x254);
     if (source->isActive() != 0) {
-        selected = (*(ValueSource **)(self + 0x254))->getSelection();
+        selection = (*(ValueSource **)(self + 0x254))->getSelection();
     } else {
-        selected = 0;
-        s32 *selection = *(s32 **)(self + 0x258);
-        if (selection != 0 && *(s32 *)(self + 0x25C) == *selection)
-            selected = 1;
+        selection = 0;
+        s32 *selectionPtr = *(s32 **)(self + 0x258);
+        if (selectionPtr != 0 && *(s32 *)(self + 0x25C) == *selectionPtr)
+            selection = 1;
     }
     f32 originX = lbl_805634A8;
     f32 originY = lbl_805634A8;
@@ -3566,7 +3566,7 @@ extern "C" void paintValueRows(u8 *self) {
     f32 rectHeight = (f32)(*(s32 *)(self + 0x10) - *(s32 *)(self + 8));
     fn_80219660(self);
     s32 row0Style;
-    if (selected != 0) {
+    if (selection != 0) {
         if (lbl_805634E8 + *(f32 *)(self + 0x260) >= fn_8023659C())
             row0Style = 2;
         else
@@ -3574,7 +3574,7 @@ extern "C" void paintValueRows(u8 *self) {
     } else {
         row0Style = 0;
     }
-    if (selected != 0) {
+    if (selection != 0) {
         if (lbl_805634E8 + *(f32 *)(self + 0x264) >= fn_8023659C())
             row1Style = 2;
         else
@@ -3582,39 +3582,39 @@ extern "C" void paintValueRows(u8 *self) {
     } else {
         row1Style = 0;
     }
-    s32 arrow0 = fn_80211660(0);
-    s32 arrow1 = fn_80211660(1);
+    s32 row0Art = fn_80211660(0);
+    s32 row1Art = fn_80211660(1);
     f32 nowSlide0 = fn_8023659C();
     f32 slideFade0 = lbl_805634A4;
-    f32 slideProgress0 = ((lbl_805634E8 + *(f32 *)(self + 0x260)) - nowSlide0 - lbl_805634A8) / lbl_805634E8;
-    slideFade0 = (slideFade0 < slideProgress0) ? slideFade0 : slideProgress0;
+    f32 slideT0 = ((lbl_805634E8 + *(f32 *)(self + 0x260)) - nowSlide0 - lbl_805634A8) / lbl_805634E8;
+    slideFade0 = (slideFade0 < slideT0) ? slideFade0 : slideT0;
     slideFade0 = (slideFade0 > lbl_805634A8) ? slideFade0 : lbl_805634A8;
     slide0 = lbl_805634A8 + slideFade0 * lbl_805634C8;
     f32 nowSlide1 = fn_8023659C();
     f32 slideFade1 = lbl_805634A4;
-    f32 slideProgress1 = ((lbl_805634E8 + *(f32 *)(self + 0x264)) - nowSlide1 - lbl_805634A8) / lbl_805634E8;
-    slideFade1 = (slideFade1 < slideProgress1) ? slideFade1 : slideProgress1;
+    f32 slideT1 = ((lbl_805634E8 + *(f32 *)(self + 0x264)) - nowSlide1 - lbl_805634A8) / lbl_805634E8;
+    slideFade1 = (slideFade1 < slideT1) ? slideFade1 : slideT1;
     slideFade1 = (slideFade1 > lbl_805634A8) ? slideFade1 : lbl_805634A8;
     slide1 = lbl_805634A8 + slideFade1 * lbl_805634C8;
-    s32 padding = fn_8022AB18(*(s32 *)(self + 0x268), 0, 3);
-    f32 paddingF = (f32)padding;
-    x1 = originX + paddingF;
-    fn_8022AAA8(*(void **)(self + 0x268), (*(ValueSource **)(self + 0x254))->getText(paddingF));
-    padding = fn_8022AB18(*(s32 *)(self + 0x268), 1, 3);
-    originY = originY - (f32)padding;
-    x0 = (x1 - getPictureWidth(arrow0, row0Style)) - slide0;
-    x1 += slide1;
+    s32 textPad = fn_8022AB18(*(s32 *)(self + 0x268), 0, 3);
+    f32 textPadF = (f32)textPad;
+    arrow1X = originX + textPadF;
+    fn_8022AAA8(*(void **)(self + 0x268), (*(ValueSource **)(self + 0x254))->getText(textPadF));
+    textPad = fn_8022AB18(*(s32 *)(self + 0x268), 1, 3);
+    originY = originY - (f32)textPad;
+    arrow0X = (arrow1X - getPictureWidth(row0Art, row0Style)) - slide0;
+    arrow1X += slide1;
     s32 alignFlags = fn_8022AA84(*(s32 *)(self + 0x268));
     if (alignFlags & 4) {
         f32 halfHeight = rowHeight * lbl_805634C4;
-        x0 -= halfHeight;
-        x1 += halfHeight;
+        arrow0X -= halfHeight;
+        arrow1X += halfHeight;
     } else {
         s32 downward = alignFlags & 2;
         if (downward)
-            x0 -= rowHeight;
+            arrow0X -= rowHeight;
         if (!downward)
-            x1 += rowHeight;
+            arrow1X += rowHeight;
     }
     s32 color0 = -1;
     s32 color1 = -1;
@@ -3622,8 +3622,8 @@ extern "C" void paintValueRows(u8 *self) {
     if (source0 == 0 || source0->isRow0Hidden() == 0) {
         f32 nowColor = fn_8023659C();
         f32 alphaFade = lbl_805634A4;
-        f32 alphaProgress = ((nowColor - *(f32 *)(self + 0x260)) - lbl_805634A8) / lbl_80563504;
-        alphaFade = (alphaFade < alphaProgress) ? alphaFade : alphaProgress;
+        f32 alphaT = ((nowColor - *(f32 *)(self + 0x260)) - lbl_805634A8) / lbl_80563504;
+        alphaFade = (alphaFade < alphaT) ? alphaFade : alphaT;
         alphaFade = (alphaFade > lbl_805634A8) ? alphaFade : lbl_805634A8;
         color0 = ((s32)(lbl_80563508 + alphaFade * lbl_8056350C) << 24) | 0xFFFFFF;
     }
@@ -3631,20 +3631,20 @@ extern "C" void paintValueRows(u8 *self) {
     if (source1 == 0 || source1->isRow1Hidden() == 0) {
         f32 nowColor = fn_8023659C();
         f32 alphaFade = lbl_805634A4;
-        f32 alphaProgress = ((nowColor - *(f32 *)(self + 0x264)) - lbl_805634A8) / lbl_80563504;
-        alphaFade = (alphaFade < alphaProgress) ? alphaFade : alphaProgress;
+        f32 alphaT = ((nowColor - *(f32 *)(self + 0x264)) - lbl_805634A8) / lbl_80563504;
+        alphaFade = (alphaFade < alphaT) ? alphaFade : alphaT;
         alphaFade = (alphaFade > lbl_805634A8) ? alphaFade : lbl_805634A8;
         color1 = ((s32)(lbl_80563508 + alphaFade * lbl_8056350C) << 24) | 0xFFFFFF;
     }
-    if ((*(ValueSource **)(self + 0x254) == 0 || (*(ValueSource **)(self + 0x254))->isRow0Hidden() != 0 || (f32)__fabs((double)slide0) > *(f32 *)&lbl_80558DC4) && arrow0 != 0) {
-        f32 arrowWidth = getPictureWidth(arrow0, row0Style);
-        f32 arrowHeight = getPictureHeight(arrow0, row0Style);
-        drawPictureScaled(arrow0, row0Style, color0, x0, originY + arrowHeight * lbl_805634C4, lbl_805634A8, arrowWidth, arrowHeight);
+    if ((*(ValueSource **)(self + 0x254) == 0 || (*(ValueSource **)(self + 0x254))->isRow0Hidden() != 0 || (f32)__fabs((double)slide0) > *(f32 *)&lbl_80558DC4) && row0Art != 0) {
+        f32 arrowWidth = getPictureWidth(row0Art, row0Style);
+        f32 arrowHeight = getPictureHeight(row0Art, row0Style);
+        drawPictureScaled(row0Art, row0Style, color0, arrow0X, originY + arrowHeight * lbl_805634C4, lbl_805634A8, arrowWidth, arrowHeight);
     }
-    if ((*(ValueSource **)(self + 0x254) == 0 || (*(ValueSource **)(self + 0x254))->isRow1Hidden() != 0 || (f32)__fabs((double)slide1) > *(f32 *)&lbl_80558DC4) && arrow1 != 0) {
-        f32 arrowWidth = getPictureWidth(arrow1, row1Style);
-        f32 arrowHeight = getPictureHeight(arrow1, row1Style);
-        drawPictureScaled(arrow1, row1Style, color1, x1, originY + arrowHeight * lbl_805634C4, lbl_805634A8, arrowWidth, arrowHeight);
+    if ((*(ValueSource **)(self + 0x254) == 0 || (*(ValueSource **)(self + 0x254))->isRow1Hidden() != 0 || (f32)__fabs((double)slide1) > *(f32 *)&lbl_80558DC4) && row1Art != 0) {
+        f32 arrowWidth = getPictureWidth(row1Art, row1Style);
+        f32 arrowHeight = getPictureHeight(row1Art, row1Style);
+        drawPictureScaled(row1Art, row1Style, color1, arrow1X, originY + arrowHeight * lbl_805634C4, lbl_805634A8, arrowWidth, arrowHeight);
     }
 }
 #pragma pop
