@@ -27,7 +27,7 @@ void fn_8023B618(void) {
 }
 
 extern int fn_802E30C8(const char *, ...);
-extern void fn_802473A4(void);
+extern void runAttractMenu(void);
 extern void fn_80012794(void);
 extern void fn_80012788(void);
 extern void fn_80247210(void);
@@ -45,9 +45,9 @@ extern char lbl_803412D8[];
 extern char lbl_803412EC[];
 #pragma dont_inline on
 #pragma scheduling invalid_target
-/* Demo main mode: log entry, then run the demo/attract loop (fn_802473A4).
+/* Demo main mode: log entry, then run the demo/attract loop (runAttractMenu).
  * fn_802E30C8 prints "mmain: demo mode!". */
-void fn_8023B640(void) { fn_802E30C8(lbl_803412D8); fn_802473A4(); }
+void fn_8023B640(void) { fn_802E30C8(lbl_803412D8); runAttractMenu(); }
 #pragma scheduling on
 #pragma push
 #pragma scheduling invalid_target

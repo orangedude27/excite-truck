@@ -633,7 +633,7 @@ s32 fn_80246AE8(void) {
  * while it runs fn_80247624 reports the demo-mode flag this sets. */
 #pragma push
 #pragma use_lmw_stmw off
-void fn_802473A4(void) {
+void runAttractMenu(void) {
 #define gMessages       lbl_80343270 /* this file's strings, "pop_warn.lyt" first */
 #define gDemoRunning    lbl_8055F260 /* fn_80247624 reports it */
 #define gMenuFlag       lbl_8055D430 /* bit 0: the menu owns the screens */
