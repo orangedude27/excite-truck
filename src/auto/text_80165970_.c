@@ -29,7 +29,7 @@ public:
 extern "C" {
     double atof(const char *);
     char *strchr(const char *, int);
-    float fn_80204CFC(const char *);
+    float getDifficultySettingFloat(const char *);
     extern char lbl_8055A170, lbl_8055A178, lbl_8055A180, lbl_8055A188;
     extern float lbl_805618A4, lbl_805618A8, lbl_805618AC, lbl_805618B0, lbl_805618B4;
     extern float lbl_805618B8, lbl_805618BC, lbl_805618C0, lbl_805618C4, lbl_805618C8, lbl_805618CC;
@@ -217,7 +217,7 @@ next_item:
 #pragma pop
 extern double atof(const char *);
 extern char *strchr(const char *, int);
-extern float fn_80204CFC(const char *);
+extern float getDifficultySettingFloat(const char *);
 extern float lbl_805618A4;
 extern float lbl_805618A8;
 extern float lbl_805618AC;
@@ -298,8 +298,8 @@ extern "C" void fn_80165B78(void **arg0)
   *((float *) (((char *) (&lbl_8042FE38)) + 0x1c)) = obj2->getFloatDefault(strings + 0x134, lbl_805618B8);
   *((float *) (((char *) (&lbl_8042FE38)) + 0x20)) = obj2->getFloatDefault(strings + 0x144, lbl_805618BC);
   *((float *) (((char *) (&lbl_8042FE38)) + 0x24)) = obj2->getFloatDefault(strings + 0x154, lbl_805618C0);
-  *((float *) (((char *) (&lbl_8042FE38)) + 0x54)) = fn_80204CFC(strings + 0x164);
-  *((float *) (((char *) (&lbl_8042FE38)) + 0x58)) = fn_80204CFC(strings + 0x178);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x54)) = getDifficultySettingFloat(strings + 0x164);
+  *((float *) (((char *) (&lbl_8042FE38)) + 0x58)) = getDifficultySettingFloat(strings + 0x178);
   *((float *) (((char *) (&lbl_8042FE38)) + 0x5c)) = obj->getFloatDefault(strings + 0x194, lbl_805618C4);
   value = (float) ((Dummy80165B78D *) obj)->getFloatDefaultDouble(strings + 0x1A8, lbl_805618C8);
   *((float *) (((char *) (&lbl_8042FE38)) + 0x60)) = value * lbl_805618CC;

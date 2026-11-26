@@ -46,7 +46,7 @@ extern "C" s32 lbl_8055A058[1];
 extern "C" f32 lbl_8056179C;
 extern "C" f32 lbl_805617C4;
 extern "C" f32 fn_801E7E24(void);
-extern "C" f32 fn_80204CFC(const char*);
+extern "C" f32 getDifficultySettingFloat(const char*);
 extern "C" void* fn_8023139C(void*,s32,u32);
 extern "C" void* getRegisteredObject(s32);
 struct Item38 { u8 pad[0x14]; s32 val; u8 pad2[0x20]; };
@@ -3187,7 +3187,7 @@ struct ArrayTracker {
     // tell the bonus listeners.  scoreBonusValue is the same scoring pass for
     // another category; this one refreshes the popup's count only once.
     char text[16];
-    f32 scale = fn_80204CFC(CFG_SCORE_SCALE);
+    f32 scale = getDifficultySettingFloat(CFG_SCORE_SCALE);
     BonusTracker* tracker = (BonusTracker*)arg0;
     *arg1 *= scale;
     *arg1 *= BONUS_TYPE_SCALE[arg0->m4];
@@ -3237,7 +3237,7 @@ extern "C" s32 lbl_8055A05C[1];
     // "%s %d" format, with 0x168 per event queued since the last frame after
     // them.
     char text[16];
-    f32 scale = fn_80204CFC(CFG_SCORE_SCALE);
+    f32 scale = getDifficultySettingFloat(CFG_SCORE_SCALE);
     BonusTracker* tracker = (BonusTracker*)arg0;
     f32 value;
     *arg1 *= scale;
@@ -3558,7 +3558,7 @@ extern "C" void scoreBonusValue(Unk801577F0* arg0, f32* scoreVal) {
     // this category's multiplier, show the result on the bonus popup when one is
     // up, add it to the current record and tell the bonus listeners about it.
     char text[16];
-    f32 scale = fn_80204CFC(CFG_SCORE_SCALE);
+    f32 scale = getDifficultySettingFloat(CFG_SCORE_SCALE);
     BonusTracker* tracker = (BonusTracker*)arg0;
     *scoreVal *= scale;
     *scoreVal *= BONUS_TYPE_SCALE[arg0->m4];
@@ -4121,7 +4121,7 @@ extern "C" void fn_8015D8B0(void *arg0) {
     }
 }
 
-extern "C" f32 fn_80204CFC(const char*);
+extern "C" f32 getDifficultySettingFloat(const char*);
 extern "C" void* fn_8023139C(void*,s32,u32);
 extern "C" char lbl_8032F39C[];
 extern "C" f32 lbl_8042FD08[];
@@ -4134,7 +4134,7 @@ extern "C" void scoreBonusValueBase(Unk801577F0* trackerObj, f32* scoreVal) {
     // tell the bonus listeners.  scoreBonusValueOnce and scoreBonusValue are the same
     // scoring pass; this one never refreshes the popup's count afterwards.
     char text[16];
-    f32 scale = fn_80204CFC(CFG_SCORE_SCALE);
+    f32 scale = getDifficultySettingFloat(CFG_SCORE_SCALE);
     BonusTracker* tracker = (BonusTracker*)trackerObj;
     *scoreVal *= scale;
     *scoreVal *= BONUS_TYPE_SCALE[trackerObj->m4];

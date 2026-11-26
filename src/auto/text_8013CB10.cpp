@@ -501,7 +501,7 @@ extern "C" f32 lbl_805614F0;
 extern "C" f32 lbl_805614F4;
 extern "C" f32 lbl_805614F8;
 extern "C" f64 lbl_805614D8;
-extern "C" f32 fn_80204CFC(const char *);
+extern "C" f32 getDifficultySettingFloat(const char *);
 extern "C" void fn_801345D8(void *, s32, const char *, ...);
 extern "C" void fn_801308F4(void *, s32, s32);
 extern "C" void fn_80130980(void *, s32, s32, f32);
@@ -1012,7 +1012,7 @@ extern "C" void *fn_8013D8D0(void *out, TPathDocument *document) {
                 group->nodes=(PathNode *)fn_8002F37C(fn_8012850C(count*0x24+0x10,&lbl_80559D30),fn_8013E338,0,0x24,count);
                 TPathValue *attr=(TPathValue *)element->attribute(&lbl_80559D38);
                 TVec2 tangent=attr->vector(lbl_80559D40);
-                float scale=fn_80204CFC(base+0x1c0);
+                float scale=getDifficultySettingFloat(base+0x1c0);
                 scale=factor*fn_8013E300(&tangent)*scale;
                 for(int i=0;i<group->count;i++) {
                     fn_8013E2AC(&group->nodes[i],&previous->nodes[i]);
@@ -1024,7 +1024,7 @@ extern "C" void *fn_8013D8D0(void *out, TPathDocument *document) {
                 group->nodes=(PathNode *)fn_8002F37C(fn_8012850C(count*0x24+0x10,&lbl_80559D44),fn_8013E338,0,0x24,count);
                 TPathValue *attr=(TPathValue *)element->attribute(&lbl_80559D28);
                 float scale=attr->number(base+0x1d0,lbl_805614AC);
-                scale=fn_80204CFC(base+0x1c0)*scale;
+                scale=getDifficultySettingFloat(base+0x1c0)*scale;
                 int used=0;
                 for(int j=0;element->child(j);j++) {
                     TPathElement *node=(TPathElement *)element->child(j);
@@ -1049,7 +1049,7 @@ extern "C" void *fn_8013D8D0(void *out, TPathDocument *document) {
                     fn_8013DF24(node,before,after);
                 }
             }
-            *(f32 *)((char *)group+8)=fn_80204CFC(base+0x1e0);
+            *(f32 *)((char *)group+8)=getDifficultySettingFloat(base+0x1e0);
             group->pad[1]=1;
             group->pad[2]=10;
             sprintf(name,base+0x1f0,groupIndex+1);
@@ -1063,12 +1063,12 @@ extern "C" void *fn_8013D8D0(void *out, TPathDocument *document) {
                     group->pad[1]=groupIndex+1;
                     group->pad[2]=10;
                 }
-                group->pad[2]=(s32)((f32)group->pad[2]*fn_80204CFC(base+0x200));
+                group->pad[2]=(s32)((f32)group->pad[2]*getDifficultySettingFloat(base+0x200));
             } else {
                 group=&data->groups[groupIndex];
                 group->pad[1]=groupIndex+1;
                 group->pad[2]=10;
-                group->pad[2]=(s32)((f32)group->pad[2]*fn_80204CFC(base+0x200));
+                group->pad[2]=(s32)((f32)group->pad[2]*getDifficultySettingFloat(base+0x200));
             }
             groupIndex++;
         }
@@ -1360,7 +1360,7 @@ struct TimeBonusParams {
 // Fill the game's one TimeBonusParams block from the zone's attribute set
 // (the "zoneconf.val" document the caller opened): every field is looked up
 // by name with the default used when the key - or the whole set - is absent,
-// then the two table-only values are read through fn_80204CFC and the time
+// then the two table-only values are read through getDifficultySettingFloat and the time
 // bonus is scaled by the table's global factor.
 /* Fill the global TimeBonusParams block from the zone's attribute set, using documented defaults for missing keys, then read two values from the global numeric table and scale the checkpoint bonus by its factor. */ extern "C" void initTimeBonusParams(void *params, void *attrs) {
     TimeBonusParams *p = (TimeBonusParams *)params;
@@ -1430,8 +1430,8 @@ struct TimeBonusParams {
 
     /* the two values the attribute set cannot carry come from the global
      * numeric table, and the bonus is scaled by its global factor */
-    p->f34 = fn_80204CFC(keys + 0x310);
-    scale = fn_80204CFC(keys + 0x200);
+    p->f34 = getDifficultySettingFloat(keys + 0x310);
+    scale = getDifficultySettingFloat(keys + 0x200);
     f32 conv = (f32)p->bonusTime;
     p->bonusFreeze = lbl_805614F8;
     p->bonusTime = (s32)(conv * scale);

@@ -182,7 +182,7 @@ extern "C" void Abend_Panic(const char *, ...);
  * scene's, and if neither has it as the plain "<name>" in both.  A setting none
  * of them has is reported with the 'Difficulty: "%s" was not found' message and
  * reads as 0.0; the value string the lookup returns is parsed with atof. */
-extern "C" float fn_80204CFC(const char *name) {
+extern "C" float getDifficultySettingFloat(const char *name) {
     /* A difficulty setting set: has() at +0xC, the value string get() at +0x14. */
     class DifficultySet {
     public:
@@ -236,7 +236,7 @@ extern "C" float fn_80204CFC(const char *name) {
  * lbl_8055ED5C: first as "<contest>_<name>" in the stage's difficulty set, then
  * in the scene's, and if neither has it as the plain "<name>" in both.  A
  * setting none of them has is reported with the 'Difficulty: "%s" was not
- * found' message and reads as 0.  fn_80204CFC is the same lookup with the
+ * found' message and reads as 0.  getDifficultySettingFloat is the same lookup with the
  * string parsed as a number. */
 #pragma push
 #pragma scheduling invalid_target

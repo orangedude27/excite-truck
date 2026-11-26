@@ -1910,7 +1910,7 @@ extern void *fn_8014E154(void *, s32);
 extern void **__AXFXGetLfoSinTable_801769CC(void);
 extern void *fn_8001285C(void *);
 extern void fn_8002F53C(void *, ...);
-extern f32 fn_80204CFC(void *);
+extern f32 getDifficultySettingFloat(void *);
 extern void *fn_80207848(void *, s32);
 extern void *fn_8000AC38(void);
 extern void fn_801679F0(void);
@@ -1968,7 +1968,7 @@ extern "C" void *fn_8014DE50(void) {
         f64 value = lfo->eval((void *)(strings + 0x344), lbl_805616CC);
         *(f32 *)(obj + 0x8DC) = value;
         *(f32 *)(obj + 0x8E0) = (f32)value;
-        *(f32 *)(obj + 0x8D8) = fn_80204CFC(strings + 0x3E0);
+        *(f32 *)(obj + 0x8D8) = getDifficultySettingFloat(strings + 0x3E0);
         *(void * *)(obj + 0x8E8) = fn_80207848(strings + 0x3F0, 1);
         *(void * *)(obj + 0x8EC) = fn_80207848(strings + 0x400, 1);
         *(f32 *)(obj + 0x8D4) = lbl_80561648;
