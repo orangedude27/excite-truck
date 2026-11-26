@@ -1097,7 +1097,7 @@ void fn_80232D3C(u8 *text, s32 font, s32 color, s32 x, s32 flags, f32 y, f32 sca
 #pragma push
 #pragma opt_common_subs off
 #pragma scheduling on
-void fn_80232DF4(u8 *text, s32 font, s32 color, s32 flags, f32 x, f32 y, f32 scale, f32 spacing, f32 extra) {
+void drawFontText(u8 *text, s32 font, s32 color, s32 flags, f32 x, f32 y, f32 scale, f32 spacing, f32 extra) {
     u8 *pText = text;
     s32 nFont = font;
     s32 sp10;
@@ -1363,18 +1363,18 @@ void fn_8023389C(s32 x, s32 y, s32 color, s32 param, const char *fmt, f32 scaleX
 }
 #pragma pop
 
-extern void fn_80232DF4(u8 *, s32, s32, s32, f32, f32, f32, f32, f32);
+extern void drawFontText(u8 *, s32, s32, s32, f32, f32, f32, f32, f32);
 #pragma push
 #pragma use_lmw_stmw off
 // Matched with the shared variadic wrapper signature and 0x80-byte formatting buffer.
 void fn_802339A8(f32 x, s32 font, f32 y, s32 color, f32 spacing, f32 scale, s32 flags, f32 extra, const char *fmt, ...) {
-    /* Formats a string with vsprintf and draws it via fn_80232DF4 with the given font, color, flags, position, scale, spacing, and extra scale. */
+    /* Formats a string with vsprintf and draws it via drawFontText with the given font, color, flags, position, scale, spacing, and extra scale. */
     #pragma scheduling invalid_target
     char buffer[0x80];
     va_list args;
     va_start(args, fmt);
     vsprintf(buffer, fmt, args);
-    fn_80232DF4((u8 *)buffer, font, color, flags, x, y, scale, spacing, extra);
+    drawFontText((u8 *)buffer, font, color, flags, x, y, scale, spacing, extra);
 }
 
 extern void fn_80231380(void *, s32, f32, f32, f32, f32, f32); /* fill a 0x18-byte vertex: x, y, z, colour, u, v */
