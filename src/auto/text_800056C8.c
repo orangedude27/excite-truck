@@ -62,7 +62,7 @@ extern s32 fn_80009C84(void);
 extern u8 lbl_8055D340[4];
 extern s32 fn_801CB844(void);
 extern s32 fn_801B8874(void);
-extern void fn_80006B18(void *);
+extern void drawAwardsList(void *);
 extern s32 fn_80010074(s32, s32, void *, void *, f32, f32, f32);
 extern int sprintf(char *, const char *, ...);
 extern u8 lbl_802FB2A0[];
@@ -875,7 +875,7 @@ void fn_800064A8(void *arg0) {
     switch (p[1]) {
     case 3: fn_800066B4(arg0); return;
     case 2: fn_801CB844(); return;
-    case 1: if (fn_801B8874() == 0) fn_80006B18(arg0); return;
+    case 1: if (fn_801B8874() == 0) drawAwardsList(arg0); return;
     }
 }
 void fn_80006550(void *menu, s32 delta) {
@@ -1086,7 +1086,7 @@ struct AwardCar {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_80006B18(void *screen) {
+void drawAwardsList(void *screen) {
     /* Draw the awards list (fn_800064A8's state 1): one row per real car
      * record, in the order of the CarMgr slot table (rank order).  Each row
      * is a background bar plus two text columns: the left column shows the
