@@ -244,12 +244,12 @@ check:
 #pragma pop
 __declspec(section ".data") extern unsigned char lbl_8049FEE0;
 extern char lbl_8055C638, lbl_8055C63C, lbl_8055C644;
-extern void fn_80277F84(void *, void *, int);
+extern void initCameraEntryFromConfig(void *, void *, int);
 extern int stricmp(const char *, const char *);
 extern char *strncpy(char *, const char *, unsigned int);
 
 /* One camera record of the table at lbl_8049FEE0 (lbl_8055F5A0 of them, each
- * filled from a camera object's named parameters by fn_80277F84). The record
+ * filled from a camera object's named parameters by initCameraEntryFromConfig). The record
  * just before the table, at lbl_8049FE98, is the fallback all others blend from. */
 struct CameraEntry {
     unsigned char inUse;   /* set once the record holds a camera */
@@ -298,7 +298,7 @@ extern "C" void fn_80276ACC(void *camera, int defaultName) {
     int i = lbl_8055F5A0;
     struct CameraEntry *entry = (struct CameraEntry *)&lbl_8049FEE0 + i;
     lbl_8055F5A0 = i + 1;
-    fn_80277F84(entry, camera, i + 1);
+    initCameraEntryFromConfig(entry, camera, i + 1);
     strncpy(entry->name, name, 0x10);
     if (stricmp(name, &lbl_8055C644 /* "house" */) == 0) {
         lbl_8055F59C = (int)entry;
@@ -936,7 +936,7 @@ void fn_80277A14(void *arg0, int arg1) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_80277F84(void *arg0, void *arg1, int arg2) {
+extern "C" void initCameraEntryFromConfig(void *arg0, void *arg1, int arg2) {
     /* Initialize a camera/entry record by reading named float fields and a name string from a config object. */
     class FloatDummy {
     public:
