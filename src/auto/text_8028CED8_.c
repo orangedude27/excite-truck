@@ -23,14 +23,14 @@ extern void fn_8028D4FC(void);
 extern void fn_8028D4A0(void);
 extern void fn_8028D25C(void);
 extern int fn_8028D17C(void);
-extern void fn_8028D2B4(void);
+extern void initSkidSystemBuffers(void);
 extern void fn_8028DDF0(void *, int);
 extern void fn_80287B38(void *);
 void fn_8028CED8(void) {
     /* RealName: SkidSystem_Init (guess). If skid data is ready, allocate/init buffers, register the update callback, and mark active. */
 #define sSkidSystemActive lbl_8055F714
 #define SkidSystem_PrepareData fn_8028D17C
-#define SkidSystem_InitBuffers fn_8028D2B4
+#define SkidSystem_InitBuffers initSkidSystemBuffers
 #define SkidSystem_RegisterUpdate fn_80287B38
 #define SkidSystem_UpdateCallback fn_8028DDF0
     if (SkidSystem_PrepareData() != 0) {
@@ -217,7 +217,7 @@ extern void *fn_8002F37C(void *, void (*)(void), int, int, int);
 extern void fn_8028D49C(void);
 #pragma push
 #pragma scheduling invalid_target
-void fn_8028D2B4(void) {
+void initSkidSystemBuffers(void) {
     typedef struct {
         int unk0;
         int unk4;
@@ -269,7 +269,7 @@ void fn_8028D2B4(void) {
 #pragma pop
 
 /* RealName: SkidSystem_ElementInit (guess). No-op per-element constructor passed
- * as the init callback to the skid element array allocator in fn_8028D2B4; skid
+ * as the init callback to the skid element array allocator in initSkidSystemBuffers; skid
  * elements need no default initialization, so it intentionally does nothing. */
 void fn_8028D49C(void) {
 }
@@ -277,7 +277,7 @@ void fn_8028D49C(void) {
 extern int lbl_8055F718, lbl_8055F71C, lbl_8055F720;
 extern int fn_80128670(int);
 void fn_8028D4A0(void) {
-    /* Release the three buffers allocated by fn_8028D2B4 (lbl_8055F720, lbl_8055F71C, and lbl_8055F718) and clear their pointers. */
+    /* Release the three buffers allocated by initSkidSystemBuffers (lbl_8055F720, lbl_8055F71C, and lbl_8055F718) and clear their pointers. */
     fn_80128670(lbl_8055F720);
     lbl_8055F720 = 0;
     fn_80128670(lbl_8055F71C);
