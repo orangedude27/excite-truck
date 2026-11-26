@@ -497,7 +497,7 @@ extern u8 lbl_80558B88, lbl_80558B90, lbl_80558B98;
 extern f32 lbl_805603B0;
 #pragma processor 750
 #pragma scheduling invalid_target
-void buildLapInfoHudLine(void *arg0) {
+/* Builds the lap-info HUD line (title, labels, best/last/timed lap values) and redraws it on the given overlay. */ void buildLapInfoHudLine(void *hudOverlay) {
     /* Build the lap-info line of the race HUD (the HUD_LAPINFO block): which
      * title to show, the two labels beside it and the two times to fill in.
      *
@@ -547,7 +547,7 @@ void buildLapInfoHudLine(void *arg0) {
     f32 value2;
     u8 *base;
     s32 displayMode;
-    u8 *overlay = (u8 *)arg0;
+    u8 *overlay = (u8 *)hudOverlay;
     value1 = 0.0f;
     value2 = value1;
     base = lbl_802FCB98;
@@ -584,7 +584,7 @@ void buildLapInfoHudLine(void *arg0) {
             displayMode = 0;
         }
     }
-    if (((s32 (*)(void *))fn_80014ADC)(arg0) != 0) {
+    if (((s32 (*)(void *))fn_80014ADC)(hudOverlay) != 0) {
         if (((struct HudState *)lbl_8055D350)->info->kind == 3)
             value1 = ((struct HudState *)lbl_8055D350)->info->last;
         else
@@ -592,7 +592,7 @@ void buildLapInfoHudLine(void *arg0) {
         strcpy(first, kTimedLap);
     }
     ((void (*)(void *, void *, s32, void *, void *, f32, f32, f32))fn_80013EDC)(
-        arg0, name, displayMode, first, second, *(f32 *)(overlay + 0x2C), value1, value2);
+        hudOverlay, name, displayMode, first, second, *(f32 *)(overlay + 0x2C), value1, value2);
 
 #undef kTitleNormal
 #undef kTitleKind3
