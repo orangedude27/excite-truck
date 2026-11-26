@@ -1052,7 +1052,7 @@ state_check:
 extern void *memcpy(void *, const void *, unsigned int);
 extern void fn_8000BF20(void *, int);
 #pragma scheduling invalid_target
-void restartGameFromContext(void *arg0) {
+/* Copies the game context into a local scratch copy, forces one record with the last-frame flag, refreshes any 0x50-tagged records in place, and runs the frame-sequence engine on that copy. */ void restartGameFromContext(void *context) {
     /* Copies a game context buffer (32-byte header, a run of 0x78-byte records,
      * and the 4-word tail) into a local buffer, resets the record count to 1 and
      * sets the "last" flag, then runs the frame-sequence engine (fn_8000BF20)
@@ -1063,34 +1063,34 @@ void restartGameFromContext(void *arg0) {
     struct Payload { unsigned int words[0xF0]; int count; };
     struct Tail { int a, b, c, d; };
     struct Context { struct Header header; struct Payload payload; struct Tail tail; int last; } local;
-    unsigned char *src = (unsigned char *)arg0;
-    unsigned char *rec;
-    unsigned char *out;
-    int i;
+    unsigned char *srcBytes = (unsigned char *)context;
+    unsigned char *record;
+    unsigned char *dst;
+    int recordIndex;
 
-    local.header = *(struct Header *)src;
-    local.payload = *(struct Payload *)(src + 0x20);
-    local.tail = *(struct Tail *)(src + 0x3E4);
+    local.header = *(struct Header *)srcBytes;
+    local.payload = *(struct Payload *)(srcBytes + 0x20);
+    local.tail = *(struct Tail *)(srcBytes + 0x3E4);
     local.payload.count = 0;
     local.last = local.payload.count | 1;
     local.payload.count = 1;
-    out = (unsigned char *)&local;
-    rec = src;
-    i = 0;
-    while (i < *(int *)(src + 0x3E0)) {
-        if (*(volatile int *)(rec + 0x20) == 0x50) {
-            *(unsigned int *)(out + 0x20) = *(unsigned int *)(rec + 0x20);
-            *(struct Header *)(out + 0x24) = *(struct Header *)(rec + 0x24);
-            *(struct Header *)(out + 0x44) = *(struct Header *)(rec + 0x44);
-            *(struct Header *)(out + 0x64) = *(struct Header *)(rec + 0x64);
-            *(unsigned int *)(out + 0x84) = *(unsigned int *)(rec + 0x84);
-            *(unsigned int *)(out + 0x88) = *(unsigned int *)(rec + 0x88);
-            *(unsigned int *)(out + 0x8C) = *(unsigned int *)(rec + 0x8C);
-            out[0x90] = rec[0x90];
-            *(unsigned int *)(out + 0x94) = *(unsigned int *)(rec + 0x94);
+    dst = (unsigned char *)&local;
+    record = srcBytes;
+    recordIndex = 0;
+    while (recordIndex < *(int *)(srcBytes + 0x3E0)) {
+        if (*(volatile int *)(record + 0x20) == 0x50) {
+            *(unsigned int *)(dst + 0x20) = *(unsigned int *)(record + 0x20);
+            *(struct Header *)(dst + 0x24) = *(struct Header *)(record + 0x24);
+            *(struct Header *)(dst + 0x44) = *(struct Header *)(record + 0x44);
+            *(struct Header *)(dst + 0x64) = *(struct Header *)(record + 0x64);
+            *(unsigned int *)(dst + 0x84) = *(unsigned int *)(record + 0x84);
+            *(unsigned int *)(dst + 0x88) = *(unsigned int *)(record + 0x88);
+            *(unsigned int *)(dst + 0x8C) = *(unsigned int *)(record + 0x8C);
+            dst[0x90] = record[0x90];
+            *(unsigned int *)(dst + 0x94) = *(unsigned int *)(record + 0x94);
         }
-        rec += 0x78;
-        i++;
+        record += 0x78;
+        recordIndex++;
     }
     fn_8000BF20(&local, 0);
 }
