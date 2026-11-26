@@ -442,7 +442,7 @@ int fn_801D4CB8(int object, int deleteFlag) {
 extern "C" int fn_801D4CF8(void *arg0, void *arg1) {
     /* Fills an ActionSequence (arg0) from a value-file node (arg1): reads the
      * "name" attribute, walks the node's children collecting the ones named
-     * "element" (building each via fn_801D7334 and appending to elements), and
+     * "element" (building each via createASEElement and appending to elements), and
      * reads the auto_reset / reset_time / trigger_resets / has_rumble /
      * first_active_lap / last_active_lap attributes.  Returns 1 on success,
      * 0 if the node has no "name". */
@@ -490,7 +490,7 @@ extern "C" int fn_801D4CF8(void *arg0, void *arg1) {
     };
     extern char lbl_8055AC80;
     extern char lbl_8055AC88;
-    extern void *fn_801D7334(void *);
+    extern void *createASEElement(void *);
     extern void fn_802E30C8(const char *, const char *);
     extern int stricmp(const char *, const char *);
     char *base = &lbl_80338460;
@@ -522,7 +522,7 @@ copy_done:
     goto loop_test;
 loop_body:
     if (stricmp(node->name(), &lbl_8055AC88) == 0) {
-        void *r = fn_801D7334(node);
+        void *r = createASEElement(node);
         if (r != 0) {
             int n = out->count;
             void **items = out->items;
@@ -1280,7 +1280,7 @@ extern "C" int fn_801D5BBC(void *out, void *object) {
     extern float lbl_80562AEC;
     extern float lbl_80562B0C;
     extern void fn_801345D8(char *, int, char *, ...);
-    extern void fn_801D0800(void *);
+    extern void fn_801D0800(s32);
     extern void fn_802E30C8(const char *, const char *);
     struct Vec3 {
         float x;
@@ -1302,63 +1302,64 @@ extern "C" int fn_801D5BBC(void *out, void *object) {
         virtual void v11();
         virtual Vec3 vector2(char *, Vec3);
     };
-    Dummy *obj = (Dummy *)object;
     char *base = &lbl_80338460;
     int result = 0;
     int i;
     char name[20];
-    float f;
-    Vec3 def;
 
-    ((int *)out)[3] = obj->count(base + 0x170, -1);
-    if (((int *)out)[3] >= 0) {
+    *(int *)((char *)out + 0xC) = ((Dummy *)object)->count(base + 0x170, -1);
+    if (*(int *)((char *)out + 0xC) >= 0) {
         for (i = 0; i < 4; i++) {
             int *entry;
+            float f;
+            int n;
             fn_801345D8(name, 0x14, base + 0x17C, i);
-            if (obj->has(name) != 0) {
-                int n = ((int *)out)[5];
-                ((int *)out)[5] = n + 1;
-                entry = (int *)(((int *)out)[4] + n * 8);
-                entry[0] = obj->get(name);
+            if (((Dummy *)object)->has(name) != 0) {
+                n = *(int *)((char *)out + 0x14);
+                *(int *)((char *)out + 0x14) = n + 1;
+                entry = (int *)(*(int *)((char *)out + 0x10) + n * 8);
+                entry[0] = ((Dummy *)object)->get(name);
                 fn_801345D8(name, 0x14, base + 0x190, i);
-                f = obj->value(name, lbl_80562ADC);
+                f = ((Dummy *)object)->value(name, lbl_80562ADC);
                 ((float *)entry)[1] = f * f;
             }
         }
-        f = obj->value(&lbl_8055AC90, lbl_80562ADC);
-        ((float *)out)[0x18] = f;
-        ((float *)out)[0x19] = obj->value(&lbl_8055AC98, f);
         {
-            def.x = lbl_80562ADC;
-            def.y = lbl_80562ADC;
-            def.z = lbl_80562ADC;
-            const Vec3 &v = obj->vector2(&lbl_8055ACA0, def);
-            ((float *)out)[0xF] = v.x;
-            ((float *)out)[0x10] = v.y;
-            ((float *)out)[0x11] = v.z;
+            double f = ((Dummy *)object)->value(&lbl_8055AC90, lbl_80562ADC);
+            *(float *)((char *)out + 0x60) = f;
+            *(float *)((char *)out + 0x64) = ((Dummy *)object)->value(&lbl_8055AC98, f);
         }
         {
-            Vec3 arg;
-            arg.x = ((float *)out)[0xF];
-            arg.y = ((float *)out)[0x10];
-            arg.z = ((float *)out)[0x11];
-            const Vec3 &v = obj->vector2(&lbl_8055ACA8, arg);
-            ((float *)out)[0x12] = v.x;
-            ((float *)out)[0x13] = v.y;
-            ((float *)out)[0x14] = v.z;
+            Vec3 v;
+            v.x = lbl_80562ADC;
+            v.y = lbl_80562ADC;
+            v.z = lbl_80562ADC;
+            const Vec3 &r = ((Dummy *)object)->vector2(&lbl_8055ACA0, v);
+            *(float *)((char *)out + 0x3C) = r.x;
+            *(float *)((char *)out + 0x40) = r.y;
+            *(float *)((char *)out + 0x44) = r.z;
         }
         {
-            def.x = lbl_80562ADC;
-            def.y = lbl_80562ADC;
-            def.z = lbl_80562ADC;
-            const Vec3 &v = obj->vector2(base + 0x1A0, def);
-            ((float *)out)[0x15] = v.x;
-            ((float *)out)[0x16] = v.y;
-            ((float *)out)[0x17] = v.z;
+            const Vec3 &r = ((Dummy *)object)->vector2(&lbl_8055ACA8, *(Vec3 *)((char *)out + 0x3C));
+            *(float *)((char *)out + 0x48) = r.x;
+            *(float *)((char *)out + 0x4C) = r.y;
+            *(float *)((char *)out + 0x50) = r.z;
         }
-        ((int *)out)[0x1A] = (int)(lbl_80562B0C * obj->value(base + 0x1AC, lbl_80562AEC));
-        fn_801D0800((char *)out + 4);
-        ((int *)out)[2] = 1;
+        {
+            Vec3 v;
+            v.x = lbl_80562ADC;
+            v.y = lbl_80562ADC;
+            v.z = lbl_80562ADC;
+            const Vec3 &r = ((Dummy *)object)->vector2(base + 0x1A0, v);
+            *(float *)((char *)out + 0x54) = r.x;
+            *(float *)((char *)out + 0x58) = r.y;
+            *(float *)((char *)out + 0x5C) = r.z;
+        }
+        *(int *)((char *)out + 0x68) = (int)(lbl_80562B0C * ((Dummy *)object)->value(base + 0x1AC, lbl_80562AEC));
+        if (out != 0) {
+            fn_801D0800((s32)((char *)out + 4));
+            *(int *)((char *)out + 0x8) = 1;
+        }
         result = 1;
     } else {
         ((void (*)(const char *, ...))fn_802E30C8)(base + 0x1BC);
@@ -2529,7 +2530,7 @@ extern char lbl_8055AD08;
  * The element is then handed the request with accept(); an element that
  * refuses the request is destroyed and nothing is returned.
  */
-extern "C" void *fn_801D7334(void *arg0) {
+extern "C" void *createASEElement(void *arg0) {
     extern char lbl_80338460;
     extern char lbl_8055ACF4;
     struct Request {
