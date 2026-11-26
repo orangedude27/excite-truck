@@ -188,7 +188,7 @@ extern "C" void fn_801F0148(void *out, void *source) {
 /* --- wheel mod LOD table -------------------------------------------------
  * A "detached wheel" record (0x138 bytes, looked up by name in fn_801F09FC)
  * keeps up to 8 level-of-detail entries at 0x28 and how many it found at 0xE8.
- * fn_801F08AC loads a record out of a .mod resource; fn_801F0208 below reads
+ * fn_801F08AC loads a record out of a .mod resource; readWheelModLods below reads
  * its lod0..lod7 parameters, each written "<distance> <flag>" ("12.5 y").
  * fn_801F0488 then loads the two remap models of every entry and fn_801F15A8
  * picks the entry whose squared distance the camera has not reached yet.
@@ -255,7 +255,7 @@ typedef struct MatrixPair {
  * flag word said 'y'.  The record gets the number of entries it found; a malformed
  * entry is fatal (Abend_Panic reports it and exits), and the first missing lod ends
  * the table. */
-extern "C" void fn_801F0208(void *arg0, void *arg1, char *modName) {
+extern "C" void readWheelModLods(void *arg0, void *arg1, char *modName) {
     class ModResource {
     public:
         virtual void v0();
@@ -505,7 +505,7 @@ extern "C" int sprintf(char *, const char *, ...);
 extern "C" int fn_8012C33C(char *);
 extern "C" void *fn_80131808(void *);
 extern "C" void fn_80131818(void *);
-extern "C" void fn_801F0208(void *, void *, char *);
+extern "C" void readWheelModLods(void *, void *, char *);
 extern "C" void fn_801F06DC(void *, void *);
 extern "C" void fn_801F08AC(int, const char *);
 extern "C" void fn_801F08AC(int arg0, const char *arg1) {
@@ -527,7 +527,7 @@ extern "C" void fn_801F08AC(int arg0, const char *arg1) {
     }
     resource = (Fn801F08ACResource *)fn_80131808(nameBuffer);
     fn_801F0148((void *)arg0, resource->lookup(lbl_8033A4C8));
-    fn_801F0208((void *)arg0, resource->lookup((const char *)&lbl_8055B108), nameBuffer);
+    readWheelModLods((void *)arg0, resource->lookup((const char *)&lbl_8055B108), nameBuffer);
     ((void (*)(void *, void *))fn_801F0488)((void *)arg0, resource->lookup((const char *)&lbl_8055B0F0));
     if (resource->has((const char *)&lbl_8055B10C) != 0) {
         fn_801F06DC((char *)arg0 + 0xEC, resource->lookup((const char *)&lbl_8055B10C));
