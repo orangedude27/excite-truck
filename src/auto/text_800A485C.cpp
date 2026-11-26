@@ -27542,7 +27542,7 @@ extern "C" const char lbl_8031EA80[];
 extern "C" const char lbl_8031EA90[];
 extern "C" void fn_800A71D0(void *, s32);
 
-extern "C" s32 sdCommandIoctlv(s32 fd, s32 command, s32 type, s32 responseKind, s32 argument, s32 buffer, s32 count, s32 blockSize, s32 writeFlag, s32 responseOut, s32 callback, s32 callbackArg) {
+/* Sends an SD command via IOS ioctlv 7 (sync or async): builds a 0x40-byte command block plus a 6-entry ioctlv vector in the shared buffer, and when callback is set allocates an async request for fn_800BAA8C and leaves it running; otherwise issues a synchronous ioctlv, copies the first response word to responseOut if provided, and frees the command block on the sync/error path. */ extern "C" s32 sdCommandIoctlv(s32 fd, s32 command, s32 type, s32 responseKind, s32 argument, s32 dataBuffer, s32 count, s32 blockSize, s32 writeFlag, s32 responseOut, s32 callback, s32 callbackArg) {
     /* RealName: SD_CommandIoctlv (sends an SD command via IOS ioctlv 7, sync or async)
      * Builds a 0x40-byte command block and a 6-entry ioctlv vector in the shared
      * lbl_8055DD80 buffer (request block + response buffer lbl_8055DD74). When callback
@@ -27572,7 +27572,7 @@ extern "C" s32 sdCommandIoctlv(s32 fd, s32 command, s32 type, s32 responseKind, 
     cmdBuf[1] = type;
     cmdBuf[2] = responseKind;
     cmdBuf[3] = argument;
-    cmdBuf[6] = buffer;
+    cmdBuf[6] = dataBuffer;
     cmdBuf[4] = count;
     cmdBuf[5] = blockSize;
     cmdBuf[7] = 1;
@@ -27582,7 +27582,7 @@ extern "C" s32 sdCommandIoctlv(s32 fd, s32 command, s32 type, s32 responseKind, 
     ioctlv = (s32 *)lbl_8055DD80;
     ioctlv[1] = 0x24;
     ioctlv = (s32 *)lbl_8055DD80;
-    ioctlv[2] = buffer;
+    ioctlv[2] = dataBuffer;
     ioctlv = (s32 *)lbl_8055DD80;
     ioctlv[3] = count * blockSize;
     ioctlv = (s32 *)lbl_8055DD80;
