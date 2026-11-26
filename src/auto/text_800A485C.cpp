@@ -2417,7 +2417,7 @@ extern "C" s32 fn_800A7B34(void *volume, void *block) {
  * moved to the front of the list, the page is the caller's until the cache
  * hands it out again.
  */
-extern "C" s32 VFiPFCACHE_AcquirePage(void *volume, void **list, u32 sector, void **outPage, s32 *outCached) {
+/* Find or reserve the cache page covering a sector, configure its range/data pointer, move it to the list front, and report whether it was already cached. */ extern "C" s32 VFiPFCACHE_AcquirePage(void *volume, void **list, u32 sector, void **outPage, s32 *outCached) {
     u8 *page;
     s32 r;
     /* the page covering the sector, if the list already has one */
