@@ -274,7 +274,7 @@ typedef struct CachedMessage8016B964 {
 
 /* One round's results state, carried at +0xAC of the "ringchalmaster" object and
    laid out exactly like the crush-mode CrushRoundState (updateCrushRoundResults).  The ten
-   text cells are the results overlay's fields; fn_8016B964 refills them. */
+   text cells are the results overlay's fields; updateRingChallengeResults refills them. */
 typedef struct CrushRoundState8016B964 {
     int state;                    /* +0x00: 0 idle, 1 running, 2 ended, 4 scored */
     float time;                   /* +0x04: game time the round began */
@@ -303,7 +303,7 @@ typedef struct CrushRoundState8016B964 {
     int counters[4];              /* +0xF8: cue flags: abort, step, pause, finish */
 } CrushRoundState8016B964;
 #pragma scheduling invalid_target
-extern "C" void fn_8016B964(CrushRoundState8016B964 *round, s32 totalScore, s32 bonusScore, s32 timeBonus) {
+extern "C" void updateRingChallengeResults(CrushRoundState8016B964 *round, s32 totalScore, s32 bonusScore, s32 timeBonus) {
     /* Refills the results overlay's text cells (bonus, the time bonus counting up,
        its caption, total, score without the time bonus, time left and the grade)
        and steps the round's animation and sound state machine.  Same shape as the
@@ -3355,7 +3355,7 @@ loop_80:
     if ((((TObj4C *)arg0)->d7() != 0) && !((lbl_8055E3C8 - M2C_FIELD(arg0, f32 *, 0xA0)) < lbl_80561A1C)) {
         temp_r5_2 = M2C_FIELD(arg0, s32 *, 0x60);
         temp_r6_2 = (s32) M2C_FIELD(arg0, f32 *, 0x38);
-        fn_8016B964((CrushRoundState8016B964 *)((u8 *)arg0 + 0xAC), temp_r5_2 + temp_r6_2, temp_r5_2, temp_r6_2);
+        updateRingChallengeResults((CrushRoundState8016B964 *)((u8 *)arg0 + 0xAC), temp_r5_2 + temp_r6_2, temp_r5_2, temp_r6_2);
     }
 }
 #pragma cplusplus off
