@@ -1079,7 +1079,7 @@ void fn_802BDD54(void) {
 
 void fn_802BDD58(void) {
 #define getCurrentTime fn_801E7E18
-#define updateEffectTransforms fn_802C173C
+#define updateEffectTransforms updateTreeHitSwings
 #define isDebugDrawEnabled fn_8020403C
 #define drawDebugEntries fn_802BD814
     /* Per-frame debug draw: read the current time to drive effect transforms, then draw debug entries when enabled. */

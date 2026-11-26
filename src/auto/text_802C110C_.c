@@ -54,7 +54,7 @@ struct TreeClass {
 };                     /* 0x60 */
 
 struct TreeObject {
-    f32 matrix[9];     /* 0x00 rotation, swung about the hit axis by fn_802C173C */
+    f32 matrix[9];     /* 0x00 rotation, swung about the hit axis by updateTreeHitSwings */
     f32 pos[3];        /* 0x24 Y goes 9000 below the ground once the tree is cut */
 };
 
@@ -433,7 +433,7 @@ extern f32 lbl_80564E64, lbl_80564E68, lbl_80564E6C;
 #pragma push
 #pragma processor 750
 #pragma paired_single off
-extern "C" void fn_802C173C(float time)
+extern "C" void updateTreeHitSwings(float time)
 {
   struct M33 { f32 m[9]; };
   struct V3 { f32 x, y, z; };
@@ -566,7 +566,7 @@ void fn_802C1A08(void) {}
  *               report when something hits them
  * lbl_804C0E10  the eight queued hits (ring, next slot lbl_8055FB34); fn_802C1C34
  *               queues one, fn_802C1180 hands its pose back to the tree and
- *               fn_802C173C swings the tree about the hit axis (time lbl_8055FB38)
+ *               updateTreeHitSwings swings the tree about the hit axis (time lbl_8055FB38)
  * lbl_80564E50 / lbl_80564E54  0.0f / 1.0f
  * lbl_80564E70  -2000.0f: a tree whose Y is under it has been cut
  * lbl_80564E74  -9000.0f: how far below a cut tree is dropped
@@ -588,7 +588,7 @@ struct TreeClass {
 };                     /* 0x60 */
 
 struct TreeObject {
-    f32 matrix[9];     /* 0x00 rotation, swung about the hit axis by fn_802C173C */
+    f32 matrix[9];     /* 0x00 rotation, swung about the hit axis by updateTreeHitSwings */
     f32 pos[3];        /* 0x24 Y goes 9000 below the ground once the tree is cut */
 };
 
