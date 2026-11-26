@@ -996,7 +996,7 @@ extern float fn_801DCF0C(void);
 // zeroed, then restore the weights. With the weights cleared, the height lookup
 // (fn_801DCF0C) returns the unmodified terrain height, which is what this
 // function hands back (in f1 from the call).
-float sampleBaseGroundHeight(float x, float z) {
+/* Sample the base ground height at (x, z) with terrain weights temporarily zeroed, then restore them. */ float sampleBaseGroundHeight(float x, float z) {
     float savedWeights[75];
     int i, j;
 
