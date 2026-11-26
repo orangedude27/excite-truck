@@ -36,7 +36,7 @@ struct Table80338340 {
     char error[20];
 };
 
-/* Physics object configuration read by fn_801D334C from a config object. */
+/* Physics object configuration read by readPhobConfig from a config object. */
 struct PhobConfig {
     float max_life;
     float mass;
@@ -122,7 +122,7 @@ int fn_801D32E0(int configName, int typeId, int position, int orientation, int s
 #pragma pool_strings off
 /* Reads a mut_phob physics object's configuration (mass, size, spring,
    friction, surface, effect and collision shape) from a config object. */
-extern "C" void fn_801D334C(void *outConfig, void *configSource) {
+extern "C" void readPhobConfig(void *outConfig, void *configSource) {
     PhobConfigSource *source = (PhobConfigSource *)configSource;
     struct PhobConfig *config = (struct PhobConfig *)outConfig;
     f32 mzValue;
@@ -172,7 +172,7 @@ extern "C" void fn_801D334C(void *outConfig, void *configSource) {
 
 extern void *fn_80131810(int);
 extern void fn_80131818(void *);
-extern void fn_801D334C(void *, void *);
+extern void readPhobConfig(void *, void *);
 extern int lbl_80562AB0;
 extern int lbl_80562AB4;
 extern char lbl_803383BC[];
@@ -195,7 +195,7 @@ extern "C" void fn_801D3610(void *outConfig, int configName) {
         if (store != 0) {
             if (store->isAvailable(configName) != 0) {
                 configValue = store->getValue(configName);
-                fn_801D334C(outConfig, configValue);
+                readPhobConfig(outConfig, configValue);
                 fn_80131818(store);
                 return;
             }
@@ -633,6 +633,8 @@ void fn_801D3FA4(void *arg0, int arg1, int arg2, void *arg3, void *arg4, void *a
     float fa;
     float fb;
     float fc;
+    float fd;
+    float fe;
     int temp_r21;
     int temp_r22;
     int temp_r23;
@@ -650,13 +652,16 @@ void fn_801D3FA4(void *arg0, int arg1, int arg2, void *arg3, void *arg4, void *a
     int temp_r6_2;
     int r0;
     int zero;
-    int t0, t1, t2, t3;
+    int t0;
+    int t1;
+    int t2;
+    int t3;
 
+    temp_r7 = 0;
     temp_r11 = ((int *)arg3)[0];
     temp_r27 = ((int *)arg3)[1];
     temp_r26 = ((int *)arg3)[2];
     temp_r25 = ((int *)arg3)[3];
-    temp_r7 = 0;
     temp_r24 = ((int *)arg3)[4];
     temp_r23 = ((int *)arg3)[5];
     temp_r22 = ((int *)arg3)[6];
@@ -669,11 +674,17 @@ void fn_801D3FA4(void *arg0, int arg1, int arg2, void *arg3, void *arg4, void *a
     *(int *)((char *)arg0 + 0x1EC) = arg1;
     temp_r4 = *(int *)((char *)arg5 + 0x28);
     *(int *)((char *)arg0 + 0x1F4) = temp_r11;
+    fc = *(float *)((char *)arg5 + 0);
     *(int *)((char *)arg0 + 0x1F0) = arg2;
+    t0 = *(int *)((char *)arg5 + 0x24);
     *(int *)((char *)arg0 + 0x1F8) = temp_r27;
+    fb = *(float *)((char *)arg5 + 4);
     *(int *)((char *)arg0 + 0x1FC) = temp_r26;
+    fa = *(float *)((char *)arg5 + 8);
     *(int *)((char *)arg0 + 0x200) = temp_r25;
+    fd = *(float *)((char *)arg5 + 0xC);
     *(int *)((char *)arg0 + 0x204) = temp_r24;
+    fe = *(float *)((char *)arg5 + 0x10);
     *(int *)((char *)arg0 + 0x208) = temp_r23;
     *(int *)((char *)arg0 + 0x20C) = temp_r22;
     *(int *)((char *)arg0 + 0x210) = temp_r21;
@@ -685,24 +696,32 @@ void fn_801D3FA4(void *arg0, int arg1, int arg2, void *arg3, void *arg4, void *a
     *(int *)((char *)arg0 + 0x228) = arg6;
     *(int *)((char *)arg0 + 0x22C) = temp_r7;
     *(int *)((char *)arg0 + 0x230) = temp_r4;
-    *(float *)((char *)arg0 + 0x234) = *(float *)((char *)arg5 + 0);
-    *(int *)((char *)arg0 + 0x238) = *(int *)((char *)arg5 + 0x24);
-    fn_8017B2D0(arg0, *(float *)((char *)arg5 + 4), *(float *)((char *)arg5 + 8), *(float *)((char *)arg5 + 0xC), *(float *)((char *)arg5 + 0x10));
+    *(float *)((char *)arg0 + 0x234) = fc;
+    *(int *)((char *)arg0 + 0x238) = t0;
+    fn_8017B2D0(arg0, fb, fa, fd, fe);
     fn_801D4294(arg0, arg5);
-    fc = *(float *)((char *)arg4 + 0);
+    fa = *(float *)((char *)arg4 + 0);
     fb = *(float *)((char *)arg4 + 4);
-    fa = *(float *)((char *)arg4 + 8);
-    *(float *)((char *)arg0 + 0x30) = fc;
+    fc = *(float *)((char *)arg4 + 8);
+    *(float *)((char *)arg0 + 0x30) = fa;
     *(float *)((char *)arg0 + 0x34) = fb;
-    *(float *)((char *)arg0 + 0x38) = fa;
+    *(float *)((char *)arg0 + 0x38) = fc;
     fn_8017A57C(arg0);
+    t0 = ((int *)arg3)[0];
+    t1 = temp_r27;
     temp_r6_2 = ((int *)arg3)[8];
     temp_r5 = ((int *)arg3)[9];
     temp_r4_2 = ((int *)arg3)[10];
-    *(int *)((char *)arg0 + 0x3C) = ((int *)arg3)[0];
-    *(int *)((char *)arg0 + 0x40) = temp_r27;
-    *(int *)((char *)arg0 + 0x44) = temp_r26;
-    *(int *)((char *)arg0 + 0x48) = temp_r25;
+    t2 = temp_r26;
+    t3 = temp_r25;
+    zero = ((int *)arg3)[11];
+    temp_r24 = temp_r24;
+    t1 = t1;
+    temp_r4 = temp_r4;
+    *(int *)((char *)arg0 + 0x3C) = t0;
+    *(int *)((char *)arg0 + 0x40) = t1;
+    *(int *)((char *)arg0 + 0x44) = t2;
+    *(int *)((char *)arg0 + 0x48) = t3;
     *(int *)((char *)arg0 + 0x4C) = temp_r24;
     *(int *)((char *)arg0 + 0x50) = temp_r23;
     *(int *)((char *)arg0 + 0x54) = temp_r22;
@@ -710,7 +729,7 @@ void fn_801D3FA4(void *arg0, int arg1, int arg2, void *arg3, void *arg4, void *a
     *(int *)((char *)arg0 + 0x5C) = temp_r6_2;
     *(int *)((char *)arg0 + 0x60) = temp_r5;
     *(int *)((char *)arg0 + 0x64) = temp_r4_2;
-    *(int *)((char *)arg0 + 0x68) = ((int *)arg3)[11];
+    *(int *)((char *)arg0 + 0x68) = zero;
     fn_8017A580(arg0, temp_r4_2, temp_r5, temp_r6_2, temp_r21, temp_r22, temp_r23, temp_r24);
 }
 

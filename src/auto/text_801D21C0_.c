@@ -30,7 +30,7 @@ __declspec(section ".sdata") extern u8 lbl_8055AC00[];
 __declspec(section ".sdata") extern u8 lbl_8055AC08[];
 __declspec(section ".sdata") extern u8 lbl_8055AC10[];
 __declspec(section ".sdata") extern u8 lbl_8055ABF0[];
-extern void fn_801D334C(void *, void *);
+extern void readPhobConfig(void *, void *);
 extern void fn_801D3610(void *, void *);
 extern s32 fn_802C6FC0(void *, s32, s32);
 extern s32 parseHexString(void *);
@@ -634,7 +634,7 @@ extern "C" void fn_801D26C8(void *arg0, void *arg1) {
         if (obj->v1((const char *)(base + 0x70)))
             fn_801D3610(self + 8, obj->v3((const char *)(base + 0x70)));
         else
-            fn_801D334C(self + 8, arg1);
+            readPhobConfig(self + 8, arg1);
         *(int *)(self + 0x2C) = obj->v6((const char *)(base + 0x7C), -1);
         *(int *)(self + 0x3C) = fn_802C6FC0(obj->v3((const char *)lbl_8055ABE8), 0, 0);
         zero = lbl_80562A90;
@@ -664,7 +664,7 @@ extern "C" void fn_801D26C8(void *arg0, void *arg1) {
             else
                 *(int *)(entry + 0x98) = -1;
             if ((unsigned char)child->v21((const char *)(base + 0x70)) != 0) {
-                fn_801D334C(entry + 0x44, child->v21((const char *)(base + 0x70)));
+                readPhobConfig(entry + 0x44, child->v21((const char *)(base + 0x70)));
                 entry[0x40] = 1;
             } else
                 entry[0x40] = 0;
