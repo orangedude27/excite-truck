@@ -3446,7 +3446,7 @@ extern "C" s32 fn_8021D8D4(void *self) {
 extern "C" s32 fn_80216D28();
 extern "C" s32 fn_80230E90(s32);
 extern "C" f32 fn_8023659C();
-extern "C" s32 routeMenuInput(void *arg0, s32 arg1) {
+/* Handle a menu/navigation input for this widget: verify resource state, then trigger actions (0x125/0x127) or navigate the parent list (0x126/0x128), returning 1 when handled. */ extern "C" s32 routeMenuInput(void *widget, s32 command) {
     /* Handle a menu/navigation input for this object: verify its bound resource state,
      * then process command ids (0x125/0x127 trigger actions and stamp fn_8023659C time,
      * 0x126/0x128 navigate the parent list at +0x2C when allowed), returning 1 if handled. */
@@ -3466,47 +3466,47 @@ extern "C" s32 routeMenuInput(void *arg0, s32 arg1) {
         virtual s32 v9();
     };
 
-    if ((*(ClassB **)((u8 *)arg0 + 0x254))->v0() != 0) {
-        if ((*(ClassB **)((u8 *)arg0 + 0x254))->v2() == 0)
+    if ((*(ClassB **)((u8 *)widget + 0x254))->v0() != 0) {
+        if ((*(ClassB **)((u8 *)widget + 0x254))->v2() == 0)
             return 0;
     } else {
-        s32 *p = *(s32 **)((u8 *)arg0 + 0x258);
-        if (p == 0)
+        s32 *boundKey = *(s32 **)((u8 *)widget + 0x258);
+        if (boundKey == 0)
             return 0;
-        if (*(s32 *)((u8 *)arg0 + 0x25C) != *p)
+        if (*(s32 *)((u8 *)widget + 0x25C) != *boundKey)
             return 0;
     }
 
-    switch (arg1) {
+    switch (command) {
     case 0x127:
-        if ((*(ClassB **)((u8 *)arg0 + 0x254))->v9() != 0) {
-            (*(ClassB **)((u8 *)arg0 + 0x254))->v7();
-            *(f32 *)((u8 *)arg0 + 0x264) = fn_8023659C();
+        if ((*(ClassB **)((u8 *)widget + 0x254))->v9() != 0) {
+            (*(ClassB **)((u8 *)widget + 0x254))->v7();
+            *(f32 *)((u8 *)widget + 0x264) = fn_8023659C();
         } else {
             fn_80216D28();
         }
         return 1;
 
     case 0x125:
-        if ((*(ClassB **)((u8 *)arg0 + 0x254))->v8() != 0) {
-            (*(ClassB **)((u8 *)arg0 + 0x254))->v6();
-            *(f32 *)((u8 *)arg0 + 0x260) = fn_8023659C();
+        if ((*(ClassB **)((u8 *)widget + 0x254))->v8() != 0) {
+            (*(ClassB **)((u8 *)widget + 0x254))->v6();
+            *(f32 *)((u8 *)widget + 0x260) = fn_8023659C();
         } else {
             fn_80216D28();
         }
         return 1;
 
     case 0x126:
-        if ((*(ClassB **)((u8 *)arg0 + 0x254))->v0() == 0 && *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x2C) + 0x494) > 1) {
-            fn_80217D84(*(s32 *)((u8 *)arg0 + 0x2C));
+        if ((*(ClassB **)((u8 *)widget + 0x254))->v0() == 0 && *(s32 *)((u8 *)*(void **)((u8 *)widget + 0x2C) + 0x494) > 1) {
+            fn_80217D84(*(s32 *)((u8 *)widget + 0x2C));
             fn_80230E90(0);
             return 1;
         }
         break;
 
     case 0x128:
-        if ((*(ClassB **)((u8 *)arg0 + 0x254))->v0() == 0 && *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x2C) + 0x494) > 1) {
-            fn_80217C4C(*(s32 *)((u8 *)arg0 + 0x2C));
+        if ((*(ClassB **)((u8 *)widget + 0x254))->v0() == 0 && *(s32 *)((u8 *)*(void **)((u8 *)widget + 0x2C) + 0x494) > 1) {
+            fn_80217C4C(*(s32 *)((u8 *)widget + 0x2C));
             fn_80230E90(0);
             return 1;
         }
