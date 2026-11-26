@@ -2092,7 +2092,7 @@ void fn_80036D24(u32 arg0) {
     fn_8003B218(fn_80035E6C);
 }
 
-extern void fn_800375A8(u32);
+extern void onDiscHeaderReadComplete(u32);
 /* Record DVD error status into the global error info ring and dispatch the corresponding recovery path. */
 void fn_800370F4(u32 errorCode) {
     register u32 status = errorCode;
@@ -2127,7 +2127,7 @@ void fn_800370F4(u32 errorCode) {
         *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;
         *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
         OSRestoreInterrupts(interrupts);
-        DVDLowReadAsync(lbl_80376A80, 0x20, 0x108, (s32)fn_800375A8);
+        DVDLowReadAsync(lbl_80376A80, 0x20, 0x108, (s32)onDiscHeaderReadComplete);
     } else {
         fn_800356F4(0x27, 0, 0);
         fn_8003B218(fn_80035E6C);
@@ -2248,7 +2248,7 @@ void fn_8003727C(u32 status) {
 
 #pragma push
 #pragma use_lmw_stmw off
-void fn_800375A8(u32 statusCode) {
+void onDiscHeaderReadComplete(u32 statusCode) {
     register u32 status = statusCode;
     s32 interrupts;
 
