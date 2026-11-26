@@ -653,7 +653,7 @@ extern "C" void *loadResourceNode(void *arg0, void *arg1) {
     s32 size;
     s32 data;
     s32 var_r31;
-    s32 res;
+    s32 parseResult;
 
     handle = ((s32 (*)(void *, void *))fn_8012ABB0)(arg0, header);
     if (handle != -1) {
@@ -718,12 +718,12 @@ done2:
         *(s32 *)(node + 0xA0) = data;
         if (header[3] & 1) {
             *(s32 *)(node + 0x60) = 0;
-            res = fn_8012ACA0(node, (void *)data, size);
+            parseResult = fn_8012ACA0(node, (void *)data, size);
         } else {
             *(s32 *)(node + 0x60) = *(s32 *)(node + 0xA0);
-            res = ((s32 (*)(void *, s32))fn_8012AA60)(node, size);
+            parseResult = ((s32 (*)(void *, s32))fn_8012AA60)(node, size);
         }
-        if (res == 0) {
+        if (parseResult == 0) {
             fn_8012A7FC();
             if (node != 0) {
                 if (node[0xAC] != 0) {
