@@ -2527,7 +2527,7 @@ extern s32 lbl_8055DEE0;
 extern s32 lbl_8055DEE4;
 extern s32 lbl_8055DEE8;
 extern s32 fn_80119DD0(void *, u32, s32, s32, s32, void *);
-extern void fn_8011A6A0(void *);
+extern void dvdStreamQueueRead(void *);
 extern void TRKGetFreeBuffer(void *);
 /* Install the streaming-player callback table (or clear it when table is NULL), then return the PCM player's open routine. */
 void *fn_8011A168(void *table) {
@@ -2614,7 +2614,7 @@ poll_drive:
 
 /* Ring-buffered DVD file stream.  fn_8011ACC4 opens the file (or takes the caller's
    already-open DVDFileInfo, which it copies in at +0x54), fn_8011AC10 hands it the
-   ring buffer to fill, fn_8011A6A0 keeps queueing 32 KiB async reads into the ring
+   ring buffer to fill, dvdStreamQueueRead keeps queueing 32 KiB async reads into the ring
    and fn_8011A8FC drains it.  A read is padded backwards to a 32-byte boundary, so
    its data lands padSize bytes past the write pointer and the read callback (
    dvdStreamReadCallback) slides it into place. */
@@ -2741,7 +2741,7 @@ void fn_8011A45C(void *arg0, s32 arg1, s32 arg2) {
     }
 }
 
-/* DvdStreamReadCallback: completion callback of the 32 KiB read fn_8011A6A0 queued
+/* DvdStreamReadCallback: completion callback of the 32 KiB read dvdStreamQueueRead queued
    for a stream.  transferSize bytes landed at the write pointer, padSize of them
    ahead of the wanted data, so slide the chunk into the ring, update the stream's
    counters, wait off the pacing rate and queue the next read unless the stream is
@@ -2792,11 +2792,11 @@ void dvdStreamReadCallback(s32 transferSize, DVDFileInfo *fileInfo) {
             stream->readTimeSync += stream->readStart;
         stream->reading = 0;
         if (stream->paused == 0)
-            fn_8011A6A0(stream);
+            dvdStreamQueueRead(stream);
     }
 }
 
-void fn_8011A6A0(void* arg0) {
+void dvdStreamQueueRead(void* arg0) {
     /* Pump DVD streaming reads: check drive status, flag errors/cancel, and queue the next async read chunk when ready. */
     s32 driveStatus = DVDGetDriveStatus();
     s32 bytesRemaining = *(s32*)((u8*)arg0 + 0xB8) - *(s32*)((u8*)arg0 + 0x90);
@@ -2850,7 +2850,7 @@ read_valid:
 
 s32 fn_8011A7CC(DVDFileInfo *fileInfo) {
     /* Check DVD drive state for this file: return 0 if an operation/error is
-     * already flagged (+0x20/+0x50), on status 0 invoke fn_8011A6A0, on certain
+     * already flagged (+0x20/+0x50), on status 0 invoke dvdStreamQueueRead, on certain
      * error statuses set the error flag at +0x20, and return the value at +0x24. */
     s32 *file = (s32 *)fileInfo;
     s32 status;
@@ -2870,7 +2870,7 @@ s32 fn_8011A7CC(DVDFileInfo *fileInfo) {
     goto done;
 
 call_callback:
-    fn_8011A6A0(fileInfo);
+    dvdStreamQueueRead(fileInfo);
     goto done;
 set_error:
     file[0x20 / 4] = 1;
@@ -2983,7 +2983,7 @@ u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
     } else {
         rd = &stream->consumerOffset;
         while (arg4 != 0 && stream->error == 0) {
-            fn_8011A6A0(arg0);
+            dvdStreamQueueRead(arg0);
             work = stream->fill;
             if (work != 0) {
                 if ((u32)work > arg4)
