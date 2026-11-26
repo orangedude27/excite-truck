@@ -8504,7 +8504,7 @@ extern "C" s32 fn_800B10E0(void *volume, void *entry, s32 name, s32 unused) {
 }
 
 extern "C" void fn_800B36C4(s32, s32, s32);
-extern "C" s32 VFiPFOpenFile(void *volume, s32 path, s32 mode, void **fileHandleOut) {
+/* Open or create a file on a VFiPF volume: resolve and validate the path, find or initialize its directory entry, then allocate and initialize a file-handle slot returned through fileHandleOut. */ extern "C" s32 VFiPFOpenFile(void *volume, s32 path, s32 mode, void **fileHandleOut) {
     struct LocalFrame {
         u32 value8;
         u32 valueC;
