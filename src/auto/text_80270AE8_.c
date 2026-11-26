@@ -512,7 +512,7 @@ extern const char lbl_8055C5A0[];
 #pragma cplusplus on
 #pragma scheduling invalid_target
 /* Load camera and region definitions from a parsed node tree into the camera/region tables. */
-extern "C" void loadCameraRegionDefs(void *rootNode) {
+/* Load camera and region definitions from a parsed value-file node tree into the camera and region tables, using a default value file when the main one is absent. */ extern "C" void loadCameraRegionDefs(void *rootNode) {
     class Item { public: virtual const char *getName(); };
     class Iterator { public: virtual void unused(); virtual Item *next(int); };
     extern char lbl_80346B00[];
