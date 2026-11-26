@@ -6089,7 +6089,7 @@ void WPADiDecodeAccStatus(s32 chan, WPADStatusEx* pReport)
      * flipping rxBufIndex at the end, with interrupts off, publishes it.
      * The readings are widened back to 10 bits and brought down to the
      * remote's zero-g calibration, and the buttons narrowed to the core set.
-     * fn_80065524 does the same without the accelerometer and fn_80065934
+     * WPADiDecodeStatus does the same without the accelerometer and fn_80065934
      * with an extension's data. */
     typedef struct {
         u8 _head[0x788];
