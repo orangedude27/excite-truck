@@ -4,7 +4,7 @@
       typedef signed int s32;
 extern __declspec(section ".sdata") char lbl_8055BBB8[];
 extern __declspec(section ".sdata") char lbl_8055BBC0[];
-extern __declspec(section ".sdata") char lbl_8055BBD0[];
+extern __declspec(section ".sdata") char gHornLabel[];
 extern __declspec(section ".sdata") char lbl_8055BC18[];
 extern __declspec(section ".sdata") char lbl_8055BC68[];
 extern __declspec(section ".sdata") char lbl_8055BC70[];
@@ -237,7 +237,7 @@ void fn_8023D7CC(void) {
         switch (scheme) {
         case 0:
             fn_802E8664(1);
-            SetControlOption(slotIndex + 8, (int)lbl_8055BBD0, lbl_8055BC68);
+            SetControlOption(slotIndex + 8, (int)gHornLabel, lbl_8055BC68);
             SetControlOption(slotIndex + 8, (int)lbl_8055BC70, (void *)&lbl_8055BC08);
             SetControlOption(slotIndex + 8, (int)(optionData + 0x1B4), (void *)&lbl_8055BC08);
             SetControlOption(slotIndex + 8, (int)(optionData + 0x1CC), (void *)&lbl_8055BC08);
@@ -249,14 +249,14 @@ void fn_8023D7CC(void) {
             SetControlOption(slotIndex + 8, (int)(optionData + 0x208), optionData + 0x40C);
             SetControlOption(slotIndex + 8, (int)(optionData + 0x1B4), optionData + 0x254);
             SetControlOption(slotIndex + 8, (int)(optionData + 0x1CC), optionData + 0x260);
-            SetControlOption(slotIndex + 8, (int)lbl_8055BBD0, optionData + 0x278);
+            SetControlOption(slotIndex + 8, (int)gHornLabel, optionData + 0x278);
             SetControlOption(slotIndex + 8, (int)lbl_8055BBB8, optionData + 0x418);
             break;
         case 3:
             ((void (*)(void *, ...))fn_802E30C8)(optionData + 0x424);
             fn_802E8664(0);
             SetControlOption(slotIndex + 8, (int)lbl_8055BBB8, optionData + 0x468);
-            SetControlOption(slotIndex + 8, (int)lbl_8055BBD0, optionData + 0x278);
+            SetControlOption(slotIndex + 8, (int)gHornLabel, optionData + 0x278);
             SetControlOption(slotIndex + 8, (int)lbl_8055BBC0, optionData + 0x29C);
             SetControlOption(slotIndex + 8, (int)(optionData + 0x184), lbl_8055BC78);
             SetControlOption(slotIndex + 8, (int)(optionData + 0x16C), lbl_8055BC80);
@@ -270,7 +270,7 @@ void fn_8023D7CC(void) {
             SetControlOption(slotIndex + 8, (int)(optionData + 0x1B4), (void *)&lbl_8055BC08);
             SetControlOption(slotIndex + 8, (int)(optionData + 0x1CC), (void *)&lbl_8055BC08);
             SetControlOption(slotIndex + 8, (int)lbl_8055BBB8, optionData + 0x468);
-            SetControlOption(slotIndex + 8, (int)lbl_8055BBD0, optionData + 0x278);
+            SetControlOption(slotIndex + 8, (int)gHornLabel, optionData + 0x278);
             SetControlOption(slotIndex + 8, (int)lbl_8055BBC0, optionData + 0x29C);
             break;
         default:
@@ -634,7 +634,7 @@ extern int fn_80128668(void);
 extern void fn_8023DA64(void *, int, int);
 extern char lbl_8055BBB8[];
 extern char lbl_8055BBC0[];
-extern char lbl_8055BBD0[];
+extern char gHornLabel[];
 extern char lbl_8055BC18[];
 extern char lbl_8055BC68[];
 extern char lbl_8055BC70[];
