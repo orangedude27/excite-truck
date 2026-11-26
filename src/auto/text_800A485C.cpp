@@ -22810,7 +22810,7 @@ extern "C" s32 findArcFileByName(ARCHandle *handle, const char *name) {
     return result;
 }
 #pragma pop
-extern "C" s32 getArcFileAddress(long arcHandle, long dirPath, long subDirFourCC, long fileName, long outSize, long unused) {
+/* Resolves a file in an ARC directory/subdirectory and returns its in-memory address, optionally writing its length to outSize; returns 0 if the file is not found. */ extern "C" s32 getArcFileAddress(long arcHandle, long dirPath, long subDirFourCC, long fileName, long outSize, long unused) {
     /* Resolves a file in an ARC directory/subdirectory and returns its memory address, optionally writing its length. */
     s32 entry=-1;
     char subDirName[5]; ARCFileInfo info;
