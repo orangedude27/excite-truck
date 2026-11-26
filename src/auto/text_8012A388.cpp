@@ -11,7 +11,7 @@ struct E7FC { char pad[0x28]; int v28; unsigned int v30; };
 #define RES_ENTRY_NAME_DUPLICATE 0x10 /* set on a later entry with the same name */
 
 /* One entry of a resource manager's table (stride 0x44); the name is at +0x00
- * (fn_8012B534 compares it with stricmp). The five words at +0x20 are stored
+ * (findResourceEntry compares it with stricmp). The five words at +0x20 are stored
  * byte-reversed and swapped by fn_8012A388 when the table is read in. */
 struct ResEntry {
     /* 0x00 */ char name[0x20];
@@ -28,7 +28,7 @@ struct ResEntry {
 
 /* One resource manager ("resource set") in the global list lbl_8055E000: the
  * 0xB0-byte node loadResourceNode builds from one resource file. Its directory name
- * is the string at +0x00 (fn_8012B534 matches a path's directory against it)
+ * is the string at +0x00 (findResourceEntry matches a path's directory against it)
  * and the list link is +0xA8. */
 struct ResManager {
     /* 0x00 */ char dirName[0x20]; /* directory this set's entries answer to */
@@ -113,7 +113,7 @@ extern "C" void *fn_8012A570(u32, void *);
 extern "C" s32 stricmp(const char *, const char *);
 extern "C" s32 fn_8012B85C(s32, s32, s32, s32, s32, s32);
 extern "C" const char lbl_805599A4[1];
-extern "C" void *fn_8012B534(char *arg0, s32 *arg1, u32 arg2);
+extern "C" void *findResourceEntry(char *arg0, s32 *arg1, u32 arg2);
 extern "C" void fn_80127464(void);
 extern "C" void fn_802E30C8(const char *, ...);
 extern "C" void Abend_Panic(const char *, ...);
@@ -982,7 +982,7 @@ extern "C" u8 *fn_8012B4E4(u8 *path, s8 *hasWildcard) {
 extern "C" s32 fn_8012B50C(void *existingEntry, void *duplicateEntry) {
     /* Name-clash check: true when the entry found first for a name is flagged
        as the primary and a later, duplicate-named entry is flagged as a
-       duplicate. Used by fn_8012B534 while resolving resources by path. */
+       duplicate. Used by findResourceEntry while resolving resources by path. */
     if ((((struct ResEntry *)existingEntry)->flags & RES_ENTRY_NAME_PRIMARY) &&
         (((struct ResEntry *)duplicateEntry)->flags & RES_ENTRY_NAME_DUPLICATE)) return 1;
     return 0;
@@ -998,7 +998,7 @@ extern "C" void reportGetBeforeWaitError(s32);
 #pragma scheduling invalid_target
 /* Finds a resource manager/entry by parsed path and name, handling wildcards, duplicate-name
  * warnings, and flags controlling "not ready" and missing-resource behavior. */
-extern "C" void *fn_8012B534(char *arg0, s32 *arg1, u32 arg2) {
+extern "C" void *findResourceEntry(char *arg0, s32 *arg1, u32 arg2) {
     u8 wildcard;
     char name[0x100];
     char dir[0x100];
@@ -1160,7 +1160,7 @@ extern "C" s32 fn_8012B85C(s32 path, s32 dataTag, s32 outId, s32 outSize, s32 ou
     struct ResManager *manager;
     const char *strings = lbl_8032A630;
     u8 *result = 0;
-    manager = (struct ResManager *)((struct ResManager *(*)(s32, s32 *, s32))fn_8012B534)(path, &index, 0);
+    manager = (struct ResManager *)((struct ResManager *(*)(s32, s32 *, s32))findResourceEntry)(path, &index, 0);
     if (manager != 0) {
         if (fn_8012B6FC(manager, index) != 0) {
             struct ResEntry *entry = (struct ResEntry *)(manager->entries + index * 0x44);
@@ -1547,7 +1547,7 @@ read_rest:
    the index of the found entry is written to a throwaway local and ignored. */
 extern "C" s32 fn_8012C33C(char *path) {
     s32 index;
-    return fn_8012B534(path, &index, 0) != 0;
+    return findResourceEntry(path, &index, 0) != 0;
 }
 
 #pragma use_lmw_stmw off
@@ -2336,7 +2336,7 @@ struct ResTocManager {
     u8 pumping;                // 0xA20: fn_8012DEE4 is working the queue
 };
 
-// fn_8012B534 could not find NAME (arg0) in any loaded resource table.  Ask
+// findResourceEntry could not find NAME (arg0) in any loaded resource table.  Ask
 // every mounted set's on-disc ETOC table whether it lists NAME; if one does,
 // the set is mounted but its resources have not been set yet, which is the
 // "Get-Before-Wait" error the res-CRIP() message reports with the set's name.
@@ -3089,7 +3089,7 @@ extern "C" void fn_8012E96C(s32 arg0) {
     s32 arg = arg0;
     nw4r::ef::Effect *entry = lbl_8055E014;
     if (entry != 0) {
-        result = ((s32 (*)(s32, s32 *, s32))fn_8012B534)(arg0, &sp8, 3);
+        result = ((s32 (*)(s32, s32 *, s32))findResourceEntry)(arg0, &sp8, 3);
         if (result == 0) {
             result = findResourceOwningMount((s32)entry, arg);
             if (result != 0)
@@ -3506,7 +3506,7 @@ extern "C" s32 fn_8012C5B8(s32 path, s32 typeTag, s32 outId) {
     struct ResManager *manager;
     struct ResEntry *entry;
 
-    manager = (struct ResManager *)((struct ResManager *(*)(s32, s32 *, s32))fn_8012B534)(path, &index, 1);
+    manager = (struct ResManager *)((struct ResManager *(*)(s32, s32 *, s32))findResourceEntry)(path, &index, 1);
     if (manager != 0) {
         entry = (struct ResEntry *)(manager->entries + index * 0x44);
         if (entry->dataTag == (u32)typeTag) {
