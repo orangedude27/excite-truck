@@ -1172,14 +1172,14 @@ float getGroundHeight(float worldX, float worldZ)
   unsigned short tileId;
   char *node;
   int firstLayer;
-  unsigned short sample;
+  unsigned short heightSample;
   int nextLayer;
   int weightIndex;
   float gridX;
   float gridZ;
   float roundedX;
   float roundedZ;
-  float layerHeight;
+  float layerContribution;
   float height;
   char *layer;
   if (ground->tiled == 0)
@@ -1234,10 +1234,10 @@ float getGroundHeight(float worldX, float worldZ)
     do {
       GroundLayer *overlay = (GroundLayer *) layer;
       weightIndex = overlay->tableIndex;
-      sample = overlay->samples[cellInTileX][cellInTileZ];
+      heightSample = overlay->samples[cellInTileX][cellInTileZ];
       nextLayer = overlay->next;
-      layerHeight = overlay->baseHeight + overlay->heightScale * (float) sample;
-      height += layerHeight * lbl_804425DC[weightIndex];
+      layerContribution = overlay->baseHeight + overlay->heightScale * (float) heightSample;
+      height += layerContribution * lbl_804425DC[weightIndex];
       if (nextLayer < 0) { break; }
       layer = *((char **)((char *) ground + 0x20)) + (nextLayer * 0x810);
     } while (1);
