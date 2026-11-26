@@ -619,9 +619,9 @@ void fn_80235AFC(void *arg0, int texNodeIndex, int vertexFlags,
  * (x, y, z): the picture gives the texture rectangle, rgba gives the colour
  * with its alpha scaled by the current fade.  Logs and draws nothing when the
  * index is not in the set. */
-void drawArtPicture(ArtSet *artSet, int pictureIndex, int rgba, float x, float y, float z, float width, float height) {
+/* Draw one art-set picture as a textured quad at (x,y,z) with the given size and fade-scaled alpha; log and skip when the picture index is absent. */ void drawArtPicture(ArtSet *artSet, int pictureIndex, int rgba, float x, float y, float z, float width, float height) {
     ArtPicture *picture;
-    int color;
+    int packedColor;
     float u0, v0, u1, v1;
     Idx_80235CBC ids;
     Vtx_80235CBC t3, t2, t1, t0;
@@ -640,14 +640,14 @@ void drawArtPicture(ArtSet *artSet, int pictureIndex, int rgba, float x, float y
     u1 = picture->s1;
     v1 = picture->t1;
     fn_802C8C04(artSet->drawHandle);
-    color = fn_80230B9C(rgba);
-    t3 = fn_80230A68(color, x, y, z, u0, v0);
+    packedColor = fn_80230B9C(rgba);
+    t3 = fn_80230A68(packedColor, x, y, z, u0, v0);
     frame.v[0].a = t3.a; frame.v[0].b = t3.b; frame.v[0].c = t3.c; frame.v[0].d = t3.d; frame.v[0].e = t3.e;
-    t2 = fn_80230A68(color, x + width, y, z, u1, v0);
+    t2 = fn_80230A68(packedColor, x + width, y, z, u1, v0);
     frame.v[1].a = t2.a; frame.v[1].b = t2.b; frame.v[1].c = t2.c; frame.v[1].d = t2.d; frame.v[1].e = t2.e;
-    t1 = fn_80230A68(color, x, y - height, z, u0, v1);
+    t1 = fn_80230A68(packedColor, x, y - height, z, u0, v1);
     frame.v[2].a = t1.a; frame.v[2].b = t1.b; frame.v[2].c = t1.c; frame.v[2].d = t1.d; frame.v[2].e = t1.e;
-    t0 = fn_80230A68(color, x + width, y - height, z, u1, v1);
+    t0 = fn_80230A68(packedColor, x + width, y - height, z, u1, v1);
     frame.v[3].a = t0.a; frame.v[3].b = t0.b; frame.v[3].c = t0.c; frame.v[3].d = t0.d; frame.v[3].e = t0.e;
     ids = lbl_802FA020;
     fn_802C8DB8(frame.v, 4, ids.i, 6);
