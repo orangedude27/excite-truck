@@ -125,7 +125,7 @@ s32 fn_802E47F8(void) {
 
 #pragma push
 #pragma scheduling invalid_target
-void recordInputHistory(u16 inputWord) {
+/* Record one input word into the screenshot key-history subsystem. */ void recordInputHistory(u16 inputWord) {
     // Record one input word into the screenshot key-history subsystem (skipped while the
     // Wii Home menu is open): refresh the last-input timestamp, shift the 32-entry
     // 12-bit input history and append the key code, then store the full word in the
