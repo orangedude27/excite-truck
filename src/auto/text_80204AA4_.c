@@ -576,7 +576,7 @@ inline DiffLookup802054EC::DiffLookup802054EC(int type, int stageIndex) {
     }
 }
 #pragma dont_inline off
-extern "C" int Difficulty_ReadBool(const char *propName, int typeIndex, int stageIndex) {
+/* Read a difficulty property as a boolean: true when its value string is "yes" or "true", checking the stage-specific key before the plain name. */ extern "C" int Difficulty_ReadBool(const char *propName, int typeIndex, int stageIndex) {
     /* Read a difficulty property as a boolean: resolve its value string first under the
      * stage-specific "<contest>_<propName>" key, then under the plain name, panicking if
      * no set defines it; return 1 when the value is "yes" or "true", otherwise 0. */
@@ -588,10 +588,10 @@ extern "C" int Difficulty_ReadBool(const char *propName, int typeIndex, int stag
     DiffLookup802054EC lookup(typeIndex, stageIndex);
     char keyBuf[KEY_BUF_SIZE];
     const char *value = 0;
-    void *contest = lookup.contest;
+    void *contestName = lookup.contest;
     int isYes;
-    if (contest != 0) {
-        ((int (*)(void *, int, const char *, ...))fn_801345D8)(keyBuf, KEY_BUF_SIZE, STAGE_KEY_FORMAT, contest, propName);
+    if (contestName != 0) {
+        ((int (*)(void *, int, const char *, ...))fn_801345D8)(keyBuf, KEY_BUF_SIZE, STAGE_KEY_FORMAT, contestName, propName);
         value = lookup.Find(keyBuf);
     }
     if (value == 0) {
