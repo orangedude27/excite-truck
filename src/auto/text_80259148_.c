@@ -1983,52 +1983,52 @@ rank_done:
 #pragma cplusplus reset
 
 int handleAchievementRowInput(void *self, int input) {
-    /* Handle menu input/state transitions for this UI object: reject blocked
-       states, process confirm/cancel/navigation cases, and trigger the
-       corresponding follow-up actions. */
-    char *obj = (char *)self;
-    if (*(unsigned char *)(obj + 0x58) != 0 || IsLowAndFlagged_(obj) != 0) {
+    /* Handle a message for one achievements-display row: while the row is still
+       counting, silence input sounds; the message selects a status/sound action
+       (force-complete, cancel, or the two navigation directions). */
+    AchievementRow *row = (AchievementRow *)self;
+    if (row->done != 0 || IsLowAndFlagged_(row) != 0) {
         fn_80216D28();
     }
     switch (input) {
     case 0xD:
-        if (*(unsigned char *)(obj + 0xC4) != 0) {
-            if (*(unsigned char *)(obj + 0x58) != 0) {
-                *(float *)(obj + 0x28) = (float)*(int *)(obj + 0x20);
-            } else if (IsLowAndFlagged_(obj) == 0) {
-                *(unsigned char *)(obj + 0x59) = 1;
-                *(int *)(obj + 0x5C) = -2;
+        if (row->flagC4 != 0) {
+            if (row->done != 0) {
+                row->progress = (float)row->goal;
+            } else if (IsLowAndFlagged_(row) == 0) {
+                row->soundPending = 1;
+                row->soundId = -2;
             }
             break;
         }
-        if (*(int *)(obj + 0xC8) > 1 || fn_8025921C() != 0) {
-            if (IsLowAndFlagged_(obj) == 0) {
-                *(int *)(obj + 0x5C) = 3;
-                *(unsigned char *)(obj + 0x59) = 1;
+        if (row->rank > 1 || fn_8025921C() != 0) {
+            if (IsLowAndFlagged_(row) == 0) {
+                row->soundId = 3;
+                row->soundPending = 1;
                 break;
             }
         }
         fn_80214D50(1);
         return 0;
     case 0x1B:
-        if (*(unsigned char *)(obj + 0xC4) == 0) {
-            *(unsigned char *)(obj + 0x59) = 1;
-            *(int *)(obj + 0x5C) = -1;
+        if (row->flagC4 == 0) {
+            row->soundPending = 1;
+            row->soundId = -1;
             break;
         }
         return 0;
     case 0x126:
-        if (*(unsigned char *)(obj + 0xC4) == 0) {
-            *(unsigned char *)(obj + 0x59) = 1;
-            *(int *)(obj + 0x5C) = 1;
+        if (row->flagC4 == 0) {
+            row->soundPending = 1;
+            row->soundId = 1;
             fn_80216CA8();
             break;
         }
         return 0;
     case 0x128:
-        if (*(unsigned char *)(obj + 0xC4) == 0) {
-            *(unsigned char *)(obj + 0x59) = 1;
-            *(int *)(obj + 0x5C) = 2;
+        if (row->flagC4 == 0) {
+            row->soundPending = 1;
+            row->soundId = 2;
             fn_80216CA8();
             break;
         }
