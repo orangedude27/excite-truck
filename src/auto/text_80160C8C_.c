@@ -2309,7 +2309,7 @@ extern "C" void fn_801636E0(void *arg0) {
     extern void fn_801EA140(void *);
     extern void fn_802A95A8(f32 *, f32 *, f32, f32);
     extern void fn_802A95AC(s32);
-    extern s32 fn_8016D294(s32, s32, s32);
+    extern s32 RingChallengeMaster_SelectSet(s32, s32, s32);
     s32 i;
     s32 firstOffset;
     u32 j;
@@ -2367,7 +2367,7 @@ extern "C" void fn_801636E0(void *arg0) {
     *(u8 *)(self + 0x56D) = 0;
     *(float *)(self + 0x574) = resetValue;
     if (lbl_8055E304 > 0)
-        fn_8016D294(0, 0, lbl_8055E304 - 1);
+        RingChallengeMaster_SelectSet(0, 0, lbl_8055E304 - 1);
 }
 #pragma cplusplus reset
 #pragma scheduling on

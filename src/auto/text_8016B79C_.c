@@ -1211,7 +1211,7 @@ void fn_8016D278(void *list) {
  * +0x54 so it can be released again.  Kind 0 is the only request the master
  * handles; any other kind does nothing.
  */
-void fn_8016D294(s32 unused, s32 kind, s32 setIndex) {
+void RingChallengeMaster_SelectSet(s32 unused, s32 kind, s32 setIndex) {
     char setName[0x20];   /* "set_%i_5" &c., for the gem-set reset */
     char markerName[0x20]; /* the same name, for the marker position lookup */
     register u8 *master = (u8 *)lbl_8055E378;
