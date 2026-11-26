@@ -208,7 +208,7 @@ extern char lbl_803398E4[];
 // identity matrix and an empty model handle (-1). When archiveCtx is not -1,
 // look up the archive item by name (which yields a resource path), copy the
 // item's data in, and load the model that the path points to.
-void *createModelHandle(s32 archiveCtx, s32 itemName, s32 variant)
+/* Allocate a model-handle object with an identity transform and empty handle, then load the model named by the archive item when one is given. */ void *createModelHandle(s32 archiveCtx, s32 itemName, s32 variant)
 {
   struct Pair
   {
