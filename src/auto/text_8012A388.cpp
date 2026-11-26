@@ -1148,7 +1148,7 @@ extern "C" s32 fn_8012B6FC(struct ResManager *manager, s32 entryIndex) {
  *   outNewRequest- whether the entry was not marked "requested" until now
  * Returns 0 when the resource is unknown, could not be made resident, or has
  * another type tag than asked for (each reported on the "res:" log). */
-extern "C" s32 ResourceGetEntry(s32 path, s32 dataTag, s32 outId, s32 outSize, s32 outFirstUse, s32 outNewRequest) {
+/* Look up a resource by path and fourcc tag, make it resident, take a reference and return its loaded data. */ extern "C" s32 ResourceGetEntry(s32 path, s32 dataTag, s32 outId, s32 outSize, s32 outFirstUse, s32 outNewRequest) {
     /* The entry's flag word at +0x34, seen as bitfields. */
     struct EntryFlags {
         u32 rest : 31;
