@@ -7,7 +7,7 @@ extern unsigned char lbl_8034925C[];
 extern void loadWoodChunkModels(void *, int, int, int);
 extern char lbl_8055C988;
 extern float lbl_805644D4;
-extern void fn_80293374(void *, void *);
+extern void loadCarChunkModels(void *, void *);
 extern void *fn_802935A0(void *);
 extern int fn_8012C33C(void *);
 extern void fn_801345D8(void *, int, const char *, int, int);
@@ -244,7 +244,7 @@ typedef struct ChunkSysNames {
 
 /* A chunk effect object, an nw4r::ef::Effect: the "car", "ter" and "wood" chunk
  * systems fn_802928D4 allocates.  Its chunk models -- "<model_base>1.mod" ..
- * "<model_base>8.mod" -- are loaded by fn_80293374 (car), loadTerrainChunkModels (ter) and
+ * "<model_base>8.mod" -- are loaded by loadCarChunkModels (car), loadTerrainChunkModels (ter) and
  * loadWoodChunkModels (wood); the chunk records start just after, at +0x2C, and their
  * count is the s32 at the end of the object (+0x2FAC car, +0x4C2C ter,
  * +0x222C wood). */
@@ -615,7 +615,7 @@ extern "C" void *fn_80293034(void *effect, void *effectArg, int modelBase) {
     };
     /* Construct an Effect: set its vtable, load chunk models and per-car colors, and take gravity from "grav_f" (default 1.0). */
     *(void **)effect = lbl_80349294;
-    fn_80293374(effect, (void *)modelBase);
+    loadCarChunkModels(effect, (void *)modelBase);
     fn_802935A0(effect);
     float initialValue = lbl_805644D4;
     *(float *)((char *)effect + 4) = initialValue;
@@ -637,7 +637,7 @@ extern int setLightAmbientColor(int);
 extern int MRModel_SetInstanceTransform(void*, void*);
 extern int fn_80128668(void*);
 extern void fn_80293530(void*);
-extern void fn_80293374(void*, void*);
+extern void loadCarChunkModels(void*, void*);
 extern char lbl_80349250[];
 extern void* fn_802935A0(void*);
 extern float lbl_805644D4;
@@ -766,7 +766,7 @@ process:
  * first name the resource system does not have, and leaving the slots no model
  * was found for at -1.  The car one takes no instance and remaps no texture;
  * loadTerrainChunkModels and loadWoodChunkModels do the "ter" and "wood" ones. */
-void fn_80293374(void *object, void *modelBase) {
+void loadCarChunkModels(void *object, void *modelBase) {
     char name[0x20];
     int count;
     ChunkSys *chunkSys = (ChunkSys *)object;
@@ -1182,7 +1182,7 @@ extern char lbl_80349250[];
  * (lbl_80349250 is "%s%d.mod"): every one the resource system has is
  * instantiated for `instance` -- its textures remapped first when the profile
  * names a texture to remap -- and the handle is stored in the object's model
- * table, the slots no model was found for left at -1.  fn_80293374 and
+ * table, the slots no model was found for left at -1.  loadCarChunkModels and
  * loadWoodChunkModels do the same for the "car" and "wood" chunk systems.
  * modelBase and remapTexture are the profile's "model_base" and
  * "remap_texture" strings, handed over as ints by the file's prototype. */
@@ -1544,7 +1544,7 @@ void fn_80294408(void *arg0, const float *arg1, const float *arg2) {
  * is stored in the object's model table.  The slots no model was found for are
  * left at -1.
  *
- * The "wood chunk sys"; fn_80293374 and loadTerrainChunkModels do the same for the "car"
+ * The "wood chunk sys"; loadCarChunkModels and loadTerrainChunkModels do the same for the "car"
  * and "ter" ones.  modelBase and remapTexture are the strings the profile's
  * "model_base" and "remap_texture" entries give, handed over as ints by the
  * file's prototype. */
