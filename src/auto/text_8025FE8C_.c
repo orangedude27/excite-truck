@@ -1055,8 +1055,8 @@ extern "C" s32 fn_80261178(void *unused) {
  * the dim state, and everything else is dimmed and cleared.  fn_802616A8 is
  * the same walk upwards.
  */
-extern "C" s32 selectorMoveCursorDown(void) {
-    s32 offset;
+/* Challenge-selector down input: advance the cursor within the group list or its items, then repaint both widget lists so the active cursor/group items are bright and everything else is dimmed. */ extern "C" s32 selectorMoveCursorDown(void) {
+    s32 widgetByteOffset;
     s32 i;
 
     if (SELECTOR_IN_ITEMS == 0) {
@@ -1075,41 +1075,41 @@ extern "C" s32 selectorMoveCursorDown(void) {
 
     /* repaint the item list */
     i = 0;
-    offset = 0;
-    for (; i < SELECTOR->item_count; offset += 4, i++) {
+    widgetByteOffset = 0;
+    for (; i < SELECTOR->item_count; widgetByteOffset += 4, i++) {
         if (SELECTOR_IN_ITEMS == 0) {
             /* the cursor is not here, so the whole list dims */
-            (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->setDim();
-            (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->clearCursor();
+            (*(SelectorWidget **)(SELECTOR->item_widgets + widgetByteOffset))->setDim();
+            (*(SelectorWidget **)(SELECTOR->item_widgets + widgetByteOffset))->clearCursor();
         } else if (i == SELECTOR->cursor) {
-            (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->setCursor();
+            (*(SelectorWidget **)(SELECTOR->item_widgets + widgetByteOffset))->setCursor();
         } else if (i == SELECTOR->group * 2 || i == SELECTOR->group * 2 + 1) {
             /* the two items of the group the cursor is in stay bright */
-            (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->clearDim();
-            (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->clearCursor();
+            (*(SelectorWidget **)(SELECTOR->item_widgets + widgetByteOffset))->clearDim();
+            (*(SelectorWidget **)(SELECTOR->item_widgets + widgetByteOffset))->clearCursor();
         } else {
-            (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->clearCursor();
+            (*(SelectorWidget **)(SELECTOR->item_widgets + widgetByteOffset))->clearCursor();
         }
     }
 
     /* repaint the group list */
     i = 0;
-    offset = 0;
-    for (; i < SELECTOR->group_count; offset += 4, i++) {
+    widgetByteOffset = 0;
+    for (; i < SELECTOR->group_count; widgetByteOffset += 4, i++) {
         if (SELECTOR_IN_ITEMS == 0) {
             if (i == SELECTOR->group) {
-                (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->setCursor();
+                (*(SelectorWidget **)(SELECTOR->group_widgets + widgetByteOffset))->setCursor();
             } else {
-                (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->clearDim();
-                (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->clearCursor();
+                (*(SelectorWidget **)(SELECTOR->group_widgets + widgetByteOffset))->clearDim();
+                (*(SelectorWidget **)(SELECTOR->group_widgets + widgetByteOffset))->clearCursor();
             }
         } else if (i == SELECTOR->group) {
             /* the group the cursor is inside: open, and let it show its items */
-            (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->setCursor();
+            (*(SelectorWidget **)(SELECTOR->group_widgets + widgetByteOffset))->setCursor();
             (*(SelectorWidget **)(SELECTOR->group_widgets + SELECTOR->group * 4))->setExpanded();
         } else {
-            (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->setDim();
-            (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->clearCursor();
+            (*(SelectorWidget **)(SELECTOR->group_widgets + widgetByteOffset))->setDim();
+            (*(SelectorWidget **)(SELECTOR->group_widgets + widgetByteOffset))->clearCursor();
         }
     }
     return 0;
