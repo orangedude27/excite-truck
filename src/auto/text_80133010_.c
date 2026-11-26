@@ -52,7 +52,7 @@ typedef enum OptionValueType {
 
 // Why the save system (src/game/memcard.c) calls a save record's call-back
 // around the memcpy of the record's bytes; the options record ('OPTS') uses
-// fn_80133FCC as its call-back.
+// optionsRecordCallback as its call-back.
 typedef enum SaveRecordStage {
     SAVE_RECORD_BEFORE_LOAD = 0, // the record's bytes are about to be replaced
     SAVE_RECORD_AFTER_LOAD = 1,  // they have just been copied over it
@@ -80,7 +80,7 @@ typedef struct OptionTable {
     /* 0x08 */ OptionEntry entries[OPTIONS_MAX_ENTRIES];
 } OptionTable;
 
-// What the save/load call-back fn_80133FCC keeps beside the table:
+// What the save/load call-back optionsRecordCallback keeps beside the table:
 //   lbl_8042F558 - up to 8 OptionEntry values held back from the save file and
 //                  copied back over the table after the card's data is loaded
 //   lbl_8055E080 - how many of those entries there are (fn_80133024 zeroes it)
@@ -127,7 +127,7 @@ extern const char lbl_8032B9FC[];
 extern int lbl_8055E078, lbl_8055E080;
 extern const char lbl_8032B880[], lbl_8032B88C[];
 extern void* fn_801284F8(int, const char*);
-extern void fn_80133FCC(long, long);
+extern void optionsRecordCallback(long, long);
 extern void fn_801341B4(int, int);
 extern void fn_802E6BD8(int, int, int, int, void (*)(void));
 extern void fn_8000DBC8(void (*)(int, int));
@@ -151,7 +151,7 @@ void fn_80133024(void) {
     lbl_8042F718[15] = 0;
     if (readOptionsFile(lbl_80559B58, 0, 0x12) == 0)
         Abend_Panic(lbl_8032B88C, lbl_80559B58);
-    fn_802E6BD8(0x4F505473, 6, lbl_8055E07C, 0x6D68, (void (*)(void))fn_80133FCC);
+    fn_802E6BD8(0x4F505473, 6, lbl_8055E07C, 0x6D68, (void (*)(void))optionsRecordCallback);
     fn_8000DBC8(fn_801341B4);
 }
 #pragma scheduling on
@@ -740,7 +740,7 @@ extern char lbl_8042F558[], lbl_8032BAC8[];
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-void fn_80133FCC(long stage, long unusedArg) {
+void optionsRecordCallback(long stage, long unusedArg) {
     /* Memory-card call-back for the options record ('OPTS' = 0x4F505473), which
      * fn_80133024 registers with the save system.  src/game/memcard.c calls it
      * with a SaveRecordStage around the memcpy of the record's bytes: after a
