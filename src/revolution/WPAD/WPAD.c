@@ -6091,13 +6091,11 @@ void fn_80065524(s32 chan, WPADStatus* pReport)
     OSRestoreInterrupts(enabled);
 }
 
-// fn_800656E8: WPADiDecodeAccStatus (proposed name) - decode one core button +
-// accelerometer input report into the control block's other receive buffer.
-void fn_800656E8(s32 chan, WPADStatusEx* pReport)
+#define WPADiDecodeAccStatus fn_800656E8
+void WPADiDecodeAccStatus(s32 chan, WPADStatusEx* pReport)
 {
-    /* WPADiDecodeAccStatus (proposed name): turn one core button +
-     * accelerometer input report from the remote on `chan` into the
-     * WPADStatusEx the application reads.
+    /* Decode one core-button + accelerometer input report from the remote on
+     * `chan` into the WPADStatusEx the application reads.
      *
      * pReport is the report as it came in, read as bytes: +1 is the status
      * byte (bit 7 says whether an extension is plugged in, bits 5-6 carry the
