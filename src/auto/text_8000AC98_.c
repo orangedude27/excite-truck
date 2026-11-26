@@ -584,49 +584,49 @@ extern char lbl_802FBFB0[];
 #pragma push
 #pragma dont_inline on
 /* Dispatch a UI/menu event for a context, gating by current screen state and invoking event-specific handlers. */
-void dispatchGameLoopKey(int eventId, int contextId) {
-    int playerState;
+void dispatchGameLoopKey(int key, int inputNibble) {
+    int playerIndex;
     int (*eventFilter)(int);
-    int selectedValue;
+    int selection;
 
-    playerState = fn_80137C98(contextId);
-    if (playerState < 0) goto done;
-    if (fn_801DF238(eventId) != 0) goto done;
-    if (fn_8000AD84() != 0 && contextId != lbl_8055D3E4) goto done;
+    playerIndex = fn_80137C98(inputNibble);
+    if (playerIndex < 0) goto done;
+    if (fn_801DF238(key) != 0) goto done;
+    if (fn_8000AD84() != 0 && inputNibble != lbl_8055D3E4) goto done;
 
     eventFilter = *(int (**)(int))((char *)lbl_8055D3D0 + 4);
-    if (eventFilter != 0 && eventFilter(eventId) != 0) goto done;
-    if (eventId == 0x60) goto done;
+    if (eventFilter != 0 && eventFilter(key) != 0) goto done;
+    if (key == 0x60) goto done;
 
-    if (eventId >= 0x60) goto high_event;
-    if (eventId == 0x50) goto event_50;
-    if (eventId >= 0x50) goto check_5c;
-    if (eventId == 0x1B) goto event_1b;
-    if (eventId >= 0x1B) goto default_event;
-    if (eventId != 0x0A) goto default_event;
+    if (key >= 0x60) goto high_event;
+    if (key == 0x50) goto event_50;
+    if (key >= 0x50) goto check_5c;
+    if (key == 0x1B) goto event_1b;
+    if (key >= 0x1B) goto default_event;
+    if (key != 0x0A) goto default_event;
     goto done;
 
 check_5c:
-    if (eventId != 0x5C) goto default_event;
+    if (key != 0x5C) goto default_event;
     goto event_5c;
 
 high_event:
-    if (eventId >= 0x121) goto check_124;
-    if (eventId == 0x7E) goto done;
-    if (eventId >= 0x7E) goto default_event;
-    if (eventId != 0x70) goto default_event;
+    if (key >= 0x121) goto check_124;
+    if (key == 0x7E) goto done;
+    if (key >= 0x7E) goto default_event;
+    if (key != 0x70) goto default_event;
     goto event_50;
 
 check_124:
-    if (eventId == 0x124) goto event_124;
-    if (eventId >= 0x124) goto default_event;
-    if (eventId < 0x123) goto done;
+    if (key == 0x124) goto event_124;
+    if (key >= 0x124) goto default_event;
+    if (key < 0x123) goto done;
     goto default_event;
 
 event_1b:
     if (Sound_isActive() == 0 &&
         fn_801E8838() == 0 &&
-        fn_800075A0(playerState) != 0) {
+        fn_800075A0(playerIndex) != 0) {
         fn_8000D000((void *)fn_8000B42C, (void *)fn_8000B3B4, 0);
         fn_8000ADE0(1);
     }
@@ -645,10 +645,10 @@ event_50:
     goto done;
 
 event_124:
-    selectedValue = fn_801E86F8(playerState);
-    if (selectedValue != -1) {
-        selectedValue = fn_801E86F8(playerState);
-        fn_801E86E8(selectedValue, playerState);
+    selection = fn_801E86F8(playerIndex);
+    if (selection != -1) {
+        selection = fn_801E86F8(playerIndex);
+        fn_801E86E8(selection, playerIndex);
     }
     goto done;
 
@@ -659,7 +659,7 @@ event_5c:
     goto done;
 
 default_event:
-    fn_8000BF10(eventId, (int)lbl_8034F5B8);
+    fn_8000BF10(key, (int)lbl_8034F5B8);
 
 done:
     return;
