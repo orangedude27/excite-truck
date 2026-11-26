@@ -530,7 +530,7 @@ extern "C" void fn_800B36D4(s32 arg0);
 extern "C" s32 fn_800B6004(void *);
 extern "C" void fn_800B783C(void *arg0);
 extern "C" s32 fn_800B77C0(void *arg0);
-extern "C" s32 fn_800B5E14(void *arg0);
+extern "C" s32 VFiPFVOL_UpdateMountState(void *arg0);
 extern "C" s32 fn_800A53C0(void *);
 extern "C" s32 fn_800A53DC(void *);
 extern "C" void fn_800A53E8(void *);
@@ -3748,7 +3748,7 @@ extern "C" s32 fn_800A9A4C(void *arg0, s32 arg1, s32 arg2) {
 
     vol = ((void *(*)(void))fn_800B36D4)();
     fn_800B77C0((u8 *)vol + 0x1F90);
-    result = fn_800B5E14(vol);
+    result = VFiPFVOL_UpdateMountState(vol);
     if (result != 0) {
         fn_800B783C((void *)((volatile u8 *)vol + 0x1F90));
         lbl_803D2140[16] = result;
@@ -3779,7 +3779,7 @@ extern "C" void *fn_800A9B0C(void *fileArg) {
 
     volume = *(void **)((u8 *)fileArg + 8);
     fn_800B77C0((u8 *)volume + 0x1F90);
-    result = fn_800B5E14(volume);
+    result = VFiPFVOL_UpdateMountState(volume);
     if (result != 0) {
         fn_800B783C((u8 *)volume + 0x1F90);
         lbl_803D2140[16] = result;
@@ -9064,7 +9064,7 @@ extern "C" s32 fn_800B1EB8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4) {
     *arg4 = 0;
     file = arg3 == 0 ? 0 : *(void **)((u8 *)*(void **)((u8 *)arg3 + 8) + 0x268);
     fn_800B77C0((u8 *)file + 0x1F90);
-    result = fn_800B5E14(file);
+    result = VFiPFVOL_UpdateMountState(file);
     if (result != 0) {
         fn_800B783C((void *)((volatile u8 *)file + 0x1F90));
         lbl_803D2140[16] = result;
@@ -9099,7 +9099,7 @@ extern "C" s32 fn_800B1EB8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4) {
  * file thread by fn_800B75EC.
  *
  * The volume the handle's stream belongs to is locked and any mount or unmount
- * waiting on it carried out first (fn_800B5E14), and the stream still has to be
+ * waiting on it carried out first (VFiPFVOL_UpdateMountState), and the stream still has to be
  * one that is open.  The new position is the handle's own, the start of the
  * file or its end, plus offset - which is signed: a negative one moves back and
  * is refused before the start of the file, and a positive one that would not
@@ -9120,7 +9120,7 @@ extern "C" s32 fn_800B1EB8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4) {
     u8 *streamVolume;
     volume = file == 0 ? 0 : VF_STREAM_VOLUME(VF_HANDLE_STREAM(file));
     VFiPFLOCK_Acquire(VF_VOL_LOCK(volume));
-    status = fn_800B5E14(volume);
+    status = VFiPFVOL_UpdateMountState(volume);
     if (status != 0) {
         VFiPFLOCK_Release(VF_VOL_LOCK(volume));
         VF_LAST_ERROR = status;
@@ -9192,7 +9192,7 @@ extern "C" void *fn_800B224C(void *fileObj, void *info) {
 
     volume = fileObj == 0 ? 0 : *(void **)((u8 *)*(void **)((u8 *)fileObj + 8) + 0x268);
     fn_800B77C0((u8 *)volume + 0x1F90);
-    result = fn_800B5E14(volume);
+    result = VFiPFVOL_UpdateMountState(volume);
     if (result != 0) {
         fn_800B783C((void *)((volatile u8 *)volume + 0x1F90));
         lbl_803D2140[16] = result;
@@ -10879,7 +10879,7 @@ struct VFiPFVolume {
 #define VF_VOL_KEEP_FAT        0x0080 /* mount: leave the FAT as it is */
 
 /* The VF instance (lbl_803D2140) counts the volumes it holds mounted; every
- * mount and every unmount of fn_800B5E14/fn_800B6004 moves it. */
+ * mount and every unmount of VFiPFVOL_UpdateMountState/fn_800B6004 moves it. */
 #define VF_MOUNT_COUNT         lbl_803D2140[13]
 
 /* One drive slot, and the drive letters 'A'..'Z' they are named by. */
@@ -11255,7 +11255,7 @@ extern "C" s32 fn_800B5CB4(u32 arg0, void *arg1)
  * system is mounted and VF_ERR_NOT_MOUNTED when it is not.  fn_800B6004 is this
  * same routine answering VF_ERR_WRITE_PROTECTED for write-protected media.
  */
-extern "C" s32 fn_800B5E14(void *vol) {
+extern "C" s32 VFiPFVOL_UpdateMountState(void *vol) {
     s32 result;
     if (VFiPFVOL_IsMediaPresent(vol) != 0) {
         if (fn_800A53DC(vol) != 0 && (VF_VOLUME(vol)->flags & VF_VOL_MOUNTED) == 0) {
