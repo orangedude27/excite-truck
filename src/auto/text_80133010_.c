@@ -1,7 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-// Options files: fn_80133BA0 parses a text file ("default.opt", written back
+// Options files: readOptionsFile parses a text file ("default.opt", written back
 // out as "options.dat") into the table lbl_8055E07C, which fn_80133024
 // allocates here.  fn_80133E10 looks an option up by section + key and adds it
 // when it is missing; LoadIntOptionValue/fn_80133348/fn_8013323C/fn_80133460/
@@ -11,11 +11,11 @@
 #define OPTIONS_TAG 0x424F5054  // 'BOPT'
 #define OPTIONS_FILE_VERSION 2  // the "version 2" line a file starts with
 #define OPTIONS_MAX_ENTRIES 500 // options the table holds (0x1F4)
-#define OPTIONS_LINE_SIZE 0x100 // line buffer fn_80133BA0 reads into
+#define OPTIONS_LINE_SIZE 0x100 // line buffer readOptionsFile reads into
 
 // The "[SECTION]" an option was written under.  fn_80133B24 turns a section
 // name into one of these (the 17 names are in lbl_802F9308) and answers
-// OPTIONS_SECTION_NONE for a name it doesn't know; fn_80133BA0 takes
+// OPTIONS_SECTION_NONE for a name it doesn't know; readOptionsFile takes
 // OPTIONS_SECTION_NONE for its section argument to mean "every section".
 typedef enum OptionSection {
     OPTIONS_SECTION_GLOBAL = 0,
@@ -106,7 +106,7 @@ extern const char lbl_8032BA90[];
 
 extern int lbl_8055E07C;
 extern int lbl_80559B58;
-extern int fn_80133BA0(int, int, int);
+extern int readOptionsFile(int, int, int);
 extern int fn_80133AD8(int);
 extern int Abend_Panic(const char *, ...);
 extern const char lbl_8032B8B0[];
@@ -149,7 +149,7 @@ void fn_80133024(void) {
     lbl_8042F718[11] = 0;
     lbl_8042F718[13] = 0;
     lbl_8042F718[15] = 0;
-    if (fn_80133BA0(lbl_80559B58, 0, 0x12) == 0)
+    if (readOptionsFile(lbl_80559B58, 0, 0x12) == 0)
         Abend_Panic(lbl_8032B88C, lbl_80559B58);
     fn_802E6BD8(0x4F505473, 6, lbl_8055E07C, 0x6D68, (void (*)(void))fn_80133FCC);
     fn_8000DBC8(fn_801341B4);
@@ -157,7 +157,7 @@ void fn_80133024(void) {
 #pragma scheduling on
 /* Load default options for a section, or report failure with the section name. */
 void fn_801330E8(int section) {
-    if (!fn_80133BA0(lbl_80559B58, 0, section)) {
+    if (!readOptionsFile(lbl_80559B58, 0, section)) {
         const char *fmt = lbl_8032B8B0;
         int sectionName = fn_80133AD8(section);
         Abend_Panic(fmt, sectionName);
@@ -491,7 +491,7 @@ test_char:
     return (float)(unsigned int)fn_80133844(p);
 }
 #pragma opt_propagation off
-/* Read one line from the text at *srcPtr into dst for fn_80133BA0's BOPT parser: skip leading whitespace (ctype table bit 0x100), copy up to dstCapacity-1 bytes until CR/LF, NUL-terminate, advance the source cursor, and return whether any bytes were copied. */
+/* Read one line from the text at *srcPtr into dst for readOptionsFile's BOPT parser: skip leading whitespace (ctype table bit 0x100), copy up to dstCapacity-1 bytes until CR/LF, NUL-terminate, advance the source cursor, and return whether any bytes were copied. */
 int fn_80133A08(char **srcPtr, int srcRemaining, char *dst, int dstCapacity) {
     char *src;
     int ch, outOfRange, isSpace;
@@ -559,7 +559,7 @@ int fn_80133B24(char *sectionName) {
 
 #pragma use_lmw_stmw off
 /*
- * fn_80133BA0 - read an options file into the option table.
+ * readOptionsFile - read an options file into the option table.
  *
  * Asks the resource manager for the "BOPT" file called `path` and reads it
  * line by line.  "[SECTION]" lines pick the section (fn_80133B24 knows the 17
@@ -571,7 +571,7 @@ int fn_80133B24(char *sectionName) {
  * options of wantSection are stored - OPTIONS_SECTION_NONE takes them all.
  * Returns 0 when the file can't be read or has the wrong version.
  */
-int fn_80133BA0(int path, int ignoreVersion, int wantSection) {
+int readOptionsFile(int path, int ignoreVersion, int wantSection) {
     int size;
     int loadStatus;
     int fileVersion;
@@ -828,7 +828,7 @@ void fn_801341B4(int optionValue, int event) {
 
 extern int lbl_8055E07C;
 extern int lbl_80559B58;
-extern int fn_80133BA0(int, int, int);
+extern int readOptionsFile(int, int, int);
 extern int fn_80133AD8(int);
 extern int Abend_Panic(const char *, ...);
 extern const char lbl_8032B8B0[];
