@@ -437,7 +437,7 @@ extern void fn_80148100(void *);
 #pragma push
 #pragma processor 750
 #pragma cplusplus on
-extern "C" void fn_801DFFB4(void) {
+extern "C" void drawWhiteoutFlash(void) {
     /* Renders the "whiteout" screen flash: derive a 0..1 opacity from how long
      * ago the event fired, write white-with-alpha into the named menu pane,
      * set its width and refresh it, guarded on the active game/subsystem state.
