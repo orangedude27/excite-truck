@@ -1211,7 +1211,7 @@ void fn_8016D278(void *list) {
  * +0x54 so it can be released again.  Kind 0 is the only request the master
  * handles; any other kind does nothing.
  */
-void RingChallengeMaster_SelectSet(s32 unused, s32 kind, s32 setIndex) {
+/* Select a ring set for the Ring Challenge master: mark it active, clear its timer and gems, reset its configured gem set, then release the old map marker and queue a new one. Only kind 0 is handled. */ void RingChallengeMaster_SelectSet(s32 unused, s32 kind, s32 setIndex) {
     char setName[0x20];   /* "set_%i_5" &c., for the gem-set reset */
     char markerName[0x20]; /* the same name, for the marker position lookup */
     register u8 *master = (u8 *)lbl_8055E378;
@@ -1226,20 +1226,20 @@ void RingChallengeMaster_SelectSet(s32 unused, s32 kind, s32 setIndex) {
         if (setIndex < RCM_SET_COUNT(master)) {
             s32 gemIndex;
             u8 *ringSet;
-            s32 gemOffset;
+            s32 gemByteOffset;
             ringSet = RCM_SET_LIST(master) + setIndex * 0x14; /* 0x14-byte set entry */
             ringSet[9] = 1;                    /* set is active */
             gemIndex = 0;
             *(f32 *)(ringSet + 0xC) = lbl_8055E3C8; /* its timer back to 0.0f */
-            gemOffset = 0;
+            gemByteOffset = 0;
             *(volatile s32 *)(ringSet + 0x10) = 0;  /* and its counter to 0 */
             while (gemIndex < *(s32 *)(*(u8 **)ringSet + 4)) { /* its gems */
-                u8 *gems = (u8 *)**(void ***)ringSet;
-                void *gem = *(void **)(gems + gemOffset + 4);
-                if (gem != 0) {
-                    fn_802BAF98(gem, 1);       /* release the gem object */
+                u8 *gemList = (u8 *)**(void ***)ringSet;
+                void *gemRecord = *(void **)(gemList + gemByteOffset + 4);
+                if (gemRecord != 0) {
+                    fn_802BAF98(gemRecord, 1);       /* release the gem object */
                 }
-                gemOffset += 0x44;             /* 0x44 bytes per gem */
+                gemByteOffset += 0x44;             /* 0x44 bytes per gem */
                 gemIndex += 1;
             }
         }
