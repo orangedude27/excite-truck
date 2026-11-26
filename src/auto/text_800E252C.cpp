@@ -1675,7 +1675,7 @@ extern "C" void UpdateAxMix__Q46nw4hbm3snd6detail7AxVoiceFv(void *);
 extern "C" void UpdateAxLpf__Q46nw4hbm3snd6detail7AxVoiceFv(char *);
 extern "C" int fn_800E6B24(void *);
 #pragma use_lmw_stmw off
-extern "C" void ApplyPendingAxUpdates__Q46nw4hbm3snd6detail7AxVoiceFv(void *voice_) {
+/* Apply one AxVoice's pending AX updates (start, pause/mute, source rate, volume, mix and low-pass filter) to its voices, clearing each flag as it is handled and reporting playback completion through the status callback. */ extern "C" void ApplyPendingAxUpdates__Q46nw4hbm3snd6detail7AxVoiceFv(void *voice_) {
 #define B(off) (*(unsigned char *)((char *)voice_ + (off)))
 #define I(off) (*(int *)((char *)voice_ + (off)))
 #define CHANNEL_COUNT I(0x104)
