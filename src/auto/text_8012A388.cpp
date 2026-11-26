@@ -121,7 +121,7 @@ extern "C" const char lbl_8032AB78[];
 extern "C" u8 lbl_8055DFF9;
 extern "C" void *lbl_8055E000;
 extern "C" s32 fn_8012BC50(void *, void *, s32);
-extern "C" s32 fn_8012E9F0(s32, s32);
+extern "C" s32 findResourceOwningMount(s32, s32);
 extern "C" const char lbl_8032AD88[];
 extern "C" const char lbl_8032AD6C[];
 extern "C" const char lbl_8032AD2C[];
@@ -363,56 +363,159 @@ static inline void Swap4(u8 *q) {
     t = q[1]; q[1] = q[2]; q[2] = t;
 }
 
-extern "C" void fn_8012A80C(s32 arg0) {
-#pragma use_lmw_stmw off
-    u8 *p = (u8 *)arg0;
-    s32 s48, s44, s40, s3C, s38, s34, s30, s2C, s28, s24, s20, s1C, s18, s14, s10, sC, s8;
-    u8 k29, k28, k25, k24, k21, k20, k1D, k1C, k19, k18, k15, k12, k11, k10, kD, kC, k9;
-    u8 b0, b1, b2, b3, b4, b5, b6, b7, b8, bB;
-
-    s48 = p[0xA]; k9 = p[9];
-    s8 = p[0xF]; kC = p[0xC];
-    sC = p[0xE]; kD = p[0xD];
-    s10 = p[0x13]; k10 = p[0x10];
-    s14 = p[0x12]; k11 = p[0x11];
-    s18 = p[0x17]; k12 = p[0x14];
-    s1C = p[0x16]; k15 = p[0x15];
-    s20 = p[0x1B]; k18 = p[0x18];
-    s24 = p[0x1A]; k19 = p[0x19];
-    s28 = p[0x1F]; k1C = p[0x1C];
-    s2C = p[0x1E]; k1D = p[0x1D];
-    s30 = p[0x23]; k20 = p[0x20];
-    s34 = p[0x22]; k21 = p[0x21];
-    s38 = p[0x27]; k24 = p[0x24];
-    s3C = p[0x26]; k25 = p[0x25];
-    s40 = p[0x2B]; k28 = p[0x28];
-    s44 = p[0x2A]; k29 = p[0x29];
-    b0 = p[0]; b1 = p[1]; b2 = p[2]; b3 = p[3];
-    b4 = p[4]; b5 = p[5]; b6 = p[6]; b7 = p[7];
-    b8 = p[8]; bB = p[0xB];
-
-    p[9] = (u8)s48; p[0xC] = (u8)s8; p[0xD] = (u8)sC;
-    p[0x10] = (u8)s10; p[0x11] = (u8)s14; p[0x14] = (u8)s18;
-    p[0x15] = (u8)s1C; p[0x18] = (u8)s20; p[0x19] = (u8)s24;
-    p[0x1C] = (u8)s28; p[0x1D] = (u8)s2C; p[0x20] = (u8)s30;
-    p[0x21] = (u8)s34; p[0x24] = (u8)s38; p[0x25] = (u8)s3C;
-    p[0x28] = (u8)s40; p[0x29] = (u8)s44;
-    p[0] = b3; p[3] = b0; p[1] = b2; p[2] = b1;
-    p[4] = b7; p[7] = b4; p[5] = b6; p[6] = b5;
-    p[8] = bB; p[0xB] = b8;
-    p[0xA] = k9; p[0xF] = kC; p[0xE] = kD;
-    p[0x13] = k10; p[0x12] = k11; p[0x17] = k12;
-    p[0x16] = k15; p[0x1B] = k18; p[0x1A] = k19;
-    p[0x1F] = k1C; p[0x1E] = k1D; p[0x23] = k20;
-    p[0x22] = k21; p[0x27] = k24; p[0x26] = k25;
-    p[0x2B] = k28; p[0x2A] = k29;
+extern "C" void fn_8012A80C(s32 arg0)
+{
+  u8 *p = (u8 *) arg0;
+  s32 s48;
+  s32 s44;
+  char s40;
+  s32 s3C;
+  s32 s38;
+  s32 s30;
+  s32 s2C;
+  s32 s34;
+  s32 s28;
+  volatile unsigned int s24;
+  s32 s20;
+  s32 s1C;
+  s32 s18;
+  s32 s14;
+  s32 s10;
+  s32 sC;
+  s32 s8;
+  u8 k21;
+  u8 k29;
+  u8 k28;
+  u8 k25;
+  u8 k24;
+  u8 k20;
+  u8 k1D;
+  u8 k1C;
+  u8 k19;
+  u8 k18;
+  u8 k15;
+  u8 k12;
+  u8 k11;
+  u8 k10;
+  u8 kD;
+  u8 k9;
+  u8 b0;
+  volatile long b1;
+  u8 b2;
+  u8 b3;
+  u8 kC;
+  u8 b4;
+  u8 b5;
+  u8 b6;
+  u8 b7;
+  u8 b8;
+  u8 bB;
+  s48 = p[0xA];
+  kD = p[0xD];
+  k9 = p[9];
+  s8 = p[0xF];
+  kC = p[0xC];
+  sC = p[0xE];
+  s10 = p[0x13];
+  k10 = p[0x10];
+  s14 = p[0x12];
+  k11 = p[0x11];
+  s18 = p[0x17];
+  k12 = p[0x14];
+  s1C = p[0x16];
+  k15 = p[0x15];
+  s20 = p[0x1B];
+  k18 = p[0x18];
+  s24 = p[0x1A];
+  k19 = p[0x19];
+  s28 = p[0x1F];
+  k1C = p[0x1C];
+  s2C = p[0x1E];
+  k1D = p[0x1D];
+  s30 = p[0x23];
+  k20 = p[0x20];
+  s34 = p[0x22];
+  k21 = p[0x21];
+  s38 = p[0x27];
+  k24 = p[0x24];
+  s3C = p[0x26];
+  k25 = p[0x25];
+  s40 = p[0x2B];
+  b0 = p[0];
+  k28 = p[0x28];
+  s44 = p[0x2A];
+  k29 = p[0x29];
+  b1 = p[1];
+  b2 = p[2];
+  b3 = p[3];
+  b4 = p[4] & 0xFFFFu;
+  b5 = p[5];
+  b6 = p[6];
+  b8 = p[8];
+  b7 = p[7];
+  bB = p[0xB];
+  ((u8 *) arg0)[9] = (u8) s48;
+  ((u8 *) arg0)[0xC] = (u8) s8;
+  ((u8 *) arg0)[0xD] = (u8) sC;
+  ((u8 *) arg0)[0x10] = (u8) s10;
+  ((u8 *) arg0)[0x11] = (u8) s14;
+  ((u8 *) arg0)[0x14] = (u8) s18;
+  ((u8 *) arg0)[0x15] = (u8) s1C;
+  ((u8 *) arg0)[0x18] = (u8) s20;
+  ((u8 *) arg0)[0x19] = (u8) s24;
+  ((u8 *) arg0)[0x1C] = (u8) s28;
+  ((u8 *) arg0)[0x1D] = (u8) s2C;
+  ((u8 *) arg0)[0x20] = (u8) s30;
+  ((u8 *) arg0)[0x21] = (u8) s34;
+  ((u8 *) arg0)[0x24] = (u8) s38;
+  ((u8 *) arg0)[0x25] = (u8) s3C;
+  ((u8 *) arg0)[0x28] = (u8) s40;
+  ((u8 *) arg0)[0x29] = (u8) s44;
+  ((u8 *) arg0)[0] = b3;
+  ((u8 *) arg0)[3] = b0;
+  ((u8 *) arg0)[1] = b2;
+  ((u8 *) arg0)[2] = b1;
+  ((u8 *) arg0)[4] = b7;
+  ((u8 *) arg0)[7] = b4;
+  ((u8 *) arg0)[5] = b6;
+  ((u8 *) arg0)[6] = b5;
+  ((u8 *) arg0)[8] = bB;
+  ((u8 *) arg0)[0xB] = b8;
+  ((u8 *) arg0)[0xA] = k9;
+  ((u8 *) arg0)[0xF] = kC;
+  ((u8 *) arg0)[0xE] = kD;
+  ((u8 *) arg0)[0x13] = k10;
+  ((u8 *) arg0)[0x12] = k11;
+  ((u8 *) arg0)[0x17] = k12;
+  ((u8 *) arg0)[0x16] = k15;
+  ((u8 *) arg0)[0x1B] = k18;
+  ((u8 *) arg0)[0x1A] = k19;
+  ((u8 *) arg0)[0x1F] = k1C;
+  ((u8 *) arg0)[0x1E] = k1D;
+  ((u8 *) arg0)[0x23] = k20;
+  ((u8 *) arg0)[0x22] = k21;
+  ((u8 *) arg0)[0x27] = k24;
+  ((u8 *) arg0)[0x26] = k25;
+  ((u8 *) arg0)[0x2B] = k28;
+  ((u8 *) arg0)[0x2A] = k29;
+  {
+    u8 c = p[0x2C];
+    u8 e = p[0x30];
+    u8 f = p[0x31] ^ 0;
+    u8 d = p[0x2D];
+    do
     {
-        u8 c = p[0x2C], d = p[0x2D], e = p[0x30], f = p[0x31];
-        p[0x2C] = p[0x2F]; p[0x2F] = c;
-        p[0x2D] = p[0x2E]; p[0x2E] = d;
-        p[0x30] = p[0x33]; p[0x33] = e;
-        p[0x31] = p[0x32]; p[0x32] = f;
+      p[0x2C] = p[0x2F];
+      p[0x2F] = c;
+      p[0x2D] = p[0x2E];
+      p[0x2E] = d;
     }
+    while (0);
+    p[0x30] = p[0x33];
+    p[0x33] = e;
+    p[0x31] = p[0x32];
+    p[0x32] = f;
+  }
 }
 
 #pragma scheduling reset
@@ -2987,7 +3090,7 @@ extern "C" void fn_8012E96C(s32 arg0) {
     if (entry != 0) {
         result = ((s32 (*)(s32, s32 *, s32))fn_8012B534)(arg0, &sp8, 3);
         if (result == 0) {
-            result = fn_8012E9F0((s32)entry, arg);
+            result = findResourceOwningMount((s32)entry, arg);
             if (result != 0)
                 fn_8012E67C((s32)entry, result + 0xC);
         } else {
@@ -3001,7 +3104,7 @@ extern "C" void fn_8012E96C(s32 arg0) {
 // and entries byte-reversed if the read just brought it in - and returns the
 // mount whose table lists arg1 (fn_8012E96C reports the set by its name at
 // +0xC), or 0 when no mounted set has it.
-extern "C" s32 fn_8012E9F0(s32 manager, s32 resName) {
+extern "C" s32 findResourceOwningMount(s32 manager, s32 resName) {
     char tocPath[128];
     s32 tocOffset;
     u8 startedLoad;
