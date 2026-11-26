@@ -21717,7 +21717,7 @@ extern "C" const char lbl_8031EA90[];
 extern "C" const char lbl_8031EA40[];
 extern "C" const char lbl_8031EA4C[];
 extern "C" void fn_800D2E3C(s32, s32, s32, s32);
-extern "C" void fn_800D24D4(void*, s32);
+extern "C" void Console_DrawDirectLines(void*, s32);
 extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597E0[]; }
 extern "C" void fn_8010DC74(s32, const char *, ...);
 extern "C" void fn_800D2FDC(void *arg0, void *arg1, s32 arg2, const char *fmt, ...);
@@ -27131,7 +27131,7 @@ extern "C" void Console_DrawDirect__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHe
             fn_800D2E3C(*(s16 *)((u8 *)head + 0x1C) - 6, *(s16 *)((u8 *)head + 0x1E) - 3,
                         (s32)(*(u16 *)((u8 *)head + 4)) * 6 + 12,
                         (s32)(*(u16 *)((u8 *)head + 0x20)) * 0xA + 4);
-            fn_800D24D4(head, 0);
+            Console_DrawDirectLines(head, 0);
             fn_800D2FC8();
             OSUnlockMutex(&lbl_804077C0);
         }
@@ -27400,7 +27400,7 @@ extern "C" void fn_800D2480(void) {
    Console_DrawDirect__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHead calls it
    under the console mutex; rename_symbol refuses game symbols, so it keeps its
    placeholder name. */
-extern "C" void fn_800D24D4(void *consoleHead, s32 charWriter)
+extern "C" void Console_DrawDirectLines(void *consoleHead, s32 charWriter)
 {
     nw4hbm::db::detail::ConsoleHead *console = (nw4hbm::db::detail::ConsoleHead *)consoleHead;
     s32 skip;
