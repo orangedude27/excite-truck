@@ -603,7 +603,7 @@ extern u16 lbl_80560CBA;
 extern u16 lbl_80560CBC;
 extern u16 lbl_80560CBE;
 #pragma use_lmw_stmw off
-int ReadFont(int dst, int encode, int font) {
+/* Copy the compressed font from ROM into a scratch buffer, verify its Yay0 header, decompress it into the output font header, and for Shift-JIS patch the 'T' glyph tile in the decompressed sheet with a fixed pattern; return the uncompressed font size (0 on a bad header). */ int ReadFont(int dst, int encode, int font) {
     u8* tex;
     int i;
     u32 code;
