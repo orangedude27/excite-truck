@@ -456,7 +456,7 @@ extern "C" void *__array_delete(void *, void *, int, int);
 extern "C" void *__dt__Q46nw4hbm3snd6detail7AxVoiceFv(void *, int);
 extern "C" void *fn_800E2D74(void *, int);
 extern "C" void TRKGetFreeBuffer(void *);
-extern "C" void fn_800E4764(void *);
+extern "C" void ApplyPendingAxUpdates__Q46nw4hbm3snd6detail7AxVoiceFv(void *);
 #pragma push
 #pragma small_data off
 extern u8 lbl_80322498[];
@@ -1440,7 +1440,7 @@ extern "C" void fn_800E4064(void *manager) {
 #pragma use_lmw_stmw off
 /* Advance every voice on this AxManager's voice list once with interrupts off:
  * each LinkList node sits 0x1A8 into an AxVoice, the list sentinel is at +0x18
- * of the manager, and fn_800E4764 applies one voice's pending AX updates. */
+ * of the manager, and ApplyPendingAxUpdates__Q46nw4hbm3snd6detail7AxVoiceFv applies one voice's pending AX updates. */
 extern "C" void UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv(void *manager) {
     struct { unsigned int irq; } irqState;
     unsigned int &level = irqState.irq;
@@ -1456,7 +1456,7 @@ extern "C" void UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv(void *manager)
         link = *(void **)link;
         if (voiceNode == 0)
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803220C4, 0x23D, (const char *)lbl_803220A0);
-        fn_800E4764((char *)voiceNode - 0x1A8);
+        ApplyPendingAxUpdates__Q46nw4hbm3snd6detail7AxVoiceFv((char *)voiceNode - 0x1A8);
     }
     OSRestoreInterrupts(level);
 }
@@ -1675,7 +1675,7 @@ extern "C" void UpdateAxMix__Q46nw4hbm3snd6detail7AxVoiceFv(void *);
 extern "C" void UpdateAxLpf__Q46nw4hbm3snd6detail7AxVoiceFv(char *);
 extern "C" int fn_800E6B24(void *);
 #pragma use_lmw_stmw off
-extern "C" void fn_800E4764(void *voice_) {
+extern "C" void ApplyPendingAxUpdates__Q46nw4hbm3snd6detail7AxVoiceFv(void *voice_) {
 #define B(off) (*(unsigned char *)((char *)voice_ + (off)))
 #define I(off) (*(int *)((char *)voice_ + (off)))
 #define CHANNEL_COUNT I(0x104)
@@ -2007,7 +2007,7 @@ struct AxVoice {
 };
 
 /* Bits of AxVoice::updateFlags (+0x123).  Setters ask for one thing to be pushed
- * to the AX voices; the update pass fn_800E4764, run over every live AxVoice by
+ * to the AX voices; the update pass ApplyPendingAxUpdates__Q46nw4hbm3snd6detail7AxVoiceFv, run over every live AxVoice by
  * AxManager::UpdateAllVoices, does it and clears the bit again. */
 enum AxVoiceUpdateFlag {
     AX_UPDATE_START = 0x01,   /* start playing: apply the source rate, then set the AX voices playing */
@@ -2150,7 +2150,7 @@ extern "C" void Setup__Q46nw4hbm3snd6detail7AxVoiceFRCQ46nw4hbm3snd6detail8WaveD
 }
 /* RealName: Start__Q46nw4hbm3snd6detail7AxVoiceFv - asks this AxVoice to start
  * playing: marks it started (+0x11D), clears its pause flag (+0x11F) and sets the
- * start bit of the AX update flags (+0x123); the update pass fn_800E4764 then
+ * start bit of the AX update flags (+0x123); the update pass ApplyPendingAxUpdates__Q46nw4hbm3snd6detail7AxVoiceFv then
  * applies the source rate and sets this voice's AX voices playing.  The three
  * writes are held under an interrupt lock, the same lock AxManager::UpdateAllVoices
  * takes while it walks the live voices, so the request is never seen half applied.
