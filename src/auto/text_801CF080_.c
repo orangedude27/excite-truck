@@ -28,7 +28,7 @@ typedef struct MeshTri {
     /* 0x14 */ f32 planeDist;     /* dot(normal, corner) */
     /* 0x18 */ Vec edgeNormal[3]; /* inward normal of the edge plane through
                                    * corner k, used to test a point against the
-                                   * triangle (fn_801CF080, fn_801CF828) */
+                                   * triangle (fn_801CF080, MeshRayCast_801CF828) */
 } MeshTri; /* 0x3C */
 
 typedef struct Mesh {
@@ -262,7 +262,7 @@ f32 fn_801CF778(const float *point, const float *origin, const float *dir) {
  * that are inside all three edge planes.  Returns 1, shortens *ioDist to the
  * distance of the closest such hit and writes the plane normal of the triangle
  * it hit to normalOut; returns 0 when the ray misses the mesh. */
-s32 fn_801CF828(Mesh *mesh, Vec *origin, Vec *dir, f32 *ioDist, Vec *normalOut) {
+s32 MeshRayCast_801CF828(Mesh *mesh, Vec *origin, Vec *dir, f32 *ioDist, Vec *normalOut) {
     Vec *nrm;
     s32 nodeOff;
     s32 triOff;

@@ -151,7 +151,7 @@ extern "C" s32 fn_8012C4E4(void*, void*, s32);
 extern "C" s32 fn_801CFF18(s32, s32);
 extern "C" void fn_801D0650(void);
 extern "C" void fn_801CFF14(void);
-extern "C" s32 fn_801CF828(s32, s32, s32, s32, s32);
+extern "C" s32 MeshRayCast_801CF828(s32, s32, s32, s32, s32);
 extern s32 trackMesh;
 extern "C" s32 fn_801CFEAC(void*);
 extern s32 lbl_803336EC[];
@@ -5519,7 +5519,7 @@ extern "C" s32 fn_801A40F8(void *arg0, f32 * __restrict arg1, f32 *arg2, s32 arg
         }
     }
     typedef s32 (*Call)(s32, f32 *, f32 *, s32, f32 *);
-    if (((Call)fn_801CF828)(*(s32 *)((u8 *)arg0 + 0x24), &stack[6], &stack[3], arg3, &stack[0]) != 0) {
+    if (((Call)MeshRayCast_801CF828)(*(s32 *)((u8 *)arg0 + 0x24), &stack[6], &stack[3], arg3, &stack[0]) != 0) {
         f32 *m3 = (f32 *)*(void **)((u8 *)arg0 + 0xC);
         if (arg4 == &stack[0]) {
             f32 b3 = m3[3];
@@ -5945,10 +5945,10 @@ extern "C" void fn_801A4E54(void) {
 extern "C" void fn_801D0650(void);
 extern s32 trackMesh;
 extern void fn_801CFF14(void);
-extern s32 fn_801CF828(s32, s32, s32, s32, s32);
+extern s32 MeshRayCast_801CF828(s32, s32, s32, s32, s32);
 /* Test the global object for a hit with the given parameters; on hit, store result code 0x6E and return 1. */
 extern "C" s32 fn_801A4E88(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4) {
-    if ((trackMesh != 0) && (fn_801CF828(trackMesh, arg0, arg1, arg2, arg3) != 0)) {
+    if ((trackMesh != 0) && (MeshRayCast_801CF828(trackMesh, arg0, arg1, arg2, arg3) != 0)) {
         *arg4 = 0x6E;
         return 1;
     }
