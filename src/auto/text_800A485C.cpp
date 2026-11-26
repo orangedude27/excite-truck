@@ -19682,44 +19682,44 @@ class HomeButtonSoundControl { public: virtual void d0(); virtual void d1(); vir
  * `flag` is the C++ deleting-destructor flag: with flag > 0 the controller
  * itself goes through operator delete (fn_80128668) at the end.
  */
-extern "C" void *deleteHomeButtonController(void *homeButton, s32 flag) {
-    u8 *self = (u8 *)homeButton;
+/* Deleting destructor: destroy and free every resource owned by the home-button overlay controller, then free the controller itself when the deleting flag is set. */ extern "C" void *deleteHomeButtonController(void *controller, s32 flag) {
+    u8 *self = (u8 *)controller;
     s32 index;
-    u8 *slot;
-    if (homeButton != 0) {
+    u8 *resourceSlot;
+    if (controller != 0) {
         ((HomeButtonResource *)*(void **)(self + 0x1F4))->deleteThis(-1);
         MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0x1F4));
         ((HomeButtonResource *)*(void **)(self + 0x1E0))->deleteThis(-1);
         MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0x1E0));
         if (*(s32 *)((u8 *)*(void **)(self + 4) + 0x20) == 0) {
-            slot = self;
-            for (index = 0; index < 4; slot += 4, index++) {
-                ((HomeButtonResource *)*(void **)(slot + 0x1E4))->deleteThis(-1);
-                MEMFreeToAllocator(lbl_80559708, *(void **)(slot + 0x1E4));
+            resourceSlot = self;
+            for (index = 0; index < 4; resourceSlot += 4, index++) {
+                ((HomeButtonResource *)*(void **)(resourceSlot + 0x1E4))->deleteThis(-1);
+                MEMFreeToAllocator(lbl_80559708, *(void **)(resourceSlot + 0x1E4));
             }
         }
-        slot = self;
-        for (index = 0; index < *(s32 *)(self + 0xC); slot += 4, index++) {
-            ((HomeButtonResource *)*(void **)(slot + 0x268))->deleteThis(-1);
-            MEMFreeToAllocator(lbl_80559708, *(void **)(slot + 0x268));
+        resourceSlot = self;
+        for (index = 0; index < *(s32 *)(self + 0xC); resourceSlot += 4, index++) {
+            ((HomeButtonResource *)*(void **)(resourceSlot + 0x268))->deleteThis(-1);
+            MEMFreeToAllocator(lbl_80559708, *(void **)(resourceSlot + 0x268));
         }
-        slot = self;
-        for (index = 0; index < 0xF; index++, slot += 4) {
-            ((HomeButtonResource *)*(void **)(slot + 0x3C0))->deleteThis(-1);
-            MEMFreeToAllocator(lbl_80559708, *(void **)(slot + 0x3C0));
+        resourceSlot = self;
+        for (index = 0; index < 0xF; index++, resourceSlot += 4) {
+            ((HomeButtonResource *)*(void **)(resourceSlot + 0x3C0))->deleteThis(-1);
+            MEMFreeToAllocator(lbl_80559708, *(void **)(resourceSlot + 0x3C0));
         }
-        slot = self;
-        for (index = 0; index < 0x4A; index++, slot += 4) {
-            ((HomeButtonResource *)*(void **)(slot + 0x298))->deleteThis(-1);
-            MEMFreeToAllocator(lbl_80559708, *(void **)(slot + 0x298));
+        resourceSlot = self;
+        for (index = 0; index < 0x4A; index++, resourceSlot += 4) {
+            ((HomeButtonResource *)*(void **)(resourceSlot + 0x298))->deleteThis(-1);
+            MEMFreeToAllocator(lbl_80559708, *(void **)(resourceSlot + 0x298));
         }
         MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0x1FC));
         ((HomeButtonSoundControl *)*(void **)(self + 0x1F8))->deleteThis(-1);
         MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0x1F8));
-        slot = self;
-        for (index = 0; index < 4; index++, slot += 4) {
-            fn_800D0F1C(*(void **)(slot + 0x254), -1);
-            MEMFreeToAllocator(lbl_80559708, *(void **)(slot + 0x254));
+        resourceSlot = self;
+        for (index = 0; index < 4; index++, resourceSlot += 4) {
+            fn_800D0F1C(*(void **)(resourceSlot + 0x254), -1);
+            MEMFreeToAllocator(lbl_80559708, *(void **)(resourceSlot + 0x254));
         }
         ((HomeButtonResource1F0 *)*(void **)(self + 0x264))->deleteThis(-1);
         MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0x264));
@@ -19728,9 +19728,9 @@ extern "C" void *deleteHomeButtonController(void *homeButton, s32 flag) {
         MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0xA8));
         fn_800D67B8((s32)(self + 0x200), -1);
         if (flag > 0)
-            ((void (*)(void *))fn_80128668)(homeButton);
+            ((void (*)(void *))fn_80128668)(controller);
     }
-    return homeButton;
+    return controller;
 }
 
 extern "C" void* __dt__Q36nw4hbm3lyt19ArcResourceAccessorFv(void* self, s32 deleteFlag) {
