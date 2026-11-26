@@ -95,7 +95,7 @@ extern "C" void transformTwoPoints(int, int, void*);
     extern "C" void fn_80298B48(void*);
     extern "C" void fn_802976DC(void);
     extern "C" void fn_80128670(int);
-  extern "C" void fn_80298FBC(void*, void* = 0);
+  extern "C" void transformEffectEntryPosition(void*, void* = 0);
   extern "C" void fn_802CAC54(int);
   extern "C" void fn_8029BDC4(void*);
   extern "C" void fn_80299544(void* = 0);
@@ -568,7 +568,7 @@ extern "C" void fn_80298AD8(void* arg0) {
 }
 
 #pragma scheduling invalid_target
-/* Applies per-entry processing (fn_80298FBC) to each 0x20-byte entry in the
+/* Applies per-entry processing (transformEffectEntryPosition) to each 0x20-byte entry in the
  * container's array whose active flag at offset 0x19 is set. */
 extern "C" void fn_80298B48(void* container) {
     int byteOffset = 0;
@@ -576,7 +576,7 @@ extern "C" void fn_80298B48(void* container) {
     while (entryIndex < fn_80287B14()) {
         char* entry = (char*)*(void**)container + byteOffset;
         if ((unsigned char)entry[0x19] != 0) {
-            fn_80298FBC(container, entry);
+            transformEffectEntryPosition(container, entry);
         }
         byteOffset += 0x20;
         entryIndex++;
@@ -714,7 +714,7 @@ extern "C" void fn_80298DE0(void *container, void *entryIndex, int enabled) {
 
 #pragma push
 #pragma processor 750
-void fn_80298FBC(void *container, void *entry) {
+void transformEffectEntryPosition(void *container, void *entry) {
     typedef void (*EmitPointFn)(void *emitter, float *position, float *basePosition);
     /* Transform an active effect entry's local position by its object's pose (column-major
      * 3x3 rotation, translation), add per-axis random jitter, then emit the world position. */
