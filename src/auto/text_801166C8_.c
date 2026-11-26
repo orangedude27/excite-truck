@@ -5001,7 +5001,7 @@ void fn_8011D7F8(void *arg0, void *arg1)
  * whose low nibble selects the band's symbol table and whose high nibble is the
  * index' width, and every non-zero symbol is followed by its sign bit; set, a
  * single 4-bit value (again signed) is repeated over the whole block. */
-void fn_8011D9E4(void *arg0, BitReader8011 *reader) {
+void decodeSignedBandBlock(void *arg0, BitReader8011 *reader) {
     /* One band of the stream; see the BandState8011 layout above decodeBandBlock. */
     struct Band {
         u8 *start;      /* 0x00 first value of the published block */
