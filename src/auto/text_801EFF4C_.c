@@ -431,7 +431,7 @@ extern "C" void fn_801345D8(void *, int, const char *, ...);
  * its square.  value44 is the resource's "dist" and value48 the "range" value
  * (default 500) squared.  Without the key, a single entry loads the "<value>.mod"
  * model at distance zero.  The table is stored at WheelMod+0xEC. */
-extern "C" void loadWheelLodTable(void *arg0, void *arg1) {
+/* Load the wheel's LOD model table from the "detached wheel" resource: up to eight models "<value><lod>.mod", each with its squared switch distance. */ extern "C" void loadWheelLodTable(void *arg0, void *arg1) {
     class WheelLodResource {
     public:
         virtual void unused0();
