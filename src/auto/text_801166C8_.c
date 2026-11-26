@@ -5753,7 +5753,7 @@ void fn_80120CA4(register s32 count, register void *dst, register s32 mode, regi
  * the slot above it (sp+0x10) is never loaded, so callers may pass any type
  * there -- fn_80120E14 hands it the int `mode` and still matches. */
 extern void fn_80121400(s32, s32 *, f32 *);
-extern void fn_801219B4(void *);
+extern void reorderFFT32Result(void *);
 extern void fn_80121BF4(void *);
 extern void fn_80125014(void *);
 extern void fn_80122518(s32, u8 *, void *);
@@ -5794,7 +5794,7 @@ void fn_80120E14(register s32 n, register void *a, register s32 ip, register s32
     } else if (n > 8) {
         if (n == 0x20) {
             fn_80123E98(a, (u8 *)w + (nw - 8) * 4);
-            fn_801219B4(a);
+            reorderFFT32Result(a);
         } else {
             fn_80124AD8(a, w);
             fn_80121BF4(a);
@@ -5991,7 +5991,7 @@ void fn_80121848(void *values) {
 // after sample 0 (offsets 0x08..0x7C) into natural order.  Sample 0 (offsets
 // 0x00/0x04) is already correct and is left alone.  Each aXX temporary holds
 // the value read from a + 0xXX so the in-place move can be done from registers.
-void fn_801219B4(void *a) {
+void reorderFFT32Result(void *a) {
     f32 a08, a0C, a10, a14, a18, a1C, a20, a24, a28, a2C;
     f32 a30, a34, a38, a3C, a40, a44, a48, a4C, a50, a54;
     f32 a58, a5C, a60, a64, a68, a6C, a70, a74, a78, a7C;
