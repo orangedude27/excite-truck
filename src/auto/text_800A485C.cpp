@@ -8045,7 +8045,7 @@ extern "C" s32 VFiPFFILE_Cursor_AdvanceToRead(void *cursor, s32 byteCount, s32 s
     return ok;
 }
 
-extern "C" s32 fn_800B0868(VFiPFCursor *cur, s32 dest, u32 length, u32 *readOut) {
+extern "C" s32 VFiPFFILE_ReadSectorHead(VFiPFCursor *cur, s32 dest, u32 length, u32 *readOut) {
     /* Read the part of a file read that lies in the rest of the sector the cursor
      * is in - the unaligned head of fn_800B0DEC's three-part read (this part, then
      * fn_800B0A60's whole sectors, then fn_800B0C10's tail).  A cursor already on
@@ -8156,7 +8156,7 @@ extern "C" s32 fn_800B0A60(void *file, s32 dst, u32 length, u32 *bytesReadOut) {
 
 extern "C" s32 fn_800B0C10(VFiPFCursor *cur, s32 dest, u32 length, u32 *readOut) {
     /* Read the tail of a file read - the run that is left over once whole
-     * sectors no longer fit (fn_800B0DEC calls fn_800B0868 for the partial
+     * sectors no longer fit (fn_800B0DEC calls VFiPFFILE_ReadSectorHead for the partial
      * sector the cursor starts inside, then fn_800B0A60 for the whole sectors
      * in between, and this for what remains).  An empty run, or one with no
      * byte of the file left to read, answers 0 without touching the disk.
@@ -8218,7 +8218,7 @@ extern "C" s32 fn_800B0DEC(void *arg0, s32 arg1, u32 arg2, s32 *arg3, s32 arg4) 
     temp_r7 = *(void **)((u8 *)arg0 + 8);
     *(void **)((u8 *)temp_r7 + 0x34) = (u8 *)arg0 + 0xC;
     *arg3 = 0;
-    result = fn_800B0868((VFiPFCursor *)arg0, arg1, arg2, &sp8);
+    result = VFiPFFILE_ReadSectorHead((VFiPFCursor *)arg0, arg1, arg2, &sp8);
     *arg3 += sp8;
     if (result != 0)
         return result;
