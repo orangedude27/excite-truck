@@ -653,7 +653,7 @@ extern void GXSetTevColor();
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_802DC464(int positionArray, int vertexCount, unsigned short *__restrict indexList, int indexListSize) {
+void CpuLight_DrawFadeFans(int positionArray, int vertexCount, unsigned short *__restrict indexList, int indexListSize) {
     /* Point the GX position array at `positionArray` (vertexCount xyz vertices), fade TEV
      * colour 1 to round(255 * CpuLight_FadeScale) clamped to 0..255 (only when that byte
      * changed since the last call), then push every [count, index...] run of `indexList`

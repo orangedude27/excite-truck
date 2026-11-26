@@ -743,7 +743,7 @@ extern void fn_802C8BD0();
 extern void DrawList_RestoreNormalMode(void);
 extern void fn_802DC3C0(int);
 extern void CpuLight_ResetVideoState(void);
-extern void fn_802DC464();
+extern void CpuLight_DrawFadeFans();
 extern float fn_801DCF48(int, float, float);
 #pragma push
 #pragma processor 750
@@ -779,7 +779,7 @@ void fn_802B1758(void *arg0) {
         cacheCount = *(int *)((char *)arg0 + 0x31C);
         v.node = *(void **)((char *)arg0 + 0x934);
         while (v.node) {
-            fn_802DC464(cache, cacheCount, *(void **)v.node, *(int *)((char *)v.node + 4));
+            CpuLight_DrawFadeFans(cache, cacheCount, *(void **)v.node, *(int *)((char *)v.node + 4));
             v.node = *(void **)((char *)v.node + 0xC);
         }
         v.i = 0;
@@ -789,7 +789,7 @@ void fn_802B1758(void *arg0) {
             setupA[2] = *(float *)(entry + 4);
             fn_802DA704(1, setupA, 1);
             fn_802DAA18();
-            fn_802DC464(cache, cacheCount, *(void **)entry, *(unsigned short *)*(void **)entry + 1);
+            CpuLight_DrawFadeFans(cache, cacheCount, *(void **)entry, *(unsigned short *)*(void **)entry + 1);
             offset += 8;
             v.i++;
         }
@@ -861,7 +861,7 @@ void fn_802B1758(void *arg0) {
                 values[12] = *p++;
                 values[13] = *p++;
             }
-            fn_802DC464(lbl_804BE190, 8, values, 0xE);
+            CpuLight_DrawFadeFans(lbl_804BE190, 8, values, 0xE);
             CpuLight_ResetVideoState();
             DrawList_RestoreNormalMode();
         }
