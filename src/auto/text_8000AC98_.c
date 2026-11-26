@@ -304,7 +304,7 @@ extern void fn_802B87A0(void);
 extern void destroyTrackMusicResource(void);
 extern void fn_8020D1C8(void);
 extern void fn_8000CEF0(void);
-extern void fn_80006E54(void);
+extern void shutdownGameManagers(void);
 extern void fn_80206228(void);
 extern void fn_801618B4(void);
 extern void fn_801CB8C0(void);
@@ -332,7 +332,7 @@ void fn_8000B09C(int arg0) {
     destroyTrackMusicResource();
     fn_8020D1C8();
     fn_8000CEF0();
-    fn_80006E54();
+    shutdownGameManagers();
     fn_80206228();
     fn_801618B4();
     fn_801CB8C0();

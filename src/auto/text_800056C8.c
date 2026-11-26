@@ -1186,9 +1186,9 @@ extern f32 lbl_8055892C; /* the "effects_volume" setting; startup reads it with 
 #pragma push
 #pragma cplusplus on
 #pragma dont_inline on
-/* fn_80006D9C - start the game's managers up; fn_80006E54 is its reverse.
+/* fn_80006D9C - start the game's managers up; shutdownGameManagers is its reverse.
  *
- * It opens the subsystems fn_80006E54 closes again at its end - fn_800201F0
+ * It opens the subsystems shutdownGameManagers closes again at its end - fn_800201F0
  * (shut by fn_80020430), the HUD font read from "uifnt_o.gtx" (freed by
  * fn_8000F158), fn_8000F884 (fn_8000FB44) and fn_80011F64 (fn_800120BC) -
  * fills the session's state block with the object fn_801E87A8 hands out and the
@@ -1197,7 +1197,7 @@ extern f32 lbl_8055892C; /* the "effects_volume" setting; startup reads it with 
  * volume), reads the saved "effects_volume" with 1.0 as its default, clears the
  * mode flags (fn_80005464) and builds the HUD overlay managers (fn_80005C88)
  * that fn_800070DC then resets to their starting state.  The current mode's
- * master object gets its slot-0xF8 hook, the same one fn_80006E54 calls on the
+ * master object gets its slot-0xF8 hook, the same one shutdownGameManagers calls on the
  * way out.
  */
 extern "C" void fn_80006D9C(void) {
@@ -1243,7 +1243,7 @@ extern "C" void fn_80006D9C(void) {
     LoadFloatOption(4, (u8 *)names + 0x204, &lbl_8055892C);  /* saved "effects_volume", else 1.0 */
     fn_80005464();                        /* the session's mode flags off */
     fn_80005C88();                        /* build the HUD overlay managers */
-    fn_80011A5C(SESSION->playerCount);    /* the count fn_80006E54 walks later */
+    fn_80011A5C(SESSION->playerCount);    /* the count shutdownGameManagers walks later */
     fn_8001DB54();
     ((ModeMaster *)fn_801B83A0())->hook();
     fn_800070DC();                        /* the overlays to their starting state */
@@ -1252,7 +1252,7 @@ extern "C" void fn_80006D9C(void) {
 
 void fn_80006E50(void) {
     /* Empty no-op hook between manager startup (fn_80006D9C) and teardown
-     * (fn_80006E54); a reserved slot with no work to do in this build. */
+     * (shutdownGameManagers); a reserved slot with no work to do in this build. */
 }
 
 extern void fn_8001DD6C(void);
@@ -1263,7 +1263,7 @@ extern void fn_80020430(void);
 extern void fn_80209110(void *);
 extern void *memset(void *, int, unsigned int);
 #pragma cplusplus on
-/* fn_80006E54 - tear the game's managers down (the reverse of fn_80006D9C).
+/* shutdownGameManagers - tear the game's managers down (the reverse of fn_80006D9C).
  *
  * The managers sit in the table at lbl_8034EEB8 that fn_80005C88 builds and
  * fn_800070DC walks every frame: one object per entry at +0x18, +0x28 ...
@@ -1275,7 +1275,7 @@ extern void *memset(void *, int, unsigned int);
  * released.  The calls at the end shut down the subsystems fn_80006D9C
  * started up, the last of them the mode master's own teardown.
  */
-extern "C" void fn_80006E54(void) {
+extern "C" void shutdownGameManagers(void) {
     /* What the table's objects have in common: the game's usual release call,
      * the first virtual of their base class, with the "delete too" flag set. */
     struct Releasable {
