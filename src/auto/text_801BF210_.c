@@ -77,7 +77,7 @@ int fn_801BF2A4(int arg0, int arg1, float *arg2, float *arg3, float *arg4, int a
   extern void fn_801BFEB0(void);
   extern void fn_801BFE7C(float *, float *, float *);
   extern void fn_801BFD34(float *, float *, const float *);
-  extern void fn_801BFB2C(char *, float *, FV3 *);
+  extern void buildOrthonormalBasis(char *, float *, FV3 *);
   extern void composeTransformInv(float *, const float *, const float *, int);
   extern int fn_801BF754(int);
   extern float lbl_805628C0;
@@ -285,7 +285,7 @@ int fn_801BF2A4(int arg0, int arg1, float *arg2, float *arg3, float *arg4, int a
       while (idx < 4);
     }
     fn_80144DC8(frame.spB0);
-    fn_801BFB2C(found, frame.spB0, (FV3 *) frame.sp80);
+    buildOrthonormalBasis(found, frame.spB0, (FV3 *) frame.sp80);
     ((void (*)(float *, float *, float *)) composeTransformInv)((float *) (((char *) found) + 0x230), frame.sp50, frame.spB0);
     {
       int idx = 0;
@@ -403,7 +403,7 @@ void fn_801BFD34(float *, float *, const float *);
  * (idx 0x22C-0x228). Falls back to identity axes when the cross product is
  * degenerate (dot <= lbl_805628CC), then stores the resulting transform parts
  * via fn_801BFD34/fn_80015B20. */
-void fn_801BFB2C(char *base, float *out, FV3 *points) {
+void buildOrthonormalBasis(char *base, float *out, FV3 *points) {
     float normal[3], axis1[3], axis0[3];
     float basis[12];
     FV3 *pA, *pB;
