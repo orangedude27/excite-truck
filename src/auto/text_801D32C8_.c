@@ -127,7 +127,7 @@ extern "C" void readPhobConfig(void *outConfig, void *configSource) {
     struct PhobConfig *config = (struct PhobConfig *)outConfig;
     f32 mzValue;
     f32 weight;
-    int type;
+    int shapeType;
     config->max_life = source->getFloat("max_life");
     config->mass = source->getFloat((const char *)&lbl_8055AC30);
     config->mx = source->getFloat((const char *)&lbl_8055AC38);
@@ -145,9 +145,9 @@ extern "C" void readPhobConfig(void *outConfig, void *configSource) {
     }
     config->ground_test = source->getByte("ground_test", 1);
     config->effect_id = source->getInt("effect_id", -1);
-    type = fn_801D37C4(source->getString((const char *)&lbl_8055AC4C));
-    config->mode = type;
-    switch (type) {
+    shapeType = fn_801D37C4(source->getString((const char *)&lbl_8055AC4C));
+    config->mode = shapeType;
+    switch (shapeType) {
     case 0:
         config->primarySize = source->getFloat((const char *)&lbl_8055AC54);
         break;
@@ -163,7 +163,7 @@ extern "C" void readPhobConfig(void *outConfig, void *configSource) {
         config->primarySize = source->getFloat((const char *)&lbl_8055AC58);
         break;
     default:
-        Abend_Panic("mut_phob: invalid type %d", type);
+        Abend_Panic("mut_phob: invalid type %d", shapeType);
         break;
     }
 }
