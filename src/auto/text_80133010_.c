@@ -99,7 +99,7 @@ extern char lbl_8032B868[];
 extern int fn_802E30C8(const char *, ...);
 extern int fn_801338D8(const char *);
 extern float optionStringToFloat(const char *);
-extern int fn_80133844(const char *);
+extern int optionStringToBool(const char *);
 extern unsigned long strlen(const char *);
 extern const char lbl_8032B8F8[];
 extern const char lbl_8032BA90[];
@@ -310,7 +310,7 @@ int fn_8013358C(int section, int key, char *valueStr) {
     *((char *)entry + 0x23) = 0;
     *(int *)((char *)entry + 0xC) = fn_801338D8((char *)entry + 0x14);
     *(float *)((char *)entry + 0x10) = optionStringToFloat((char *)entry + 0x14);
-    *((unsigned char *)entry + 8) = fn_80133844((char *)entry + 0x14);
+    *((unsigned char *)entry + 8) = optionStringToBool((char *)entry + 0x14);
     *(int *)entry = 3;
     if (strlen(valueStr) > 15) {
         fn_802E30C8(lbl_8032B8F8, valueStr, (char *)entry + 0x14);
@@ -401,7 +401,7 @@ char *fn_801337E4(char *str) {
     return p;
 }
 #pragma dont_inline on
-int fn_80133844(const char *arg0) {
+int optionStringToBool(const char *arg0) {
     /* Return nonzero if the whitespace-trimmed string is a nonzero integer or "yes". */
     char *text = fn_801337E4((char *)arg0);
     int invalid = 0;
@@ -451,7 +451,7 @@ check_invalid:
     if (isDigit == 0) {
         if ((signed char)b == '-')
             return atoi(p);
-        return fn_80133844(p);
+        return optionStringToBool(p);
     }
     return atoi(p);
 }
@@ -488,7 +488,7 @@ lookup:
 test_char:
     if (value || (unsigned char)(c - 0x2d) <= 1)
         return (float)atof(p);
-    return (float)(unsigned int)fn_80133844(p);
+    return (float)(unsigned int)optionStringToBool(p);
 }
 #pragma opt_propagation off
 /* Read one line from the text at *srcPtr into dst for readOptionsFile's BOPT parser: skip leading whitespace (ctype table bit 0x100), copy up to dstCapacity-1 bytes until CR/LF, NUL-terminate, advance the source cursor, and return whether any bytes were copied. */
@@ -630,7 +630,7 @@ int readOptionsFile(int path, int ignoreVersion, int wantSection) {
                                 ((OptionEntry *)entry)->floatValue =
                                     optionStringToFloat(((OptionEntry *)entry)->text);
                                 ((OptionEntry *)entry)->boolValue =
-                                    fn_80133844(((OptionEntry *)entry)->text);
+                                    optionStringToBool(((OptionEntry *)entry)->text);
                                 ((OptionEntry *)entry)->valueType =
                                     OPTIONS_VALUE_FILE;
                             }
