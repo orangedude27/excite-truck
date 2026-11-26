@@ -40,7 +40,7 @@ extern void* lbl_80436D28[];
 /* The trailer cars.  One "trlr_car" (alloc tag lbl_803369C0, vtable
    lbl_803369D0, 0x2760 bytes) per player index, kept in lbl_80436D28 next to
    the player it trails (lbl_80430830, handed out by fn_8017960C).
-   fn_801B8E28 places one every frame and fn_801B949C (vtable+0x10) resets it;
+   updateTrailerCar places one every frame and fn_801B949C (vtable+0x10) resets it;
    both hand the pose they work out to fn_80189CB4 at vtable+0x54. */
 
 #pragma push
@@ -376,7 +376,7 @@ extern "C" void *fn_801B8D80(void) {
    as the trailer's pose, velocity and heading).  The spring at +0x2704 that
    pulls the trailer along is then re-aimed at the same point, with the longer
    range of lbl_80562760 while the trailer hangs from the player (+0x275D). */
-extern "C" void fn_801B8E28(int playerIndex) {
+extern "C" void updateTrailerCar(int playerIndex) {
     struct CarPose pose;
     f32 towedAnchor[3];
     f32 anchor[3];

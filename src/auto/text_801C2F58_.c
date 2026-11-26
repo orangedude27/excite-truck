@@ -726,7 +726,7 @@ extern u8 *fn_80137C54(s32);
 extern void fn_801B8100(void *, s32, s32);
 extern void fn_801B8048(void *, s32, f32, f32);
 extern s32 fn_802794AC(s32, s32);
-extern void fn_801B8E28(s32);
+extern void updateTrailerCar(s32);
 extern void *fn_801B2ED0(s32);
 __declspec(section ".sdata") extern char lbl_8055AA48[];
 #pragma push
@@ -965,7 +965,7 @@ __repair_literal = 4;
                 place.pos.z = place.m.rot.m[8] * scale;
                 (*(void (**)(u8 *, struct Placement *))(*(u8 **)p + 0x54))(p, &place);
                 if (fn_802794AC(*(s32 *)(p + 0x1f0), 0) != 0 && (__AXFXGetLfoSinTable_801769CC()[1] & 0x1400)) {
-                    fn_801B8E28(j);
+                    updateTrailerCar(j);
                 }
                 n++;
             }
