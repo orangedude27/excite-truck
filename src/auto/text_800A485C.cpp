@@ -4074,7 +4074,7 @@ extern "C" s32 findVFiPDirectoryEntry(void *dir, void *entryInfo, s32 entryName,
     #define END_MARKER     0xE5
     #define NO_RESULT      0xF423F
     struct Copy14 { s32 word[14]; };
-    s32 loadedValue;
+    s32 entryValue;
     s32 entryId = entryName;
     u8 iter[0x70];
     struct Copy14 *src = (struct Copy14 *)dir;
@@ -4089,21 +4089,21 @@ extern "C" s32 findVFiPDirectoryEntry(void *dir, void *entryInfo, s32 entryName,
     *(u8 *)((u8 *)entryInfo + 0x20C) = (u8)mode;
     *(s16 *)entryInfo = (s16)mode;
     flags = FLAGS_WORD;
-    loadedValue = mode;
+    entryValue = mode;
     if ((flags & PATH_MODE_BIT) == PATH_MODE_BIT) mode = PARSE_PATH_NUM(readArg0, &entryId);
     *dst = *src;
     if (mode == 1) {
         result = SEEK_ENTRY(iter, entryId - 1);
         if (result != 0) { *outValue = NO_RESULT; *outIndex = NO_RESULT; return result; }
-        result = LOAD_ENTRY(entryInfo, iter, readArg0, readArg1, readArg2, &loadedValue);
+        result = LOAD_ENTRY(entryInfo, iter, readArg0, readArg1, readArg2, &entryValue);
         if (result == 0) { *outValue = NO_RESULT; *outIndex = NO_RESULT; return 3; }
         if ((ENTRY_STATE & LONG_NAME_BIT) == 0) goto fail_main;
         result = SEEK_ENTRY(iter, entryId);
         if (result != 0) { *outValue = NO_RESULT; *outIndex = NO_RESULT; return result; }
-        result = LOAD_ENTRY(entryInfo, iter, readArg0, readArg1, readArg2, &loadedValue);
+        result = LOAD_ENTRY(entryInfo, iter, readArg0, readArg1, readArg2, &entryValue);
         if (result == 0) {
             *(s32 *)((u8 *)entryInfo + 0x22C) = *(s32 *)((u8 *)dir + 0x34);
-            *outValue = loadedValue; *outIndex = *(s32 *)iter;
+            *outValue = entryValue; *outIndex = *(s32 *)iter;
             return 0;
         }
         goto fail_main;
@@ -4117,10 +4117,10 @@ extern "C" s32 findVFiPDirectoryEntry(void *dir, void *entryInfo, s32 entryName,
             *(u8 *)((u8 *)entryInfo + 0x20A) = 0;
             *(s16 *)entryInfo = 0;
         } else {
-            result = LOAD_ENTRY(entryInfo, iter, readArg0, readArg1, readArg2, &loadedValue);
+            result = LOAD_ENTRY(entryInfo, iter, readArg0, readArg1, readArg2, &entryValue);
             if (result == 0) {
                 *(s32 *)((u8 *)entryInfo + 0x22C) = *(s32 *)((u8 *)dir + 0x34);
-                *outValue = loadedValue; *outIndex = *(s32 *)iter;
+                *outValue = entryValue; *outIndex = *(s32 *)iter;
                 return 0;
             }
         }
