@@ -714,7 +714,7 @@ extern "C" void fn_80298DE0(void *container, void *entryIndex, int enabled) {
 
 #pragma push
 #pragma processor 750
-void transformEffectEntryPosition(void *container, void *entry) {
+/* Transform an effect entry's local position by its object's pose and jitter, then emit the world position. */ void transformEffectEntryPosition(void *container, void *entry) {
     typedef void (*EmitPointFn)(void *emitter, float *position, float *basePosition);
     /* Transform an active effect entry's local position by its object's pose (column-major
      * 3x3 rotation, translation), add per-axis random jitter, then emit the world position. */
