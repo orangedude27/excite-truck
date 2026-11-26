@@ -22426,7 +22426,7 @@ extern "C" u16 fn_800D4138(const void *arg0, u32 arg1, f32 farg0) {
 }
 
 extern "C" f32 lbl_80560E48, lbl_80560E4C, lbl_80560E50, lbl_80560E54, lbl_80560E58, lbl_80560E5C;
-extern "C" f32 fn_800D4220(const void *arg0, u32 arg1, f32 farg0) {
+extern "C" f32 evaluateHermiteCurve(const void *arg0, u32 arg1, f32 farg0) {
     /* Evaluate a cubic Hermite keyframe curve: each 12-byte key is (time, value, tangent),
      * keys are searched for the span containing farg0 and the value is interpolated (with
      * endpoint clamping and a small-epsilon check for hitting a key exactly). */
@@ -22679,7 +22679,7 @@ void nw4hbm::lyt::AnimTransformBasic::Animate(unsigned long arg1, nw4hbm::lyt::P
                 u8 *item = record + *(s32 *)itemOffsets;
                 if (item[1] >= 0xA) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xC5, file + 0x6C);
                 if (item[2] != 2) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xC6, file + 0xB0);
-                f32 value = fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
+                f32 value = evaluateHermiteCurve(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
                 u32 index = item[1];
                 if (index >= 0xA) Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597F0, 0xFA, lbl_8031F208);
                 *(f32 *)((u8 *)arg2 + index * 4 + 0x2C) = value;
@@ -22711,7 +22711,7 @@ void nw4hbm::lyt::AnimTransformBasic::Animate(unsigned long arg1, nw4hbm::lyt::P
                 u8 *item = record + *(s32 *)itemOffsets;
                 if (item[1] >= 0x11) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xED, file + 0x138);
                 if (item[2] != 2) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xEE, file + 0xB0);
-                u8 value = __OSf32tou8(fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame) + half);
+                u8 value = __OSf32tou8(evaluateHermiteCurve(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame) + half);
                 ((PaneAnimationDispatch *)arg2)->setVertexColor(item[1], value);
                 itemOffsets += 4;
                 itemIndex++;
