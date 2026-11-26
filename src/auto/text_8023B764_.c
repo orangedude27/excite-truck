@@ -22,7 +22,7 @@ extern void fn_8023B9EC(int, int, int, int, int);
 extern void fn_8001EFC8(void);
 extern int fn_8024A4CC(int *, int *, int *);
 extern s32 fn_80128668(void);
-extern void fn_8000BF20(void *);
+extern void runGameLoop(void *);
 extern void restartGameFromContext(void);
 extern u8 lbl_803413A8[];
 extern s32 atoi();
@@ -112,7 +112,7 @@ void fn_8023B904(void *context, void *result, s32 reset) {
     Src8023C210 *out;
     if (reset == 0) {
         local.data = lbl_803413A8;
-        ((void (*)(void *, void *))fn_8000BF20)(context, &local);
+        ((void (*)(void *, void *))runGameLoop)(context, &local);
         if (result != 0) {
             out = (Src8023C210 *)result;
             out->a = local.a;

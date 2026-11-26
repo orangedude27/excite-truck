@@ -961,7 +961,7 @@ extern void fn_8001EFB4(void);
 #pragma push
 #pragma dont_inline on
 #pragma cplusplus on
-extern "C" void fn_8000BF20(void *arg0, int arg1) {
+extern "C" void runGameLoop(void *arg0, int arg1) {
     struct Interface {
         virtual void begin(void);
         virtual void submit(void *);
@@ -1050,12 +1050,12 @@ state_check:
 #pragma cplusplus reset
 #pragma pop
 extern void *memcpy(void *, const void *, unsigned int);
-extern void fn_8000BF20(void *, int);
+extern void runGameLoop(void *, int);
 #pragma scheduling invalid_target
 /* Copies the game context into a local scratch copy, forces one record with the last-frame flag, refreshes any 0x50-tagged records in place, and runs the frame-sequence engine on that copy. */ void restartGameFromContext(void *context) {
     /* Copies a game context buffer (32-byte header, a run of 0x78-byte records,
      * and the 4-word tail) into a local buffer, resets the record count to 1 and
-     * sets the "last" flag, then runs the frame-sequence engine (fn_8000BF20)
+     * sets the "last" flag, then runs the frame-sequence engine (runGameLoop)
      * on the local copy.  Records whose +0x20 tag equals 0x50 are re-copied at
      * the local header's offsets while the rest of the buffer is carried over
      * verbatim by the initial bulk copy. */
@@ -1092,7 +1092,7 @@ extern void fn_8000BF20(void *, int);
         record += 0x78;
         recordIndex++;
     }
-    fn_8000BF20(&local, 0);
+    runGameLoop(&local, 0);
 }
 
 /* Builds the camera/view matrices, applies the current camera position to the
