@@ -3523,8 +3523,7 @@ extern "C" s32 fn_8021D97C(void *arg0, s32 arg1) {
 #pragma optimization_level 2
 #pragma processor 750
 #pragma use_lmw_stmw off
-#define drawValueRows paintValueRows
-extern "C" void drawValueRows(u8 *self) {
+extern "C" void paintValueRows(u8 *self) {
     /* Draw the widget's two value rows: choose each row's arrow style from the
        ValueSource's active/selection state, slide its panel in from 10 px over
        0.3 s while fading its alpha from opaque to clear over 0.15 s, then look
