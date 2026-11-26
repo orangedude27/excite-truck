@@ -3178,7 +3178,7 @@ struct ArrayTracker {
 
 #pragma push
 #pragma processor 750
-extern "C" void scoreBonusValueOnce(Unk801577F0* arg0, f32* arg1) {
+/* Score one bonus value into the current record and popup, refreshing the popup's count line exactly once at the end. */ extern "C" void scoreBonusValueOnce(Unk801577F0* arg0, f32* arg1) {
     // Scores one bonus value for this tracker's category: scale it by the
     // "score_scale" config value and by this category's multiplier, show it on
     // the bonus popup while one is up, add it to the record being filled and
