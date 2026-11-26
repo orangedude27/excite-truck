@@ -11255,31 +11255,31 @@ extern "C" s32 fn_800B5CB4(u32 arg0, void *arg1)
  * system is mounted and VF_ERR_NOT_MOUNTED when it is not.  fn_800B6004 is this
  * same routine answering VF_ERR_WRITE_PROTECTED for write-protected media.
  */
-extern "C" s32 VFiPFVOL_UpdateMountState(void *vol) {
-    s32 result;
-    if (VFiPFVOL_IsMediaPresent(vol) != 0) {
-        if (fn_800A53DC(vol) != 0 && (VF_VOLUME(vol)->flags & VF_VOL_MOUNTED) == 0) {
-            VFiPFFILE_FinalizeAllFiles((u8 *)vol);
-            VFiPFDIR_FinalizeAllDirs((u8 *)vol);
-            if (fn_800A5788(vol, 1) == 0) {
-                if (VF_VOLUME(vol)->flags & VF_VOL_MOUNTED) {
-                    VF_VOLUME(vol)->cache[0].flag = 0;
-                    VF_VOLUME(vol)->cache[1].flag = 0;
-                    VF_VOLUME(vol)->cache[2].flag = 0;
-                    VF_VOLUME(vol)->cache[3].flag = 0;
+extern "C" s32 VFiPFVOL_UpdateMountState(void *volume) {
+    s32 mountResult;
+    if (VFiPFVOL_IsMediaPresent(volume) != 0) {
+        if (fn_800A53DC(volume) != 0 && (VF_VOLUME(volume)->flags & VF_VOL_MOUNTED) == 0) {
+            VFiPFFILE_FinalizeAllFiles((u8 *)volume);
+            VFiPFDIR_FinalizeAllDirs((u8 *)volume);
+            if (fn_800A5788(volume, 1) == 0) {
+                if (VF_VOLUME(volume)->flags & VF_VOL_MOUNTED) {
+                    VF_VOLUME(volume)->cache[0].flag = 0;
+                    VF_VOLUME(volume)->cache[1].flag = 0;
+                    VF_VOLUME(volume)->cache[2].flag = 0;
+                    VF_VOLUME(volume)->cache[3].flag = 0;
                 }
-                VF_VOLUME(vol)->flags = (u16)(VF_VOLUME(vol)->flags & ~VF_VOL_MOUNTED);
+                VF_VOLUME(volume)->flags = (u16)(VF_VOLUME(volume)->flags & ~VF_VOL_MOUNTED);
             }
-            fn_800A53E8(vol);
+            fn_800A53E8(volume);
             VF_MOUNT_COUNT = VF_MOUNT_COUNT - 1;
         }
-        if (fn_800A53C0(vol) != 0) {
-            if (!(VF_VOLUME(vol)->flags & VF_VOL_MOUNTED)) {
-                result = fn_800B5988(vol);
-                switch (result) {
+        if (fn_800A53C0(volume) != 0) {
+            if (!(VF_VOLUME(volume)->flags & VF_VOL_MOUNTED)) {
+                mountResult = fn_800B5988(volume);
+                switch (mountResult) {
                 case 0:
-                    VF_VOLUME(vol)->state = (u16)(VF_VOLUME(vol)->state & ~7);
-                    fn_800A53E8(vol);
+                    VF_VOLUME(volume)->state = (u16)(VF_VOLUME(volume)->state & ~7);
+                    fn_800A53E8(volume);
                     VF_MOUNT_COUNT = VF_MOUNT_COUNT + 1;
                     goto block_13;
                 default:
@@ -11287,10 +11287,10 @@ extern "C" s32 VFiPFVOL_UpdateMountState(void *vol) {
                 }
             } else {
 block_13:
-                fn_800A53CC(vol);
-                result = 0;
+                fn_800A53CC(volume);
+                mountResult = 0;
             }
-            if (result != 0) {
+            if (mountResult != 0) {
             } else {
                 goto block_25;
             }
@@ -11298,31 +11298,31 @@ block_13:
             goto block_25;
         }
     } else {
-        if (fn_800A53DC(vol) != 0 && (VF_VOLUME(vol)->flags & VF_VOL_MOUNTED) == 0) {
-            VFiPFFILE_FinalizeAllFiles((u8 *)vol);
-            VFiPFDIR_FinalizeAllDirs((u8 *)vol);
-            if (fn_800A5788(vol, 1) == 0) {
-                if (VF_VOLUME(vol)->flags & VF_VOL_MOUNTED) {
-                    VF_VOLUME(vol)->cache[0].flag = 0;
-                    VF_VOLUME(vol)->cache[1].flag = 0;
-                    VF_VOLUME(vol)->cache[2].flag = 0;
-                    VF_VOLUME(vol)->cache[3].flag = 0;
+        if (fn_800A53DC(volume) != 0 && (VF_VOLUME(volume)->flags & VF_VOL_MOUNTED) == 0) {
+            VFiPFFILE_FinalizeAllFiles((u8 *)volume);
+            VFiPFDIR_FinalizeAllDirs((u8 *)volume);
+            if (fn_800A5788(volume, 1) == 0) {
+                if (VF_VOLUME(volume)->flags & VF_VOL_MOUNTED) {
+                    VF_VOLUME(volume)->cache[0].flag = 0;
+                    VF_VOLUME(volume)->cache[1].flag = 0;
+                    VF_VOLUME(volume)->cache[2].flag = 0;
+                    VF_VOLUME(volume)->cache[3].flag = 0;
                 }
-                VF_VOLUME(vol)->flags = (u16)(VF_VOLUME(vol)->flags & ~VF_VOL_MOUNTED);
+                VF_VOLUME(volume)->flags = (u16)(VF_VOLUME(volume)->flags & ~VF_VOL_MOUNTED);
             }
-            fn_800A53E8(vol);
+            fn_800A53E8(volume);
             VF_MOUNT_COUNT = VF_MOUNT_COUNT - 1;
         }
-        if (fn_800A53C0(vol) != 0) {
-            fn_800A53CC(vol);
+        if (fn_800A53C0(volume) != 0) {
+            fn_800A53CC(volume);
         }
 block_25:
-        result = 0;
+        mountResult = 0;
     }
-    if (result != 0) {
-        return result;
+    if (mountResult != 0) {
+        return mountResult;
     }
-    return (VF_VOLUME(vol)->flags & VF_VOL_MOUNTED) ? 0 : VF_ERR_NOT_MOUNTED;
+    return (VF_VOLUME(volume)->flags & VF_VOL_MOUNTED) ? 0 : VF_ERR_NOT_MOUNTED;
 }
 
 #pragma pop
