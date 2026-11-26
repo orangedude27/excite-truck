@@ -2800,7 +2800,7 @@ extern "C" void fn_8027EEE4(int);
 extern "C" void *fn_8025007C(int);
 extern "C" int fn_80019664(void);
 extern "C" int fn_800196F0(void);
-extern "C" void fn_80284580(int, int, void *, int);
+extern "C" void buildAndPlaySequenceBuffer(int, int, void *, int);
 extern "C" int fn_80263F30(int, int, int);
 extern "C" void fn_8027F09C(int);
 extern "C" void *memset(void *, int, unsigned int);
@@ -2934,7 +2934,7 @@ extern "C" int fn_802840FC(int *a0, void *a1, int *a2, void *a3) {
             sequence = (Sequence *)fn_8025007C(1);
             sequence->setup(fn_80019664(), 1, 0);
             sequence->finish(0, fn_800196F0());
-            fn_80284580(0, 0, sequence, 0);
+            buildAndPlaySequenceBuffer(0, 0, sequence, 0);
             if (sequence != 0) {
                 sequence->hide(1);
             }
@@ -2972,7 +2972,7 @@ extern "C" int lbl_8055C860;
 #pragma push
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void fn_80284580(int oldPos, int newPos, void *srcSeq, int param) {
+extern "C" void buildAndPlaySequenceBuffer(int oldPos, int newPos, void *srcSeq, int param) {
     // Build a playback buffer from srcSeq plus "CAR" entries crossed between oldPos/newPos, play it, then free it.
     class Source {
     public:

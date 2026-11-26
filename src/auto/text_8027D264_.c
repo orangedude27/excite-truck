@@ -836,7 +836,7 @@ extern int fn_8001931C(void *arg0);
 extern int fn_800194C8(void);
 extern int fn_800195C0(void);
 extern void fn_8001EFB0(int *arg0);
-extern void fn_80284580(int arg0, int arg1, void *arg2, int *arg3);
+extern void buildAndPlaySequenceBuffer(int arg0, int arg1, void *arg2, int *arg3);
 extern void fn_8025A204(void);
 extern void fn_8001EFBC(void);
 extern void fn_802E7128(void);
@@ -978,7 +978,7 @@ void fn_8027E0C8(void *arg0, int arg1) {
                     a194CC = fn_800195C0();
                     ((void (*)(void *, int, int))*(void **)((char *)*(void **)obj29 + 0x10))(obj29, ((int (*)(void *))*(void **)((char *)*(void **)obj29 + 0x14))(obj29) - 1, a194CC);
                 }
-                fn_80284580(z[1], z[2], obj29, &spC);
+                buildAndPlaySequenceBuffer(z[1], z[2], obj29, &spC);
                 if (obj29 != 0) {
                     ((void (*)(void *, int))*(void **)((char *)*(void **)obj29 + 8))(obj29, 1);
                 }
