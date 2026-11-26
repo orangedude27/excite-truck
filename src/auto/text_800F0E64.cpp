@@ -5031,6 +5031,62 @@ extern "C" void detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(void* arg0
     __array_delete(arr, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8540, 0xC, 0x80);
 }
 #pragma pop
+/* StrmSound allocator helpers, kept before the seq allocator so readability rewrites of
+   allocStrmSoundInstance cannot strip them.  Bodies match the shared versions below. */
+#pragma push
+#pragma always_inline on
+struct AmbientParamUpdateCallback_Str {
+    virtual void detail_Update(void *param, s32 soundId, s32 unk, s32 arg, s32 flags);
+};
+struct AmbientArgAllocaterCallback_Str {
+    virtual void *detail_AllocAmbientArg(s32 size);
+};
+struct BasicSoundVirtuals_Str {
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void Stop(s32 fadeFrames);
+};
+static inline s32 AmbientInfo_GetPriority_Str(s32 ambientInfo, s32 soundId) {
+    s32 priority = 0;
+    if (ambientInfo != 0) {
+        s32 info[7];
+        (*(AmbientParamUpdateCallback_Str **)ambientInfo)->detail_Update((void *)info, soundId, 0, *(s32 *)(ambientInfo + 0xC), 8);
+        priority = info[6];
+    }
+    return priority;
+}
+static inline s32 ClampS32_Str(s32 x, s32 low, s32 high) {
+    return x > high ? high : (x < low ? low : x);
+}
+static inline void SoundPlayer_InsertPriorityList_Str(s32 player, void *sound) {
+    void *it;
+    struct { void *node; } iter;
+    void *&pos = iter.node;
+    pos = *(void **)(player + 0x10);
+    while (pos != (void *)(player + 0x10)) {
+        if (pos == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326348, 0x23D, lbl_80326324);
+        }
+        {
+            s32 c = *(u8 *)((u8 *)pos - 0x54) + *(s32 *)((u8 *)pos - 0x88);
+            s32 cc = c > 0x7F ? 0x7F : (c < 0 ? 0 : c);
+            s32 d = *(u8 *)((u8 *)sound + 0x74) + *(s32 *)((u8 *)sound + 0x40);
+            s32 dc = d > 0x7F ? 0x7F : (d < 0 ? 0 : d);
+            if (dc < cc) {
+                break;
+            }
+        }
+        pos = *(void **)pos;
+    }
+    if (sound == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326288, 0x233, (const char *)lbl_80326264);
+    }
+    it = pos;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListImpl8Iterator((u8 *)(player + 0xC), &it, (u8 *)sound + 0xC8);
+}
+#pragma pop
 extern "C" void* fn_800F07EC(void*, void*);
 struct BasicSoundVirtualsEarly {
     virtual void v0();
