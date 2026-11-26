@@ -1056,189 +1056,145 @@ extern float fn_8023659C(int *);
 extern float lbl_80563764, lbl_80563768, lbl_8056376C, lbl_80563770;
 extern float lbl_80563774, lbl_80563778, lbl_8056377C;
 #pragma scheduling on
-s32 fn_80241354(void *arg0, s32 arg1)
-{
-  char *base = (char *) arg0;
-  s32 direction = arg1;
-  s32 active = 0;
-  void *child;
-  char c;
-  int n;
-  char *dst;
-  char *src;
-  int count;
-  int index;
-  int frame;
-  int boundary;
-  int *animation;
-  float temp;
-  float diff;
-  float start;
-  float end;
-  float t;
-  float curve;
-  register void *vtable = *((void **) (base + 0x0C));
-  register void *method = *((void **) (((char *) vtable) + 0x10));
-  int result;
-  result = ((int (*)(void *)) method)(arg0);
-  if (result != 0)
-  {
-    active = 1;
-    switch (direction)
-    {
-      case 0x127:
-        index = (*((int *) (base + 0x2C))) + 1;
-        *((int *) (base + 0x2C)) = index;
-        count = *((int *) (((char *) (*((void **) (base + 0x28)))) + 0x98));
+s32 fn_80241354(void *__restrict arg0, s32 arg1) {
+    char *base = (char *)arg0;
+    s32 direction = arg1;
+    s32 active = 0;
+    void *child;
+    char c;
+    int n;
+    char *dst, *src;
+    int count, index, frame, boundary;
+    int *animation;
+    float temp, diff, start, end;
+    float t, curve;
+    register void *vtable = *(void **)(base + 0x0C);
+    register void *method = *(void **)((char *)vtable + 0x10);
+    int result = ((int (*)(void *))method)(arg0);
+    if (result != 0) {
+        active = 1;
+        switch (direction) {
+        case 0x127:
+        index = *(int *)(base + 0x2C) + 1;
+        *(int *)(base + 0x2C) = index;
+        count = *(int *)((char *)*(void **)(base + 0x28) + 0x98);
         boundary = 0;
-        if (index >= count)
-      {
-        *((int *) (base + 0x2C)) = count - 1;
-        boundary = 1;
-      }
-        if (boundary != 0)
-      {
-        fn_80216D28();
-        fn_80214D50(1);
-        goto done;
-      }
-        if ((*((void **) (base + 0x28))) != 0)
-      {
-        index = *((volatile int *) (base + 0x2C));
-        child = fn_80016BC8(*((void **) (base + 0x28)), *((int *) (base + 0x3C)));
-        *((int *) (((char *) child) + 4)) = index;
-      }
-        index = *((int *) (base + 0x2C));
-        *((signed char *) (base + 0x5C)) = 0;
-        if ((index >= 0) && (index < (*((int *) (((char *) (*((void **) (base + 0x28)))) + 0x98)))))
-      {
-        child = *((void **) ((((char *) (*((void **) (base + 0x28)))) + 0x64) + (index * 4)));
-        *(*((void ***) (base + 0x34))) = child;
-        fn_80255918(*((void **) (base + 0x38)), child);
-        ((int (*)(void *, int, char *, ...)) fn_801345D8)(base + 0x5C, 0x40, lbl_8034287C, (*((int *) (base + 0x2C))) + 1);
-        src = (char *) fn_80131234(base + 0x5C);
-        dst = base + 0x5C;
-        n = 0x40;
-        goto copy_body_forward;
-        copy_check_forward:
-        if ((--n) <= 0)
-        {
-          dst[-1] = 0;
-          goto copy_done_forward;
+        if (index >= count) {
+            *(int *)(base + 0x2C) = count - 1;
+            boundary = 1;
         }
-
-        copy_body_forward:
-        c = *(src++);
-
-        *(dst++) = c;
-        if (((signed char) c) != 0)
-        {
-          goto copy_check_forward;
+        if (boundary != 0) {
+            fn_80216D28();
+            fn_80214D50(1);
+            goto done;
         }
-        copy_done_forward:
-        ;
-
-        ;
-        ;
-      }
-        animation = *((int **) (base + 0x30));
-        *animation = *((int *) (base + 0x2C));
-        frame = (int) (fn_8023659C(animation) * lbl_80563768);
-        temp = ((float) (frame - (*((int *) (base + 0x48))))) / lbl_8056376C;
-        t = (lbl_80563764 < temp) ? (lbl_80563764) : (temp);
-        t = (t > lbl_80563758) ? (t) : (lbl_80563758);
-        curve = (t < lbl_80563770) ? (lbl_80563770) : ((t > lbl_80563764) ? (lbl_80563764) : ((t > lbl_80563758) ? ((t * ((lbl_80563774 * t) * t)) + ((lbl_80563778 * t) * t)) : ((t * ((lbl_80563774 * t) * t)) - ((lbl_80563778 * t) * t))));
-        start = *((float *) (base + 0x4C));
-        end = *((float *) (base + 0x50));
-        ;
-        *((int *) (base + 0x48)) = frame;
-        *((float *) (base + 0x58)) = lbl_8056377C;
-        *((float *) (base + 0x4C)) = start + (curve * (end - start));
-        *((float *) (base + 0x50)) = (float) (*((int *) (base + 0x2C)));
-        break;
-
-      case 0x125:
-        index = (*((int *) (base + 0x2C))) - 1;
-        *((int *) (base + 0x2C)) = index;
-        boundary = 0;
-        if (index < 0)
-      {
-        *((int *) (base + 0x2C)) = 0;
-        boundary = 1;
-      }
-        if (boundary != 0)
-      {
-        fn_80216D28();
-        fn_80214D50(1);
-        goto done;
-      }
-        if ((*((void **) (base + 0x28))) != 0)
-      {
-        index = *((volatile int *) (base + 0x2C));
-        child = fn_80016BC8(*((void **) (base + 0x28)), *((int *) (base + 0x3C)));
-        *((int *) (((char *) child) + 4)) = index;
-      }
-        index = *((int *) (base + 0x2C));
-        *((signed char *) (base + 0x5C)) = 0;
-        if ((index >= 0) && (index < (*((int *) (((char *) (*((void **) (base + 0x28)))) + 0x98)))))
-      {
-        child = *((void **) ((((char *) (*((void **) (base + 0x28)))) + 0x64) + (index * 4)));
-        *(*((void ***) (base + 0x34))) = child;
-        fn_80255918(*((void **) (base + 0x38)), child);
-        ((int (*)(void *, int, char *, ...)) fn_801345D8)(base + 0x5C, 0x40, lbl_8034287C, (*((int *) (base + 0x2C))) + 1);
-        src = (char *) fn_80131234(base + 0x5C);
-        dst = base + 0x5C;
-        n = 0x40;
-        goto copy_body_backward;
-        copy_check_backward:
-        if ((--n) <= 0)
-        {
-          dst[-1] = 0;
-          goto copy_done_backward;
+        if (*(void **)(base + 0x28) != 0) {
+            index = *(volatile int *)(base + 0x2C);
+            child = fn_80016BC8(*(void **)(base + 0x28), *(int *)(base + 0x3C));
+            *(int *)((char *)child + 4) = index;
         }
-
-        copy_body_backward:
-        c = *(src++);
-
-        *(dst++) = c;
-        if (((signed char) c) != 0)
-        {
-          goto copy_check_backward;
+        index = *(int *)(base + 0x2C);
+        *(signed char *)(base + 0x5C) = 0;
+        if (index >= 0 && index < *(int *)((char *)*(void **)(base + 0x28) + 0x98)) {
+            child = *(void **)((char *)*(void **)(base + 0x28) + 0x64 + index * 4);
+            **(void ***)(base + 0x34) = child;
+            fn_80255918(*(void **)(base + 0x38), child);
+            ((int (*)(void *, int, char *, ...))fn_801345D8)(base + 0x5C, 0x40, lbl_8034287C, *(int *)(base + 0x2C) + 1);
+            src = (char *)fn_80131234(base + 0x5C);
+            dst = base + 0x5C;
+            n = 0x40;
+            goto copy_body_forward;
+copy_check_forward:
+            if (--n <= 0) {
+                dst[-1] = 0;
+                goto copy_done_forward;
+            }
+copy_body_forward:
+            c = *src++;
+            *dst++ = c;
+            if ((signed char)c != 0) goto copy_check_forward;
+copy_done_forward:
+            ;
         }
-        copy_done_backward:
-        ;
-
-        ;
-        ;
-      }
-        animation = *((int **) (base + 0x30));
-        *animation = *((int *) (base + 0x2C));
-        frame = (int) (fn_8023659C(animation) * lbl_80563768);
-        temp = ((float) (frame - (*((int *) (base + 0x48))))) / lbl_8056376C;
-        t = (lbl_80563764 < temp) ? (lbl_80563764) : (temp);
-        t = (t > lbl_80563758) ? (t) : (lbl_80563758);
-        curve = (t < lbl_80563770) ? (lbl_80563770) : ((t > lbl_80563764) ? (lbl_80563764) : ((t > lbl_80563758) ? ((t * ((lbl_80563774 * t) * t)) + ((lbl_80563778 * t) * t)) : ((t * ((lbl_80563774 * t) * t)) - ((lbl_80563778 * t) * t))));
-        start = *((float *) (base + 0x4C));
-        end = *((float *) (base + 0x50));
+        animation = *(int **)(base + 0x30);
+        *animation = *(int *)(base + 0x2C);
+        frame = (int)(fn_8023659C(animation) * lbl_80563768);
+        temp = (float)(frame - *(int *)(base + 0x48)) / lbl_8056376C;
+        t = (lbl_80563764 < temp) ? lbl_80563764 : temp;
+        t = (t > lbl_80563758) ? t : lbl_80563758;
+        curve = (t < lbl_80563770) ? lbl_80563770 : ((t > lbl_80563764) ? lbl_80563764 : ((t > lbl_80563758) ? (t * ((lbl_80563774 * t) * t) + (lbl_80563778 * t) * t) : (t * ((lbl_80563774 * t) * t) - (lbl_80563778 * t) * t)));
+        start = *(float *)(base + 0x4C);
+        end = *(float *)(base + 0x50);
         diff = end - start;
-        *((int *) (base + 0x48)) = frame;
-        *((float *) (base + 0x54)) = lbl_8056377C;
-        *((float *) (base + 0x4C)) = start + (curve * (end - start));
-        *((float *) (base + 0x50)) = (float) (*((int *) (base + 0x2C)));
+        *(int *)(base + 0x48) = frame;
+        *(float *)(base + 0x58) = lbl_8056377C;
+        *(float *)(base + 0x4C) = start + curve * diff;
+        *(float *)(base + 0x50) = (float)*(int *)(base + 0x2C);
         break;
-
-      default:
-
-      case 0x126:
-        active = 0;
+        case 0x125:
+        index = *(int *)(base + 0x2C) - 1;
+        *(int *)(base + 0x2C) = index;
+        boundary = 0;
+        if (index < 0) {
+            *(int *)(base + 0x2C) = 0;
+            boundary = 1;
+        }
+        if (boundary != 0) {
+            fn_80216D28();
+            fn_80214D50(1);
+            goto done;
+        }
+        if (*(void **)(base + 0x28) != 0) {
+            index = *(volatile int *)(base + 0x2C);
+            child = fn_80016BC8(*(void **)(base + 0x28), *(int *)(base + 0x3C));
+            *(int *)((char *)child + 4) = index;
+        }
+        index = *(int *)(base + 0x2C);
+        *(signed char *)(base + 0x5C) = 0;
+        if (index >= 0 && index < *(int *)((char *)*(void **)(base + 0x28) + 0x98)) {
+            child = *(void **)((char *)*(void **)(base + 0x28) + 0x64 + index * 4);
+            **(void ***)(base + 0x34) = child;
+            fn_80255918(*(void **)(base + 0x38), child);
+            ((int (*)(void *, int, char *, ...))fn_801345D8)(base + 0x5C, 0x40, lbl_8034287C, *(int *)(base + 0x2C) + 1);
+            src = (char *)fn_80131234(base + 0x5C);
+            dst = base + 0x5C;
+            n = 0x40;
+            goto copy_body_backward;
+copy_check_backward:
+            if (--n <= 0) {
+                dst[-1] = 0;
+                goto copy_done_backward;
+            }
+copy_body_backward:
+            c = *src++;
+            *dst++ = c;
+            if ((signed char)c != 0) goto copy_check_backward;
+copy_done_backward:
+            ;
+        }
+        animation = *(int **)(base + 0x30);
+        *animation = *(int *)(base + 0x2C);
+        frame = (int)(fn_8023659C(animation) * lbl_80563768);
+        temp = (float)(frame - *(int *)(base + 0x48)) / lbl_8056376C;
+        t = (lbl_80563764 < temp) ? lbl_80563764 : temp;
+        t = (t > lbl_80563758) ? t : lbl_80563758;
+        curve = (t < lbl_80563770) ? lbl_80563770 : ((t > lbl_80563764) ? lbl_80563764 : ((t > lbl_80563758) ? (t * ((lbl_80563774 * t) * t) + (lbl_80563778 * t) * t) : (t * ((lbl_80563774 * t) * t) - (lbl_80563778 * t) * t)));
+        start = *(float *)(base + 0x4C);
+        end = *(float *)(base + 0x50);
+        diff = end - start;
+        *(int *)(base + 0x48) = frame;
+        *(float *)(base + 0x54) = lbl_8056377C;
+        *(float *)(base + 0x4C) = start + curve * diff;
+        *(float *)(base + 0x50) = (float)*(int *)(base + 0x2C);
         break;
-
+        default:
+        case 0x126:
+            active = 0;
+            break;
+        }
     }
-
-  }
-  done:
-  return active;
-
+done:
+    return active;
 }
 extern float lbl_80563780, lbl_80563784, lbl_80563788, lbl_8056378C, lbl_80563790, lbl_80563794;
 extern float fn_8023659C();
@@ -1526,7 +1482,8 @@ static inline void updateInfoDst_80241EF0(InfoDstObj_80241EF0 *infoDst, char *na
         infoDst->texts[4][0] = 0;
     }
 }
-extern "C" void advanceMRollCollection(void *arg0, s32 arg1) {
+/* Advance the collection to its next entry, copy the selected item's name and record name, and refresh the viewer context and info panel. */
+extern "C" void advanceMRollCollection(void *selfObj, s32 unusedArg1) {
     struct SelfObj {
         u8 pad00[0x10];
         s32 *field10;
@@ -1540,22 +1497,22 @@ extern "C" void advanceMRollCollection(void *arg0, s32 arg1) {
         char name4C[0x20];
         s32 result;
     };
-    SelfObj *self = (SelfObj *)arg0;
-    s32 temp;
-    u8 *temp2;
+    SelfObj *self = (SelfObj *)selfObj;
+    s32 index;
+    u8 *recordBytes;
 
     self->index++;
     if (self->index >= self->col->getCount()) {
         self->index = 0;
     }
-    temp = self->index;
-    if (temp < 0) return;
+    index = self->index;
+    if (index < 0) return;
     if (self->index >= self->col->getCount()) return;
     void *item = self->col->getItem(self->index);
     void *record = fn_8001668C(item, 0);
-    temp2 = (u8 *)record;
-    *self->field14 = *(s32 *)(temp2 + 4);
-    *self->field10 = *(s32 *)(temp2 + 0x9C);
+    recordBytes = (u8 *)record;
+    *self->field14 = *(s32 *)(recordBytes + 4);
+    *self->field10 = *(s32 *)(recordBytes + 0x9C);
 
     {
         s32 n = 0x20;
