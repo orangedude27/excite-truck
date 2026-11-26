@@ -512,18 +512,20 @@ extern "C" void fn_80245D2C(void *object) {
     fn_80214D50(4);
 }
 
+#pragma push
+#pragma opt_unroll_loops reset
 extern "C" void fn_80245D74(void *arg0, void *arg1) {
     struct State {
         void *p1C;
-        int pad20;
-        int pad24;
+        unsigned pad20;
+        unsigned int pad24;
+        unsigned int pad2C;
         int pad28;
-        int pad2C;
-        int i30;
-        unsigned char c34;
+        unsigned int i30;
+        char pad37;
         unsigned char c35;
         char pad36;
-        char pad37;
+        unsigned char c34;
     };
     struct Frame {
         unsigned int args[5];
@@ -538,62 +540,62 @@ extern "C" void fn_80245D74(void *arg0, void *arg1) {
         virtual void f3();
         virtual void f4();
     };
-    void *a0 = arg0;
-    void *a1 = arg1;
+    register void *a0 = arg0;
+    register void *a1 = arg1;
     char *base = (char *)lbl_80342FC0;
     struct Frame frame;
-    int *s;
-    int *d;
-    int count;
-    int i;
-    char *name1;
+    unsigned count;
+    register int i;
+    register char *name1;
     char *name2;
-    int len1;
-    int len2;
+    long len1;
+    unsigned long len2;
     int has8;
+    int *s;
+    register int *d;
     if (*(unsigned char *)((char *)a0 + 0x1D) == 0) {
         ((struct Dummy *)((char *)a0 + 4))->f2();
         return;
     }
     s = (int *)a1;
     d = &frame.buf[0];
-    count = s[5];
     *(void **)((char *)a0 + 0x20) = a1;
+    count = s[5];
     i = 0;
-    if (count > 0) {
-        while (i < count) {
+    if (0 < count) {
+        while (count > i) {
             d[0] = s[6];
             d[1] = s[7];
-            s += 2;
             d += 2;
+            s += 2;
             i++;
         }
     }
     while (i < 4) {
         d[0] = 0;
         d[1] = 0;
-        d += 2;
         i++;
+        d += 2;
     }
     frame.state.c34 = 1;
-    frame.state.p1C = (void *)lbl_80343148;
     frame.state.i30 = 0;
-    frame.state.c35 = 1;
+    frame.state.p1C = (void *)lbl_80343148;
     has8 = ((int *)a1)[2];
-    if (has8 != 0) {
+    frame.state.c35 = 1;
+    if (has8) {
         frame.state.c35 = 0;
     }
+    frame.cfg[1] = 5;
     frame.cfg[2] = (unsigned int)&frame.state.p1C;
     frame.cfg[3] = 0;
-    frame.cfg[1] = 5;
-    frame.cfg[0] = (unsigned int)&lbl_8055BE68;
     frame.cfg[4] = 0;
-    frame.cfg[6] = 8;
-    frame.cfg[5] = (unsigned int)&lbl_8055BAC0;
+    frame.cfg[0] = (unsigned int)&lbl_8055BE68;
     frame.cfg[7] = (unsigned int)&fn_80246210;
+    frame.cfg[5] = (unsigned int)&lbl_8055BAC0;
     frame.cfg[8] = 0;
-    frame.cfg[9] = 0;
+    frame.cfg[6] = 8;
     name1 = *(char **)a1;
+    frame.cfg[9] = 0;
     len1 = strlen(name1);
     frame.cfg[13] = (unsigned int)len1;
     frame.cfg[11] = 3;
@@ -604,46 +606,46 @@ extern "C" void fn_80245D74(void *arg0, void *arg1) {
     len2 = strlen(name2);
     frame.cfg[18] = (unsigned int)len2;
     frame.cfg[15] = (unsigned int)&lbl_8055BE78;
-    frame.cfg[16] = 3;
     frame.cfg[17] = (unsigned int)name2;
+    frame.cfg[16] = 3;
     frame.cfg[19] = 0;
     frame.cfg[20] = (unsigned int)(base + 0xDC);
+    frame.cfg[25] = (unsigned int)(base + 0xDC);
     frame.cfg[21] = 0;
     frame.cfg[22] = 0;
     frame.cfg[23] = (unsigned int)frame.buf[1];
     frame.cfg[24] = 0;
-    frame.cfg[25] = (unsigned int)(base + 0xDC);
     frame.cfg[26] = 3;
     frame.cfg[27] = (unsigned int)frame.buf[0];
     frame.cfg[28] = 0;
     frame.cfg[29] = 0;
-    frame.cfg[30] = (unsigned int)(base + 0xE8);
     frame.cfg[31] = 0;
+    frame.cfg[30] = (unsigned int)(base + 0xE8);
     frame.cfg[32] = 0;
     frame.cfg[33] = (unsigned int)frame.buf[3];
     frame.cfg[34] = 0;
-    frame.cfg[35] = (unsigned int)(base + 0xE8);
     frame.cfg[36] = 3;
+    frame.cfg[35] = (unsigned int)(base + 0xE8);
     frame.cfg[37] = (unsigned int)frame.buf[2];
     frame.cfg[38] = 0;
     frame.cfg[39] = 0;
-    frame.cfg[40] = (unsigned int)(base + 0xF4);
     frame.cfg[41] = 0;
+    frame.cfg[40] = (unsigned int)(base + 0xF4);
     frame.cfg[42] = 0;
     frame.cfg[43] = (unsigned int)frame.buf[5];
     frame.cfg[44] = 0;
-    frame.cfg[45] = (unsigned int)(base + 0xF4);
     frame.cfg[46] = 3;
+    frame.cfg[45] = (unsigned int)(base + 0xF4);
     frame.cfg[47] = (unsigned int)frame.buf[4];
     frame.cfg[48] = 0;
     frame.cfg[49] = 0;
-    frame.cfg[50] = (unsigned int)(base + 0x100);
     frame.cfg[51] = 0;
+    frame.cfg[50] = (unsigned int)(base + 0x100);
     frame.cfg[52] = 0;
     frame.cfg[53] = (unsigned int)frame.buf[7];
     frame.cfg[54] = 0;
-    frame.cfg[55] = (unsigned int)(base + 0x100);
     frame.cfg[56] = 3;
+    frame.cfg[55] = (unsigned int)(base + 0x100);
     frame.cfg[57] = (unsigned int)frame.buf[6];
     frame.cfg[58] = 0;
     frame.cfg[59] = 0;
@@ -651,20 +653,20 @@ extern "C" void fn_80245D74(void *arg0, void *arg1) {
     frame.cfg[61] = (unsigned int)lbl_80498890[1];
     frame.cfg[62] = (unsigned int)lbl_80498890[2];
     frame.cfg[63] = (unsigned int)lbl_80498890[3];
-    frame.cfg[64] = (unsigned int)lbl_80498890[4];
     frame.args[0] = (unsigned int)lbl_802FA364[0];
+    frame.cfg[64] = (unsigned int)lbl_80498890[4];
     frame.args[1] = (unsigned int)lbl_802FA364[1];
     frame.args[2] = (unsigned int)lbl_802FA364[2];
     frame.args[3] = (unsigned int)lbl_802FA364[3];
     frame.args[4] = (unsigned int)lbl_802FA364[4];
-    if (has8 == 0) {
-        frame.args[0] = (unsigned int)(base + 0xCC);
-    } else {
+    if (has8) {
         frame.args[0] = (unsigned int)has8;
+    } else {
+        frame.args[0] = (unsigned int)(base + 0xCC);
     }
     frame.args[1] = (unsigned int)&frame.cfg[0];
     fn_80216CA8();
-    if (has8 != 0) {
+    if (has8) {
         fn_80214D50(5);
     }
     fn_802146BC((int *)frame.args, -999, -999, 1);
