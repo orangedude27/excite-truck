@@ -14,7 +14,7 @@ s32 stricmp(const char*, const char*);
 extern int sprintf(char*, const char*, ...);
 extern void* memset(void*, int, unsigned long);
 extern char* strncpy(char*, const char*, unsigned long);
-void* fn_80279004(s32, s32);
+void* loadCarResource(s32, s32);
 
 typedef struct Node_80279254 {
     u8 pad0[0x20EC];
@@ -303,7 +303,7 @@ extern "C" void fn_80278A64(CarObject* car, File_80279004* file, File_80279004* 
 #pragma cplusplus reset
 
 #pragma cplusplus on
-extern "C" void* fn_80279004(s32 name, s32 arg1) {
+extern "C" void* loadCarResource(s32 name, s32 arg1) {
     #pragma scheduling invalid_target
     char path[0x80];
     char path2[0x80];
@@ -382,7 +382,7 @@ void* fn_80279254(s32 name, s32 arg1) {
         node = node->next;
     }
     if (node == NULL) {
-        node = fn_80279004(name, arg1);
+        node = loadCarResource(name, arg1);
     }
     return node;
 }
@@ -393,7 +393,7 @@ void fn_80128668(void*);
 #pragma dont_inline on
 /* RealName: GetCarResource. Look up the car layout named carName in
  * gCarResourceList, raising its reference count, and load it through
- * fn_80279004 when it is not there yet; the loader's second argument is
+ * loadCarResource when it is not there yet; the loader's second argument is
  * unused, so this wrapper passes 0. Returns the car resource. */
 void* fn_802792E4(char* carName) {
     return fn_80279254((s32)carName, 0);
