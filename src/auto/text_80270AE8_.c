@@ -429,7 +429,7 @@ int fn_80270EC4(void *arg0, int arg1) {
  *     (group = -1, the CG_ANY of the two debug strings) after complaining once;
  *     a second failure complains once more and gives up with -1.
  */
-extern "C" int findBestRegion(void *subject, int group) {
+/* Pick the highest-scoring camera region for a subject, falling back to an enabled region or an all-groups retry, and return its index. */ extern "C" int findBestRegion(void *subject, int group) {
     struct { void *region; float t; int slot; } alongRay;
     struct { void *region; float t; int slot; } alongPath;
     float score;
