@@ -3178,7 +3178,7 @@ struct ArrayTracker {
 
 #pragma push
 #pragma processor 750
-extern "C" void fn_8015B9B0(Unk801577F0* arg0, f32* arg1) {
+extern "C" void scoreBonusValueOnce(Unk801577F0* arg0, f32* arg1) {
     // Scores one bonus value for this tracker's category: scale it by the
     // "score_scale" config value and by this category's multiplier, show it on
     // the bonus popup while one is up, add it to the record being filled and
@@ -3230,7 +3230,7 @@ extern "C" s32 lbl_8055A05C[1];
     // Scores one bonus value for this tracker's category: scale it by the
     // "score_scale" config value and by this category's multiplier, show it on
     // the bonus popup while one is up, add it to the record being filled and
-    // tell the bonus listeners.  fn_8015B9B0 and scoreBonusValue are the same
+    // tell the bonus listeners.  scoreBonusValueOnce and scoreBonusValue are the same
     // scoring pass; this one ends by re-showing count and extra through the
     // "%s %d" format, with 0x168 per event queued since the last frame after
     // them.
@@ -4129,7 +4129,7 @@ extern "C" void fn_8015D9BC(Unk801577F0* arg0, f32* arg1) {
     // Scores one bonus value for this tracker's category: scale it by the
     // "score_scale" config value and by this category's multiplier, show it on
     // the bonus popup while one is up, add it to the record being filled and
-    // tell the bonus listeners.  fn_8015B9B0 and scoreBonusValue are the same
+    // tell the bonus listeners.  scoreBonusValueOnce and scoreBonusValue are the same
     // scoring pass; this one never refreshes the popup's count afterwards.
     char text[16];
     f32 scale = fn_80204CFC(CFG_SCORE_SCALE);
