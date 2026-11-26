@@ -390,7 +390,7 @@ int scanSongDirectory(void *dirPath, int maxDepth) {
     #define mp3Extension   lbl_8055D29C /* ".mp3" */
     extern void fn_801345D8(char *, long, const char *, ...);
     extern int fn_800B7C90(char *, int, char *);
-    extern int fn_802B7CBC(char *);
+    extern int fn_800B7CBC(char *);
     extern char *fn_80029004(char *, int);
     extern int strcmp(const char *, const char *);
     extern int stricmp(const char *, const char *);
