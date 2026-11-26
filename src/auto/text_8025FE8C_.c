@@ -549,7 +549,7 @@ extern s32 selectorMoveCursorUp(void);
 extern s32 selectorMoveCursorDown(void);
 extern s32 fn_80261178(void *);
 extern s32 fn_802610C8(void);
-extern s32 fn_80260E30(void);
+extern s32 selectorCloseGroup(void);
 #pragma push
 #pragma small_data on
 #pragma pop
@@ -655,7 +655,7 @@ extern "C" void fn_80260954(s32 arg0) {
           fn_80261688(&frame.objects[14], 0x128, 0, (s32)selectorMoveCursorDown);
           fn_80261688(&frame.objects[15], 0xD, -2, (s32)fn_80261178);
           fn_80261688(&frame.objects[16], 0x121, 0, (s32)fn_802610C8);
-          fn_80261688(&frame.objects[17], 0x1B, -1, (s32)fn_80260E30);
+          fn_80261688(&frame.objects[17], 0x1B, -1, (s32)selectorCloseGroup);
           fn_80260E04((s32 *)&frame.objects[18], (s32 *)&lbl_80498F00);
       
           args[0] = table[0];
@@ -814,7 +814,7 @@ struct SelectorWidget {
  * repainted the way fn_80261178 does it, now with the cursor outside: the whole
  * item list dims and loses its cursor, the group the cursor stands on gets
  * setCursor() and every other group comes out of the dim state. */
-extern "C" s32 fn_80260E30(void) {
+extern "C" s32 selectorCloseGroup(void) {
     s32 offset;
     s32 i;
 
@@ -919,7 +919,7 @@ extern "C" s32 fn_802610C8(void) {
    groups (the difficulties, from the data source lbl_8055F3E4) and, inside
    each group, its items.  Selector_buildWidgetLists creates the two widget arrays and
    stores them at 0x18 and 0x3C; the input callbacks fn_80261178 (enter),
-   selectorMoveCursorUp (up), selectorMoveCursorDown (down) and fn_80260E30 (leave) move the
+   selectorMoveCursorUp (up), selectorMoveCursorDown (down) and selectorCloseGroup (leave) move the
    cursor and repaint both lists, and lbl_8055F3EB says which list the
    cursor is in. */
 typedef struct {
@@ -985,7 +985,7 @@ struct SelectorDataGroup {
 #pragma push
 #pragma cplusplus on
 /* Open the group the selector's cursor is on (input event 0xD of the challenge
- * screen, the pair of fn_80260E30, which closes it again).
+ * screen, the pair of selectorCloseGroup, which closes it again).
  *
  * Only reachable from the group list: from inside a group the callback reports
  * that it did nothing by returning 1.  Otherwise the cursor moves into the
