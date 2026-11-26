@@ -6426,12 +6426,12 @@ extern "C" f32 charWriterWriteString(void *writer, const u16 *str) {
     copy.word54 = source->word54;
     copy.word58 = source->word58;
     copy.word5C = source->word5C;
-    f32 endY;
-    f32 width;
-    width = fn_801142F8(&copy, (s32)str, length);
-    endY = GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770((s32)&copy);
+    f32 endCursorY;
+    f32 measuredWidth;
+    measuredWidth = fn_801142F8(&copy, (s32)str, length);
+    endCursorY = GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770((s32)&copy);
     SetCursor__Q36nw4hbm2ut10CharWriterFff((s32)writer,
-        GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658((s32)&copy), endY);
+        GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658((s32)&copy), endCursorY);
     fn_801033F0(&copy, 0);
 #undef utf16Strlen
 #undef printAndMeasure
@@ -6441,7 +6441,7 @@ extern "C" f32 charWriterWriteString(void *writer, const u16 *str) {
 #undef destroyWriterCopy
 #undef nw4hbmPanic
 #undef assertSourceFile
-    return width;
+    return measuredWidth;
 }
 #pragma pop
 extern "C" s32 fn_80112EA0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
