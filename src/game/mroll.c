@@ -1497,19 +1497,21 @@ extern "C" void fn_80241EF0(void *arg0, s32 arg1) {
         s32 result;
     };
     SelfObj *self = (SelfObj *)arg0;
+    s32 temp;
+    u8 *temp2;
 
     self->index++;
     if (self->index >= self->col->getCount()) {
         self->index = 0;
     }
-    if (self->index < 0) return;
+    temp = self->index;
+    if (temp < 0) return;
     if (self->index >= self->col->getCount()) return;
-    struct PtrHolder { void *p; } ih;
-    ih.p = self->col->getItem(self->index);
-    void *item = ih.p;
+    void *item = self->col->getItem(self->index);
     void *record = fn_8001668C(item, 0);
-    *self->field14 = *(s32 *)((u8 *)record + 4);
-    *self->field10 = *(s32 *)((u8 *)record + 0x9C);
+    temp2 = (u8 *)record;
+    *self->field14 = *(s32 *)(temp2 + 4);
+    *self->field10 = *(s32 *)(temp2 + 0x9C);
 
     {
         s32 n = 0x20;
