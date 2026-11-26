@@ -794,7 +794,7 @@ extern u32 lbl_8055B9D4;
 
 #pragma push
 #pragma small_data on
-s32 loadFontTexture(const char *name) {
+/* Load a 'GETX' font texture block by archive file name: reuse or refresh a cached block, byte-swap a newly loaded one, register its texture with a "<name>.tex" resource, and add it to the cache. */ s32 loadFontTexture(const char *name) {
     /* gText: load a font texture by archive file name (e.g. "bigtext.gtx").
      * Returns the loaded 'GETX' block, or 0.  A name already in the cache table
      * only has its use count bumped and its "_ol_<name>" variant refreshed; a
