@@ -1823,9 +1823,7 @@ static inline float HudEase(float t) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-/* RealName: drawCrushHudInfoPanels
- *
- * Draws the timed results panels on the Crush-mode results overlay: the
+/* Draws the timed results panels on the Crush-mode results overlay: the
    "ring challenge master" and "player data" info boxes fade in and out on a
    fixed timeline relative to the round's start.  Skipped entirely while a
    challenge sub-task is still active. */
