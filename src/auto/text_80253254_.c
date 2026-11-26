@@ -21,7 +21,7 @@ extern void fn_80253824(void *);
 extern s32 fn_80128668(void);
 extern char lbl_80344B98[];
 extern char lbl_80344BC0[];
-extern void fn_80255200(void *, s32);
+extern void setupUICarObject(void *, s32);
 extern void fn_80015A20(void *, void *);
 extern void fn_80015B20(void *, void *, void *);
 extern float fn_8023659C(void);
@@ -1098,7 +1098,7 @@ loop_27:
  * gStreamRecords - allocates and constructs the 0x698-byte front/rear wheel
  * buffer object ("CarUISM") at +8, and finally registers the car itself with
  * fn_80255A84. */
-void fn_80255200(void *car, s32 reloadParams) {
+void setupUICarObject(void *car, s32 reloadParams) {
     extern char lbl_803447C0[]; /* this file's string pool, "fwheelbuf" ... */
     extern void *lbl_80498E08[]; /* live stream records, by gStreamRecordCount */
     extern long lbl_8055C190; /* "CarUISM", the wheel buffer object's heap name */
@@ -1310,7 +1310,7 @@ void *fn_802556BC(void *obj, s32 param_120) {
     *(void **)((u8 *)obj + 0xFC) = lbl_80344BC0;
     *(s32 *)((u8 *)obj + 0x110) = 0;
     *(u8 *)((u8 *)obj + 0x114) = 0;
-    fn_80255200(obj, 0);
+    setupUICarObject(obj, 0);
     return obj;
 }
 
