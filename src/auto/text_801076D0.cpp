@@ -6046,7 +6046,7 @@ extern "C" const char lbl_80329530[];
  * (SetCursor), so the call leaves the writer's own font, spacing and tab state
  * as they were; the copy is then destroyed without freeing it (the deleting
  * flag fn_801033F0 is given is 0). */
-extern "C" f32 textWriterPrint(void *writer, const char *str, s32 length) {
+/* nw4hbm TextWriterBase::Print: print length characters of str through a stack copy of the writer, commit only the resulting cursor back to the original, and return the measured text width. */ extern "C" f32 textWriterPrint(void *writer, const char *str, s32 length) {
     extern f32 fn_801142F8(void *, s32, s32);
     extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(s32); /* the writer's cursor Y */
     extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(s32); /* the writer's cursor X */
