@@ -182,7 +182,7 @@ extern "C" void Abend_Panic(const char *, ...);
  * scene's, and if neither has it as the plain "<name>" in both.  A setting none
  * of them has is reported with the 'Difficulty: "%s" was not found' message and
  * reads as 0.0; the value string the lookup returns is parsed with atof. */
-extern "C" float getDifficultySettingFloat(const char *name) {
+/* Read a current-scene difficulty setting as a float: try the contest-prefixed key in the stage set then scene set, then the plain key; panic if none has it. */ extern "C" float getDifficultySettingFloat(const char *name) {
     /* A difficulty setting set: has() at +0xC, the value string get() at +0x14. */
     class DifficultySet {
     public:
@@ -202,33 +202,33 @@ extern "C" float getDifficultySettingFloat(const char *name) {
     char key[0x64];
     DifficultyInfo *info;
     int setting = 0;
-    int text;
-    int found;
+    int valueString;
+    int foundString;
     info = (DifficultyInfo *)lbl_8055ED5C;
     if (info->contestName != 0) {
         fn_801345D8(key, 0x64, lbl_8055B4AC, info->contestName, name);
         if (info->stageSet != 0 && info->stageSet->has(key)) {
-            found = info->stageSet->get(key);
+            foundString = info->stageSet->get(key);
         } else if (info->sceneSet->has(key)) {
-            found = info->sceneSet->get(key);
+            foundString = info->sceneSet->get(key);
         } else {
-            found = 0;
+            foundString = 0;
         }
-        setting = found;
+        setting = foundString;
     }
     if (setting == 0) {
         if (info->stageSet != 0 && info->stageSet->has((void *)name)) {
-            found = info->stageSet->get((void *)name);
+            foundString = info->stageSet->get((void *)name);
         } else if (info->sceneSet->has((void *)name)) {
-            found = info->sceneSet->get((void *)name);
+            foundString = info->sceneSet->get((void *)name);
         } else {
-            found = 0;
+            foundString = 0;
         }
-        setting = found;
+        setting = foundString;
     }
     if (setting == 0) Abend_Panic(lbl_8033BBF4, name);
-    text = setting;
-    return (float)atof((const char *)text);
+    valueString = setting;
+    return (float)atof((const char *)valueString);
 }
 #pragma pop
 /* Read one difficulty setting of the current scene as its value string.  The
