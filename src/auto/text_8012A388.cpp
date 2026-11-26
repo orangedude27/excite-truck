@@ -2556,7 +2556,7 @@ extern "C" void *__dt__Q34nw4r2ef6EffectFv(nw4r::ef::Effect *effect, s32 deleteF
 extern "C" void fn_8012DFE8(void *, const char *, s32);
 extern "C" void fn_8012DEE4(void *);
 extern "C" void fn_8012DFCC(Unk8012DFCCList *, Unk8012DFCCNode *);
-extern "C" void *fn_8012E060(void *, const char *);
+extern "C" void *loadTocFile(void *, const char *);
 extern "C" s32 fn_8012D838(s32);
 extern "C" void *fn_8012E3D4(void *);
 extern "C" void fn_8012E40C(void *, s32);
@@ -2594,7 +2594,7 @@ extern "C" void fn_8012DDA8(s32 resName) {
         mount = (ResTocMount *)fn_8012E460((ResTocNodePool *)&manager->pool);
     }
     if (mount == 0) goto check;
-    fn_8012DFE8(mount, (const char *)resName, (s32)fn_8012E060(&manager->unk_0x4, (const char *)resName));
+    fn_8012DFE8(mount, (const char *)resName, (s32)loadTocFile(&manager->unk_0x4, (const char *)resName));
     fn_8012DFCC((Unk8012DFCCList *)&manager->mounts, (Unk8012DFCCNode *)mount);
     fn_8012DEE4(manager);
     found = 1;
@@ -2688,7 +2688,7 @@ done:
     *(s32 *)((u8 *)obj + 8) = 1;
 }
 
-extern "C" void *fn_8012E060(void *unused, const char *path) {
+extern "C" void *loadTocFile(void *unused, const char *path) {
     /* Build "<path-without-ext>.toc", load that resource, byte-swap its header and each entry, and return the data pointer offset by 0x80. */
     const char *origPath = path;
     char pathBuf[0x80];
