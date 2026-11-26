@@ -731,7 +731,7 @@ typedef struct RaceSession {
 } RaceSession;
 #define gSession ((RaceSession *)lbl_8055D350)
 
-/* Bits of the HUD mask at state+0x20; each block of fn_80014D04 draws one. */
+/* Bits of the HUD mask at state+0x20; each block of updateRaceHUD draws one. */
 #define HUD_LAP       0x0001 /* "lap <n> / <total>" */
 #define HUD_PLACE     0x0002 /* place number and its ordinal suffix */
 #define HUD_SPEED     0x0008 /* speed needle and the boost gauge */
