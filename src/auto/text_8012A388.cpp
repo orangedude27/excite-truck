@@ -2689,50 +2689,51 @@ done:
 }
 
 extern "C" void *loadTocFile(void *unused, const char *path) {
-    /* Build "<path-without-ext>.toc", load that resource, byte-swap its header and each entry, and return the data pointer offset by 0x80. */
-    const char *origPath = path;
-    char pathBuf[0x80];
+    /* Build "<path-without-ext>.toc", load that resource, byte-swap its header
+     * and each entry, and return the data pointer offset by 0x80. */
+    const char *originalPath = path;
+    char tocPath[0x80];
     s32 dataSize;
-    u8 swappedFlag;
-    s32 remaining;
-    char *dst;
-    char *suffixSrc;
+    u8 needsByteSwap;
+    s32 pathRemaining;
+    char *pathDst;
+    char *suffixSource;
     s32 suffixRemaining;
     char *scan;
-    u8 ch;
-    u8 suffixCh;
-    void *data;
-    u8 t;
-    u8 t2;
-    u32 i;
-    u8 *entry;
-    void *ret;
+    u8 pathChar;
+    u8 suffixChar;
+    void *tocData;
+    u8 swapByte;
+    u8 unusedByte;
+    u32 entryIndex;
+    u8 *tocEntry;
+    void *tocEntries;
     char *dot;
 
-    dst = pathBuf; remaining = 0x80;
+    pathDst = tocPath; pathRemaining = 0x80;
     goto path_copy;
 path_limit:
-    remaining -= 1;
-    if (remaining > 0) goto path_copy;
-    dst[-1] = 0;
+    pathRemaining -= 1;
+    if (pathRemaining > 0) goto path_copy;
+    pathDst[-1] = 0;
     goto path_done;
 path_copy:
-    ch = *path++; *dst++ = ch;
-    if ((s8)ch != 0) goto path_limit;
+    pathChar = *path++; *pathDst++ = pathChar;
+    if ((s8)pathChar != 0) goto path_limit;
 path_done:
-    dot = fn_80029004(pathBuf, 0x2E);
+    dot = fn_80029004(tocPath, 0x2E);
     if ((s8)*dot != 0) {
-        dot = fn_80029004(pathBuf, 0x2E);
+        dot = fn_80029004(tocPath, 0x2E);
         *dot = 0;
     }
-    scan = pathBuf; suffixRemaining = 0x80;
+    scan = tocPath; suffixRemaining = 0x80;
     goto scan_test;
 scan_step:
     suffixRemaining -= 1; scan += 1;
 scan_test:
     if ((s8)*scan != 0) goto scan_step;
     if (suffixRemaining <= 0) goto path_all_done;
-    suffixSrc = (char *)&lbl_805599E0;
+    suffixSource = (char *)&lbl_805599E0;
     goto suffix_copy;
 suffix_limit:
     suffixRemaining -= 1;
@@ -2740,36 +2741,36 @@ suffix_limit:
     scan[-1] = 0;
     goto path_all_done;
 suffix_copy:
-    suffixCh = *suffixSrc++; *scan++ = suffixCh;
-    if ((s8)suffixCh != 0) goto suffix_limit;
+    suffixChar = *suffixSource++; *scan++ = suffixChar;
+    if ((s8)suffixChar != 0) goto suffix_limit;
 path_all_done:
-    fn_8002B0D8(pathBuf);
-    data = (void *)getResourceData((s32)pathBuf, 0x45544F43, (s32)&dataSize, 0, 0, (s32)&swappedFlag);
-    if (data != 0 && swappedFlag != 0) {
-        u8 *d = (u8 *)data;
-        t = d[0]; d[0] = d[3]; d[3] = t;
-        t = d[1]; d[1] = d[2]; d[2] = t;
-        t = d[4]; d[4] = d[7]; d[7] = t;
-        t = d[5]; d[5] = d[6]; d[6] = t;
-        t = d[8]; d[8] = d[0xB]; d[0xB] = t;
-        t = d[9]; d[9] = d[0xA]; d[0xA] = t;
-        t = d[0xC]; d[0xC] = d[0xF]; d[0xF] = t;
-        t = d[0xD]; d[0xD] = d[0xE]; d[0xE] = t;
-        t = d[0x10]; d[0x10] = d[0x13]; d[0x13] = t;
-        t = d[0x11]; d[0x11] = d[0x12]; d[0x12] = t;
-        if (*(u32 *)d != 0 || *(u32 *)(d + 4) != 0x14)
-            Abend_Panic(lbl_8032AE60, *(u32 *)d, 0, *(u32 *)(d + 4), 0x14);
-        entry = d + 0x14; i = 0;
+    fn_8002B0D8(tocPath);
+    tocData = (void *)getResourceData((s32)tocPath, 0x45544F43, (s32)&dataSize, 0, 0, (s32)&needsByteSwap);
+    if (tocData != 0 && needsByteSwap != 0) {
+        u8 *bytes = (u8 *)tocData;
+        swapByte = bytes[0]; bytes[0] = bytes[3]; bytes[3] = swapByte;
+        swapByte = bytes[1]; bytes[1] = bytes[2]; bytes[2] = swapByte;
+        swapByte = bytes[4]; bytes[4] = bytes[7]; bytes[7] = swapByte;
+        swapByte = bytes[5]; bytes[5] = bytes[6]; bytes[6] = swapByte;
+        swapByte = bytes[8]; bytes[8] = bytes[0xB]; bytes[0xB] = swapByte;
+        swapByte = bytes[9]; bytes[9] = bytes[0xA]; bytes[0xA] = swapByte;
+        swapByte = bytes[0xC]; bytes[0xC] = bytes[0xF]; bytes[0xF] = swapByte;
+        swapByte = bytes[0xD]; bytes[0xD] = bytes[0xE]; bytes[0xE] = swapByte;
+        swapByte = bytes[0x10]; bytes[0x10] = bytes[0x13]; bytes[0x13] = swapByte;
+        swapByte = bytes[0x11]; bytes[0x11] = bytes[0x12]; bytes[0x12] = swapByte;
+        if (*(u32 *)bytes != 0 || *(u32 *)(bytes + 4) != 0x14)
+            Abend_Panic(lbl_8032AE60, *(u32 *)bytes, 0, *(u32 *)(bytes + 4), 0x14);
+        tocEntry = bytes + 0x14; entryIndex = 0;
         goto entries_test;
 entries_loop:
-        fn_8012A388(entry); entry += 0x44; i += 1;
+        fn_8012A388(tocEntry); tocEntry += 0x44; entryIndex += 1;
 entries_test:
-        if (i < *(u32 *)(d + 0xC)) goto entries_loop;
+        if (entryIndex < *(u32 *)(bytes + 0xC)) goto entries_loop;
     }
-    if (data == 0) Abend_Panic(lbl_8032ADDC, origPath);
-    ret = (void *)(*(s32 *)((char *)data + 0x10) + 0x80);
-    releaseResource(data);
-    return ret;
+    if (tocData == 0) Abend_Panic(lbl_8032ADDC, originalPath);
+    tocEntries = (void *)(*(s32 *)((char *)tocData + 0x10) + 0x80);
+    releaseResource(tocData);
+    return tocEntries;
 }
 
 #pragma push
