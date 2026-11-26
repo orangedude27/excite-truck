@@ -13309,7 +13309,7 @@ extern "C" s32 fn_800B8FE4(s32 buffer, s32 path, s32 length, s32 offset, s32 *ou
  * for write, seek to end). On a NAND error, store it in the slot's error field.
  * Returns 0 on success, -20 for a bad handle / missing slot, -22 if no slot.
  * (lbl_/fn_ names kept: rename_symbol unavailable for game symbols.) */
-extern "C" s32 fn_800B90A8(s32 fileId)
+extern "C" s32 resetNandFileHandle(s32 fileId)
 {
   s32 result;
   s32 nandResult;
