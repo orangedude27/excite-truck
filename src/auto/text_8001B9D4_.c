@@ -48,7 +48,7 @@ extern void fn_8001C9C4(void);
 extern void fn_8001CAF8(void);
 extern s32 fn_8001D25C(s32);
 extern void fn_8001CD4C(s32, s32, s32);
-extern s32 fn_8001CB8C(s32, const char *, void *);
+extern s32 getConfigValue(s32, const char *, void *);
 extern void *fn_8001BC38();
 extern char lbl_80358628[];
 extern s32 fn_8001CDB8(s32, s32, s32, s32, s32);
@@ -294,7 +294,7 @@ void *fn_8001BC38(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     if (count != 0) {
         *(void **)(base + 0x18) =
             ((void *(*)(s32, s32, s32))fn_8001CD4C)(*(s32 *)(base + 0), *(s32 *)(base + 4), count);
-        *(u8 *)(base + 0x10) = fn_8001CB8C(*(s32 *)(base + 4), (const char *)count, base + 0x14);
+        *(u8 *)(base + 0x10) = getConfigValue(*(s32 *)(base + 4), (const char *)count, base + 0x14);
     } else {
         *(void **)(base + 0x18) = &lbl_80358628;
         *(u8 *)(base + 0x10) = 0;
@@ -946,7 +946,7 @@ extern void *lbl_8055E050;
 #pragma dont_inline on
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" s32 fn_8001CB8C(s32 flags, const char *name, void *outValue) {
+extern "C" s32 getConfigValue(s32 flags, const char *name, void *outValue) {
     struct ConfigNode {
         virtual const char *GetName();
         virtual s32 IsValid(s32 context);
