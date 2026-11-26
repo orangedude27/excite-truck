@@ -1432,32 +1432,32 @@ extern f32 lbl_80563688;
    second height byte font[6] (0x20), all scaled by the font scale and the
    renderer's rate (fn_8022EDC4()'s field 0x38). */
 void applyTextAlignmentOffset(u8 *text, u8 *font, f32 *x, f32 *y, s32 flags, f32 scale, f32 extra) {
-    u32 code;
-    f32 rate;
+    u32 codepoint;
+    f32 renderRate;
     if (flags & TEXT_ALIGN_BEARING) {
-        u8 first = text[0];
-        if ((first & 0xF0) == 0xE0) {
-            code = ((first & 0x0F) << 12) | ((text[1] & 0x3F) << 6) | (text[2] & 0x3F);
-        } else if ((first & 0xE0) == 0xC0) {
-            code = ((first & 0x1F) << 6) | (text[1] & ~0xC0);
+        u8 firstByte = text[0];
+        if ((firstByte & 0xF0) == 0xE0) {
+            codepoint = ((firstByte & 0x0F) << 12) | ((text[1] & 0x3F) << 6) | (text[2] & 0x3F);
+        } else if ((firstByte & 0xE0) == 0xC0) {
+            codepoint = ((firstByte & 0x1F) << 6) | (text[1] & ~0xC0);
         } else {
-            code = first & 0x7F;
+            codepoint = firstByte & 0x7F;
         }
-        *x -= *(f32 *)(*(u8 **)(font + 0x10) + (code & 0xFFFF) * 0x1C);
+        *x -= *(f32 *)(*(u8 **)(font + 0x10) + (codepoint & 0xFFFF) * 0x1C);
     } else if (flags & TEXT_ALIGN_RIGHT) {
         *x -= scale * fn_8023293C((s32)font, (char *)text, extra);
     } else if (flags & TEXT_ALIGN_CENTER_X) {
-        f32 textWidth = scale * fn_8023293C((s32)font, (char *)text, extra);
-        *x -= textWidth * lbl_80563688;
+        f32 scaledWidth = scale * fn_8023293C((s32)font, (char *)text, extra);
+        *x -= scaledWidth * lbl_80563688;
     }
-    rate = *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
+    renderRate = *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
     if (flags & TEXT_ALIGN_TOP) {
-        *y -= rate * ((f32)font[4] * scale);
+        *y -= renderRate * ((f32)font[4] * scale);
     } else if (flags & TEXT_ALIGN_ASCENT) {
-        *y -= rate * ((f32)font[6] * scale);
+        *y -= renderRate * ((f32)font[6] * scale);
     } else if (flags & TEXT_ALIGN_CENTER_Y) {
-        f32 textHeight = rate * ((f32)font[4] * scale);
-        *y -= textHeight * lbl_80563688;
+        f32 scaledHeight = renderRate * ((f32)font[4] * scale);
+        *y -= scaledHeight * lbl_80563688;
     }
 }
 /* Set the current draw color and submit the object to the draw list. */
