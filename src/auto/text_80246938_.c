@@ -1083,7 +1083,7 @@ void *fn_80248140(void *object, int shouldDelete) {
 }
 
 /* "logo_mover" (fn_802483E0): the animation of the "thankyou.lyt" text.  While
- * it runs it installs fn_802481A0 as the text drawer's position-warp hook. */
+ * it runs it installs warpTextPosition as the text drawer's position-warp hook. */
 extern s32 lbl_8055F274;                /* ms stamp of when the animation started */
 extern float lbl_805638AC, lbl_805638B0, lbl_805638B4, lbl_805638B8;
 extern double sin(double);
@@ -1105,7 +1105,7 @@ extern float lbl_80563898, lbl_805638AC, lbl_805638B0, lbl_805638B4, lbl_805638B
  * by the curve read off logoCurve at its x, scaled by `remaining`, so the text
  * settles onto the position it was given; outside that one-second window the
  * clamps leave `remaining` at 0 and the glyph passes through untouched. */
-void fn_802481A0(float *outX, float *outY, float x, float y) {
+void warpTextPosition(float *outX, float *outY, float x, float y) {
 #define startTime   lbl_8055F274 /* ms stamp fn_802483E0 took at the start */
 #define one         lbl_80563898 /* 1.0f */
 #define msPerSecond lbl_805638AC /* 1000.0f */
@@ -1268,7 +1268,7 @@ void fn_802483E0(void)
   frame.args[4] = lbl_802FA478[4];
   lbl_8055F278 = objectPtr;
   frame.args[1] = (s32) frame.item;
-  fn_80232B80((s32) fn_802481A0);
+  fn_80232B80((s32) warpTextPosition);
   fn_802146BC((void *) frame.args, -999, -999, 1);
   fn_80232B80(0);
   lbl_8055F278 = 0;
