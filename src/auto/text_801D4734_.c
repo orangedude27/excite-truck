@@ -3157,7 +3157,7 @@ struct PhysPathAse {
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" int PhysPathAse_initFromTable(void *arg0, void *arg1) {
+/* Initializes a PhysPathAse element from an action-sequence value table: copies its "path"/"object" names, resolves "kill_bound" and converts "delay" seconds to ticks; returns 0 if "path" is missing, else 1. */ extern "C" int PhysPathAse_initFromTable(void *arg0, void *arg1) {
     /* The action-sequence value table (actseq.val) an element reads itself
      * from; the two leading vtable entries are the destructor pair, so the
      * first method declared here sits at +0x8. */
