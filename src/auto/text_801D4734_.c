@@ -9,7 +9,7 @@
 #include <math.h>
 
 /* One loaded action sequence: a table of the "action_sequence_file" value
- * file (actseq.val), built by fn_801D4B34/fn_801D4CF8 and updated every frame
+ * file (actseq.val), built by fn_801D4B34/ActionSequence_load and updated every frame
  * by fn_801D50B8.  Its *_ASE elements are the events it hands out. */
 enum ActionSequenceState {
     ACTION_SEQ_UNLOADED = 0, /* no table loaded yet */
@@ -439,7 +439,7 @@ int fn_801D4CB8(int object, int deleteFlag) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" int fn_801D4CF8(void *arg0, void *arg1) {
+extern "C" int ActionSequence_load(void *arg0, void *arg1) {
     /* Fills an ActionSequence (arg0) from a value-file node (arg1): reads the
      * "name" attribute, walks the node's children collecting the ones named
      * "element" (building each via createASEElement and appending to elements), and
@@ -913,7 +913,7 @@ extern "C" void fn_801D5520(char *arg0) {
     struct Manager { virtual void v0(); virtual void *get(int); };
     struct Node { virtual const char *name(); };
     struct Releasable { virtual void release(int); };
-    extern void *fn_80131810(void); extern void fn_80131818(void *); extern void *fn_801D4B34(void *); extern int fn_801D4CF8(void *,void *); extern void *fn_801284F8(int,void *); extern void fn_802E30C8(const char *, const char *); extern int stricmp(const char *,const char *); extern char lbl_80338460; extern int lbl_804423A4[];
+    extern void *fn_80131810(void); extern void fn_80131818(void *); extern void *fn_801D4B34(void *); extern int ActionSequence_load(void *,void *); extern void *fn_801284F8(int,void *); extern void fn_802E30C8(const char *, const char *); extern int stricmp(const char *,const char *); extern char lbl_80338460; extern int lbl_804423A4[];
     char *base=(char *)&lbl_80338460;
     void *obj;
     Manager *manager=(Manager *)fn_80131810();
@@ -928,7 +928,7 @@ body:
     if(stricmp(name,base+0x150)==0) {
         obj=fn_801284F8(0x13c,base+0x160);
         if(obj) obj=fn_801D4B34(obj);
-        if(fn_801D4CF8(obj,node)) {
+        if(ActionSequence_load(obj,node)) {
             int n=lbl_804423A4[1];
             void **items=(void **)lbl_804423A4[0];
             lbl_804423A4[1]=n+1;
