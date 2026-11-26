@@ -4540,7 +4540,7 @@ extern "C" u8 fn_800AB2F4(void *dateOut, void *timeOut, s32 unused) {
  * that cannot place the position it asked for puts the old one back and calls
  * this again, so every call of it in the entry code comes in a pair.
  */
-extern "C" s32 fn_800AB378(void *arg0, s32 grow) {
+extern "C" s32 VFiPFENT_ITER_seek(void *arg0, s32 grow) {
     typedef s32 (*ClaimPage)(void *, s32, void **, s32 *);              /* fn_800A8D08: a page of the volume's cache; -1 asks for one held by nobody */
     typedef s32 (*WriteSector)(void *, s32, s32, s32, u16, u32 *, s32); /* VFiPFCACHE_WriteData: write bytes to a sector */
     VFiPFEntIter *it = (VFiPFEntIter *)arg0;
@@ -4601,7 +4601,7 @@ extern "C" s32 fn_800AB528(void *arg0, void *arg1, s32 arg2, u8 arg3, s32 arg4, 
     extern void VFiPFPATH_getLongNameformShortName(void *, void *, s32);
     extern s32 VFiPFPATH_transformInUnicode(s16 *, s32, s32);
     extern s32 fn_800AA4EC(void *, void *);
-    extern s32 fn_800AB378(void *, s32);
+    extern s32 VFiPFENT_ITER_seek(void *, s32);
     extern s32 fn_800AC4AC(void *, s32);
     extern s32 fn_800B3754(s32, s32 *, s32);
     extern s32 fn_800B5070(s32, s32 *);
@@ -4651,11 +4651,11 @@ extern "C" s32 fn_800AB528(void *arg0, void *arg1, s32 arg2, u8 arg3, s32 arg4, 
         *(u8 *)(self + 0x6C) = shift;
         *(s16 *)(self + 0x4A) = (s16)(big - 1);
         *(s32 *)self = steps;
-        attempt = fn_800AB378(self, 0);
+        attempt = VFiPFENT_ITER_seek(self, 0);
         var_r23 = attempt;
         if (attempt != 0) {
             *(s32 *)self = prev;
-            fn_800AB378(self, 0);
+            VFiPFENT_ITER_seek(self, 0);
         } else {
             if ((u32)(*(s32 *)(self + 0x44) + 0x10000) == 0xFFFF) {
                 value = 0x10;
@@ -4687,11 +4687,11 @@ loop_16:
                 *(u8 *)(self + 0x6C) = shift;
                 *(s16 *)(self + 0x4A) = (s16)(big - 1);
                 *(s32 *)self = sp14;
-                attempt = fn_800AB378(self, 0);
+                attempt = VFiPFENT_ITER_seek(self, 0);
                 var_r23 = attempt;
                 if (attempt != 0) {
                     *(s32 *)self = prev;
-                    fn_800AB378(self, 0);
+                    VFiPFENT_ITER_seek(self, 0);
                 } else {
                     if ((u32)(*(s32 *)(self + 0x44) + 0x10000) == 0xFFFF) {
                         value = 0x10;
@@ -4826,10 +4826,10 @@ loop_106_body:
 block_98:
     prev = *(s32 *)self;
     *(s32 *)self = prev + 1;
-    attempt = fn_800AB378(self, 0);
+    attempt = VFiPFENT_ITER_seek(self, 0);
     if (attempt != 0) {
         *(s32 *)self = prev;
-        fn_800AB378(self, 0);
+        VFiPFENT_ITER_seek(self, 0);
         value = attempt;
     } else {
         if ((u32)(*(s32 *)(self + 0x44) + 0x10000) == 0xFFFF) {
@@ -4938,11 +4938,11 @@ loop_64:
         M2C_FIELD(p0, u8 *, 0x6C) = temp_r6;
         M2C_FIELD(p0, s16 *, 0x4A) = (s16) (temp_r5_2 - 1);
         M2C_FIELD(p0, s32 *, 0) = 0;
-        temp_r3_6 = ((s32 (*)(void *, s32, s32, s32))fn_800AB378)(p0, 0, temp_r5_2, temp_r6);
+        temp_r3_6 = ((s32 (*)(void *, s32, s32, s32))VFiPFENT_ITER_seek)(p0, 0, temp_r5_2, temp_r6);
         var_r22 = temp_r3_6;
         if (temp_r3_6 != 0) {
             M2C_FIELD(p0, s32 *, 0) = temp_r27;
-            fn_800AB378(p0, 0);
+            VFiPFENT_ITER_seek(p0, 0);
         } else {
             if ((u32) (M2C_FIELD(p0, s32 *, 0x44) + 0x10000) == -1U) {
                 var_r4 = 0x10;
@@ -4987,11 +4987,11 @@ loop_64:
                 M2C_FIELD(p0, u8 *, 0x6C) = temp_r6_2;
                 M2C_FIELD(p0, s16 *, 0x4A) = (s16) (temp_r5_4 - 1);
                 M2C_FIELD(p0, s32 *, 0) = 0;
-                temp_r3_9 = ((s32 (*)(void *, s32, s32, s32))fn_800AB378)(p0, 0, temp_r5_4, temp_r6_2);
+                temp_r3_9 = ((s32 (*)(void *, s32, s32, s32))VFiPFENT_ITER_seek)(p0, 0, temp_r5_4, temp_r6_2);
                 var_r21 = temp_r3_9;
                 if (temp_r3_9 != 0) {
                     M2C_FIELD(p0, s32 *, 0) = temp_r22;
-                    fn_800AB378(p0, 0);
+                    VFiPFENT_ITER_seek(p0, 0);
                 } else {
                     if ((u32) (M2C_FIELD(p0, s32 *, 0x44) + 0x10000) == -1U) {
                         var_r4_2 = 0x10;
@@ -5040,7 +5040,7 @@ block_65:
     return 0;
 }
 
-extern "C" s32 fn_800AB378(void *, s32);
+extern "C" s32 VFiPFENT_ITER_seek(void *, s32);
 extern s32 readVolumeData(void *, void *, u32, u32, u32 *, u32);
 extern "C" s32 readVolumeData(void *, u8 *, u32, u32, u32, u32 *, s32);
 #pragma push
@@ -5062,11 +5062,11 @@ extern "C" s32 fn_800AC1B4(void *arg0, s32 arg1) {
     *(u8 *)((u8 *)arg0 + 0x6C) = temp_r7;
     *(u16 *)((u8 *)arg0 + 0x4A) = (one << temp_r7) - 1;
     *(s32 *)((u8 *)arg0 + 0x40) = -1;
-    temp_r3 = ((s32 (*)(void *, s32))fn_800AB378)(arg0, 0);
+    temp_r3 = ((s32 (*)(void *, s32))VFiPFENT_ITER_seek)(arg0, 0);
     var_r31 = temp_r3;
     if (temp_r3 != 0) {
         *(s32 *)arg0 = temp_r30;
-        ((s32 (*)(void *, s32))fn_800AB378)(arg0, 0);
+        ((s32 (*)(void *, s32))VFiPFENT_ITER_seek)(arg0, 0);
     } else {
         if (*(u32 *)((u8 *)arg0 + 0x44) == 0xFFFFFFFFU) {
             temp_r4 = 0x10;
@@ -5099,7 +5099,7 @@ extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(void *arg0) {
     index = iter->index;
     old = iter->position;
     iter->position = (index + 1) << iter->shift;
-    if (fn_800AB378(iter, 0) != 0) {
+    if (VFiPFENT_ITER_seek(iter, 0) != 0) {
         iter->position = old;
         iter->index = index;
         return 1;
@@ -5139,10 +5139,10 @@ extern "C" s32 VFiPFENT_ITER_Advance(void *arg0, s32 arg1) {
     if (arg1 != 0)
         goto zero;
     *(u32 *)iter = next;
-    result = ((s32 (*)(void *, s32))fn_800AB378)(iter, arg1);
+    result = ((s32 (*)(void *, s32))VFiPFENT_ITER_seek)(iter, arg1);
     if (result != 0) {
         *(u32 *)iter = index;
-        ((s32 (*)(void *, s32))fn_800AB378)(iter, 0);
+        ((s32 (*)(void *, s32))VFiPFENT_ITER_seek)(iter, 0);
         goto done;
     }
 normal:
@@ -5220,10 +5220,10 @@ extern "C" s32 fn_800AC4AC(void *arg0, s32 arg1) {
     if ((u32)cnt == prev && *(u32 *)(self + 0x44) + 0x10000 == 0xFFFF && arg1 != 0)
         goto zero;
     *(s32 *)self = prev;
-    rv = ((s32 (*)(void *, s32))fn_800AB378)(arg0, arg1);
+    rv = ((s32 (*)(void *, s32))VFiPFENT_ITER_seek)(arg0, arg1);
     if (rv) {
         *(s32 *)self = cnt;
-        ((s32 (*)(void *, s32))fn_800AB378)(arg0, 0);
+        ((s32 (*)(void *, s32))VFiPFENT_ITER_seek)(arg0, 0);
         goto done;
     }
     sec = *(u32 *)(self + 0x44);
@@ -5268,10 +5268,10 @@ static inline s32 VFiPFENT_ITER_MoveNextAndRead(u8 *iter) {
     s32 code;
     u32 sp8;
     *(u32 *)iter = old + 1;
-    result = fn_800AB378((void *)iter, 0);
+    result = VFiPFENT_ITER_seek((void *)iter, 0);
     if (result != 0) {
         *(u32 *)iter = old;
-        fn_800AB378((void *)iter, 0);
+        VFiPFENT_ITER_seek((void *)iter, 0);
     } else {
         if (*(u32 *)(iter + 0x44) + 0x10000 == 0xFFFF) {
             code = 0x10;
@@ -5289,10 +5289,10 @@ static inline s32 VFiPFENT_ITER_MoveNextAndReadOld(u8 *iter, u32 old) {
     s32 result;
     s32 code;
     u32 sp8;
-    result = fn_800AB378((void *)iter, 0);
+    result = VFiPFENT_ITER_seek((void *)iter, 0);
     if (result != 0) {
         *(u32 *)iter = old;
-        fn_800AB378((void *)iter, 0);
+        VFiPFENT_ITER_seek((void *)iter, 0);
     } else {
         if (*(u32 *)(iter + 0x44) + 0x10000 == 0xFFFF) {
             code = 0x10;
@@ -5402,10 +5402,10 @@ process:
 advance:
     status = *(u32 *)iter;
     *(u32 *)iter = status + 1;
-    result = fn_800AB378((void *)iter, 0);
+    result = VFiPFENT_ITER_seek((void *)iter, 0);
     if (result != 0) {
         *(u32 *)iter = status;
-        fn_800AB378((void *)iter, 0);
+        VFiPFENT_ITER_seek((void *)iter, 0);
     } else {
         if (*(u32 *)(iter + 0x44) + 0x10000 == 0xFFFF) {
             code = 0x10;
