@@ -27628,43 +27628,80 @@ extern "C" s32 IOS_IoctlAsync(s32, s32, void *, s32, void *, s32, void *, void *
 #pragma push
 #pragma use_lmw_stmw off
 /*
- * runSdCardCommand - run one MMC/SD command on the card opened as "fd" through the
- * SD module's ioctl 7: the command goes over in a 0x24 byte SDCmdBlock and the
- * card's 0x10 byte response comes back in the library's shared response buffer
- * lbl_8055DD74, from where it is copied to the caller's "response" (4 words).
+ * Run one MMC/SD command on the card opened as "fd" through the SD module's
+ * ioctl 7.  The command goes over in a 0x24-byte SDCmdBlock and the card's
+ * 0x10-byte response comes back in the library's shared buffer lbl_8055DD74,
+ * from where it is copied to the caller's "response" (four words).
  * Without "callback" this waits for IOS to finish the request; with one the
  * request is left running and fn_800BAA8C copies the response out, calls
- * callback(callbackArg) and frees both blocks - so this frees the request block
- * itself only when the request never got going (no response, no callback, or
- * IOS refused it).  A command that moves data (the 0x19 write of SDCard_writeBlocks)
- * describes its buffer inside the block; the read path uses the ioctlv twin
- * fn_800BAE98 instead, which hands the buffer to IOS as its own vector.
- * lbl_80559248 is the SD library's heap and lbl_8031B838 its message strings.
+ * callback(callbackArg) and frees both blocks - so this frees the request
+ * block itself only when the request never got going (no response, no
+ * callback, or IOS refused it).  A command that moves data (the 0x19 write of
+ * SDCard_writeBlocks) describes its buffer inside the block; the read path
+ * uses the ioctlv twin fn_800BAE98 instead, which hands the buffer to IOS as
+ * its own vector.  lbl_80559248 is the SD library's heap and lbl_8031B838 its
+ * message strings.
  */
-extern "C" s32 runSdCardCommand(s32 fd,s32 command,s32 type,s32 responseKind,s32 argument,s32 buffer,s32 count,s32 blockSize,s32 writeFlag,s32 response,s32 callback,s32 callbackArg) {
- const char *messages=lbl_8031B838;
- s32 res;
- SDCmdBlock *cmd;
- SDCmdRequest *cb;
- cmd=(SDCmdBlock *)iosAlloc(lbl_80559248,0x40);
- if(!cmd) { OSReport(messages+0x15c,0x40); res=-0x16; goto done; } /* no room for a request block */
- cmd->command=command; cmd->type=type; cmd->responseKind=responseKind; cmd->argument=argument; cmd->buffer=buffer; cmd->count=count; cmd->blockSize=blockSize; cmd->writeFlag=writeFlag;
- if (response) {
- if (callback) { /* leave it running: fn_800BAA8C reports it and frees both blocks */
-  cb=(SDCmdRequest *)iosAlloc(lbl_80559248,0x1c);
-  if (!cb) { OSReport(messages+0x188); res=-0x16; goto done; }
-  cb->callback=callback; cb->callbackArg=callbackArg; cb->response=response; cb->command=command; cb->flag10=1; cb->cmd=cmd;
-  res=IOS_IoctlAsync(fd,7,cmd,0x24,lbl_8055DD74,0x10,(void *)fn_800BAA8C,cb);
-  if(res) { OSReport(messages+0x1c4,res); res=(s32)0xc1000000; }
- } else {
-  res=IOS_Ioctl(fd,7,cmd,0x24,lbl_8055DD74,0x10);
-  if(res) { if ((u32)command==SD_CMD_SEND_CSD) res=0; else OSReport(messages+0x1e8,res,res,cmd); } /* a card that will not answer its CSD is not an error here */
-  else { ((s32 *)response)[0]=((s32 *)lbl_8055DD74)[0]; ((s32 *)response)[1]=((s32 *)lbl_8055DD74)[1]; ((s32 *)response)[2]=((s32 *)lbl_8055DD74)[2]; ((s32 *)response)[3]=((s32 *)lbl_8055DD74)[3]; }
- }
- } else { OSReport(messages+0x218); res=(s32)0xc1000000; } /* nowhere to put the response */
+extern "C" s32 runSdCardCommand(s32 fd, s32 command, s32 type, s32 responseKind,
+                                s32 argument, s32 buffer, s32 count, s32 blockSize,
+                                s32 writeFlag, s32 response, s32 callback, s32 callbackArg) {
+    const char *messages = lbl_8031B838;
+    s32 res;
+    SDCmdBlock *cmd;
+    SDCmdRequest *cb;
+
+    cmd = (SDCmdBlock *)iosAlloc(lbl_80559248, 0x40);
+    if (!cmd) {
+        OSReport(messages + 0x15c, 0x40);
+        res = -0x16;
+        goto done;
+    }
+    cmd->command = command;
+    cmd->type = type;
+    cmd->responseKind = responseKind;
+    cmd->argument = argument;
+    cmd->buffer = buffer;
+    cmd->count = count;
+    cmd->blockSize = blockSize;
+    cmd->writeFlag = writeFlag;
+    if (response) {
+        if (callback) {
+            cb = (SDCmdRequest *)iosAlloc(lbl_80559248, 0x1c);
+            if (!cb) {
+                OSReport(messages + 0x188);
+                res = -0x16;
+                goto done;
+            }
+            cb->callback = callback;
+            cb->callbackArg = callbackArg;
+            cb->response = response;
+            cb->command = command;
+            cb->flag10 = 1;
+            cb->cmd = cmd;
+            res = IOS_IoctlAsync(fd, 7, cmd, 0x24, lbl_8055DD74, 0x10, (void *)fn_800BAA8C, cb);
+            if (res) {
+                OSReport(messages + 0x1c4, res);
+                res = (s32)0xc1000000;
+            }
+        } else {
+            res = IOS_Ioctl(fd, 7, cmd, 0x24, lbl_8055DD74, 0x10);
+            if (res) {
+                if ((u32)command == SD_CMD_SEND_CSD) res = 0;
+                else OSReport(messages + 0x1e8, res, res, cmd);
+            } else {
+                ((s32 *)response)[0] = ((s32 *)lbl_8055DD74)[0];
+                ((s32 *)response)[1] = ((s32 *)lbl_8055DD74)[1];
+                ((s32 *)response)[2] = ((s32 *)lbl_8055DD74)[2];
+                ((s32 *)response)[3] = ((s32 *)lbl_8055DD74)[3];
+            }
+        }
+    } else {
+        OSReport(messages + 0x218);
+        res = (s32)0xc1000000;
+    }
 done:
- if ((!response || !callback || res) && cmd) iosFree(lbl_80559248,cmd);
- return res;
+    if ((!response || !callback || res) && cmd) iosFree(lbl_80559248, cmd);
+    return res;
 }
 #pragma pop
 
