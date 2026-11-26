@@ -107,7 +107,7 @@ extern const char lbl_8032BA90[];
 extern int lbl_8055E07C;
 extern int lbl_80559B58;
 extern int readOptionsFile(int, int, int);
-extern int fn_80133AD8(int);
+extern int optionSectionName(int);
 extern int Abend_Panic(const char *, ...);
 extern const char lbl_8032B8B0[];
 extern int lbl_8042F718[];
@@ -159,7 +159,7 @@ void fn_80133024(void) {
 void fn_801330E8(int section) {
     if (!readOptionsFile(lbl_80559B58, 0, section)) {
         const char *fmt = lbl_8032B8B0;
-        int sectionName = fn_80133AD8(section);
+        int sectionName = optionSectionName(section);
         Abend_Panic(fmt, sectionName);
     }
 }
@@ -516,7 +516,7 @@ int fn_80133A08(char **srcPtr, int srcRemaining, char *dst, int dstCapacity) {
 extern void *memcpy(void *, const void *, unsigned long);
 #pragma push
 #pragma optimize_for_size on
-int fn_80133AD8(int sectionIndex) {
+int optionSectionName(int sectionIndex) {
     /* Returns the section name string at sectionIndex from the 17-entry options
        name table lbl_802F9308, copied to a local buffer before indexing. */
     int sectionNames[17];
@@ -545,7 +545,7 @@ int optionSectionFromName(char *sectionName) {
     int sectionIndex = 0;
 
     do {
-        if (stricmp(sectionName, (char *)fn_80133AD8(sectionIndex)) == 0) {
+        if (stricmp(sectionName, (char *)optionSectionName(sectionIndex)) == 0) {
             return sectionIndex;
         }
         sectionIndex++;
@@ -637,7 +637,7 @@ int readOptionsFile(int path, int ignoreVersion, int wantSection) {
                         } else {
                             // "Item %s:%s has no value"
                             fn_802E30C8(strings + 0x1D0,
-                                        fn_80133AD8(section), buf);
+                                        optionSectionName(section), buf);
                         }
                     }
                 } else if ((sscanf(buf, strings + 0x1E8, &fileVersion) == 1 &&
@@ -829,7 +829,7 @@ void fn_801341B4(int optionValue, int event) {
 extern int lbl_8055E07C;
 extern int lbl_80559B58;
 extern int readOptionsFile(int, int, int);
-extern int fn_80133AD8(int);
+extern int optionSectionName(int);
 extern int Abend_Panic(const char *, ...);
 extern const char lbl_8032B8B0[];
 extern int lbl_8042F718[];
