@@ -173,7 +173,7 @@ extern double __fabs(double);
 /* Steps the rain/thunder sound state each frame: picks a new rain spell or thunderclap
  * time, eases the volume toward its target, and asks the thunder sound to play at the
  * scheduled instant. The force flag makes the change happen immediately. */
-void stepWeatherSounds(void) {
+/* Steps the rain/thunder sound state each frame, easing rain volume and triggering thunder at its scheduled time. */ void stepWeatherSounds(void) {
     float currentTime = lbl_8055E3C8;
     char *sound = gWeatherSound;
     int zero = 0;
