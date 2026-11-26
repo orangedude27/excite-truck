@@ -627,7 +627,7 @@ void fn_80232024(u8 **textPtr) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma dont_inline on
-extern void fn_80233BF0(u8 *, u8 *, f32 *, f32 *, s32, f32, f32);
+extern void applyTextAlignmentOffset(u8 *, u8 *, f32 *, f32 *, s32, f32, f32);
 extern void fn_80233DD8(s32 *, s32);
 extern void fn_80233E34(s32 *, s32, s32);
 extern void fn_80233EBC(void);
@@ -658,7 +658,7 @@ void fn_80232040(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     rate = *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
     tmpRate = (f32)((u8 *)arg1)[4] * farg2;
     temp_f31 = tmpRate * rate;
-    fn_80233BF0((u8 *)sp8, (u8 *)arg1, &spC, &sp10, arg3, farg2, farg4);
+    applyTextAlignmentOffset((u8 *)sp8, (u8 *)arg1, &spC, &sp10, arg3, farg2, farg4);
     while (var_r31 > 0) {
         var_r5 = sp14;
         temp_r30 = (var_r31 == 2);
@@ -1078,7 +1078,7 @@ extern f32 lbl_80563684;
 extern void fn_80232040(u8 *, s32, s32, s32, s32, f32, f32, f32, f32, f32, f32);
 extern void fn_80232BA4(char *, s32, s32, s32, f32, f32, f32, f32, f32);
 extern void fn_80233AA4(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4);
-extern void fn_80233BF0(u8 *arg0, u8 *arg1, f32 *arg2, f32 *arg3, s32 arg4, f32 farg0, f32 farg1);
+extern void applyTextAlignmentOffset(u8 *arg0, u8 *arg1, f32 *arg2, f32 *arg3, s32 arg4, f32 farg0, f32 farg1);
 extern void fn_80233E80(s32 *arg0, s32 arg1);
 extern void fn_80233EBC(void);
 extern void DrawList_RestoreNormalMode(void);
@@ -1121,7 +1121,7 @@ void fn_80232D3C(u8 *text, s32 font, s32 color, s32 x, s32 flags, f32 y, f32 sca
         f32 rate = *(f32 *)((u8 *)fn_8022EDC4() + 0x34);
         f32 f0 = (f32)*(u8 *)(nFont + 4) * scale;
         f32 fontHeight = f0 * rate;
-        fn_80233BF0(pText, (u8 *)nFont, &sp8, &spC, flags, scale, extra);
+        applyTextAlignmentOffset(pText, (u8 *)nFont, &sp8, &spC, flags, scale, extra);
         {
             f32 startX = sp8;
             strlen((const char *)pText);
@@ -1414,7 +1414,7 @@ void fn_80233AA4(void *fontArg, s32 glyphIndex, f32 x0, f32 y0, f32 x1, f32 y1, 
 #pragma pop
 
 extern f32 lbl_80563688;
-/* How fn_80233BF0 moves the pen point back before a string is drawn; the text
+/* How applyTextAlignmentOffset moves the pen point back before a string is drawn; the text
    drawing entry points pass these down as their layout flags (the UI's
    TEXT_ALIGN_CENTER is 0x4|0x10, centring the string on the point). */
 #define TEXT_ALIGN_BEARING  0x1  /* by the first glyph's left bearing */
@@ -1431,7 +1431,7 @@ extern f32 lbl_80563688;
    from the font's own height byte font[4] (0x8), half of it (0x10) or the
    second height byte font[6] (0x20), all scaled by the font scale and the
    renderer's rate (fn_8022EDC4()'s field 0x38). */
-void fn_80233BF0(u8 *text, u8 *font, f32 *x, f32 *y, s32 flags, f32 scale, f32 extra) {
+void applyTextAlignmentOffset(u8 *text, u8 *font, f32 *x, f32 *y, s32 flags, f32 scale, f32 extra) {
     u32 code;
     f32 rate;
     if (flags & TEXT_ALIGN_BEARING) {
@@ -1982,7 +1982,7 @@ void fn_80234AEC(void) {
 typedef struct {
     s32 font;        /* font context pointer, e.g. the "bigtext.gtx" one at lbl_8055D498 */
     s32 color;       /* RGBA pen colour, 0xFF000000 = shadowed text */
-    s32 style;       /* layout flags passed to fn_80233BF0 (wrap/spacing modes) */
+    s32 style;       /* layout flags passed to applyTextAlignmentOffset (wrap/spacing modes) */
     f32 scale;       /* text scale */
     f32 spacing;     /* extra horizontal scale used when measuring the string */
 } TextDrawStyle;
