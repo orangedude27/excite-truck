@@ -9238,9 +9238,9 @@ extern "C" void *fn_800B224C(void *fileObj, void *info) {
  */
 extern "C" s32 VFiPFPATH_SplitDriveAndName(s32 path, s32 outDir, s32 outName, s32 allowWildcards) {
     union Tok { s32 words[4]; f64 dbl[2]; };
-    Tok token;
-    Tok lastToken;
-    s32 rangeEnd;
+    Tok currentToken;
+    Tok finalToken;
+    s32 dirEnd;
     s32 charCode;
     s32 result;
     charCode = fn_800A4D44((void *)path);
@@ -9253,36 +9253,36 @@ extern "C" s32 VFiPFPATH_SplitDriveAndName(s32 path, s32 outDir, s32 outName, s3
     if (VFiPFSTR_StrNCmp(path, &PF_COLON, 1, 1, 1) == 0) {
         ((void (*)(void *, s32))VFiPFSTR_MoveStrPos)((void *)path, 2);
     }
-    rangeEnd = ((s32 *)path)[0];
-    token.words[0] = rangeEnd;
-    token.words[1] = rangeEnd;
-    token.words[3] = charCode;
-    result = VFiPFPATH_GetNextTokenOfPath(&token, allowWildcards);
+    dirEnd = ((s32 *)path)[0];
+    currentToken.words[0] = dirEnd;
+    currentToken.words[1] = dirEnd;
+    currentToken.words[3] = charCode;
+    result = VFiPFPATH_GetNextTokenOfPath(&currentToken, allowWildcards);
     if (result != 0) return result;
-    if (token.words[0] == 0 || (u16)fn_800A4F08(&token) == 0) return 2;
-    if (((u32 *)path)[1] < (u32)token.words[1]) return 2;
-    lastToken.dbl[0] = token.dbl[0];
-    lastToken.dbl[1] = token.dbl[1];
+    if (currentToken.words[0] == 0 || (u16)fn_800A4F08(&currentToken) == 0) return 2;
+    if (((u32 *)path)[1] < (u32)currentToken.words[1]) return 2;
+    finalToken.dbl[0] = currentToken.dbl[0];
+    finalToken.dbl[1] = currentToken.dbl[1];
     for (;;) {
-        if (VFiPFSTR_StrNCmp((s32)&token, lbl_8055920C, 2, 0, 1) == 0) {
-            rangeEnd = lastToken.words[1];
+        if (VFiPFSTR_StrNCmp((s32)&currentToken, lbl_8055920C, 2, 0, 1) == 0) {
+            dirEnd = finalToken.words[1];
             break;
         }
-        result = VFiPFPATH_GetNextTokenOfPath(&token, allowWildcards);
+        result = VFiPFPATH_GetNextTokenOfPath(&currentToken, allowWildcards);
         if (result != 0) return result;
-        if ((u16)fn_800A4F08(&token) == 0) return 2;
-        if (((u32 *)path)[1] >= (u32)token.words[1] && token.words[0] != 0) {
-            rangeEnd = lastToken.words[1];
-            lastToken.dbl[0] = token.dbl[0];
-            lastToken.dbl[1] = token.dbl[1];
+        if ((u16)fn_800A4F08(&currentToken) == 0) return 2;
+        if (((u32 *)path)[1] >= (u32)currentToken.words[1] && currentToken.words[0] != 0) {
+            dirEnd = finalToken.words[1];
+            finalToken.dbl[0] = currentToken.dbl[0];
+            finalToken.dbl[1] = currentToken.dbl[1];
             continue;
         }
         break;
     }
     ((s32 *)outDir)[0] = ((s32 *)path)[0];
-    ((s32 *)outDir)[1] = rangeEnd;
+    ((s32 *)outDir)[1] = dirEnd;
     if (outName != 0) {
-        volatile s32 *src = (volatile s32 *)&lastToken;
+        volatile s32 *src = (volatile s32 *)&finalToken;
         volatile s32 *dst = (volatile s32 *)outName;
         s32 d, c, b, a;
         a = src[0];
