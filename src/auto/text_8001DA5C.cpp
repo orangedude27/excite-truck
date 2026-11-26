@@ -429,7 +429,7 @@ extern "C" s32 fn_8001E26C(s32 object, s32 deleteFlag) {
    level * OVERLAY_ALPHA_MAX; otherwise a warning level above OVERLAY_WARN_MIN
    shows the "overheat_warn" pane, its colour pulsed between 0xC0FFFFFF and
    0xFFFF2020. */
-extern "C" void updateOverheatOverlay(void* slots, s32 playerIndex) {
+/* Refresh the overheat HUD overlay for one racer: hold/cool the 0..1 level, then draw the OVERHEAT pane (or the warn pane, when warn level exceeds OVERLAY_WARN_MIN). */ extern "C" void updateOverheatOverlay(void* slots, s32 playerIndex) {
     PaneData warnData;
     PaneData textData;
     f32* slot;
