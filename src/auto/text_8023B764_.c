@@ -23,7 +23,7 @@ extern void fn_8001EFC8(void);
 extern int fn_8024A4CC(int *, int *, int *);
 extern s32 fn_80128668(void);
 extern void fn_8000BF20(void *);
-extern void fn_8000C0E8(void);
+extern void restartGameFromContext(void);
 extern u8 lbl_803413A8[];
 extern s32 atoi();
 extern void Abend_Panic(const char *, ...);
@@ -101,7 +101,7 @@ void fn_8023B8AC(s32 context) {
 #pragma scheduling invalid_target
 /* Run one game-loop frame with a result callback and copy the submitted race
  * results into `result`; when `reset` is nonzero, restart the frame context
- * through fn_8000C0E8 instead. */
+ * through restartGameFromContext instead. */
 void fn_8023B904(void *context, void *result, s32 reset) {
     struct Local8023B904 {
         u8 *data;                    /* callback vtable (lbl_803413A8) */
@@ -124,7 +124,7 @@ void fn_8023B904(void *context, void *result, s32 reset) {
             out->t = local.t;
         }
     } else {
-        fn_8000C0E8();
+        restartGameFromContext();
     }
 }
 #pragma scheduling on

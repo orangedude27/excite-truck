@@ -1052,7 +1052,7 @@ state_check:
 extern void *memcpy(void *, const void *, unsigned int);
 extern void fn_8000BF20(void *, int);
 #pragma scheduling invalid_target
-void fn_8000C0E8(void *arg0) {
+void restartGameFromContext(void *arg0) {
     /* Copies a game context buffer (32-byte header, a run of 0x78-byte records,
      * and the 4-word tail) into a local buffer, resets the record count to 1 and
      * sets the "last" flag, then runs the frame-sequence engine (fn_8000BF20)
