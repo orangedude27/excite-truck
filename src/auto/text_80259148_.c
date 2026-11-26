@@ -1535,9 +1535,9 @@ typedef struct LevelButton {
 // thresholds and refresh the dialog's texts with the name and value of the
 // threshold now shown; a button already at the first or last level plays the
 // "cannot go any further" cue instead.
-int handleLevelButtonMessage(void *arg0, int arg1) {
+/* Handle the achievement-level selector button: step the level within the achievement's thresholds and refresh the dialog's name and level text, or play the limit cue when the level cannot change. */ int handleLevelButtonMessage(void *self, int message) {
     typedef void (*Fmt)(char *, int, const char *, ...);
-    LevelButton *button = (LevelButton *)arg0;
+    LevelButton *button = (LevelButton *)self;
     LevelDialog *dialog;
     int level;
     unsigned char *nameSrc;
@@ -1559,7 +1559,7 @@ int handleLevelButtonMessage(void *arg0, int arg1) {
     int oldLevel2;
     int achievement2;
 
-    switch (arg1) {
+    switch (message) {
     case 0x128:  // one level down
         oldLevel = button->level;
         level = button->levelCount;
