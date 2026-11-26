@@ -117,76 +117,77 @@ extern void closeFileHandle(int *);
 
 void drawSoundDash(void) {
     struct { char sp8[64]; char sp48[64]; char padding[0xD0]; } scratch;
-    int soundIndex;
-    int drawSlot;
-    int entryIndex;
+    int soundIdx;
+    int slotIndex;
+    int entryIdx;
     int isValueColumn;
     int zero = 0;
-    unsigned int column;
-    unsigned int indexSign;
-    int nameX, valueX, textColor, copyRemaining;
+    unsigned int gridRow;
+    unsigned int rowSign;
+    int nameX, valueX, textColor, copyLimit;
     unsigned int slotSign;
-    char *sourceText, *destText;
-    unsigned char copiedChar;
+    char *srcText, *dstText;
+    unsigned char ch;
 
-    /* Draw the "SOUND DASH" debug overlay: sound-name grid in mode 1, sound/value list in mode 0. */
+    /* Draw the SOUND DASH debug overlay: a grid of sound names in mode 1, or a
+     * sound-name/volume list with the selected entry highlighted in mode 0. */
     fn_8023895C();
     fn_80238A74(0xC, 0xC, lbl_8033C5CC, 0xFF2D2DC8);
 
     if (soundDashMode == 1) {
         fn_80238B44(7, 7, 0x15E, 0x1C0, 0x8C000000);
-        soundIndex = 0;
+        soundIdx = 0;
         do {
-            fn_802E6B38(soundIndex, scratch.sp48);
-            column = (unsigned int)soundIndex << 28;
-            indexSign = (unsigned int)soundIndex >> 31;
-            column -= indexSign;
-            column = (column << 4) | (column >> 28);
-            column += indexSign;
+            fn_802E6B38(soundIdx, scratch.sp48);
+            gridRow = (unsigned int)soundIdx << 28;
+            rowSign = (unsigned int)soundIdx >> 31;
+            gridRow -= rowSign;
+            gridRow = (gridRow << 4) | (gridRow >> 28);
+            gridRow += rowSign;
             nameX = 0x14;
-            if (soundIndex / 16 != 0)
+            if (soundIdx / 16 != 0)
                 nameX = 0x122;
-            fn_80238A74(nameX, (column * 0xE) + 0x1A, scratch.sp48, -0x100);
-            soundIndex += 1;
-        } while (soundIndex < 0x20);
+            fn_80238A74(nameX, (gridRow * 0xE) + 0x1A, scratch.sp48, -0x100);
+            soundIdx += 1;
+        } while (soundIdx < 0x20);
     } else if (soundDashMode == 0) {
         fn_80238B44(7, 7, 0x12C, 0x1C0, 0x8C000000);
-        soundIndex = fn_8020A76C() * 2;
-        for (drawSlot = 0; drawSlot < soundIndex; drawSlot++) {
-            sourceText = voiceSndGetEntry(drawSlot / 2);
-            slotSign = (unsigned int)drawSlot >> 31;
-            isValueColumn = ((drawSlot & 1) ^ slotSign) - slotSign;
-            entryIndex = (int)(slotSign + drawSlot) >> 1;
+        soundIdx = fn_8020A76C() * 2;
+        for (slotIndex = 0; slotIndex < soundIdx; slotIndex++) {
+            srcText = voiceSndGetEntry(slotIndex / 2);
+            slotSign = (unsigned int)slotIndex >> 31;
+            isValueColumn = ((slotIndex & 1) ^ slotSign) - slotSign;
+            entryIdx = (int)(slotSign + slotIndex) >> 1;
             if (isValueColumn == 0) {
-                destText = scratch.sp8;
-                copyRemaining = 0x40;
+                dstText = scratch.sp8;
+                copyLimit = 0x40;
                 goto copy_text_body;
             copy_text_limit:
-                if (--copyRemaining <= 0) {
-                    *(destText - 1) = zero;
+                if (--copyLimit <= 0) {
+                    *(dstText - 1) = zero;
                     goto copy_text_done;
                 }
             copy_text_body:
-                copiedChar = (unsigned char)*sourceText;
-                sourceText += 1;
-                *destText = copiedChar;
-                destText += 1;
-                if ((signed char)copiedChar == 0)
+                ch = (unsigned char)*srcText;
+                srcText += 1;
+                *dstText = ch;
+                dstText += 1;
+                if ((signed char)ch == 0)
                     goto copy_text_done;
                 else
                     goto copy_text_limit;
             copy_text_done:
                 ;
             } else {
-                sprintf(scratch.sp8, (const char *)&lbl_8055B5C8, *(float *)(sourceText + 0x20));
+                sprintf(scratch.sp8, (const char *)&lbl_8055B5C8, *(float *)(srcText + 0x20));
             }
             textColor = -0x100;
-            if (entryIndex == soundDashSelectedIndex)
+            if (entryIdx == soundDashSelectedIndex)
                 textColor = 0xFF2D2DC8;
             valueX = 0x14;
             if (isValueColumn != 0)
                 valueX = 0xF0;
-            fn_80238A74(valueX, (entryIndex * 0xE) + 0x1A, scratch.sp8, textColor);
+            fn_80238A74(valueX, (entryIdx * 0xE) + 0x1A, scratch.sp8, textColor);
         }
     }
 
