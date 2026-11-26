@@ -583,7 +583,7 @@ void fn_802E7FD0(void) {
  * (+0x00..0x1C are the eight analog readings, +0x20..0x3B the button bytes,
  * +0x40..0x61 the words and error byte), and return the record's status byte at
  * +0x00.  fn_80129400 stores the result into its caller's snapshot at +0x1C. */
-unsigned char copyControllerInputSnapshot(void *out, int controllerIndex) {
+/* Copies one controller's 0x62-byte input snapshot (analog values, buttons, words and error byte) from the Wiimote state table into out and returns the record's status byte. */ unsigned char copyControllerInputSnapshot(void *out, int controllerIndex) {
 #define gWiimoteStateTable lbl_80505978
     extern unsigned char gWiimoteStateTable[];
     unsigned char *record = gWiimoteStateTable + controllerIndex * 0x638;
