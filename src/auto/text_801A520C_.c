@@ -359,34 +359,34 @@ extern "C" void applyWallContactImpulse(void *contactPtr, void *carPtr, float *p
 #define kReleaseDelay    0.2f
 #define kHalfPi          1.5707964f
 #define kEpsilon         (*(float *)lbl_80558DC4)
-    float relVel[3], futurePoint[3], force[3], impulse[3], forcePoint[3];
+    float relativeVel[3], futurePoint[3], force[3], impulse[3], forcePoint[3];
     Vec3 direction;
     float normalSpeed, blend, movement, temp, push, limit, bounce, impulseScale, mass;
     double absPush;
-    float planeOffset;
-    int engaged, outsidePlane;
+    float signedDistance;
+    int isEngaged, beyondPlane;
     char *slot = (char *)contactPtr;
     char *car = (char *)carPtr;
     if (*(void **)(slot + 0x20) != 0) {
-        relVel[0] = pointVelocity[0] + *(float *)(car + 0x118);
-        relVel[1] = pointVelocity[1] + *(float *)(car + 0x11c);
-        relVel[2] = pointVelocity[2] + *(float *)(car + 0x120);
-        normalSpeed = PSVECDotProduct(relVel, (float *)contactPtr);
+        relativeVel[0] = pointVelocity[0] + *(float *)(car + 0x118);
+        relativeVel[1] = pointVelocity[1] + *(float *)(car + 0x11c);
+        relativeVel[2] = pointVelocity[2] + *(float *)(car + 0x120);
+        normalSpeed = PSVECDotProduct(relativeVel, (float *)contactPtr);
         blend = *(float *)(slot + 0x18) / *(float *)(slot + 0x1c);
         blend = kOne < blend ? kOne : blend;
         blend = blend > kZero ? blend : kZero;
         movement = *(float *)(slot + 0xc) + blend * (*(float *)(slot + 0x10) - *(float *)(slot + 0xc));
-        futurePoint[0] = *(float *)(car + 0x60) + relVel[0] * kFrameTime;
-        futurePoint[1] = *(float *)(car + 0x64) + relVel[1] * kFrameTime;
-        futurePoint[2] = *(float *)(car + 0x68) + relVel[2] * kFrameTime;
+        futurePoint[0] = *(float *)(car + 0x60) + relativeVel[0] * kFrameTime;
+        futurePoint[1] = *(float *)(car + 0x64) + relativeVel[1] * kFrameTime;
+        futurePoint[2] = *(float *)(car + 0x68) + relativeVel[2] * kFrameTime;
         temp = fn_801A5A7C(contactPtr, futurePoint, (float *)((char *)*(void **)((char *)*(void **)(slot + 0x20) + 0xc) + 0x24));
-        planeOffset = *(float *)(slot + 0x14);
-        outsidePlane = 0;
-        if (kZero < planeOffset) {
-            outsidePlane = 1;
+        signedDistance = *(float *)(slot + 0x14);
+        beyondPlane = 0;
+        if (kZero < signedDistance) {
+            beyondPlane = 1;
         }
-        engaged = *(float *)(slot + 0x18) < *(float *)(slot + 0x1c);
-        if (engaged) {
+        isEngaged = *(float *)(slot + 0x18) < *(float *)(slot + 0x1c);
+        if (isEngaged) {
             push = movement - normalSpeed;
             push = kZero > push ? kZero : push;
             bounce = kZero;
@@ -405,8 +405,8 @@ extern "C" void applyWallContactImpulse(void *contactPtr, void *carPtr, float *p
             blend = *(float *)(car + 0xd4) / kSecondsPerFrame;
             force[0] = impulse[0] * blend; force[1] = impulse[1] * blend; force[2] = impulse[2] * blend;
             limit = kMaxVertForce;
-            if (relVel[1] > limit && *(int *)(car + 0x2620) == 0) {
-                temp = kVertScale * relVel[1];
+            if (relativeVel[1] > limit && *(int *)(car + 0x2620) == 0) {
+                temp = kVertScale * relativeVel[1];
                 mass = *(float *)(car + 0xd4);
                 limit = limit < temp ? limit : temp;
                 force[1] = -limit * (mass / kFrameTime);
@@ -435,7 +435,7 @@ extern "C" void applyWallContactImpulse(void *contactPtr, void *carPtr, float *p
         }
         movement = *(float *)(slot + 0x18) + kFrameTime;
         *(float *)(slot + 0x18) = movement;
-        if (movement > kReleaseDelay + *(float *)(slot + 0x1c) && !engaged)
+        if (movement > kReleaseDelay + *(float *)(slot + 0x1c) && !isEngaged)
             *(void **)(slot + 0x20) = 0;
     }
 #undef kZero
