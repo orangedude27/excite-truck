@@ -666,117 +666,102 @@ void fn_802D81C4(void *arg0, int arg1) {
 }
 #pragma unroll reset
 extern char lbl_8034C5AC[];
-/* Prepares an 8-bit paletted (C8) drgc source texture for GX in place: byte-swaps the 256-entry RGBA8888 palette, then rewrites the linear image into GX 4x8 tiled order through a temporary copy. arg1 is unused (shared C4/C8 dispatch signature). */ void prepareC8TextureForGx(void *source, int arg1)
+/* Prepares a C8 (8bpp paletted) drgc source texture for GX in place: byte-swaps its 256-entry RGBA8888 palette, then reorders the linear image into GX 4x8 tiles through a temporary buffer. */ /* Prepares an 8-bit paletted (C8) drgc source texture for GX in place: byte-swaps the 256-entry RGBA8888 palette, then rewrites the linear image into GX 4x8 tiled order through a temporary copy. arg1 is unused (shared C4/C8 dispatch signature). */ void prepareC8TextureForGx(void *textureSource, int formatTag)
 {
-  void **srcData = *((void ***) (((char *) source) + 0x2c));
-  int width = *((int *) (((char *) source) + 0x24));
-  int height = *((int *) (((char *) source) + 0x28));
-  unsigned char *image = (unsigned char *) srcData[1];
-  unsigned char *linearCopy;
-  unsigned char *palette = (unsigned char *) srcData[0];
-  unsigned char tmp;
-  int palBlockCount = (arg1 != 0) ? (128) : (128);
+  void **textureData = *((void ***) (((char *) textureSource) + 0x2c));
+  int width = *((int *) (((char *) textureSource) + 0x24));
+  int height = *((int *) (((char *) textureSource) + 0x28));
+  unsigned char *imageData = (unsigned char *) textureData[1];
+  unsigned char *linearImage;
+  unsigned char *paletteData = (unsigned char *) textureData[0];
+  unsigned char swapByte;
+  int paletteBlocks = (formatTag != 0) ? (128) : (128);
   int i;
   int x;
-  for (i = 0; i < palBlockCount; i++)
+  for (i = 0; i < paletteBlocks; i++)
   {
-    tmp = palette[0]; palette[0] = palette[3]; palette[3] = tmp;
-    tmp = palette[1]; palette[1] = palette[2]; palette[2] = tmp & 0xFF;
-    tmp = palette[4]; palette[4] = palette[7]; palette[7] = tmp;
-    tmp = palette[5]; palette[5] = palette[6]; palette[6] = tmp;
-    palette += 8;
+    swapByte = paletteData[0]; paletteData[0] = paletteData[3]; paletteData[3] = swapByte;
+    swapByte = paletteData[1]; paletteData[1] = paletteData[2]; paletteData[2] = swapByte & 0xFF;
+    swapByte = paletteData[4]; paletteData[4] = paletteData[7]; paletteData[7] = swapByte;
+    swapByte = paletteData[5]; paletteData[5] = paletteData[6]; paletteData[6] = swapByte;
+    paletteData += 8;
   }
 
   fn_801282EC(0x20);
-  linearCopy = (unsigned char *) fn_8012850C((void *) (width * height), lbl_8034C5AC);
-  memcpy(linearCopy, image, width * height);
+  linearImage = (unsigned char *) fn_8012850C((void *) (width * height), lbl_8034C5AC);
+  memcpy(linearImage, imageData, width * height);
   for (i = 0; i < height; i++)
   {
     for (x = 0; x < width; x++)
     {
-      image[(((((i / 4) * (width / 8)) + (x / 8)) * 32) + ((i % 4) * 8)) + (x % 8)] = linearCopy[(i * width) + x] & 0xFF;
+      imageData[(((((i / 4) * (width / 8)) + (x / 8)) * 32) + ((i % 4) * 8)) + (x % 8)] = linearImage[(i * width) + x] & 0xFF;
     }
 
   }
 
-  fn_80128670(linearCopy);
+  fn_80128670(linearImage);
 }
 
 #pragma processor reset
-void *fn_802D8A84(void *arg0, void *arg1)
-{
-  struct TexHeader
-  {
-    char pad[0x24];
-    char obj[32];
-  };
-  void *texture;
-  void *obj = arg0;
-  int width;
-  int height;
-  int bytes;
-  int format;
-  int count;
-  char *dst;
-  unsigned char ch;
-  char *work = (char *) arg1;
-  char *image;
-  texture = *((void **) (((char *) obj) + 0x30));
-  texture = (texture != 0) ? (texture) : (fn_802D7600(work));
-  dst = (char *) texture;
-  count = 0x20;
-  goto copy_char;
-  count_down:
-  count--;
+void *fn_802D8A84(void *arg0, void *arg1) {
+    struct TexHeader { char pad[0x24]; char obj[32]; };
+    void *texture;
+    void *obj = arg0;
+    int width;
+    int height;
+    int bytes;
+    int format;
+    int count;
+    char *dst;
+    unsigned char ch;
+    char *work = (char *)arg1;
+    char *image;
 
-  if (count > 0)
-  {
+    texture = *(void **)((char *)obj + 0x30);
+    texture = texture != 0 ? texture : fn_802D7600(work);
+
+    dst = (char *)texture;
+    count = 0x20;
     goto copy_char;
-  }
-  dst[-1] = 0;
-  goto copied_name;
-  copy_char:
-  ch = (unsigned char) (*work);
-
-  work++;
-  *dst = (char) ch;
-  dst++;
-  if (((signed char) ch) != 0)
-  {
-    if (1)
-    {
-      if (arg0)
-      {
-        goto count_down;
-      }
-      else
-      {
-        goto count_down;
-      }
+count_down:
+    count--;
+    if (count > 0) {
+        goto copy_char;
     }
-  }
-  copied_name:
-  height = *((int *) (((char *) obj) + 0x28));
+    dst[-1] = 0;
+    goto copied_name;
+copy_char:
+    ch = (unsigned char)*work;
+    work++;
+    *dst = (char)ch;
+    dst++;
+    if ((signed char)ch != 0) {
+        goto count_down;
+    }
+copied_name:
+    height = *(int *)((char *)obj + 0x28);
+    width = *(int *)((char *)obj + 0x24);
+    *(int *)((char *)texture + 0x70) = 0;
+    *(int *)((char *)texture + 0xC4) = 0;
+    GXGetTexBufferSize((unsigned short)width, (unsigned short)height, 0xE, 0, 1);
+    bytes = height * width;
+    image = *(char **)(*(char **)((char *)obj + 0x2C) + 4);
+    *(char **)((char *)texture + 0xD0) = image;
+    bytes = (int)((u32)bytes + ((u32)bytes >> 31)) >> 1;
+    *(int *)((char *)texture + 0xD4) = bytes;
+    DCFlushRange(image, bytes);
 
-  width = *((int *) (((char *) obj) + 0x24));
-  *((int *) (((char *) texture) + 0x70)) = 0;
-  *((int *) (((char *) texture) + 0xC4)) = 0;
-  GXGetTexBufferSize((unsigned short) width, (unsigned short) height, 0xE, 0, 1);
-  bytes = height * width;
-  image = *((char **) ((*((char **) (((char *) obj) + 0x2C))) + 4));
-  *((char **) (((char *) texture) + 0xD0)) = image;
-  bytes = ((int) (((u32) bytes) + ((((u32) bytes) >> 14) >> 17))) >> 1;
-  *((int *) (((char *) texture) + 0xD4)) = bytes;
-  DCFlushRange(image, bytes);
-  format = ((0, *((int *) (((char *) obj) + 0x20)))) & 0xFFFFFFFFFFFFFFFFu;
-  GXInitTexObj(((struct TexHeader *) texture)->obj, image, (unsigned short) width, (unsigned short) height, 0xE, 1, 1, ((u32) (((format ^ 2) >> 1) - ((format ^ 2) & format))) >> 31);
-  if (((u32) (((format ^ 2) >> 1) - ((format ^ 2) & format))) >> 31)
-  {
-    GXInitTexObjLOD(((char *) texture) + 0x24, 5, 1, lbl_80565018, (float) ((*((int *) (((char *) obj) + 0x20))) - 1), lbl_8056501C, 1, 1, 0);
-  }
-  GXInvalidateTexAll();
-  fn_802D7780(texture, obj);
-  return texture;
+    format = *(int *)((char *)obj + 0x20);
+    GXInitTexObj(((struct TexHeader *)texture)->obj, image, (unsigned short)width,
+                 (unsigned short)height, 0xE, 1, 1,
+                 (u32)((((format ^ 2) >> 1) - ((format ^ 2) & format))) >> 31);
+    if ((u32)((((format ^ 2) >> 1) - ((format ^ 2) & format))) >> 31) {
+        GXInitTexObjLOD((char *)texture + 0x24, 5, 1, lbl_80565018,
+                        (float)(*(int *)((char *)obj + 0x20) - 1), lbl_8056501C, 1, 1, 0);
+    }
+    GXInvalidateTexAll();
+    fn_802D7780(texture, obj);
+    return texture;
 }
 /* Free the drgc texture-cache pool (an array of 0x1C2 DrTexRecord slots of
  * 0xF4 bytes) back to the heap and clear the global pointer. */
