@@ -511,7 +511,7 @@ extern "C" void *fn_8016BE60(void *setup) {
 #pragma cplusplus reset
 #pragma scheduling on
 #pragma cplusplus on
-extern "C" void *fn_8016BF74(void *arg0, s32 arg1) {
+extern "C" void *destroyRingChallengeController(void *arg0, s32 arg1) {
     /* The seven sounds the controller owns all answer to this: destroy(flag),
      * their vtable's first slot (+8), frees the sound when flag > 0. */
     class Sound { public: virtual void destroy(int); };
