@@ -806,7 +806,7 @@ void uiAnime_scriptGetSetValue(int channel, float *valuesOut, float valueIn)
      * flag is set -- otherwise it writes valueIn (complemented to 1.0f when the
      * channel/direction pair calls for it) to the matching manager and always
      * to the third manager at +0x30. */
-    float var_f31 = valueIn;
+    float value = valueIn;
     float var_f1, var_f2;
     void *p;
     if (channel == 0) {
@@ -827,19 +827,19 @@ void uiAnime_scriptGetSetValue(int channel, float *valuesOut, float valueIn)
         if ((unsigned char)lbl_8055F0C0[0x20] != 0) valuesOut[1] = lbl_805636E0;
     } else {
         if (channel == 3) {
-            if ((unsigned char)lbl_8055F0C0[0x21] != 0) var_f31 = lbl_805636E4 - valueIn;
+            if ((unsigned char)lbl_8055F0C0[0x21] != 0) value = lbl_805636E4 - valueIn;
         } else {
-            if ((unsigned char)lbl_8055F0C0[0x21] == 0) var_f31 = lbl_805636E4 - valueIn;
+            if ((unsigned char)lbl_8055F0C0[0x21] == 0) value = lbl_805636E4 - valueIn;
         }
         if ((unsigned int)(channel == 3) == (unsigned char)lbl_8055F0C0[0x21]) {
             p = *(void **)(lbl_8055F0C0 + 0x2C);
-            if (p) call_set_37AA0(p, var_f31);
+            if (p) call_set_37AA0(p, value);
         } else {
             p = *(void **)(lbl_8055F0C0 + 0x28);
-            if (p) call_set_37AA0(p, var_f31);
+            if (p) call_set_37AA0(p, value);
         }
         p = *(void **)(lbl_8055F0C0 + 0x30);
-        if (p) call_set_37AA0(p, var_f31);
+        if (p) call_set_37AA0(p, value);
     }
 }
 #pragma pop
