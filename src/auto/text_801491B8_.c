@@ -421,7 +421,7 @@ extern s32 lbl_80559EA4;
 extern void fn_80130980(void *arg0, s32 arg1, s32 arg2);
 extern void fn_801474EC(s32 arg0, s32 *arg1, void *arg2);
 extern s32 lbl_80559EC4;
-extern void *fn_8017960C(s32 arg0);
+extern void *getRegisteredObject(s32 arg0);
 extern void fn_80149D64(void *arg0, void *arg1, s32 arg2);
 extern f32 lbl_80561648;
 // Getter returning a pointer to the "Resize" name string (lbl_80559E9C).
@@ -634,7 +634,7 @@ extern "C" void fn_80149CEC(void *state, const void *owner) {
     s32 count;
     void *timingState = *(void * const *)((const u8 *)owner + 0x68);
     *(f32 *)((u8 *)state + 0x28) = *(const f32 *)((const u8 *)timingState + 0x8D4);
-    provider = *(void **)((u8 *)fn_8017960C(*(s32 *)((const u8 *)owner)) + 0x270);
+    provider = *(void **)((u8 *)getRegisteredObject(*(s32 *)((const u8 *)owner)) + 0x270);
     provider = ((CountProvider *)provider)->getCountSource();
     count = *(s32 *)((u8 *)provider + 4);
     *(s32 *)((u8 *)state + 4) = count;
@@ -782,7 +782,7 @@ void fn_80149F2C(void *arg0, void *arg1, void *arg2) {
                         fn_8014AF58(it);
                         (void)v;
                         if (*(s32 *)(r24 + 0x1254) == 0) {
-                            fn_8017960C(*(s32 *)(r24 + 0x1268));
+                            getRegisteredObject(*(s32 *)(r24 + 0x1268));
                             fn_8014AEC8(it);
                             if (fn_80141F7C(fn_8014AEC8(it)) == 0) {
                                 fn_8014AF58(it);
@@ -1092,7 +1092,7 @@ s32 fn_8014AFD4(void *arg0, void *arg1, s32 arg2) {
     s32 status;
     s32 flag;
     s32 sum;
-    manager = fn_8017960C(*(s32 *)arg0);
+    manager = getRegisteredObject(*(s32 *)arg0);
     object = *(void **)((u8 *)manager + 0x270);
     first = ((void *(*)(void *))(*(void ***)object)[4])(object);
     object = *(void **)((u8 *)manager + 0x270);
@@ -2232,7 +2232,7 @@ extern "C" void fn_8014E61C(s32 playerIndex, s32 eventType, f32 eventValue) {
                 break;
             case 1:
                 *(f32 *)(entry + 0x44) = lbl_80561688;
-                if (*(s32 *)((u8 *)fn_8017960C(playerIndex) + 0x1F0) == 0x50)
+                if (*(s32 *)((u8 *)getRegisteredObject(playerIndex) + 0x1F0) == 0x50)
                     fn_801DF074(1, 1);
                 break;
             case 6:
@@ -2241,7 +2241,7 @@ extern "C" void fn_8014E61C(s32 playerIndex, s32 eventType, f32 eventValue) {
             case 0: case 2: case 3: case 4: case 5: case 7: case 9:
                 break;
             }
-            playerObject = fn_8017960C(playerIndex);
+            playerObject = getRegisteredObject(playerIndex);
             handler = *(RaceEntryHandler **)(entry + 0x10);
             handler->Dispatch(playerObject, eventType, savedValue);
         }
@@ -2894,17 +2894,17 @@ void fn_80150BDC(void *arg0) {
                 s32 over = *(f32 *)(b + 0x8D4) > *(f32 *)(b + 0x8DC);
                 if (over) {
                     if (*(u8 *)(r28 + 0xA0) == 0) fn_8014DB94(r28);
-                } else if (*(s32 *)((char *)fn_8017960C(r29) + 0x1F0) == 0x50) {
+                } else if (*(s32 *)((char *)getRegisteredObject(r29) + 0x1F0) == 0x50) {
                     played = 1;
                     if (fn_801609C4((s32)*(f32 *)(r28 + 0x14)) == 0 && *(u8 *)(b + 0x8F4) != 0) {
                         fn_801688B4(1);
                         *(s8 *)(r31p + 0x8F8) = 1;
                     }
-                    if (fn_800167F4() == 1) { fn_8017960C(r29); fn_80167840(); }
+                    if (fn_800167F4() == 1) { getRegisteredObject(r29); fn_80167840(); }
                     tmp = fn_8016A30C(r29);
                     if (tmp > 0) fn_8014E61C(r29, 5, (f32)tmp);
                 }
-            } else if (*(s32 *)((char *)fn_8017960C(r29) + 0x1F0) == 0x50) {
+            } else if (*(s32 *)((char *)getRegisteredObject(r29) + 0x1F0) == 0x50) {
                 char *r24 = b + 0x454, *r23p = b;
                 for (r22 = 0; r22 < fn_80179650(); r22++, r24 += 0x240, r23p += 0x240) {
                     if (r29 == fn_80179630(r22)) {
@@ -4880,7 +4880,7 @@ extern "C" void fn_80155700(void *arg0, void *arg1, s32 index) {
     k.self = (u8 *)arg0;
     k.arg1 = (u8 *)arg1;
     k.index = index;
-    k.player = (u8 *)fn_8017960C(k.index);
+    k.player = (u8 *)getRegisteredObject(k.index);
     if (k.player && (f32)__fabs(*(f32 *)(k.player+0x2690)) <= lbl_80558DC4[0] &&
         ((VArg0 *)k.self)->v6(k.index) &&
         fn_80161BB8() == 0 && *(s32 *)(k.player+0x1F0) == 0x50) {
@@ -4921,7 +4921,7 @@ extern "C" void fn_80155700(void *arg0, void *arg1, s32 index) {
         for (i = 0; i < *(s32 *)(k.self+0x3BC); i++) {
             entry=(*(u8 ***)(k.self+0x3B8))[i];
             if (k.arg1 == *(void **)entry && entry[4]) {
-                player2=(u8 *)fn_8017960C(k.index);
+                player2=(u8 *)getRegisteredObject(k.index);
                 if (player2) {
                     v=((VArg1 *)k.arg1)->v2();
                     event.pos[0]=v[0]; event.pos[1]=v[1]; event.pos[2]=v[2];

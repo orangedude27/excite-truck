@@ -51,8 +51,8 @@ void fn_80276098(void *arg0, void *arg1, float arg2, float arg3, float arg4, int
     float (*a)[3] = (float (*)[3])arg0;
     float (*b)[3] = (float (*)[3])arg1;
     float trace, root, inv;
-    register int i, j, k;
-    int eq, off;
+    int i, j, k, eq;
+    unsigned int off;
     if ((float)__fabs(arg2-arg3) <= lbl_80558DC4[0]) {
         eq = (float)__fabs(PSVECSquareDistance((char*)arg0+0x24,(char*)arg1+0x24)) <= lbl_80558DC4[0];
         if (eq) eq = (float)__fabs(PSVECSquareDistance(arg0,arg1)) <= lbl_80558DC4[0];
@@ -138,28 +138,29 @@ unsigned int fn_8027656C(void *arg0, void *arg1, unsigned int arg2) {
     int i, j, k;
     float mat[4][3];
     float quat[4];
-    unsigned char *base;
+    float tmp[3];
     int off;
     float t, scalar, trace, root, inv, s;
-    float x, y, z, w, x2, y2, z2, xx, yy, zz, wx, yz;
+    float pf;
     float *outm;
-    float p0, p1, p2, pf;
     t = fn_80277704(arg2);
-    base = lbl_8049FD58;
     off = arg2 * 0x50;
-    if (*(int *)(base + off + 0x4C) != 0x22) {
+    outm = (float *)arg0;
+    if (*(int *)&lbl_8049FD58[off + 0x4C] != 0x22) {
         float (*m)[3];
-        fn_8026A49C(arg2, *(int *)(base + off + 0x4C), (float *)mat, &scalar);
+        fn_8026A49C(arg2, *(int *)&lbl_8049FD58[off + 0x4C], (float *)mat, &scalar);
         m = mat;
         trace = m[0][0] + m[1][1] + m[2][2];
         if (trace > lbl_80564048) {
             root = (float)fn_8002F234(lbl_8056404C + trace);
             inv = lbl_80564050 / root;
-            *(float *)(base + off + 0x20) = lbl_80564050 * root;
-            *(float *)(base + off + 0x14) = inv * (m[1][2] - m[2][1]);
-            *(float *)(base + off + 0x18) = inv * (m[2][0] - m[0][2]);
-            *(float *)(base + off + 0x1C) = inv * (m[0][1] - m[1][0]);
+            *(float *)&lbl_8049FD58[off + 0x20] = lbl_80564050 * root;
+            *(float *)&lbl_8049FD58[off + 0x14] = inv * (m[1][2] - m[2][1]);
+            *(float *)&lbl_8049FD58[off + 0x18] = inv * (m[2][0] - m[0][2]);
+            *(float *)&lbl_8049FD58[off + 0x1C] = inv * (m[0][1] - m[1][0]);
         } else {
+            int k;
+            float *q = (float *)&lbl_8049FD58[off + 0x14];
             i = 0;
             if (m[1][1] > m[0][0]) i = 1;
             if (m[2][2] > m[i][i]) i = 2;
@@ -167,59 +168,58 @@ unsigned int fn_8027656C(void *arg0, void *arg1, unsigned int arg2) {
             k = (j + 1) % 3;
             root = (float)fn_8002F234(lbl_8056404C + (m[i][i] - (m[j][j] + m[k][k])));
             inv = lbl_80564050 / root;
-            *(float *)(base + off + 0x14 + i * 4) = lbl_80564050 * root;
-            *(float *)(base + off + 0x20) = inv * (m[j][k] - m[k][j]);
-            *(float *)(base + off + 0x14 + j * 4) = inv * (m[i][j] + m[j][i]);
-            *(float *)(base + off + 0x14 + k * 4) = inv * (m[i][k] + m[k][i]);
+            q[i] = lbl_80564050 * root;
+            q[3] = inv * (m[j][k] - m[k][j]);
+            q[j] = inv * (m[i][j] + m[j][i]);
+            q[k] = inv * (m[i][k] + m[k][i]);
         }
-        *(float *)(base + off + 0x30) = m[3][0];
-        *(float *)(base + off + 0x34) = m[3][1];
-        *(float *)(base + off + 0x38) = m[3][2];
-        *(float *)(base + off + 0x40) = scalar;
+        *(float *)&lbl_8049FD58[off + 0x30] = m[3][0];
+        *(float *)&lbl_8049FD58[off + 0x34] = m[3][1];
+        *(float *)&lbl_8049FD58[off + 0x38] = m[3][2];
+        *(float *)&lbl_8049FD58[off + 0x40] = scalar;
     }
     if (t >= lbl_8056404C || t < lbl_80564048) {
+        float x, y, z, w, x2, y2, z2, xx, yy, zz, wx, yz;
         if (t < lbl_80564048) fn_802E30C8(lbl_80347384);
-        x = *(float *)(base + off + 0x14); y = *(float *)(base + off + 0x18);
-        z = *(float *)(base + off + 0x1C); w = *(float *)(base + off + 0x20);
+        x = *(float *)&lbl_8049FD58[off + 0x14];
+        y = *(float *)&lbl_8049FD58[off + 0x18];
+        z = *(float *)&lbl_8049FD58[off + 0x1C];
+        w = *(float *)&lbl_8049FD58[off + 0x20];
         x2 = x + x; y2 = y + y; z2 = z + z;
         xx = x * x2; yy = y * y2; zz = z * z2; wx = w * x2; yz = y * z2;
-        outm = (float *)arg0;
         outm[0] = lbl_8056404C - (yy + zz);
         outm[4] = lbl_8056404C - (xx + zz);
         outm[8] = lbl_8056404C - (xx + yy);
         outm[7] = yz - wx; outm[5] = yz + wx;
         outm[6] = x * z2 + w * y2; outm[3] = x * y2 - w * z2;
         outm[1] = x * y2 + w * z2; outm[2] = x * z2 - w * y2;
-        outm[9] = *(float *)(base + off + 0x30);
-        outm[10] = *(float *)(base + off + 0x34);
-        outm[11] = *(float *)(base + off + 0x38);
-        *(float *)arg1 = *(float *)(base + off + 0x40);
-        base[off] = 0;
+        outm[9] = *(float *)&lbl_8049FD58[off + 0x30];
+        outm[10] = *(float *)&lbl_8049FD58[off + 0x34];
+        outm[11] = *(float *)&lbl_8049FD58[off + 0x38];
+        *(float *)arg1 = *(float *)&lbl_8049FD58[off + 0x40];
+        lbl_8049FD58[off] = 0;
     } else {
+        float x, y, z, w, x2, y2, z2, xx, yy, zz, wx, yz;
         if (t < lbl_80564054) s = lbl_80564054;
         else if (t > lbl_8056404C) s = lbl_8056404C;
         else if (t > lbl_80564048) s = lbl_80564058 * t * t * t + lbl_8056405C * t * t;
         else s = lbl_80564058 * t * t * t - lbl_8056405C * t * t;
-        fn_8012F57C(quat, (float *)(base + off + 4), (float *)(base + off + 0x14), s);
+        fn_8012F57C(quat, (float *)&lbl_8049FD58[off + 4], (float *)&lbl_8049FD58[off + 0x14], s);
         x = quat[0]; y = quat[1]; z = quat[2]; w = quat[3];
         x2 = x + x; y2 = y + y; z2 = z + z;
         xx = x * x2; yy = y * y2; zz = z * z2; wx = w * x2; yz = y * z2;
-        outm = (float *)arg0;
         outm[0] = lbl_8056404C - (yy + zz);
         outm[4] = lbl_8056404C - (xx + zz);
         outm[8] = lbl_8056404C - (xx + yy);
         outm[7] = yz - wx; outm[5] = yz + wx;
         outm[6] = x * z2 + w * y2; outm[3] = x * y2 - w * z2;
         outm[1] = x * y2 + w * z2; outm[2] = x * z2 - w * y2;
-        p0 = *(float *)(base + off + 0x24);
-        p1 = *(float *)(base + off + 0x28);
-        p2 = *(float *)(base + off + 0x2C);
-        p0 = p0 + s * (*(float *)(base + off + 0x30) - p0);
-        p1 = p1 + s * (*(float *)(base + off + 0x34) - p1);
-        p2 = p2 + s * (*(float *)(base + off + 0x38) - p2);
-        outm[9] = p0; outm[10] = p1; outm[11] = p2;
-        pf = *(float *)(base + off + 0x3C);
-        *(float *)arg1 = pf + s * (*(float *)(base + off + 0x40) - pf);
+        tmp[2] = *(float *)&lbl_8049FD58[off + 0x2C] + s * (*(float *)&lbl_8049FD58[off + 0x38] - *(float *)&lbl_8049FD58[off + 0x2C]);
+        tmp[1] = *(float *)&lbl_8049FD58[off + 0x28] + s * (*(float *)&lbl_8049FD58[off + 0x34] - *(float *)&lbl_8049FD58[off + 0x28]);
+        tmp[0] = *(float *)&lbl_8049FD58[off + 0x24] + s * (*(float *)&lbl_8049FD58[off + 0x30] - *(float *)&lbl_8049FD58[off + 0x24]);
+        outm[11] = tmp[2]; outm[10] = tmp[1]; outm[9] = tmp[0];
+        pf = *(float *)&lbl_8049FD58[off + 0x3C];
+        *(float *)arg1 = pf + s * (*(float *)&lbl_8049FD58[off + 0x40] - pf);
     }
 }
 
@@ -803,7 +803,7 @@ void fn_80277828(void) {
         lbl_8055F59C = (int)entry;
         lbl_8055F5A0 = i + 1;
         entry->inUse = 1;
-        entry->fov = *(volatile float *)&lbl_80564074;
+        entry->fov = 1.4835298f;
         strcpy(((struct CameraEntry *)lbl_8055F59C)->name, &lbl_8055C644);
     }
 }
@@ -837,7 +837,7 @@ void fn_80277A14(void *arg0, int arg1) {
     extern double fn_8002EF30(double, double, double);
     extern double fn_8002EFB0(double, double);
     extern int fn_80178CA4(void *, float);
-    extern void *fn_8017960C(int);
+    extern void *getRegisteredObject(int);
     extern int fn_801B89F8(void);
     extern float fn_801EA0E8(float, float, float, float, float, float, float, float);
     extern void fn_8026A51C(void *, signed char *, int);
@@ -855,7 +855,7 @@ void fn_80277A14(void *arg0, int arg1) {
 
     *(int *)(rec + 0x20) = *(int *)(rec + 0x24);
     *(int *)(rec + 0x10) = *(int *)(rec + 0x14);
-    truck = fn_8017960C(*(int *)(rec + 0x20));
+    truck = getRegisteredObject(*(int *)(rec + 0x20));
     *(void **)(rec + 0x140) = truck;
     sp8 = 0;
     fn_8026A51C(rec, &sp8, arg1);

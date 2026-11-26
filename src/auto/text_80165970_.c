@@ -453,7 +453,7 @@ extern void fn_80128668(void *);
 extern void fn_80163550(int);
 extern int fn_800081F0(int);
 extern int fn_801B2EC0(void);
-extern void *fn_8017960C(void);
+extern void *getRegisteredObject(void);
 extern float lbl_805618D0;
 extern float lbl_805618D4;
 #pragma push
@@ -477,7 +477,7 @@ extern "C" float fn_80166274(void) {
     data = object->get();
     fn_80179630(-1);
     {
-        void *scaleData = fn_8017960C();
+        void *scaleData = getRegisteredObject();
         float limit = *(float *)((char *)*(void **)((char *)data + 4) + 0x20);
         float value = *(float *)((char *)scaleData + 0x25CC);
         float minLimit = lbl_805618D0;
@@ -1109,7 +1109,7 @@ extern "C" float fn_801671FC(int arg0) {
         delta = lbl_8056189C;
         if (gate1 != delta && gate2 != delta) {
             if (*(void **)&lbl_8055E334 != 0) {
-                other = ((void *(*)(int))fn_8017960C)(arg0);
+                other = ((void *(*)(int))getRegisteredObject)(arg0);
                 if (*(void **)&lbl_8055E334 != 0) {
                     result = fn_80139EC4(*(void **)&lbl_8055E334,
                                          *(float *)((char *)other + 0x60),

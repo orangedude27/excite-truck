@@ -669,7 +669,7 @@ extern "C" s32 fn_80156C60(void *config, s32 index) {
     return 0;
 }
 
-extern "C" void* fn_8017960C(s32);
+extern "C" void* getRegisteredObject(s32);
 extern "C" s32 fn_80139B70(s32, f32, f32);
 extern "C" s32 fn_80129D90(s32, s32, s32);
 extern "C" f32 randFloatInRange(s32, s32, s32, f32, f32);
@@ -687,7 +687,7 @@ extern "C" s32 fn_80156C84(void *arg0, s32 arg1) {
     void *self = arg0;
 
     if (f31 >= *(f32 *)(element + 0xE4)) {
-        void *r29 = fn_8017960C(arg1);
+        void *r29 = getRegisteredObject(arg1);
         s32 found;
         s32 i;
         s32 offset;

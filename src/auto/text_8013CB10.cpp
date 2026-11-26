@@ -397,7 +397,7 @@ extern "C" char lbl_80559D60[7];
 
 extern "C" void fn_80140A6C(void *, int);
 extern "C" s32 fn_801B8514(void);
-  extern "C" u8 *fn_8017960C(s32);
+  extern "C" u8 *getRegisteredObject(s32);
   extern "C" u32 fn_8013D148(u8 *, f32);
   extern "C" void *fn_802C6C34(s32);
   extern "C" void fn_802C70AC(s32, void *, s32, s32);
@@ -581,7 +581,7 @@ extern "C" s32 fn_8013CBC0(void *arg0, s32 arg1) {
 #define F(q, o) (*(f32 *)((char *)(q) + (o)))
     obj = *(void **)((char *)arg0 + 0x104);
     r29 = 0;
-    p = fn_8017960C(arg1);
+    p = getRegisteredObject(arg1);
     f10 = F(p, 0x5bc);
     f9 = F(obj, 0);
     f13 = F(p, 0x94) + F(p, 0x54) * f10;
@@ -2938,7 +2938,7 @@ extern "C" void fn_80141574(char *arg0) {
                 if (fn_801B306C() <= f31) {
                     if (((s32 (*)(void *, f32))fn_80142D34)(self, f30) == 0 && *(void **)(e + 0x104) == 0 && fn_8013D1F0(i) > 0) {
                         *(void **)(e + 0x104) = fn_80142C9C((u8 *)self, i);
-                        fn_80142C5C(e, (u8 *)fn_8017960C(i));
+                        fn_80142C5C(e, (u8 *)getRegisteredObject(i));
                     }
                     flag = 0;
                     if (*(void **)(e + 0x104) != 0) {
@@ -3023,7 +3023,7 @@ extern "C" void fn_80141574(char *arg0) {
                             }
                             }
                         }
-                        fn_8017960C(i);
+                        getRegisteredObject(i);
                         f32 vf = fn_801420D4(e) != 0 ? lbl_80561498 : lbl_805614A4;
                         *(f32 *)(e + 0x108) = fn_801429D0(vf, *(f32 *)(e + 0x108) - f29);
                         if (fn_80141FA8(e, lbl_80561590) == 0 && ((s32 (*)(void *))fn_80141FA0)((void *)*(s32 *)(self + 0x27C)) == 0)
@@ -3757,7 +3757,7 @@ extern "C" void fn_80142C5C(void *out, u8 *car) {
     *(f32 *)((u8 *)out + 0x128) = *(f32 *)((u8 *)model + 0x30) - *(f32 *)((u8 *)model + 0x2C);
 }
 
-extern "C" u8 *fn_8017960C(s32);
+extern "C" u8 *getRegisteredObject(s32);
 extern "C" u32 fn_8013D148(u8 *, f32);
 extern "C" void *fn_802C6C34(s32);
 extern "C" u8 *fn_80142C9C(u8 *arg0, s32 arg1) {
@@ -3769,7 +3769,7 @@ extern "C" u8 *fn_80142C9C(u8 *arg0, s32 arg1) {
         virtual u8 *get();
     };
     register u8 *self = arg0;
-    u8 *manager = (u8 *)fn_8017960C(arg1);
+    u8 *manager = (u8 *)getRegisteredObject(arg1);
     u8 *base = *(u8 **)(manager + 0x270);
     u8 *object = ((Object *)base)->get();
     s32 index = *(s32 *)(self + 0x68);
@@ -4925,7 +4925,7 @@ extern "C" int fn_801433A8(unsigned char *self, int unused, int event)
   }
   if (event == 0x72)
   {
-    unsigned char *object = fn_8017960C(0);
+    unsigned char *object = getRegisteredObject(0);
     fn_802E30C8(labels + 0x750, lbl_8055E3C4);
     fn_802E30C8(labels + 0x764);
     fn_802E30C8(labels + 0x770, *((float *) (object + 0x64)));

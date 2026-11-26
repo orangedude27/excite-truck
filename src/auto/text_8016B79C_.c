@@ -3404,12 +3404,12 @@ f32 fn_80170E80(f32 *ptr) {
     return *ptr;
 }
 
-extern s32 fn_8017960C(s32);
+extern s32 getRegisteredObject(s32);
 /* Resolve a list entry to the object it names: take the object-table index stored at
- * +4 of the entry and look it up in the 8-entry global object table (fn_8017960C),
+ * +4 of the entry and look it up in the 8-entry global object table (getRegisteredObject),
  * which holds the vehicle/player registered at each index (0 if out of range). */
 s32 fn_80170E88(void *entry) {
-    return fn_8017960C(*(s32 *)((u8 *)entry + 4));
+    return getRegisteredObject(*(s32 *)((u8 *)entry + 4));
 }
 
 /* Read the byte flag at +8 of an item/entry object handled by the TObj4C
@@ -3683,7 +3683,7 @@ extern "C" s32 fn_8017133C(void *arg0, s32 arg1, s8 *arg2) {
     v = lbl_8055E3C8;
     if (v > ((Base *)arg0)->f12() && *(u8 *)((u8 *)arg0 + 0x78) == 0) {
         index = arg1 * 4;
-        data = (void *)fn_8017960C(*(s32 *)((u8 *)(*(void **)((u8 *)*(void **)((u8 *)arg0 + 4) + index)) + 4));
+        data = (void *)getRegisteredObject(*(s32 *)((u8 *)(*(void **)((u8 *)*(void **)((u8 *)arg0 + 4) + index)) + 4));
         cond = ((f32)__fabs((f64)*(f32 *)((u8 *)data + 0x2690)) <= lbl_80558DC4);
         if (cond) {
             obj = *(void **)((u8 *)*(void **)((u8 *)arg0 + 4) + index);
@@ -3693,7 +3693,7 @@ extern "C" s32 fn_8017133C(void *arg0, s32 arg1, s8 *arg2) {
                 if (*(void **)((u8 *)holder + 4) != 0 &&
                     *(s32 *)((u8 *)*(void **)((u8 *)holder + 4) + 4) > 0 &&
                     *(u8 *)((u8 *)(*(s32 **)*(void **)((u8 *)holder + 4)) + *(s32 *)((u8 *)holder + 0x10) * 0x38 + 0x30) != 0) {
-                    data = (void *)fn_8017960C(*(s32 *)((u8 *)obj + 4));
+                    data = (void *)getRegisteredObject(*(s32 *)((u8 *)obj + 4));
                     item = (u8 *)(*(s32 **)*(void **)((u8 *)holder + 4)) + *(s32 *)((u8 *)holder + 0x10) * 0x38;
                     x = *(f32 *)((u8 *)data + 0x60);
                     y = *(f32 *)((u8 *)data + 0x68);
@@ -3736,8 +3736,8 @@ extern "C" s32 fn_8017133C(void *arg0, s32 arg1, s8 *arg2) {
             }
         }
         if (result == 0 &&
-            *(s32 *)((u8 *)(void *)fn_8017960C(*(s32 *)((u8 *)(*(void **)((u8 *)*(void **)((u8 *)arg0 + 4) + index)) + 4)) + 0x10) == 0x50434152) {
-            info = (void *)fn_8017960C(*(s32 *)((u8 *)(*(void **)((u8 *)*(void **)((u8 *)arg0 + 4) + index)) + 4));
+            *(s32 *)((u8 *)(void *)getRegisteredObject(*(s32 *)((u8 *)(*(void **)((u8 *)*(void **)((u8 *)arg0 + 4) + index)) + 4)) + 0x10) == 0x50434152) {
+            info = (void *)getRegisteredObject(*(s32 *)((u8 *)(*(void **)((u8 *)*(void **)((u8 *)arg0 + 4) + index)) + 4));
             if (((Pcr *)*(void **)((u8 *)info + 0x270C))->m3() & 0x10) {
                 ent = *(void **)((u8 *)*(void **)((u8 *)arg0 + 4) + index);
                 if (*(u8 *)((u8 *)ent + 8) == 0) {

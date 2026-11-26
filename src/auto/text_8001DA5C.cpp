@@ -63,7 +63,7 @@ extern "C" void fn_80147230(void*, const char*, ...);
 extern "C" void fn_801476C4(...);
 extern "C" s32 fn_80147C50(u32, u32, f32);
 extern "C" void fn_80147CEC(void*, void*, void*, f32);
-extern "C" void* fn_8017960C(s32);
+extern "C" void* getRegisteredObject(s32);
 extern "C" s32 fn_801E85A4(void);
 extern "C" void fn_80232928(s32);
 extern "C" void fn_80232930(void);
@@ -434,7 +434,7 @@ extern "C" s32 fn_8001E26C(s32 object, s32 deleteFlag) {
     PaneData textData;
     f32* slot;
     const char* strings = lbl_802FDB68;
-    void* truck = fn_8017960C(playerIndex);
+    void* truck = getRegisteredObject(playerIndex);
     slot = (f32*)slots + playerIndex * 3;
     f32 zero;
     f32 heat;

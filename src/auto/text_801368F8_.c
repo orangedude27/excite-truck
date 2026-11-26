@@ -66,7 +66,7 @@ extern f32 lbl_80561374;
 extern s32 lbl_8032BEB4[];
 extern void fn_801376A8(s32, s32 *, s32, s32, s32 *);
 extern void fn_80136D20(void *, s32);
-extern s32 fn_8017960C(s32);
+extern s32 getRegisteredObject(s32);
 extern s32 fn_802C6C34(s32);
 extern void *fn_801B2ED0(s32);
 #pragma push
@@ -369,8 +369,8 @@ s32 fn_80137140(s32 indexA, s32 indexB) {
     s32 modelA;
     s32 modelB;
     /* Return whether cars indexA and indexB are close enough for their collision shapes to touch, testing both separating directions. */
-    objA = fn_8017960C(indexA);
-    objB = fn_8017960C(indexB);
+    objA = getRegisteredObject(indexA);
+    objB = getRegisteredObject(indexB);
     modelA = fn_802C6C34(*(s32 *)(objA + 0x59C));
     modelB = fn_802C6C34(*(s32 *)(objB + 0x59C));
     return fn_80137078((void *)(objA + 0x3C), (void *)(objB + 0x3C), *(f32 *)(modelA + 0x40), *(f32 *)(modelB + 0x3C)) &&

@@ -57,16 +57,17 @@ void *fn_80171698(void) {
                     if ((diff & (s32)0x80000000) == 0 &&
                         ((diff + 0x27) & (s32)0x80000000) != 0)
                         flag = 0;
-                    if (flag != 0) {
-                        hi = n & (s32)0x80000000;
-                        flag = 1;
-                        if (hi == 0 && hi != (m & (s32)0x80000000))
-                            flag = 0;
-                    }
-                    check = flag;
+                    if (flag != 0)
+                        check = flag;
                 }
-                if (check != 0)
-                    fn_801414A4((char *)obj + 0xA14);
+                if (check != 0) {
+                    hi = n & (s32)0x80000000;
+                    flag = 1;
+                    if (hi == 0 && hi != (m & (s32)0x80000000))
+                        flag = 0;
+                    if (flag != 0)
+                        fn_801414A4((char *)obj + 0xA14);
+                }
             }
         }
     }
@@ -128,13 +129,12 @@ void *fn_801717B4(void *self, int shouldDelete) {
 }
 #pragma pop
 void fn_8017188C(char *arg0) {
-    const unsigned int color = 0x8000FF00;
     int offset = 0;
     int i = 0;
     while (i < *(int *)(arg0 + 0xC)) {
         unsigned char *entry = *(unsigned char **)(arg0 + 8) + offset;
         if (entry[0x25] && !entry[0x24] && *(int *)*(void **)(entry + 0x18) > 1)
-            ((void (*)(void *, void *, int, unsigned int))fn_80141558)(arg0 + 0xA14, entry, 2, color);
+            ((void (*)(void *, void *, int, unsigned int))fn_80141558)(arg0 + 0xA14, entry, 2, 0x8000FF00);
         offset += 0x28;
         i++;
     }
@@ -146,7 +146,7 @@ void fn_80171930(void) {
 
 extern s32 fn_801B2F24(void);
 extern s32 fn_801B2F54(s32);
-extern void fn_8017960C(s32);
+extern void getRegisteredObject(s32);
 extern s32 fn_80139B5C(s32);
 extern void fn_801D488C(s32, s32, s32, f32 *, f32, f32, f32);
 extern f32 lbl_80561A30;
@@ -171,7 +171,7 @@ void fn_80171934(void *triggerMaster) {
         while (triggerIndex < *(s32 *)((u8 *)triggerMaster + 0xC)) {
             trigger = *(u8 **)((u8 *)triggerMaster + 8) + offset;
             if (trigger[0x24] == 0 && fn_801B2F54(deity) >= *(s32 *)(trigger + 0x20)) {
-                s32 selected = ((s32 (*)(s32))fn_8017960C)(deity);
+                s32 selected = ((s32 (*)(s32))getRegisteredObject)(deity);
                 if (((s32 (*)(s32, s32))fn_80139B5C)(selected, *(s32 *)(trigger + 0x18)) != 0) {
                     f32 pos[3];
                     pos[0] = *(f32 *)(trigger + 0) + *(f32 *)(trigger + 0xC);
@@ -228,7 +228,7 @@ __declspec(section ".sdata") extern char lbl_8055A290[];
 __declspec(section ".sdata") extern char lbl_8055A294[];
 extern f32 lbl_80561A34;
 #pragma processor 750
-#pragma use_lmw_stmw on
+#pragma use_lmw_stmw off
 extern "C" void fn_80171A80(void *arg0) {
     class Node {
     public:
@@ -284,10 +284,10 @@ extern "C" void fn_80171A80(void *arg0) {
     char sp8[8];
     f32 v[4];
     f32 *p;
-    f32 *o;
-    int k, j;
+    int j, k;
     char *e;
     int n;
+    f32 *o;
     f32 d1, d2;
     Mgr *mgr = *(Mgr **)((char *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
     int i = 0;
@@ -296,8 +296,9 @@ extern "C" void fn_80171A80(void *arg0) {
     while ((node = mgr->get(i)) != 0) {
         if (strcmp(node->m0(), lbl_8055A280) == 0) {
             n = *(int *)((char *)arg0 + 0xC);
+            char *base = *(char **)((char *)arg0 + 8);
             *(int *)((char *)arg0 + 0xC) = n + 1;
-            e = *(char **)((char *)arg0 + 8) + n * 0x28;
+            e = base + n * 0x28;
             node->m3(lbl_8055A288);
             *(int *)(e + 0x1C) = fn_801D4888();
             *(char *)(e + 0x25) = node->m10(lbl_80330F18, 1);
@@ -309,10 +310,10 @@ extern "C" void fn_80171A80(void *arg0) {
             *(char *)(e + 0x24) = 0;
             v[0] = p[2] - p[4];
             v[1] = p[3] - p[5];
+            d2 = v[0] * v[0] + v[1] * v[1];
             v[2] = p[2] - p[6];
             v[3] = p[3] - p[7];
             d1 = v[2] * v[2] + v[3] * v[3];
-            d2 = v[0] * v[0] + v[1] * v[1];
             if (d2 > d1) {
                 d1 = d2;
                 k = 0;

@@ -12,7 +12,7 @@ extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
 extern void DrawList_endMeshPass(void);
 
 extern void *lbl_8055EA10;
-extern void *fn_8017960C();
+extern void *getRegisteredObject();
 extern s32 fn_80139B70(s32, f32, f32);
 typedef struct Vec_801E1048 { f32 x, y, z; } Vec_801E1048;
 typedef struct { float x, y; } Vec2_801E;
@@ -558,7 +558,7 @@ s32 fn_801E1048(void) {
     u8 *obj = (u8 *)lbl_8055EA10;
     u32 valid = (u32)(-(s32)obj | (s32)obj) >> 31;
     if (valid != 0) {
-        player = (u8 *)fn_8017960C();
+        player = (u8 *)getRegisteredObject();
         vec = player + 0x23AC;
         i = 0;
         offset = 0;
@@ -823,7 +823,7 @@ void fn_801E168C(const void *status) {
     *(f32 *)((u8 *)status + 0x60) = initialTimer;
 }
 
-extern void *fn_8017960C(s32);
+extern void *getRegisteredObject(s32);
 extern s32 fn_801E85A4(void);
 extern f32 lbl_80562C78, lbl_80562C7C, lbl_80562C8C, lbl_80562CA0, lbl_80562CA4;
 #pragma processor 750
@@ -871,7 +871,7 @@ void fn_801E1710(void *arg0) {
             f32 current2;
             int cond;
             int gt;
-            void *obj = fn_8017960C(*(s32 *)(row + 0x0C));
+            void *obj = getRegisteredObject(*(s32 *)(row + 0x0C));
             f32 current = *(f32 *)((u8 *)obj + 0x258C);
             cond = 0;
             gt = current > threshold;

@@ -1120,7 +1120,7 @@ void *fn_802678E4(int index) {
 extern void fn_80267EE0(void);
 extern int fn_801C5B68(void *, int);
 extern void fn_8026B768(int, int), fn_80268E94(void *, int), fn_8020655C(void *, int);
-extern void *fn_8017960C(int);
+extern void *getRegisteredObject(int);
 extern int fn_801769F8(void), fn_8026B734(int, float *);
 extern float fn_801B8950(int), PSVECDotProduct(void *, void *);
 extern double fn_8002EF30(float), fabs(double);
@@ -1151,7 +1151,7 @@ void fn_802678E8(void *arg0, int arg1) {
  *(int *)(p+0x20) = *(int *)(p+0x24);
  *(int *)(p+0x10) = *(int *)(p+0x14);
  *(float *)(p+0xbc) = 1.7017f;
- *(void **)(p+0x140) = fn_8017960C(*(int *)(p+0x20));
+ *(void **)(p+0x140) = getRegisteredObject(*(int *)(p+0x20));
  { float z = *(float *)(p+0x84), y = *(float *)(p+0x80), x = *(float *)(p+0x7c);
  frame.x = x; frame.flag = 0; entity = *(char **)(p+0x140); frame.y = y; frame.z = z; }
  if (entity) {

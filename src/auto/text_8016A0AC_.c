@@ -219,7 +219,7 @@ void fn_8016A240(const char *name) {
 }
 #pragma pop
 extern f32 PSVECSquareDistance(void *, void *);
-extern s32 fn_8017960C(void);
+extern s32 getRegisteredObject(void);
 extern u8 lbl_8055E364;
 extern f64 lbl_80561968;
 extern f32 lbl_80561960;
@@ -242,7 +242,7 @@ s32 fn_8016A30C(void)
   s32 index;
   f32 *radiusBonusPtr;
 
-  player = fn_8017960C();
+  player = getRegisteredObject();
   radiusBonusPtr = &radiusBonus;
   if (player)
   {
@@ -403,7 +403,7 @@ s32 fn_8016A780(const char *arg0, s32 arg1) {
     register f32 thresh;
     name = arg0;
     count = 0;
-    veh = ((void*(*)(s32))fn_8017960C)(arg1);
+    veh = ((void*(*)(s32))getRegisteredObject)(arg1);
     if (veh != 0) {
         thresh = lbl_80561970;
         i = 0;

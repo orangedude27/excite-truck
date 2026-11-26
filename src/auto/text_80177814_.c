@@ -290,7 +290,7 @@ void fn_80177EE4(void) {
     int playerIndex;
     if (lbl_8055E44C != 0) {
         for (playerIndex = 0; playerIndex < 8; playerIndex++) {
-            if (fn_8017960C(playerIndex) != 0) {
+            if (getRegisteredObject(playerIndex) != 0) {
                 fn_8018A180();
             }
         }
@@ -951,9 +951,9 @@ void fn_80178CAC(void *carA, void *carB)
     }
   }
 
-  carAData = (void *) fn_8017960C((int) carA);
+  carAData = (void *) getRegisteredObject((int) carA);
   carAObj = carAData;
-  carBObj = (void *) fn_8017960C((int) carB);
+  carBObj = (void *) getRegisteredObject((int) carB);
   field1F0A = *((int *) (((char *) carAObj) + 0x1F0));
   field1F0B = *((int *) (((char *) carBObj) + 0x1F0));
   field10A = *((int *) (((char *) carAObj) + 0x10));
@@ -1471,7 +1471,7 @@ void fn_801795D8(void *vehicle, int objIndex) {
 
 /* Look up a registered vehicle/object by index in the 8-entry global object table
  * (lbl_80430830); returns NULL for an out-of-range index. */
-int fn_8017960C(int objIndex) {
+int getRegisteredObject(int objIndex) {
     if (objIndex < 8) return lbl_80430830[objIndex];
     return 0;
 }

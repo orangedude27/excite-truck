@@ -14,7 +14,7 @@ extern int lbl_8055F4D0, lbl_8055F4CC, lbl_8055F4C8;
 extern float lbl_80563D68;
 extern float lbl_80563D6C, lbl_80563D70, lbl_80563D74, lbl_8055E3C8;
 extern unsigned char lbl_8049A0E8[];
-extern void *fn_8017960C(void);
+extern void *getRegisteredObject(void);
 extern int fn_80178CA4(void);
 extern void fn_8020C900(int);
 extern void fn_80206444(void);
@@ -184,7 +184,7 @@ extern "C" void fn_8026B260(void) {
      * the centre to trigger the "whosh" sound. */
     struct Ent { unsigned char on; unsigned char pad[3]; float t; float v; int idx; };
     float t = lbl_8055E3C8;
-    unsigned char *p = (unsigned char *)fn_8017960C();
+    unsigned char *p = (unsigned char *)getRegisteredObject();
     if (fn_80178CA4() == 1 && *(int *)(p + 0x1F0) == 0x50) {
         int off = arg0 << 4;
         struct Ent *e = (struct Ent *)((char *)lbl_8049A0E8 + off);

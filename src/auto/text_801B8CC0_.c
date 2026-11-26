@@ -39,7 +39,7 @@ extern void* lbl_80436D28[];
 
 /* The trailer cars.  One "trlr_car" (alloc tag lbl_803369C0, vtable
    lbl_803369D0, 0x2760 bytes) per player index, kept in lbl_80436D28 next to
-   the player it trails (lbl_80430830, handed out by fn_8017960C).
+   the player it trails (lbl_80430830, handed out by getRegisteredObject).
    updateTrailerCar places one every frame and resetTrailerCar (vtable+0x10) resets it;
    both hand the pose they work out to fn_80189CB4 at vtable+0x54. */
 
@@ -329,10 +329,10 @@ extern "C" void *fn_801B8D80(void) {
     /* Allocate and initialize a "trlr_car" object (0x2760 bytes), set its vtable
        (lbl_803369D0), clear/init fields at 0x2700/0x2710/0x272C/0x2730/0x2738/0x275C,
        assign the next global index (lbl_8055E774), store in the object table
-       (lbl_80436D28), and cache a per-object value from fn_8017960C at 0x2754. */
+       (lbl_80436D28), and cache a per-object value from getRegisteredObject at 0x2754. */
     extern void *fn_801284F8(unsigned int, void *); /* allocate tagged memory */
     extern void fn_80182010(void *);                /* base object constructor/init */
-    extern int fn_8017960C(int);                    /* lookup/init by object index */
+    extern int getRegisteredObject(int);                    /* lookup/init by object index */
     extern char lbl_803369C0[];                     /* alloc tag string "trlr_car" */
     extern char lbl_803369D0[];                     /* trlr_car vtable */
     extern void *lbl_80436D28[];                    /* global trlr_car object table */
@@ -360,7 +360,7 @@ extern "C" void *fn_801B8D80(void) {
         lbl_8055E774 = objectIndex + 1;
         lbl_80436D28[*(int *)((char *)object + 0x2700)] = object;
         *(int *)((char *)object + 0x2754) =
-            fn_8017960C(*(int *)((char *)object + 0x2700));
+            getRegisteredObject(*(int *)((char *)object + 0x2700));
         *(unsigned char *)((char *)object + 0x275C) = zero;
     }
     return object;

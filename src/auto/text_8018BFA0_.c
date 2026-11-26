@@ -1057,7 +1057,7 @@ extern "C" void fn_8018E330(void *state) {
 #pragma scheduling on
 float PSVECSquareDistance(float *, float *);         /* extern */
 void *__AXFXGetLfoSinTable_801769CC();              /* extern */
-void *fn_8017960C(int);                             /* extern */
+void *getRegisteredObject(int);                             /* extern */
 int fn_801796CC(int, float *, int);       /* extern */
 int fn_80189BDC(float, float, float, float, float, float);      /* extern */
 int fn_8018A174(void *);                        /* extern */
@@ -1343,13 +1343,13 @@ block_11:
                     var_f22 = temp_f1_2;
                     if (arg4 >= 0) {
                         var_f22 = temp_f1_2 * lbl_80561F98;
-                        if (((int) M2C_FIELD(arg0, int *, 0x1F0) != 0x50) && (M2C_FIELD(arg0, float *, 0x25BC) <= lbl_80558DC4) && ((M2C_FIELD(fn_8017960C(arg4), float *, 0x25BC) > lbl_80558DC4) || (var_f22 > lbl_80562004)) && (M2C_FIELD(fn_8017960C(arg4), float *, 0x25D4) > M2C_FIELD(arg0, float *, 0x25D4))) {
+                        if (((int) M2C_FIELD(arg0, int *, 0x1F0) != 0x50) && (M2C_FIELD(arg0, float *, 0x25BC) <= lbl_80558DC4) && ((M2C_FIELD(getRegisteredObject(arg4), float *, 0x25BC) > lbl_80558DC4) || (var_f22 > lbl_80562004)) && (M2C_FIELD(getRegisteredObject(arg4), float *, 0x25D4) > M2C_FIELD(arg0, float *, 0x25D4))) {
                             fn_8018A174(arg0);
                         }
                     } else if (arg5 == 0x73) {
                         var_f22 = temp_f1_2 * lbl_8055A460;
                     }
-                    if ((((arg4 >= 0) && (M2C_FIELD(fn_8017960C(arg4), float *, 0x25BC) > lbl_80558DC4)) || (!(var_f22 < lbl_80562008) && ((arg4 >= 0) || !(M2C_FIELD(arg0, float *, 0x25D4) < lbl_8056200C) || !(var_f22 < lbl_80562010)))) && (((unsigned int) (M2C_FIELD(__AXFXGetLfoSinTable_801769CC(), int *, 4) + 0xFFE80000) != 0x304U) || ((int) M2C_FIELD(arg0, int *, 0x1F0) != 0x50) || (arg4 < 0))) {
+                    if ((((arg4 >= 0) && (M2C_FIELD(getRegisteredObject(arg4), float *, 0x25BC) > lbl_80558DC4)) || (!(var_f22 < lbl_80562008) && ((arg4 >= 0) || !(M2C_FIELD(arg0, float *, 0x25D4) < lbl_8056200C) || !(var_f22 < lbl_80562010)))) && (((unsigned int) (M2C_FIELD(__AXFXGetLfoSinTable_801769CC(), int *, 4) + 0xFFE80000) != 0x304U) || ((int) M2C_FIELD(arg0, int *, 0x1F0) != 0x50) || (arg4 < 0))) {
                         fn_8018E330(arg0);
                         goto block_43;
                     }

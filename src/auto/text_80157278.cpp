@@ -48,7 +48,7 @@ extern "C" f32 lbl_805617C4;
 extern "C" f32 fn_801E7E24(void);
 extern "C" f32 fn_80204CFC(const char*);
 extern "C" void* fn_8023139C(void*,s32,u32);
-extern "C" void* fn_8017960C(s32);
+extern "C" void* getRegisteredObject(s32);
 struct Item38 { u8 pad[0x14]; s32 val; u8 pad2[0x20]; };
 struct Word4 { s32 v; };
 
@@ -2533,7 +2533,7 @@ extern "C" f32 lbl_805617B4, lbl_805617B8, lbl_805617BC;
             s32 enabled;
             *(s32*)(slot+0x274) = *(s32*)(slot+0x270);
             if (!*(s32*)(slot+0x270)) { enabled = 0; } else {
-                u8* car = (u8*)fn_8017960C(*(s32*)(slot+0x278));
+                u8* car = (u8*)getRegisteredObject(*(s32*)(slot+0x278));
                 if (!car) { enabled = 0; } else {
                     s32 running = *(s32*)(car+0x2620) > 0;
                     switch (*(s32*)(slot+0x270)) {
@@ -2871,7 +2871,7 @@ extern "C" void fn_8015B340(Unk801577F0* self) {
 #pragma processor 750
 static inline BOOL isSlotMoving_8015B404(s32 i) {
     BOOL moving;
-    u8* o = (u8*)fn_8017960C(i);
+    u8* o = (u8*)getRegisteredObject(i);
     if (o != 0) {
         moving = !((f32)__fabs(*(f32*)(o + 0x2690)) <= lbl_80558DC4[0]);
     } else {
@@ -2906,7 +2906,7 @@ extern "C" f32 fn_8015B404(void* arg0) {
                 f32 t = *(volatile f32*)(p + 0x24C);
                 *(f32*)(p + 0x24C) = t - one;
             }
-            u8* o = (u8*)fn_8017960C(i);
+            u8* o = (u8*)getRegisteredObject(i);
             s32 flag;
             s32 more;
             if (o != 0) {
@@ -2993,13 +2993,13 @@ extern "C" void fn_8015B708(Unk801577F0* self) {
     ((LocalVtable*)self)->v31();
 }
 
-extern "C" void* fn_8017960C(s32);
+extern "C" void* getRegisteredObject(s32);
 extern "C" f32 lbl_805617C0;
 #pragma push
 #pragma processor 750
 /* Updates a per-slot timer/value pair for arg1, tracking the max value while the source object remains valid. */
 extern "C" void fn_8015B788(void* arg0, s32 arg1, f32 farg0) {
-    void* obj = fn_8017960C(arg1);
+    void* obj = getRegisteredObject(arg1);
     BOOL invalid;
 
     if (obj != 0) {

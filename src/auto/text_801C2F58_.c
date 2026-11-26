@@ -123,7 +123,7 @@ extern char lbl_8055E7E2;
 extern s32 lbl_8055E804;
 #define gNumPlayers lbl_8055E804
 extern f32 lbl_805629CC;
-extern u8* fn_8017960C(s32);
+extern u8* getRegisteredObject(s32);
 extern Vec lbl_80438268;
 extern Vec lbl_8043848C;
 extern char lbl_804380F0[256];
@@ -602,7 +602,7 @@ extern void fn_8020C8FC(void);
 extern void fn_8020C8F8(void);
 void fn_801C4B10(void) {
     /* Count active player slots, allocate the action list buffer, and initialize it. */
-    for (lbl_8055E804 = 0; fn_8017960C(lbl_8055E804); lbl_8055E804++) {
+    for (lbl_8055E804 = 0; getRegisteredObject(lbl_8055E804); lbl_8055E804++) {
     }
     lbl_8055E7F8 = fn_8012850C(0xC300, lbl_80336D84);
     fn_801C3D88(lbl_80336D90);
@@ -691,7 +691,7 @@ void fn_801C4BAC(void) {
     sDebugEnabled = debugEnabled;
     if (debugEnabled != 0) {
         memset(sActionBuffer, zero, 0xA0);
-        fn_8017960C(fn_80179630(0));
+        getRegisteredObject(fn_80179630(0));
     }
 #undef sActionBuffer
 #undef sPendingTimer
@@ -812,7 +812,7 @@ __repair_literal = 4;
                 wait = 1;
                 for (j = 0; j < lbl_8055E804; j++) {
                     if (((s32 (*)(s32, s32))fn_801C3508)(*(s32 *)(rec + 0x10), j) != 0) {
-                        p = fn_8017960C(j);
+                        p = getRegisteredObject(j);
                         if (p != 0) {
                             d.x = *(f32 *)(p + 0x94) - *(f32 *)(rec + 0x214);
                             d.y = *(f32 *)(p + 0x98) - *(f32 *)(rec + 0x218);
@@ -883,8 +883,8 @@ __repair_literal = 4;
             n = 0;
             for (j = 0; j < lbl_8055E804; j++) {
                 if (((s32 (*)(s32, s32))fn_801C3508)(*(s32 *)(rec + 0xc), j) == 0) continue;
-                if (fn_802794AC(*(s32 *)(fn_8017960C(j) + 0x1f0), 0) == 0) continue;
-                p = fn_8017960C(j);
+                if (fn_802794AC(*(s32 *)(getRegisteredObject(j) + 0x1f0), 0) == 0) continue;
+                p = getRegisteredObject(j);
                 if (p == 0) break;
                 place.id = -1;
                 place.m.rot.m[0] = one;
@@ -1049,7 +1049,7 @@ void fn_801C56AC(void) {
     cBC = lbl_805629BC;
     i = 0;
     for (;;) {
-        obj = fn_8017960C(i);
+        obj = getRegisteredObject(i);
         if (obj == 0) return;
         var_f23 = *(float *)(cfg + 8);
         fn_8018ADCC(obj, lbl_80562970);
@@ -1072,7 +1072,7 @@ void fn_801C56AC(void) {
             if (cfg4 > 1) {
                 idx = ((i + lbl_8055E804) - cfg4) % lbl_8055E804;
             }
-            obj2 = fn_8017960C(idx);
+            obj2 = getRegisteredObject(idx);
             if (*(s32 *)(cfg + 0) == 2) {
                 buf[4] = *(float *)(cfg + 0xC);
                 buf[5] = *(float *)(cfg + 0x10);
@@ -1345,7 +1345,7 @@ s32 fn_801C5B68(char *arg0, s32 arg1) {
     if ((s32) (*(s32 *)((char *)(state) + 0x58)) >= 0) {
         var_r29 = (*(s32 *)((char *)(state) + 0x58));
     }
-    temp_r31 = (char *)fn_8017960C(var_r29);
+    temp_r31 = (char *)getRegisteredObject(var_r29);
     (*(s32 *)((char *)(arg0) + 0x68)) = (s32) ((*(s32 *)((char *)(arg0) + 0x68)) | 5);
     if (fn_801C3B6C() > (*(f32 *)((char *)(state) + 4))) {
         var_f29 = (*(f32 *)((char *)(state) + 4)) - (*(f32 *)((char *)(state) + 0));
@@ -1681,7 +1681,7 @@ s32 fn_801C6C28(Vec *arg0) {
 
     goto check;
 body:
-    if (PSVECSquareDistance((Vec *)(fn_8017960C(playerIndex) + 0x60), arg0) < distanceThresholdSq) {
+    if (PSVECSquareDistance((Vec *)(getRegisteredObject(playerIndex) + 0x60), arg0) < distanceThresholdSq) {
         foundIndex = playerIndex;
         goto done;
     }

@@ -907,7 +907,7 @@ extern int fn_8014C75C(int, void *);
 extern void fn_8001BA68(void *);
 extern int fn_80179650(void);
 extern void fn_80179630(int);
-extern void fn_8017960C(void);
+extern void getRegisteredObject(void);
 #pragma scheduling invalid_target
 s32 fn_8015FBCC(void *arg0, s32 arg1, u8 arg2, s32 arg3) {
     struct Hit table[64];
@@ -953,7 +953,7 @@ s32 fn_8015FBCC(void *arg0, s32 arg1, u8 arg2, s32 arg3) {
         } while (n < 0x32);
         for (n = 0; n < fn_80179650(); n++) {
             fn_80179630(n);
-            fn_8017960C();
+            getRegisteredObject();
             t27 = ((int (*)(void))fn_801602B4)() + 0x24;
             ((void (*)(void *))fn_801602B0)(sp10);
             fn_8016029C(sp10, (f32 *)&sp10[t27]);

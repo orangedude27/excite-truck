@@ -100,7 +100,7 @@ void fn_8017D380(float *arg0, int arg1) {
     arg0[2] = values[1];
 }
 
-extern void *fn_8017960C(int);
+extern void *getRegisteredObject(int);
 extern void gatherPhobLists(void *, int *, float *);
 extern float PSVECDotProduct(float *, float *);
 extern void PSVECNormalize(float *, float *);
@@ -120,7 +120,7 @@ extern "C" void fn_8017D404(float *pos, int target, float radius, float strength
     register char *obj;
     register void **node;
     register void ***iter;
-    register void *result = fn_8017960C(arg2);
+    register void *result = getRegisteredObject(arg2);
     register int i;
     float dist, rand, px, py, pz;
     register float zero;
@@ -476,7 +476,7 @@ done:
     extern void fn_8017D380(float *, int);          /* the spawn point of a target id */
     extern void fn_8017A580(void *);                /* refreshes the body's world transform */
     extern float fn_8017D378(void);                 /* the clock the body's timers run on */
-    extern void *fn_8017960C(int);                  /* scene object by id; its tag is at +0x10 */
+    extern void *getRegisteredObject(int);                  /* scene object by id; its tag is at +0x10 */
     extern void *fn_801B2EC0(int);                  /* the target's vehicle by id */
     extern void fn_801602B0(void *);                /* no-op */
     extern void fn_8017E3C4(void *, void *, short *); /* a random spot beside the target */
@@ -484,7 +484,7 @@ done:
     extern void fn_8017E388(void *);                /* identity transform, all 12 floats */
     extern void fn_80160230(void *, void *);        /* (x, const, z) from an (x, z) pair */
     extern float fn_8017E380();                     /* the height the body floats at */
-    extern void *fn_801602B4(void);                 /* object+0x3C; r3 comes from fn_8017960C */
+    extern void *fn_801602B4(void);                 /* object+0x3C; r3 comes from getRegisteredObject */
     extern void GXInitLightAttnA_80144B44(float *, float, float, float); /* writes three floats */
     extern void fn_8017DEE0(void *, long, long, short, float); /* move the body to a transform */
     extern int fn_801E9E30(void *, void *);         /* the ground under a point */
@@ -501,7 +501,7 @@ done:
         body->needsReposition = 0;
     }
     if (body->followMode == 0 && body->decideTime < fn_8017D378()) {
-        targetTag = *(unsigned *)((char *)fn_8017960C(body->targetId) + 0x10);
+        targetTag = *(unsigned *)((char *)getRegisteredObject(body->targetId) + 0x10);
         mode = 1;
         if (targetTag == FOURCC_ACAR) mode = 2;
         body->followMode = mode;
@@ -537,7 +537,7 @@ done:
                 fn_8017E388(xf.rotation);
                 fn_80160230(xf.translation, &spot); /* upright, on that spot */
                 lift = fn_8017E380(arg0);
-                fn_8017960C(body->targetId);
+                getRegisteredObject(body->targetId);
                 targetY = *(float *)((char *)fn_801602B4() + 0x28); /* the target's height */
                 xf.translation[1] = targetY + lift;
                 GXInitLightAttnA_80144B44(attn, lbl_80561BE0, lbl_80561BE0, lbl_80561BE0);
@@ -747,7 +747,7 @@ void fn_8017E3C4(void *arg0, void *arg1, short *arg2) {
     float t;
     float *out = (float *)arg1;
     if (*(int *)((char *)__AXFXGetLfoSinTable_801769CC() + 4) & 0x10000) {
-        float *q = (float *)fn_8017960C(*(int *)((char *)arg0 + 0x1F8));
+        float *q = (float *)getRegisteredObject(*(int *)((char *)arg0 + 0x1F8));
         sp3C[0] = q[24] + q[70] * lbl_80561C30;
         sp3C[1] = q[25] + q[71] * lbl_80561C30;
         sp3C[2] = q[26] + q[72] * lbl_80561C30;

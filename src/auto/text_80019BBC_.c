@@ -302,7 +302,7 @@ extern f32 lbl_8056043C;
 extern f32 lbl_80560440;
 extern void *fn_80178C9C(void);
 extern void fn_80136468(void *, void *, f32);
-extern void *fn_8017960C(s32);
+extern void *getRegisteredObject(s32);
 extern void *fn_802678E4(s32);
 extern f32 lbl_80560418, lbl_80560420, lbl_80560424, lbl_8056043C, lbl_80560440;
 extern void *fn_801E87A8(void);
@@ -434,7 +434,7 @@ subtractCheck:
     if (f25 > lbl_80560418) f25 = lbl_80560418;
     state = fn_80178C9C();
     fn_80136468(frame.vectors, state, f21);
-    actor = fn_8017960C(s.resource);
+    actor = getRegisteredObject(s.resource);
     state = fn_802678E4(s.objKey);
     desc = *(void **)((u8 *)state + 0x140);
     v = *(f32 *)((u8 *)state + 0x70);
@@ -551,7 +551,7 @@ subtractCheck:
     do {
         if (index == fn_801E866C(s.objKey)) break;
         record = fn_801EA9A0(index);
-        actor = fn_8017960C(index);
+        actor = getRegisteredObject(index);
         px = *(f32 *)((u8 *)actor + 0x60) - *(f32 *)((u8 *)s.global + 8);
         py = *(f32 *)((u8 *)actor + 0x64) - *(f32 *)((u8 *)s.global + 0xC);
         pz = *(f32 *)((u8 *)actor + 0x68) - *(f32 *)((u8 *)s.global + 0x10);
@@ -627,7 +627,7 @@ subtractCheck:
                 x + width * lbl_80560420, y - height * lbl_80560420,
                 lbl_80560418, result, result,
                 *(f32 *)((u8 *)s.data + s.resource * 8 + 8));
-    actor = fn_8017960C(fn_801E866C(s.objKey));
+    actor = getRegisteredObject(fn_801E866C(s.objKey));
     px = *(f32 *)((u8 *)s.global + 8) - *(f32 *)((u8 *)&frame + 0x10C);
     py = *(f32 *)((u8 *)s.global + 0xC) - *(f32 *)((u8 *)&frame + 0x110);
     pz = lbl_80560418 - *(f32 *)((u8 *)&frame + 0x114);

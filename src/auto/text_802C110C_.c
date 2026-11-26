@@ -610,7 +610,7 @@ struct TreeHitEvent {  /* the 0x20-byte payload of efx event 10, fn_801796EC */
     int eventId;       /* 0x1C the class slot's "efx_event_id" */
 };                     /* 0x20 */
 
-struct PlayerObject {  /* one of the eight players of lbl_80430830, fn_8017960C */
+struct PlayerObject {  /* one of the eight players of lbl_80430830, getRegisteredObject */
     u8 pad0[0x6C];
     s16 heading;       /* 0x6C */
     u8 pad6E[0x118 - 0x6E];
@@ -619,7 +619,7 @@ struct PlayerObject {  /* one of the eight players of lbl_80430830, fn_8017960C 
 
 #define TREE_CLASS_EVENT_ID 0x40 /* offsetof(struct TreeClass, eventId) */
 
-extern void *fn_8017960C(int);
+extern void *getRegisteredObject(int);
 extern void fn_801796EC(int, void *, int);
 #pragma push
 #pragma processor 750
@@ -665,7 +665,7 @@ extern "C" void fn_802C1A0C(void **hit, int player) {
     base = (char *)lbl_8055FB30;                /* the tree list */
     tree = (struct TreeObject *)*(void **)(base + treeIndex * 4);
     if (tree->pos[1] > lbl_80564E70) { /* still above the ground, so: cut it */
-        struct PlayerObject *hitter = (struct PlayerObject *)fn_8017960C(player);
+        struct PlayerObject *hitter = (struct PlayerObject *)getRegisteredObject(player);
         event.velocity[0] = hitter->velocity[0];
         event.velocity[1] = hitter->velocity[1];
         event.velocity[2] = hitter->velocity[2];

@@ -53,12 +53,13 @@ void fn_801CECE0(void) {
     }
 }
 
+#pragma scheduling invalid_target
 void fn_801CEDDC(void) {
     extern int lbl_8055E890;
-    extern float lbl_80562A24, lbl_80562A28, lbl_80562A2C, lbl_80562A30;
-    register float v;
-    register float speed;
-    register float decay;
+    extern float lbl_80562A20, lbl_80562A24, lbl_80562A28, lbl_80562A2C, lbl_80562A30;
+    struct FW { float v; };
+    register struct FW minw;
+    register struct FW decayw;
     register float threshold;
     register float max;
     register float step;
@@ -67,20 +68,22 @@ void fn_801CEDDC(void) {
     register int j;
     step = lbl_80562A24;
     max = lbl_80562A28;
-    decay = lbl_80562A30;
+    decayw.v = lbl_80562A30;
+    minw.v = lbl_80562A20;
     threshold = lbl_80562A2C;
     for (i = 0; i < 8; i++) {
         p = (char *)lbl_8055E890 + i * 0x30;
         for (j = 0; j < 4; j++) {
             if (*(int *)p >= 0) {
-                v = *(float *)(p + 4) + step;
+                register float v = *(float *)(p + 4) + step;
                 *(float *)(p + 4) = v;
                 if (v > max) {
                     *(int *)p = -1;
                 } else if (*(float *)(p + 4) > threshold) {
-                    speed = *(float *)(p + 8) - decay;
-                    if (0.0f > speed)
-                        speed = 0.0f;
+                    register float speed = minw.v;
+                    speed = *(float *)(p + 8) - decayw.v;
+                    if (minw.v > speed)
+                        speed = minw.v;
                     *(float *)(p + 8) = speed;
                 }
             }
@@ -88,17 +91,16 @@ void fn_801CEDDC(void) {
         }
     }
 }
-
 extern float lbl_80562A20;
-extern void *fn_8017960C(void);
+extern void *getRegisteredObject(void);
 extern void fn_801B916C(void *);
-extern void *fn_8017960C();
+extern void *getRegisteredObject();
 extern void fn_801B916C();
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
 /* Populate the 4 damage-car slots (+0x74, stride 0x18) of each 0xE0-byte record in manager
- * from the dmg_car_info table (lbl_8055E890) and the referenced car object (fn_8017960C),
+ * from the dmg_car_info table (lbl_8055E890) and the referenced car object (getRegisteredObject),
  * then invoke fn_801B916C. */
 void fn_801CEEC8(void *manager) {
     register float zeroFloat;
@@ -124,7 +126,7 @@ outer_body:
         *(float *)(dstSlot + 4) = *(float *)(srcSlot + 4);
         *(float *)(dstSlot + 0x10) = *(float *)(srcSlot + 8);
         if (carOrObj >= 0) {
-            carOrObj = (int)fn_8017960C(carOrObj);
+            carOrObj = (int)getRegisteredObject(carOrObj);
             *(float *)(dstSlot + 8) = *(float *)((char *)carOrObj + 0x2690);
             *(float *)(dstSlot + 0xc) = *(float *)((char *)carOrObj + 0x2694);
             *(int *)(dstSlot + 0x14) = *(int *)((char *)carOrObj + 0x268c);

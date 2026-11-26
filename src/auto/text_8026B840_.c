@@ -1,7 +1,7 @@
 #include "types.h"
 
 extern s32 fn_8026A344(s32);
-extern void *fn_8017960C(s32);
+extern void *getRegisteredObject(s32);
 extern void fn_801BFD34(void *, void *, void *);
 extern void fn_8012F57C(f32 *, f32 *, f32 *, f32);
 extern f32 fn_801E9DDC(f32 *, f32, f32);
@@ -1045,7 +1045,7 @@ void fn_8026C014(s32 arg0, void *arg1) {
         switch ((s32) lbl_8055F4E0) {               /* switch 2; irregular */
         case 1:                                     /* switch 2 */
             if (arg0 != 0) {
-                temp_r3_8 = fn_8017960C(fn_8026A344(0));
+                temp_r3_8 = getRegisteredObject(fn_8026A344(0));
                 if (temp_r3_8 != NULL) {
                     temp_f5_3 = (*(f32 *)((u8 *)(temp_r3_8) + (0x60))) - (*(f32 *)((u8 *)(lbl_80499050) + (0x24)));
                     (*(f32 *)((u8 *)(lbl_80499050) + (0x18))) = temp_f5_3;
@@ -1085,7 +1085,7 @@ void fn_8026C014(s32 arg0, void *arg1) {
                 case 2:                             /* switch 3 */
                     if (arg0 != 0) {
                         temp_r27 = fn_8026A344(0);
-                        temp_r3_9 = fn_8017960C(temp_r27);
+                        temp_r3_9 = getRegisteredObject(temp_r27);
                         if ((temp_r3_9 != NULL) && ((s32)lbl_8055F4E4 & 4)) {
                             (*(f32 *)(localFrame + (0x210 - 0x10))) = (*(f32 *)((u8 *)(temp_r3_9) + (0x3C)));
                             (*(f32 *)(localFrame + (0x214 - 0x10))) = (*(f32 *)((u8 *)(temp_r3_9) + (0x40)));
@@ -1261,7 +1261,7 @@ extern s32 lbl_8055F4F0;
 extern f32 lbl_80563D94;
 extern BOOL fn_8026BFF0(s32);
 extern s32 fn_8026A344(s32);
-extern void *fn_8017960C(s32);
+extern void *getRegisteredObject(s32);
 extern void fn_801BFD34(void *, void *, void *);
 extern void fn_80015B20(void *, void *, void *);
 extern void fn_8026E688(f32 *, f32 *, f32 *, f32 *);
@@ -1286,8 +1286,8 @@ void fn_8026DAA8(void *arg0) {
             u32 local[12];
             f32 up[3];
             s32 id = fn_8026A344(0);
-            u32 *source = (u32 *)((u8 *)fn_8017960C(lbl_8055F4F0) + 0x3C);
-            u8 *otherRaw = (u8 *)fn_8017960C(id);
+            u32 *source = (u32 *)((u8 *)getRegisteredObject(lbl_8055F4F0) + 0x3C);
+            u8 *otherRaw = (u8 *)getRegisteredObject(id);
             f32 *target = (f32 *)&local[9];
 
             *(Block2 *)&local[0] = *(Block2 *)&source[0];
@@ -1326,7 +1326,7 @@ void fn_8026DAA8(void *arg0) {
         break;
     case 4: {
         s32 id = fn_8026A344(0);
-        u8 *base = (u8 *)fn_8017960C(id) + 0x3C;
+        u8 *base = (u8 *)getRegisteredObject(id) + 0x3C;
         fn_801BFD34((u8 *)self + 0x7C, (u8 *)lbl_80499050 + 0x24, base);
         fn_80015B20((u8 *)self + 0x58, lbl_80499050, base);
         break;
@@ -1374,9 +1374,9 @@ void fn_8026DDD8(s32 arg0) {
     f32 *g;
     if (arg0 == 3 || (s32)lbl_8055F4E0 == arg0) {
         s32 r23 = fn_8026A344(0);
-        if (fn_8017960C(++lbl_8055F4F0) == 0) lbl_8055F4F0 = 0;
+        if (getRegisteredObject(++lbl_8055F4F0) == 0) lbl_8055F4F0 = 0;
         if (lbl_8055F4F0 == r23) {
-            if (fn_8017960C(++lbl_8055F4F0) == 0) lbl_8055F4F0 = 0;
+            if (getRegisteredObject(++lbl_8055F4F0) == 0) lbl_8055F4F0 = 0;
         }
         fn_802E30C8(lbl_80346A70, lbl_8055F4F0, r23);
     }
@@ -1396,7 +1396,7 @@ void fn_8026DDD8(s32 arg0) {
             PSVECNormalize(g + 6, g + 6);
             PSVECCrossProduct(g + 6, g, g + 3);
             *(s32 *)(lbl_8049A168 + 0x50) = fn_8026A344(0);
-            p = (f32 *)((void *(*)(void))fn_8017960C)();
+            p = (f32 *)((void *(*)(void))getRegisteredObject)();
             if (p != 0) {
                 f32 (*m)[3] = (f32 (*)[3])((char *)p + 0x3c);
                 f32 t = m[0][0] + m[1][1];
@@ -1452,7 +1452,7 @@ void fn_8026DDD8(s32 arg0) {
         } else if (fn_8026BFF0(arg0) == 0 && fn_8026BFF0((s32)lbl_8055F4E0) != 0) {
             void *p;
             fn_8026A344(0);
-            p = ((void *(*)(void))fn_8017960C)();
+            p = ((void *(*)(void))getRegisteredObject)();
             if (p != 0) {
                 *(Words12 *)lbl_80499050 = *(Words12 *)((char *)p + 0x3c);
             }

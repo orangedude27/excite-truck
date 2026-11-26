@@ -53,7 +53,7 @@ extern "C" void fn_801390B0(void *arg0, float *arg1, float *arg2, int arg3, floa
 #pragma cplusplus reset
 #pragma pop
 /* Player slot of a racer vehicle: objects registered in the 8-entry object
- * table (lbl_80430830, see fn_8017960C/fn_801795D8) carry their type at +0x1F0
+ * table (lbl_80430830, see getRegisteredObject/fn_801795D8) carry their type at +0x1F0
  * and, for a player/racer vehicle (type 0x50), their split-screen player slot
  * in the low two bits of +0x260.  Anything that is not a racer vehicle reports
  * slot 0; the caller turns the slot into that player's 0x38-byte record
@@ -78,7 +78,7 @@ extern float lbl_80561400;
 extern float lbl_80561404;
 extern float lbl_80561408;
 extern void fn_801476D8(void *, int, int);
-extern int fn_8017960C(int);
+extern int getRegisteredObject(int);
 extern int fn_801392F8(void *);
 extern void *fn_801E8718(long);
 extern double fn_8002F234(float x);
@@ -90,8 +90,8 @@ extern void DrawList_endMeshPass(void);
 extern void DrawList_RestoreNormalMode(void);
 extern void fn_801390B0(void *, float *, float *, int, float, float);
 extern double __fabs(double);
-#pragma push
-#pragma processor 750
+#pragma scheduling invalid_target
+#pragma processor 603
 void fn_80139318(void *arg0, int arg1, int arg2, float farg0) {
 #pragma dont_inline on
     float v[30];
@@ -110,7 +110,7 @@ void fn_80139318(void *arg0, int arg1, int arg2, float farg0) {
     v[1] = *(float *)(o2 + 0x14);
     v[8] = v[10] + v[0];
     v[9] = v[11] + v[1];
-    ip = fn_801E8718(fn_801392F8((void *)fn_8017960C(arg2)));
+    ip = fn_801E8718(fn_801392F8((void *)getRegisteredObject(arg2)));
     if (lbl_80558DC4 <= (float)__fabs((double)*(float *)(ip + 0x18)) ||
         lbl_80558DC4 <= (float)__fabs((double)*(float *)(ip + 0x20))) {
         ex = *(float *)(ip + 0x18);
@@ -136,7 +136,7 @@ void fn_80139318(void *arg0, int arg1, int arg2, float farg0) {
         v[28] = *(float *)(ip + 0x28);
         v[29] = *(float *)(ip + 0x2C);
         fn_802C8BD0(arg1);
-        if (beginDrawListPass(0x20) != 0) {
+        if (fn_802C8DBC(0x20) != 0) {
             f25 = lbl_805613E0;
             f28 = lbl_805613E4;
             f23 = lbl_805613F0;
@@ -147,7 +147,7 @@ void fn_80139318(void *arg0, int arg1, int arg2, float farg0) {
             f30 = lbl_80561404;
             f31 = lbl_80561408;
             for (n = lbl_8055E4D0 - 1; n >= 0; n--) {
-                cur = (char *)fn_8017960C(n);
+                cur = (char *)getRegisteredObject(n);
                 if (fn_801B8570(n) != 0) {
                     if ((float *)&v[15] == (float *)((char *)cur + 0x54)) {
                         float c54 = *(float *)(cur + 0x54);
@@ -178,12 +178,12 @@ void fn_80139318(void *arg0, int arg1, int arg2, float farg0) {
                     t3 = f26 * farg0;
                     cl0 = (mag - t3) / (f27 * farg0 - t3);
                     if (f25 < cl0) cl0 = f25;
-                    if (cl0 <= f28) cl0 = f28;
+                    cl0 = cl0 <= f28 ? f28 : cl0;
                     f22 = f25 + cl0 * f29;
                     t3 = f27 * farg0;
                     cl1 = (mag - t3) / (f30 * farg0 - t3);
                     if (f25 < cl1) cl1 = f25;
-                    if (cl1 <= f28) cl1 = f28;
+                    cl1 = cl1 <= f28 ? f28 : cl1;
                     f21 = f25 + cl1 * f31;
                     if (mag > farg0) {
                         t4 = PSVECMag((void *)&v[12]);
@@ -197,19 +197,17 @@ void fn_80139318(void *arg0, int arg1, int arg2, float farg0) {
                     t5 = -farg0;
                     u = (v[12] - t5) / (farg0 - t5);
                     if (f25 < u) u = f25;
-                    if (u <= f28) u = f28;
+                    u = u <= f28 ? f28 : u;
                     w = (v[14] - farg0) / (-farg0 - farg0);
                     v[2] = v[10] + (u * (v[8] - v[10]));
                     if (f25 < w) w = f25;
-                    if (w <= f28) w = f28;
+                    w = w <= f28 ? f28 : w;
                     v[3] = v[11] + (w * (v[9] - v[11]));
                     fn_801390B0(arg0, (float *)&v[2], (float *)&v[4], n == arg2, f22, f21);
                 }
             }
-            DrawList_endMeshPass();
+            fn_802C8E48();
         }
-        DrawList_RestoreNormalMode();
+        fn_802C8D74();
     }
 }
-#pragma pop
-

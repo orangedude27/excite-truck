@@ -42,7 +42,7 @@ struct RacerState {
     char pad0[0x10];
     int laps;                    /* 0x10 laps this racer has completed */
 };
-/* The player/vehicle object of fn_8017960C. */
+/* The player/vehicle object of getRegisteredObject. */
 struct RacerObject {
     char pad0[0x1F0];
     int competitorId;            /* 0x1F0, the competitor id of the race table */
@@ -91,7 +91,7 @@ struct TimedEffect {
 
   extern void updateActionSequence(int);
 
-extern int fn_8017960C(int);
+extern int getRegisteredObject(int);
 extern void *fn_801B2EC0(int);
 extern int fn_801B2F24(void);
   extern char lbl_80338C78[];
@@ -666,7 +666,7 @@ void updateActionSequence(int sequence) {
         virtual void v1();
         virtual struct RacerState *state();
     };
-    extern int fn_8017960C(int);
+    extern int getRegisteredObject(int);
     extern void *fn_801B2EC0(int);
     extern int fn_801B2F24(void);
     ActionSequence *seq = (ActionSequence *)sequence;
@@ -720,7 +720,7 @@ test2:
         goto test3;
 loop3:
         {
-            RacerObject *player = (RacerObject *)fn_8017960C(racer);
+            RacerObject *player = (RacerObject *)getRegisteredObject(racer);
             if (player->competitorId == COMPETITOR_SETS_LAPS) {
                 RacerSlot *slot = (RacerSlot *)fn_801B2EC0(racer);
                 RacerState *racerState = slot->state();
@@ -1731,12 +1731,12 @@ int fn_801D6508(int effect) {
 
 #pragma push
 #pragma scheduling invalid_target
-/* While active (state 2), after start delay iterate objects from fn_8017960C
+/* While active (state 2), after start delay iterate objects from getRegisteredObject
  * and apply fn_80267E40 to those passing optional filter fn_80139B5C; advance
  * to state 3 once start+duration has elapsed. */
 void fn_801D6534(void *self) {
     extern int fn_80139B5C(int, int);
-    extern int fn_8017960C(int);
+    extern int getRegisteredObject(int);
     extern void fn_80267E40(int, float);
     int object;
     int index;
@@ -1752,7 +1752,7 @@ process:
         fn_80267E40(object, *(float *)((char *)self + 0x10));
     index++;
 fetch:
-    object = fn_8017960C(index);
+    object = getRegisteredObject(index);
     if (object != 0) goto process;
 finish:
     if (lbl_8055E3C4 - *(int *)((char *)self + 0x1C) >= *(int *)((char *)self + 8) + *(int *)((char *)self + 0xC))
@@ -3272,7 +3272,7 @@ extern "C" int fn_801D815C(PhysPathAse *cue, int direction) {
     #define STR_INSIDE &lbl_8055AD34
     #define STR_OUTSIDE &lbl_8055AD40
     extern int fn_80179630(int);
-    extern int fn_8017960C(int);
+    extern int getRegisteredObject(int);
     extern int fn_80179650(void);
     extern int fn_80139B5C(int, int);
     extern void *fn_801B2EC0(int);
@@ -3341,7 +3341,7 @@ extern "C" int fn_801D815C(PhysPathAse *cue, int direction) {
             playerSlot = 0;
             while (playerSlot < fn_80179650()) {
                 objectIndex = fn_80179630(playerSlot);
-                insideKillBound = fn_80139B5C(fn_8017960C(objectIndex), (int)effect->killBound);
+                insideKillBound = fn_80139B5C(getRegisteredObject(objectIndex), (int)effect->killBound);
                 if (insideKillBound != 0) {
                     racerSlot = (Name *)fn_801B2EC0(objectIndex);
                     racerProperty = *(int *)((char *)racerSlot->get() + 4);

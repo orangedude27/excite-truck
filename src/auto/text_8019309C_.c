@@ -22,7 +22,7 @@ extern const float lbl_80562208;
 
       extern void fn_80194FD0(unsigned char *, float *, float);
 typedef struct { void *a; float b; int c; } Samp80194FD0;
-extern void *fn_8017960C();
+extern void *getRegisteredObject();
 extern int fn_80137788(void *, int, float *);
 extern float lbl_805621C0, lbl_805621F0, lbl_805621F4, lbl_805621F8, lbl_805621FC, lbl_80562200, lbl_80562160, lbl_8056216C;
 extern float lbl_8056214C, lbl_80562150, lbl_80562154, lbl_80562158;
@@ -1381,7 +1381,7 @@ void fn_80194FD0(unsigned char *self, float *out, float dt)
     void *ent = *((void **) ((((*((unsigned char **) (tbl + 0x10))) + ((*((int *) (self + new_var))) * (*((int *) (tbl + 0xC))))) + ((*((int *) (self + 0x2C4))) * 4)) + 0x18));
     if (F80194FD0(ent, 0x18) < 2500.0f)
     {
-      unsigned char *o = fn_8017960C();
+      unsigned char *o = getRegisteredObject();
       fn_80137788(ent, *((int *) (self + new_var)), info);
       if (info[1] > 0.0f)
       {
@@ -3010,7 +3010,7 @@ int fn_8019799C(void *self, void *candidate) {
 }
 
 typedef struct Obj Obj;
-extern void *fn_8017960C(int);
+extern void *getRegisteredObject(int);
 extern Obj *fn_801B2ED0(int);
 extern float lbl_80562194;
 #pragma scheduling invalid_target
@@ -3044,7 +3044,7 @@ extern "C" void fn_80197AB8(void *arg0, int arg1, float farg0, float farg1, floa
         update = *(float *)(p + 0xEC) > farg0;
     if (update) {
         *(float *)(p + 0xEC) = farg0;
-        obj = fn_8017960C(arg1);
+        obj = getRegisteredObject(arg1);
         vals[0] = *(float *)((char *)obj + 0x88);
         vals[1] = *(float *)((char *)obj + 0x90);
         obj = fn_801B2ED0(arg1);
@@ -3773,7 +3773,7 @@ void fn_8019340C(void *arg0, void *arg1, float *arg2, int arg3, void *arg4) {
                 cur = *(int *)((char *)arg0 + 0x2C4);
                 temp = *(int *)((char *)arg4 + 0x1EC);
                 if (temp == cur) {
-                    ret = fn_8017960C(temp);
+                    ret = getRegisteredObject(temp);
                     val = lbl_80562150 + dot / lbl_80562154;
                     if (val > lbl_80562154) {
                     } else {

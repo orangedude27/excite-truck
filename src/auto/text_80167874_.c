@@ -721,7 +721,7 @@ void fn_801683F4(void *arg0, s32 arg1) {
     extern s32 lbl_8055E354;
     extern f32 lbl_80561924;
     extern f32 lbl_80561950;
-    extern void *fn_8017960C(s32);
+    extern void *getRegisteredObject(s32);
     extern f64 fn_8002F234(f32);
     s32 num;
     s32 i;
@@ -750,7 +750,7 @@ void fn_801683F4(void *arg0, s32 arg1) {
     f32 radius;
     s32 counts[7];
     memset(counts, 0, 0x18);
-    object = fn_8017960C(arg1);
+    object = getRegisteredObject(arg1);
     tableIndex = arg1 * 4;
     if (lbl_80430260[tableIndex] == lbl_8055E3C4 - 1) {
         num = 0;

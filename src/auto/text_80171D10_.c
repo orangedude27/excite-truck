@@ -35,7 +35,7 @@ extern float PSQUATMultiply(void *, void *);
 // split_file divides it into the game's real files (file_status shows its range).
 
 #define FOURCC_PCAR 0x50434152 /* 'PCAR' player truck, stored at +0x10 of a car resource */
-extern void *fn_8017960C();
+extern void *getRegisteredObject();
 extern void fn_802AE0E0();
 extern float lbl_80561A50;
 /* A Sound object (created by fn_80207848). Its update (Sound3D_update) acts on
@@ -177,9 +177,9 @@ int fn_80171D38(int arg0) {
     return result;
 }
 
-/* Calls fn_8018F76C for indices 0..3 on the object/context returned by fn_8017960C. */
+/* Calls fn_8018F76C for indices 0..3 on the object/context returned by getRegisteredObject. */
 void fn_80171D94(int unused) {
-#define GetContext fn_8017960C
+#define GetContext getRegisteredObject
 #define ApplySlot fn_8018F76C
     void *context = GetContext();
     int index = 0;
@@ -228,9 +228,9 @@ __repair_addr = (char *)((char *)arg0 + 4);
 }
 
 /* Return whether the car in the given slot is the player's truck: its resource
- * (fn_8017960C, with the slot index forwarded in r3) has the 'PCAR' magic at +0x10. */
+ * (getRegisteredObject, with the slot index forwarded in r3) has the 'PCAR' magic at +0x10. */
 int fn_80171EC0(int carIndex) {
-    return *(int *)((char *)fn_8017960C() + 0x10) == FOURCC_PCAR;
+    return *(int *)((char *)getRegisteredObject() + 0x10) == FOURCC_PCAR;
 }
 
 extern float lbl_80561A3C, lbl_80561A40;
@@ -441,7 +441,7 @@ void fn_8017248C(int arg0) {
     float wave;
     float offset;
 
-    state = fn_8017960C(arg0);
+    state = getRegisteredObject(arg0);
     camera = DrawList_getCurrentMatrix();
     value = (PSQUATMultiply((char *)state + 0x60,
                             (char *)camera + 0x24) - lbl_80561A68) /
@@ -491,11 +491,11 @@ float fn_801725C8(float arg0) {
 
 /* Compare two objects by dot product of their vectors at +0x118, weighted with object A's threshold at +0x25D4 and lbl_8043038C coefficients, returning 2/1/0 by threshold bands. */
 int fn_80172624(void *arg0, int arg1) {
-      extern void *fn_8017960C();
+      extern void *getRegisteredObject();
   extern float PSQUATMultiply(void *, void *);
     extern float lbl_8043038C[];
-    void *objectA = fn_8017960C((int)arg0);
-    void *objectB = fn_8017960C(arg1);
+    void *objectA = getRegisteredObject((int)arg0);
+    void *objectB = getRegisteredObject(arg1);
     float dot = PSQUATMultiply((char *)objectA + 0x118, (char *)objectB + 0x118);
     float objectAThreshold = *(float *)((char *)objectA + 0x25D4);
     float upperWeight = lbl_8043038C[9];
@@ -1362,10 +1362,10 @@ extern "C" void fn_80173ACC(void *arg0) {
     e = p;
     for (i = 0; i < *(int *)(p + 0x170); i++, e += 0x1C) {
         if (*(unsigned char *)(e + 0x91) != 0 && *(unsigned char *)((char *)lbl_8043038C + 0x11) != 0) {
-            *(float *)((char *)fn_8017960C(i) + 0x25A0) = zero;
+            *(float *)((char *)getRegisteredObject(i) + 0x25A0) = zero;
         }
         if (*(unsigned char *)(e + 0x91) == 0 && *(unsigned char *)(e + 0x90) == 0) {
-            *(float *)((char *)fn_8017960C(i) + 0x25A0) = big;
+            *(float *)((char *)getRegisteredObject(i) + 0x25A0) = big;
         }
     }
     if (((Dummy *)p)->f7() == 0) {
@@ -1657,7 +1657,7 @@ void fn_8017431C(int arg0, int arg1) {
     int inside;
     float dx, dz, dist;
     if (*(unsigned char *)(arg0 + arg1 * 0x1C + 0x90) != 0) {
-        obj = (char *)fn_8017960C(arg1);
+        obj = (char *)getRegisteredObject(arg1);
         fn_8018AF04();
         cam.mark = -1;
         fn_801E9DC4(&cam.mark);
@@ -2289,16 +2289,16 @@ int fn_80175A38(void *table, float *outVec, float *outValue, int index, int unus
     return 1;
 }
 
-extern void *fn_8017960C();
+extern void *getRegisteredObject();
 extern float lbl_80561AF0;
 extern float lbl_80561AF4;
-extern void *fn_8017960C(int);
+extern void *getRegisteredObject(int);
 #pragma scheduling on
 int fn_80175A68(void *unused, float *arg0, float *arg1, int arg2, void *unused2, int *arg3) {
     float *p;
     float first, s, af4;
     Fn8017431CV3 v;
-    p = (float *)fn_8017960C(arg2);
+    p = (float *)getRegisteredObject(arg2);
     first = p[0x54 / 4];
     s = lbl_80561AF0;
     af4 = lbl_80561AF4;
@@ -2343,7 +2343,7 @@ void fn_80175B0C(char *arg0) {
         f24 = lbl_80561B00;
         n = 0x13;
         do {
-            obj = (char *)fn_8017960C(i);
+            obj = (char *)getRegisteredObject(i);
             v[0] = *(float *)(obj + 0x60);
             v[1] = *(float *)(obj + 0x68);
             d[0] = *(float *)(obj + 0x54);
@@ -2413,12 +2413,12 @@ extern "C" void fn_80175D40(void *arg0) {
  for(;i<*(int *)((char *)arg0+0x124);i++,out+=0x24) {
   obj=*(char **)((char *)arg0+0x128);
   if(((ObjView*)obj)->active(i)==0)continue;
-  obj=(char *)fn_8017960C(i);
+  obj=(char *)getRegisteredObject(i);
   old[0]=*(float *)(obj+0x60);old[1]=*(float *)(obj+0x68);
   delta[1]=old[1]-*(float *)(out+0x18);
   delta[0]=old[0]-*(float *)(out+0x14);
   if(delta[0]*delta[0]+delta[1]*delta[1]<radius*radius||lbl_8055E3C8>*(float *)(out+0x20)) {
-   obj=(char *)fn_8017960C(i);
+   obj=(char *)getRegisteredObject(i);
    base[0]=*(float *)(obj+0x60);base[1]=*(float *)(obj+0x68);
    if(fn_80171E3C(base)) {
     a=lbl_80561AF8;
@@ -2428,7 +2428,7 @@ extern "C" void fn_80175D40(void *arg0) {
     f24=lbl_80561B00;
     n=0x13;
     do {
-     obj=(char *)fn_8017960C(i);
+     obj=(char *)getRegisteredObject(i);
      v[0]=*(float *)(obj+0x60);
      v[1]=*(float *)(obj+0x68);
      d[0]=*(float *)(obj+0x54);
@@ -2551,11 +2551,11 @@ void fn_80176040(char *self, int a, int b) {
             }
             if (n == 2) {
                 *(float *)(o + 0x190) = fn_8001DAE8(o + 0x18C);
-                p = (char *)fn_8017960C(a);
+                p = (char *)getRegisteredObject(a);
                 sp8[0] = *(float *)(p + 0x60) + *(float *)(p + 0x54) * lbl_80561AF0;
                 sp8[1] = *(float *)(p + 0x64) + *(float *)(p + 0x58) * lbl_80561AF0;
                 sp8[2] = *(float *)(p + 0x68) + *(float *)(p + 0x5C) * lbl_80561AF0;
-                q = (char *)fn_8017960C(c);
+                q = (char *)getRegisteredObject(c);
                 sp14[0] = sp8[0] - *(float *)(q + 0x60);
                 sp14[1] = sp8[1] - *(float *)(q + 0x64);
                 sp14[2] = sp8[2] - *(float *)(q + 0x68);

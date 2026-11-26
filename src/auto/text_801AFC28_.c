@@ -84,96 +84,113 @@ void *__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_801AFD70(void *this_,
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_801AFDCC(void *arg0, void *arg1) {
-    #pragma scheduling on
-    struct Object {
-        void *vtable; void *owner; s32 field8; void *fieldC;
-        f32 field10; f32 field14; s32 field18; s32 field1C; s32 field20;
-        f32 field24; f32 field28; f32 field2C; f32 field30;
-        f32 field34; f32 field38; f32 field3C; f32 field40;
-        f32 field44; f32 field48; u8 field4C; u8 pad4D[3]; f32 field50;
-    };
-    volatile f32 stack1C;
-    volatile f32 stack18;
-    volatile f32 stack14;
-    volatile f32 stack10;
-    volatile f32 stackC;
-    volatile f32 stack8;
-    f32 temp_f31;
-    f32 temp_f30;
-    f32 temp_f29;
-    f32 temp_f0;
-    f32 temp_f2;
-    f32 temp_f3;
-    f32 temp_f4;
-    f32 temp_f5;
-    f32 zero;
-    struct Object *allocated;
-
-    fn_8017B0F8();
-    temp_f2 = *(volatile f32 *)&lbl_80562580;
-    temp_f0 = *(volatile f32 *)((u8 *)arg1 + 0x1C);
-    zero = *(volatile f32 *)&lbl_80562578;
-    temp_f0 = temp_f2 * temp_f0;
-    temp_f3 = lbl_8056257C;
-    temp_f4 = *(volatile f32 *)((u8 *)arg1 + 0x20);
-    temp_f2 = *(volatile f32 *)((u8 *)arg1 + 0x18);
-    temp_f5 = temp_f0 / temp_f3;
-    temp_f29 = *(volatile f32 *)((u8 *)arg1 + 0x24);
-    temp_f0 = *(volatile f32 *)&lbl_80562584;
-
-    stack14 = zero;
-    stack18 = zero;
-    stack1C = zero;
-    stack8 = zero;
-    stackC = temp_f0;
-    stack10 = zero;
-
-    temp_f4 = temp_f4 * temp_f4;
-    temp_f31 = temp_f3 * temp_f2;
-    temp_f30 = temp_f5 * temp_f4;
-
-    *(f32 *)((u8 *)arg0 + 0x60) = zero;
-    *(f32 *)((u8 *)arg0 + 0x64) = temp_f0;
-    *(f32 *)((u8 *)arg0 + 0x68) = zero;
-    ((void (*)(void *, f32, f32, f32, f32, f32))fn_8017A580)(
-        arg0, zero, temp_f2, temp_f3, temp_f4, temp_f5);
-
-    allocated = (struct Object *)fn_801284F8(0x54, lbl_803359F0);
-    if (allocated != NULL) {
-        temp_f0 = *(volatile f32 *)&lbl_80562578;
-        allocated->fieldC = (u8 *)arg0 + 0x3C;
-        allocated->owner = arg0;
-        allocated->field8 = 0;
-        allocated->field18 = 0x53504852;
-        allocated->field10 = temp_f30;
-        allocated->field14 = temp_f29;
-        allocated->field20 = 0x64;
-        allocated->field1C = 0;
-        allocated->vtable = lbl_80333B48;
-        allocated->field24 = temp_f31;
-        allocated->field34 = temp_f0;
-        allocated->field38 = temp_f0;
-        allocated->field3C = temp_f0;
-        allocated->field40 = temp_f0;
-        allocated->field44 = temp_f0;
-        allocated->field48 = temp_f0;
-        allocated->field4C = 0;
-        allocated->field50 = temp_f0;
-        allocated->field28 = stack14;
-        allocated->field2C = stack18;
-        allocated->field30 = stack1C;
-
-        if (arg0 != NULL) {
-            fn_8019EECC(arg0, &allocated->field28);
-            fn_80179F94(arg0, allocated);
-            temp_f0 = *(volatile f32 *)&lbl_80562578;
-            *(u8 *)((u8 *)arg0 + 0x1E8) = 1;
-            *(f32 *)((u8 *)arg0 + 0x1EC) = temp_f0;
-            ((void **)lbl_80435BA8)[*(s32 *)(void *)&lbl_8055E650] = arg0;
-            ++*(s32 *)(void *)&lbl_8055E650;
-        }
+void fn_801AFDCC(void *arg0, void *arg1)
+{
+  struct Object
+  {
+    void *vtable;
+    void *owner;
+    s32 field8;
+    void *fieldC;
+    f32 field10;
+    f32 field14;
+    s32 field18;
+    s32 field1C;
+    s32 field20;
+    f32 field24;
+    f32 field28;
+    f32 field2C;
+    f32 field30;
+    f32 field34;
+    f32 field38;
+    f32 field3C;
+    f32 field40;
+    f32 field44;
+    f32 field48;
+    u8 field4C;
+    u8 pad4D[3];
+    f32 field50;
+  };
+  volatile f32 stack1C;
+  volatile f32 stack18;
+  volatile f32 stack14;
+  volatile f32 stack10;
+  volatile f32 stackC;
+  volatile f32 stack8;
+  f32 temp_f31;
+  f32 temp_f30;
+  f32 temp_f29;
+  f32 temp_f0;
+  f32 temp_f2;
+  f32 temp_f3;
+  f32 temp_f4;
+  f32 temp_f5;
+  f32 zero;
+  struct Object *allocated;
+  fn_8017B0F8();
+  temp_f2 = *((volatile f32 *) (&lbl_80562580));
+  temp_f0 = *((volatile f32 *) (((u8 *) arg1) + 0x1C));
+  zero = *((volatile f32 *) (&lbl_80562578));
+  temp_f0 = temp_f2 * temp_f0;
+  temp_f3 = lbl_8056257C;
+  temp_f4 = *((volatile f32 *) (((u8 *) arg1) + 0x20));
+  temp_f2 = *((volatile f32 *) (((u8 *) arg1) + 0x18));
+  temp_f5 = temp_f0 / temp_f3;
+  temp_f29 = *((volatile f32 *) (((u8 *) arg1) + 0x24));
+  temp_f0 = *((volatile f32 *) (&lbl_80562584));
+  stack14 = zero;
+  stack18 = zero;
+  stack1C = zero;
+  stack8 = zero;
+  stackC = temp_f0;
+  stack10 = zero;
+  temp_f4 = temp_f4 * temp_f4;
+  temp_f31 = temp_f3 * temp_f2;
+  temp_f30 = temp_f5 * temp_f4;
+  *((f32 *) (((u8 *) arg0) + 0x60)) = zero;
+  *((f32 *) (((u8 *) arg0) + 0x64)) = temp_f0;
+  *((f32 *) (((u8 *) arg0) + 0x68)) = zero;
+  ((void (*)(void *, f32, f32, f32, f32, f32)) fn_8017A580)(arg0, zero, temp_f2, temp_f3, temp_f4, temp_f5);
+  allocated = (struct Object *) fn_801284F8(0x54, lbl_803359F0);
+  if (allocated != NULL)
+  {
+    f32 v2;
+    f32 v1;
+    f32 v0;
+    v0 = stack14;
+    v1 = stack18;
+    v2 = stack1C;
+    allocated->fieldC = ((u8 *) arg0) + 0x3C;
+    allocated->owner = arg0;
+    allocated->field8 = 0;
+    allocated->field18 = 0x53504852;
+    allocated->field10 = temp_f30;
+    allocated->field14 = temp_f29;
+    allocated->field20 = 0x64;
+    allocated->field1C = 0;
+    allocated->vtable = lbl_80333B48;
+    allocated->field24 = temp_f31;
+    allocated->field34 = 0.0f;
+    allocated->field38 = 0.0f;
+    allocated->field3C = 0.0f;
+    allocated->field40 = 0.0f;
+    allocated->field44 = 0.0f;
+    allocated->field48 = 0.0f;
+    allocated->field4C = 0;
+    allocated->field50 = 0.0f;
+    allocated->field28 = v0;
+    allocated->field2C = v1;
+    allocated->field30 = v2;
+    if (arg0 != NULL)
+    {
+      fn_8019EECC(arg0, &allocated->field28);
+      fn_80179F94(arg0, allocated);
+      temp_f0 = *((volatile f32 *) (&lbl_80562578));
+      *((u8 *) (((u8 *) arg0) + 0x1E8)) = 1;
+      *((f32 *) (((u8 *) arg0) + 0x1EC)) = temp_f0;
+      ((void **) lbl_80435BA8)[(*((s32 *) ((void *) (&lbl_8055E650))))++] = arg0;
     }
+  }
 }
 
 #pragma processor gekko
@@ -181,10 +198,8 @@ void fn_801AFF64(void *arg0, int arg1) {
     struct WordPair { unsigned int a, b; };
     unsigned char *src = (unsigned char *)arg0;
     unsigned char *dst = (unsigned char *)arg1 + *(unsigned int *)(src + 8);
-    float c = 1.0f;
     float t = lbl_8055E460;
-    float delta = t - c;
-    if ((float)fabs(delta) <= lbl_80558DC4[0]) {
+    if ((float)fabs(t - 1.0f) <= lbl_80558DC4[0]) {
         struct WordPair *s = (struct WordPair *)(src + 0x70);
         struct WordPair *d = (struct WordPair *)dst;
         d[0] = s[0]; d[1] = s[1]; d[2] = s[2]; d[3] = s[3];
@@ -193,10 +208,11 @@ void fn_801AFF64(void *arg0, int arg1) {
         ((unsigned int *)dst)[11] = ((unsigned int *)(src + 0x70))[11];
     } else {
         float temp[12];
-        float *a = (float *)(src + 0x70);
-        float *b = (float *)(src + 0xA0);
-        float *out = temp;
+        float *a, *b, *out;
         int i;
+        out = temp;
+        b = (float *)(src + 0xA0);
+        a = (float *)(src + 0x70);
         for (i = 0; i < 2; i++) {
             float a0 = a[0], b0 = b[0];
             float a1 = a[1], b1 = b[1];
@@ -340,8 +356,8 @@ void fn_801B02E0(void *arg0) {
     s32 result[3];
     f32 crossAxis[3];
     f32 axis[3];
-    f32 v124, v128, v12c, v118, v11c, v120;
-    f32 out124, out128, out12c, out118, out11c, out120;
+    f32 v120, v11c, v118, v12c, v128, v124;
+    f32 out120, out11c, out118, out12c, out128, out124;
     s32 active;
     if (*(u8 *)(self + 0x1F8) != 0) {
         fn_8017B81C();
@@ -353,12 +369,12 @@ void fn_801B02E0(void *arg0) {
         v118 = *(f32 *)(self + 0x118);
         v11c = *(f32 *)(self + 0x11C);
         v120 = *(f32 *)(self + 0x120);
-        out124 = v124 * lbl_8056259C;
-        out128 = v128 * lbl_8056259C;
-        out12c = v12c * lbl_8056259C;
-        out118 = v118 * lbl_805625A0;
-        out11c = v11c * lbl_805625A0;
-        out120 = v120 * lbl_805625A0;
+        out124 = 0.99996662f * v124;
+        out128 = 0.99996662f * v128;
+        out12c = 0.99996662f * v12c;
+        out118 = 0.9996674f * v118;
+        out11c = 0.9996674f * v11c;
+        out120 = 0.9996674f * v120;
         *(f32 *)(self + 0x124) = out124;
         *(f32 *)(self + 0x128) = out128;
         *(f32 *)(self + 0x12C) = out12c;
@@ -502,14 +518,17 @@ extern "C" void fn_801B05E4(void *arg0, u8 *arg1, u8 *arg2, s32 *arg3, s32 *arg4
     s32 spC;
     s32 sp8;
     s32 result;
-    u32 firstFlag;
+    u8 firstFlag;
     f32 zeroValue;
     f32 resetValue;
     *arg3 = ((Callback0 *)arg0)->get();
     result = ((Callback1 *)arg0)->get(arg2);
+#pragma push
+#pragma scheduling 604
     firstFlag = *arg1;
     *arg4 = result;
     if (firstFlag != 0 && *arg2 != 0) {
+#pragma pop
         *(u8 *)((u8 *)arg0 + 0x1F8) = 1;
         fn_8017D160(arg0, arg1 + 1, arg2 + 1, &spC, &sp8, arg5);
     } else {
@@ -529,7 +548,7 @@ void __AXDSPInitCallback_801AFC38(void) {
 }
 
 extern void *lbl_80435BA8[];
-extern void *fn_8017960C(void *);
+extern void *getRegisteredObject(void *);
 extern void fn_801B04B0(void *, s32, s32, s32, void *);
 #pragma scheduling invalid_target
 void fn_801AFC44(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
@@ -543,7 +562,7 @@ void fn_801AFC44(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
 
     if ((s32)lbl_8055E650 < 1) return;
     effectObject = lbl_80435BA8[(s32)lbl_8055E654];
-    baseData = fn_8017960C((void *)arg0);
+    baseData = getRegisteredObject((void *)arg0);
     fn_801B04B0(effectObject, arg2, arg3, arg4, (u8 *)baseData + 0x6C);
     value = lbl_8055E3C8;
     *(s32 *)((u8 *)effectObject + 0x1F0) = arg0;

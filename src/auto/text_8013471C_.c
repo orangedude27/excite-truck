@@ -374,10 +374,10 @@ f32 fn_80134C1C(void) {
 }
   
 s32 fn_80134C24(s32 playerIndex) {
-    extern void *fn_8017960C(void);
+    extern void *getRegisteredObject(void);
     /* Return the label value from player slot 0-7, or -1 when the slot is out of range. */
     if (playerIndex >= 0 && playerIndex < 8)
-        return *(s32 *)((char *)fn_8017960C() + 0x258);
+        return *(s32 *)((char *)getRegisteredObject() + 0x258);
     return -1;
 }
   
