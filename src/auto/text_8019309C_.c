@@ -1952,7 +1952,7 @@ void fn_801961F8(void) {
  * driver's state-0 tick (fn_80198530, from fn_801967A4 case 0).
  *
  * The car's current orbit speed factor -- the rubber-band multiplier the orbit
- * automation keeps per car (fn_801671FC; 1.0 while the automation is off, and
+ * automation keeps per car (computeVehicleFactor; 1.0 while the automation is off, and
  * bounded by the value file's "max_sf") -- is folded into the driver's own
  * speed scalar at +0x28.  Once the game mode's timer (fn_801B841C steps it by
  * one 1/60 s frame while the mode runs) has passed 4 s, the driver also forces
@@ -1962,7 +1962,7 @@ void fn_801961FC(void *driver) {
     #define DRV_SPEED_SCALAR(driver) (*(float *)((char *)(driver) + 0x28))
     #define DRV_CAR_INDEX(driver) (*(int *)((char *)(driver) + 0x290))
     #define DRV_DRIVE_FLAGS(driver) (*(int *)((char *)(driver) + 0x2D0))
-    #define Orbit_GetSpeedFactor fn_801671FC
+    #define Orbit_GetSpeedFactor computeVehicleFactor
     #define ModeTimerPastIntro fn_801B89F8
     extern float Orbit_GetSpeedFactor(int);
     extern int ModeTimerPastIntro(void);
@@ -2043,7 +2043,7 @@ void fn_80196250(float *arg0, float *arg1, int *arg2, float farg0, float farg1, 
   *arg2 = var_r0;
 }
 #pragma opt_propagation reset
-  extern float fn_801671FC(int);
+  extern float computeVehicleFactor(int);
   extern int fn_801B89F8(void);
   extern int lbl_8055E0D0;
   extern void fn_8018ADAC(void *, float);
@@ -3747,7 +3747,7 @@ void fn_80198EA0(int slotIndex) {
       void fn_801964D0(void *);
       void fn_80128668(void *);
     void fn_80193138(void *, int);
-  extern float fn_801671FC(int);
+  extern float computeVehicleFactor(int);
   extern int fn_801B89F8(void);
   extern int lbl_8055E0D0;
   extern void fn_8018ADBC(int, float);

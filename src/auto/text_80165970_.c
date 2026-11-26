@@ -1064,7 +1064,7 @@ unsigned char fn_801671AC(int index) {
 #pragma scheduling invalid_target
 #pragma cplusplus on
 #pragma optimization_level 2
-extern "C" float fn_801671FC(int arg0) {
+extern "C" float computeVehicleFactor(int arg0) {
     /* Compute and return a per-entry value: adjust by a context-dependent delta when gates pass, else store 0 and return base. */
     extern int fn_80139EC4(void *, float, float);
     extern float lbl_80561900;
