@@ -1654,7 +1654,7 @@ next_done:
 // One row of the achievements display: a value counting up to a goal, graded
 // against the thresholds of one achievement (lbl_802FDF30, "score", "win",
 // "AAA", "air", "tree_run", "drift", "rings", ...).  fn_8025B520 fills a row
-// in and fn_8025B788 updates it once per frame.
+// in and updateAchievementRow updates it once per frame.
 #ifndef ACHIEVEMENT_ROW_DEFINED
 #define ACHIEVEMENT_ROW_DEFINED
 typedef struct AchievementRow {
@@ -1683,7 +1683,7 @@ extern char lbl_80344E20[];
 #pragma cplusplus on
 extern "C" void fn_8025B520(void *arg0) {
     // The "achieve tally" banner of the results/pause screen (lbl_8055F394);
-    // slots 12 and 14 are the ones fn_8025B788 uses as show() and setProgress().
+    // slots 12 and 14 are the ones updateAchievementRow uses as show() and setProgress().
     class AchievementBanner {
     public:
         virtual void m0();
@@ -1793,14 +1793,14 @@ name_done:
     row->soundPending = 0;
     row->soundId = -0x3E8;
     if (row->flagC4 != 0) {
-        // restart the tally banner ("achieve_tally", the same name fn_8025B788
+        // restart the tally banner ("achieve_tally", the same name updateAchievementRow
         // fills in) from zero progress and show it again
         ((AchievementBanner *)lbl_8055F394)->setProgress(lbl_80344E20, lbl_80563AE4);
         ((AchievementBanner *)lbl_8055F394)->show(lbl_80344E20);
     }
     fn_80214A9C(0x10);  // fade the next-threshold and goal-reached elements out
     fn_80214A9C(0xD);
-    // The threshold name counts as announced already: fn_8025B788 only reports
+    // The threshold name counts as announced already: updateAchievementRow only reports
     // a name to the achievement list when it changes.
     shownSrc = (unsigned char *)(row->rankName);
     shownDst = (unsigned char *)(row->shownRankName);
@@ -1836,7 +1836,7 @@ extern float lbl_80563B34;                // 0.8f: seconds the value waits befor
 // One row of the achievements display: eases the shown value towards the goal,
 // refreshes the value and next-threshold text and the name of the threshold
 // reached, and fades the HUD elements that go with them in and out.
-extern "C" void fn_8025B788(void *arg0) {
+extern "C" void updateAchievementRow(void *arg0) {
     class AchievementBanner {
     public:
         virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
