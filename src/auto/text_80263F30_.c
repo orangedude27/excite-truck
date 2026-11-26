@@ -111,7 +111,7 @@ extern void fn_80265940(void);
 extern void *fn_802646D0(void *);
 extern void fn_8026451C(void *);
 extern int stricmp(const char *, const char *);
-extern int fn_802656C8(void *);
+extern int showCreditsPage(void *);
 extern int fn_80264538(int, int);
 extern void *fn_80264968(void *, int);
 
@@ -121,7 +121,7 @@ extern void *fn_80264968(void *, int);
 /* Starts the credits sequence.
  *
  * Pushes the credits movie (lbl_8055C450 -> "credits.bik") onto the movie stack, opens the
- * "credits.val" table and hands the entry named "credits_page" to fn_802656C8, which builds
+ * "credits.val" table and hands the entry named "credits_page" to showCreditsPage, which builds
  * the credits_page_items list and posts the request that shows them, then pops the movie
  * again.  The music song is switched to 1 for the walk and restored at the end; fadeOut and
  * fadeIn ask for the screen fade before and after it (fn_80265A74 = "fade_out",
@@ -158,7 +158,7 @@ extern "C" void fn_80263F30(int fadeOut, unsigned char skip, int fadeIn) {
         fadeOutOrIndex = 0;
         while (keepGoing != 0 && (entry = ((ValList *)valList)->get(fadeOutOrIndex)) != 0) {
             if (stricmp(((ValEntry *)entry)->getName(), base + CREDITS_PAGE_NAME) == 0) {
-                keepGoing = fn_802656C8(entry);
+                keepGoing = showCreditsPage(entry);
             }
             fadeOutOrIndex++;
         }
@@ -1077,7 +1077,7 @@ __declspec(section ".sdata") extern char lbl_8055C4A0[];
  * descriptor per item plus four fixed descriptors, loads the "a_credits.val" layout,
  * runs the dialog, then frees the list and destroys every registered credits object.
  * Returns 1 unless the dialog result is -1 (cancelled). */
-extern "C" int fn_802656C8(void *valueList) {
+extern "C" int showCreditsPage(void *valueList) {
     struct ValEntry { virtual const char *getName(); };
     struct Deletable { virtual void destroy(int); };
     struct ValList {
