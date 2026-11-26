@@ -298,54 +298,54 @@ extern "C" s32 drawAllPlayerHuds(void) {
         virtual s32 ownsScreen() = 0;          /* 0x28: state byte, set while it is full-screen */
         virtual void updateForPlayer(s32) = 0; /* 0x2C: per-frame update of one player */
     };
-    s32 savedViewport[4], savedFullScreen[4], rect[4], playerCount = fn_801E85A4();
-    /* The overlay manager; its per-player entry starts at entry[4], so entry[4] is the
-       overlay that player's HUD shows and entry[5] the one it showed last frame. */
-    s32 *entry = lbl_8034EEB8;
-    for (s32 i = 0; i < playerCount; entry += 4, i++) {
+    s32 savedViewportRect[4], savedFullScreenRect[4], viewportRect[4], playerCount = fn_801E85A4();
+    /* The overlay manager; its per-player entry starts at overlayEntry[4], so overlayEntry[4]
+       is the overlay that player's HUD shows and overlayEntry[5] the one it showed last frame. */
+    s32 *overlayEntry = lbl_8034EEB8;
+    for (s32 playerIndex = 0; playerIndex < playerCount; overlayEntry += 4, playerIndex++) {
         Overlay *overlay, *lastOverlay;
 
-        fn_80005740(i);
-        overlay = *(Overlay **)(entry + 4);
-        lastOverlay = *(Overlay **)(entry + 5);
+        fn_80005740(playerIndex);
+        overlay = *(Overlay **)(overlayEntry + 4);
+        lastOverlay = *(Overlay **)(overlayEntry + 5);
         if (lastOverlay != overlay) {
             if (lastOverlay) lastOverlay->releaseScreen();
             overlay->takeScreen();
-            *(Overlay **)(entry + 5) = overlay;
+            *(Overlay **)(overlayEntry + 5) = overlay;
         }
         fn_80010EC8();
         if (overlay->ownsScreen()) {
-            rect[3] = 0; rect[2] = 0; rect[1] = lbl_8055CFF0; rect[0] = lbl_8055CFF4;
+            viewportRect[3] = 0; viewportRect[2] = 0; viewportRect[1] = lbl_8055CFF0; viewportRect[0] = lbl_8055CFF4;
         } else {
-            fn_801E88B4(&rect[3], &rect[2], &rect[1], &rect[0], i);
+            fn_801E88B4(&viewportRect[3], &viewportRect[2], &viewportRect[1], &viewportRect[0], playerIndex);
         }
-        DrawList_saveViewport(savedViewport, rect[3], rect[2], rect[1], rect[0]);
+        DrawList_saveViewport(savedViewportRect, viewportRect[3], viewportRect[2], viewportRect[1], viewportRect[0]);
         overlay->update();
         if (fn_801E89EC() != 3) {
             Sound_isActive();
-            if (overlay->ownsScreen() == 0 || i == 0)
+            if (overlay->ownsScreen() == 0 || playerIndex == 0)
                 overlay->updateOnce();
         }
         fn_8001123C(SESSION->currentPlayer);
         fn_80011A2C();
-        DrawList_restoreViewport(savedViewport, -1);
+        DrawList_restoreViewport(savedViewportRect, -1);
     }
-    entry = lbl_8034EEB8;
-    for (s32 i = 0; i < playerCount; entry += 4, i++) {
+    overlayEntry = lbl_8034EEB8;
+    for (s32 playerIndex = 0; playerIndex < playerCount; overlayEntry += 4, playerIndex++) {
         Overlay *overlay;
 
-        fn_80005740(i);
-        overlay = *(Overlay **)(entry + 4);
+        fn_80005740(playerIndex);
+        overlay = *(Overlay **)(overlayEntry + 4);
         fn_80010EC8();
-        DrawList_saveViewport(savedFullScreen, 0, 0, lbl_8055CFF0, lbl_8055CFF4);
+        DrawList_saveViewport(savedFullScreenRect, 0, 0, lbl_8055CFF0, lbl_8055CFF4);
         overlay->update();
         if (fn_801E89EC() != 3) {
             Sound_isActive();
-            overlay->updateForPlayer(i);
+            overlay->updateForPlayer(playerIndex);
         }
         fn_8001123C(SESSION->currentPlayer);
         fn_80011A2C();
-        DrawList_restoreViewport(savedFullScreen, -1);
+        DrawList_restoreViewport(savedFullScreenRect, -1);
     }
 }
 #pragma cplusplus off
