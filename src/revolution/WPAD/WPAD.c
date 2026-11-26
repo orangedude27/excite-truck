@@ -3726,7 +3726,7 @@ void fn_8005EEC4(s32 chan, s32 result) {
  * transfer error, queue the very same read of WM_ADDR_MEM_GAME_INFO_0 again,
  * with this same callback on it, so WPAD keeps trying until the Wii Remote
  * answers.  Every other result is ignored. */
-void fn_8005F0A8(s32 chan, s32 result) {
+void WPADiGameInfoReadRetry(s32 chan, s32 result) {
     WPADCB *cb = lbl_8038F4F0[chan];
     WPADCommandQueue *queue = &cb->stdCmdQueue;
     /* the WPADCommand built here (at buf + 8) and the copy of it that the
@@ -3744,14 +3744,14 @@ void fn_8005F0A8(s32 chan, s32 result) {
     s32 wrapMask;
     if (result != WPAD_ERR_TRANSFER) return;
     /* WPADiSendReadData(queue, read buffer, sizeof(WPADGameInfo),
-     * WM_ADDR_MEM_GAME_INFO_0, fn_8005F0A8) inlined: the command's report ID,
+     * WM_ADDR_MEM_GAME_INFO_0, WPADiGameInfoReadRetry) inlined: the command's report ID,
      * payload length and callback, then its read address and length staged
      * where the two memcpys below can take their addresses. */
     *(u32 *)&buf[4] = WM_ADDR_MEM_GAME_INFO_0;
     *(u16 *)&buf[0] = sizeof(WPADGameInfo);
     *(u32 *)&buf[8] = RPTID_READ_DATA;                  /* command.reportID */
     *(u16 *)&buf[0x22] = RPT17_SIZE;                    /* command.dataLength */
-    *(u32 *)&buf[0x34] = (u32)fn_8005F0A8;              /* command.cmdCB: retry here */
+    *(u32 *)&buf[0x34] = (u32)WPADiGameInfoReadRetry;              /* command.cmdCB: retry here */
     memcpy(&buf[0x0c], &buf[4], sizeof(u32));  /* command.dataBuf's read address */
     memcpy(&buf[0x10], &buf[0], sizeof(u16));  /* command.dataBuf's read length */
     len = *(u16 *)&buf[0];
@@ -3909,7 +3909,7 @@ void fn_8005F3E8(s32 chan, s32 arg1) {
     cmd.dataLength = 0x38;
     cmd.dstBuf = (void *)((u8 *)cb + 0x874);
     cmd.readLength = 6;
-    cmd.cmdCB = (WPADCallback)fn_8005F0A8;
+    cmd.cmdCB = (WPADCallback)WPADiGameInfoReadRetry;
     fn_8005F3E8_enqueue(cb, &cmd);
 
     memset(&cmd, 0, 0x30);
