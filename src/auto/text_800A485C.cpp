@@ -11792,7 +11792,7 @@ extern "C" s32 fn_800B5B94(void *, s32);
  * forces them away.  Returns 0, the error, or 1 when an error happened while
  * forcing; the instance and the volume both keep the last error.
  */
-extern "C" s32 fn_800B6A8C(s8 arg0, s32 arg1) {
+extern "C" s32 unmountDriveByLetter(s8 arg0, s32 arg1) {
     u8 *vol;
     u32 slot_address;
     s32 result;
@@ -12331,15 +12331,15 @@ extern "C" s32 fn_800B76A8(s32 flags, s32 callback) {
 }
 #pragma dont_inline reset
 
-extern "C" s32 fn_800B6A8C(s8, s32);
+extern "C" s32 unmountDriveByLetter(s8, s32);
 #pragma dont_inline fn_800B76E8
 extern "C" s32 fn_800B76E8(s8 drive) {
     typedef s32 (*UnmountFn)(s8);
     typedef s32 (*StatusFn)(void);
-    /* Unmount drive letter `drive` (fn_800B6A8C), then map its FRESULT to -1/0/1 (fn_800B73E4).
+    /* Unmount drive letter `drive` (unmountDriveByLetter), then map its FRESULT to -1/0/1 (fn_800B73E4).
        The no-arg casts are trampolines that leave r3, holding the result, live for the next call. */
     extern void fn_800B73E4(void*);
-    ((UnmountFn)fn_800B6A8C)(drive);
+    ((UnmountFn)unmountDriveByLetter)(drive);
     return ((StatusFn)fn_800B73E4)();
 }
 
