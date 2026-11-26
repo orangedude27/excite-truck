@@ -72,7 +72,7 @@ struct Fn80157CF0Obj {
 };
 
 // Frame-driven player over a list of 0x38-byte records (mRecords / mCount).
-// fn_80158B0C and fn_80159728 advance the progress counters by
+// fn_80158B0C and BonusTracker_updateFromInput advance the progress counters by
 // (speed * lbl_8056177C) each frame, lbl_8056177C being one 60 Hz frame
 // (0.0166834 s); fn_80158D60, fn_80159AB4 and fn_8015B23C
 // emit the current record's value and reset the counters.
@@ -1977,7 +1977,7 @@ extern "C" void fn_80159724(void) {
    the frame time while the input magnitude is small; when progress exceeds the
    level, reads the current record's value, applies it, and resets.  Returns the
    value read (zero while still accumulating). */
-extern "C" f32 fn_80159728(void* arg0, void *__restrict arg1) {
+extern "C" f32 BonusTracker_updateFromInput(void* arg0, void *__restrict arg1) {
  Fn8015889C* self = (Fn8015889C*)arg0;
  u8* p = (u8*)arg0;
  f32 result = 0.0f;
