@@ -303,7 +303,7 @@ extern int lbl_8055E0D0;
  * -1 - to the camera and its slot record, notes the slot with the array
  * manager (fn_80136EA4) and updates the camera at once (fn_801A7444), unless
  * the camera has only just been started. */
-extern "C" void fn_801A67C4(void *self) {
+extern "C" void updateCameraMoveFollow(void *self) {
     char *cam = (char *)self;
     int state = *(int *)(cam + 0x2610);
     *(char *)(cam + 0x1e9) = 0;
