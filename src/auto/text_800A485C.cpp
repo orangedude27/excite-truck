@@ -12760,7 +12760,7 @@ done:
 
 extern "C" s32 fn_800B814C(void *fileState) {
     extern s32 NANDClose(void *); extern s32 NANDDelete(void *);
-    extern s32 fn_800B8318(void); extern s32 fn_800B878C(void *,u8*,s32*,s32);
+    extern s32 fn_800B8318(void); extern s32 buildFATBootSector(void *,u8*,s32*,s32);
     extern s32 fn_800B8520(void *,u32 *); extern void fn_800B865C(void *);
     u8 zeroSector[0x200] __attribute__((aligned(32))), bootSector[0x200] __attribute__((aligned(32))), fsInfoSector[0x200] __attribute__((aligned(32)));
     s32 fatType,result; u32 clusterCount,bytesRemaining;
@@ -12769,8 +12769,8 @@ extern "C" s32 fn_800B814C(void *fileState) {
      * deleting it on any write error. */
     if((result=fn_800B8318())!=0)return result;
     fn_800A499C((const char*)bootSector,0,0x200); clusterCount=0;
-    fn_800B878C(fileState,bootSector,&fatType,0);
-    if(fatType!=fn_800B8520(bootSector,&clusterCount))fn_800B878C(fileState,bootSector,&fatType,clusterCount);
+    buildFATBootSector(fileState,bootSector,&fatType,0);
+    if(fatType!=fn_800B8520(bootSector,&clusterCount))buildFATBootSector(fileState,bootSector,&fatType,clusterCount);
     result=NANDWrite((u8*)fileState+0x58,bootSector,0x200);
     if(result<0){NANDClose((u8*)fileState+0x58);NANDDelete((u8*)fileState+4);return result;}
     bytesRemaining=*(u32*)((u8*)fileState+0x54)-0x200;
@@ -12980,7 +12980,7 @@ extern "C" s32 fn_800B865C(u8 *buffer) {
 /* Builds a FAT12/16/32 boot sector in a 0x200-byte buffer.
  * Determines the FAT type from the data cluster count, computes the FAT size
  * in sectors, and fills in all standard boot sector fields. Returns 0. */
-extern "C" s32 fn_800B878C(void *fileState, u8 *bootSector, s32 *fatType, s32 clusterCount) {
+extern "C" s32 buildFATBootSector(void *fileState, u8 *bootSector, s32 *fatType, s32 clusterCount) {
     u32 dataSectors = clusterCount ? (u32)clusterCount : *(u32 *)((u8 *)fileState + 0x54) >> 9;
     u32 fatSize;
     s32 type, isAligned;
