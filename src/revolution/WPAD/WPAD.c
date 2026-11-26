@@ -4631,7 +4631,8 @@ void fn_80062088(s32 volume) {
  * 0x18 speaker stream report and enqueue it on the channel's standard queue. */
 #pragma push
 #pragma opt_propagation off
-s32 fn_80062278(s32 chan, void* pData, u16 len) {
+#define WPADSendStreamDataInline fn_80062278
+s32 WPADSendStreamDataInline(s32 chan, void* pData, u16 len) {
     /* REXE01 inline expansion of WPADSendStreamData: build the 0x18 stream report and queue it on the channel's standard command queue when the controller is connected, handshaken and the stream is idle. Returns WPAD_ERR_OK, WPAD_ERR_NO_CONTROLLER, or WPAD_ERR_COMMUNICATION_ERROR when busy/unready. */
     WPADCB* cb = lbl_8038F4F0[chan];
     s32 intrState, nestedIntrState, status, handshakeDone;
