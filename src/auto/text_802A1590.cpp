@@ -1068,7 +1068,7 @@ extern "C" void fn_802A2FCC(void *arg0, void *arg1, s32 arg2) {
 }
 #pragma pop
 // Effect creation descriptor for the effect builder fn_8028E2F8.  fn_8028E61C
-// clears the 0x8C bytes that start at `mode`, and fn_8028FD00 copies them into
+// clears the 0x8C bytes that start at `mode`, and initEffectFromArgs copies them into
 // the new effect object verbatim (there at 0x00-0x89, i.e. 0x18 lower than
 // here); the six words before `mode` are not read by the builder.
 struct EffectDesc {

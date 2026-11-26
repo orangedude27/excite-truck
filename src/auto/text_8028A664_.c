@@ -100,7 +100,7 @@ struct SparkSystem {
 };
 
 /* Settings handed to the particle emitter factory fn_8028E2F8; fn_8028E61C
-   clears the first 0x8C bytes and fn_8028FD00 copies them into the new
+   clears the first 0x8C bytes and initEffectFromArgs copies them into the new
    emitter, which keeps them at the same offsets.  fn_8028E654 reads the same
    fields from an emitter's parameter file (the key names are quoted below);
    fn_8028B3CC fills them by hand for the built-in paint splats. */
@@ -1101,50 +1101,42 @@ void fn_8028BD60(s32 arg0) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_8028BED4(void *arg0, s32 arg1, void *arg2, void *arg3, f32 farg0)
-{
-  struct Ring
-  {
-    void *data;
-    s32 head;
-    s32 tail;
-  } *ring = (struct Ring *) arg0;
-  f32 *src = (f32 *) arg2;
-  f32 *vel = (f32 *) arg3;
-  s32 count;
-  s32 limit;
-  s32 i;
-  s32 j;
-  f32 now;
-  f32 temp_y;
-  f32 temp_z;
-  f32 temp_x;
-  f32 *dst;
-  now = fn_801E7E18();
-  count = ring->tail - ring->head;
-  limit = arg1 & (((-arg1) & (~arg1)) >> 31);
-  if (limit < count)
-  {
-    count = limit;
-  }
-  for (i = 0; i < count; i++)
-  {
-    dst = (f32 *) (((u8 *) ring->data) + (((ring->head + i) * ((0, 0x1C))) & 0xFF));
-    for (j = 0; j < 3; j++)
-    {
-      dst[j] = src[j];
+void fn_8028BED4(void *arg0, s32 arg1, void *arg2, void *arg3, f32 farg0) {
+    struct Ring {
+        void *data;
+        s32 head;
+        s32 tail;
+    } *ring = (struct Ring *)arg0;
+    f32 *src = (f32 *)arg2;
+    f32 *vel = (f32 *)arg3;
+    s32 count;
+    s32 limit;
+    s32 i;
+    s32 j;
+    f32 now;
+    f32 temp_y;
+    f32 temp_z;
+    f32 temp_x;
+    f32 *dst;
+    now = fn_801E7E18();
+    count = ring->tail - ring->head;
+    limit = arg1 & ((-arg1 & ~arg1) >> 31);
+    if (limit < count) count = limit;
+    for (i = 0; i < count; i++) {
+        dst = (f32 *)((u8 *)ring->data + (ring->head + i) * 0x1C);
+        for (j = 0; j < 3; j++) {
+            f32 t = src[j];
+            dst[j] = t;
+        }
+        temp_z = vel[2] + fn_80287BC8(-farg0, farg0);
+        temp_y = vel[1] + fn_80287BC8(-farg0, farg0);
+        temp_x = vel[0] + fn_80287BC8(-farg0, farg0);
+        dst[3] = temp_x;
+        dst[4] = temp_y;
+        dst[5] = temp_z;
+        dst[6] = now;
     }
-
-    temp_z = vel[2] + fn_80287BC8(-farg0, farg0);
-    temp_y = vel[1] + fn_80287BC8(-farg0, farg0);
-    temp_x = vel[0] + fn_80287BC8(-farg0, farg0);
-    dst[3] = temp_x;
-    dst[4] = temp_y;
-    dst[5] = temp_z;
-    dst[6] = now;
-  }
-
-  ring->head += count;
+    ring->head += count;
 }
 #pragma pop
 

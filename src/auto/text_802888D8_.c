@@ -26,16 +26,16 @@ typedef struct {
 /* Stack block the smoke-effect creators (fn_80289154 .. fn_8028A084) fill in.
  * The nw4r::ef create-args start at sp20: fn_8028E61C clears the 0x8C bytes
  * there and fn_8028E2F8 hands them to the new effect, which copies them field
- * by field into itself in fn_8028FD00.  Offsets into that block:
- *   +0x00 (sp20) int   effect type; fn_8028FD00 switches on it (type 1 looks up
+ * by field into itself in initEffectFromArgs.  Offsets into that block:
+ *   +0x00 (sp20) int   effect type; initEffectFromArgs switches on it (type 1 looks up
  *                      the resource given at +0x84 and caches 1.0f/it at +0xAC)
  *   +0x04 (sp24) int   emitter count; fn_8028F7AC allocates count*0x28+0x10
  *                      bytes of 0x28-byte emitters and keeps the count at +0x98
  *   +0x08 (sp28) float value the effect caches 1.0f/it at effect+0xA0
- *   +0x10 (sp30) .. +0x24 (sp44) two triples (copied as words by fn_8028FD00),
+ *   +0x10 (sp30) .. +0x24 (sp44) two triples (copied as words by initEffectFromArgs),
  *   which the creators fill with one repeated float each and also store again
  *   at sp14 and sp8 - below the block, where nothing reads them
- *   +0x34 (sp54) float clamped to [1.0f, lbl_80564420] by fn_8028FD00
+ *   +0x34 (sp54) float clamped to [1.0f, lbl_80564420] by initEffectFromArgs
  *   +0x44 (sp64) an int (1, 5 or 6) and +0x48 (sp68) a float, then +0x50 (sp70)
  *   .. +0x7C (sp9C) the effect's motion and colour parameters.
  * The game's own names for these fields are not known yet.
@@ -1220,7 +1220,7 @@ void fn_80289FC4(int **smokeMan, int trackIndex, int state) {
 }
 #pragma scheduling on
 /* Creates the "radiator smoke" effect: fills a cleared nw4r::ef create-arg
- * block (frame.sp20, 0x8C bytes; see fn_8028FD00, which copies it into the new
+ * block (frame.sp20, 0x8C bytes; see initEffectFromArgs, which copies it into the new
  * effect) with this effect's parameters and lets fn_8028E2F8 allocate the
  * effect from smoke.tex (lbl_8055C880) and link it; the handle goes in slot+4.
  */

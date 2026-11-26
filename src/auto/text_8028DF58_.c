@@ -27,19 +27,19 @@ typedef struct { EfPair p; float v6; unsigned char c0, c1, c2; float f0; float f
 /* One effect object, seen as the 0x8C-byte create-args block the effect
  * creators (fn_80289C80, fn_80289D94, ... in text_802888D8) fill in on the
  * stack: fn_8028E61C clears it, fn_8028E2F8/fn_8028F7AC build the effect from
- * it and fn_8028FD00 copies it field by field into the new object and fills in
+ * it and initEffectFromArgs copies it field by field into the new object and fills in
  * the derived fields at +0xA0, +0xA8 and +0xAC.  The game's own names for the
  * parameters are not known; the fields are named for how the effect code uses
  * them (the emitter half is the EfObj above). */
 typedef struct EfEffect {
-    int mode;                /* 0x00: effect type; fn_8028FD00 switches on it */
+    int mode;                /* 0x00: effect type; initEffectFromArgs switches on it */
     int emitterCount;        /* 0x04: emitters to allocate (fn_8028F7AC) */
     float period;            /* 0x08: 1.0f/it is cached at +0xA0 */
     float fc;                /* 0x0C */
     int f10, f14, f18;       /* 0x10: one triple, copied as words */
     int f1c, f20, f24;       /* 0x1C: the second triple */
     float f28, f2c, f30;     /* 0x28 */
-    float blend;             /* 0x34: clamped to [0.0f, 1.0f] by fn_8028FD00 */
+    float blend;             /* 0x34: clamped to [0.0f, 1.0f] by initEffectFromArgs */
     unsigned char en38;      /* 0x38: enables the mode 0 / 2 colour byte */
     unsigned char pad39[3];
     float f3c, f40;          /* 0x3C */
@@ -353,7 +353,7 @@ extern int fn_8028F7AC(void *, void *, int);
 extern void *fn_8012850C(int, void *);
 extern void *fn_8002F37C(void *, void *, int, int, int);
 extern int RegisterTextureByName(int, int);
-extern void fn_8028FD00(void *, void *, int);
+extern void initEffectFromArgs(void *, void *, int);
 extern void fn_8028F854(void);
 extern char lbl_80348FC4[];
 extern void fn_8028ED8C(void *, int);
@@ -1102,7 +1102,7 @@ int fn_8028F7AC(void *arg0, void *arg1, int arg2) {
     void *result;
 
     ((int (*)(void *))fn_8028E61C)(arg0);
-    ((void (*)(void *, void *))fn_8028FD00)(arg0, arg1);
+    ((void (*)(void *, void *))initEffectFromArgs)(arg0, arg1);
     count = *(int *)((char *)arg1 + 4);
     buffer = fn_8012850C(count * 0x28 + 0x10, lbl_80348FC4);
     result = fn_8002F37C(buffer, (void *)fn_8028F854, 0, 0x28, count);
@@ -1324,7 +1324,7 @@ extern double lbl_80564440;
  * power-of-4 count at +0x84 into its square root at +0xA8 with 1.0f/it at
  * +0xAC.  The timed playback cursor is reset last (fn_8028F8C4).  Called by
  * fn_8028F7AC, which allocates the particle array right afterwards. */
-void fn_8028FD00(void *effectArg, void *argsArg, int arg2) {
+void initEffectFromArgs(void *effectArg, void *argsArg, int arg2) {
     volatile EfEffect *args = (volatile EfEffect *)argsArg;
     EfEffect *effect = (EfEffect *)effectArg;
     unsigned char f89;
