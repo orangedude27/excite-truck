@@ -5590,16 +5590,17 @@ static inline void SoundPlayer_InsertPriorityList(s32 player, void *sound) {
 /* Allocate a streaming sound for one player, evicting the lowest-priority active
    sound if the pool is full, and wire it into the manager/player sound lists. */
 extern "C" void *allocStrmSoundInstance(s32 player, s32 priority, s32 requestedPriority, s32 ambientInfo, s32 externalPlayer, s32 soundId, void *manager) {
-    /* detail::SoundInstanceManager::Alloc for streaming sounds.  Takes a free
-     * StrmSound out of the instance pool; when the pool is full it takes the
-     * sound with the lowest priority away from that list (stopping it first) if
-     * the new sound outranks it, and gives up otherwise.  The new sound is then
-     * built up: the player's first free frame heap, a copy of the ambient arg
-     * with its update callback, its priority (+0x74) and ambient priority
+    /* Allocate a streaming sound for one player, evicting the lowest-priority
+     * active sound when the pool is full.  detail::SoundInstanceManager::Alloc
+     * takes a free StrmSound out of the instance pool; when the pool is full it
+     * takes the sound with the lowest priority away from that list (stopping it
+     * first) if the new sound outranks it, and gives up otherwise.  The new sound
+     * is then built up: the player's first free frame heap, a copy of the ambient
+     * arg with its update callback, its priority (+0x74) and ambient priority
      * offset (+0x40), and links into the manager's priority list (+0x4, node
-     * +0xB8), the player's sound list (+0x00, node +0xC0), the player's
-     * priority list (+0x0C, node +0xC8) and the external player's sound list.
-     * Returns the sound, or 0 when it could not be started. */
+     * +0xB8), the player's sound list (+0x00, node +0xC0), the player's priority
+     * list (+0x0C, node +0xC8) and the external player's sound list.  Returns the
+     * sound, or 0 when it could not be started. */
 #define PANIC Panic__Q26nw4hbm2dbFPCciPCce
 #define LIST_INSERT Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode
 #define LIST_ERASE Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator
@@ -5622,8 +5623,8 @@ extern "C" void *allocStrmSoundInstance(s32 player, s32 priority, s32 requestedP
     scratch.request = requestedPriority;
     /* The ambient arg's callback hands out this sound's ambient priority, which
      * the sound itself carries as its priority offset. */
-    ambientPriority = AmbientInfo_GetPriority(ambientInfo, soundId);
-    listPriority = ClampS32(scratch.request - ambientPriority, 0, 127);
+    ambientPriority = AmbientInfo_GetPriority_Str(ambientInfo, soundId);
+    listPriority = ClampS32_Str(scratch.request - ambientPriority, 0, 127);
     if (CHECK_PLAYABLE((void *)player, listPriority, (void *)externalPlayer) == 0) {
         return 0;
     }
@@ -5688,7 +5689,7 @@ extern "C" void *allocStrmSoundInstance(s32 player, s32 priority, s32 requestedP
                 goto allocation_done;
             }
         }
-        ((BasicSoundVirtuals *)lowest)->Stop(0);
+        ((BasicSoundVirtuals_Str *)lowest)->Stop(0);
         freeSound = POOL_ALLOC(manager);
         sound = freeSound;
         if (freeSound == 0) {
@@ -5706,7 +5707,7 @@ extern "C" void *allocStrmSoundInstance(s32 player, s32 priority, s32 requestedP
         if (pos == 0) {
             PANIC(lbl_803258C4, 0x23D, lbl_803258A0);
         }
-        if (listPriority < ClampS32(*(u8 *)((u8 *)pos - 0x44) + *(s32 *)((u8 *)pos - 0x78), 0, 0x7F)) {
+        if (listPriority < ClampS32_Str(*(u8 *)((u8 *)pos - 0x44) + *(s32 *)((u8 *)pos - 0x78), 0, 0x7F)) {
             break;
         }
         pos = *(void **)pos;
@@ -5757,7 +5758,7 @@ allocation_done:
         if (ambientInfo != 0) {
             /* Copy the ambient arg out of the caller's block and let the sound
              * update it through the ambient callbacks. */
-            void *arg = (*(AmbientArgAllocaterCallback **)(ambientInfo + 8))->detail_AllocAmbientArg(*(s32 *)(ambientInfo + 0x10));
+            void *arg = (*(AmbientArgAllocaterCallback_Str **)(ambientInfo + 8))->detail_AllocAmbientArg(*(s32 *)(ambientInfo + 0x10));
             if (arg != 0) {
                 memcpy(arg, (const void *)*(s32 *)(ambientInfo + 0xC), (u32)*(s32 *)(ambientInfo + 0x10));
                 ATTACH_AMBIENT_ARG(sound, *(void ***)ambientInfo, *(s32 *)(ambientInfo + 4), *(void ***)(ambientInfo + 8), (s32)arg);
@@ -5780,7 +5781,7 @@ allocation_done:
     if (externalPlayer != 0) {
         EXTERNAL_INSERT_SOUND((void *)externalPlayer, sound);
     }
-    SoundPlayer_InsertPriorityList(player, sound);
+    SoundPlayer_InsertPriorityList_Str(player, sound);
 #undef PANIC
 #undef LIST_INSERT
 #undef LIST_ERASE
