@@ -3974,7 +3974,7 @@ s32 fn_8005FBCC(u8 devHandle) {
  * Remote, reset its control block and queue the extension/firmware probe
  * read; on disconnect, drain the channel's command queue (answering every
  * callback with WPAD_ERR_NO_CONTROLLER), tear the channel down and release it. */
-void fn_8005FCCC(u8 devHandle, u8 open) {
+void wpadConnectionCallback(u8 devHandle, u8 open) {
     extern void fn_8005E8E0(s32 chan);
     extern const char lbl_803120E0[];
     extern s8 lbl_80390500[];
@@ -7358,7 +7358,7 @@ void fn_8005E8C0(OSAlarm* pAlarm, OSContext* pContext)
 
 /*
  * WPADiResetChannel: bring one channel's control block back to its
- * "just connected" state.  The connection handler (fn_8005FCCC) calls it for
+ * "just connected" state.  The connection handler (wpadConnectionCallback) calls it for
  * the channel handed to a Wii Remote that has just opened a link: it clears
  * the read/extension state, the status-report fields, the auto sampling
  * buffer and both command queues, marks the channel as not handshaked yet,
