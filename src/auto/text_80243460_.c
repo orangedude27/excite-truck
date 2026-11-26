@@ -37,7 +37,7 @@ s32 fn_80243478(s32);
 extern s32 MenuList_GetTextLength(void *);
 extern void fn_80230C30(float *, float *, int, int);
 extern void fn_80230F78(signed char *, float *, long, long);
-extern void fn_80230924(void *, float, float, float, float, float);
+extern void drawSolidRect(void *, float, float, float, float, float);
 extern void fn_80232BA4(char *, s32, s32, s32, float, float, float, float, float);
 extern double fn_8023659C(void);
 extern double fn_8002EFB4(double, double);
@@ -450,9 +450,9 @@ void fn_80243C1C(void *arg0) {
                         }
                         if (var_r21 == 1) {
                             color = (color & 0x00FFFFFF) | ((s32)sp8 << 24);
-                            fn_80230924((void *)(long)color, (cAC + f24) - (cA8 * sp14), (c98 * sp14) + (f25 - cAC), (cA8 * sp14) + ((f24 + (cA8 * (float)entry[1])) - cB0), (cB0 + (f25 - c98)) - (c98 * sp14), cA4);
+                            drawSolidRect((void *)(long)color, (cAC + f24) - (cA8 * sp14), (c98 * sp14) + (f25 - cAC), (cA8 * sp14) + ((f24 + (cA8 * (float)entry[1])) - cB0), (cB0 + (f25 - c98)) - (c98 * sp14), cA4);
                         } else {
-                            fn_80230924((void *)(long)color, (cAC + f24) - cA4, cA4 + (f25 - cAC), cA4 + ((f24 + (cA8 * (float)entry[1])) - cB0), (cB0 + (f25 - c98)) - cA4, cA4);
+                            drawSolidRect((void *)(long)color, (cAC + f24) - cA4, cA4 + (f25 - cAC), cA4 + ((f24 + (cA8 * (float)entry[1])) - cB0), (cB0 + (f25 - c98)) - cA4, cA4);
                         }
                     }
                     if (var_r25 == var_r21) {
@@ -488,7 +488,7 @@ void fn_80243C1C(void *arg0) {
             col = 0xFF000000;
         spC = ((char *)*(s32 *)((u8 *)arg0 + 0x18))[idx];
         if (var0 != 0) {
-            fn_80230924((void *)0x80FFFF00L, lbl_805637D8 + f24, f24 - lbl_805637D8, lbl_805637DC + ((f23 + (lbl_805637D4 * (float)(idx + 1))) - lbl_805637E0), f24 - lbl_805637D8, cA4);
+            drawSolidRect((void *)0x80FFFF00L, lbl_805637D8 + f24, f24 - lbl_805637D8, lbl_805637DC + ((f23 + (lbl_805637D4 * (float)(idx + 1))) - lbl_805637E0), f24 - lbl_805637D8, cA4);
         }
         buf = lbl_8055BE14;
         if (idx < MenuList_GetTextLength(arg0))

@@ -160,7 +160,7 @@ extern "C" void *lbl_8033DEAC[];
 #pragma pop
 
 extern "C" void fn_80227880(s32, f32, f32, f32, f32);
-extern "C" void fn_80230924(s32, s32, f32, f32, f32, f32, f32);
+extern "C" void drawSolidRect(s32, s32, f32, f32, f32, f32, f32);
 extern "C" f32 lbl_80563514;
 extern "C" { __declspec(section ".data") extern char lbl_8033E038; }
 extern "C" u8 lbl_8055EFBC;
@@ -1490,7 +1490,7 @@ extern "C" void fn_80219FE0(void *arg0) {
     case 7: {
         s32 w = ((VfObj *)self)->vf28();
         s32 h = *(s32 *)(self + 0x10) - *(s32 *)(self + 8);
-        ((void (*)(s32, f32, f32, f32, f32, f32))fn_80230924)(*(s32 *)(self + 0x254), x, y, x + (f32)w, y - (f32)h, zero);
+        ((void (*)(s32, f32, f32, f32, f32, f32))drawSolidRect)(*(s32 *)(self + 0x254), x, y, x + (f32)w, y - (f32)h, zero);
         break;
     }
     }
@@ -4152,7 +4152,7 @@ extern "C" void fn_8021EC1C(void* entity, s32 canvas) {
  * one-pixel-wide 0xFFFFFF00 bar at the x the text reaches when cut at the caret
  * index.  Nothing is drawn at the box' own coordinates: +0x04/+0x08 count from
  * the middle of the screen with y upwards, so every position goes through the
- * same centring before gxDrawPicture/fn_8022BAD0/fn_80230924 see it.  No code
+ * same centring before gxDrawPicture/fn_8022BAD0/drawSolidRect see it.  No code
  * calls this; it is reached through the object' vtable. */
 extern "C" void drawTextBox(void *self) {
     /* The text box being drawn; only the fields used here are named. */
@@ -4192,7 +4192,7 @@ extern "C" void drawTextBox(void *self) {
         if (box->caretIndex >= 0) caretText[box->caretIndex] = zero;
         x += (f32)UIStyle_getTextOffsetX(box->style, (s32)caretText);
         f32 height = (f32)UIStyle_getTextHeight(box->style, caretText);
-        ((void (*)(s32,f32,f32,f32,f32,f32))fn_80230924)(-0x100, x, y - lbl_80563514, lbl_805634A4 + x, lbl_80563514 + (y - height), lbl_805634A8);
+        ((void (*)(s32,f32,f32,f32,f32,f32))drawSolidRect)(-0x100, x, y - lbl_80563514, lbl_805634A4 + x, lbl_80563514 + (y - height), lbl_805634A8);
     }
 }
 
@@ -6375,7 +6375,7 @@ extern "C" void *fn_80223208(void *self, unsigned int deletingFlag) {
 }
 
 #pragma pop
-extern "C" void fn_80230924(s32, s32, f32, f32, f32, f32, f32);
+extern "C" void drawSolidRect(s32, s32, f32, f32, f32, f32, f32);
 
 extern "C" s32 fn_802236C8(void *, s32);
 extern "C" void fn_8022375C(void);
@@ -6444,11 +6444,11 @@ loop_test:
     temp_f6 = *(f32 *)((u8 *)arg0 + 0x404) * (f32)(*(f64 *)&scratch[2] - lbl_805634B8);
     temp_f28_2 = *(f32 *)((u8 *)arg0 + 0x400) + *(f32 *)(temp_r30_2 + 0x2F4);
     temp_f27_2 = lbl_805634EC + temp_f6;
-    ((void (*)(s32, f32, f32, f32, f32, f32))fn_80230924)(0x96646464, temp_f30_2, temp_f31 - lbl_805634EC, temp_f30_2 + temp_f28_2, temp_f31 - temp_f27_2 - lbl_80563534, lbl_805634A8);
-    ((void (*)(s32, f32, f32, f32, f32, f32))fn_80230924)(0x96282828, temp_f30_2, temp_f31 - lbl_805634EC, lbl_805634EC + temp_f30_2, temp_f31 - temp_f27_2 - lbl_80563534, lbl_805634A8);
-    ((void (*)(s32, f32, f32, f32, f32, f32))fn_80230924)(0x96282828, temp_f30_2, temp_f31 - lbl_805634EC, temp_f30_2 + temp_f28_2, temp_f31 - lbl_80563534, lbl_805634A8);
-    ((void (*)(s32, f32, f32, f32, f32, f32))fn_80230924)(0x96AAAAAA, temp_f30_2, (temp_f31 - temp_f27_2) - lbl_805634EC, temp_f30_2 + temp_f28_2, (temp_f31 - temp_f27_2) - lbl_80563534, lbl_805634A8);
-    ((void (*)(s32, f32, f32, f32, f32, f32))fn_80230924)(0x96AAAAAA, temp_f30_2 + temp_f28_2 - lbl_805634EC, temp_f31 - lbl_805634EC, temp_f30_2 + temp_f28_2, temp_f31 - temp_f27_2 - lbl_80563534, lbl_805634A8);
+    ((void (*)(s32, f32, f32, f32, f32, f32))drawSolidRect)(0x96646464, temp_f30_2, temp_f31 - lbl_805634EC, temp_f30_2 + temp_f28_2, temp_f31 - temp_f27_2 - lbl_80563534, lbl_805634A8);
+    ((void (*)(s32, f32, f32, f32, f32, f32))drawSolidRect)(0x96282828, temp_f30_2, temp_f31 - lbl_805634EC, lbl_805634EC + temp_f30_2, temp_f31 - temp_f27_2 - lbl_80563534, lbl_805634A8);
+    ((void (*)(s32, f32, f32, f32, f32, f32))drawSolidRect)(0x96282828, temp_f30_2, temp_f31 - lbl_805634EC, temp_f30_2 + temp_f28_2, temp_f31 - lbl_80563534, lbl_805634A8);
+    ((void (*)(s32, f32, f32, f32, f32, f32))drawSolidRect)(0x96AAAAAA, temp_f30_2, (temp_f31 - temp_f27_2) - lbl_805634EC, temp_f30_2 + temp_f28_2, (temp_f31 - temp_f27_2) - lbl_80563534, lbl_805634A8);
+    ((void (*)(s32, f32, f32, f32, f32, f32))drawSolidRect)(0x96AAAAAA, temp_f30_2 + temp_f28_2 - lbl_805634EC, temp_f31 - lbl_805634EC, temp_f30_2 + temp_f28_2, temp_f31 - temp_f27_2 - lbl_80563534, lbl_805634A8);
     fn_80232BA4((char *)*(s32 *)((u8 *)arg0 + temp_r29 + 0x244), *(s32 *)((u8 *)arg0 + 0x3FC), 0xFF000000, 0xC, lbl_80563534 + temp_f29, temp_f31 - lbl_80563534, *(f32 *)((u8 *)arg0 + 0x404), lbl_805634A8, lbl_805634A4);
     fn_80232BA4((char *)*(s32 *)(temp_r30_2 + 0x244), *(s32 *)((u8 *)arg0 + 0x3FC), fn_802236C8(arg0, var_r28), 0xC, lbl_805634EC + temp_f29, temp_f31 - lbl_805634EC, *(f32 *)((u8 *)arg0 + 0x404), lbl_805634A8, lbl_805634A4);
 }
@@ -8373,9 +8373,9 @@ extern "C" void fn_802272D4(void *arg0) {
 }
 extern "C" void fn_80227880(s32 unused, f32 x, f32 y, f32 width, f32 height) {
     /* Draw a filled rectangle (x,y)-(x+width,y-height) with two passes: light overlay then dark overlay. */
-    ((void (*)(s32, f32, f32, f32, f32, f32))fn_80230924)(
+    ((void (*)(s32, f32, f32, f32, f32, f32))drawSolidRect)(
         0x40FFFFFF, x, y, x + width, y - height, lbl_805634A8);
-    ((void (*)(s32, f32, f32, f32, f32, f32))fn_80230924)(
+    ((void (*)(s32, f32, f32, f32, f32, f32))drawSolidRect)(
         0x99000000, x, y, x + width, y - height, lbl_805634A8);
 }
 #pragma pop
@@ -8734,7 +8734,7 @@ extern "C" void *fn_8022855C(void *obj, void *config, s32 value244, s32 value248
 }
 
 extern "C" void fn_802361E8(s32, s32, s32, s32, s32, s32);
-extern "C" void fn_80230924(s32, s32, f32, f32, f32, f32, f32);
+extern "C" void drawSolidRect(s32, s32, f32, f32, f32, f32, f32);
 extern "C" void fn_802285B8(void *arg0) {
     /* Compute screen bounds for this element and draw via object-specific or
      * default rectangle rendering depending on whether a target handle is set. */
@@ -8750,7 +8750,7 @@ extern "C" void fn_802285B8(void *arg0) {
                     *(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
         return;
     }
-    fn_80230924(0x8FAFBFCF, *(s32 *)((u8 *)arg0 + 8), x, y,
+    drawSolidRect(0x8FAFBFCF, *(s32 *)((u8 *)arg0 + 8), x, y,
                 x + (f32)((Vf78 *)arg0)->get(),
                 y - (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8)),
                 lbl_805634A8);

@@ -908,7 +908,7 @@ extern void drawPictureScaled();
 extern void fn_80232928();
 extern void fn_80232930();
 extern void fn_80232BA4();
-extern void fn_80230924();
+extern void drawSolidRect();
 extern void fn_80230F78();
 extern double sin();
 extern void *lbl_8055E050;
@@ -1053,7 +1053,7 @@ void fn_8022BD40(int arg0, int i19arg, int arg2_, unsigned char i20_, float farg
         } else if (fl & 2) {
             sp18 -= *(float *)((char *)lbl_8055E050 + 0x70) + farg3;
         }
-        fn_80230924(*(int *)(entry + 0x20), sp18, sp14, sp18 + farg3, sp14 - farg4, farg2);
+        drawSolidRect(*(int *)(entry + 0x20), sp18, sp14, sp18 + farg3, sp14 - farg4, farg2);
     }
     if ((i19 != 0) && (*(int *)((char *)base + 8) != 0)) {
         i30 = fn_80232B70(*(int *)((char *)base + 8));

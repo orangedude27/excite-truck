@@ -883,7 +883,7 @@ struct BarWidget {
 #define BAR_HALF lbl_80563844   /* 0.5f, for centring */
 
 extern void fn_80230C30(float *, float *, int, int);
-extern void fn_80230924(int, float, float, float, float, float);
+extern void drawSolidRect(int, float, float, float, float, float);
 extern float getPictureWidth(int, int);
 extern float getPictureHeight(int, int);
 extern void drawPicture(int, int, float, float, float);
@@ -946,7 +946,7 @@ extern void fn_80235758(int, int, int, float, float, float, float, float, float,
         drawPictureScaled(widget->image, BAR_PIECE_FRAME_MID, -1, x+leftWidth, y, BAR_Z, midWidth, barHeight);
         drawPicture(widget->image, BAR_PIECE_FRAME_RIGHT, midWidth+(x+leftWidth), y, BAR_Z);
     } else {
-        fn_80230924(-1, x, y, x+width* widget->fill, y-height, BAR_Z);
+        drawSolidRect(-1, x, y, x+width* widget->fill, y-height, BAR_Z);
     }
 }
 #pragma pop

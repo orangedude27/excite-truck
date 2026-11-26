@@ -333,7 +333,7 @@ void fn_802307AC(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
 #pragma paired off
 #pragma ppc_psq_save off
 #pragma cplusplus on
-extern "C" void fn_80230924(u32 color, f32 left, f32 top, f32 right, f32 bottom, f32 depth);
+extern "C" void drawSolidRect(u32 color, f32 left, f32 top, f32 right, f32 bottom, f32 depth);
 extern "C" void fn_802C8B98(s32, s32);      // begin a draw into a display list
 extern "C" void DrawList_RestoreNormalMode(void);          // end the draw
 extern "C" void fn_802C8DB8(void *, s32, u16 *, s32); // submit verts: verts, count, indices, index count
@@ -344,7 +344,7 @@ extern "C" u16 lbl_802F9FD8[6];             // QUAD_INDICES_SOLID
 // Draws one untextured quad of the 2D overlay: the box (left,top)-(right,bottom)
 // at `depth`, filled with `color` (RGBA, dimmed by the current global brightness)
 // and texture coordinate 0 at every vertex.
-void fn_80230924(u32 color, f32 left, f32 top, f32 right, f32 bottom, f32 depth) {
+void drawSolidRect(u32 color, f32 left, f32 top, f32 right, f32 bottom, f32 depth) {
     s32 packedColor;
     struct SolidQuad {
         u16 indices[6];   // the two triangles the four vertices make

@@ -30,7 +30,7 @@ extern void fn_80232BA4(char *, int, int, int, float, float, float, float, float
 extern char lbl_8055C08C;
 extern float lbl_80563930, lbl_80563940;
 extern float fn_8023293C();
-extern void fn_80230924(void *, float, float, float, float, float);
+extern void drawSolidRect(void *, float, float, float, float, float);
 extern void fn_80230C30(float *, float *, int, int);
 extern double lbl_80563938;
 
@@ -713,7 +713,7 @@ void fn_8024D0EC(struct MessageWidget *widget) {
         widget->color = 0xFF000000;
         w = fn_8023293C(widget->font, widget->message, widget->extra);
         barWidth = widget->scale * w;
-        fn_80230924((void *)-1, x, y, x + barWidth, y - (float)height, lbl_80563940);
+        drawSolidRect((void *)-1, x, y, x + barWidth, y - (float)height, lbl_80563940);
     }
     sy = y;
     sx = x;
@@ -722,7 +722,7 @@ void fn_8024D0EC(struct MessageWidget *widget) {
     sprintf(buf, &lbl_8055C08C, count, count, widget->message); /* "%*.*s" */
     w = fn_8023293C(widget->font, buf, widget->extra);
     cursorX = x + widget->scale * w;
-    fn_80230924((void *)-0x2FC1, cursorX - lbl_80563930, y, lbl_80563930 + cursorX, y - (float)widget->height, lbl_80563940);
+    drawSolidRect((void *)-0x2FC1, cursorX - lbl_80563930, y, lbl_80563930 + cursorX, y - (float)widget->height, lbl_80563940);
 }
 #pragma scheduling on
 extern float lbl_80563948, lbl_80563944, lbl_8056394C;
@@ -932,10 +932,10 @@ void fn_8024D810(void *arg0)
   dy = dy * lbl_80563944;
   cy = y - (dy * ((float) (row0 + 1)));
   e = lbl_80563950;
-  fn_80230924((void *) 0xFFAF7F00, cx, cy, cx + dx, (0, cy - e), lbl_80563940);
-  fn_80230924((void *) 0xFFAF7F00, cx, cy, cx + dx, e + (cy - dy), lbl_80563940);
-  fn_80230924((void *) 0xFFAF7F00, cx, cy, cx + e, cy - dy, lbl_80563940);
-  fn_80230924((void *) 0xFFAF7F00, cx + dx, cy, (cx + dx) - e, cy - dy, lbl_80563940);
+  drawSolidRect((void *) 0xFFAF7F00, cx, cy, cx + dx, (0, cy - e), lbl_80563940);
+  drawSolidRect((void *) 0xFFAF7F00, cx, cy, cx + dx, e + (cy - dy), lbl_80563940);
+  drawSolidRect((void *) 0xFFAF7F00, cx, cy, cx + e, cy - dy, lbl_80563940);
+  drawSolidRect((void *) 0xFFAF7F00, cx + dx, cy, (cx + dx) - e, cy - dy, lbl_80563940);
   x += dx * lbl_80563954;
   y -= dy * lbl_80563954;
   for (row = 0, base = 0; row < 4; row++, base += 10, y -= dy)
