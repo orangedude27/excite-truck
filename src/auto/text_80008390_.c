@@ -94,7 +94,7 @@ extern void DrawList_beginFrame(void);
 extern void DrawList_setViewport(s32, s32, s32, s32);
 extern void fn_801E7E48(void);
 extern void fn_8026A1F0(s32, s32, s32);
-extern void fn_801E81B8(s32, s32);
+extern void updateGameFrame(s32, s32);
 extern void fn_80230B5C(void *);
 extern void DrawList_loadMatrix(void *);
 extern void fn_802C974C(float, float, float);
@@ -554,7 +554,7 @@ void fn_80008F98(void) {
         fn_801E7E48();
         DrawList_beginFrame();
         DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
-        fn_801E81B8(1, 0);
+        updateGameFrame(1, 0);
         DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
         fn_80230B5C((void *)tmp);
         DrawList_loadMatrix((void *)tmp);
@@ -926,7 +926,7 @@ skip16:
         fn_801E7E48();
         fn_8026A1F0(var15, 0, var20);
         var20 = 0;
-        fn_801E81B8(1, 0);
+        updateGameFrame(1, 0);
         KERNEL_GetTimeMs();
         DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
         fn_80230B5C(view);

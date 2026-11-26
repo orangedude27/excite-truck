@@ -541,7 +541,7 @@ extern "C" void fn_801E8148(void) {
 
 #pragma push
 #pragma scheduling invalid_target
-extern "C" void fn_801E81B8(int arg0, void (*callback)(void)) {
+extern "C" void updateGameFrame(int arg0, void (*callback)(void)) {
     extern void *lbl_8055AF0C;
     extern float *lbl_8055EB04;
     unsigned long index;

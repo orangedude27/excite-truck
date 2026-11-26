@@ -399,7 +399,7 @@ void fn_8000B288(void* unused) {
 
 extern void DrawList_beginFrame(void);
 extern int fn_801DF060(void);
-extern void fn_801E81B8(int, void (*)(void *));
+extern void updateGameFrame(int, void (*)(void *));
 extern void fn_801DFFB4(void);
 extern void fn_802C9A70(int);
 extern int fn_801E8838(void);
@@ -411,7 +411,7 @@ extern void fn_802C2B48(void);
 void fn_8000B2AC(void) {
     /* Main per-frame render/update step: prepares draw state, runs player updates with mode-specific callback, then finalizes rendering. */
     DrawList_beginFrame();
-    fn_801E81B8(1, fn_801DF060() != 0
+    updateGameFrame(1, fn_801DF060() != 0
         ? (void (*)(void *))fn_8000B288
         : (void (*)(void *))fn_8000B210);
     fn_801DFFB4();
