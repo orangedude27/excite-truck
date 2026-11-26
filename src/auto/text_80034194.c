@@ -1856,7 +1856,7 @@ extern s32 lbl_8055D87C, lbl_8055D8BC;
 extern s32 IDShouldBe_8055D8C4, executing_8055D8C8, lbl_8055D860;
 extern BOOL DVDCompareDiskID(void *, void *);
 extern s32 fn_8003AD88(void *, s32, s32, u32);
-extern void fn_80036B84(u32);
+extern void __DVDHandleCommandStatus(u32);
 extern char lbl_80376B20[];
 extern char lbl_80376B40[];
 extern u32 *lbl_8055D89C;
@@ -1890,7 +1890,7 @@ void fn_8003684C(void) {
             lbl_8055D860 = 0;
             fn_8003BCDC(0);
             LOG_ENTRY(0x21, 0x10000, 0x20);
-            fn_8003AD88(idBase + 0xA0, 0x20, 0x10000, (u32)fn_80036B84);
+            fn_8003AD88(idBase + 0xA0, 0x20, 0x10000, (u32)__DVDHandleCommandStatus);
         } else {
             LOG_ENTRY(0x10, 0, 0);
             fn_8003AF1C(0, 0, __DVDHandleMotorError);
@@ -1904,7 +1904,7 @@ void fn_8003684C(void) {
             lbl_8055D860 = 0;
             fn_8003BCDC(0);
             LOG_ENTRY(0x21, 0x10000, 0x20);
-            fn_8003AD88(idBase + 0xA0, 0x20, 0x10000, (u32)fn_80036B84);
+            fn_8003AD88(idBase + 0xA0, 0x20, 0x10000, (u32)__DVDHandleCommandStatus);
         }
         break;
     }
@@ -1916,7 +1916,7 @@ void fn_8003684C(void) {
 /* Handles a DVD drive status value: records it in __ErrorInfo, then starts an
  * error-report/reset flow for 0x10, 0x20 or an odd code, else issues a
  * stop-motor/reset command sequence. */
-void fn_80036B84(u32 status) {
+void __DVDHandleCommandStatus(u32 status) {
     s32 interrupts;
 
     interrupts = OSDisableInterrupts();
