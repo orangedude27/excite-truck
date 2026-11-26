@@ -4261,7 +4261,6 @@ enum {
 
 extern "C" s32 strlen(const char *);
 extern "C" s32 isKeyPressed(s32);
-extern "C" void focusPreviousWidget(void*);
 /* Key handler of a text-edit field: moves the caret (home/end/left/right),
    erases with backspace/delete, inserts a typed character at the caret and
    hands tab to the widget group to move the focus.  Returns whether the key
