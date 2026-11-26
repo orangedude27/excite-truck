@@ -2645,10 +2645,11 @@ void fn_8006AED4(s32 arg0) {
     lbl_8055DC40 = L.length;
     BTM_VendorSpecificCommand(0xFC4C, (u8)(L.length + 4), packet, WUDiDownloadPatchCallback);
 }
-void WUDiDownloadPatchCallback(tBTM_VSC_CMPL *arg0) {
+void WUDiDownloadPatchCallback(tBTM_VSC_CMPL *p_vsc_cmpl) {
     /* Continuation callback for the 0xFC4C patch-download VSC: send the next chunk
      * of download data, and once it is all sent start the 0xFC4F install-patch VSC
-     * (whose chunks are sent by fn_8006B26C). */
+     * (whose chunks are sent by fn_8006B26C). A null completion aborts and calls
+     * WUDiInstallPatchComplete. */
     #define PatchSentCount   lbl_8055DC39
     #define PatchTotalCount  lbl_8055DC3A
     #define PatchData        lbl_80313600
@@ -2667,7 +2668,7 @@ void WUDiDownloadPatchCallback(tBTM_VSC_CMPL *arg0) {
     s32 patchBytes;
     u32 headerValue;
 
-    if (arg0 != 0) {
+    if (p_vsc_cmpl != 0) {
         if (DownloadTotal == DownloadOffset) {
             PatchSentCount = 0;
             patchCount = PatchData[0];
