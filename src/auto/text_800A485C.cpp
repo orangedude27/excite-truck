@@ -380,7 +380,7 @@ extern "C" void fn_800D1300(void *);
 extern "C" void fn_800D16A8(s32 *);
 extern "C" f32 lbl_80560DC8, lbl_80560DCC, lbl_80560DD8;
 extern "C" u8 lbl_8031D840[];
-extern "C" void fn_800CF554(s32, u8 *, f32, f32, f32, f32, f32);
+extern "C" void drawColoredLine(s32, u8 *, f32, f32, f32, f32, f32);
 struct B240 { u32 w[144]; };
 extern "C" void NANDSetUserData(void *, s32);
 extern "C" u16 fn_800A4F08(void *);
@@ -19984,7 +19984,7 @@ void homebutton::FrameController::calc() {
     }
 }
 
-extern "C" void fn_800CF554(s32 arg0, u8 *arg1, f32 x0, f32 y0, f32 x1, f32 y1, f32 z) {
+extern "C" void drawColoredLine(s32 arg0, u8 *arg1, f32 x0, f32 y0, f32 x1, f32 y1, f32 z) {
     /* Draws a single colored line segment (two vertices) at constant z with identity rotation. */
     f32 mtx[3][4];
     GXClearVtxDesc();
@@ -20725,10 +20725,10 @@ extern "C" void draw__Q310homebutton3gui13PaneComponentFv(void *arg0) {
         f31=*(f32 *)(pane+0x90); f30=*(f32 *)(pane+0xA0);
         color[0]=lbl_80560E2C; color[1]=lbl_80560E2D; color[2]=lbl_80560E2E; color[3]=lbl_80560E2F;
         if (*(u8 *)((u8 *)arg0+4)) { color[0]=0; color[2]=0xFF; }
-        fn_800CF554(8,color,f31-sz.x*lbl_80560E30,f30-sz.y*lbl_80560E30,f31+sz.x*lbl_80560E30,f30-sz.y*lbl_80560E30,lbl_80560E28);
-        fn_800CF554(8,color,f31+sz.x*lbl_80560E30,f30-sz.y*lbl_80560E30,f31+sz.x*lbl_80560E30,f30+sz.y*lbl_80560E30,lbl_80560E28);
-        fn_800CF554(8,color,f31+sz.x*lbl_80560E30,f30+sz.y*lbl_80560E30,f31-sz.x*lbl_80560E30,f30+sz.y*lbl_80560E30,lbl_80560E28);
-        fn_800CF554(8,color,f31-sz.x*lbl_80560E30,f30+sz.y*lbl_80560E30,f31-sz.x*lbl_80560E30,f30-sz.y*lbl_80560E30,lbl_80560E28);
+        drawColoredLine(8,color,f31-sz.x*lbl_80560E30,f30-sz.y*lbl_80560E30,f31+sz.x*lbl_80560E30,f30-sz.y*lbl_80560E30,lbl_80560E28);
+        drawColoredLine(8,color,f31+sz.x*lbl_80560E30,f30-sz.y*lbl_80560E30,f31+sz.x*lbl_80560E30,f30+sz.y*lbl_80560E30,lbl_80560E28);
+        drawColoredLine(8,color,f31+sz.x*lbl_80560E30,f30+sz.y*lbl_80560E30,f31-sz.x*lbl_80560E30,f30+sz.y*lbl_80560E30,lbl_80560E28);
+        drawColoredLine(8,color,f31-sz.x*lbl_80560E30,f30+sz.y*lbl_80560E30,f31-sz.x*lbl_80560E30,f30-sz.y*lbl_80560E30,lbl_80560E28);
     }
 }
 #pragma cplusplus reset
