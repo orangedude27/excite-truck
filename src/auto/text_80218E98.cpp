@@ -122,7 +122,7 @@ extern "C" void fn_802328D4(void *);
 extern "C" f32 fn_80214D48(void);
 extern "C" void fn_80228AEC(s32, f32);
 extern "C" void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
-extern "C" void fn_80230150(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
+extern "C" void drawScrollingOverlayQuad(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
 extern "C" void fn_802304EC(s32, s32, s32, s32, f32, f32, f32, f32, f32, f32, f32);
 extern "C" void fn_80230650(s32, s32, s32, s32, f32, f32, f32, f32, f32, f32, f32);
 extern "C" void fn_802307AC(s32, s32, s32, s32, f32, f32, f32, f32, f32, f32, f32);
@@ -1403,7 +1403,7 @@ extern "C" void fn_80219FE0(void *arg0) {
             flag = 1;
         s32 h = *(s32 *)(self + 0x10) - *(s32 *)(self + 8);
         f32 wf = (f32)((VfObj *)self)->vf28();
-        fn_80230150(*(s32 *)(self + 0x254), flag | 8, x, y - (f32)h, zero, wf, (f32)h,
+        drawScrollingOverlayQuad(*(s32 *)(self + 0x254), flag | 8, x, y - (f32)h, zero, wf, (f32)h,
                     (f32)*(s32 *)(self + 0x250), time, lbl_805634C0);
         break;
     }
