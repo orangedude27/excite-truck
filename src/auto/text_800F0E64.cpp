@@ -3465,7 +3465,7 @@ extern "C" s32 detail_GetFileWaveDataAddress__Q36nw4hbm3snd18SoundArchivePlayerC
 extern "C" void DetachSound__Q34nw4hbm3snd11SoundHandleFv(void **);
 extern "C" void detail_AttachSound__Q36nw4hbm3snd11SoundHandleFPQ46nw4hbm3snd6detail10BasicSound(void **, void *);
 extern "C" void fn_800E9BA4(void *, s32);
-extern "C" void *fn_800F8CA4(s32, s32, s32, s32, s32, s32, void *);
+extern "C" void *allocSeqSound(s32, s32, s32, s32, s32, s32, void *);
 extern "C" void *fn_800F9200(s32, s32, s32, s32, s32, s32, void *);
 extern "C" void *fn_800F975C(s32, s32, s32, s32, s32, s32, void *);
 extern "C" const char lbl_80325870[];
@@ -3587,7 +3587,7 @@ extern "C" s32 fn_800F65F0(void *arg0, void **arg1, u32 arg2, s32 arg3, s32 arg4
         if (((s32 (*)(void *, u32, void *))fn_800F27F4)(*(void **)((u8 *)arg0 + 0x10), arg2, stack.local.seqInfo) == 0) {
             return 3;
         }
-        sound = fn_800F8CA4((s32)sound, soundCount, loop, arg3, arg4, arg2, (u8 *)arg0 + 0x78);
+        sound = allocSeqSound((s32)sound, soundCount, loop, arg3, arg4, arg2, (u8 *)arg0 + 0x78);
         if (sound == 0) {
             return 1;
         }
@@ -5060,7 +5060,7 @@ static inline s32 ClampS32_E(s32 x, s32 low, s32 high) {
 #pragma push
 #pragma dont_inline off
 #pragma auto_inline off
-extern "C" void* fn_800F8CA4(s32 player, s32 priority, s32 requestedPriority, s32 ambientInfo, s32 externalPlayer, s32 soundId, void *manager) {
+extern "C" void* allocSeqSound(s32 player, s32 priority, s32 requestedPriority, s32 ambientInfo, s32 externalPlayer, s32 soundId, void *manager) {
     /* detail::SoundInstanceManager::Alloc for sequence sounds (SeqSound).
      * Takes a free SeqSound out of the instance pool; when the pool
      * is full it takes the sound with the lowest priority away from that list
