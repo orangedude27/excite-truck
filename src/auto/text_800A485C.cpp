@@ -14640,9 +14640,9 @@ struct SDCmdRequest {
  * callback runs.  lbl_8055DD70 and lbl_8055DD78 are its ioctl scratch buffers.
  * lbl_8031B838 is the base of the library's message strings; the second
  * argument of the "%s: ..." reports is the reporting function's name, here at
- * +0x398 (its write twin SDCard_writeBlocks uses the one at +0x438).
+ * +0x398 (its write twin fn_800BB81C uses the one at +0x438).
  */
-extern "C" s32 readSdCardBlocks(s32 device, s32 offset, s32 buffer, s32 length, s32 callback, s32 callbackArg) {
+/* Read whole 0x200-byte blocks from an open SD card into buffer, optionally completing asynchronously via callback; set up an unconfigured card first (read CSD, set block size and 4-bit bus). */ extern "C" s32 readSdCardBlocks(s32 device, s32 offset, s32 buffer, s32 length, s32 callback, s32 callbackArg) {
 const char *messages=lbl_8031B838;
 u32 blockSize=0x200; /* size of one block of the transfer */
 if((u32)length<=0x200)blockSize=(u32)length;
