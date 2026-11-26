@@ -376,7 +376,7 @@ extern "C" void *fn_801B8D80(void) {
    as the trailer's pose, velocity and heading).  The spring at +0x2704 that
    pulls the trailer along is then re-aimed at the same point, with the longer
    range of lbl_80562760 while the trailer hangs from the player (+0x275D). */
-extern "C" void updateTrailerCar(int playerIndex) {
+/* Per-frame trailer car update: place the car in the player's trailer frame with its offset and velocity, hand the pose to the trailer's setPose, then re-aim the tow spring at the same anchor. */ extern "C" void updateTrailerCar(int playerIndex) {
     struct CarPose pose;
     f32 towedAnchor[3];
     f32 anchor[3];
