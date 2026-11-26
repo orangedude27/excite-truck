@@ -63,7 +63,7 @@ extern float lbl_80561D2C, lbl_80561D30;
 extern int *fn_801E1F44(void);
 extern int fn_80019BA8(void);
 extern void fn_802049DC(int, int, float, float, float);
-extern int fn_8020503C(void *);
+extern int isDifficultySettingOn(void *);
 extern char lbl_80434990[];
 extern float lbl_80561CDC;
 extern float lbl_80561DE0;
@@ -431,7 +431,7 @@ fn_802049DC((int)(void *)(names + 0x174), (int)(void *)(temp_r31_2 + 0x24), lbl_
 fn_802049DC((int)(void *)(names + 0x188), (int)(void *)(temp_r31_2 + 0x2C), lbl_80561CAC, lbl_80561CE0, lbl_80561CF8);
 fn_802049DC((int)(void *)(names + 0x1A0), (int)(void *)(temp_r31_2 + 0x30), lbl_80561CAC, lbl_80561D34, lbl_80561CFC);
 }
-if (fn_8020503C(names + 0x1B8) != 0) {
+if (isDifficultySettingOn(names + 0x1B8) != 0) {
 (*(float *)((char *)(((char *)base + 0x68)) + (0xC))) = (float) lbl_80561CAC;
 } else {
 (*(float *)((char *)(((char *)base + 0x68)) + (0xC))) = temp_f31;
@@ -728,7 +728,7 @@ void fn_80182074(void *arg0, void *arg1) {
     fn_801D108C(*(int *)(a + 0x1EC));
     fn_80131818(cfg);
     flag = 0;
-    if (isPcar && fn_8020503C(lbl_803322B0 + 0x2D8) != 0) flag = 1;
+    if (isPcar && isDifficultySettingOn(lbl_803322B0 + 0x2D8) != 0) flag = 1;
     *(signed char *)(a + 0x25C8) = flag;
     if ((unsigned int)(*(int *)((unsigned char *)__AXFXGetLfoSinTable_801769CC() + 4) - 0x180000) == 0x304)
         *(signed char *)(a + 0x25C8) = 1;

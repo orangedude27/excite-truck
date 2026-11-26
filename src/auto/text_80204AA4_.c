@@ -297,7 +297,7 @@ __declspec(section ".sdata") extern const char lbl_8055B4B8[];
  * and if neither has it as the plain "<name>" in both.  A setting none of them
  * has is reported with the 'Difficulty: "%s" was not found' message and reads as
  * off.  The string the lookup returns is the flag: only "yes" and "true" are on. */
-extern "C" int fn_8020503C(const char *name) {
+extern "C" int isDifficultySettingOn(const char *name) {
     #define DIFFICULTY_INFO lbl_8055ED5C  /* the published difficulty info block */
     #define KEY_FORMAT      lbl_8055B4AC  /* "%s_%s" */
     #define NOT_FOUND_MSG   lbl_8033BBF4  /* Difficulty: "%s" was not found */
