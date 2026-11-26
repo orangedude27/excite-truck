@@ -369,7 +369,7 @@ int fn_801DFF08(int index) { return lbl_804348E8[index]; }
 
 /* One slip/skid instance: how far one vehicle's tyres have been sliding, and
  * the sound zone and screen effect that slip has reached.  fn_801DFF1C sets one
- * up, fn_801E02B0 clears them all and fn_801E0300 runs them once a frame. */
+ * up, fn_801E02B0 clears them all and updateSlipSkidEffects runs them once a frame. */
 struct SlipRecord {
     float charge;           /* 0x00: 0.15..1.0, how strong the effect is */
     float timer;            /* 0x04: when it was raised; < 0 while waiting */
@@ -395,7 +395,7 @@ struct SlipSlot {
  * effect begins at its minimum charge, unraised and inactive, its timers and
  * sound zone cleared, and its slip is seeded from the speed the vehicle already
  * has (20 * 2 * speed / 53.3333) so that a vehicle which is already sliding
- * reaches the sound zones fn_801E0300 tests without waiting for it to build up. */
+ * reaches the sound zones updateSlipSkidEffects tests without waiting for it to build up. */
 void fn_801DFF1C(int index) {
     #define SLIP_SEED_SCALE lbl_80562C44 /* 20.0 */
     #define SLIP_SPEED_SCALE lbl_8055AE30 /* 2.0 */
@@ -633,7 +633,7 @@ extern float lbl_80562C58, lbl_80562C5C, lbl_80562C60, lbl_80562C64, lbl_80562C6
  * cycling effect objects to play it; a raised or never-started instance then
  * fades back down and tells the sound manager about the change.
  */
-extern "C" void fn_801E0300(void *manager) {
+extern "C" void updateSlipSkidEffects(void *manager) {
     struct FxIface {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
         virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9();
