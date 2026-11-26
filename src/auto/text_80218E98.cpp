@@ -5256,86 +5256,86 @@ extern "C" void scrollBarOnPress(void *scrollBar, s32 mouseX, s32 mouseY) {
         virtual void a24() = 0; virtual void a25() = 0; virtual void a26() = 0; virtual void a27() = 0;
         virtual s32 get(void *) = 0;
     };
-    u8 *self = (u8 *)scrollBar;
-    s32 *scrollState;
+    u8 *bar = (u8 *)scrollBar;
+    s32 *state;
     f32 scale;
-    f32 factor;
-    f32 adjusted;
+    f32 pageFactor;
+    f32 pageDelta;
     s32 thumbStart;
     s32 thumbEnd;
-    s32 newOffset;
-    s32 maxOffset;
+    s32 candidateOffset;
+    s32 maxScroll;
 
-    *(s8 *)(self + 0x250) = 1;
-    if (*(s32 *)(self + 0x254) == 0) {
-        scrollState = *(s32 **)(self + 0x244);
-        scale = (f32)(*(s32 *)(self + 0x10) - *(s32 *)(self + 8)) / (f32)scrollState[0];
-        thumbStart = *(s32 *)(self + 8) + (s32)(scale * (f32)scrollState[2]) + 5;
-        thumbEnd = *(s32 *)(self + 8) + (s32)(scale * (f32)(scrollState[2] + scrollState[1])) - 5;
+    *(s8 *)(bar + 0x250) = 1;
+    if (*(s32 *)(bar + 0x254) == 0) {
+        state = *(s32 **)(bar + 0x244);
+        scale = (f32)(*(s32 *)(bar + 0x10) - *(s32 *)(bar + 8)) / (f32)state[0];
+        thumbStart = *(s32 *)(bar + 8) + (s32)(scale * (f32)state[2]) + 5;
+        thumbEnd = *(s32 *)(bar + 8) + (s32)(scale * (f32)(state[2] + state[1])) - 5;
         if (mouseY >= thumbStart && mouseY <= thumbEnd) {
-            *(s32 *)(self + 0x25C) = (s32)(scale * (f32)scrollState[2]) - mouseY;
+            *(s32 *)(bar + 0x25C) = (s32)(scale * (f32)state[2]) - mouseY;
             return;
         }
         if (mouseY < thumbStart) {
-            newOffset = (s32)((f32)scrollState[2] - (lbl_805634A4 / scale) * (f32)((thumbEnd - thumbStart) + 5));
-            scrollState[2] = newOffset;
-            maxOffset = scrollState[0] - scrollState[1];
-            if (newOffset > maxOffset) {
-                scrollState[2] = maxOffset;
+            candidateOffset = (s32)((f32)state[2] - (lbl_805634A4 / scale) * (f32)((thumbEnd - thumbStart) + 5));
+            state[2] = candidateOffset;
+            maxScroll = state[0] - state[1];
+            if (candidateOffset > maxScroll) {
+                state[2] = maxScroll;
             }
-            if (scrollState[2] < 0) {
-                scrollState[2] = 0;
+            if (state[2] < 0) {
+                state[2] = 0;
             }
         } else {
-            factor = lbl_805634A4 / scale;
-            adjusted = factor * (f32)((thumbEnd - thumbStart) + 5);
-            newOffset = (s32)(adjusted + (f32)scrollState[2]);
-            scrollState[2] = newOffset;
-            maxOffset = scrollState[0] - scrollState[1];
-            if (newOffset > maxOffset) {
-                scrollState[2] = maxOffset;
+            pageFactor = lbl_805634A4 / scale;
+            pageDelta = pageFactor * (f32)((thumbEnd - thumbStart) + 5);
+            candidateOffset = (s32)(pageDelta + (f32)state[2]);
+            state[2] = candidateOffset;
+            maxScroll = state[0] - state[1];
+            if (candidateOffset > maxScroll) {
+                state[2] = maxScroll;
             }
-            if (scrollState[2] < 0) {
-                scrollState[2] = 0;
+            if (state[2] < 0) {
+                state[2] = 0;
             }
         }
-        *(s8 *)(self + 0x250) = 0;
+        *(s8 *)(bar + 0x250) = 0;
         return;
     }
     {
-        s32 total = **(s32 **)(self + 0x244);
-        scale = (f32)((Vf78Arg *)scrollBar)->get(*(void **)(self + 0x244)) / (f32)total;
-        scrollState = *(s32 * volatile *)(self + 0x244);
-        thumbStart = *(s32 *)(self + 4) + (s32)(scale * (f32)scrollState[2]) + 5;
-        thumbEnd = *(s32 *)(self + 4) + (s32)(scale * (f32)(scrollState[2] + scrollState[1])) - 5;
+        s32 total = **(s32 **)(bar + 0x244);
+        scale = (f32)((Vf78Arg *)scrollBar)->get(*(void **)(bar + 0x244)) / (f32)total;
+        state = *(s32 * volatile *)(bar + 0x244);
+        thumbStart = *(s32 *)(bar + 4) + (s32)(scale * (f32)state[2]) + 5;
+        thumbEnd = *(s32 *)(bar + 4) + (s32)(scale * (f32)(state[2] + state[1])) - 5;
         if (mouseX >= thumbStart && mouseX <= thumbEnd) {
-            *(s32 *)(self + 0x258) = (s32)(scale * (f32)scrollState[2]) - mouseX;
+            *(s32 *)(bar + 0x258) = (s32)(scale * (f32)state[2]) - mouseX;
             return;
         }
         if (mouseX < thumbStart) {
-            newOffset = (s32)((f32)scrollState[2] - (lbl_805634A4 / scale) * (f32)((thumbEnd - thumbStart) + 5));
-            scrollState[2] = newOffset;
-            maxOffset = scrollState[0] - scrollState[1];
-            if (newOffset > maxOffset) {
-                scrollState[2] = maxOffset;
+            candidateOffset = (s32)((f32)state[2] - (lbl_805634A4 / scale) * (f32)((thumbEnd - thumbStart) + 5));
+            state[2] = candidateOffset;
+            maxScroll = state[0] - state[1];
+            if (candidateOffset > maxScroll) {
+                state[2] = maxScroll;
             }
-            if (scrollState[2] < 0) {
-                scrollState[2] = 0;
+            if (state[2] < 0) {
+                state[2] = 0;
             }
         } else {
-            factor = lbl_805634A4 / scale;
-            adjusted = factor * (f32)((thumbEnd - thumbStart) + 5);
-            newOffset = (s32)(adjusted + (f32)scrollState[2]);
-            scrollState[2] = newOffset;
-            maxOffset = scrollState[0] - scrollState[1];
-            if (newOffset > maxOffset) {
-                scrollState[2] = maxOffset;
+            pageFactor = lbl_805634A4 / scale;
+            pageDelta = pageFactor * (f32)((thumbEnd - thumbStart) + 5);
+            candidateOffset = (s32)(pageDelta + (f32)state[2]);
+            state[2] = candidateOffset;
+            maxScroll = state[0] - state[1];
+            if (candidateOffset > maxScroll) {
+                state[2] = maxScroll;
             }
-            if (scrollState[2] < 0) {
-                scrollState[2] = 0;
+            if (state[2] < 0) {
+                state[2] = 0;
             }
         }
-        *(s8 *)(self + 0x250) = 0;
+        *(s8 *)(bar + 0x250) = 0;
     }
 }
 extern "C" void fn_802213A4(void *scrollBar, s32 pointerX, s32 pointerY) {
