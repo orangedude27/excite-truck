@@ -995,7 +995,7 @@ struct SelectorDataGroup {
  * come out of the dim state, everything else is dimmed, and the open group is
  * the one widget that gets setExpanded().
  */
-extern "C" s32 selectorOpenGroup(void *unused) {
+/* Open the group the selector's cursor is on: move the cursor into it and repaint both lists, keeping the open group and its two items bright. */ extern "C" s32 selectorOpenGroup(void *unused) {
     s32 offset;
     s32 i;
 
