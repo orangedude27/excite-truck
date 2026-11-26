@@ -4,7 +4,7 @@
 // checkScreenshotHotkey (fn_802E46F0), anyInputPending (fn_802E47B8),
 // (fn_802E47E8), recordInput (fn_802E4800), matchKeySequence
 // (MatchKeySequence), inputNibble (fn_802E4A10), keyPressed (isKeyPressed),
-// pollInput (fn_802E4A2C), restoreSavedState (fn_802E4A60).
+// pollInput (fn_802E4A2C), restoreSavedState (restoreSavedInputState).
 // Recovered TU window 0x802E46AC..0x802E4C0C (see docs/attribution_analysis.md).
 // Static-init thunk fn_802E4C0C (+ .ctors slot 0x802ED5FC) remains in
 // auto/text_802E4C0C_.c pending a promotion pass.
@@ -216,7 +216,7 @@ extern unsigned char lbl_8055FF58;
 extern unsigned char lbl_804FC3B0[];
 /* Restores a saved 0x61-byte input/telemetry snapshot into out when one is available:
  * copies the record from the saved-state buffer and returns 1, or returns 0 if none is saved. */
-int fn_802E4A60(void *out) {
+int restoreSavedInputState(void *out) {
 #define hasSavedState lbl_8055FF58
 #define savedStateBuffer lbl_804FC3B0
     unsigned char *dst = (unsigned char *)out;

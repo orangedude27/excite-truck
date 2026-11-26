@@ -252,7 +252,7 @@ extern s32 copyPadStateRecord(f32 *, s32);
 extern u8 *__AXFXGetLfoSinTable_801297F4(void);
 extern s32 lbl_8055F4EC;
 extern u8 lbl_8055F500;
-extern s32 fn_802E4A60(f32 *);
+extern s32 restoreSavedInputState(f32 *);
 extern void fn_8026B8A0(void);
 extern s32 KERNEL_GetTimeMs(void);
 extern u8 lbl_8055F501;
@@ -555,7 +555,7 @@ void fn_8026C014(s32 arg0, void *arg1) {
                 lbl_8055F500 = temp_r5;
             }
         }
-        if (fn_802E4A60(&(*(f32 *)(localFrame + (0x240 - 0x10)))) != 0) {
+        if (restoreSavedInputState(&(*(f32 *)(localFrame + (0x240 - 0x10)))) != 0) {
             (*(f32 *)(localFrame + (0x2a4 - 0x10))) = (*(f32 *)(localFrame + (0x240 - 0x10)));
             (*(f32 *)(localFrame + (0x2a8 - 0x10))) = (*(f32 *)(localFrame + (0x244 - 0x10)));
             (*(f32 *)(localFrame + (0x2ac - 0x10))) = (*(f32 *)(localFrame + (0x248 - 0x10)));
