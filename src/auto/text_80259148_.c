@@ -1982,7 +1982,7 @@ rank_done:
 }
 #pragma cplusplus reset
 
-int fn_8025BBFC(void *self, int input) {
+int handleAchievementRowInput(void *self, int input) {
     /* Handle menu input/state transitions for this UI object: reject blocked
        states, process confirm/cancel/navigation cases, and trigger the
        corresponding follow-up actions. */
