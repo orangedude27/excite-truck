@@ -608,6 +608,9 @@ extern "C" void fn_801B92F0(void *arg0, int arg1) {
     *(float *)((unsigned char *)arg0 + 0x274c) = sum;
 }
 #pragma dont_inline reset
+/* Reset a trailer car to its saved pose, recompute the pose from the player's
+   trailer frame and velocity, then set up the spring that pulls the trailer
+   toward its anchor (or toward the player while it is towed). */
 extern "C" void resetTrailerCar(struct TrlrCar *car) {
     struct CarPose pose;
     f32 towedAnchor[3];
