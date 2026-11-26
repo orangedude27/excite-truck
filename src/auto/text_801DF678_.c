@@ -438,10 +438,9 @@ extern void fn_80148100(void *);
 #pragma processor 750
 #pragma cplusplus on
 extern "C" void drawWhiteoutFlash(void) {
-    /* Renders the "whiteout" screen flash: derive a 0..1 opacity from how long
-     * ago the event fired, write white-with-alpha into the named menu pane,
+    /* Render the "whiteout" screen flash: derive a 0..1 opacity from how long
+     * ago the event fired, write white-with-alpha into the "whiteout" menu pane,
      * set its width and refresh it, guarded on the active game/subsystem state.
-     * (lbl_/fn_ names kept: rename_symbol unavailable for game symbols.)
      *   WO_DURATION/WO_DURATION_DIV = 1.5/3 -> 0.5s half-window,
      *   WO_MIN_ALPHA/WO_MAX_ALPHA = 0/1, WO_ALPHA_SCALE = 255,
      *   WO_FADE_SCALE = 0.5, WO_TIME_OFFSET = 0.1, WO_REF_WIDTH = 640. */
