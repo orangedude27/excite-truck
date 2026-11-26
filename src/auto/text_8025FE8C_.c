@@ -482,7 +482,7 @@ extern s32 fn_80128668(void);
 extern s32 fn_802328D4(s32);
 extern s32 fn_80235380(s32, s32 *);
 /* --- one item row of the challenge-difficulty selector ------------------- */
-/* 0x28 bytes, allocated by fn_80261C68 with the vtable named below; the group
+/* 0x28 bytes, allocated by Selector_buildWidgetLists with the vtable named below; the group
    rows (SelectorGroupRow, above) have the same shape plus their group number
    at 0x20.  Slot 0x8 of both vtables is the destructor fn_80260854/fn_802608D4,
    which the screen's cleanup loop calls as destroy(1). */
@@ -538,7 +538,7 @@ extern void fn_80261A18(void *, s32);
 extern void fn_80261A7C(void *, s32);
 extern void fn_80261AE8(s32 *, s32);
 extern void fn_80261AF0(s32 *, s32);
-extern void fn_80261C68(s32 *);
+extern void Selector_buildWidgetLists(s32 *);
 extern void fn_80262120(void *);
 extern void fn_8026213C(void *);
 extern void fn_80261688(void *, s32, s32, s32);
@@ -610,7 +610,7 @@ extern "C" void fn_80260954(s32 arg0) {
           header[1] = 0;
           header[0] = 0;
           header[5] = 0;
-          fn_80261C68(header);
+          Selector_buildWidgetLists(header);
           table = lbl_802FA6C0;
       
       loop_6:
@@ -917,7 +917,7 @@ extern "C" s32 fn_802610C8(void) {
 /* lbl_8055F420 points at the frame header the screen loop (fn_80260954)
    builds on its stack, which carries the state of its cursor: a list of
    groups (the difficulties, from the data source lbl_8055F3E4) and, inside
-   each group, its items.  fn_80261C68 creates the two widget arrays and
+   each group, its items.  Selector_buildWidgetLists creates the two widget arrays and
    stores them at 0x18 and 0x3C; the input callbacks fn_80261178 (enter),
    fn_802616A8 (up), fn_802613E0 (down) and fn_80260E30 (leave) move the
    cursor and repaint both lists, and lbl_8055F3EB says which list the
@@ -967,7 +967,7 @@ struct SelectorWidget {
 /* --- the data the selector shows ---------------------------------------- */
 /* lbl_8055F3E4, the handle fn_8027B878 returns for the screen's argument.  Its
    groups are the difficulties and each group's items are the choices listed
-   under it; fn_80261C68 turns at most 3 groups and 6 items per group into the
+   under it; Selector_buildWidgetLists turns at most 3 groups and 6 items per group into the
    two widget lists. */
 struct SelectorDataGroup;
 struct SelectorData {
@@ -1434,7 +1434,7 @@ static inline void Selector_Repaint(void) {
     }
 }
 #pragma scheduling invalid_target
-extern "C" void fn_80261C68(s32 *arg0) {
+extern "C" void Selector_buildWidgetLists(s32 *arg0) {
     /* Build both widget lists of the challenge-difficulty selector.
      *
      * arg0 is the screen's frame header, which becomes lbl_8055F420 (SELECTOR).
