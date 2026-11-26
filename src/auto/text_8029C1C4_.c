@@ -196,7 +196,7 @@ typedef struct NearObject {
    Nothing happens while the frame time is zero (game standing still). */
 void fn_8029C450(void *arg0, int arg1) {
     extern float fn_801E7E24(void);
-    extern void fn_8029D7D0(int, void **);
+    extern void WaterPool_VehicleSplash(int, void **);
     extern void fn_8029EA34(void *, void **);
     extern void fn_8029CD48(void *);
     extern int fn_802BF4F0(void);
@@ -223,7 +223,7 @@ void fn_8029C450(void *arg0, int arg1) {
                 record->flag != 0) {
                 pool = 0;
                 while (pool < lbl_8055F7F0) {
-                    fn_8029D7D0(lbl_804B5010[pool], (void **)record);
+                    WaterPool_VehicleSplash(lbl_804B5010[pool], (void **)record);
                     pool++;
                 }
                 shallow = 0;
@@ -1046,7 +1046,7 @@ void fn_8029D644(void *arg0) {
 
 extern void fn_8029E49C(int, void *, int);
 extern void fn_8029E130(void *, float *, float *, float);
-void fn_8029D7D0(int pool, void **__restrict nearRecord) {
+void WaterPool_VehicleSplash(int pool, void **__restrict nearRecord) {
     extern void fn_801EE0C8(int);
     extern void *fn_802C6C34(void);
     extern int lbl_80488648[];
