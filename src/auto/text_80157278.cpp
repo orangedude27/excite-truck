@@ -6,7 +6,7 @@ extern "C" void fn_8014AEC8(void*);
 extern "C" s32 fn_80141F7C(f32);
 extern "C" s32 fn_80158D04(void*);
 extern "C" void fn_80158D0C(void*);
-extern "C" f32 fn_80158D60(void*, void*);
+extern "C" f32 emitBonusTrackerValue(void*, void*);
 extern "C" void fn_80158E74(void*);
 extern "C" f32 fn_80158E80(void*);
 extern f32 lbl_802F9478[];
@@ -74,7 +74,7 @@ struct Fn80157CF0Obj {
 // Frame-driven player over a list of 0x38-byte records (mRecords / mCount).
 // BonusTracker_updateFromPlayer and BonusTracker_updateFromInput advance the progress counters by
 // (speed * lbl_8056177C) each frame, lbl_8056177C being one 60 Hz frame
-// (0.0166834 s); fn_80158D60, fn_80159AB4 and fn_8015B23C
+// (0.0166834 s); emitBonusTrackerValue, fn_80159AB4 and fn_8015B23C
 // emit the current record's value and reset the counters.
 class Fn8015889C {
 public:
@@ -1722,7 +1722,7 @@ extern "C" f32 BonusTracker_updateFromPlayer(void* tracker, void* player) {
         }
         emitted = 0.0f;
     } else if (((s32 (*)(f32))fn_80141F7C)(playerTime) != 0) {
-        emitted = fn_80158D60(tracker, player);
+        emitted = emitBonusTrackerValue(tracker, player);
     } else {
         self->onIdleFrame();
         f32 previousTime = playerTime;
@@ -1730,7 +1730,7 @@ extern "C" f32 BonusTracker_updateFromPlayer(void* tracker, void* player) {
         fn_80158D0C(tracker);
     }
     if (self->recordIndex() == fn_80158D04(tracker) - 1) {
-        emitted = fn_80158D60(tracker, player);
+        emitted = emitBonusTrackerValue(tracker, player);
     }
     flag273 = (flag272 != 0 && flag271 != 0);
     flag270 = 0;
@@ -1771,7 +1771,7 @@ extern "C" void fn_80158D0C(void* arg0) {
 #pragma push
 #pragma processor gekko
 #pragma dont_inline on
-extern "C" f32 fn_80158D60(void* arg0, void*) {
+extern "C" f32 emitBonusTrackerValue(void* arg0, void*) {
     /* Emit the current record's scaled value for this frame player and reset its
      * progress/time counters, returning the emitted value (or 0 when nothing is emitted). */
     Fn8015889C* self = (Fn8015889C*)arg0;
@@ -1804,7 +1804,7 @@ extern "C" f32 fn_80158E80(void* player) {
 }
 
 extern "C" void fn_80158F34(void**);
-extern "C" f32 fn_80158D60(void*, void*);
+extern "C" f32 emitBonusTrackerValue(void*, void*);
 /* Run a per-frame update for this object: apply a pre-hook, emit its current value when active,
  * and trigger an event for the selected entry under specific game-state conditions. */
 extern "C" void fn_80158E88(void* self, void* context) {
@@ -1812,7 +1812,7 @@ extern "C" void fn_80158E88(void* self, void* context) {
     s32 selectedValue;
     fn_80158F34(&savedContext);
     if (*(f32*)((u8*)self + 0x25C) > lbl_80561754) {
-        fn_80158D60(self, savedContext);
+        emitBonusTrackerValue(self, savedContext);
     }
     selectedValue = *(s32*)((u8*)(*(u32*)((u8*)self + 8) +
         (*(s32*)((u8*)self + 0xC) - 1) * 0x38) + 4);
@@ -1882,7 +1882,7 @@ extern "C" s32 fn_80158F98(const void *obj, f32 *out) {
    and moves the time (0x258) on by one frame.  Once the progress counted for
    the instance at 0x268 (0x260) has passed the level at 0x24C, that instance is
    told about this tracker through fn_801CB750 and its progress is cleared -
-   the step fn_80158D0C takes on its own, plus the counters fn_80158D60 would
+   the step fn_80158D0C takes on its own, plus the counters emitBonusTrackerValue would
    have reset after emitting. */
 extern "C" void fn_801590A8(void* self) {
     f32 frameTime;
@@ -4801,7 +4801,7 @@ extern "C" void fn_80159488(Unk801577F0* object) {
 #define ACH_COUNTER_CRASH    7  // "crash"
 
 // End of this drift bonus tracker's bonus, called with the tracker and the
-// player whose bonus ended.  It hands the value built up so far to fn_80158D60,
+// player whose bonus ended.  It hands the value built up so far to emitBonusTrackerValue,
 // which scores it into the record being filled and resets the progress
 // counters; banks the last record's count of scored values in the "drift"
 // lifetime counter -- only for a single player run (fn_80179650() == 1) in the
@@ -4813,7 +4813,7 @@ extern "C" void fn_80159554(void *tracker, void *player) {
     s32 scoredCount;
     fn_80158F34(&playerArg);
     if (*(f32 *)((u8 *)tracker + 0x25C) > 0.0f) {
-        fn_80158D60(tracker, playerArg);
+        emitBonusTrackerValue(tracker, playerArg);
     }
     scoredCount = ((BonusRecord *)*(u32 *)((u8 *)tracker + 8))[(s32)(*(s32 *)((u8 *)tracker + 0xC) - 1)].scoredCount;
     if (scoredCount > 0 && fn_80179650() == 1 && *(s32 *)((u8 *)player + 0x1F0) == 0x50 && fn_801CF064() == 0) {
