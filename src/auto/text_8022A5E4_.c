@@ -1409,7 +1409,7 @@ int fn_8022CC8C(const char *styleName) {
 __declspec(section ".sdata") extern char lbl_8055B928[];
 extern char lbl_80340070[];
 extern int sscanf(const char *, const char *, ...);
-int fn_8022CD0C(char *arg0) {
+int parseStyleColor(char *arg0) {
     extern int __rlwimi(int, int, int, int, int);
     volatile int sp18;
     int sp14;
@@ -1454,7 +1454,7 @@ extern char lbl_8033FBE8[], lbl_8055B930[], lbl_8055B938[], lbl_8055B940[], lbl_
 #pragma cplusplus on
 void fn_8022CDE4(int *d, void *o) {
     /* Reads a record of seven int attributes out of an XML node into d[0..6]:
-     * four numeric attributes (d[0..3]) via fn_8022CD0C, a named enum attribute
+     * four numeric attributes (d[0..3]) via parseStyleColor, a named enum attribute
      * mapped by name (d[4]), and a "%d %d" pair (d[5..6]).  Attribute keys come
      * from the string table lbl_8033FBE8. */
     class Xml {
@@ -1470,13 +1470,13 @@ void fn_8022CDE4(int *d, void *o) {
     if (!o)
         return;
     if (xo->has(base + 0x498))
-        d[0] = fn_8022CD0C(xo->get(base + 0x498));
+        d[0] = parseStyleColor(xo->get(base + 0x498));
     if (xo->has(base + 0x4A4))
-        d[1] = fn_8022CD0C(xo->get(base + 0x4A4));
+        d[1] = parseStyleColor(xo->get(base + 0x4A4));
     if (xo->has(base + 0x4BC))
-        d[2] = fn_8022CD0C(xo->get(base + 0x4BC));
+        d[2] = parseStyleColor(xo->get(base + 0x4BC));
     if (xo->has(base + 0x4C8))
-        d[3] = fn_8022CD0C(xo->get(base + 0x4C8));
+        d[3] = parseStyleColor(xo->get(base + 0x4C8));
     if (xo->has(base + 0x4E0)) {
         s = xo->get(base + 0x4E0);
         if (stricmp(s, lbl_8055B930) == 0)
@@ -1492,7 +1492,7 @@ void fn_8022CDE4(int *d, void *o) {
         else if (stricmp(s, base + 0x504) == 0)
             d[4] = 6;
         else
-            d[4] = fn_8022CD0C(s);
+            d[4] = parseStyleColor(s);
     }
     if (xo->has(lbl_8055B948))
         sscanf(xo->get(lbl_8055B948), lbl_8055B950, &d[5], &d[6]);
