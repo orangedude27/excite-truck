@@ -5672,7 +5672,7 @@ void getDevConfig(s32 chan, s32 result, WPADStatus* status, u8* data)
    extension register: check the two 16-byte blocksums and store the stick and
    accelerometer calibration in the channel's extension config. On failure the
    channel is marked as an unsupported extension. */
-void fn_80064278(s32 chan, s32 result) {
+void parseExtConfig(s32 chan, s32 result) {
     const char* messages = (const char*)lbl_80312338;
     WPADCB* cb = lbl_8038F4F0[chan];
     WPADExtConfig* ext = (WPADExtConfig*)((u8*)cb + 0x7C2);
@@ -6009,7 +6009,7 @@ void fn_80064F64(s32 chan, void* data) {
                 }
             }
             if (*(s32*)((u8*)pCB + 0x8B8) == 0x04A40020) {
-                fn_80064278(chan, sd);
+                parseExtConfig(chan, sd);
             }
             if (*(s32*)((u8*)pCB + 0x8B8) == 0x04A400FE) {
                 fn_80064740(chan, sd);
