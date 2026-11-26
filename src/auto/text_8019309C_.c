@@ -534,19 +534,19 @@ public:
 
 #pragma cplusplus on
 #pragma scheduling invalid_target
-/* Initialize the driver object (link it to its vehicle, register it in the slot table, and seed shared tuning state on first init). */ /* Initialize the driver object (link it to its vehicle, register it in the slot table, and seed shared tuning state on first init). */ extern "C" void initDriver(void *driver, void *vehicle) {
+/* Initialize the driver object (link it to its vehicle, register it in the slot table, and seed shared tuning state on first init). */ /* Initialize the driver object (link it to its vehicle, register it in the slot table, and seed shared tuning state on first init). */ /* Initialize the driver object (link it to its vehicle, register it in the slot table, and seed shared tuning state on first init). */ extern "C" void initDriver(void *driver, void *vehicle) {
     /* Initialize a player/vehicle-related runtime object, register it, and one-time init shared tuning/state. */
     char *table = lbl_80333158;
     int zero = 0;
-    int id;
+    int vehicleId;
     DummyClass_80193AEC *obj;
 
     *(void **)((char *)driver + 0x294) = vehicle;
     *(int *)((char *)driver + 0x214) = 2;
     *(unsigned char *)((char *)driver + 0x2A4) = zero;
-    id = *(int *)((char *)vehicle + 0x1EC);
-    *(int *)((char *)driver + 0x290) = id;
-    fn_80134CD4(id, (char *)driver + 0x2AC);
+    vehicleId = *(int *)((char *)vehicle + 0x1EC);
+    *(int *)((char *)driver + 0x290) = vehicleId;
+    fn_80134CD4(vehicleId, (char *)driver + 0x2AC);
 
     *(void **)((char *)driver + 0x298) = (char *)*(void **)((char *)driver + 0x294) + 0x23AC;
     lbl_804349C0[*(int *)((char *)driver + 0x290)] = driver;
