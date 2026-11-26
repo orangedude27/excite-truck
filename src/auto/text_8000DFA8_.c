@@ -855,15 +855,15 @@ void fn_8001027C(s32 color, s32 fontId, const char *fmt, f32 y, f32 x, f32 scale
 #pragma processor 750
 #pragma scheduling invalid_target
 /* printf-style UI text draw: formats the message into a scratch buffer, then queues a
-   word-wrapped draw of it (fn_80233010) with the default UI font (lbl_8055D490) in the
+   word-wrapped draw of it (Text_drawWordWrapped) with the default UI font (lbl_8055D490) in the
    given color/flags at (x, y), wrapped at `width` and drawn at `scale` times the UI
-   scale factor lbl_805602C8. The trailing 1 selects fn_80233010's queued-draw mode. */
+   scale factor lbl_805602C8. The trailing 1 selects Text_drawWordWrapped's queued-draw mode. */
 void fn_800103B8(s32 color, s32 flags, f32 scale, f32 x, f32 y, f32 width, const char *fmt, ...) {
     char buffer[0x200];
     va_list args;
     va_start(args, fmt);
     vsprintf(buffer, fmt, args);
-    fn_80233010(buffer, lbl_8055D490,
+    Text_drawWordWrapped(buffer, lbl_8055D490,
                 x, y, width,
                 lbl_805602C8 * scale,
                 lbl_80560280, lbl_80560264,

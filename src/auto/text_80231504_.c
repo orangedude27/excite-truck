@@ -1168,7 +1168,7 @@ void fn_80232DF4(u8 *text, s32 font, s32 color, s32 flags, f32 x, f32 y, f32 sca
 extern u8 fn_80232B70(void *);
 extern void fn_802344CC(s32, s32, s32, s32, f32, f32, f32);
 extern f32 fn_8023293C(s32, char *, f32);
-/* Readable aliases for the pieces fn_80233010 wraps text with; the game's own
+/* Readable aliases for the pieces Text_drawWordWrapped wraps text with; the game's own
  * symbols keep their placeholder names. */
 #define gTextFontHeight fn_80232B70   /* the font's line height, one byte into the font */
 #define gTextMeasureWidth fn_8023293C /* pixel width of a string in a font, plus extra spacing */
@@ -1178,7 +1178,7 @@ extern f32 fn_8023293C(s32, char *, f32);
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling off
-void fn_80233010(char *string, s32 font, s32 color, s32 flags, s32 mode, f32 x, f32 y, f32 width, f32 scale, f32 spacing, f32 extra) {
+void Text_drawWordWrapped(char *string, s32 font, s32 color, s32 flags, s32 mode, f32 x, f32 y, f32 width, f32 scale, f32 spacing, f32 extra) {
 #pragma scheduling invalid_target
     /* Word-wrapped text draw: takes the whole UTF-8 characters of `string` that still
      * measure under `width` into lineBuffer, breaking the line back at the last space

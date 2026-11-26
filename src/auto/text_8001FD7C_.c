@@ -646,7 +646,7 @@ extern float lbl_80560544, lbl_80560548, lbl_8056054C, lbl_80560550;
 extern void fn_80148134(float, float, float *, float *, int);
 extern void fn_80011280(int, int, float, float, float);
 extern void fn_8023293C(int, int, float);
-extern void fn_80233010(int, int, int, int, int, float, float, float, float, float, float);
+extern void Text_drawWordWrapped(int, int, int, int, int, float, float, float, float, float, float);
 extern int fn_800167F4(void);
 extern void fn_80130FCC(void *, int, int);
 extern void fn_80130980(void *, int, int, float);
@@ -760,7 +760,7 @@ void fn_800209A0(int arg0, float arg1)
       fn_80131318();
     }
     fn_8023293C(lbl_8055D64C, lbl_8035BAF0.f4, lbl_805604B8);
-    fn_80233010(lbl_8055D65C, lbl_8055D64C, -1, 0x11, 0, lbl_805604C8 + f26b, f25b - lbl_80560530, lbl_80560534, lbl_80560538, lbl_805604B4, lbl_805604B8);
+    Text_drawWordWrapped(lbl_8055D65C, lbl_8055D64C, -1, 0x11, 0, lbl_805604C8 + f26b, f25b - lbl_80560530, lbl_80560534, lbl_80560538, lbl_805604B4, lbl_805604B8);
   }
   if (((lbl_8055D646 == 0) && ((((((lbl_8055D647 & 0xFF) & 0xFF) & 0xFF) & 0xFF) & 0xFF) == 0)) && (fn_800167F4() == 1))
   {
