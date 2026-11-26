@@ -12796,7 +12796,7 @@ extern "C" s32 fn_800B814C(void *fileState) {
 #pragma push
 #pragma global_optimizer off
 // Creates/opens the NAND file for the path in arg0+0x4 and stores handle in arg0+0x58.
-extern "C" s32 createOrOpenNandFile(void *arg0, s32 arg1) {
+/* Creates/opens the NAND file for the path in arg0+0x4 and stores the handle in arg0+0x58. Walks the path component by component, creating each private directory along the way (NANDPrivateCreateDir), refusing paths over 0xC components, and updates arg0+0x58 with the opened file's type. */ extern "C" s32 createOrOpenNandFile(void *ctx, s32 arg1) {
     extern s32 NANDCreate(void*,s32,s32);
     extern s32 NANDGetType(void*);
     extern s32 NANDOpen(void*,void*,s32);
@@ -12805,59 +12805,59 @@ extern "C" s32 createOrOpenNandFile(void *arg0, s32 arg1) {
     extern s32 fn_800A4AD0(void*,void*);
     extern s32 lbl_80559244;
     extern s32 lbl_80559240;
-    u8 path[0x10];
+    u8 filePath[0x10];
     u16 part = 0;
-    u8 *src;
+    u8 *srcByte;
     u16 total = 0;
     s32 result;
-    u8 *dst;
+    u8 *dstByte;
 
-    if (*(u32*)((u8*)arg0 + 0xE4) & 4) return 0;
-    src = (u8*)arg0 + 4;
-    fn_800A499C(path, 0, 0x10);
-    dst = path;
+    if (*(u32*)((u8*)ctx + 0xE4) & 4) return 0;
+    srcByte = (u8*)ctx + 4;
+    fn_800A499C(filePath, 0, 0x10);
+    dstByte = filePath;
 
 loop:
-    switch ((s8)*src) {
+    switch ((s8)*srcByte) {
     case '/':
         if (part == 0) {
             if (total == 0) {
                 result = NANDGetType(&lbl_80559240);
                 if (result) return result;
             }
-            src++;
+            srcByte++;
             goto copy;
         }
-        if ((s8)src[1] == 0) {
+        if ((s8)srcByte[1] == 0) {
             if (part > 0xC) return -20;
-            result = NANDCreate(path, 0x30, 0);
+            result = NANDCreate(filePath, 0x30, 0);
             if (result == 0 || result == -6) {
-                NANDOpen(path, (u8*)arg0 + 0x58, 3);
+                NANDOpen(filePath, (u8*)ctx + 0x58, 3);
                 result = NANDGetType(&lbl_80405D18);
             }
             goto done;
         }
         if (part > 0xB) return -20;
-        result = fn_800A4AD0(path, &lbl_80559244);
-        if (result) result = NANDPrivateCreateDir(path, 0x30, 0);
+        result = fn_800A4AD0(filePath, &lbl_80559244);
+        if (result) result = NANDPrivateCreateDir(filePath, 0x30, 0);
         else result = 0;
         if (result == 0 || result == -6 || result == -1) {
-            result = NANDGetType(path);
+            result = NANDGetType(filePath);
             if (result == 0) goto valid;
             return result;
         }
         return result;
 valid:
-        src++;
-        fn_800A499C(path, 0, 0x10);
-        dst = path;
+        srcByte++;
+        fn_800A499C(filePath, 0, 0x10);
+        dstByte = filePath;
         part = 0;
         goto copy;
     case 0:
         if (part > 0xC) return -20;
-        result = NANDCreate(path, 0x30, 0);
+        result = NANDCreate(filePath, 0x30, 0);
         if (result == 0 || result == -6) {
-            NANDOpen(path, (u8*)arg0 + 0x58, 3);
+            NANDOpen(filePath, (u8*)ctx + 0x58, 3);
             result = NANDGetType(&lbl_80405D18);
         }
         goto done;
@@ -12865,7 +12865,7 @@ valid:
         break;
     }
 copy:
-    *dst++ = *src++;
+    *dstByte++ = *srcByte++;
     part++;
     total++;
     goto loop;
