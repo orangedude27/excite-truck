@@ -255,7 +255,7 @@ s32 fn_80116A30(ARCFileInfo *info) {
 }
 
 /* Always reports success (nonzero); callers ignore the return value. */
-s32 fn_80116A38(void) {
+s32 ARCCloseFile(void) {
     return 1;
 }
 
@@ -8637,6 +8637,7 @@ void fn_80125664(void *outp, void *stridep, void *inp, void *quantp) {
     s32 *quant = quantp;
     s32 tmp[64];
     s32 *t = tmp;
+    s32 s25, s26, s26b, s7, s0, s23, s24, s12, s7b, s0b, s7c, s25b, s9, s10, s11, s23b, s9b, s8, s10b, s25c, s23c, s11b, s9c, s7d, v24;
     s32 i;
     for (i = 0; i < 8; i++) {
         if ((in[8] | in[24] | in[16] | in[32] | in[48] | in[40] | in[56]) == 0) {
@@ -8653,8 +8654,7 @@ void fn_80125664(void *outp, void *stridep, void *inp, void *quantp) {
             t[56] = dc;
             t++;
         } else {
-            s32 s25, s26, s26b, s7, s0, s23, s24, s12, s7b, s0b, s7c, s25b, s9, s10, s11, s23b, s9b, s8, s10b, s25c, s23c, s11b, s9c, s7d;
-            s32 v24 = (in[0] * quant[0]) >> 11;
+            v24 = (in[0] * quant[0]) >> 11;
             s25 = (in[16] * quant[16]) >> 11;
             s9 = (in[24] * quant[24]) >> 11;
             s0 = (in[48] * quant[48]) >> 11;

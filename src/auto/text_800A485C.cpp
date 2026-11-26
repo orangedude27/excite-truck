@@ -21724,7 +21724,7 @@ extern "C" void __VprintfThunk(const char*, va_list);
 extern "C" void Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ46nw4hbm2db6detail11ConsoleHeadPCcP16__va_list_struct(void*, void*, const char*, void*);
 extern "C" s32 fn_80116A30(void*);
 extern "C" void fn_800D1C48(s32, s32);
-extern "C" s32 fn_80116A38(void*);
+extern "C" s32 ARCCloseFile(void*);
 extern "C" u32 fn_80060CC0(void*, u32, u32);
 extern "C" void fn_800D1B1C(s32, s32);
 
@@ -22831,7 +22831,7 @@ extern "C" s32 getArcFileAddress(long arcHandle, long dirPath, long subDirFourCC
         if(ARCFastOpen(ARC,entry,&info)==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8,0x83,lbl_8031F2E4);
         result=(s32)ARCGetStartAddrInMem(&info);
         if(outSize) *(u32*)outSize=fn_80116A30(&info);
-        fn_80116A38(&info);
+        ARCCloseFile(&info);
         return result;
     }
     return 0;
@@ -27470,7 +27470,7 @@ extern "C" void Play__Q210homebutton9RemoteSpkFliSc(void *arg0, long arg1, int a
         ARCFastOpen((ARCHandle *)((u8 *)r26 + 0x1D0), r28, &info);
         r30 = ARCGetStartAddrInMem(&info);
         r31 = fn_80116A30(&info);
-        fn_80116A38(&info);
+        ARCCloseFile(&info);
         
         u8 *entry = (u8 *)r26 + ((s32)r27 * 0x68);
         entry[0x5E] = 0;
