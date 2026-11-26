@@ -4170,6 +4170,9 @@ extern "C" void drawTextBox(void *self) {
         u8 padA5C[4];                /* 0xA5C the "ibeam.img" cursor graphic */
         s32 sliderArt;               /* 0xA60 "slider.img", single-row boxes */
     };
+#define kZeroFloat   lbl_805634A8
+#define kOneFloat    lbl_805634A4
+#define kThreeFloat  lbl_80563514
     TextBox *box = (TextBox *)self;
     char caretText[256]; /* the box' text, cut where the caret stands */
     if (box->sliderArt) {
@@ -4178,7 +4181,7 @@ extern "C" void drawTextBox(void *self) {
         y = (f32)(screenHeightPx / 2 - box->y);
         height = (f32)gxGetImageHeight(box->sliderArt);
         f32 width = (f32)((Vf78 *)self)->get();
-        gxDrawPicture(box->sliderArt, 0, x, y, lbl_805634A8, width, height);
+        gxDrawPicture(box->sliderArt, 0, x, y, kZeroFloat, width, height);
     }
     s32 zero = 0;
     ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, s32, f32))drawTextIntArgs)(
@@ -4192,8 +4195,11 @@ extern "C" void drawTextBox(void *self) {
         if (box->caretIndex >= 0) caretText[box->caretIndex] = zero;
         x += (f32)UIStyle_getTextOffsetX(box->style, (s32)caretText);
         f32 height = (f32)UIStyle_getTextHeight(box->style, caretText);
-        ((void (*)(s32,f32,f32,f32,f32,f32))drawSolidRect)(-0x100, x, y - lbl_80563514, lbl_805634A4 + x, lbl_80563514 + (y - height), lbl_805634A8);
+        ((void (*)(s32,f32,f32,f32,f32,f32))drawSolidRect)(-0x100, x, y - kThreeFloat, kOneFloat + x, kThreeFloat + (y - height), kZeroFloat);
     }
+#undef kThreeFloat
+#undef kOneFloat
+#undef kZeroFloat
 }
 
 #pragma pop
