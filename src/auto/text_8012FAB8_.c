@@ -63,7 +63,7 @@ struct ObjVTable {
 typedef struct {
     ObjVTable *vt;
 } Obj;
-extern Obj *fn_80131808(void *arg);
+extern Obj *getValueFile(void *arg);
 extern void fn_80131818(Obj *arg);
 extern void fn_80131318(int *arg);
 extern void *fn_80131234();
@@ -200,7 +200,7 @@ void fn_8012FAB8(void *arg0)
     Obj *child;
     Obj *parent;
     Rec10 *records;
-    parent = fn_80131808(arg0);
+    parent = getValueFile(arg0);
     if (parent != 0)
     {
       long index;

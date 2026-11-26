@@ -33,7 +33,7 @@ typedef Node_80279254 CarResourceNode;
 
 extern void* fn_801284F8(s32, const char*);
 extern s32 fn_8012C33C(char*);
-extern void* fn_80131808(char*);
+extern void* getValueFile(char*);
 extern void fn_80131818(void*);
 extern void fn_802E30C8(const char*, ...);
 extern void Abend_Panic(const char*, ...);
@@ -325,15 +325,15 @@ extern "C" void* loadCarResource(s32 name, s32 arg1) {
      * new resource onto the head of gCarResourceList. */
     resource = (char*)fn_801284F8(0x2464, carLayoutAllocLabel);
     sprintf(physicsPath, layoutStrings + 0xF4, resourceName);
-    *(void**)(resource + 0x2438) = fn_80131808(physicsPath);
+    *(void**)(resource + 0x2438) = getValueFile(physicsPath);
     sprintf(physicsPath, layoutStrings + 0x108, resourceName);
     if (fn_8012C33C(physicsPath) == 0) {
         sprintf(physicsPath, layoutStrings + 0x118, resourceName);
     }
-    boneFile = fn_80131808(physicsPath);
+    boneFile = getValueFile(physicsPath);
     sprintf(boneModPath, layoutStrings + 0x128, resourceName);
     if (fn_8012C33C(boneModPath) != 0) {
-        boneModFile = fn_80131808(boneModPath);
+        boneModFile = getValueFile(boneModPath);
     } else {
         boneModFile = NULL;
     }

@@ -225,7 +225,7 @@ void *fn_8025343C(void *obj) {
 #pragma cplusplus on
 extern "C" void fn_801345D8(void *, int, const char *, ...);
 extern "C" int fn_802C6FC0(void *, int, int);
-extern "C" void *fn_80131808(void *);
+extern "C" void *getValueFile(void *);
 extern "C" int fn_801F0010(int, int);
 extern "C" float fn_801F159C(int);
 extern "C" void fn_80131818(void *, float, float, float);
@@ -312,7 +312,7 @@ copy_done:
     fn_801345D8(stack.sp18, 0x20, labels + 0x24, stack.sp38);
     *(int *)((unsigned char *)arg0 + 0x14) = fn_802C6FC0(stack.sp18, 0, (int)stack.sp38);
     fn_801345D8(stack.sp18, 0x20, labels + 0x34, stack.sp38);
-    manager = fn_80131808(stack.sp18);
+    manager = getValueFile(stack.sp18);
     resource = ((Dummy *)manager)->lookup(lbl_8055C130);
     *(int *)((unsigned char *)arg0 + 0x18) =
         fn_801F0010(((Dummy *)resource)->load(labels + 0x44),
@@ -1217,7 +1217,7 @@ void fn_8025539C(void *arg0, s32 arg1) {
     strings = lbl_803447C0;
     manager = strings + 0x128;
     if (fn_8012C33C(manager) != 0) {
-        obj = fn_80131808(manager);
+        obj = getValueFile(manager);
         if (((Factory *)obj)->test(arg1) != 0) {
             result = ((Factory *)obj)->get(arg1);
             value = ((Query *)result)->value(strings + 0x134, lbl_80563A5C);

@@ -238,7 +238,7 @@ extern void fn_80128670(void *);
 extern void fn_801308F4(char *, int, int);
 extern void fn_80130980(char *, int, int, float);
 extern char *fn_80131234(void *);
-extern void **fn_80131808(void *);
+extern void **getValueFile(void *);
 extern void fn_80131818(void *);
 extern void fn_801345D8(char *, int, const char *, ...);
 extern void *fn_80214A9C(int);
@@ -326,7 +326,7 @@ void fn_8025C204(int arg0, int arg1) {
     if (lbl_8055F2E8 == 0) {
         list = fn_801284F8(8, lbl_8055C114);
         if (list != 0) {
-            items = fn_80131808(lbl_80344760);
+            items = getValueFile(lbl_80344760);
             *(int *)((char *)list + 4) = 0;
             *(void **)list = fn_8012850C(0xAF0, lbl_8055C10C);
             i = 0;

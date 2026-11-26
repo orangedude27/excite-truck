@@ -13,7 +13,7 @@ s32 fn_80018E44(const char *, s32);
 s32 Abend_Panic(void *, void *);
 void fn_80018BA4(void);
 void fn_80018CCC(void);
-void *fn_80131808(void *);
+void *getValueFile(void *);
 extern const char lbl_80558C50[] __attribute__((section(".sdata2")));
 extern const char lbl_802FD2F4[];
 extern const char lbl_802FD308[];
@@ -597,7 +597,7 @@ s32 fn_80019088(void) {
 __declspec(section ".data") extern void *lbl_802FD2DC;
 /* RealName: InitUnlocks. Load the unlock/properties manager from common.res/unlock.val, build its item tables, and clear the reset-requested flag. */
 void fn_80018F40(void) {
-    sUnlockManager = fn_80131808(&sUnlockValPath);
+    sUnlockManager = getValueFile(&sUnlockValPath);
     fn_80018BA4();
     fn_80018CCC();
     sResetRequested = 0;

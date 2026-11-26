@@ -1,7 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 extern void fn_80287D70(void *, int, int);
 extern int fn_8012C33C(const char *);
-extern int fn_80131808(const char *);
+extern int getValueFile(const char *);
 extern int sprintf(char *, const char *, ...);
 extern const char lbl_80348A20[];
 extern const char lbl_80348A30[];
@@ -518,7 +518,7 @@ void fn_80287CE8(int effectSlot, void *carName, int effectId, int flags) {
     /* Load a car's "<name>.car/efx.val" effect file into its table slot, then parse it. */
     sprintf(path, lbl_80348A20, carName);
     if (fn_8012C33C(path) != 0) {
-        *(void **)effectSlot = (void *)fn_80131808(path);
+        *(void **)effectSlot = (void *)getValueFile(path);
     }
     fn_80287D70((void *)effectSlot, effectId, flags);
 }
@@ -552,7 +552,7 @@ void fn_80287D70(void *arg0, int arg1, int arg2) {
 #pragma scheduling on
 extern void fn_801346B4(void *, s32, s32);
 extern s32 fn_8012C33C(const char *);
-extern s32 fn_80131808(const char *);
+extern s32 getValueFile(const char *);
 extern void fn_80287D70(void *, s32, s32);
 extern int sprintf(char *, const char *, ...);
 extern const char lbl_80348A40[];

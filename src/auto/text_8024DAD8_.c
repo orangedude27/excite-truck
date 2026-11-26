@@ -801,7 +801,7 @@ void *fn_8024F17C(void *arg0, void **arg1, s32 *arg2, s32 *arg3, void *arg4, voi
     extern void *fn_801284F8(unsigned int, void *);
     extern void *fn_8012850C(s32, void *);
     extern void fn_80130FCC(void *, s32, void *);
-    extern void *fn_80131808(void *);
+    extern void *getValueFile(void *);
     extern void fn_80131818(void *);
     extern void fn_801345D8(void *, s32, void *, ...);
     extern s32 ArtSetGet(void *);
@@ -853,7 +853,7 @@ void *fn_8024F17C(void *arg0, void **arg1, s32 *arg2, s32 *arg3, void *arg4, voi
     if (lbl_8055F2E8 == 0) {
         temp_r3_3 = fn_801284F8(8, lbl_8055C114);
         if (temp_r3_3 != 0) {
-            temp_r3_4 = (void **)fn_80131808(lbl_80344760);
+            temp_r3_4 = (void **)getValueFile(lbl_80344760);
             M2C_FIELD(temp_r3_3, s32, 4) = 0;
             M2C_FIELD(temp_r3_3, void *, 0) = fn_8012850C(0xAF0, lbl_8055C10C);
             var_r22 = 0;
@@ -919,7 +919,7 @@ loop_20:
     M2C_FIELD(this_obj, s8, 0x80) = 0;
     M2C_FIELD(this_obj, void *, 0xCC) = fn_8012850C(M2C_FIELD(this_obj, s32, 0x1C) * 0x14, lbl_8055C0D0);
     temp_f31 = lbl_80563960;
-    temp_r18 = fn_80131808((void *)(base_4170 + 0x1A8));
+    temp_r18 = getValueFile((void *)(base_4170 + 0x1A8));
     var_r23_2 = 0; var_r19 = 0; var_r14 = 0; var_r16 = 0;
 loop_54:
     if (var_r19 < M2C_FIELD(this_obj, s32, 0x1C)) {
@@ -1988,31 +1988,48 @@ extern "C" double __fabs(double);
 extern "C" void fn_80251B04(void *arg0) {
     extern s32 lbl_8055CFF0;
     extern u32 lbl_8055CFF4;
+    extern f32 lbl_80563960;
     extern const f32 lbl_80563964, lbl_80563980, lbl_8056398C, lbl_80563990, lbl_80563994, lbl_80563998, lbl_8056399C, lbl_805639A0, lbl_805639A4, lbl_805639A8, lbl_805639AC, lbl_805639B0, lbl_805639B4, lbl_805639B8, lbl_805639BC;
     extern double __fabs(double);
+    extern f32 fn_80216CB4(void);
+    extern void drawPictureScaled(s32, s32, s32, f32, f32, f32, f32, f32);
     f32 temp_f3, temp_f10, f27, f26, f23;
     s32 off, i;
-    temp_f10 = (f32)((s32)(((u32)lbl_8055CFF4 >> 31) + lbl_8055CFF4) >> 1);
+
+    temp_f10 = (f32)((s32)lbl_8055CFF4 / 2);
     temp_f3 = (lbl_80563990 * (f32)lbl_8055CFF0) / lbl_80563994;
     f27 = temp_f10 - lbl_8056398C;
-    fn_80231220(*(s32 *)((char *)arg0 + 0x20), -1, lbl_8055CFF4, lbl_80563998 * temp_f3, lbl_8056399C, temp_f3, lbl_805639A0, lbl_80563960, lbl_80563960, lbl_805639A4, lbl_80563964);
+    fn_80231220(*(s32 *)((char *)arg0 + 0x20), -1, lbl_8055CFF4,
+                lbl_80563998 * temp_f3, lbl_8056399C, temp_f3, lbl_805639A0,
+                lbl_80563960, lbl_80563960, lbl_805639A4, lbl_80563964);
     f26 = fn_80216CB4();
-    f23 = lbl_80563960;
     i = 0;
     off = 0;
     for (; i < *(s32 *)((char *)arg0 + 0x1C); i++, off += 0xC) {
-        register char *p = *(char **)((char *)arg0 + 0x18) + off;
-        register f32 a, b, c;
-        register s32 idx = i;
+        char *p = *(char **)((char *)arg0 + 0x18) + off;
+        f32 a, b, c, s, y, arg3, arg4, arg6, arg7;
+
         a = lbl_80563964 - (f32)__fabs(*(f32 *)(p + 8));
         a = a < f26 ? a : f26;
+        s = lbl_805639A8 * a;
         c = *(f32 *)((char *)arg0 + 0x28);
+        arg3 = lbl_805639AC * ((f32)i - c) - lbl_805639B0;
+        y = f27 - lbl_80563980 * ((lbl_80563964 - a) * lbl_805639A8);
         b = (f32)__fabs(c - (f32)i);
-        b = b < lbl_80563964 ? b : lbl_80563964;
+        if (lbl_80563964 < b) {
+            b = lbl_80563964;
+        }
+        f23 = lbl_80563960;
         b = b > f23 ? b : f23;
-        (*(void (**)(void *, s32, s32, f32, f32, f32, f32, f32))(*(char **)arg0 + 0x60))(arg0, i, *(s32 *)p, lbl_805639AC * ((f32)i - c) - lbl_805639B0, (f27 - lbl_80563980 * (lbl_805639A8 * (lbl_80563964 - a))) + lbl_805639B4 * a, lbl_805639AC, lbl_805639A8 * a + lbl_805639A4 * a, lbl_80563964 - b);
+        arg7 = lbl_80563964 - b;
+        arg4 = y + lbl_805639B4 * a;
+        arg6 = s + lbl_805639A4 * a;
+        (*(void (**)(void *, s32, s32, f32, f32, f32, f32, f32))(*(char **)arg0 + 0x60))(
+            arg0, i, *(s32 *)p, arg3, arg4, lbl_805639AC, arg6, arg7);
     }
-    drawPictureScaled(*(s32 *)((char *)arg0 + 0x24), 2, -1, lbl_805639B8, lbl_805639B4 + f27, lbl_80563960, lbl_805639AC, lbl_805639BC);
+    drawPictureScaled(*(s32 *)((char *)arg0 + 0x24), 2, -1,
+                      lbl_805639B8, lbl_805639B4 + f27, lbl_80563960,
+                      lbl_805639AC, lbl_805639BC);
 }
 
 #pragma scheduling on

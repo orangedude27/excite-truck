@@ -6,7 +6,7 @@ extern char lbl_8033BBD8[];
 extern void *fn_801E87A8(void);
 extern void *fn_801284F8(int, void *);
 extern const char lbl_8033BBE4[];
-extern void *fn_80131808(const char *);
+extern void *getValueFile(const char *);
 extern int fn_80012854(void);
 extern char lbl_802F9D68[];
 #define sTypeEntries   lbl_802F9D68 /* 0xC-byte descriptors: {name, display name, property key} */
@@ -135,7 +135,7 @@ extern "C" void fn_80204BB8(void)
     *(int *)((char *)info + 8) = 0;
     *(int *)((char *)info + 12) = 0;
     *(int *)((char *)info + 16) = 0;
-    *groupSlot = fn_80131808(DIFFICULTY_VAL);
+    *groupSlot = getValueFile(DIFFICULTY_VAL);
     typeEntry = fn_80204B18(sceneType);
     groupValue = ((PropertyGroup *)*groupSlot)->get(*(int *)((char *)typeEntry + 8));
     *(void **)((char *)info + 8) = groupValue;
@@ -385,7 +385,7 @@ void fn_80205208(void) {
 }
 
 extern const char lbl_8033BBE4[];
-extern void *fn_80131808(const char *);
+extern void *getValueFile(const char *);
 extern int fn_80012854(void);
 #pragma push
 #pragma dont_inline on
@@ -447,7 +447,7 @@ extern "C" int getDifficultyProperty(const char *propName, int typeIndex, int st
     lookup.current = 0;
     lookup.stage = 0;
     lookup.contest = 0;
-    lookup.group = fn_80131808(DIFFICULTY_VAL);
+    lookup.group = getValueFile(DIFFICULTY_VAL);
     typeEntry = (char *)fn_80204B18(typeIndex);
     lookup.current = ((ValueGroup *)lookup.group)->get(*(int *)(typeEntry + 8));
     if (stageIndex >= 0 && stageIndex < fn_80012854()) {
@@ -563,7 +563,7 @@ inline DiffLookup802054EC::DiffLookup802054EC(int type, int stageIndex) {
     current = 0;
     stage = 0;
     contest = 0;
-    group = fn_80131808(lbl_8033BBE4);
+    group = getValueFile(lbl_8033BBE4);
     entry = (char *)((void *(*)(int))fn_80204B18)(type);
     current = ((ValueGroup *)group)->get(*(int *)(entry + 8));
     if (stageIndex >= 0 && stageIndex < fn_80012854()) {

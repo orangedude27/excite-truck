@@ -13,7 +13,7 @@ extern float lbl_8042F8B8[];
 extern int fn_801E87A8(void);
 extern void readCatchupParams(float*, int);
 extern void fn_8013B6C0(int*, float*, int);
-extern void *fn_80131808(void *);
+extern void *getValueFile(void *);
 extern void fn_80131818(void *);
 extern void Abend_Panic(const char *);
 extern int stricmp(const char *, const char *);
@@ -55,7 +55,7 @@ extern "C" void readCatchupParams(float *catchupParams, int carCount) {
     int entryIndex;
     const char *sectionName;
     unsigned int diffIndex;
-    catchupList = fn_80131808((void *)"catchup.val");
+    catchupList = getValueFile((void *)"catchup.val");
     if (catchupList == 0) goto error;
     entryIndex = 0;
     while ((entry = ((List *)catchupList)->getAt(entryIndex)) != 0) {

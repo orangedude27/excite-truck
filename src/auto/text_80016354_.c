@@ -17,7 +17,7 @@ extern int fn_80016510(int);
 extern void *lbl_8055D548;
 extern char lbl_802FCEA8[];
 extern void *lbl_8055D538;
-extern int fn_80131808(void *);
+extern int getValueFile(void *);
 extern int fn_8012850C(int, void *);
 extern void fn_80016C1C(void);
 extern void fn_8000D884(int, int, void *, int, void *);
@@ -32,7 +32,7 @@ void fn_80016354(void) {
     /* Initialize driver and vehicle data tables and register the vehicle-slot refresh callback. */
     int slotIndex;
 
-    lbl_8055D538 = (void *)fn_80131808(&lbl_802FCEA8[0xC]);
+    lbl_8055D538 = (void *)getValueFile(&lbl_802FCEA8[0xC]);
     lbl_8055D540 = (void *)fn_8012850C(0x11F8, &lbl_802FCEA8[0x18]);
     lbl_8055D544 = (void *)fn_8012850C(0x20D0, &lbl_802FCEA8[0x28]);
     fn_80016C1C();

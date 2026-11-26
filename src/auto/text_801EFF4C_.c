@@ -503,7 +503,7 @@ extern char lbl_8033A4A4[];
 extern char lbl_8033A4C8[];
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" int fn_8012C33C(char *);
-extern "C" void *fn_80131808(void *);
+extern "C" void *getValueFile(void *);
 extern "C" void fn_80131818(void *);
 extern "C" void readWheelModLods(void *, void *, char *);
 extern "C" void loadWheelLodTable(void *, void *);
@@ -525,7 +525,7 @@ extern "C" void fn_801F08AC(int arg0, const char *arg1) {
     if (fn_8012C33C(nameBuffer) == 0) {
         Abend_Panic(lbl_8033A4A4, arg1);
     }
-    resource = (Fn801F08ACResource *)fn_80131808(nameBuffer);
+    resource = (Fn801F08ACResource *)getValueFile(nameBuffer);
     fn_801F0148((void *)arg0, resource->lookup(lbl_8033A4C8));
     readWheelModLods((void *)arg0, resource->lookup((const char *)&lbl_8055B108), nameBuffer);
     ((void (*)(void *, void *))loadWheelModels)((void *)arg0, resource->lookup((const char *)&lbl_8055B0F0));

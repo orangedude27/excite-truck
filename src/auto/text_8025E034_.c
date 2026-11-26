@@ -978,7 +978,7 @@ struct ParamDir_8025FA18 {
 #pragma cplusplus reset
 extern void *fn_801284F8(int, const char *);
 extern "C" void *fn_8012850C(int, const char *);
-extern void *fn_80131808(const char *);
+extern void *getValueFile(const char *);
 extern void fn_80131818(void *);
 extern int RegisterTextureByName(const char *, int);
 extern int strcmp(const char *, const char *);
@@ -1013,7 +1013,7 @@ extern "C" void *fn_8025FA18(void) {
     if (lbl_8055F2E8 == 0) {
         heap = fn_801284F8(8, lbl_8055C114);
         if (heap != 0) {
-            set = (ParamDir_8025FA18 *)fn_80131808(lbl_80344760);
+            set = (ParamDir_8025FA18 *)getValueFile(lbl_80344760);
             *(int *)((char *)heap + 4) = 0;
             *(void **)heap = fn_8012850C(0xAF0, lbl_8055C10C);
             for (count = 0; (entry = set->getAt(count)) != 0; count++) {

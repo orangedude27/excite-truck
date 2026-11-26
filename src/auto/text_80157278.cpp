@@ -652,7 +652,7 @@ extern "C" s32 fn_80157558(void* arrayHolder) {
 }
 
 extern "C" void* fn_80131810(void*);
-extern "C" void* fn_80131808(void*);
+extern "C" void* getValueFile(void*);
 extern "C" void fn_80131818(void*);
 extern "C" void fn_801345D8(void*, s32, void*, ...);
 /* loadBonusStuntTable is handed one of the group's bonus trackers (an Unk801577F0) as
@@ -680,7 +680,7 @@ extern "C" char lbl_8055A054;   /* "%s " */
 #define STUNT_KEY_PTS       (&lbl_8055A050) /* "pts": the points the record is worth */
 #define STUNT_FMT_ADJ       (&lbl_8055A054) /* "%s ": the adjustment name in the record */
 
-/* One object of a parsed "*.val" value file: fn_80131810 / fn_80131808 open one
+/* One object of a parsed "*.val" value file: fn_80131810 / getValueFile open one
    by name and fn_80131818 closes it again.  Its values are looked up by the key
    string they are stored under, and a group hands out its entries by index
    until one comes back null. */
@@ -727,7 +727,7 @@ extern "C" void loadBonusStuntTable(VObj *tracker) {
        into the record's name.  Both files are closed again on the way out, the
        per-course one only when it is not the default file as well. */
     ValueObject *stunts = (ValueObject *)fn_80131810(STUNTS_VAL);
-    ValueObject *stuntDef = (ValueObject *)fn_80131808(STUNTDEF_VAL);
+    ValueObject *stuntDef = (ValueObject *)getValueFile(STUNTDEF_VAL);
     ValueObject *group;
     if (stunts == 0) {
         stunts = stuntDef;

@@ -280,7 +280,7 @@ extern void fn_80128670(void *);
 extern void fn_80128668(void *);
 extern void *fn_801284F8(int, void *);
 extern void *fn_8012850C(int, void *, int);
-extern void *fn_80131808(void *);
+extern void *getValueFile(void *);
 extern void fn_80131818(void *);
 extern int fn_8012C33C(void *);
 extern void *fn_8002F37C(void *, void *, void *, int, int);
@@ -440,7 +440,7 @@ extern "C" void *FlipBook_create(char *name, void *config) {
     if (book == 0) {
         valid = 0;
         if (fn_8012C33C(name) != 0) {
-            iterator = (Iterator *)fn_80131808(name);
+            iterator = (Iterator *)getValueFile(name);
             frameCount = 0;
             FlipBookFrame_initDefaults(defaultFrame);
             otherCount = 0;

@@ -25,7 +25,7 @@ extern int lbl_8055F2E8;
 extern char lbl_8055C114, lbl_8055C10C;
 extern char lbl_80344760[];
 extern void *fn_801284F8(int, void *);
-extern void **fn_80131808(void *);
+extern void **getValueFile(void *);
 extern void *fn_8012850C(int, void *);
 extern void *lbl_8055F2E4;
 extern char lbl_8055C108[], lbl_8055C100[];
@@ -83,7 +83,7 @@ void fn_8025CE78(void) {
     if (lbl_8055F2E8 == 0) {
         list = fn_801284F8(8, &lbl_8055C114);
         if (list != 0) {
-            items = fn_80131808(&lbl_80344760);
+            items = getValueFile(&lbl_80344760);
             *(int *)((char *)list + 4) = 0;
             *(void **)list = fn_8012850C(0xaf0, &lbl_8055C10C);
             for (i = 0; ; i++) {

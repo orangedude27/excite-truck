@@ -15,7 +15,7 @@ extern void fn_80128668(void*);    /* free */
 extern void Abend_Panic(const char *, ...); /* debug/log print */
 extern int fn_800167F4(void);
 void fn_80137C84(int, int);
-extern void *fn_80131808(void *);       /* load a .val file */
+extern void *getValueFile(void *);       /* load a .val file */
 extern void fn_80131818(void *);        /* close a .val file */
 extern int sprintf(char *, const char *, ...);
 extern int stricmp(const char *, const char *);
@@ -76,7 +76,7 @@ extern "C" void fn_80137A18(void) {
     void *item;
     const char *itemName;
     sprintf(valPath, (const char *)(void *)&lbl_80559C18, leagueData + 8);
-    valList = fn_80131808(valPath);
+    valList = getValueFile(valPath);
     index = 0;
     for (;;) {
         item = ((ValList *)valList)->get(index++);

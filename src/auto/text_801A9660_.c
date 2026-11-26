@@ -180,7 +180,7 @@ void fn_801A9AB0(void *self, void *cfg) {
     extern void *fn_8019FFD8(void *, void *, void *);
     extern void fn_801A0258(void *, void *, void *);
     extern void fn_801A0444(void *, void *);
-    extern void *fn_80131808(void *);
+    extern void *getValueFile(void *);
     extern void *fn_80131818(void *);
     extern int strcmp(const char *, const char *);
     extern void fn_80179F94(void *, void *);
@@ -622,7 +622,7 @@ void fn_801A9AB0(void *self, void *cfg) {
         break;
 
     case 10:
-        scan = fn_80131808(c + 0x58);
+        scan = getValueFile(c + 0x58);
         while (scan != 0 && strcmp((const char *)scan, "MRJT") != 0) {
             scan = fn_80131818(scan);
         }

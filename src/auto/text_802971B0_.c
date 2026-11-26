@@ -188,7 +188,7 @@ float fn_8029748C(void *collection) {
 }
 
 extern s32 fn_8012C33C(void);
-extern void *fn_80131808(void *);
+extern void *getValueFile(void *);
 extern void fn_80131818(void *);
 extern void *fn_8012850C(s32, const char *, s32);
 extern void *fn_8002F37C(void *, void *, void *, s32, s32);
@@ -214,7 +214,7 @@ extern char lbl_803493B4[];
     s32 nodesSize;
     sequence = 0;
     if (fn_8012C33C() != 0) {
-        iterator = fn_80131808(path);
+        iterator = getValueFile(path);
         seqCount = 0;
         firstIndex = 0;
         for (;;) {

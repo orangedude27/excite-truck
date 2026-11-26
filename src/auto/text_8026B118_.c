@@ -102,7 +102,7 @@ extern int *__AXFXGetLfoSinTable_801769CC(void);
 extern void *fn_8001285C(int);
 extern void *fn_80028E00(char *, const char *);
 extern int fn_8012C33C(char *);
-extern void *fn_80131808(char *);
+extern void *getValueFile(char *);
 extern void fn_80131818(void *);
 extern int fn_802E30C8(const char *, ...);
 extern char *strchr(const char *, int);
@@ -151,7 +151,7 @@ extern "C" void fn_8026B260(void) {
             fn_802E30C8(base + 0xC, name);
             return;
         }
-        iteratorOrZero = (int)fn_80131808(name);
+        iteratorOrZero = (int)getValueFile(name);
         it = (Iterator *)iteratorOrZero;
         index = 0;
         do {

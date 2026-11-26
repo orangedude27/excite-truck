@@ -255,7 +255,7 @@ public:
 };
 #pragma cplusplus off
 extern u8 lbl_8032D358[];
-extern void *fn_80131808(void *);
+extern void *getValueFile(void *);
 extern void fn_80131818(void *);
 extern void *fn_8012850C(s32, void *);
 extern f32 lbl_8056163C, lbl_8056164C, lbl_80561670, lbl_805616C8;
@@ -2071,7 +2071,7 @@ extern "C" void *fn_8014E154(void *object, s32 shouldFree) {
     entry->selectedIndex = -1;
     entry->configValueA = 1;
     entry->configValueB = 1;
-    table = fn_80131808(strings + 0x4c8);
+    table = getValueFile(strings + 0x4c8);
     if (table != 0) {
         found = 0;
         iter = (Iter_8014E1D0 *)((Iter_8014E1D0 *)table)->open((char *)(strings + 0x4d8));

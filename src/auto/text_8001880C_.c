@@ -7,7 +7,7 @@ s32 fn_80128670(s32);
 s32 fn_80131818(s32);
 s32 Abend_Panic(const char *, ...);
 extern void* fn_8012850C(s32, const char*);
-extern void* fn_80131808(const char*);
+extern void* getValueFile(const char*);
 extern int fn_801345D8(char*, int, const char*, ...);
 extern void* memset(void*, int, unsigned long);
 extern char lbl_802FD1B0[];
@@ -62,7 +62,7 @@ extern "C" void fn_8001880C(void)
   u32 n;
   const int zero = 0;
   lbl_8055D570 = 1;
-  lbl_8055D574 = (s32) fn_80131808(base + zero);
+  lbl_8055D574 = (s32) getValueFile(base + zero);
   lbl_8055D57C = 0;
   idx = 0;
   while ((item1 = ((Dir_8001880C *) lbl_8055D574)->getAt(idx)) != 0)

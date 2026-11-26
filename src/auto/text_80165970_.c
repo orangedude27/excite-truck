@@ -66,7 +66,7 @@ extern float fn_801660C0(void);
 extern int *__AXFXGetLfoSinTable_801769CC(void);
 extern void *fn_8001285C(int);
 extern void fn_80165FAC(void);
-extern void *fn_80131808(void *);
+extern void *getValueFile(void *);
 extern void fn_80131818(void *);
 extern int fn_80204EA0(const char *);
 extern void fn_802E30C8(char *, ...);
@@ -318,7 +318,7 @@ extern "C" void fn_80165FAC(void) {
     int orbitSubtableId;
     void **orbitSubtable;
 
-    orbitValueFile = (Obj *)fn_80131808(lbl_8032FCC0 + 0x1C0);
+    orbitValueFile = (Obj *)getValueFile(lbl_8032FCC0 + 0x1C0);
     orbitSubtableId = fn_80204EA0(lbl_8032FCC0 + 0x1CC);
     fn_802E30C8(lbl_8032FCC0 + 0x1D8, orbitSubtableId);
     orbitSubtable = orbitValueFile->method(orbitSubtableId);

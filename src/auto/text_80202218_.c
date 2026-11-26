@@ -2,7 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "revolution/MTX/vec.h"
 
-extern void *fn_80131808(void *);
+extern void *getValueFile(void *);
 extern void fn_80131818(void *);
 extern void *fn_8012850C(s32, const char *);
 extern void *fn_8002F37C(void *, void (*)(void), void *, s32, s32);
@@ -175,7 +175,7 @@ void fn_802023D4(void) {
     config = lbl_8033B9F8;
     lbl_8055ECD4 = 7;
     state = lbl_804888B8;
-    manager = fn_80131808(config);
+    manager = getValueFile(config);
     interface = ((Manager *)manager)->get(config + 0x10);
     count = ((Interface *)interface)->getCount(&lbl_8055B418);
     lbl_8055ECC0 = count;

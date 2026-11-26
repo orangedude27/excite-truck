@@ -524,7 +524,7 @@ extern const char lbl_8055C5A0[];
     extern int lbl_8055F550;
     extern unsigned char lbl_8055F55B;
     extern int fn_8012C33C(void *);
-    extern void *fn_80131808(void *);
+    extern void *getValueFile(void *);
     extern void fn_80131818(void *);
     extern int fn_80272028(void *, void *);
     extern int fn_80272DCC(void *, void *);
@@ -543,7 +543,7 @@ extern const char lbl_8055C5A0[];
     lbl_8055F548 = 0;
     fn_80277740();
     if (fn_8012C33C(rootNode) != 0) {
-        iterator = (Iterator *)fn_80131808(rootNode);
+        iterator = (Iterator *)getValueFile(rootNode);
         cameraTable = lbl_8049A2C8;
         regionTable = lbl_8049EDC8;
         index = 0;
@@ -565,7 +565,7 @@ extern const char lbl_8055C5A0[];
         register Item *node;
         register int index;
         register char *cameraTable;
-        iterator = (Iterator *)fn_80131808(stringBase + 0x334);
+        iterator = (Iterator *)getValueFile(stringBase + 0x334);
         cameraTable = lbl_8049A2C8;
         index = 0;
         while ((node = iterator->next(index)) != 0) {

@@ -39,7 +39,7 @@ extern void *fn_801284F8(int, void*);
 extern void* ArtSetGet(void*);
 extern void fn_802A1120(void*, float*);
 extern int fn_8012C33C(void*);
-extern void* fn_80131808(void*);
+extern void* getValueFile(void*);
 extern void fn_80131818(void*);
 extern int fn_802CB128(int, int, int, int);
 extern void* RegisterTextureByName(void*, int);
@@ -144,7 +144,7 @@ extern "C" void* fn_80019C68(int arg0) {
  if(fn_8012C33C(alloc)) {
  p=lbl_80358508+arg0*0x48;
  *(int*)p=-2; *(int*)(p+4)=-2; *(int*)(p+8)=-2; *(int*)(p+12)=-2; *(int*)(p+20)=-2; *(int*)(p+24)=-2;
- resource=fn_80131808(alloc);
+ resource=getValueFile(alloc);
  node=((Res*)resource)->get(base+28);
  if(node) {
  *(float*)(p+40)=((Res*)node)->f(lbl_80558C70);
@@ -886,7 +886,7 @@ extern void* fn_801284F8(int, void*);
 extern void* ArtSetGet(void*);
 extern void fn_802A1120(void*, float*);
 extern int fn_8012C33C(void*);
-extern void* fn_80131808(void*);
+extern void* getValueFile(void*);
 extern void fn_80131818(void*);
 extern int fn_802CB128(int, int, int, int);
 extern void* RegisterTextureByName(void*, int);

@@ -4895,7 +4895,7 @@ public:
     virtual TagNode *GetChild(const char *);  // 0x08
     virtual TagNode *GetNth(int);             // 0x0C
 };
-extern "C" TagList *fn_80131808(void *, void *);
+extern "C" TagList *getValueFile(void *, void *);
 extern "C" void fn_80131818(TagList *);
 #pragma scheduling invalid_target
 extern "C" void fn_801A3190(void *arg0, s32 arg1, void *arg2, s32 arg3, void *arg4, void *arg5, f32 farg0, f32 farg1) {
@@ -4969,7 +4969,7 @@ extern "C" void *fn_801A324C(void *arg0, int arg1, void *arg2, f32 farg0, f32 fa
     *(int *)(self + 0x20) = 100;
     *(int *)(self + 0x1C) = 0;
     *(void **)self = lbl_80333778;
-    list = fn_80131808(arg2, lbl_80333778);
+    list = getValueFile(arg2, lbl_80333778);
     *(int *)(self + 0xBC) = 0;
     *(int *)(self + 0xDC) = 0;
     node = list->GetChild(lbl_8055A4C8);

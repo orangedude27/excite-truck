@@ -1129,7 +1129,7 @@ void fn_801EE0D0(long table, long index) {
     fn_801F159C(*(long *)(table + index * 4 + 0x4D4));
 }
 
-extern void *fn_80131808(void *);
+extern void *getValueFile(void *);
 __declspec(section ".sdata") extern char lbl_8055AFFC[], lbl_8055B000[], lbl_8055B004[], lbl_8055B00C[];
 extern int fn_8012C33C(void *);
 extern void fn_80131818(void *);
@@ -1172,7 +1172,7 @@ void fn_801EE0E0(void *arg0, char *arg1, int arg2, int arg3, char *arg4) {
     char *base = lbl_8033A060;
     idx = arg3;
     fn_801345D8(nameBuf, 0x100, base + 0x64, arg1);
-    table = (void **)fn_80131808(nameBuf);
+    table = (void **)getValueFile(nameBuf);
     i = 4;
 loop1:
     fn_801345D8(small, 0x40, base + 0x74, i + 1);
@@ -1276,7 +1276,7 @@ loop30:
     fn_801345D8(big2A0, 0x100, base + 0x118, arg1);
     if (fn_8012C33C(big2A0) == 0) fn_801345D8(big2A0, 0x100, base + 0x128, arg1);
     *(int *)((char *)arg0 + 0x150) = 0;
-    p15 = (void **)fn_80131808(big2A0);
+    p15 = (void **)getValueFile(big2A0);
     node = (char *)arg0 + 0x154;
     k = 0;
     j = 0;

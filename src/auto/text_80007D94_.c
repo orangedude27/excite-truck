@@ -48,7 +48,7 @@ void fn_80007D94(const char** lhs, const char** rhs) {
     stricmp(*lhs, *rhs);
 }
 
-extern void *fn_80131808(void *);
+extern void *getValueFile(void *);
 extern char lbl_802FB6E0[];
 DECL_SECTION(".sdata") extern const char lbl_80558978[];
 DECL_SECTION(".sdata") extern const char lbl_80558980[];
@@ -79,7 +79,7 @@ extern "C" void fn_80007DA0(void) {
        0xC-byte slots (max 0x28, overflows -> abend base+0x84), then qsort by
        name with fn_80007D94. global[0x78]=count, global[0x79]=config ptr. */
     base = lbl_802FB6E0;
-    initialConfig = fn_80131808(base + 0x68);
+    initialConfig = getValueFile(base + 0x68);
     global = (volatile u32 *)&lbl_8034EF38;
     global[0x79] = (u32)initialConfig;
     index = 0;

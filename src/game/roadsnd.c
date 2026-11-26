@@ -29,7 +29,7 @@ extern const char lbl_8055B620[4];
 extern const char lbl_8055B628[4];
 extern f32 lbl_80563300;
 extern void* fn_801284F8(int, const char*);
-extern void* fn_80131808(const char*);
+extern void* getValueFile(const char*);
   extern void fn_80131818(void*);
   extern void fn_80128668(void*);
 extern void* fn_802077A4(int, int, void*, void*);
@@ -113,7 +113,7 @@ void fn_8020CA38(void) {
         *(char**)container = lbl_8033C650;
         *(void**)(container + 4) = ownerCtx;
         *(int*)(container + 8) = 0;
-        paramDir = (RoadSndParamDir*)fn_80131808(lbl_8033C660);
+        paramDir = (RoadSndParamDir*)getValueFile(lbl_8033C660);
         speedScale = lbl_80563300;
         itemIndex = 0;
         while ((item = paramDir->getAt(itemIndex)) != 0) {

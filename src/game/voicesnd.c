@@ -290,7 +290,7 @@ DECL_SECTION(".sdata") extern const char lbl_8055B5A0[];
 DECL_SECTION(".sdata") extern const char lbl_8055B5A8[];
 DECL_SECTION(".sdata") extern const char lbl_8055B5B0[];
 extern float lbl_805632B4;
-extern void *fn_80131808(const char *);
+extern void *getValueFile(const char *);
 extern void fn_80131818(void *);
 extern void fn_802E58B8(int);
 extern int strcmp(const char *, const char *);
@@ -313,7 +313,7 @@ extern int strcmp(const char *, const char *);
         virtual float getValue(const char *, float);
     };
     char *records;
-    List *list = (List *)fn_80131808(lbl_8033C3B4);
+    List *list = (List *)getValueFile(lbl_8033C3B4);
     if (list != 0) {
         records = lbl_804892D0;
         Entry *entry;

@@ -56,7 +56,7 @@ void fn_801DF6D0(void* elem) {
 }
 #pragma scheduling on
 extern void *fn_801284F8(int, void *);
-extern void *fn_80131808(void *);
+extern void *getValueFile(void *);
 extern void fn_80131818(void *);
 extern int fn_80145E70(void *);
 extern void fn_801D0DDC(void *);
@@ -92,7 +92,7 @@ void fn_801DF6FC(void) {
         *(int *)((char *)obj + 0x108) = zero;
         *(int *)((char *)obj + 0x10C) = fn_80207848(base + 0x70, 1);
         *(int *)((char *)obj + 0x1B0) = zero;
-        iter = fn_80131808(base + 0x80);
+        iter = getValueFile(base + 0x80);
         if (iter) {
             list = ((void *(*)(void *, void *))(*(void ***)iter)[2])(iter, base + 0x8C);
             for (j = 0; (entry = ((void *(*)(void *, int))(*(void ***)list)[0x18])(list, j)) != 0; j++) {

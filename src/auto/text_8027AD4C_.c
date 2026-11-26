@@ -1161,7 +1161,7 @@ struct Ctx8027C2B8 {
 #pragma cplusplus on
 extern "C" void fn_8027C2B8(void *arg0, long arg1, void *arg2) {
     extern char lbl_80347A50[];
-    extern void *fn_80131808(void *);
+    extern void *getValueFile(void *);
     struct Ctx8027C2B8 *ctx = (struct Ctx8027C2B8 *)arg0;
     int tableCount;
     void *outerList;
@@ -1175,7 +1175,7 @@ extern "C" void fn_8027C2B8(void *arg0, long arg1, void *arg2) {
     int innerIndex;
     int itemCount;
     void **tableArray;
-    outerList = fn_80131808(arg2);
+    outerList = getValueFile(arg2);
     if (outerList == 0)
         return;
     outerCount = ctx->outerCount;

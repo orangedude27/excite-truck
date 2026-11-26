@@ -91,7 +91,7 @@ void *fn_8013C800(int classType) {
 }
 
 #pragma cplusplus on
-extern "C" int fn_80131808(int);
+extern "C" int getValueFile(int);
 extern "C" void Abend_Panic(int, ...);
 extern "C" void fn_8013C748(void);
 extern "C" void *fn_8013C770(const char *);
@@ -110,7 +110,7 @@ extern "C" void fn_8013C804(void) {
     int objectIndex;
 
     fn_8013C748();
-    lbl_8055E188 = fn_80131808((int)lbl_8032C4C0);
+    lbl_8055E188 = getValueFile((int)lbl_8032C4C0);
     if (lbl_8055E188 != 0) {
         objectIndex = 0;
         goto get_object;

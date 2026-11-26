@@ -45,7 +45,7 @@ extern char lbl_8034ACA0[];
 extern char lbl_8055CF80;
 __declspec(section ".sdata") extern char lbl_8055CF78[];
 #pragma small_data off
-extern void *fn_80131808(void *, int, int);
+extern void *getValueFile(void *, int, int);
 extern int fn_80131818(void *);
 #pragma dont_inline fn_802BECE4
 extern int fn_802BECE4(const char *, int);
@@ -115,7 +115,7 @@ extern "C" void fn_802BEDFC(void) {
     lbl_8055FAEC = 0x202040;
     lbl_8055FAE0 = 0.7f;
     lbl_8055FAF0 = baseE000 + 0x1040;
-    resource = (Resource *)fn_80131808(strings + 0x2C, alpha, baseE000);
+    resource = (Resource *)getValueFile(strings + 0x2C, alpha, baseE000);
     if (resource != 0) {
         if (resource->hasStyle(strings + 0x38) != 0)
             style = (Resource *)resource->getStyle(strings + 0x38);

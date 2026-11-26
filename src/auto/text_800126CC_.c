@@ -559,7 +559,7 @@ extern "C" void fn_800135AC(char *fieldName, void *fieldChecker, char *ownerName
 #pragma cplusplus reset
 extern char lbl_802FCB74[];
 extern int fn_8012C33C(void);
-extern int fn_80131808(int);
+extern int getValueFile(int);
 extern void fn_8001335C(int, int);
 #pragma scheduling invalid_target
 /* Registers an object: if enabled, stores its resolved handle in the global table and initializes it. */
@@ -571,7 +571,7 @@ void fn_80013618(int object) {
         return;
     if (fn_8012C33C() == 0)
         return;
-    handle = fn_80131808(object);
+    handle = getValueFile(object);
     table = (int *)lbl_8035183C;
     count = table[0x20];
     table[count] = handle;
@@ -713,5 +713,5 @@ void fn_80013A34(void) {
 #pragma scheduling reset
 extern char lbl_802FCB74[];
 extern int fn_8012C33C(void);
-extern int fn_80131808(int);
+extern int getValueFile(int);
 extern void fn_8001335C(int, int);

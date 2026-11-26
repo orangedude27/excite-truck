@@ -11,7 +11,7 @@ extern void fn_802E30C8(const char *, ...);
 extern void *fn_801284F8(s32, const char *);
 extern void fn_802E6BD8(u32, s32, void *, u32, void (*)(s32));
 extern void fn_8000DBC8(void *);
-extern s32 fn_80131808(const char *);
+extern s32 getValueFile(const char *);
 extern void memset(void *, s32, u32);
 extern void fn_8001D5F0(s32);
 extern void fn_8001D728(s32, s32);
@@ -902,7 +902,7 @@ void fn_8001C9C4(void) {
     lbl_8055D5D0 = descriptor;
     fn_802E6BD8(0x53746174, 7, lbl_8055D5CC, 0x3E7D0, fn_8001D5F0);
     fn_8000DBC8(fn_8001D728);
-    lbl_8055D5D4 = (void *)fn_80131808(base + 0x390);
+    lbl_8055D5D4 = (void *)getValueFile(base + 0x390);
     lbl_8055D5D8 = 1;
 }
 #pragma pop

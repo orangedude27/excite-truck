@@ -80,7 +80,7 @@ void fn_801607F8(void) {
 extern void **__AXFXGetLfoSinTable_801769CC(void);
 extern void *fn_8001285C(void *);
 extern void *fn_80204EA0(const char *);
-extern void *fn_80131808(const char *);
+extern void *getValueFile(const char *);
 extern void fn_80131818(void *);
 extern void fn_802E30C8(const char *, ...);
 extern char lbl_8055A0A8;
@@ -142,7 +142,7 @@ extern "C" void fn_80160850(void) {
         fn_8016071C((Obj *)result);
         succeeded = 1;
     } else {
-        resource = (Resource *)fn_80131808(name);
+        resource = (Resource *)getValueFile(name);
         if (resource != 0) {
             if (resource->validate(key) != 0) {
                 result = resource->get(key);

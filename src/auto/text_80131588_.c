@@ -126,7 +126,7 @@ unsigned char* fn_801317F0(void* valueNode) {
  * the quiet flag, so this variant reports "Can't get value file %s" when the
  * file is missing; fn_80131810 is the silent one.  The caller releases the
  * table with fn_80131818. */
-Unk131588 *fn_80131808(const char *fileName) { return fn_80131588((void *)fileName, 0); }
+Unk131588 *getValueFile(const char *fileName) { return fn_80131588((void *)fileName, 0); }
 
 void fn_80131810(s32 data) {
     /* Parse this data block through fn_80131588 with the silent flag (1), suppressing the failure report. */
@@ -134,7 +134,7 @@ void fn_80131810(s32 data) {
 }
 
 /* Release the parsed value-file table in `table` (loaded by fn_80131588 /
- * fn_80131808) by forwarding it to the resource decref/release path. */
+ * getValueFile) by forwarding it to the resource decref/release path. */
 void fn_80131818(void *table) {
     releaseResource(table);
 }

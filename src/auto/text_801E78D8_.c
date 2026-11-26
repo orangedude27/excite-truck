@@ -1413,7 +1413,7 @@ void fn_801E95DC(void) {
     }
 }
 #pragma pop
-extern void *fn_80131808(void);
+extern void *getValueFile(void);
 extern void fn_80131818(void *);
 extern int fn_8002B1D8(const char *, const char *, int);
 extern float fn_801DCF48(long, float, float);
@@ -1460,7 +1460,7 @@ void fn_801E96D8(long arg0) {
     temp = (void *)fn_8001285C(*(long *)(arg0 + 0x3E4));
     sbase = lbl_80339BA0;
     if ((((long (*)(void *, void *, long))(*(void ***)(*(void **)((char *)temp + 0x20)))[6])((*(void **)((char *)temp + 0x20)), sbase + 0x1DC, 0)) != 0) {
-        temp_r3_3 = fn_80131808();
+        temp_r3_3 = getValueFile();
         var_r23 = 0;
         var_r22 = ((void **(*)(void *, long))(*(void ***)temp_r3_3)[3])(temp_r3_3, 0);
         r31base = lbl_803338C0;

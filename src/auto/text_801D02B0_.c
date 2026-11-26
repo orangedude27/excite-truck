@@ -21,7 +21,7 @@ typedef struct {
     float (*getFloat)(SurfObj *, const char *, float);
 } SurfVT;
 struct SurfObj { SurfVT *vt; };
-extern SurfObj *fn_80131808(char *);
+extern SurfObj *getValueFile(char *);
 extern SurfObj *fn_80131810(char *);
 extern void fn_80131818(SurfObj *);
 extern int sprintf(char *, const char *, ...);
@@ -52,7 +52,7 @@ extern "C" void fn_801D02B0(void) {
     SurfObjV *item;
     base = lbl_80338098;
     lbl_8055E8C0 = 1;
-    a = (SurfObjV *)fn_80131808(base + 0xA0);
+    a = (SurfObjV *)getValueFile(base + 0xA0);
     b = (SurfObjV *)fn_80131810(base + 0xB0);
     rec = &((struct SurfTable *)base)->recs[0];
     i = 0;
