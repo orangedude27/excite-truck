@@ -663,7 +663,7 @@ void drawVehicleParts(void *vehicleRender) {
     long keyParams[2];
     float mirrorScale;
     long *entry;
-    long keyParam, groupOffset, mirrored, i, mask, partKey, j;
+    long keyParam, groupOffset, mirrored, entryIndex, partsMask, partKey, groupIndex;
     char *group;
     char *scan;
     char *self = vehicleRender;
@@ -673,17 +673,17 @@ void drawVehicleParts(void *vehicleRender) {
         entry = (long *)(self+0x154);
         keyParam = PartKeyParam;
         mirrorScale = MirrorScale;
-        for (i=0; i<*(long *)(self+0x150); entry+=3, i++) {
-            mask = *(long *)(Model+0x29C) & entry[2];
+        for (entryIndex=0; entryIndex<*(long *)(self+0x150); entry+=3, entryIndex++) {
+            partsMask = *(long *)(Model+0x29C) & entry[2];
             keyParams[0] = *(long *)(self+0x3EC);
             keyParams[1] = keyParam;
             if ((float)__fabs((double)*(float *)(Model+0x28C)) <= ZeroEps)
                 ResetPartKeys();
             partKey = NewPartKey(1, (void *)&((struct PartNames *)Model)->name[entry[0] + 1], entry[1]-entry[0], 1, keyParams, 2);
-            for (j=0, groupOffset=0; j<*(long *)(Model+0xA78); groupOffset+=0x34, j++) {
+            for (groupIndex=0, groupOffset=0; groupIndex<*(long *)(Model+0xA78); groupOffset+=0x34, groupIndex++) {
                 scan = Model+groupOffset;
                 group = scan+0xA7C;
-                if (*(long *)(scan+0xAAC) & mask) {
+                if (*(long *)(scan+0xAAC) & partsMask) {
                     if (mirrored) {
                         *(PartPoseRot *)&partPose = *(PartPoseRot *)group;
                         *(PartPosePos *)((char *)&partPose+0x24) = *(PartPosePos *)(group+0x24);
@@ -694,7 +694,7 @@ void drawVehicleParts(void *vehicleRender) {
                     } else {
                         DrawPart((*(int **)(self+0x16C))[*(long *)(self+0x3F8)], group, partKey, *(long *)(scan+0xAAC));
                     }
-                    mask &= ~*(long *)(group+0x30);
+                    partsMask &= ~*(long *)(group+0x30);
                 }
             }
             if (!SkipRestOfParts) {
@@ -704,9 +704,9 @@ void drawVehicleParts(void *vehicleRender) {
                     ownPose.values[0] *= mirrorScale;
                     ownPose.values[1] *= mirrorScale;
                     ownPose.values[2] *= mirrorScale;
-                    DrawPart((*(int **)(self+0x16C))[*(long *)(self+0x3F8)], &ownPose, partKey, mask);
+                    DrawPart((*(int **)(self+0x16C))[*(long *)(self+0x3F8)], &ownPose, partKey, partsMask);
                 } else {
-                    DrawPart((*(int **)(self+0x16C))[*(long *)(self+0x3F8)], self+0x4A0, partKey, mask);
+                    DrawPart((*(int **)(self+0x16C))[*(long *)(self+0x3F8)], self+0x4A0, partKey, partsMask);
                 }
             }
         }
