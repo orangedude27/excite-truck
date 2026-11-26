@@ -1163,7 +1163,7 @@ void fn_8016D278(void *list) {
  * 0x1B4-byte singleton built by fn_8016BE60 under the heap name "ringchalmaster"
  * (lbl_803306D0 + 0x20).  Its ring-set controller sub-object starts at +0x30
  * (constructed by constructRingSetController), so the fields below are that sub-object's
- * +0x18 .. +0x44; the same sub-object is what fn_8016DE20 / fn_8016DFB8 /
+ * +0x18 .. +0x44; the same sub-object is what refreshRingSetMapMarker / fn_8016DFB8 /
  * fn_8016E06C / fn_8016E1B4 are handed directly.
  *   +0x48  ring-set list: pointer to the array of 0x14-byte ring-set entries
  *   +0x50  map "mapgems.art" object the marker is drawn on
@@ -1459,7 +1459,7 @@ extern s32 fn_8016DE08(void *);
 extern s32 fn_8016DE10(s32 *, s32);
 extern void fn_8016E06C(void *);
 extern void fn_8016DFB8(void *);
-extern void fn_8016DE20(void *);
+extern void refreshRingSetMapMarker(void *);
 extern void fn_8016E118(void *);
 extern void fn_8016E15C(void *);
 extern s32 fn_8016E1A4(s32 *, s32);
@@ -1517,7 +1517,7 @@ extern void fn_8016E15C();
     if (entryIdx >= 0 && entryIdx < M2C_FIELD(obj, s32 *, 0x68)) {
         fn_8016E06C((u8 *) obj + 0x30);
         fn_8016DFB8((u8 *) obj + 0x30);
-        fn_8016DE20((u8 *) obj + 0x30);
+        refreshRingSetMapMarker((u8 *) obj + 0x30);
     }
     for (j = 0; j < fn_8016DE08(M2C_FIELD(obj, void **, 0x4C)); j++) {
         *(s8 *) fn_8016DE10((s32 *) M2C_FIELD(obj, void **, 0x4C), j) = 0;
@@ -1594,7 +1594,7 @@ s32 fn_8016DE10(s32 *header, s32 index) {
  * Frees any existing handle, formats mode-specific label text, resolves display
  * metrics for that label, then allocates/updates the active handle; logs an
  * error for unknown modes. */
-void fn_8016DE20(void *obj) {
+void refreshRingSetMapMarker(void *obj) {
     char textBuffer[0x20];
     register char *formatBase = lbl_803306D0;
     register void *object = obj;
@@ -2927,7 +2927,7 @@ extern "C" s32 fn_80161C38(void);
 extern "C" s32 fn_8016A30C(void);
 extern "C" s32 fn_8016A780(void *, s32);
 extern "C" s32 fn_8016A878(void *);
-extern "C" void fn_8016DE20(void *);
+extern "C" void refreshRingSetMapMarker(void *);
 extern "C" void fn_8016E1B4(void *, s32);
 extern "C" f32 fn_8016FD58(void);
 extern "C" void fn_80170E98(void *, void *, s32);
@@ -3071,7 +3071,7 @@ loop_83:
                         fn_8016DFB8((u8 *)arg0 + 0x30);
                     }
                     if (((s32) M2C_FIELD(arg0, u8 *, 0x7A) != 0) && ((s32) M2C_FIELD(arg0, s32 *, 0x54) == -1)) {
-                        fn_8016DE20((u8 *)arg0 + 0x30);
+                        refreshRingSetMapMarker((u8 *)arg0 + 0x30);
                     }
                     if (((temp_r23_2 > 0) || (temp_r3_3 == fn_8016A878(&sp8)) || ((temp_r3_3 > 0) && (fn_8015A404(temp_r22) > 1))) && ((s32) M2C_FIELD(arg0, u8 *, 0x7A) != 0)) {
                         temp_f30_2 = fn_8016FD58();
