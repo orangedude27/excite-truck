@@ -77,7 +77,7 @@ extern "C" s32 fn_802C6FC0(void *, s32, s32);
 
 extern "C" void fn_8021C6D0(void *);
 extern "C" s32 fn_8021165C(s32, s32);
-extern "C" s32 fn_8022B498(s32, s32);
+extern "C" s32 UIStyle_getTextOffsetX(s32, s32);
 extern "C" char lbl_8033EE50[];
 
 extern "C" u8 lbl_8033E7F4[];
@@ -2624,7 +2624,7 @@ extern "C" void *fn_8021C344(void *self, s32 x, s32 y, void *callbackObj, s32 pa
     *(s32 *)((u8 *)self + 0x2C4) = 8;
     lineBottom = textY + gxGetImageWidth(fn_8021165C(1, 2));
     *(s32 *)((u8 *)self + 0x2C0) =
-        lineBottom - fn_8022B498(*(s32 *)((u8 *)self + 0x2C4), textId);
+        lineBottom - UIStyle_getTextOffsetX(*(s32 *)((u8 *)self + 0x2C4), textId);
     *(u8 *)((u8 *)self + 0x2D0) = 0;
     ((Callback *)callbackObj)->Call(&textPtr, &textLen);
     if (textLen > 0) {
@@ -4190,7 +4190,7 @@ extern "C" void drawTextBox(void *self) {
         f32 y = (f32)(screenHeightPx / 2 - box->y);
         strcpy(caretText, box->text);
         if (box->caretIndex >= 0) caretText[box->caretIndex] = zero;
-        x += (f32)fn_8022B498(box->style, (s32)caretText);
+        x += (f32)UIStyle_getTextOffsetX(box->style, (s32)caretText);
         f32 height = (f32)UIStyle_getTextHeight(box->style, caretText);
         ((void (*)(s32,f32,f32,f32,f32,f32))fn_80230924)(-0x100, x, y - lbl_80563514, lbl_805634A4 + x, lbl_80563514 + (y - height), lbl_805634A8);
     }

@@ -577,7 +577,7 @@ void fn_8022B390(const char *unusedLabel, const char *text, int maxChars, int *o
  * Measures the text width (using the font or bitmap font), applies the style's
  * horizontal alignment (left/right/center) within the canvas width, and returns
  * the pixel offset. If no string is given, returns the canvas width directly. */
-int fn_8022B498(int unused, const char *arg1)
+int UIStyle_getTextOffsetX(int unused, const char *arg1)
 {
     struct Holder { int m; } h;
     int *max = &h.m;
