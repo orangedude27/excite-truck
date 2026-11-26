@@ -946,7 +946,7 @@ extern void *lbl_8055E050;
 #pragma dont_inline on
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" s32 getConfigValue(s32 flags, const char *name, void *outValue) {
+/* Looks up a named config node valid for the given archive context and writes its int or (optionally scaled) float value to the output. */ extern "C" s32 getConfigValue(s32 flags, const char *name, void *outValue) {
     struct ConfigNode {
         virtual const char *GetName();
         virtual s32 IsValid(s32 context);
