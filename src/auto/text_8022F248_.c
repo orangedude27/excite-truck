@@ -380,7 +380,7 @@ void fn_8022F868(void *dst, void *src) {
  * entry and texture coordinates running from (0, 0) to (texScale, texScale),
  * points the texture matrix at the quad's transform composed with the current
  * one, then pushes the quad as two triangles through the GX FIFO. */
-void drawOverlayQuad(OverlayQuad *quad) {
+/* Draw one overlay quad: build its four textured, colored corners at the given depth and size, compose its transform with the current one, and push it to the GX FIFO as two triangles. */ void drawOverlayQuad(OverlayQuad *quad) {
     extern void fn_80230A68(QuadVtx *, int, f32, f32, f32, f32, f32);
     extern int fn_80230B9C(int);
     extern void fn_8022F868(void *, void *);
