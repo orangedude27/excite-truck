@@ -2369,7 +2369,7 @@ extern f32 fn_8013CB3C(void);
 #pragma optimize level=4
 #pragma scheduling invalid_target
 #pragma opt_propagation off
-extern "C" void updateQueuedStringItem(void *obj, void *index, void *item) {
+/* Per-frame update of a queued string item: once its time window elapses, copy its three string states, adjust their positions, and hand the interpolated pair to the draw list. */ extern "C" void updateQueuedStringItem(void *obj, void *index, void *item) {
     /* Per-frame update of one queued string item: when its time window has
      * elapsed, hand its string states to the draw list. */
     struct VString { virtual void d0(); virtual void d1(); virtual u8 *get(const char *); };
