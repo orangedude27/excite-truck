@@ -49,7 +49,7 @@ extern float fn_801E7E24(void);
 extern void fn_8029D574(int);
 extern float lbl_80558DC4;
 extern void fn_8029C570(void);
-extern void fn_8029C73C(void);
+extern void buildWaterPools(void);
 extern void fn_8029C998(void);
 extern void fn_8029CBA0(void);
 extern void fn_8029C664(void);
@@ -68,7 +68,7 @@ void fn_8029C1C4(void) {
     /* Reset per-frame water state, run water subsystem updates, and register the
        water callback if splashes or any pool/shallow-water entries are active. */
     lbl_8055F7FC = 0;
-    fn_8029C570(); fn_8029C73C(); fn_8029C998(); fn_8029CBA0(); fn_8029C664();
+    fn_8029C570(); buildWaterPools(); fn_8029C998(); fn_8029CBA0(); fn_8029C664();
     if (fn_802BF4F0() == 0 && lbl_8055F7F0 <= 0 && lbl_8055F7F4 <= 0) return;
     fn_80287B38(fn_8029C450);
 }
@@ -337,7 +337,7 @@ extern "C" void *memset(void *, int, unsigned int);
    file and makes one 0x78-byte water pool per entry -- up to the eight the
    lbl_804B5010 list holds -- from the entry's origin/right/up rectangle, its
    texture index and the default simulation values below. */
-void fn_8029C73C(void) {
+void buildWaterPools(void) {
     typedef struct { float x, y, z; } Vec;
     typedef struct { float x, y; } Vec2;
     /* the pool's rectangle: one corner and its two edge vectors */
@@ -1289,7 +1289,7 @@ extern float fn_801E7E24(void);
 extern void fn_8029D574(int);
 extern float lbl_80558DC4;
 extern void fn_8029C570(void);
-extern void fn_8029C73C(void);
+extern void buildWaterPools(void);
 extern void fn_8029C998(void);
 extern void fn_8029CBA0(void);
 extern void fn_8029C664(void);
@@ -1844,7 +1844,7 @@ extern float fn_801E7E24(void);
 extern void fn_8029D574(int);
 extern float lbl_80558DC4;
 extern void fn_8029C570(void);
-extern void fn_8029C73C(void);
+extern void buildWaterPools(void);
 extern void fn_8029C998(void);
 extern void fn_8029CBA0(void);
 extern void fn_8029C664(void);
