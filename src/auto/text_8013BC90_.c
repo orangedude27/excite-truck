@@ -428,7 +428,7 @@ typedef struct CacheTable {
     CACHE_COPY2(dst, src, 60) CACHE_COPY2(dst, src, 62)                        \
     CACHE_COPY2(dst, src, 64) CACHE_COPY2(dst, src, 66)
 #pragma scheduling invalid_target
-void CacheTable_releaseResource(void *obj) {
+/* Drop one reference to a cached resource: find its entry in the cache table, and at refcount zero free the resource and its blocks then fill the hole with the table's last entry. */ void CacheTable_releaseResource(void *obj) {
     // Hand a cached resource back: find the entry that holds it and drop one
     // reference. The last reference frees the resource and closes the hole its
     // entry left in the table with the table's last entry.
