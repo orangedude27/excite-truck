@@ -120,7 +120,7 @@ extern void fn_8022D76C(void *);
  * rows * rowSize bytes. Allocates the column size and column offset tables and the
  * cell buffer (tags "column_wids", "column_offs" and "UITable:buf"), lays the columns
  * out back to back in a row, and clears the buffer. Returns the table. */
-void *uiCreateTable(UITable *table, int rows, int columns, const int *__restrict columnWidths) {
+/* Build a UITB text table: allocate its column-size, column-offset and packed tag/text buffers and set its geometry. */ void *uiCreateTable(UITable *table, int rows, int columns, const int *__restrict columnWidths) {
     char *tagStrings;
     int tableBytes;
     int column;
