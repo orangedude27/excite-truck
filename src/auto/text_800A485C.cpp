@@ -12718,7 +12718,7 @@ extern "C" s32 fn_800B8048(s32 arg0) {
 #pragma small_data off
 extern "C" s32 NANDGetType(char *);
 extern "C" s32 NANDOpen(void *, void *, s32);
-extern "C" s32 fn_800B814C(void *);
+extern "C" s32 formatNandFatImage(void *);
 extern "C" s32 fn_800B808C(s32 arg0, void *fileState, s32 retryMode) {
     /* Open or prepare a NAND-backed file state: check NAND path/type, open if needed, optionally force retry, and store arg0 on success. */
     s32 result = NANDGetType((char *)&lbl_80405D18);
@@ -12746,7 +12746,7 @@ extern "C" s32 fn_800B808C(s32 arg0, void *fileState, s32 retryMode) {
     }
 
 retry:
-    result = fn_800B814C(fileState);
+    result = formatNandFatImage(fileState);
     if (result != 0)
         goto done;
     *(s32 *)fileState = arg0;
@@ -12759,7 +12759,7 @@ done:
     return result;
 }
 
-extern "C" s32 fn_800B814C(void *fileState) {
+extern "C" s32 formatNandFatImage(void *fileState) {
     extern s32 NANDClose(void *); extern s32 NANDDelete(void *);
     extern s32 createOrOpenNandFile(void); extern s32 buildFATBootSector(void *,u8*,s32*,s32);
     extern s32 fn_800B8520(void *,u32 *); extern void fn_800B865C(void *);
