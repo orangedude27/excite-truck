@@ -4213,7 +4213,7 @@ extern "C" s32 fn_800B4D00(s32);
  * volume will not create (fn_800B4D00) is refused before anything is read.
  * Nothing left long enough is VF_ERR_NO_FREE_ENTRIES; 0 is room found.
  */
-extern "C" s32 VFiPFENT_findFreeEntries(void *outEntry, u32 neededEntries, void *dir, void *freeSectors, s32 name, s32 *outPosition) {
+/* Scan a directory for a run of free entries long enough for a new entry's name; answer with the run's sectors and position, or VF_ERR_NAME_EXISTS if the name is already present. */ extern "C" s32 VFiPFENT_findFreeEntries(void *outEntry, u32 neededEntries, void *dir, void *freeSectors, s32 name, s32 *outPosition) {
     struct DirCopy { u32 word[14]; };
     u8 iter[0x70];
     u8 converted[0x240];
