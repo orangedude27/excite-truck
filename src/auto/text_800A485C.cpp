@@ -27398,7 +27398,7 @@ extern "C" void fn_800D2480(void) {
    db_DirectPrint when that is 0. At most viewLines lines are drawn, stopping at the
    line being written (which is shown only once terminated). Called by
    Console_DrawDirect under the console mutex. */
-extern "C" void Console_DrawDirectLines(void *consoleHead, s32 charWriter)
+/* Draws the console's stored lines from the scroll position via a CharWriter or direct screen print, up to viewLines lines. */ extern "C" void Console_DrawDirectLines(void *consoleHead, s32 charWriter)
 {
     nw4hbm::db::detail::ConsoleHead *console = (nw4hbm::db::detail::ConsoleHead *)consoleHead;
     s32 skip;
