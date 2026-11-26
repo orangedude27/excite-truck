@@ -172,7 +172,7 @@ extern "C" void *__AXFXGetLfoSinTable_801769CC(void);
 /* Set up an audio placement for start modes 1/2: derive the interpolation from
    the slot and active league, apply it through fn_801B78EC, then set the
    placement's three output coefficients. */
-extern "C" void setupStartAudioPlacement(void *placement, unsigned int slot, int startType) {
+/* Set up an audio placement for race start modes 1/2: derive an interpolation from the slot and active AI league, apply it through fn_801B78EC, then write the placement's three output coefficients. */ extern "C" void setupStartAudioPlacement(void *placement, unsigned int slot, int startType) {
     struct V1 {
         virtual void v0(); virtual void v1(); virtual void v2();
         virtual void v3(); virtual void v4(); virtual int v5();
