@@ -2327,7 +2327,7 @@ extern s32 lbl_80559F4C;
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" f32 getDifficultyValue(s32 arg0, s32 arg1) {
+extern "C" f32 getDifficultyValue(s32 stageIndex, s32 difficultyType) {
     /* Look up a per-entry score/value: try the file's direct getter, else load a resource by formatted path and compute a rounded rate. */
     class MainInterface {
     public:
@@ -2366,9 +2366,9 @@ extern "C" f32 getDifficultyValue(s32 arg0, s32 arg1) {
     f32 rate;
 
     fn_8012E81C(lbl_8032D358 + 0x5A4);
-    file = fn_8001285C((void *)arg0);
+    file = fn_8001285C((void *)stageIndex);
     fileText = fn_80012820(*(s32 *)((u8 *)file + 4));
-    entryName = getDifficultyProperty(lbl_8032D358 + 0x5B8, arg1, arg0);
+    entryName = getDifficultyProperty(lbl_8032D358 + 0x5B8, difficultyType, stageIndex);
     register u8 *strings = lbl_8032D358;
 
     if (((MainInterface *)*(void **)((u8 *)file + 0x20))->check(entryName) == 0) {
