@@ -122,7 +122,6 @@ extern float lbl_80562838, lbl_8056283C, lbl_8056284C, lbl_80562850, lbl_8056285
 #pragma scheduling 603
 void fn_801BD808(void) {
     int idx = lbl_8055E78C;
-    int next = idx + 1;
     float *o30;
     float *o29;
     void *o28;
@@ -131,7 +130,7 @@ void fn_801BD808(void) {
     float z, s, c;
     float z2, one;
     o30 = (float *)(lbl_8055E794 + idx * 0xB0);
-    lbl_8055E78C = next;
+    lbl_8055E78C = idx + 1;
     o29 = (float *)(lbl_8055E798 + idx * 0x1F0);
     o28 = (void *)(lbl_8055E79C + idx * 0x190);
     o27 = (void *)(lbl_8055E7A4 + idx * 0x14);
@@ -330,7 +329,7 @@ extern float lbl_80562838, lbl_8056283C, lbl_80562854;
 extern double fn_8002F234(float);
 extern signed char lbl_8055E7A8;
 #pragma scheduling invalid_target
-void fn_801BE168(int index, float (*m)[3], float *a, float *b) {
+void fn_801BE168(int index, float (*m)[3], const float *a, const float *b) {
     extern int lbl_8055E794;
     struct V4 { float x, y, z, w; };
     float t, out[4], q, inv;
@@ -339,8 +338,8 @@ void fn_801BE168(int index, float (*m)[3], float *a, float *b) {
     float *o, *dst;
     float m00 = m[0][0], m11 = m[1][1], m22 = m[2][2];
     dst = (float *)(lbl_8055E794 + index * 0xB0);
+    pos.x = *(volatile float *)&m[3][0]; pos.y = *(volatile float *)&m[3][1]; pos.z = *(volatile float *)&m[3][2];
     t = m00 + m11 + m22;
-    pos.x = m[3][0]; pos.y = m[3][1]; pos.z = m[3][2];
     dst[0] = pos.x; dst[1] = pos.y; dst[2] = pos.z; dst[3] = pos.w;
     if (t > lbl_80562838) {
         q = fn_8002F234(lbl_8056283C + t);
@@ -353,16 +352,16 @@ void fn_801BE168(int index, float (*m)[3], float *a, float *b) {
         o = out;
         i = 0; if (m[1][1] > m[0][0]) i = 1; if (m[2][2] > m[i][i]) i = 2;
         j = (i + 1) % 3; k = (j + 1) % 3;
-        q = fn_8002F234(lbl_8056283C + (m[i][i] - (m[k][k] + m[j][j])));
+        q = fn_8002F234(lbl_8056283C + (m[i][i] - (m[j][j] + m[k][k])));
         inv = lbl_80562854 / q;
         o[i] = lbl_80562854 * q;
         o[3] = inv * (m[j][k] - m[k][j]);
         o[j] = inv * (m[i][j] + m[j][i]);
         o[k] = inv * (m[i][k] + m[k][i]);
     }
-    lb.x = b[0]; lb.y = b[1]; lb.z = b[2];
-    la.x = a[0]; la.y = a[1]; la.z = a[2];
-    quat.x = -out[0]; quat.y = -out[1]; quat.z = -out[2]; quat.w = out[3];
+    lb.z = b[2]; lb.y = b[1]; lb.x = b[0];
+    la.z = a[2]; la.y = a[1]; la.x = a[0];
+    quat.w = out[3]; quat.z = -out[2]; quat.y = -out[1]; quat.x = -out[0];
     dst[16] = quat.x; dst[17] = quat.y; dst[18] = quat.z; dst[19] = quat.w;
     dst[20] = la.x; dst[21] = la.y; dst[22] = la.z; dst[23] = la.w;
     dst[24] = lb.x; dst[25] = lb.y; dst[26] = lb.z; dst[27] = lb.w;
@@ -534,40 +533,65 @@ extern float PSVECDotProduct(const void *, const void *);
 extern void PSVECNormalize(const void *, void *);
 #pragma paired off
 #pragma paired_single off
-void fn_801BEB44(int i, int j, float *target, float *velocity) {
-    unsigned char *base = (unsigned char *)lbl_8055E798 + i * 0x1F0;
-    int off = j * 16;
-    unsigned char *p = base + off;
-    Vec801BD a, b, n, diff, tmp, lerp, dead1, dead2, dead3;
-    float d0, d1, t;
-    Vec801BD_Copy(&a, (Vec801BD *)(p + 0x40));
-    Vec801BD_Copy(&b, (Vec801BD *)(p + 0x150));
-    diff.x = a.x - b.x; diff.y = a.y - b.y; diff.z = a.z - b.z;
-    Vec801BD_Copy(&n, (Vec801BD *)(p + 0x110));
-    d0 = PSVECDotProduct(&diff, &n);
-    tmp.x = a.x - target[0]; tmp.y = a.y - target[1]; tmp.z = a.z - target[2];
-    d1 = PSVECDotProduct(&tmp, velocity) - d0;
-    if (d1 > lbl_805628A8) return;
-    if (PSVECDotProduct(velocity, &n) < lbl_805628AC) return;
-    t = lbl_805628B0 * (lbl_805628A8 + d1);
-    t = (lbl_8056283C < t) ? lbl_8056283C : t;
-    t = (t > lbl_80562838) ? t : lbl_80562838;
-    lerp.x = velocity[0] + t * (n.x - velocity[0]);
-    lerp.y = velocity[1] + t * (n.y - velocity[1]);
-    lerp.z = velocity[2] + t * (n.z - velocity[2]);
-    Vec801BD_Copy(&n, &lerp);
-    PSVECNormalize(&n, &n);
-    Vec801BD_Copy(&dead1, &b);
-    lerp.x = target[0] + t * (b.x - target[0]);
-    lerp.y = target[1] + t * (b.y - target[1]);
-    lerp.z = target[2] + t * (b.z - target[2]);
-    Vec801BD_Copy(&dead2, &lerp);
-    Vec801BD_Copy(&dead3, &b);
-    p = base + off;
-    Vec801BD_Copy((Vec801BD *)(p + 0x150), &lerp);
-    *(float *)(p + 0x15C) = *(float *)(p + 0x24);
-    Vec801BD_Copy((Vec801BD *)(p + 0x110), &n);
-    *(float *)(p + 0x11C) = *(float *)(p + 0x14);
+void fn_801BEB44(int i, int j, const float *target, const float *velocity)
+{
+  unsigned char *base = ((unsigned char *) lbl_8055E798) + (62 * (i * 8));
+  int off = j * 16;
+  unsigned char *p = (((unsigned char *) lbl_8055E798) + (i * 0x1F0)) + (j * 16);
+  Vec801BD a;
+  Vec801BD b;
+  Vec801BD diff;
+  Vec801BD tmp;
+  Vec801BD lerp;
+  Vec801BD dead1;
+  Vec801BD dead2;
+  Vec801BD dead3;
+  Vec801BD *tg = (Vec801BD *) target;
+  Vec801BD *vel = (Vec801BD *) velocity;
+  float d1;
+  float d0;
+  Vec801BD n;
+  float t;
+  Vec801BD_Copy(&a, (Vec801BD *) (p + 0x40));
+  Vec801BD_Copy(&b, (Vec801BD *) (p + 0x150));
+  diff.z = a.z - b.z; diff.y = a.y - b.y; diff.x = a.x - b.x;
+  Vec801BD_Copy(&n, (Vec801BD *) (p + 0x110));
+  d0 = PSVECDotProduct(&diff, &n);
+  tmp.x = a.x - tg->x; tmp.y = a.y - ((Vec801BD *) target)->y; tmp.z = a.z - ((Vec801BD *) target)->z;
+  d1 = PSVECDotProduct(&tmp, vel) - d0;
+  if (d1 > lbl_805628A8)
+  {
+    return;
+    if (1)
+    {
+      if (1)
+      {
+      }
+    }
+  }
+  if (PSVECDotProduct(vel, &n) < lbl_805628AC)
+  {
+    return;
+  }
+  t = lbl_805628B0 * (lbl_805628A8 + d1);
+  t = (lbl_8056283C < t) ? (lbl_8056283C) : (t);
+  t = (t > lbl_80562838) ? (t) : (lbl_80562838);
+  lerp.x = ((Vec801BD *) velocity)->x + (t * (n.x - ((Vec801BD *) velocity)->x));
+  lerp.y = ((Vec801BD *) velocity)->y + (t * (((0, n.y)) - ((Vec801BD *) velocity)->y));
+  lerp.z = ((Vec801BD *) velocity)->z + (t * (n.z - vel->z));
+  Vec801BD_Copy(&n, &lerp);
+  PSVECNormalize(&n, &n);
+  Vec801BD_Copy(&dead1, &b);
+  lerp.x = (0, ((Vec801BD *) target)->x + (t * (b.x - ((Vec801BD *) target)->x)));
+  lerp.y = ((Vec801BD *) target)->y + (t * (b.y - ((Vec801BD *) target)->y));
+  lerp.z = ((Vec801BD *) target)->z + (t * (b.z - ((Vec801BD *) target)->z));
+  Vec801BD_Copy(&dead2, &lerp);
+  Vec801BD_Copy(&dead3, &b);
+  p = base - (-(j * 16));
+  Vec801BD_Copy((Vec801BD *) ((base - (-(j * 16))) + 0x150), &lerp);
+  *((float *) ((base - (-(j * 16))) + 0x15C)) = *((float *) ((base + off) + (0x24 & 0xFFu)));
+  Vec801BD_Copy((Vec801BD *) (p + 0x110), &n);
+  *((float *) (p + 0x11C)) = *((float *) (p + 0x14));
 }
 extern float lbl_80562838;
 extern float lbl_8056283C;
@@ -607,7 +631,7 @@ void fn_801BF0C4(void *arg0, void *arg1, int arg2);
  * back unless the slot is flagged, then validate the mass position (logging and
  * resetting the light fields when it is illegal) and refresh the four wheels'
  * ground-contact status, normal and position records. */
-void fn_801BEDD4(void) {
+void carPostUpdate(void) {
 #define workBuf       lbl_80436D48  /* scratch copy of one car's mass/cs/cc records */
 #define simSlot       lbl_8055A920  /* slot currently handed to the physics step */
 #define illegalPosFmt lbl_80336A60  /* "CarPostUpdate: illegal mass position (%f %f %f)" */

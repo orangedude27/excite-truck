@@ -181,7 +181,7 @@ void fn_80252C78(void) {
 }
 
 extern void fn_801BEDA8(int *, int *, int *, int *, int *);
-extern void fn_801BEDD4(void);
+extern void carPostUpdate(void);
 extern void fn_801BF1B4(void);
 extern void fn_8025280C(void *, float);
 extern double fn_8002EFB4(float, double);
@@ -199,7 +199,7 @@ void fn_80252C90(void) {
     fn_801BEDA8(&a,&b,&c,&d,&count);
     for (i=0;i<count;i++)
         fn_8025280C((void *)(a+i*0xb0), *(float *)(&lbl_8055F300+4));
-    fn_801BEDD4();
+    carPostUpdate();
     phase = lbl_805639D0;
     dst=lbl_80498D00;
     for(i=0;i<count;i++,dst+=0x78) {
@@ -348,7 +348,7 @@ void fn_80253104(s32 arg0, void *arg1) {
         fn_80252B88(arg0);
     } else {
         basis = cam[arg0].basis;
-        basis.m[10] = lbl_805639FC + ((f32 (*)(void *, f32, f32))fn_801DCF48)(0, basis.m[9], basis.m[11]);
+        basis.m[10] = lbl_805639FC + fn_801DCF48(0, basis.m[9], basis.m[11]);
         fn_801BE400(arg0, &basis, lbl_805639E8);
     }
 }

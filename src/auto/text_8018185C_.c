@@ -1561,7 +1561,7 @@ extern void fn_8017C7C8(void *, float *, float *);
 extern float PSVECDotProduct(const void *, const void *);
 extern void PSVECNormalize(const void *, void *);
 extern float PSVECMag(const void *);
-extern void fn_801BEDD4(void);
+extern void carPostUpdate(void);
 extern int fn_801D04A8(int);
 extern float fn_80181A14(void *);
 extern float fn_80181A48(void *);
@@ -1727,7 +1727,7 @@ void fn_80186DE8(void) {
         i += 0xB0;
         count += 1;
     }
-    fn_801BEDD4();
+    carPostUpdate();
     frame.values[1] = lbl_80561D2C;
     frame.tableBase = (int)0x80430000;
     frame.state[7] = (int)(void *)lbl_804348E8;
