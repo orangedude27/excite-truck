@@ -6794,7 +6794,7 @@ extern "C" f32 lbl_80563538;
    by storing the box in screen-centre coordinates, choosing the movie to play
    (the caller's own when given, otherwise the descriptor's name at +0x40) and
    whether it loops, and clearing the movie handle and completion callback. */
-extern "C" void *fn_80223CF0(void *widget, void *descriptor, s32 movieName, s32 arg3) {
+extern "C" void *MovieWidget_construct(void *widget, void *descriptor, s32 movieName, s32 arg3) {
 #define IsWidescreen    fn_802C9A58
 #define Screen_toCentre fn_80230C30
 #define Screen_width    lbl_8055CFF0

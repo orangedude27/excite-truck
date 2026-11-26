@@ -793,7 +793,7 @@ extern void *fn_8022855C(void *, void *, s32, s32);
 extern void *fn_8021F394(void *, s32, s32, s32, s32, s32);
 extern void *fn_802230A4(void *, s32, s32, s32, s32);
 extern void *fn_80223AB4(void *, void *, s32);
-extern void *fn_80223CF0(void *, void *, s32);
+extern void *MovieWidget_construct(void *, void *, s32);
 extern f32 fn_80212248(s32);
 extern void *fn_8021FF34(void *, void *, s32, s32, f32, f32);
 extern "C" float fn_80212248(s32);
@@ -1396,10 +1396,10 @@ extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
         void *node;
         if (child != 0) {
             node = fn_801284F8(0x268, strings + 0x500);
-            if (node != 0) node = (void *)fn_80223CF0(node, arg1, *(s32 *)((char *)child + 8));
+            if (node != 0) node = (void *)MovieWidget_construct(node, arg1, *(s32 *)((char *)child + 8));
         } else {
             node = fn_801284F8(0x268, strings + 0x500);
-            if (node != 0) node = (void *)fn_80223CF0(node, arg1, 0);
+            if (node != 0) node = (void *)MovieWidget_construct(node, arg1, 0);
         }
         results[0] = node; count = 1; break;
     }
