@@ -206,7 +206,7 @@ extern float lbl_80563800, lbl_80563804, lbl_80563808, lbl_8056380C, lbl_8056381
  * lbl_80342E38: the layout "unlock.lyt", the font "uifnt.gtx" (handle at
  * 0xB0) and the lock icon "chcklock.img" (handle at 0xB4), with the
  * player's Game Reputation Rating (fn_80019888) in its header.
- * fn_80244C58 scrolls the top row (0x1C) through the list and fn_80244D6C
+ * fn_80244C58 scrolls the top row (0x1C) through the list and UnlockList_DrawRows
  * draws UNLOCK_ROWS of them: the unlockable's name on the left, a
  * description under it, the rating it costs and the lock icon, which
  * shows unlocked once the rating reaches the entry's requirement.
@@ -267,7 +267,7 @@ extern float lbl_80563800, lbl_80563804, lbl_80563808, lbl_8056380C, lbl_8056381
  * Reputation Rating it costs and the lock icon, unlocked once the player's
  * rating reaches the entry's.  Positions and sizes are the unl_* constants
  * above; the window's own fields are the unl_* accessors. */
-void fn_80244D6C(void *arg0) {
+void UnlockList_DrawRows(void *arg0) {
     char *win = (char *)arg0;
     float x, y;
     float xpos, mid, step, dy_icon, dy_desc, dy_name, width, xicon, xrating, name_scale, desc_scale, row;
