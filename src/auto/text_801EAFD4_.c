@@ -31,7 +31,7 @@ extern s32 fn_801E2CCC(void *, f32 **);
 extern void fn_801EB6A8(s32);
 extern void fn_802CDDC8(void *, s32);
 extern void Abend_Panic(const char *, ...);
-extern void fn_802AE7F4(void);
+extern void initWorldGridWaterFallback(void);
 extern void fn_802AEAA8(void);
 extern s32 fn_802C6FC0(void *, s32, s32);
 extern s32 lbl_802F9A08[];
@@ -592,7 +592,7 @@ bad_resource:
     goto common;
 
 no_resource:
-    fn_802AE7F4();
+    initWorldGridWaterFallback();
 
 common:
     gEBDefaultValue = lbl_80562E6C;

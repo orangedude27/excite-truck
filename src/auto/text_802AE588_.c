@@ -280,7 +280,7 @@ void fn_802AE7C0(void) {
  * The lbl_80564B40..lbl_80564B6C globals are the .sdata2 copies of the
  * literals 10, 2, 4, 8, 16, 32, 3, 64, 128, 256, sqrt(2) and 0.5;
  * lbl_80564AF0 is 2.0f, the world units per grid cell. */
-extern "C" void fn_802AE7F4(void) {
+extern "C" void initWorldGridWaterFallback(void) {
     float footing[8];
     float start;
     int i;
