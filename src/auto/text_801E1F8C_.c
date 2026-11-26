@@ -34,7 +34,7 @@ extern f32 lbl_80562CE0;
 extern f32 lbl_80562CE4;
 extern s32 lbl_8055E3C4;
 extern char lbl_8033989C[];
-void fn_801B619C(void *, s32 *, f32 *);
+void gatherPhobLists(void *, s32 *, f32 *);
 s32 fn_801A4E88(void *, f32 *, f32 *, s32, s32 *);
 void fn_802E30C8(const char *, ...);
 void fn_801A47C8(void);
@@ -312,7 +312,7 @@ extern "C" void fn_801E22D0(void **arg0, s32 arg1) {
         p = arg0[i2];
         if (*(s32 *)((char *)p + 0x24) > 0) {
             cnt = 5;
-            fn_801B619C(hits, &cnt, (f32 *)((char *)p + 0x60));
+            gatherPhobLists(hits, &cnt, (f32 *)((char *)p + 0x60));
             cellp = (void **)hits;
             for (j2 = 0; j2 < cnt; cellp++, j2++) {
                 node = *(void ***) *cellp;
@@ -492,7 +492,7 @@ extern "C" s32 fn_801E2640(f32 *arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 *arg4,
     *arg5 = 0;
     if (threshold < (f32)__fabs((f64)normal[1])) {
         count = 5;
-        fn_801B619C(hits, &count, arg0);
+        gatherPhobLists(hits, &count, arg0);
         hitp = hits;
         for (i = 0; i < count; hitp++, i++) {
             node = *(void ***)*hitp;
