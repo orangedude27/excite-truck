@@ -637,25 +637,25 @@ void carPostUpdate(void) {
 #define illegalPosFmt lbl_80336A60  /* "CarPostUpdate: illegal mass position (%f %f %f)" */
 #define zeroF         lbl_80562838  /* 0.0f */
 #define oneF          lbl_8056283C  /* 1.0f */
-    int slot;
+    int carSlot;
     char wheelPos4[16], normal4[16], cs4[16], attn2[16], pos4[16], attn1[16];
     float normal[3], wheelPos[3], localAxis[3], massPos[3];
     int groundInfo;
-    for (slot = 0; slot < poolIndex; slot++) {
+    for (carSlot = 0; carSlot < poolIndex; carSlot++) {
         char *mass, *cs, *cx;
-        memcpy(workBuf, (char *)massList + slot * 0xB0, 0xB0);
-        memcpy(workBuf + 0xB0, (char *)csList + slot * 0x1F0, 0x1F0);
-        memcpy(workBuf + 0x2A0, (char *)ccList + slot * 0x190, 0x190);
-        simSlot = slot;
+        memcpy(workBuf, (char *)massList + carSlot * 0xB0, 0xB0);
+        memcpy(workBuf + 0xB0, (char *)csList + carSlot * 0x1F0, 0x1F0);
+        memcpy(workBuf + 0x2A0, (char *)ccList + carSlot * 0x190, 0x190);
+        simSlot = carSlot;
         fn_801BA088(workBuf, 0, 0xB, 0x2A);
         simSlot = -1;
-        if (((unsigned char *)aList)[slot] == 0) {
-            memcpy((char *)massList + slot * 0xB0, workBuf, 0xB0);
-            memcpy((char *)csList + slot * 0x1F0, workBuf + 0xB0, 0x1F0);
+        if (((unsigned char *)aList)[carSlot] == 0) {
+            memcpy((char *)massList + carSlot * 0xB0, workBuf, 0xB0);
+            memcpy((char *)csList + carSlot * 0x1F0, workBuf + 0xB0, 0x1F0);
         }
-        cx = (char *)cxList + slot * 0x14;
-        cs = (char *)csList + slot * 0x1F0;
-        mass = (char *)massList + slot * 0xB0;
+        cx = (char *)cxList + carSlot * 0x14;
+        cs = (char *)csList + carSlot * 0x1F0;
+        mass = (char *)massList + carSlot * 0xB0;
         fn_8001BA68(massPos);
         fn_801BF198(massPos, mass);
         if (((int (*)(float *))fn_801BD628)(massPos) == 0) {
