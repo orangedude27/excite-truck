@@ -18,7 +18,7 @@ extern f32 lbl_80562A08;
 #define STAT_HANDLER_LAYOUT_MOVED_UP
 /* The award stat handler kept in lbl_8055E884 (its heap name strings at
  * lbl_80337AC8 read "StatHandler::Create: ..." and "award_int"/"award_real").
- * fn_801CC470 allocates the 0x618 bytes, fn_801CC594 initialises them and
+ * fn_801CC470 allocates the 0x618 bytes, resetStatHandler initialises them and
  * fn_801CC918 resets them between races.  Only the fields the functions in this
  * file reach are named; the node pool at 0x44 holds the 0x14-byte stat nodes the
  * free list at 0x29C hands out. */
@@ -737,7 +737,7 @@ extern void *fn_801CC7A0(void *);
 extern void **fn_801CC784(void *);
 extern void *fn_801CB954();
 extern void fn_801CC768(void *, float);
-extern void fn_801CC594(void *);
+extern void resetStatHandler(void *);
 extern void *fn_80207848(void *, int);
 extern void *ArtSetGet(void *);
 extern float lbl_80562A04;
@@ -780,7 +780,7 @@ void fn_801CC470(void) {
         if (field != 0)
             fn_801CC768(field, lbl_80562A04);
         *(void **)((char *)object + 0xC) = ArtSetGet(lbl_80337AC8 + 0x1C8);
-        fn_801CC594(object);
+        resetStatHandler(object);
     }
     lbl_8055E884 = (s32 *)object;
 }
@@ -795,7 +795,7 @@ void fn_801CC470(void) {
  * reset once the handler is installed.  Nothing happens while it is paused.
  * The reset values are written through volatile pointers, so the compiler keeps
  * every one of them, in this order, in the handler. */
-void fn_801CC594(void *object) {
+void resetStatHandler(void *object) {
     StatHandler *handler = (StatHandler *)object;
     register s32 byteOffset;
     register s32 index;
@@ -963,7 +963,7 @@ void fn_801CC8FC(void *object) {
     *(int *)((char *)object + 4) = 0;
 }
 
-/* The StatHandler layout is at the top of this file, above fn_801CC594. */
+/* The StatHandler layout is at the top of this file, above resetStatHandler. */
 
 #pragma scheduling invalid_target
 /* Resets the award stat handler in lbl_8055E884 between races: hands every entry
@@ -1927,112 +1927,138 @@ void fn_801CDDCC(void) {
 #pragma dont_inline on
 void fn_801CDE00(s32 arg0) {
     extern char lbl_80337AC8[];
-    extern char lbl_8055AB30[];
-    extern char lbl_8055AB3C[];
-    extern char lbl_8055AB40[];
-    extern char lbl_8055AB44[];
-    extern char lbl_8055AB48[];
-    extern char lbl_8055AB4C[];
+    extern char lbl_8055AB30[4];
+    extern char lbl_8055AB3C[4];
+    extern char lbl_8055AB40[4];
+    extern char lbl_8055AB44[4];
+    extern char lbl_8055AB48[4];
+    extern char lbl_8055AB4C[4];
     extern s32 lbl_802FAA40[];
-    extern float lbl_805629E4;
-    extern float lbl_805629FC;
+    extern void *fn_802ADDD8(void *, s32);
+    extern s32 fn_802ADF34(void *, char *, s32 *);
     void *tmp;
     s32 s31;
     char *base;
+    char *obj;
     Struct_801CE670 t5, t4, t3, t2, t1, s30, s29, s28, s27, s26, s25, s24, s23, s22, s21, s20, s19, s18, s17, s16, s15, s14, s13, s12, s11, s10, s9, s8, s7, s6, s5, s4, s3, s2, s1;
     s32 dest[108];
-    s32 i;
-    s32 *dp;
+    register s32 i;
+    f32 *p;
+    f32 one;
+    f32 zero;
     base = lbl_80337AC8;
     tmp = fn_801284F8(8, (void *)(base + 0x348));
-    if (tmp != 0) tmp = (void *)fn_802ADDD8(0x10);
+    if (tmp != 0) tmp = (void *)((void *(*)(void *, s32))fn_802ADDD8)(tmp, 0x10);
     *(void **)((char *)arg0 + 8) = tmp;
     s31 = ((s32 (*)())fn_80204CF0)();
-    dp = dest;
-    i = 54;
-    do {
-        dp[1] = 0;
-        dp[0] = 0;
-        dp += 2;
-    } while (--i != 0);
+    memset(dest, 0, sizeof(dest));
     fn_801CE6D0(&s1, (s32)(base + 0x358), (s32)((char *)arg0 + 0x18));
-    dest[0] = s1.field8; dest[1] = s1.field4; dest[2] = s1.field0;
-    fn_801CE6A4(&s2, (s32)(base + 0x368), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x20, s1.field8, s1.field4));
-    dest[3] = s2.field8; dest[4] = s2.field4; dest[5] = s2.field0;
-    fn_801CE6A4(&s3, (s32)(base + 0x378), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x34, s2.field8, s2.field4));
-    dest[6] = s3.field8; dest[7] = s3.field4; dest[8] = s3.field0;
-    fn_801CE6A4(&s4, (s32)(base + 0x388), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x48, s3.field8, s3.field4));
-    dest[9] = s4.field8; dest[10] = s4.field4; dest[11] = s4.field0;
-    fn_801CE6A4(&s5, (s32)(base + 0x398), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x5c, s4.field8, s4.field4));
-    dest[12] = s5.field8; dest[13] = s5.field4; dest[14] = s5.field0;
-    fn_801CE6A4(&s6, (s32)(base + 0x3a8), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x70, s5.field8, s5.field4));
-    dest[15] = s6.field8; dest[16] = s6.field4; dest[17] = s6.field0;
-    fn_801CE6A4(&s7, (s32)(base + 0x3b8), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x84, s6.field8, s6.field4));
-    dest[18] = s7.field8; dest[19] = s7.field4; dest[20] = s7.field0;
-    fn_801CE6A4(&s8, (s32)(base + 0x3c8), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x98, s7.field8, s7.field4));
-    dest[21] = s8.field8; dest[22] = s8.field4; dest[23] = s8.field0;
-    fn_801CE6A4(&s9, (s32)(base + 0x3d8), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0xac, s8.field8, s8.field4));
-    dest[24] = s9.field8; dest[25] = s9.field4; dest[26] = s9.field0;
-    fn_801CE6A4(&s10, (s32)(base + 0x3e8), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0xc0, s9.field8, s9.field4));
-    dest[27] = s10.field8; dest[28] = s10.field4; dest[29] = s10.field0;
-    fn_801CE6A4(&s11, (s32)(base + 0x3f8), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0xd4, s10.field8, s10.field4));
-    dest[30] = s11.field8; dest[31] = s11.field4; dest[32] = s11.field0;
-    fn_801CE6A4(&s12, (s32)(base + 0x408), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0xe8, s11.field8, s11.field4));
-    dest[33] = s12.field8; dest[34] = s12.field4; dest[35] = s12.field0;
-    fn_801CE6A4(&s13, (s32)(base + 0x418), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0xfc, s12.field8, s12.field4));
-    dest[36] = s13.field8; dest[37] = s13.field4; dest[38] = s13.field0;
-    fn_801CE6A4(&s14, (s32)(base + 0x428), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x110, s13.field8, s13.field4));
-    dest[39] = s14.field8; dest[40] = s14.field4; dest[41] = s14.field0;
-    fn_801CE6A4(&s15, (s32)(base + 0x438), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x124, s14.field8, s14.field4));
-    dest[42] = s15.field8; dest[43] = s15.field4; dest[44] = s15.field0;
-    fn_801CE6A4(&s16, (s32)(base + 0x448), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x138, s15.field8, s15.field4));
-    dest[45] = s16.field8; dest[46] = s16.field4; dest[47] = s16.field0;
-    fn_801CE6A4(&s17, (s32)(base + 0x358), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x14c, s16.field8, s16.field4));
-    dest[48] = s17.field8; dest[49] = s17.field4; dest[50] = s17.field0;
-    fn_801CE6A4(&s18, (s32)(base + 0x458), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x160, s17.field8, s17.field4));
-    dest[51] = s18.field8; dest[52] = s18.field4; dest[53] = s18.field0;
-    fn_801CE6A4(&s19, (s32)(base + 0x468), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x174, s18.field8, s18.field4));
-    dest[54] = s19.field8; dest[55] = s19.field4; dest[56] = s19.field0;
+    dest[0] = s1.field0; dest[1] = s1.field4; dest[2] = s1.field8;
+    fn_801CE6A4(&s2, (s32)(base + 0x368), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x20, s1.field4, s1.field0));
+    dest[3] = s2.field0; dest[4] = s2.field4; dest[5] = s2.field8;
+    fn_801CE6A4(&s3, (s32)(base + 0x378), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x34, s2.field4, s2.field0));
+    dest[6] = s3.field0; dest[7] = s3.field4; dest[8] = s3.field8;
+    fn_801CE6A4(&s4, (s32)(base + 0x388), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x48, s3.field4, s3.field0));
+    dest[9] = s4.field0; dest[10] = s4.field4; dest[11] = s4.field8;
+    fn_801CE6A4(&s5, (s32)(base + 0x398), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x5c, s4.field4, s4.field0));
+    dest[12] = s5.field0; dest[13] = s5.field4; dest[14] = s5.field8;
+    fn_801CE6A4(&s6, (s32)(base + 0x3a8), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x70, s5.field4, s5.field0));
+    dest[15] = s6.field0; dest[16] = s6.field4; dest[17] = s6.field8;
+    fn_801CE6A4(&s7, (s32)(base + 0x3b8), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x84, s6.field4, s6.field0));
+    dest[18] = s7.field0; dest[19] = s7.field4; dest[20] = s7.field8;
+    fn_801CE6A4(&s8, (s32)(base + 0x3c8), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x98, s7.field4, s7.field0));
+    dest[21] = s8.field0; dest[22] = s8.field4; dest[23] = s8.field8;
+    fn_801CE6A4(&s9, (s32)(base + 0x3d8), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0xac, s8.field4, s8.field0));
+    dest[24] = s9.field0; dest[25] = s9.field4; dest[26] = s9.field8;
+    fn_801CE6A4(&s10, (s32)(base + 0x3e8), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0xc0, s9.field4, s9.field0));
+    dest[27] = s10.field0; dest[28] = s10.field4; dest[29] = s10.field8;
+    fn_801CE6A4(&s11, (s32)(base + 0x3f8), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0xd4, s10.field4, s10.field0));
+    dest[30] = s11.field0; dest[31] = s11.field4; dest[32] = s11.field8;
+    fn_801CE6A4(&s12, (s32)(base + 0x408), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0xe8, s11.field4, s11.field0));
+    dest[33] = s12.field0; dest[34] = s12.field4; dest[35] = s12.field8;
+    fn_801CE6A4(&s13, (s32)(base + 0x418), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0xfc, s12.field4, s12.field0));
+    dest[36] = s13.field0; dest[37] = s13.field4; dest[38] = s13.field8;
+    fn_801CE6A4(&s14, (s32)(base + 0x428), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x110, s13.field4, s13.field0));
+    dest[39] = s14.field0; dest[40] = s14.field4; dest[41] = s14.field8;
+    fn_801CE6A4(&s15, (s32)(base + 0x438), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x124, s14.field4, s14.field0));
+    dest[42] = s15.field0; dest[43] = s15.field4; dest[44] = s15.field8;
+    fn_801CE6A4(&s16, (s32)(base + 0x448), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x138, s15.field4, s15.field0));
+    dest[45] = s16.field0; dest[46] = s16.field4; dest[47] = s16.field8;
+    fn_801CE6A4(&s17, (s32)(base + 0x358), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x14c, s16.field4, s16.field0));
+    dest[48] = s17.field0; dest[49] = s17.field4; dest[50] = s17.field8;
+    fn_801CE6A4(&s18, (s32)(base + 0x458), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x160, s17.field4, s17.field0));
+    dest[51] = s18.field0; dest[52] = s18.field4; dest[53] = s18.field8;
+    fn_801CE6A4(&s19, (s32)(base + 0x468), (s32)((void *(*)(void*,s32,s32))fn_801CE6CC)((char *)arg0 + 0x174, s18.field4, s18.field0));
+    dest[54] = s19.field0; dest[55] = s19.field4; dest[56] = s19.field8;
     fn_801CE6A4(&s20, (s32)(base + 0x474), s31 == 0 ? (s32)((void *(*)(void*))fn_801CE6CC)((char *)arg0 + 0x188) : (s32)lbl_8055AB30);
-    dest[57] = s20.field8; dest[58] = s20.field4; dest[59] = s20.field0;
+    dest[57] = s20.field0; dest[58] = s20.field4; dest[59] = s20.field8;
     fn_801CE6A4(&s21, (s32)(base + 0x488), s31 == 1 ? (s32)((void *(*)(void*))fn_801CE6CC)((char *)arg0 + 0x188) : (s32)lbl_8055AB30);
-    dest[60] = s21.field8; dest[61] = s21.field4; dest[62] = s21.field0;
+    dest[60] = s21.field0; dest[61] = s21.field4; dest[62] = s21.field8;
     fn_801CE6A4(&s22, (s32)(base + 0x49c), s31 == 2 ? (s32)((void *(*)(void*))fn_801CE6CC)((char *)arg0 + 0x188) : (s32)lbl_8055AB30);
-    dest[63] = s22.field8; dest[64] = s22.field4; dest[65] = s22.field0;
-    fn_801CE6A4(&s23, (s32)(base + 0x4b0), (s32)((void *(*)(void*,s32,s32))fn_801CE6A0)((char *)arg0 + 0x19c, s22.field8, s22.field4));
-    dest[66] = s23.field8; dest[67] = s23.field4; dest[68] = s23.field0;
-    fn_801CE6A4(&s24, (s32)(base + 0x4c4), (s32)((void *(*)(void*,s32,s32))fn_801CE6A0)((char *)arg0 + 0x200, s23.field8, s23.field4));
-    dest[69] = s24.field8; dest[70] = s24.field4; dest[71] = s24.field0;
-    fn_801CE6A4(&s25, (s32)(base + 0x4dc), (s32)((void *(*)(void*,s32,s32))fn_801CE69C)((char *)arg0 + 0x276, s24.field8, s24.field4));
-    dest[72] = s25.field8; dest[73] = s25.field4; dest[74] = s25.field0;
-    fn_801CE6A4(&s26, (s32)(base + 0x4ec), (s32)((void *(*)(void*,s32,s32))fn_801CE698)((char *)arg0 + 0x264, s25.field8, s25.field4));
-    dest[75] = s26.field8; dest[76] = s26.field4; dest[77] = s26.field0;
-    ((void (*)(Struct_801CE670*,s32,s32,s32))fn_801CE670)(&s27, (s32)(base + 0x4f8), (s32)((char *)arg0 + 0x2b8), s26.field8);
-    dest[78] = s27.field8; dest[79] = s27.field4; dest[80] = s27.field0;
-    ((void (*)(Struct_801CE670*,s32,s32,s32))fn_801CE670)(&s28, (s32)(base + 0x358), (s32)((char *)arg0 + 0x2c8), s27.field8);
-    dest[81] = s28.field8; dest[82] = s28.field4; dest[83] = s28.field0;
-    ((void (*)(Struct_801CE670*,s32,s32,s32))fn_801CE670)(&s29, (s32)(base + 0x458), (s32)((char *)arg0 + 0x2d8), s28.field8);
-    dest[84] = s29.field8; dest[85] = s29.field4; dest[86] = s29.field0;
-    ((void (*)(Struct_801CE670*,s32,s32,s32))fn_801CE670)(&s30, (s32)(base + 0x468), (s32)((char *)arg0 + 0x2e8), s29.field8);
-    dest[87] = s30.field8; dest[88] = s30.field4; dest[89] = s30.field0;
-    ((void (*)(Struct_801CE670*,s32,s32,s32))fn_801CE670)(&t1, (s32)lbl_8055AB3C, (s32)((char *)arg0 + 0x2f8), s30.field8);
-    dest[90] = t1.field8; dest[91] = t1.field4; dest[92] = t1.field0;
-    ((void (*)(Struct_801CE670*,s32,s32,s32))fn_801CE670)(&t2, (s32)lbl_8055AB40, (s32)((char *)arg0 + 0x308), t1.field8);
-    dest[93] = t2.field8; dest[94] = t2.field4; dest[95] = t2.field0;
-    ((void (*)(Struct_801CE670*,s32,s32,s32))fn_801CE670)(&t3, (s32)lbl_8055AB44, (s32)((char *)arg0 + 0x318), t2.field8);
-    dest[96] = t3.field8; dest[97] = t3.field4; dest[98] = t3.field0;
-    ((void (*)(Struct_801CE670*,s32,s32,s32))fn_801CE670)(&t4, (s32)lbl_8055AB48, (s32)((char *)arg0 + 0x328), t3.field8);
-    dest[99] = t4.field8; dest[100] = t4.field4; dest[101] = t4.field0;
-    ((void (*)(Struct_801CE670*,s32,s32,s32))fn_801CE670)(&t5, (s32)lbl_8055AB4C, (s32)((char *)arg0 + 0x338), t4.field8);
-    dest[102] = t5.field8; dest[103] = t5.field4; dest[104] = t5.field0;
-    *(s32 *)((char *)arg0 + 0x1c) = fn_802ADF34(*(s32 *)((char *)arg0 + 8), (void *)(base + 0x504), dest, lbl_802FAA40[0], (void *)&lbl_802FAA40[1], dest[104], dest[103], dest[102]);
+    dest[63] = s22.field0; dest[64] = s22.field4; dest[65] = s22.field8;
+    fn_801CE6A4(&s23, (s32)(base + 0x4b0), (s32)((void *(*)(void*,s32,s32))fn_801CE6A0)((char *)arg0 + 0x19c, s22.field4, s22.field0));
+    dest[66] = s23.field0; dest[67] = s23.field4; dest[68] = s23.field8;
+    fn_801CE6A4(&s24, (s32)(base + 0x4c4), (s32)((void *(*)(void*,s32,s32))fn_801CE6A0)((char *)arg0 + 0x200, s23.field4, s23.field0));
+    dest[69] = s24.field0; dest[70] = s24.field4; dest[71] = s24.field8;
+    fn_801CE6A4(&s25, (s32)(base + 0x4dc), (s32)((void *(*)(void*,s32,s32))fn_801CE69C)((char *)arg0 + 0x276, s24.field4, s24.field0));
+    dest[72] = s25.field0; dest[73] = s25.field4; dest[74] = s25.field8;
+    fn_801CE6A4(&s26, (s32)(base + 0x4ec), (s32)((void *(*)(void*,s32,s32))fn_801CE698)((char *)arg0 + 0x264, s25.field4, s25.field0));
+    dest[75] = s26.field0; dest[76] = s26.field4; dest[77] = s26.field8;
+    ((void (*)(Struct_801CE670*,s32,s32,s32))fn_801CE670)(&s27, (s32)(base + 0x4f8), (s32)((char *)arg0 + 0x2b8), s26.field4);
+    dest[78] = s27.field0; dest[79] = s27.field4; dest[80] = s27.field8;
+    ((void (*)(Struct_801CE670*,s32,s32,s32))fn_801CE670)(&s28, (s32)(base + 0x358), (s32)((char *)arg0 + 0x2c8), s27.field4);
+    dest[81] = s28.field0; dest[82] = s28.field4; dest[83] = s28.field8;
+    ((void (*)(Struct_801CE670*,s32,s32,s32))fn_801CE670)(&s29, (s32)(base + 0x458), (s32)((char *)arg0 + 0x2d8), s28.field4);
+    dest[84] = s29.field0; dest[85] = s29.field4; dest[86] = s29.field8;
+    ((void (*)(Struct_801CE670*,s32,s32,s32))fn_801CE670)(&s30, (s32)(base + 0x468), (s32)((char *)arg0 + 0x2e8), s29.field4);
+    dest[87] = s30.field0; dest[88] = s30.field4; dest[89] = s30.field8;
+    ((void (*)(Struct_801CE670*,s32,s32,s32))fn_801CE670)(&t1, (s32)lbl_8055AB3C, (s32)((char *)arg0 + 0x2f8), s30.field4);
+    dest[90] = t1.field0; dest[91] = t1.field4; dest[92] = t1.field8;
+    ((void (*)(Struct_801CE670*,s32,s32,s32))fn_801CE670)(&t2, (s32)lbl_8055AB40, (s32)((char *)arg0 + 0x308), t1.field4);
+    dest[93] = t2.field0; dest[94] = t2.field4; dest[95] = t2.field8;
+    ((void (*)(Struct_801CE670*,s32,s32,s32))fn_801CE670)(&t3, (s32)lbl_8055AB44, (s32)((char *)arg0 + 0x318), t2.field4);
+    dest[96] = t3.field0; dest[97] = t3.field4; dest[98] = t3.field8;
+    ((void (*)(Struct_801CE670*,s32,s32,s32))fn_801CE670)(&t4, (s32)lbl_8055AB48, (s32)((char *)arg0 + 0x328), t3.field4);
+    dest[99] = t4.field0; dest[100] = t4.field4; dest[101] = t4.field8;
+    ((void (*)(Struct_801CE670*,s32,s32,s32))fn_801CE670)(&t5, (s32)lbl_8055AB4C, (s32)((char *)arg0 + 0x338), t4.field4);
+    dest[102] = t5.field0; dest[103] = t5.field4; dest[104] = t5.field8;
+    dest[105] = lbl_802FAA40[0]; dest[106] = lbl_802FAA40[1]; dest[107] = lbl_802FAA40[2];
+    *(s32 *)((char *)arg0 + 0x1c) = fn_802ADF34(*(void **)((char *)arg0 + 8), base + 0x504, dest);
     *(void **)((char *)arg0 + 0xc) = fn_80207848((void *)(base + 0x514), 1);
     *(void **)((char *)arg0 + 0x10) = fn_80207848((void *)(base + 0x528), 1);
     *(void **)((char *)arg0 + 0x14) = fn_80207848((void *)(base + 0x53c), 1);
+    zero = lbl_805629FC;
+    one = lbl_805629E4;
     *(s32 *)arg0 = 0;
-    *(float *)((char *)arg0 + 4) = lbl_805629FC;
+    *(f32 *)((char *)arg0 + 4) = zero;
     *(s32 *)((char *)arg0 + 0x18) = 0;
-    if (*(s32 *)((char *)arg0 + 8) != 0) fn_802AE0E0();
+    p = (f32 *)((char *)arg0 + 0x2b8);
+    p[0] = one; p[1] = zero; p[2] = zero; p[3] = zero;
+    p[4] = one; p[5] = zero; p[6] = zero; p[7] = zero;
+    p[8] = one; p[9] = zero; p[10] = zero; p[11] = zero;
+    p[12] = one; p[13] = zero; p[14] = zero; p[15] = zero;
+    p[16] = one; p[17] = zero; p[18] = zero; p[19] = zero;
+    p[20] = one; p[21] = zero; p[22] = zero; p[23] = zero;
+    p[24] = one; p[25] = zero; p[26] = zero; p[27] = zero;
+    p[28] = one; p[29] = zero; p[30] = zero; p[31] = zero;
+    p[32] = one; p[33] = zero; p[34] = zero; p[35] = zero;
+    p[36] = one; p[37] = zero; p[38] = zero; p[39] = zero;
+    if (*(void **)((char *)arg0 + 8) != 0) fn_802AE0E0();
+    obj = *(char **)((char *)arg0 + 0xc);
+    if (obj != 0) {
+        *(u8 *)(obj + 0x4a) = 1;
+        *(u8 *)(obj + 0x4c) = 0;
+    }
+    obj = *(char **)((char *)arg0 + 0x10);
+    if (obj != 0) {
+        *(u8 *)(obj + 0x4a) = 1;
+        *(u8 *)(obj + 0x4c) = 0;
+    }
+    obj = *(char **)((char *)arg0 + 0x14);
+    if (obj != 0) {
+        *(u8 *)(obj + 0x4a) = 1;
+        *(u8 *)(obj + 0x4c) = 0;
+    }
 }
 #pragma dont_inline off
 
@@ -2118,7 +2144,7 @@ int fn_801CE75C(void) {
 extern unsigned int fn_801CE898(void);
 extern void fn_802ADE60(void *, int);
 /* The one stat/awards manager (0x618 bytes): made by fn_801CC470, reset by
-   fn_801CC594 / fn_801CC918 and freed by fn_801CCCAC.  Its stat block starts at
+   resetStatHandler / fn_801CC918 and freed by fn_801CCCAC.  Its stat block starts at
    +0x2C0; the four pointers below the block's state word are the stat objects
    the manager owns. */
 #define sStatManager lbl_8055E884
