@@ -301,7 +301,7 @@ void fn_8022EE9C(void) {
  * (fn_8022ED00) for the widget to draw in.  When `dst` is one of the inputs
  * every product goes through a temporary first, so nothing is overwritten
  * before the last row that reads it. */
-void UIContext_combine(UIContext *dst, const UIContext *left, const UIContext *right) {
+/* Combine two UI draw-contexts into dst: multiply the 3x3 matrices (dst = left * right), add the position offsets and multiply the brightness/scale/rate factors. Aliasing dst with an input is handled by staging every matrix product in a temporary before storing. */ void UIContext_combine(UIContext *dst, const UIContext *left, const UIContext *right) {
     f32 m00, m10, m20, m01, m11, m21, m02, m12, m22;
 
     dst->brightness = left->brightness * right->brightness;
