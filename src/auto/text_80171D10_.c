@@ -529,7 +529,7 @@ void fn_80130980(void *, int, int, float); /* extern */
 void fn_801312EC(void *, void *);      /* extern */
 int fn_80131318();                              /* extern */
 void fn_801345D8(void *, int, void *, float); /* extern */
-void fn_80175080(void **, int, int, char *, double, ...);
+void buildMessageEntry(void **, int, int, char *, double, ...);
 void fn_80147230(void *, const char *, ...);
 int fn_801609C4(int);                               /* extern */
 /* fn_802ADFF4/fn_802AE02C/fn_802AE0B8 (ArtAnimManager start/pause/resume) are
@@ -1991,7 +1991,7 @@ void fn_80174918(void *arg0, int arg1) {
                     } else {
                         val = y * (lbl_80561ADC * y * y) - (lbl_80561A3C * y * y);
                     }
-                    fn_80175080(*(void ***)((unsigned char *)arg0 + 0x1A8), (int)(base + strOffs[i * 2]), (int)(base + strOffs[i * 2 + 1]), 0, (double)val);
+                    buildMessageEntry(*(void ***)((unsigned char *)arg0 + 0x1A8), (int)(base + strOffs[i * 2]), (int)(base + strOffs[i * 2 + 1]), 0, (double)val);
                 }
             }
         }
@@ -2012,7 +2012,7 @@ extern "C" __declspec(section ".sdata") const char lbl_8055A2EC[4];
 /* Build a formatted message/value object: look up two entries by key in a table,
  * convert the numeric value through the first entry (or copy the second verbatim
  * when it is absent), then attach a printf-formatted string (or clear it). */
-extern "C" void fn_80175080(void **table, int valueKey, int fallbackKey, char *format, double number, ...) {
+extern "C" void buildMessageEntry(void **table, int valueKey, int fallbackKey, char *format, double number, ...) {
     struct Dummy {
         virtual void *unused();
         virtual void *get(int);
