@@ -160,7 +160,7 @@ s32 fn_80127964(void);
 void *fn_801288AC(void *, s32, char *, s32);
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void MemAllocRing(void *label, void *size, s32 allocSource) {
+/* MemAllocRing: allocate `size` bytes from a debug heap ring, tagged with `label` and the allocation source id. */ extern "C" void MemAllocRing(void *label, void *size, s32 allocSource) {
     /* MemAlloc: allocate `size` bytes out of the debug heap ring, tagged with
      * `label` and the allocation source id (0 "new[]", 1 "MemAlloc",
      * 2 "MemAllocPhys", 3 "new" -- see fn_801281A0).  Called through the
