@@ -216,10 +216,10 @@ extern unsigned char gHasSavedInputState;
 extern unsigned char gSavedInputStateBuffer[];
 /* Restores a saved 0x61-byte input/telemetry snapshot into out when one is available:
  * copies the record from the saved-state buffer and returns 1, or returns 0 if none is saved. */
-int restoreSavedInputState(void *out) {
+/* If a saved input/telemetry snapshot is present, copy its 0x61 bytes from gSavedInputStateBuffer into stateOut and return 1; otherwise return 0. */ int restoreSavedInputState(void *stateOut) {
 #define hasSavedState gHasSavedInputState
 #define savedStateBuffer gSavedInputStateBuffer
-    unsigned char *dst = (unsigned char *)out;
+    unsigned char *dst = (unsigned char *)stateOut;
     if (hasSavedState != 0) {
         volatile unsigned char *src = savedStateBuffer;
         unsigned char firstByte, secondByte;
