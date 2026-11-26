@@ -12,6 +12,8 @@ extern "C" {
 
 #define RX_BUFFER_SIZE ROUND_UP(sizeof(WPADStatusEx), 32)
 
+/* Bias added to the sum of the first 14 bytes of a 16-byte config block:
+   the 15th byte stores (sum + 0x55) and the 16th stores (sum + 0xAA). */
 #define WPAD_CONFIG_BLOCK_CHECKSUM_BIAS 0x55
 #define WPAD_MAX_CONFIG_BLOCKS 2
 
