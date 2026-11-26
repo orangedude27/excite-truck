@@ -465,7 +465,7 @@ extern "C" int fn_80198F64(void *arg0, int arg1, void *arg2, float *arg3, void *
  * each other.  That tangential slip is turned around and scaled by kSlipScale,
  * then shortened to at most half the two shapes' radii added times `scale`, and
  * written to `out`. */
-extern "C" void fn_801996BC(Vec* out, s32 contactPoint, Vec* normal, void* shapeA, void* shapeB, f32 scale) {
+extern "C" void computeContactSlip(Vec* out, s32 contactPoint, Vec* normal, void* shapeA, void* shapeB, f32 scale) {
     #define kZero      lbl_805622D0 /* 0.0f */
     #define kSlipScale lbl_805622E4 /* -1000.0f */
     #define kHalf      lbl_805622E8 /* 0.5f */
@@ -731,7 +731,7 @@ extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_r
     sp[72] = temp_f2_4;
     sp[59] = lbl_805622D0;
     sp[60] = lbl_805622D0;
-    fn_801996BC((Vec*)(f32 *)&sp[58], (s32)((f32 *)arg2_raw), (Vec*)((f32 *)arg3_raw), arg0, arg1, var_f1);
+    computeContactSlip((Vec*)(f32 *)&sp[58], (s32)((f32 *)arg2_raw), (Vec*)((f32 *)arg3_raw), arg0, arg1, var_f1);
     sp[71] += sp[59];
     temp_f3_2 = (*(f32 *)((u8 *)(((f32 *)arg2_raw)) + (0)));
     sp[72] += sp[60];
