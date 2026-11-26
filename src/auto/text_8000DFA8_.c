@@ -227,7 +227,7 @@ void fn_8000F2EC(void) {
 }
 
 /* Load the resources the two bottom-of-screen banners are drawn from, the same
- * ones fn_8000F384 releases again: the sprite sheet fn_8000FC8C and fn_8000FDF0
+ * ones fn_8000F384 releases again: the sprite sheet fn_8000FC8C and drawInterludeBanner
  * draw as their end caps, opened as a refcounted archive file handle
  * (ArtSetGet; getPictureWidth / getPictureHeight give one of its frames' size), and the
  * gText font taken twice, once per banner, so each holds a reference of its own
@@ -239,7 +239,7 @@ void fn_8000F2EC(void) {
 void fn_8000F330(const char *artName, const char *fontName, s32 otherFontName) {
 #define INTERLUDE_ART lbl_8055D4C0 /* the "interlude.art" file handle */
 #define VALUE_FONT lbl_8055D4C4 /* font of the value banner fn_8000FC8C */
-#define INTERLUDE_FONT lbl_8055D4C8 /* font of the interlude banner fn_8000FDF0 */
+#define INTERLUDE_FONT lbl_8055D4C8 /* font of the interlude banner drawInterludeBanner */
     INTERLUDE_ART = ArtSetGet(artName);
     VALUE_FONT = loadFontTexture((s32)fontName);
     INTERLUDE_FONT = loadFontTexture(otherFontName);
@@ -731,7 +731,7 @@ extern f32 lbl_805602B0, lbl_805602E8;
  * black shadow. Called from fn_801C6B70 while an interlude message is pending.
  * (rename_symbol is refused here, so the suggested name DashHelper_DrawInterludeBanner
  * only lives in this comment; the original took a second, unused argument.) */
-void fn_8000FDF0(const char *text) {
+void drawInterludeBanner(const char *text) {
     extern f32 fn_80011E60(void);
     extern f32 fn_80011E70(void);
     extern f32 fn_8023293C(s32, f32);

@@ -3,7 +3,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void fn_80141558(void *, int, const char *);
-extern char fn_8000FDF0[];
+extern char drawInterludeBanner[];
 extern void fn_80128658(void *);
 extern void fn_80128668(void *);
 extern void fn_801777D0(void *);

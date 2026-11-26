@@ -3791,7 +3791,7 @@ s32 fn_801CB114(s32 key) {
 
 
 extern void fn_8000FC8C(const char*);
-extern void fn_8000FDF0(const char*);
+extern void drawInterludeBanner(const char*);
 extern f32 fn_801C3B6C(void);
 
 extern void *fn_801C3C80(void);
@@ -3821,7 +3821,7 @@ void fn_801C6B70(void) {
         }
         name0 = (const char *)lbl_80437E24[0];
         if (strlen(name0) != 0) {
-            fn_8000FDF0(name0);
+            drawInterludeBanner(name0);
         }
     }
 }
