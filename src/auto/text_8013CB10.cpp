@@ -1,5 +1,5 @@
 #include "types.h"
-/* The virtual calls fn_8013FAC4 makes: v9 is the zone HUD's own test (+0x24),
+/* The virtual calls drawGateStarArt makes: v9 is the zone HUD's own test (+0x24),
  * v10/vC are the scene object it holds at +0x54 looking something up by name
  * (+0x10 gives the object it finds, +0x0C the same kind of lookup, unused). */
 struct V9_8013FAC4 { virtual void d0(); virtual void d1(); virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3(); virtual void m4(); virtual void *v9(int); };
@@ -2457,7 +2457,7 @@ extern f32 fn_8013CB3C(void);
         }
     }
 }
-extern "C" void fn_8013FAC4(void *, int, void *);
+extern "C" void drawGateStarArt(void *, int, void *);
 #pragma scheduling on
 /* One stage of the zone-HUD draw pass outside active gameplay: select this
  * player's 0x12C-byte record, apply the nine setup helpers, and in sudden-death
@@ -2476,7 +2476,7 @@ extern "C" void fn_80140A6C(void *hud, int playerIndex) {
         fn_8013F0A0(hud, (void *)playerIndex, entity);
         ((void (*)(void *, void *, void *))fn_8013F434)(hud, (void *)playerIndex, entity);
         fn_8013F580(hud, (void *)playerIndex, entity);
-        fn_8013FAC4(hud, playerIndex, entity);
+        drawGateStarArt(hud, playerIndex, entity);
         ((void (*)(void *, void *, void *))fn_8013FDB0)(hud, (void *)playerIndex, entity);
         fn_8013F918(hud, (void *)playerIndex, entity);
         fn_8014052C(hud, playerIndex, (unsigned char *)entity);
@@ -4819,7 +4819,7 @@ extern "C" void fn_80147BD0(s32, s32, s32, s32, s32, f32);
  * (+0xC8 long, starting at +0xCC) the sprite grows in over the window's second
  * half; outside it, it is drawn at full size.  Its position is rewound by half
  * its size and scaled before the four corners are handed to the drawer. */
-extern "C" void fn_8013FAC4(void *hud, int arg1, void *arg2) {
+extern "C" void drawGateStarArt(void *hud, int arg1, void *arg2) {
     extern char lbl_8032C978[]; /* "gate_star_art" */
     extern char lbl_8032C988[]; /* "next_gate" */
     extern void fn_801476C4();
