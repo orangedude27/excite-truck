@@ -6773,7 +6773,7 @@ enum { STRM_CODEC_ADPCM = 2 };
  * plain addresses (the DBAssert(ref.dataType == 0) checks below).  Nothing is
  * copied, and 0 is returned, when the file's codec is not the ADPCM one or the
  * index is past the end of the table. */
-extern "C" s32 StrmFile_GetAdpcmParam(void *arg0, void *arg1, s32 index) {
+/* Copy the 0x30-byte ADPCM parameter block for one stream of an opened .strm file into the output, resolving the nested data refs and returning 0 for a non-ADPCM codec or out-of-range stream index. */ extern "C" s32 StrmFile_GetAdpcmParam(void *arg0, void *arg1, s32 index) {
     if (*(void **)arg0 == 0) /* DBAssert(mHeader != NULL) */
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326518, 0xAD, lbl_80326688);
     u8 *block = (u8 *)*((void **)arg0 + 1);
