@@ -932,7 +932,7 @@ extern void fn_802E3804(void *, u32);
 extern void closeFileHandle(s32 *);
 extern s32 fn_8011770C(void *, u32);
 extern void fn_80117618(s32, void *);
-extern s32 fn_802E1BB4(void *);
+extern s32 buildImageBankTextures(void *);
 extern void fn_801176FC(s32, void *);
 /* Open a Bink movie into this video object, logging open/failure status. */
 /* VideoObject movie loader: free the current Bink, resolve and open the movie file by its name at +8, and store the new handle at +4. */ void VideoObject_OpenMovie(void *videoObj) {
@@ -953,7 +953,7 @@ extern void fn_801176FC(s32, void *);
         fn_802E30C8(messages + 0x10, video + 8);
         fn_80117618(*(s32 *)(video + 4), video + 0x150);
         fn_80117618(*(s32 *)(video + 4), video + 0x150);
-        if (fn_802E1BB4(video + 0x50) == 0) {
+        if (buildImageBankTextures(video + 0x50) == 0) {
             Abend_Panic(messages + 0x20);
         }
         fn_801176FC(*(s32 *)(video + 4), video + 0x150);

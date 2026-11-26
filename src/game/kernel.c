@@ -224,7 +224,7 @@ extern unsigned int lookupTextureWidth(unsigned int);
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma opt_common_subs off
-int fn_802E1BB4(void *obj, int unused) {
+int buildImageBankTextures(void *obj, int unused) {
     /* Build an image bank's textures: ask fn_802E1A9C how the four images of one
      * slot lay out, allocate the whole run of slots as one handle, then make a
      * GX texture object for every image a slot uses and record where its data
