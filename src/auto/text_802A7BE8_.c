@@ -47,11 +47,11 @@ void fn_802A7C24(void) {
 void fn_802A7C64(void) {
 }
 
-void fn_802A7EEC(void);
+void CarMarkers_Draw(void);
 void fn_802A7C68(void) {
     #define dbgIsEnabled      fn_801C5B60
     #define dbgGetModeObj     fn_801E87A8
-    #define dbgDrawCarMarkers fn_802A7EEC
+    #define dbgDrawCarMarkers CarMarkers_Draw
     /* Draw the car markers only while debug mode is off and the game mode word
      * (the u32 at dbgGetModeObj()+4) is not 0x180304. */
     if ((dbgIsEnabled() == 0) &&
@@ -138,7 +138,7 @@ extern s32 fn_800122B4(u32, void *);
 void qsort(void *, u32, u32, s32 (*)(s32 *, s32 *));
 void fn_802339A8(s32 a, f32 b, s32 c, f32 d, ...);
 
-/* ---- what fn_802A7EEC draws its markers from ----
+/* ---- what CarMarkers_Draw draws its markers from ----
    Its cars are the records of the CarMgrEntry table of
    src/auto/text_801EA4C4_.c (fn_801EA9A0(index) is one record); fn_801EA9DC
    refreshes 0x0C-0x40 of a record from the live car object every frame. */
@@ -234,7 +234,7 @@ s32 fn_802A7E08(s32 *arg0, s32 *arg1) {
    camera.  In team play a car of the local player's own team also gets the
    team icon of fn_802A7CA8, style 3 when the team is the entry's 0xF8 and
    style 2 when it is the 0xE8 one. */
-void fn_802A7EEC(void) {
+void CarMarkers_Draw(void) {
     u32 worldPos[3];
     char rankText[8];
     f32 screen[3];
