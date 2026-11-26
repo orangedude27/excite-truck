@@ -7136,7 +7136,7 @@ extern f32 lbl_8056353C, lbl_80563540;
  * fade started at that same rate down to the mode's resting level, and clears
  * the flag once it is within a hair of it.  fn_802192AC then refreshes the
  * links this object drives. */
-extern "C" void updateIntensityFade(IntensityFade *fade) {
+/* Advance an intensity fade one frame: ramp or pulse its value toward the mode's resting level in the current mode, then refresh the links this object drives. */ extern "C" void updateIntensityFade(IntensityFade *fade) {
     if (fn_8023659C() < fade->startTime)
         fade->startTime = fn_8023659C();
     switch (fade->mode) {
