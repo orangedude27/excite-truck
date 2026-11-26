@@ -767,7 +767,7 @@ typedef struct RaceOverlay {
 #define MSG_DAMAGE        (&lbl_80558BAC)  /* "DAMAGE": off-screen marker name */
 #define MSG_KILLED        (&lbl_80558BB4)  /* "KILLED": likewise, for a wrecked racer */
 
-extern s32 fn_8000D75C(void);
+extern s32 Sound_isActive(void);
 extern void fn_8000FBE4(void);
 extern void fn_80010F38(void *, s32, s32, s32, f32);
 extern void fn_800111A4(void *, s32, s32, s32, s32, f32);
@@ -863,7 +863,7 @@ extern s32 fn_8027AA48(void *, f32, f32);
             }
             fn_801E87A8();
             if (skipGauge == 0 && (gSession->hudMask & HUD_SPEED)) {
-                if (fn_8000D75C() == 0) {
+                if (Sound_isActive() == 0) {
                     fn_80014820(overlay);
                 }
                 if (*(u32 *)((u8 *)gSession->app + 0x4) & 0x80000) {

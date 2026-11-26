@@ -624,7 +624,7 @@ check_124:
     goto default_event;
 
 event_1b:
-    if (fn_8000D75C() == 0 &&
+    if (Sound_isActive() == 0 &&
         fn_801E8838() == 0 &&
         fn_800075A0(playerState) != 0) {
         fn_8000D000((void *)fn_8000B42C, (void *)fn_8000B3B4, 0);
@@ -633,7 +633,7 @@ event_1b:
     goto done;
 
 event_50:
-    if (fn_80265D64() == 0 && fn_8000D75C() == 0) {
+    if (fn_80265D64() == 0 && Sound_isActive() == 0) {
         if (fn_801769F8() != 0) {
             fn_801769EC();
             fn_80206454();
@@ -719,7 +719,7 @@ check:
 }
 
 extern int fn_802ECC10(void);
-extern int fn_8000D75C(void);
+extern int Sound_isActive(void);
 extern int fn_8000D764(void);
 extern int fn_800216D0(void);
 extern int fn_80161C70(void);
@@ -747,7 +747,7 @@ void fn_8000B950(void) {
     state = fn_802ECC10();
     if ((unsigned int)state != (unsigned int)lbl_8055D3ED) {
         lbl_8055D3ED = state;
-        if (fn_8000D75C() == 0 &&
+        if (Sound_isActive() == 0 &&
             fn_801DF060() == 0 &&
             lbl_8055D3D0 == (void *)lbl_802FBC90) {
             if (state == 0) {
@@ -791,7 +791,7 @@ void fn_8000B950(void) {
         code = key & 0xFFFF;
         if (code != 0x58 && code != 0xD)
             goto call_key;
-        if (fn_8000D75C() != 0 ||
+        if (Sound_isActive() != 0 ||
             fn_8020DE1C() != 0 ||
             fn_801E8838() != 0)
             goto call_key;
@@ -874,7 +874,7 @@ check:
     fn_800207B0();
     fn_801E7E48();
     fn_80176BAC();
-    ((void (*)(int))fn_8000AE78)(fn_8000D75C() == 0);
+    ((void (*)(int))fn_8000AE78)(Sound_isActive() == 0);
     /* the current game mode's (lbl_8055D3D0) per-frame callback */
     if (*(void (**)(void))((char *)lbl_8055D3D0 + 8))
         (*(void (**)(void))((char *)lbl_8055D3D0 + 8))();

@@ -156,7 +156,7 @@ extern float lbl_80563C80, lbl_80563C84, lbl_80563C88, lbl_80563C64;
 extern float lbl_8055F48C;
 extern int KERNEL_GetTimeMs(void);
 extern void fn_80209190(int, float);
-extern int fn_8000D75C(void);
+extern int Sound_isActive(void);
 extern void fn_801769EC(void);
 extern void fn_8022FF10(void *, void *);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -1287,7 +1287,7 @@ void Camera_updateReplaySpin(void *arg0) {
         sSpinActive = 0;
         sSpinStartTime = SPIN_IDLE;
         sound_volume_set(sCrashVolume, FLOAT_ONE);
-        if (fn_8000D75C() == 0) {
+        if (Sound_isActive() == 0) {
             fn_801769EC();
         }
     } else {

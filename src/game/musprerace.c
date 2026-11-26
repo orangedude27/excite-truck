@@ -301,7 +301,7 @@ extern s8 lbl_8055EE43;
 
 extern void fn_8020C2AC(void);
 extern s8 hasSelectedTrackMusicSong(void);
-extern s8 fn_8000D75C(void);
+extern s8 Sound_isActive(void);
 extern s32 fn_800216D0(void);
 extern s32 fn_80009C84(void);
 extern s32 fn_801B85CC(void);
@@ -329,7 +329,7 @@ void musicPreRaceUpdate(void) {
            /* The three track tables start at lbl_8055EE41 and must be set up. */
            if ((u8)lbl_8055EE41 == 0 || (u8)lbl_8055EE43 == 0 || (u8)lbl_8055EE42 == 0) fn_8020C2AC();
            lbl_8055EE58 = hasSelectedTrackMusicSong();
-           lbl_8055EE40 = fn_8000D75C();
+           lbl_8055EE40 = Sound_isActive();
            active = 0;
            if (fn_800216D0() != 0 && fn_80009C84() == 0) active = 1;
            selection = active;

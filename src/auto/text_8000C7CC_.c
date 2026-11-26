@@ -398,7 +398,7 @@ extern "C" s32 fn_8000D540(s32 input) {
 }
 
 #pragma cplusplus reset
-u8 fn_8000D75C(void) {
+u8 Sound_isActive(void) {
     /* Return the global audio-active flag (1 while audio is running). */
 #define sAudioActiveFlag lbl_8055D404
     return sAudioActiveFlag;
