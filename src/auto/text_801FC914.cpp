@@ -158,7 +158,7 @@ extern "C" float lbl_80563044;
 extern "C" void fn_801FD3F0(void*, float);
 
 extern "C" void fn_801FD5E8(void* = 0, float = 0);
-extern "C" void fn_801FDF18(void*, float);
+extern "C" void advanceLinearPathTMH(void*, float);
 extern "C" void fn_801FEC74(void*);
 extern "C" void Abend_Panic(const char*, ...);
 extern "C" const char lbl_8033B618[];
@@ -420,7 +420,7 @@ extern "C" void fn_801FCF74(void *drone, float dt) {
     case PATH_END_REVERSE:
         return ((void (*)(void *, int, float))fn_801FD5E8)(drone, endBehavior, dt);
     case PATH_END_STOP:
-        return ((void (*)(void *, int))fn_801FDF18)(drone, endBehavior);
+        return ((void (*)(void *, int))advanceLinearPathTMH)(drone, endBehavior);
     default:
         return Abend_Panic((const char *)STR_PATH_END_BEHAVIOR);
     }
@@ -645,64 +645,68 @@ extern "C" void fn_801FD320(void* arg0, float t) {
 
 #pragma push
 #pragma processor 750
-extern "C" void fn_801FD3F0(void* arg0, float farg0) {
-    char* obj = (char*)arg0;
-    char** slot = *(char***)(obj + 4);
-    register float old_pos = *(float*)(obj + 0x40);
-    char* track = *(char* volatile*)slot;
-    register int index = *(int*)(obj + 0x3C);
-    register float pos = old_pos + farg0;
-    register int count = *(int*)(track + 0x6D0);
-    char* base = track + ((count + index) % count) * 0x24;
-    char* node = base + 0x10;
-    float length = *(float*)(node + 0x20);
-    register float step = length * pos;
-    register float one = 1.0f;
-    if (step < one) {
-        *(float*)(obj + 0x40) = pos;
-    } else {
-        float inv_length = one / length;
-        index++;
-        float old54 = *(float*)(obj + 0x54);
-        float old58 = *(float*)(obj + 0x58);
-        float old5c = *(float*)(obj + 0x5C);
-        float delta = farg0 - inv_length;
-        float old60 = *(float*)(obj + 0x60);
-        float old68 = *(float*)(obj + 0x68);
-        step -= one;
-        *(float*)(obj + 0x40) = old_pos + delta;
-        count = *(volatile int*)(track + 0x6D0);
-        index %= count;
-        *(int*)(obj + 0x3C) = index;
-        *(float*)(obj + 0x44) = old54;
-        *(float*)(obj + 0x48) = old58;
-        *(float*)(obj + 0x4C) = old5c;
-        *(float*)(obj + 0x50) = old60;
-        *(float*)(obj + 0x64) = old68;
-        char* track2 = *(char* volatile*)slot;
-        char* nodes2 = track2 + 0x10;
-        node = nodes2 + ((count + index) % count) * 0x24;
-        char* end_node = nodes2 + ((count + index + 1) % count) * 0x24;
-        *(float*)(obj + 0x54) = *(float*)(end_node + 0x1C);
-        *(float*)(obj + 0x58) = *(float*)(end_node + 0x20);
-        *(float *)(obj + 0x5C) = *(float*)(end_node + 0x24);
-        *(float*)(obj + 0x60) = *(float*)(end_node + 0x28);
-        *(float*)(obj + 0x68) = *(float*)(end_node + 0x2C);
-    }
-    char* call_track = *(char* volatile*)slot;
-    int call_count = *(int*)(call_track + 0x6D0);
-    char* call_nodes = call_track + 0x10;
-    int base2 = call_count + index;
-    char* prev = call_nodes + ((base2 - 1) % call_count) * 0x24;
-    char* next = call_nodes + ((base2 + 1) % call_count) * 0x24;
-    char* next2 = call_nodes + ((base2 + 2) % call_count) * 0x24;
-    fn_801FD144(arg0, prev, node, next, next2, step);
-    fn_801FD320(arg0, step);
-    float end = *(float*)(obj + 0x68);
-    float begin = *(float*)(obj + 0x64);
-    float difference = end - begin;
-    float result = begin + step * difference;
-    *(float*)(obj + 0x6C) = result;
+extern "C" void fn_801FD3F0(void *arg0, float farg0)
+{
+  char *obj = (char *) arg0;
+  char **slot = *((char ***) (obj + 4));
+  register float old_pos = *((float *) (obj + 0x40));
+  char *track = *((char * volatile *) slot);
+  register int index = *((int *) (obj + 0x3C));
+  register float pos = old_pos + farg0;
+  register int count = *((int *) (track + 0x6D0));
+  char *base = track + (((count + index) % count) * 0x24);
+  char *node = base + 0x10;
+  float length = *((float *) (node + 0x20));
+  register float step = length * pos;
+  register float one = 1.0f;
+  if (step < one)
+  {
+    *((float *) (obj + 0x40)) = pos;
+  }
+  else
+  {
+    float inv_length = one / length;
+    index++;
+    float old58 = *((float *) (obj + 0x58));
+    float old54 = *((float *) (obj + 0x54));
+    float old5c = *((float *) (obj + 0x5C));
+    float old60 = *((float *) (obj + 0x60));
+    float delta = farg0 - inv_length;
+    float old68 = *((float *) (obj + 0x68));
+    step -= one;
+    *((float *) (obj + 0x40)) = old_pos + delta;
+    count = *((volatile int *) (track + 0x6D0));
+    index %= count;
+    *((int *) (obj + 0x3C)) = index;
+    char *track2 = *((char * volatile *) slot);
+    *((float *) (obj + 0x44)) = old54;
+    *((float *) (obj + 0x48)) = old58;
+    *((float *) (obj + 0x4C)) = old5c;
+    *((float *) (obj + 0x50)) = old60;
+    *((float *) (obj + 0x64)) = old68;
+    char *nodes2 = track2 + 0x10;
+    node = nodes2 + (((count + index) % (count & 0xFFFFFFFFFFFFFFFF)) * 0x24);
+    char *end_node = nodes2 + ((((count + index) + 1) % count) * 0x24);
+    *((float *) (obj + 0x54)) = *((float *) (end_node + 0x1C));
+    *((float *) (obj + 0x58)) = *((float *) (end_node + 0x20));
+    *((float *) (obj + 0x5C)) = *((float *) (end_node + 0x24));
+    *((float *) (obj + 0x60)) = *((float *) (end_node + 0x28));
+    *((float *) (obj + 0x68)) = *((float *) (end_node + 0x2C));
+  }
+  char *call_track = *((char * volatile *) slot);
+  char *call_nodes = call_track + 0x10;
+  int call_count = *((int *) (call_track + 0x6D0));
+  int base2 = call_count + index;
+  char *prev = call_nodes + (((base2 - 1) % call_count) * 0x24);
+  char *next = call_nodes + (((base2 + 1) % call_count) * 0x24);
+  char *next2 = call_nodes + (((base2 + 2) % call_count) * 0x24);
+  fn_801FD144(arg0, prev, node, next, next2, step);
+  fn_801FD320(arg0, step);
+  float end = *((float *) (obj + 0x68));
+  float begin = *((float *) (obj + 0x64));
+  float difference = end - begin;
+  float result = begin + (step * difference);
+  *((float *) (obj + 0x6C)) = result;
 }
 #pragma pop
 
@@ -846,7 +850,7 @@ extern "C" void fn_801FD5E8(void* arg0, float farg0) {
 /* Advances a LinearPathTMH along its linear node track by deltaTime: rolls the
  * segment parameter over into the next node (or hands the path back at the end),
  * then refreshes the Hermite position, orientation matrix and scalar output. */
-extern "C" void fn_801FDF18(void* walker, float deltaTime) {
+extern "C" void advanceLinearPathTMH(void* walker, float deltaTime) {
     char* tmh = (char*)walker;
     char** trackSlot = *(char***)(tmh + 4);
     char* track = *trackSlot;
