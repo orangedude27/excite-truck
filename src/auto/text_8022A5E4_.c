@@ -802,8 +802,9 @@ struct UIStyle {
     return max;
 }
 #pragma pop
-/* Draws a UI style's picture/text at (x, y): renders the picture or animation, then draws the bitmap-font text lines with alignment and offsets unless a vector font is active. */
-void UIStyle_drawText(void *unused, int x, int y, char *text, unsigned int flagsArg) {
+/* Draw a UI style's picture (or animation) and then its bitmap-font text lines
+ * at (x, y), using the style's alignment, padding and per-side offsets. */
+void UIStyle_drawText(void *styleIndex, int x, int y, char *text, unsigned int flags) {
     extern int stampGetFrameCount(int);
     extern int gxCanvasDrawStamp(int, int, int, int, int);
     extern int gxGetImageFrameCount(void);
@@ -812,49 +813,49 @@ void UIStyle_drawText(void *unused, int x, int y, char *text, unsigned int flags
     extern char *strchr(const char *, int);
     extern unsigned long strlen(const char *);
     extern const char lbl_8033FC08[];
-    void *ctx;
-    int width, mode, lines, row, lineLen, xoff, yoff, state;
-    char *nl;
+    void *style;
+    int lineHeight, useEndPadding, lineCount, lineIndex, lineLength, xOffset, yOffset, picture2;
+    char *newline;
 
-    ctx = fn_8022CA2C();
-    mode = flagsArg & 1;
-    if (*(int *)((char *)ctx + 0x64) != 0) {
-        gxCanvasDrawStamp(*(int *)((char *)ctx + 0x64), x, y,
-                    flagsArg % stampGetFrameCount(*(int *)((char *)ctx + 0x64)), 0);
-    } else if ((state = *(int *)((char *)ctx + 0x68)) != 0) {
-        ((int (*)(int))gxGetImageFrameCount)(state);
+    style = fn_8022CA2C();
+    useEndPadding = flags & 1;
+    if (*(int *)((char *)style + 0x64) != 0) {
+        gxCanvasDrawStamp(*(int *)((char *)style + 0x64), x, y,
+                    flags % stampGetFrameCount(*(int *)((char *)style + 0x64)), 0);
+    } else if ((picture2 = *(int *)((char *)style + 0x68)) != 0) {
+        ((int (*)(int))gxGetImageFrameCount)(picture2);
     }
     if (text == 0) return;
-    if (*(int *)((char *)ctx + 8) != 0) return;
+    if (*(int *)((char *)style + 8) != 0) return;
     Abend_Panic(lbl_8033FC08);
-    width = fn_801E4BA8(*(int **)((char *)ctx + 4));
-    lines = fn_8022AB94(text, 10) + 1;
-    if (*(int *)((char *)ctx + 0x38) & 0x10) {
-        y -= (int)((((unsigned int)(((int)lines - 1) * width) >> 31) +
-                    ((lines - 1) * width))) >> 1;
-    } else if (*(int *)((char *)ctx + 0x38) & 0x40) {
-        y -= (lines - 1) * width;
+    lineHeight = fn_801E4BA8(*(int **)((char *)style + 4));
+    lineCount = fn_8022AB94(text, 10) + 1;
+    if (*(int *)((char *)style + 0x38) & 0x10) {
+        y -= (int)((((unsigned int)(((int)lineCount - 1) * lineHeight) >> 31) +
+                    ((lineCount - 1) * lineHeight))) >> 1;
+    } else if (*(int *)((char *)style + 0x38) & 0x40) {
+        y -= (lineCount - 1) * lineHeight;
     }
-    row = 0;
-    if (lines <= 0) return;
+    lineIndex = 0;
+    if (lineCount <= 0) return;
     goto check;
 body:
-    nl = strchr(text, 10);
-    if (nl != 0) lineLen = nl - text;
-    else lineLen = strlen(text);
-    if (mode != 0) yoff = *(int *)((char *)ctx + 0x50);
-    else yoff = *(int *)((char *)ctx + 0x48);
-    if (mode != 0) xoff = *(int *)((char *)ctx + 0x4C);
-    else xoff = *(int *)((char *)ctx + 0x44);
-    fn_801E4DBC(*(int *)((char *)ctx + 4), 0, *(int *)((char *)ctx + 0x38),
-                x + xoff, y + yoff, text, lineLen);
-    y += width;
-    nl = strchr(text, 10);
-    text = nl;
-    if (nl != 0) text = nl + 1;
-    row++;
+    newline = strchr(text, 10);
+    if (newline != 0) lineLength = newline - text;
+    else lineLength = strlen(text);
+    if (useEndPadding != 0) yOffset = *(int *)((char *)style + 0x50);
+    else yOffset = *(int *)((char *)style + 0x48);
+    if (useEndPadding != 0) xOffset = *(int *)((char *)style + 0x4C);
+    else xOffset = *(int *)((char *)style + 0x44);
+    fn_801E4DBC(*(int *)((char *)style + 4), 0, *(int *)((char *)style + 0x38),
+                x + xOffset, y + yOffset, text, lineLength);
+    y += lineHeight;
+    newline = strchr(text, 10);
+    text = newline;
+    if (newline != 0) text = newline + 1;
+    lineIndex++;
 check:
-    if (row < lines) goto body;
+    if (lineIndex < lineCount) goto body;
 }
 #pragma scheduling reset
 #pragma dont_inline off
