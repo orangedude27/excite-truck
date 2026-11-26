@@ -2046,7 +2046,7 @@ extern "C" void *fn_8014E154(void *object, s32 shouldFree) {
 #pragma use_lmw_stmw off
 /* Initialize one race place-bonus entry: load its item list and config values
  * from the place-bonus data table, or fall back to an empty one-item list. */
-extern "C" void *initPlaceBonusEntry(void *entryPtr, s32 unused) {
+/* Load a race entry's place-bonus item list and tuning values from place_bonus.val, falling back to a single empty item when the file or its data is missing. */ extern "C" void *initPlaceBonusEntry(void *entryPtr, s32 unused) {
     struct PlaceBonusEntry {
         char pad[0x74];
         void **items;
