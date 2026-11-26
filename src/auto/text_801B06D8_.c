@@ -1907,7 +1907,7 @@ extern "C" void *fn_801B307C(void);
  * copy one 0x38-byte per-racer record from each deity's state block into the
  * standings table at +0x3A0; and set +0x39C to the whole seconds left until the
  * finish (0 when there is no countdown, -1 when the deadline is disarmed). */
-extern "C" void fn_801B2D28(void *raceState) {
+extern "C" void fillRaceStateSnapshot(void *raceState) {
     struct Item {
         virtual void d0();
         virtual void d1();

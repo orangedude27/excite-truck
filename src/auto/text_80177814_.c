@@ -1582,7 +1582,7 @@ int fn_801797F8(int slotId, int eventType, int param) {
 void *fn_80179824(void) {
     extern int fn_8026A368();
     extern void fn_802678E8();
-    extern void fn_801B2D28();
+    extern void fillRaceStateSnapshot();
     extern void fn_801CEEC8();
     extern void fn_801B848C();
     extern void fn_801E1EA4();
@@ -1635,7 +1635,7 @@ void *fn_80179824(void) {
         void **o = ((void ***)lbl_8055E434)[k];
         ((void (*)(void *, void *))(((void **)*o)[10]))(o, arg);
     }
-    fn_801B2D28(p);
+    fillRaceStateSnapshot(p);
     fn_801CEEC8(p);
     fn_801B848C(p);
     {
