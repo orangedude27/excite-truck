@@ -192,13 +192,13 @@ typedef struct NearObject {
    and still flagged is reported to each 3D water pool (lbl_804B5010,
    lbl_8055F7F0 of them) and to each shallow water area (lbl_804B5030,
    lbl_8055F7F4 of them); when the splash effect system is up (fn_802BF4F0)
-   splash particles are also emitted from the object (emitWaterSplashes).
+   splash particles are also emitted from the object (fn_8029CD48).
    Nothing happens while the frame time is zero (game standing still). */
 void fn_8029C450(void *arg0, int arg1) {
     extern float fn_801E7E24(void);
     extern void fn_8029D7D0(int, void **);
     extern void fn_8029EA34(void *, void **);
-    extern void emitWaterSplashes(void *);
+    extern void fn_8029CD48(void *);
     extern int fn_802BF4F0(void);
     extern int lbl_8055F7F0, lbl_8055F7F4;
     extern int lbl_804B5010[], lbl_804B5030[];
@@ -232,7 +232,7 @@ void fn_8029C450(void *arg0, int arg1) {
                     shallow++;
                 }
                 if (fn_802BF4F0() != 0) {
-                    emitWaterSplashes(record->object);
+                    fn_8029CD48(record->object);
                 }
             }
             record++;
@@ -579,6 +579,105 @@ void fn_8029CD14(void) {
     }
 }
 
+#pragma ppc_psq_save off
+#pragma use_lmw_stmw off
+/* Emit splash particles from a nearby object's four water-contact points.  Each
+ * local point is transformed into world space; points above the water surface
+ * are skipped, and a jittered line of particles is emitted toward an offset
+ * target, with the count scaling with horizontal distance from the origin. */
+void emitWaterSplashes(void *object) {
+    extern double fn_8002F234(float); /* sqrt */
+    extern float fn_80287BC8(float, float); /* random float in [min, max] */
+    extern float fn_802BF590(void); /* water surface Y */
+    extern void fn_8028E590(int, float *, float *, float); /* emit a splash particle */
+    extern int lbl_8055F7F8; /* splash particle emitter handle */
+    struct Vec3 { float x, y, z; } emitWorld, target, startJitter, endJitter;
+    struct { float x, z; } originXZ;
+    int particleCount;
+    float *pose = (float *)object;
+    unsigned char *obj = (unsigned char *)object;
+    float *localPoint = (float *)((unsigned char *)object + 0x70);
+    int pointIndex, particleIndex;
+    for (pointIndex = 0; pointIndex < 4; pointIndex++, obj += 0x3c, localPoint = (float *)((unsigned char *)localPoint + 0x3c)) {
+        float sideSign;
+        if ((*(unsigned int *)(obj + 0x9c) & 8) != 0)
+            continue;
+        if (&emitWorld.x == localPoint) {
+            float x, y, z;
+            float m00, m10, m20, m01, m11, m21, m02, m12, m22;
+            m10 = pose[3]; m11 = pose[4]; m12 = pose[5];
+            m00 = pose[0]; m01 = pose[1]; m02 = pose[2];
+            m20 = pose[6]; m21 = pose[7]; m22 = pose[8];
+            x = localPoint[0]; y = localPoint[1]; z = localPoint[2];
+            emitWorld.x = z * m20 + (x * m00 + y * m10);
+            emitWorld.y = z * m21 + (x * m01 + y * m11);
+            emitWorld.z = z * m22 + (x * m02 + y * m12);
+        } else {
+            float m00, m01, m02, m10, m11, m12, m20, m21, m22;
+            m10 = pose[3]; m00 = pose[0]; m20 = pose[6];
+            emitWorld.x = localPoint[2] * m20 + (localPoint[0] * m00 + localPoint[1] * m10);
+            m11 = pose[4]; m01 = pose[1]; m21 = pose[7];
+            emitWorld.y = localPoint[2] * m21 + (localPoint[0] * m01 + localPoint[1] * m11);
+            m12 = pose[5]; m02 = pose[2]; m22 = pose[8];
+            emitWorld.z = localPoint[2] * m22 + (localPoint[0] * m02 + localPoint[1] * m12);
+        }
+        emitWorld.x += pose[9];
+        emitWorld.y += pose[10];
+        emitWorld.z += pose[11];
+        if (emitWorld.y > fn_802BF590())
+            continue;
+        emitWorld.y += 0.5f;
+        if (localPoint[0] > 0.0f)
+            sideSign = 1.0f;
+        else
+            sideSign = -1.0f;
+        {
+            float forwardOffset;
+            float distSq;
+            float originZ;
+            float sideOffset = 0.2f + 0.1f * (pose[20] * sideSign);
+            forwardOffset = 0.2f + 0.1f * pose[20];
+            target.x = pose[13] + pose[0] * sideOffset;
+            target.y = pose[14] + pose[1] * sideOffset;
+            target.z = pose[15] + pose[2] * sideOffset;
+            if (5.0f < forwardOffset)
+                forwardOffset = 5.0f;
+            originZ = pose[15];
+            originXZ.x = pose[13];
+            target.x += pose[3] * forwardOffset;
+            target.y += pose[4] * forwardOffset;
+            distSq = originXZ.x * originXZ.x + originZ * originZ;
+            target.z += pose[5] * forwardOffset;
+            originXZ.z = originZ;
+            {
+                float distance = fn_8002F234(distSq);
+                if ((int)(0.25f * distance) < 6)
+                    particleCount = 0.25f * distance;
+                else
+                    particleCount = 6;
+                for (particleIndex = 0; particleIndex < particleCount; particleIndex++) {
+                    float jitterStep;
+                    startJitter = emitWorld;
+                    startJitter.x += fn_80287BC8(-0.5f, 0.5f);
+                    startJitter.z += fn_80287BC8(-0.5f, 0.5f);
+                    startJitter.y = fn_802BF590();
+                    jitterStep = 2.0f < 0.125f * distance ? 2.0f : 0.125f * distance;
+                    endJitter = target;
+                    endJitter.x += fn_80287BC8(-jitterStep, jitterStep);
+                    endJitter.y = 2.0f * fn_80287BC8(0.0f, jitterStep);
+                    endJitter.z += fn_80287BC8(-jitterStep, jitterStep);
+                    if (localPoint[0] > 0.0f)
+                        sideSign = 1.0f;
+                    else
+                        sideSign = -1.0f;
+                    fn_8028E590(lbl_8055F7F8, &startJitter.x, &endJitter.x,
+                        -sideSign * fn_80287BC8(0.0f, 3.1415927f));
+                }
+            }
+        }
+    }
+}
+
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
@@ -588,7 +687,7 @@ void fn_8029CD14(void) {
  * local point is transformed into world space; points above the water surface
  * are skipped, and a jittered line of particles is emitted toward an offset
  * target, with the count scaling with horizontal distance from the origin. */
-void emitWaterSplashes(void *object) {
+void fn_8029CD48(void *object) {
     extern double fn_8002F234(float); /* sqrt */
     extern float fn_80287BC8(float, float); /* random float in [min, max] */
     extern float fn_802BF590(void); /* water surface Y */
@@ -1463,9 +1562,9 @@ void fn_8029E8E0(float *arg0, int arg1) {
     int i;
     int a, b;
     fn_802C8BD0(*(int *)((char *)arg0 + 0x40));
-    if (fn_802C8DBC(4) != 0) {
+    if (beginDrawListPass(4) != 0) {
         struct ReverseVec3 *view;
-        view = (struct ReverseVec3 *)((char *)fn_802C86DC() + 0x24);
+        view = (struct ReverseVec3 *)((char *)DrawList_getCurrentMatrix() + 0x24);
         center = *view;
         f30 = lbl_80564658;
         i = 0;
@@ -1478,8 +1577,8 @@ void fn_8029E8E0(float *arg0, int arg1) {
             diff.x = arg0[0] - cz;
             diff.z = arg0[2] - cx;
             sp8.x = diff.x;
-            sp8.z = diff.z;
             sp8.y = -diff.y;
+            sp8.z = diff.z;
             PSVECNormalize((float *)&sp8, (float *)&sp8);
             {
                 float z2 = sp8.z * sp8.z;
@@ -1500,9 +1599,9 @@ void fn_8029E8E0(float *arg0, int arg1) {
             i++;
             arg0 += 3;
         } while ((unsigned int)i < 4);
-        fn_802C8E48();
+        DrawList_endMeshPass();
     }
-    fn_802C8D74();
+    DrawList_RestoreNormalMode();
 }
 #pragma pop
 extern void fn_8029EC64(void *, void *, int);
