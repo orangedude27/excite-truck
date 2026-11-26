@@ -380,7 +380,7 @@ s32 fn_80131BD0(void* table, const char* name) {
 // Search a chain of value tables for the entry whose name matches (case-insensitive).
 // Each table holds {name, value} pairs (8 bytes each) and links to a child table at +0x14.
 // Returns a pointer to the matching entry, or NULL if no table in the chain has it.
-s32 findValueTableEntry(void *table, const char *name) {
+/* Find the {name, value} entry whose name matches case-insensitively, searching this table and then each linked child table; returns the entry pointer or NULL. */ s32 findValueTableEntry(void *table, const char *name) {
     char *found;
     s32 index;
     s32 offset;
