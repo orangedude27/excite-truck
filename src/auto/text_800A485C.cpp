@@ -17491,12 +17491,12 @@ extern "C" void fn_800C1984(s32 *arg0, s32 *arg1) {
 }
 
 extern "C" void fn_800C1C1C(void *, s32 *);
-extern "C" void decodeInterleavedSampleBlocks(void *arg0, void *arg1, s32 *out) {
+/* Decode two 9-sample blocks and emit their 18 interleaved differential output values. */ extern "C" void decodeInterleavedSampleBlocks(void *firstBlock, void *secondBlock, s32 *out) {
     /* Decode two 9-sample blocks and emit 18 interleaved differential output values. */
     s32 samples[19];
     s32 delta;
-    fn_800C1C1C(arg0, &samples[9]);
-    fn_800C1C1C(arg1, &samples[0]);
+    fn_800C1C1C(firstBlock, &samples[9]);
+    fn_800C1C1C(secondBlock, &samples[0]);
     *out = samples[9];
     delta = samples[0] - *out;
     out[1] = delta;
