@@ -1323,7 +1323,7 @@ extern char lbl_80345218[];
 extern float lbl_80563B18, lbl_80563B1C, lbl_80563B20, lbl_80563B24, lbl_80563B28, lbl_80563B2C, lbl_80563B30, lbl_8055F39C;
 extern void *fn_8022EDC4(void);
 extern void fn_8025B134(void);
-extern void fn_8025B0E8(void *, const void *);
+extern void copyNineWords(void *, const void *);
 extern float fn_8025B0A8(void *);
 extern float fn_8025B0C4(float);
 extern void fn_80144D80(void *, float, float, float);
@@ -1359,7 +1359,7 @@ void fn_8025AE18(void *arg0) {
     int a, b, index;
     float ratio, size, x, z, y, old, t;
     if (*(int *)(obj + 0x50) == -1 || *(unsigned char *)(obj + 0x4A) == 0) return;
-    fn_8025B0E8(obj + 0x54, ((void *(*)(void *))fn_8025B134)(obj + 0x84));
+    copyNineWords(obj + 0x54, ((void *(*)(void *))fn_8025B134)(obj + 0x84));
     other = (char *)fn_8022EDC4();
     x = *(float *)(other + 0x38);
     fn_80144D80(matrix, x, x, x);
@@ -1425,7 +1425,7 @@ f32 fn_8025B0C4(f32 radians) {
 }
 
 /* Copy 36 bytes (9 words) from src to dst. */
-void fn_8025B0E8(void *dst, const void *src) {
+void copyNineWords(void *dst, const void *src) {
     struct Copy {
         u32 words[9];
     };
