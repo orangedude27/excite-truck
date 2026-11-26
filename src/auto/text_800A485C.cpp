@@ -13927,7 +13927,7 @@ extern "C" s32 fn_800BB3F4(s32);
 #pragma pop
 /* Initialize/query an IOS device state with retries and a sequence of control
  * commands, returning 0 on success or a status/error code on failure. */
-extern "C" s32 fn_800B9FCC(s32 shouldInit) {
+extern "C" s32 initSdCardDevice(s32 shouldInit) {
     s32 ioctlParam;
     s32 ioctlBuffer[4];
     s16 ioctlShortParam;
@@ -17785,29 +17785,29 @@ extern "C" void fn_800C2590(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3)
   s32 a0 = arg0[0];
   s32 c0 = *(t++);
   s32 c1 = *(t++);
-  arg2[0] = arg1[0] + ((s32) ((((s64) a0) * c0) >> 20));
+  arg2[0] = (char) (arg1[0] + ((s32) ((((s64) a0) * c0) >> 20)));
   arg3[0] = arg1[17] + ((s32) ((((s64) a0) * c1) >> 20));
   s32 a1 = arg0[1];
   s32 d0 = *(t++);
   s32 d1 = *(t++);
   arg2[64] = arg1[1] + ((s32) ((((s64) a1) * d0) >> 20));
-  arg3[-64] = arg1[16] + ((s32) ((((s64) a1) * d1) >> 20));
+  arg3[-64] = arg1[16] + ((s32) ((((s64) arg0[1]) * d1) >> 20));
   s32 a2 = arg0[2];
   s32 e0 = *(t++);
   s32 e1 = *(t++);
   arg2[128] = arg1[2] + ((s32) ((((s64) a2) * e0) >> 20));
-  arg3[-128] = arg1[15] + ((s32) ((((s64) a2) * e1) >> 20));
+  arg3[-128] = arg1[15] + ((s32) ((((s64) arg0[2]) * e1) >> 20));
   s32 a3 = arg0[3];
+  volatile int f1 = *(t++);
   s32 f0 = *(t++);
-  s32 f1 = *(t++);
   arg2[192] = arg1[3] + ((s32) ((((s64) a3) * f0) >> 20));
-  arg3[-192] = arg1[14] + ((s32) ((((s64) a3) * f1) >> 20));
+  arg3[-192] = arg1[14] + ((s32) ((((s64) arg0[3]) * f1) >> 20));
   s32 a4 = arg0[4];
   s32 g0 = *(t++);
   s32 g1 = *(t++);
   arg2[256] = arg1[4] + ((s32) ((((s64) a4) * g0) >> 20));
   arg3[-256] = arg1[13] + ((s32) ((((s64) a4) * g1) >> 20));
-  s32 a5 = arg0[0, 5];
+  s32 a5 = arg0[5];
   s32 h0 = *(t++);
   s32 h1 = *(t++);
   arg2[320] = arg1[5] + ((s32) ((((s64) a5) * h0) >> 20));
