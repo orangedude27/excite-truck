@@ -1467,7 +1467,7 @@ void fn_801912B4(void *driver) {
 /* PlayerDriver start-up: read this driver's boolean options out of the option
  * table (registering their defaults) and hand the driver object at +0x38 its
  * initial settings. */
-extern "C" void initPlayerDriver(void *arg0) {
+/* PlayerDriver start-up: publish the driver's flag into the car, read its boolean options from the option table (registering defaults), apply game-state overrides, then hand the driver its car index and car. */ extern "C" void initPlayerDriver(void *arg0) {
     /* The driver object this PlayerDriver holds at +0x38.  Only the four slots
      * used here are declared; getKey() is the object's id in the option table. */
     class Driver {
