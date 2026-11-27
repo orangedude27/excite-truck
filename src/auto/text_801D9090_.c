@@ -665,8 +665,8 @@ void drawMorphMapScene(void) {
     void *child;
     float *variantWeight;
     int variantOffset;
-    struct OmlModelSet *modelSet;
-    int variantIndex;
+    struct OmlModelSet *omlSet;
+    int variantIdx;
 
     DrawModelInstance(wlMapModel);
     group = morphGroupList;
@@ -686,19 +686,19 @@ void drawMorphMapScene(void) {
         group = group->next;
     }
 
-    modelSet = omlList;
+    omlSet = omlList;
     minAlpha = morphMinAlpha;
-    while (modelSet != 0) {
-        if (modelSet->active != 0) {
+    while (omlSet != 0) {
+        if (omlSet->active != 0) {
             int groupOffset;
             float *weightDest;
             int groupIndex;
             weightDest = blend;
             groupIndex = 0;
             groupOffset = 0;
-            while (groupIndex < (count = modelSet->groupCount)) {
+            while (groupIndex < (count = omlSet->groupCount)) {
                 ++groupIndex;
-                child = *(void **)((char *)modelSet->groups + groupOffset);
+                child = *(void **)((char *)omlSet->groups + groupOffset);
                 groupOffset += 4;
                 *weightDest++ = ((struct MorphGroup *)child)->weight;
             }
@@ -710,20 +710,20 @@ void drawMorphMapScene(void) {
                     firstAlpha = minAlpha;
                 fn_802C9900(firstAlpha);
             }
-            DrawModelInstance(*modelSet->models);
+            DrawModelInstance(*omlSet->models);
             variantWeight = blend + 3;
-            variantIndex = 1;
+            variantIdx = 1;
             variantOffset = 4;
-            while (variantIndex < (count = modelSet->modelCount)) {
+            while (variantIdx < (count = omlSet->modelCount)) {
                 fn_802C9900(*variantWeight);
-                DrawModelInstance(*(int *)((char *)modelSet->models + variantOffset));
+                DrawModelInstance(*(int *)((char *)omlSet->models + variantOffset));
                 ++variantWeight;
                 variantOffset += 4;
-                ++variantIndex;
+                ++variantIdx;
             }
-            modelSet->active = 0;
+            omlSet->active = 0;
         }
-        modelSet = modelSet->next;
+        omlSet = omlSet->next;
     }
     fn_802C9904();
 }
