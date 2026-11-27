@@ -3765,7 +3765,7 @@ done:
 
 #pragma push
 #pragma scheduling invalid_target
-extern "C" void fn_8021E3BC(void *arg0, s32 arg1) {
+extern "C" void drawListWidgetItems(void *arg0, s32 arg1) {
     s32 scratch;
     register s32 color;
     register s32 item;
@@ -4030,7 +4030,7 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021E884(void *this_,
         savedLeft = ((Fn8021E8DCVTable *)widget)->Get();
         fn_80219284(widget, *(s32 *)((u8 *)widget + 0x26C),
                     *(s32 *)((u8 *)widget + 0x270));
-        fn_8021E3BC(widget, drawContext);
+        drawListWidgetItems(widget, drawContext);
         fn_80219284(widget, savedLeft, layoutWidth);
         rightBound = *(s32 *)((u8 *)widget + 8);
         ((Fn80219264VTable *)widget)->Call(
@@ -4676,23 +4676,34 @@ extern "C" s32 fn_802C5334(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
 #pragma cplusplus on
 #pragma use_lmw_stmw off
 extern "C" void fn_8021FD68(void *arg0, s32 arg1) {
-    VfObj *obj = (VfObj *)arg0;
-    s32 step = obj->vf28() - 11;
+    s32 *temp_r5;
     s32 progress;
-    s32 active = 0;
-    s32 *mode = *(s32 **)((u8 *)arg0 + 0x274);
-    progress = (s32)(((f32)step * (**(f32 **)((u8 *)arg0 + 0x250) - *(f32 *)((u8 *)arg0 + 0x248))) / (*(f32 *)((u8 *)arg0 + 0x24C) - *(f32 *)((u8 *)arg0 + 0x248)));
-    if (mode != 0 && *mode == *(s32 *)((u8 *)arg0 + 0x278)) {
-        s32 range = obj->vf28();
-        s32 centerX = ((s32)(screenWidthPx + ((u32)screenWidthPx >> 31)) >> 1);
-        s32 centerY = ((s32)(screenHeightPx + ((u32)screenHeightPx >> 31)) >> 1);
-        f32 x = (f32)(*(s32 *)((u8 *)arg0 + 4) - centerX);
-        f32 y = (f32)(centerY - *(s32 *)((u8 *)arg0 + 8));
-        f32 z = (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
-        f32 fRange = (f32)range;
-        active = 1;
-        gxDrawPicture(*(s32 *)((u8 *)arg0 + 0x25C), active, x, y, lbl_805634A8, fRange, z);
-        ((s32 (*)(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32, f32))fn_802C5334)(*(s32 *)((u8 *)arg0 + 0x260), active, x, y, lbl_805634A8, (f32)progress, z, lbl_805634A8, lbl_805634A8, (f32)progress / fRange, lbl_805634A4);
+    s32 var_r29;
+    f32 stepf;
+    f32 fRange;
+    f32 z;
+    f32 x;
+    f32 y;
+    s32 centerX;
+    s32 centerY;
+
+    stepf = (f32)(((VfObj *)arg0)->vf28() - 11);
+    progress = (s32)((stepf * (**(f32 **)((u8 *)arg0 + 0x250) - *(f32 *)((u8 *)arg0 + 0x248))) /
+        (*(f32 *)((u8 *)arg0 + 0x24C) - *(f32 *)((u8 *)arg0 + 0x248)));
+
+    var_r29 = 0;
+    temp_r5 = *(s32 **)((u8 *)arg0 + 0x274);
+    if (temp_r5 != 0 && *temp_r5 == *(s32 *)((u8 *)arg0 + 0x278)) { var_r29 = 1; }
+
+    if (var_r29 != 0) {
+        fRange = (f32)((VfObj *)arg0)->vf28();
+        z = (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
+        centerX = ((s32)(screenWidthPx + ((u32)screenWidthPx >> 31)) >> 1);
+        centerY = ((s32)(screenHeightPx + ((u32)screenHeightPx >> 31)) >> 1);
+        x = (f32)(*(s32 *)((u8 *)arg0 + 4) - centerX);
+        y = (f32)(centerY - *(s32 *)((u8 *)arg0 + 8));
+        gxDrawPicture(*(s32 *)((u8 *)arg0 + 0x25C), var_r29, x, y, lbl_805634A8, fRange, z);
+        ((s32 (*)(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32, f32))fn_802C5334)(*(s32 *)((u8 *)arg0 + 0x260), var_r29, x, y, lbl_805634A8, (f32)progress, z, lbl_805634A8, lbl_805634A8, (f32)progress / fRange, lbl_805634A4);
     }
 }
 #pragma pop
