@@ -1,7 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 // Symbol guide (the project cannot rename game symbols yet): loadRaceEvents
-// (fn_80007DA0), freeRaceEventConfig (fn_80007F04), initRaceEvents (fn_80007F40),
+// (loadRaceEventTable), freeRaceEventConfig (fn_80007F04), initRaceEvents (fn_80007F40),
 // shutdownRaceEvents (fn_80007F68), getEventName (fn_80007F90), getEventTypeName
 // (fn_80007FF0), getEventId (fn_80008050), getRaceEventCount (fn_800080D8),
 // findRaceEventIndex (fn_800080E8), getRaceEventName (fn_80008158),
@@ -56,7 +56,7 @@ DECL_SECTION(".sdata") extern const char lbl_80558988[];
 DECL_SECTION(".sdata") extern const char lbl_80558990[];
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void fn_80007DA0(void) {
+extern "C" void loadRaceEventTable(void) {
     struct Config {
         virtual void unused();
         virtual void *getEntry(u32);
@@ -139,7 +139,7 @@ void fn_80007F04(void) {
 
 /* Bootstrap the race-event subsystem: parse the config, then reset controllers. */
 void fn_80007F40(void) {
-    fn_80007DA0();
+    loadRaceEventTable();
     fn_80279464();
     fn_80012778();
 }
