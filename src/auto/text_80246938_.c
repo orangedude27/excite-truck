@@ -93,7 +93,7 @@ extern unsigned char lbl_8055F268;
 extern char attractMovieName[];
 extern char demoIdxParamName[];
 extern char lbl_8034397C[];
-extern char lbl_8055BE98;
+extern char songIdParamName;
 extern float fn_8020A5F0(void);
 extern void fn_8023D704(s32);
 extern void fn_80129AFC(void);
@@ -513,7 +513,7 @@ loop_items:
         selectedRootIndex = rootIndex;
         root = fn_80012820(rootIndex);
         demoSubobject = *(void **)((char *)root + 0x80);
-        selectedResource = ((DemoResourceNode *)demoSubobject)->find(&lbl_8055BE98, -1);
+        selectedResource = ((DemoResourceNode *)demoSubobject)->find(&songIdParamName, -1);
         goto loop_done;
     }
     rootIndex++;
