@@ -281,7 +281,7 @@ void fn_80230650(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
 #pragma paired off
 #pragma paired_single off
 /* Draws text with Y-axis wrapping/clamping, re-drawing at wrapped position when it crosses bounds. */
-void fn_802307AC(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
+void drawTextWithYWrap(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
                  f32 farg0, f32 farg1, f32 farg2, f32 farg3,
                  f32 farg4, f32 farg5, f32 farg6, s32 arg_sp0) {
     extern s32 fn_80232B70(s32);
