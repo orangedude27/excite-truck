@@ -72,7 +72,7 @@ static inline f32 fn_fast_s16f(s16 v) {
     union { f64 d; u32 w[2]; } conv;
     conv.w[0] = 0x43300000;
     conv.w[1] = (u32)((s32)v ^ 0x8000);
-    return (f32)conv.d - (f32)lbl_80565000;
+    return (f32)(conv.d - lbl_80565000);
 }
 extern u8 lbl_8055FD19;
 extern u32 lbl_804C5650[];
