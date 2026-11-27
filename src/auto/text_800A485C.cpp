@@ -10694,7 +10694,7 @@ extern "C" const u8 lbl_80560D9C;
 extern "C" const u8 lbl_80560D9D;
 #pragma push
 #pragma scheduling on
-extern "C" s32 VFiPFFSTR_ParsePathNumber(s32 path, s32 *outValue) {
+/* Parse the numeric token of a VFiP PFSTR path: after the two-character 0x01/0x02 marker, accumulate up to six decimal digits, require a separator or end-of-string at index 8, and return the value through *outValue (1 on success, 0 otherwise). */ extern "C" s32 VFiPFFSTR_ParsePathNumber(s32 path, s32 *outValue) {
     /* VFi PFSTR path parser: after the two-character 0x01/0x02 marker, read six
      * decimal digits, require '/', '\' or end-of-string at index 8, and return
      * the accumulated number through *outValue (1 on success, 0 otherwise).
