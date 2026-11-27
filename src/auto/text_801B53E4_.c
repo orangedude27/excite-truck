@@ -130,8 +130,8 @@ void linkNearbyBpxObjects(s32 listHead) {
     Vec otherStart;
     Vec otherEnd;
     f32 threshold;
-    struct ObjectLink *node;
-    struct ObjectLink *other;
+    struct ObjectLink *link;
+    struct ObjectLink *otherLink;
     struct BpxObject *a;
     struct BpxObject *b;
 
@@ -142,16 +142,16 @@ void linkNearbyBpxObjects(s32 listHead) {
      * join there - bit 0 of BpxObject.links for a segment's first end, bit 1
      * for its second. */
     threshold = LINK_SQ_DISTANCE;
-    node = (struct ObjectLink *)listHead;
-    while (node != NULL) {
-        if (fn_801B53E4(node->object) != 0) {
-            a = (struct BpxObject *)fn_801B54A8(node);
-            fn_801B5410(node->object, &start, &end);
-            other = (struct ObjectLink *)listHead;
-            while (other != NULL) {
-                if (fn_801B53E4(other->object) != 0) {
-                    b = (struct BpxObject *)fn_801B54A8(other);
-                    fn_801B5410(other->object, &otherStart, &otherEnd);
+    link = (struct ObjectLink *)listHead;
+    while (link != NULL) {
+        if (fn_801B53E4(link->object) != 0) {
+            a = (struct BpxObject *)fn_801B54A8(link);
+            fn_801B5410(link->object, &start, &end);
+            otherLink = (struct ObjectLink *)listHead;
+            while (otherLink != NULL) {
+                if (fn_801B53E4(otherLink->object) != 0) {
+                    b = (struct BpxObject *)fn_801B54A8(otherLink);
+                    fn_801B5410(otherLink->object, &otherStart, &otherEnd);
                     if (PSVECSquareDistance(&start, &otherStart) < threshold) {
                         a->links |= 1;
                         b->links |= 1;
@@ -169,10 +169,10 @@ void linkNearbyBpxObjects(s32 listHead) {
                         b->links |= 2;
                     }
                 }
-                other = other->next;
+                otherLink = otherLink->next;
             }
         }
-        node = node->next;
+        link = link->next;
     }
 }
 #pragma pop
