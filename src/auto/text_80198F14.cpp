@@ -4701,7 +4701,7 @@ extern "C" void* fn_801A2CC0(void* object, s32 arg1, s32 swapBytes) {
     return object;
 }
 
-extern "C" void fn_801A2D50(s32 arg0, void *arg1) {
+extern "C" void dispatchShapeNodeByType(s32 arg0, void *arg1) {
     extern u8 lbl_8055E5A4;
     extern u8 lbl_8055E5A5;
     extern char lbl_80333448[];
