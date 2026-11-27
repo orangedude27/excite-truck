@@ -4844,7 +4844,7 @@ extern "C" void fn_802200AC(void *arg0) {
     }
 }
 #pragma pop
-extern "C" s32 handleValueSliderKey(void *arg0, s32 arg1) {
+extern "C" s32 handleValueSliderKey(void *slider, s32 key) {
     /* Key handler of the continuous-value slider built by fn_8021FF34 (vtable
      * lbl_8033E7F4). While its cached selection entry (+0x258) still matches the
      * id at +0x25C: LEFT/RIGHT step the value at *+0x244 by +0x250 within the
@@ -4864,49 +4864,49 @@ extern "C" s32 handleValueSliderKey(void *arg0, s32 arg1) {
         f32 decreaseTime;   /* +0x260 time LEFT last moved the value */
         f32 increaseTime;   /* +0x264 time RIGHT last moved the value */
     };
-    s32 *entry;
-    f32 *value;
-    f32 bound;
-    f32 result;
-    s32 handled;
-    entry = ((ValueSlider *)arg0)->entry;
-    if (entry == 0 || *entry != ((ValueSlider *)arg0)->entryId)
+    s32 *selectedEntry;
+    f32 *valuePtr;
+    f32 limit;
+    f32 newValue;
+    s32 keyHandled;
+    selectedEntry = ((ValueSlider *)slider)->entry;
+    if (selectedEntry == 0 || *selectedEntry != ((ValueSlider *)slider)->entryId)
         return 0;
-    handled = 1;
-    switch (arg1) {
+    keyHandled = 1;
+    switch (key) {
     case MENU_KEY_RIGHT:
-        value = ((ValueSlider *)arg0)->value;
-        if (value != 0 && *value != ((ValueSlider *)arg0)->maxValue) {
-            ((ValueSlider *)arg0)->increaseTime = fn_8023659C();
-            value = ((ValueSlider *)arg0)->value;
-            bound = ((ValueSlider *)arg0)->maxValue;
-            result = *value + ((ValueSlider *)arg0)->step;
-            result = result < bound ? result : bound;
-            *value = result;
+        valuePtr = ((ValueSlider *)slider)->value;
+        if (valuePtr != 0 && *valuePtr != ((ValueSlider *)slider)->maxValue) {
+            ((ValueSlider *)slider)->increaseTime = fn_8023659C();
+            valuePtr = ((ValueSlider *)slider)->value;
+            limit = ((ValueSlider *)slider)->maxValue;
+            newValue = *valuePtr + ((ValueSlider *)slider)->step;
+            newValue = newValue < limit ? newValue : limit;
+            *valuePtr = newValue;
         }
         break;
     case MENU_KEY_LEFT:
-        value = ((ValueSlider *)arg0)->value;
-        if (value != 0 && *value != ((ValueSlider *)arg0)->minValue) {
-            ((ValueSlider *)arg0)->decreaseTime = fn_8023659C();
-            value = ((ValueSlider *)arg0)->value;
-            bound = ((ValueSlider *)arg0)->minValue;
-            result = *value - ((ValueSlider *)arg0)->step;
-            result = result > bound ? result : bound;
-            *value = result;
+        valuePtr = ((ValueSlider *)slider)->value;
+        if (valuePtr != 0 && *valuePtr != ((ValueSlider *)slider)->minValue) {
+            ((ValueSlider *)slider)->decreaseTime = fn_8023659C();
+            valuePtr = ((ValueSlider *)slider)->value;
+            limit = ((ValueSlider *)slider)->minValue;
+            newValue = *valuePtr - ((ValueSlider *)slider)->step;
+            newValue = newValue > limit ? newValue : limit;
+            *valuePtr = newValue;
         }
         break;
     case MENU_KEY_UP:
-        if (*(s32 *)((u8 *)*(s32 **)((u8 *)arg0 + 0x2C) + 0x494) > 1) {
-            fn_80217D84(*(s32 *)((u8 *)arg0 + 0x2C)); /* previous entry */
+        if (*(s32 *)((u8 *)*(s32 **)((u8 *)slider + 0x2C) + 0x494) > 1) {
+            fn_80217D84(*(s32 *)((u8 *)slider + 0x2C)); /* previous entry */
             fn_80230E90(0);
         } else {
             return 0;
         }
         break;
     case MENU_KEY_DOWN:
-        if (*(s32 *)((u8 *)*(s32 **)((u8 *)arg0 + 0x2C) + 0x494) > 1) {
-            fn_80217C4C(*(s32 *)((u8 *)arg0 + 0x2C)); /* next entry */
+        if (*(s32 *)((u8 *)*(s32 **)((u8 *)slider + 0x2C) + 0x494) > 1) {
+            fn_80217C4C(*(s32 *)((u8 *)slider + 0x2C)); /* next entry */
             fn_80230E90(0);
         } else {
             return 0;
@@ -4915,7 +4915,7 @@ extern "C" s32 handleValueSliderKey(void *arg0, s32 arg1) {
     default:
         return 0;
     }
-    return handled;
+    return keyHandled;
 }
 
 extern "C" void fn_8022071C(void *widget) {
