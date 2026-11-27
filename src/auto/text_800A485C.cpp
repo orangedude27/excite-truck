@@ -5713,19 +5713,19 @@ extern "C" s32 fn_800ACDF8(void *arg0, s32 arg1)
   return 0;
 }
 #pragma pop
-extern "C" s32 VFiPFFAT_GetChainEntryNoPage(void *fileInfo, u32 clusterIndex, u32 *outCluster, u32 *outFromCache)
+/* Resolve a position in a file's FAT chain: use a cached cluster-map entry when one covers it, otherwise walk the FAT through the volume's sector I/O. Sets *foundInCache when the answer came from the cached map; returns 0 on success or a FAT error code. */ extern "C" s32 VFiPFFAT_GetChainEntryNoPage(void *fileInfo, u32 clusterIndex, u32 *outCluster, u32 *foundInCache)
 {
-    volatile s32 end = -1;
+    volatile s32 nextCluster = -1;
     s32 result;
-    u32 chunkSize;
-    u32 quotient;
-    u32 remaining;
-    u32 current;
-    u32 finalValue;
-    void *context;
+    u32 chunkEntries;
+    u32 chunkIndex;
+    u32 stepsLeft;
+    u32 cluster;
+    u32 resolvedCluster;
+    void *volume;
 
     /* Resolves a FAT cluster index for a file, using cached cluster map entries when possible and walking the FAT chain otherwise. */
-    *outFromCache = 0;
+    *foundInCache = 0;
     if (*(u32 *)((u8 *)fileInfo + 0x24) == 0) {
         return 0;
     }
@@ -5733,56 +5733,56 @@ extern "C" s32 VFiPFFAT_GetChainEntryNoPage(void *fileInfo, u32 clusterIndex, u3
         goto return_zero;
     }
 
-    chunkSize = *(u16 *)((u8 *)fileInfo + 0x20) + 1;
-    quotient = clusterIndex / chunkSize;
-    remaining = clusterIndex - quotient * chunkSize;
-    if (remaining == 0) {
-        *outCluster = *(u32 *)((u8 *)*(void **)((u8 *)fileInfo + 0x1C) + quotient * 4);
-        *outFromCache = 1;
+    chunkEntries = *(u16 *)((u8 *)fileInfo + 0x20) + 1;
+    chunkIndex = clusterIndex / chunkEntries;
+    stepsLeft = clusterIndex - chunkIndex * chunkEntries;
+    if (stepsLeft == 0) {
+        *outCluster = *(u32 *)((u8 *)*(void **)((u8 *)fileInfo + 0x1C) + chunkIndex * 4);
+        *foundInCache = 1;
         goto done;
     }
 
-    current = *(u32 *)((u8 *)*(void **)((u8 *)fileInfo + 0x1C) + quotient * 4);
+    cluster = *(u32 *)((u8 *)*(void **)((u8 *)fileInfo + 0x1C) + chunkIndex * 4);
     goto check_remaining;
 loop_body:
-    context = *(void **)((u8 *)fileInfo + 0x34);
-    switch (*(s32 *)((u8 *)context + 0x1C)) {
+    volume = *(void **)((u8 *)fileInfo + 0x34);
+    switch (*(s32 *)((u8 *)volume + 0x1C)) {
     case 0:
-        result = readFat12ClusterEntry(context, (u16)current, (s32 *)&end);
+        result = readFat12ClusterEntry(volume, (u16)cluster, (s32 *)&nextCluster);
         break;
     case 1:
-        result = fn_800AFE14(context, current, (s32 *)&end);
+        result = fn_800AFE14(volume, cluster, (s32 *)&nextCluster);
         break;
     case 2:
-        result = fn_800B0258(context, current, (s32 *)&end);
+        result = fn_800B0258(volume, cluster, (s32 *)&nextCluster);
         break;
     default:
-        end = -1;
+        nextCluster = -1;
         result = 0xF;
         break;
     }
     if (result != 0) {
         return result;
     }
-    current = end;
-    if (current == 0) {
+    cluster = nextCluster;
+    if (cluster == 0) {
         return 0xD;
     }
-    remaining--;
+    stepsLeft--;
 check_remaining:
-    if (remaining != 0) {
+    if (stepsLeft != 0) {
         goto loop_body;
     }
 
-    finalValue = end;
-    if (finalValue == 0) {
+    resolvedCluster = nextCluster;
+    if (resolvedCluster == 0) {
         return 0xD;
     }
-    if (finalValue == lbl_802EEF40[*(s32 *)(*(u8 **)((u8 *)fileInfo + 0x34) + 0x1C) * 5 + 2]) {
+    if (resolvedCluster == lbl_802EEF40[*(s32 *)(*(u8 **)((u8 *)fileInfo + 0x34) + 0x1C) * 5 + 2]) {
         return 0;
     }
-    *outCluster = finalValue;
-    *outFromCache = 1;
+    *outCluster = resolvedCluster;
+    *foundInCache = 1;
     goto done;
 return_zero:
     return 0;
