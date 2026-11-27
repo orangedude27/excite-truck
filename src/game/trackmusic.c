@@ -90,7 +90,7 @@ extern long gSngPathFormat;
 }
 
 #pragma dont_inline on
-void fn_8020F444(void) {
+void TrackMusic_loadSongs(void) {
 #define gSongLoaded0 gTrackMusicSongLoaded0
 #define gSongLoaded1 gTrackMusicSongLoaded1
 #define gSongLoaded2 gTrackMusicSongLoaded2
@@ -854,7 +854,7 @@ void trackMusicUpdate(unsigned char mute) {
     long holdSongChange;
     struct Dummy_802113D8 *resource;
     if ((unsigned char)gTrackMusicSongLoaded0 == 0 || (unsigned char)gTrackMusicSongLoaded1 == 0 || (unsigned char)gTrackMusicSongLoaded2 == 0) {
-        fn_8020F444();
+        TrackMusic_loadSongs();
     }
     songCount = getTrackMusicSongCount();
     if (songCount != lbl_8055EEBC) {
