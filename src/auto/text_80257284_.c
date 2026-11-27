@@ -28,7 +28,7 @@ void *fn_80012870(int, int);
 char *getEventEnvironName(void *);
 char *getEventDisplayName(void *);
 extern int stricmp(const char *, const char *);
-extern char lbl_8055C1F8[4];
+extern char gNameKey[4];
 int fn_80012854(void);
 void *fn_8001285C(int);
 void *fn_80007FF0(void *);
@@ -264,7 +264,7 @@ extern "C" void buildProfileSelectorTable(void *arg0, void *arg1) {
         matched = 0;
         contestIndex = 0;
         while (matched == 0 && contestIndex < *(int *)((char *)eventRecord + 0x70)) {
-            if (((MatchDispatch *)*(void **)((char *)fn_80012870(eventIndex, contestIndex) + 0x20))->matches(lbl_8055C1F8) != 0) {
+            if (((MatchDispatch *)*(void **)((char *)fn_80012870(eventIndex, contestIndex) + 0x20))->matches(gNameKey) != 0) {
                 matched = 1;
             }
             contestIndex++;
@@ -312,7 +312,7 @@ extern "C" void fn_802576EC(void *arg0) {
         while (i < fn_80012854()) {
             entry = (char *)fn_8001285C(i);
             obj = *(MatchDispatch **)(entry + 0x20);
-            if (obj->matches(lbl_8055C1F8) != 0) {
+            if (obj->matches(gNameKey) != 0) {
                 name = getEventEnvironName((*(MatchDispatch **)(entry + 0x20))->fetch((const char *)&lbl_8055C1D8, (char *)fn_80012820(*(int *)(entry + 4)) + 8));
                 if (stricmp(name, key) == 0) {
                     pos = *(int *)(self + 0x5C);
