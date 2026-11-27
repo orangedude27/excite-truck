@@ -187,7 +187,7 @@ done:
 }
 
 extern void fn_802CE7D4(int, int, void *);
-extern int fn_80134424(int, void *, int, int *, void *, void *, int, int);
+extern int loadPoolStartRequest(int, void *, int, int *, void *, void *, int, int);
 #pragma push
 #pragma scheduling invalid_target
 /* Stamp a model-pool slot with the pool's request counter (+0x3C) and, when it is idle (+0x38 == 0), start an async 'MODL' load into it, saving the request id at +0x2C and marking the slot busy. */ void fn_802CE744(void *modelSlot) {
@@ -199,7 +199,7 @@ extern int fn_80134424(int, void *, int, int *, void *, void *, int, int);
     *(int *)((char *)modelSlot + 0x3C) = (*(int *)((char *)pool + 0x10))++;
     if (*(int *)((char *)modelSlot + 0x38) == 0) {
         loadedSize = 0;
-        requestId = fn_80134424(
+        requestId = loadPoolStartRequest(
             *(int *)((char *)pool + 4),
             (char *)modelSlot + 8,
             0x4D4F444C,
