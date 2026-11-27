@@ -112,7 +112,7 @@ extern s32 lbl_8055D870, lbl_8055D874;
 extern void fn_8003B9CC(u32, void *);
 extern void fn_8003A1A0(u32, void (*)(void));
 extern void fn_8003B218();
-extern u32 lbl_8055D848;
+extern u32 errorLogCount;
 extern s32 lbl_8055D860;
 extern char __ErrorInfo[];
 extern void (*lbl_8055D8B8)(s32, void *);
@@ -292,7 +292,7 @@ enum { MOTOR_STATE_WORKING, MOTOR_STATE_PENDING_STOP, MOTOR_STATE_STOPPED };
 
 // The __ErrorInfo ring (dvderror.h): the next free entry of its info[] array,
 // and how many drive error interrupts have been counted in a row.
-#define ErrorInfoEntry  lbl_8055D848
+#define ErrorInfoEntry  errorLogCount
 #define DriveErrorCount lbl_8055D860
 
 extern void *lbl_8055D808;
@@ -1069,7 +1069,7 @@ extern void *lbl_8055D820;
 extern void *lbl_8055D824;
 extern u8 *FstStart_8055D840;
 extern u32 __DVDLayoutFormat;
-extern u32 lbl_8055D848;
+extern u32 errorLogCount;
 extern char __ErrorInfo[];
 extern s32 OSGetTick(void);
 s32 DVDClose(void) {
@@ -1216,16 +1216,16 @@ void fn_800356F4(s32 error, s32 param1, s32 param2) {
 
     /* Record an error entry in the next __ErrorInfo slot and advance the ring index with interrupts disabled. */
     interrupts = OSDisableInterrupts();
-    if (*(volatile u32 *)&lbl_8055D848 >= 5) {
-        *(volatile u32 *)&lbl_8055D848 = 0;
+    if (*(volatile u32 *)&errorLogCount >= 5) {
+        *(volatile u32 *)&errorLogCount = 0;
     }
     info = (u8 *)__ErrorInfo;
-    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = error;
-    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = param1;
-    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = param2;
+    *(s32 *)(info + *(volatile u32 *)&errorLogCount * 0x14 + 0x1C) = error;
+    *(s32 *)(info + *(volatile u32 *)&errorLogCount * 0x14 + 0x20) = param1;
+    *(s32 *)(info + *(volatile u32 *)&errorLogCount * 0x14 + 0x24) = param2;
     tick = OSGetTick();
-    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;
-    *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+    *(s32 *)(info + *(volatile u32 *)&errorLogCount * 0x14 + 0x2C) = tick;
+    *(volatile u32 *)&errorLogCount = *(volatile u32 *)&errorLogCount + 1;
     OSRestoreInterrupts(interrupts);
 }
 #pragma pop
@@ -1286,15 +1286,15 @@ void fn_8003588C(void) {
     discOffset = *(u32 *)(lbl_80376A80 + 4) >> *(volatile u32 *)&__DVDLayoutFormat;
 
     interrupts = OSDisableInterrupts();
-    if (*(volatile u32 *)&lbl_8055D848 >= 5)
-        *(volatile u32 *)&lbl_8055D848 = 0;
+    if (*(volatile u32 *)&errorLogCount >= 5)
+        *(volatile u32 *)&errorLogCount = 0;
     errorInfoBase = (u8 *)__ErrorInfo;
-    *(s32 *)(errorInfoBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 1;
-    *(s32 *)(errorInfoBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = discOffset;
-    *(s32 *)(errorInfoBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = readLength;
+    *(s32 *)(errorInfoBase + *(volatile u32 *)&errorLogCount * 0x14 + 0x1C) = 1;
+    *(s32 *)(errorInfoBase + *(volatile u32 *)&errorLogCount * 0x14 + 0x20) = discOffset;
+    *(s32 *)(errorInfoBase + *(volatile u32 *)&errorLogCount * 0x14 + 0x24) = readLength;
     tick = OSGetTick();
-    *(s32 *)(errorInfoBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;
-    *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+    *(s32 *)(errorInfoBase + *(volatile u32 *)&errorLogCount * 0x14 + 0x2C) = tick;
+    *(volatile u32 *)&errorLogCount = *(volatile u32 *)&errorLogCount + 1;
     OSRestoreInterrupts(interrupts);
 
     DVDLowReadAsync(*(void **)((u8 *)bootInfo_8055D8C0 + 0x38),
@@ -1307,7 +1307,7 @@ void fn_8003588C(void) {
  * state the drive finished the read with.
  *
  * The state goes into the driver's error log first (dvderror.h's DVDErrorInfo at
- * __ErrorInfo: the dicr word of the entry the log count lbl_8055D848 points at, or
+ * __ErrorInfo: the dicr word of the entry the log count errorLogCount points at, or
  * the spare word at 0x78 while no command has been logged), so a dump of that log
  * shows how the read ended. Then, by state:
  *   0x10 / 0x20 - the boot is over and the drive needs no reset: hand the log to
@@ -1327,10 +1327,10 @@ void onBootDataReadComplete(u32 result) {
     void (*callback)(s32);
 
     enabled = OSDisableInterrupts();
-    if (*(volatile u32 *)&lbl_8055D848 == 0)
+    if (*(volatile u32 *)&errorLogCount == 0)
         *(u32 *)(__ErrorInfo + 0x78) = result;
     else
-        *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = result;
+        *(u32 *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x14) = result;
     OSRestoreInterrupts(enabled);
 
     if (result == 0x10) {
@@ -1356,13 +1356,13 @@ void onBootDataReadComplete(u32 result) {
 
     interrupts = OSDisableInterrupts();
     /* a new log entry: code 0x27, no parameters, taken now */
-    if (*(volatile u32 *)&lbl_8055D848 >= 5)
-        *(volatile u32 *)&lbl_8055D848 = 0;
-    *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x27;
-    *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0;
-    *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0;
-    *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
-    *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+    if (*(volatile u32 *)&errorLogCount >= 5)
+        *(volatile u32 *)&errorLogCount = 0;
+    *(s32 *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x1C) = 0x27;
+    *(s32 *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x20) = 0;
+    *(s32 *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x24) = 0;
+    *(s32 *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x2C) = OSGetTick();
+    *(volatile u32 *)&errorLogCount = *(volatile u32 *)&errorLogCount + 1;
     OSRestoreInterrupts(interrupts);
     fn_8003B218(fn_80035E6C); /* queue a drive reset */
 }
@@ -1490,16 +1490,16 @@ void fn_80035DA8(s32 arg0) {
     u32 tick;
     u8 *info;
     enabled = OSDisableInterrupts();
-    if (*(volatile u32 *)&lbl_8055D848 >= 5) {
-        *(volatile u32 *)&lbl_8055D848 = 0;
+    if (*(volatile u32 *)&errorLogCount >= 5) {
+        *(volatile u32 *)&errorLogCount = 0;
     }
     info = (u8 *)__ErrorInfo;
-    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x10;
-    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0;
-    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0;
+    *(s32 *)(info + *(volatile u32 *)&errorLogCount * 0x14 + 0x1C) = 0x10;
+    *(s32 *)(info + *(volatile u32 *)&errorLogCount * 0x14 + 0x20) = 0;
+    *(s32 *)(info + *(volatile u32 *)&errorLogCount * 0x14 + 0x24) = 0;
     tick = OSGetTick();
-    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;
-    *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+    *(s32 *)(info + *(volatile u32 *)&errorLogCount * 0x14 + 0x2C) = tick;
+    *(volatile u32 *)&errorLogCount = *(volatile u32 *)&errorLogCount + 1;
     OSRestoreInterrupts(enabled);
     DVDLowRawReadAsync(0, 0, __DVDHandleDriveError);
     #pragma unused(arg0)
@@ -1577,16 +1577,16 @@ static inline void StateCoverClosed(void) {
     u32 tick;
 
     interrupts = OSDisableInterrupts();
-    if (*(volatile u32 *)&lbl_8055D848 >= 5) {
-        *(volatile u32 *)&lbl_8055D848 = 0;
+    if (*(volatile u32 *)&errorLogCount >= 5) {
+        *(volatile u32 *)&errorLogCount = 0;
     }
     info = (u8 *)__ErrorInfo;
-    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x10;
-    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0;
-    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0;
+    *(s32 *)(info + *(volatile u32 *)&errorLogCount * 0x14 + 0x1C) = 0x10;
+    *(s32 *)(info + *(volatile u32 *)&errorLogCount * 0x14 + 0x20) = 0;
+    *(s32 *)(info + *(volatile u32 *)&errorLogCount * 0x14 + 0x24) = 0;
     tick = OSGetTick();
-    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;
-    *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+    *(s32 *)(info + *(volatile u32 *)&errorLogCount * 0x14 + 0x2C) = tick;
+    *(volatile u32 *)&errorLogCount = *(volatile u32 *)&errorLogCount + 1;
     OSRestoreInterrupts(interrupts);
     DVDLowRawReadAsync(0, 0, (void *)__DVDHandleMotorError);
 }
@@ -1602,10 +1602,10 @@ void fn_80035E6C(u32 arg0) {
     u32 period;
 
     firstInterrupts = OSDisableInterrupts();
-    if (*(volatile u32 *)&lbl_8055D848 == 0)
+    if (*(volatile u32 *)&errorLogCount == 0)
         *(u32 *)(__ErrorInfo + 0x78) = arg0;
     else
-        *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = arg0;
+        *(u32 *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x14) = arg0;
     OSRestoreInterrupts(firstInterrupts);
 
     if (arg0 == 0x10) { fn_8003A1A0(0x1234568, fn_80035C78); return; }
@@ -1677,15 +1677,15 @@ void fn_80035E6C(u32 arg0) {
             u8 *localInfo;
             u32 localTick;
             localInterrupts = OSDisableInterrupts();
-            if (*(volatile u32 *)&lbl_8055D848 >= 5)
-                *(volatile u32 *)&lbl_8055D848 = 0;
+            if (*(volatile u32 *)&errorLogCount >= 5)
+                *(volatile u32 *)&errorLogCount = 0;
             localInfo = (u8 *)__ErrorInfo;
-            *(s32 *)(localInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x10;
-            *(s32 *)(localInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0;
-            *(s32 *)(localInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0;
+            *(s32 *)(localInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x1C) = 0x10;
+            *(s32 *)(localInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x20) = 0;
+            *(s32 *)(localInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x24) = 0;
             localTick = OSGetTick();
-            *(s32 *)(localInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = localTick;
-            *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+            *(s32 *)(localInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x2C) = localTick;
+            *(volatile u32 *)&errorLogCount = *(volatile u32 *)&errorLogCount + 1;
             OSRestoreInterrupts(localInterrupts);
             DVDLowRawReadAsync(0, 0, (void *)__DVDHandleMotorError);
             return;
@@ -1704,10 +1704,10 @@ extern void fn_80036550(u32);
 
     /* Record DVD error info into __ErrorInfo ring and dispatch recovery based on error code. */
     interrupts = OSDisableInterrupts();
-    if (*(volatile u32 *)&lbl_8055D848 == 0)
+    if (*(volatile u32 *)&errorLogCount == 0)
         *(u32 *)(__ErrorInfo + 0x78) = errorCode;
     else
-        *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = errorCode;
+        *(u32 *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x14) = errorCode;
     OSRestoreInterrupts(interrupts);
 
     if (errorCode == 0x10) {
@@ -1721,30 +1721,30 @@ extern void fn_80036550(u32);
 
     if (errorCode & 1) {
         interrupts = OSDisableInterrupts();
-        if (*(volatile u32 *)&lbl_8055D848 >= 5)
-            *(volatile u32 *)&lbl_8055D848 = 0;
+        if (*(volatile u32 *)&errorLogCount >= 5)
+            *(volatile u32 *)&errorLogCount = 0;
         info = (u8 *)__ErrorInfo;
-        *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x10;
-        *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0;
-        *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0;
+        *(s32 *)(info + *(volatile u32 *)&errorLogCount * 0x14 + 0x1C) = 0x10;
+        *(s32 *)(info + *(volatile u32 *)&errorLogCount * 0x14 + 0x20) = 0;
+        *(s32 *)(info + *(volatile u32 *)&errorLogCount * 0x14 + 0x24) = 0;
         tick = OSGetTick();
-        *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;
-        *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+        *(s32 *)(info + *(volatile u32 *)&errorLogCount * 0x14 + 0x2C) = tick;
+        *(volatile u32 *)&errorLogCount = *(volatile u32 *)&errorLogCount + 1;
         OSRestoreInterrupts(interrupts);
         DVDLowRawReadAsync(0, 0, __DVDHandleDriveError);
         return;
     }
 
     interrupts = OSDisableInterrupts();
-    if (*(volatile u32 *)&lbl_8055D848 >= 5)
-        *(volatile u32 *)&lbl_8055D848 = 0;
+    if (*(volatile u32 *)&errorLogCount >= 5)
+        *(volatile u32 *)&errorLogCount = 0;
     info = (u8 *)__ErrorInfo;
-    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x27;
-    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0;
-    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0;
+    *(s32 *)(info + *(volatile u32 *)&errorLogCount * 0x14 + 0x1C) = 0x27;
+    *(s32 *)(info + *(volatile u32 *)&errorLogCount * 0x14 + 0x20) = 0;
+    *(s32 *)(info + *(volatile u32 *)&errorLogCount * 0x14 + 0x24) = 0;
     tick = OSGetTick();
-    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;
-    *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+    *(s32 *)(info + *(volatile u32 *)&errorLogCount * 0x14 + 0x2C) = tick;
+    *(volatile u32 *)&errorLogCount = *(volatile u32 *)&errorLogCount + 1;
     OSRestoreInterrupts(interrupts);
     fn_8003B218((void (*)(void))fn_80036550);
 }
@@ -1760,8 +1760,8 @@ void fn_80036550(u32 errorCode) {
     s32 interrupts = OSDisableInterrupts();
 
     /* Store the error code in the error info record while interrupts are disabled. */
-    if (*(volatile u32 *)&lbl_8055D848 == 0) *(u32 *)(__ErrorInfo + 0x78) = code;
-    else *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = code;
+    if (*(volatile u32 *)&errorLogCount == 0) *(u32 *)(__ErrorInfo + 0x78) = code;
+    else *(u32 *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x14) = code;
     OSRestoreInterrupts(interrupts);
 
     if (code == 0x10) fn_8003A1A0(0x1234568, fn_80035C78);
@@ -1870,13 +1870,13 @@ void fn_8003684C(void) {
     {                                                                                           \
         u32 tick;                                                                               \
         enabled = OSDisableInterrupts();                                                        \
-        if (*(volatile u32 *)&lbl_8055D848 >= 5) *(volatile u32 *)&lbl_8055D848 = 0;           \
-        *(s32 *)((u8 *)__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = (a);      \
-        *(s32 *)((u8 *)__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = (b);      \
-        *(s32 *)((u8 *)__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = (c);      \
+        if (*(volatile u32 *)&errorLogCount >= 5) *(volatile u32 *)&errorLogCount = 0;           \
+        *(s32 *)((u8 *)__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x1C) = (a);      \
+        *(s32 *)((u8 *)__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x20) = (b);      \
+        *(s32 *)((u8 *)__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x24) = (c);      \
         tick = OSGetTick();                                                                     \
-        *(s32 *)((u8 *)__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;     \
-        *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;                   \
+        *(s32 *)((u8 *)__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x2C) = tick;     \
+        *(volatile u32 *)&errorLogCount = *(volatile u32 *)&errorLogCount + 1;                   \
         OSRestoreInterrupts(enabled);                                                           \
     }
     switch (lbl_8055D8BC) {
@@ -1919,11 +1919,11 @@ void __DVDHandleCommandStatus(u32 status) {
     s32 enabled;
 
     enabled = OSDisableInterrupts();
-    if (*(volatile u32 *)&lbl_8055D848 == 0) {
+    if (*(volatile u32 *)&errorLogCount == 0) {
         *(u32 *)(__ErrorInfo + 0x78) = status;
     } else {
         *(u32 *)(__ErrorInfo + 0x28 +
-                 (*(volatile u32 *)&lbl_8055D848 - 1) * 0x14) = status;
+                 (*(volatile u32 *)&errorLogCount - 1) * 0x14) = status;
     }
     OSRestoreInterrupts(enabled);
 
@@ -1944,14 +1944,14 @@ void __DVDHandleCommandStatus(u32 status) {
         fn_8003BCDC(0);
 
         savedIrq = OSDisableInterrupts();
-        if (*(volatile u32 *)&lbl_8055D848 >= 5)
-            *(volatile u32 *)&lbl_8055D848 = 0;
+        if (*(volatile u32 *)&errorLogCount >= 5)
+            *(volatile u32 *)&errorLogCount = 0;
         errorInfo = (u8 *)__ErrorInfo;
-        *(s32 *)(errorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x21;
-        *(s32 *)(errorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0x10008;
-        *(s32 *)(errorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0x20;
-        *(s32 *)(errorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
-        *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+        *(s32 *)(errorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x1C) = 0x21;
+        *(s32 *)(errorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x20) = 0x10008;
+        *(s32 *)(errorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x24) = 0x20;
+        *(s32 *)(errorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x2C) = OSGetTick();
+        *(volatile u32 *)&errorLogCount = *(volatile u32 *)&errorLogCount + 1;
         OSRestoreInterrupts(savedIrq);
         DVDLowUnencryptedReadAsync(lbl_80376B40, 0x20, 0x10008, (u32)fn_80036D24);
         return;
@@ -1979,10 +1979,10 @@ void fn_80036D24(u32 arg0) {
     s32 result;
 
     enabled = OSDisableInterrupts();
-    if (*(volatile u32 *)&lbl_8055D848 == 0)
+    if (*(volatile u32 *)&errorLogCount == 0)
         *(u32 *)(__ErrorInfo + 0x78) = arg0;
     else
-        *(u32 *)(__ErrorInfo + 0x28 + (*(volatile u32 *)&lbl_8055D848 - 1) * 0x14) = arg0;
+        *(u32 *)(__ErrorInfo + 0x28 + (*(volatile u32 *)&errorLogCount - 1) * 0x14) = arg0;
     OSRestoreInterrupts(enabled);
 
     if (arg0 == 0x10) {
@@ -2019,14 +2019,14 @@ void fn_80036D24(u32 arg0) {
                     fn_8003BCDC(0);
                     value = *lbl_8055D894;
                     localEnabled = OSDisableInterrupts();
-                    if (*(volatile u32 *)&lbl_8055D848 >= 5)
-                        lbl_8055D848 = 0;
+                    if (*(volatile u32 *)&errorLogCount >= 5)
+                        errorLogCount = 0;
                     logBase = (u8 *)__ErrorInfo;
-                    *(s32 *)(logBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x22;
-                    *(s32 *)(logBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = value;
-                    *(s32 *)(logBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0;
-                    *(s32 *)(logBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
-                    lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+                    *(s32 *)(logBase + *(volatile u32 *)&errorLogCount * 0x14 + 0x1C) = 0x22;
+                    *(s32 *)(logBase + *(volatile u32 *)&errorLogCount * 0x14 + 0x20) = value;
+                    *(s32 *)(logBase + *(volatile u32 *)&errorLogCount * 0x14 + 0x24) = 0;
+                    *(s32 *)(logBase + *(volatile u32 *)&errorLogCount * 0x14 + 0x2C) = OSGetTick();
+                    errorLogCount = *(volatile u32 *)&errorLogCount + 1;
                     OSRestoreInterrupts(localEnabled);
                     DVDLowOpenPartition(*lbl_8055D894, 0, 0, 0, base + 0x100, handleDvdPartitionStatus);
                 }
@@ -2039,14 +2039,14 @@ void fn_80036D24(u32 arg0) {
                     fn_8003BCDC(0);
                     value = *lbl_8055D894;
                     localEnabled = OSDisableInterrupts();
-                    if (*(volatile u32 *)&lbl_8055D848 >= 5)
-                        lbl_8055D848 = 0;
+                    if (*(volatile u32 *)&errorLogCount >= 5)
+                        errorLogCount = 0;
                     logBase = (u8 *)__ErrorInfo;
-                    *(s32 *)(logBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x22;
-                    *(s32 *)(logBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = value;
-                    *(s32 *)(logBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0;
-                    *(s32 *)(logBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
-                    lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+                    *(s32 *)(logBase + *(volatile u32 *)&errorLogCount * 0x14 + 0x1C) = 0x22;
+                    *(s32 *)(logBase + *(volatile u32 *)&errorLogCount * 0x14 + 0x20) = value;
+                    *(s32 *)(logBase + *(volatile u32 *)&errorLogCount * 0x14 + 0x24) = 0;
+                    *(s32 *)(logBase + *(volatile u32 *)&errorLogCount * 0x14 + 0x2C) = OSGetTick();
+                    errorLogCount = *(volatile u32 *)&errorLogCount + 1;
                     OSRestoreInterrupts(localEnabled);
                     DVDLowOpenPartition(*lbl_8055D894, 0, 0, 0, base + 0x100, fn_8003727C);
                 }
@@ -2101,11 +2101,11 @@ void handleDvdPartitionStatus(u32 errorCode) {
     u32 timestamp;
 
     savedInterrupts = OSDisableInterrupts();
-    if (*(volatile u32 *)&lbl_8055D848 == 0) {
+    if (*(volatile u32 *)&errorLogCount == 0) {
         *(u32 *)(__ErrorInfo + 0x78) = status;
     } else {
         *(u32 *)(__ErrorInfo + 0x28 +
-                 (*(volatile u32 *)&lbl_8055D848 - 1) * 0x14) = status;
+                 (*(volatile u32 *)&errorLogCount - 1) * 0x14) = status;
     }
     OSRestoreInterrupts(savedInterrupts);
 
@@ -2117,15 +2117,15 @@ void handleDvdPartitionStatus(u32 errorCode) {
         lbl_8055D860 = 0;
         fn_8003BCDC(0);
         savedInterrupts = OSDisableInterrupts();
-        if (*(volatile u32 *)&lbl_8055D848 >= 5)
-            *(volatile u32 *)&lbl_8055D848 = 0;
+        if (*(volatile u32 *)&errorLogCount >= 5)
+            *(volatile u32 *)&errorLogCount = 0;
         errorInfo = (u8 *)__ErrorInfo;
-        *(s32 *)(errorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 1;
-        *(s32 *)(errorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0x108;
-        *(s32 *)(errorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0x20;
+        *(s32 *)(errorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x1C) = 1;
+        *(s32 *)(errorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x20) = 0x108;
+        *(s32 *)(errorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x24) = 0x20;
         timestamp = OSGetTick();
-        *(s32 *)(errorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = timestamp;
-        *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+        *(s32 *)(errorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x2C) = timestamp;
+        *(volatile u32 *)&errorLogCount = *(volatile u32 *)&errorLogCount + 1;
         OSRestoreInterrupts(savedInterrupts);
         DVDLowReadAsync(lbl_80376A80, 0x20, 0x108, (s32)onDiscHeaderReadComplete);
     } else {
@@ -2142,10 +2142,10 @@ void fn_8003727C(u32 status) {
     void *commandBlock;
     void (*callback)(s32, void *);
 
-    if (*(volatile u32 *)&lbl_8055D848 == 0) {
+    if (*(volatile u32 *)&errorLogCount == 0) {
         *(u32 *)(__ErrorInfo + 0x78) = diStatus;
     } else {
-        *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = diStatus;
+        *(u32 *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x14) = diStatus;
     }
     OSRestoreInterrupts(interrupts);
 
@@ -2193,11 +2193,11 @@ void fn_8003727C(u32 status) {
     u32 period;
 
     interrupts = OSDisableInterrupts();
-    if (*(volatile u32 *)&lbl_8055D848 == 0) {
+    if (*(volatile u32 *)&errorLogCount == 0) {
         *(u32 *)(__ErrorInfo + 0x78) = value;
     } else {
         *(u32 *)(__ErrorInfo +
-                 *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = value;
+                 *(volatile u32 *)&errorLogCount * 0x14 + 0x14) = value;
     }
     OSRestoreInterrupts(interrupts);
 
@@ -2257,10 +2257,10 @@ void fn_8003727C(u32 status) {
      * the boot-data read (its offset and length come from the header) and finish
      * through onBootDataReadComplete; otherwise log a fatal error and queue a drive reset. */
     interrupts = OSDisableInterrupts();
-    if (*(volatile u32 *)&lbl_8055D848 == 0) {
+    if (*(volatile u32 *)&errorLogCount == 0) {
         *(u32 *)(__ErrorInfo + 0x78) = status;
     } else {
-        *(u32 *)(__ErrorInfo + 0x28 + (*(volatile u32 *)&lbl_8055D848 - 1) * 0x14) = status;
+        *(u32 *)(__ErrorInfo + 0x28 + (*(volatile u32 *)&errorLogCount - 1) * 0x14) = status;
     }
     OSRestoreInterrupts(interrupts);
 
@@ -2344,14 +2344,14 @@ void fn_8003773C(void) {
         fn_8003BCDC(0);
 
         savedInterrupts = OSDisableInterrupts();
-        if (*(volatile u32 *)&lbl_8055D848 >= 5)
-            *(volatile u32 *)&lbl_8055D848 = 0;
-        *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x25;
-        *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0;
-        *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0;
-        *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
-        *(volatile u32 *)&lbl_8055D848 =
-            *(volatile u32 *)&lbl_8055D848 + 1;
+        if (*(volatile u32 *)&errorLogCount >= 5)
+            *(volatile u32 *)&errorLogCount = 0;
+        *(s32 *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x1C) = 0x25;
+        *(s32 *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x20) = 0;
+        *(s32 *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x24) = 0;
+        *(s32 *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x2C) = OSGetTick();
+        *(volatile u32 *)&errorLogCount =
+            *(volatile u32 *)&errorLogCount + 1;
         OSRestoreInterrupts(savedInterrupts);
         fn_8003B69C(0x20000, __DVDRecordStatusEvent);
     } else {
@@ -2360,14 +2360,14 @@ void fn_8003773C(void) {
         fn_8003BCDC(0);
 
         savedInterrupts = OSDisableInterrupts();
-        if (*(volatile u32 *)&lbl_8055D848 >= 5)
-            *(volatile u32 *)&lbl_8055D848 = 0;
-        *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 5;
-        *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0;
-        *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0x20;
-        *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
-        *(volatile u32 *)&lbl_8055D848 =
-            *(volatile u32 *)&lbl_8055D848 + 1;
+        if (*(volatile u32 *)&errorLogCount >= 5)
+            *(volatile u32 *)&errorLogCount = 0;
+        *(s32 *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x1C) = 5;
+        *(s32 *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x20) = 0;
+        *(s32 *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x24) = 0x20;
+        *(s32 *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x2C) = OSGetTick();
+        *(volatile u32 *)&errorLogCount =
+            *(volatile u32 *)&errorLogCount + 1;
         OSRestoreInterrupts(savedInterrupts);
         DVDLowAsyncIoctl(lbl_80376B00, fn_80037DBC);
     }
@@ -2419,13 +2419,13 @@ void fn_80037A8C(void) {
     u8 *base;
     fn_8003BCDC(0);
     enabled = OSDisableInterrupts();
-    if (lbl_8055D848 >= 5) lbl_8055D848 = 0;
+    if (errorLogCount >= 5) errorLogCount = 0;
     base = (u8*)__ErrorInfo;
-    *(s32*)(base + (*(volatile u32*)&lbl_8055D848) * 0x14 + 0x1C) = 0x25;
-    *(s32*)(base + (*(volatile u32*)&lbl_8055D848) * 0x14 + 0x20) = 0;
-    *(s32*)(base + (*(volatile u32*)&lbl_8055D848) * 0x14 + 0x24) = 0;
-    *(s32*)(base + (*(volatile u32*)&lbl_8055D848) * 0x14 + 0x2C) = OSGetTick();
-    lbl_8055D848 = (*(volatile u32*)&lbl_8055D848) + 1;
+    *(s32*)(base + (*(volatile u32*)&errorLogCount) * 0x14 + 0x1C) = 0x25;
+    *(s32*)(base + (*(volatile u32*)&errorLogCount) * 0x14 + 0x20) = 0;
+    *(s32*)(base + (*(volatile u32*)&errorLogCount) * 0x14 + 0x24) = 0;
+    *(s32*)(base + (*(volatile u32*)&errorLogCount) * 0x14 + 0x2C) = OSGetTick();
+    errorLogCount = (*(volatile u32*)&errorLogCount) + 1;
     OSRestoreInterrupts(enabled);
     fn_8003B69C(0x20000, __DVDRecordStatusEvent);
 }
@@ -2440,11 +2440,11 @@ void __DVDRecordStatusEvent(u32 status_code) {
     s32 saved_interrupts;
 
     saved_interrupts = OSDisableInterrupts();
-    if (*(volatile u32 *)&lbl_8055D848 == 0) {
+    if (*(volatile u32 *)&errorLogCount == 0) {
         *(u32 *)(__ErrorInfo + 0x78) = status_code;
     } else {
         *(u32 *)(__ErrorInfo + 0x28 +
-                 (*(volatile u32 *)&lbl_8055D848 - 1) * 0x14) = status_code;
+                 (*(volatile u32 *)&errorLogCount - 1) * 0x14) = status_code;
     }
     OSRestoreInterrupts(saved_interrupts);
 
@@ -2462,13 +2462,13 @@ void __DVDRecordStatusEvent(u32 status_code) {
         fn_8003BCDC(0);
 
         saved_interrupts_async = OSDisableInterrupts();
-        if (*(volatile u32 *)&lbl_8055D848 >= 5)
-            *(volatile u32 *)&lbl_8055D848 = 0;
-        *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 5;
-        *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0;
-        *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0x20;
-        *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
-        *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+        if (*(volatile u32 *)&errorLogCount >= 5)
+            *(volatile u32 *)&errorLogCount = 0;
+        *(s32 *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x1C) = 5;
+        *(s32 *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x20) = 0;
+        *(s32 *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x24) = 0x20;
+        *(s32 *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x2C) = OSGetTick();
+        *(volatile u32 *)&errorLogCount = *(volatile u32 *)&errorLogCount + 1;
         OSRestoreInterrupts(saved_interrupts_async);
         DVDLowAsyncIoctl(lbl_80376B00, fn_80037DBC);
         return;
@@ -2488,14 +2488,14 @@ void fn_80037CEC(void) {
     u8 *base;
     fn_8003BCDC(0);
     enabled = OSDisableInterrupts();
-    if (*(volatile u32 *)&lbl_8055D848 >= 5)
-        lbl_8055D848 = 0;
+    if (*(volatile u32 *)&errorLogCount >= 5)
+        errorLogCount = 0;
     base = (u8 *)__ErrorInfo;
-    *(s32 *)(base + (*(volatile u32 *)&lbl_8055D848) * 0x14 + 0x1C) = 5;
-    *(s32 *)(base + (*(volatile u32 *)&lbl_8055D848) * 0x14 + 0x20) = 0;
-    *(s32 *)(base + (*(volatile u32 *)&lbl_8055D848) * 0x14 + 0x24) = 0x20;
-    *(s32 *)(base + (*(volatile u32 *)&lbl_8055D848) * 0x14 + 0x2C) = OSGetTick();
-    lbl_8055D848 = (*(volatile u32 *)&lbl_8055D848) + 1;
+    *(s32 *)(base + (*(volatile u32 *)&errorLogCount) * 0x14 + 0x1C) = 5;
+    *(s32 *)(base + (*(volatile u32 *)&errorLogCount) * 0x14 + 0x20) = 0;
+    *(s32 *)(base + (*(volatile u32 *)&errorLogCount) * 0x14 + 0x24) = 0x20;
+    *(s32 *)(base + (*(volatile u32 *)&errorLogCount) * 0x14 + 0x2C) = OSGetTick();
+    errorLogCount = (*(volatile u32 *)&errorLogCount) + 1;
     OSRestoreInterrupts(enabled);
     DVDLowAsyncIoctl(lbl_80376B00, fn_80037DBC);
 }
@@ -2507,10 +2507,10 @@ void fn_80037CEC(void) {
 void fn_80037DBC(u32 status) {
     register u32 value = status;
     s32 interrupts = OSDisableInterrupts();
-    if (*(volatile u32 *)&lbl_8055D848 == 0) {
+    if (*(volatile u32 *)&errorLogCount == 0) {
         *(u32 *)(__ErrorInfo + 0x78) = value;
     } else {
-        *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = value;
+        *(u32 *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x14) = value;
     }
     OSRestoreInterrupts(interrupts);
     if (value == 0x10) {
@@ -2767,13 +2767,13 @@ extern void (*lbl_80558E08)(void *, void *);
    length = *(int *)(blockBytes+0x14); offset = *(int *)(blockBytes+0x10);
    {
  int irq = OSDisableInterrupts(); int tick;
- if (*(volatile u32 *)&lbl_8055D848 >= 5) *(volatile u32 *)&lbl_8055D848 = 0;
- *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x1c) = command;
- *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x20) = offset;
- *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x24) = length;
+ if (*(volatile u32 *)&errorLogCount >= 5) *(volatile u32 *)&errorLogCount = 0;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 20 + 0x1c) = command;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 20 + 0x20) = offset;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 20 + 0x24) = length;
  tick = OSGetTick();
- *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x2c) = tick;
- *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 20 + 0x2c) = tick;
+ *(volatile u32 *)&errorLogCount = *(volatile u32 *)&errorLogCount + 1;
  OSRestoreInterrupts(irq);
 }
  } break;
@@ -2804,13 +2804,13 @@ extern void (*lbl_80558E08)(void *, void *);
      stampOffset = *(u32 *)(blockBytes+0x10) + (*(u32 *)(blockBytes+0x20) >> 2);
      {
  int irq = OSDisableInterrupts(); int tick;
- if (*(volatile u32 *)&lbl_8055D848 >= 5) *(volatile u32 *)&lbl_8055D848 = 0;
- *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x1c) = stampCommand;
- *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x20) = stampOffset;
- *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x24) = transferSize;
+ if (*(volatile u32 *)&errorLogCount >= 5) *(volatile u32 *)&errorLogCount = 0;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 20 + 0x1c) = stampCommand;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 20 + 0x20) = stampOffset;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 20 + 0x24) = transferSize;
  tick = OSGetTick();
- *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x2c) = tick;
- *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 20 + 0x2c) = tick;
+ *(volatile u32 *)&errorLogCount = *(volatile u32 *)&errorLogCount + 1;
  OSRestoreInterrupts(irq);
 }
      /* DVDLowRead(addr+transferTotal, transferSize, offset+DVD_LOW_OFFSET(transferTotal), cbForStateBusy) */
@@ -2842,13 +2842,13 @@ extern void (*lbl_80558E08)(void *, void *);
      stampOffset = *(u32 *)(blockBytes+0x10) + (*(u32 *)(blockBytes+0x20) >> 2);
      {
  int irq = OSDisableInterrupts(); int tick;
- if (*(volatile u32 *)&lbl_8055D848 >= 5) *(volatile u32 *)&lbl_8055D848 = 0;
- *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x1c) = stampCommand;
- *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x20) = stampOffset;
- *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x24) = transferSize;
+ if (*(volatile u32 *)&errorLogCount >= 5) *(volatile u32 *)&errorLogCount = 0;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 20 + 0x1c) = stampCommand;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 20 + 0x20) = stampOffset;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 20 + 0x24) = transferSize;
  tick = OSGetTick();
- *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x2c) = tick;
- *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 20 + 0x2c) = tick;
+ *(volatile u32 *)&errorLogCount = *(volatile u32 *)&errorLogCount + 1;
  OSRestoreInterrupts(irq);
 }
      ((void (*)(void *, u32, u32, void *))DVDLowUnencryptedReadAsync)(*(u8 **)(blockBytes+0x18)+*(u32 *)(blockBytes+0x20), *(u32 *)(blockBytes+0x1c), *(u32 *)(blockBytes+0x10)+(*(u32 *)(blockBytes+0x20)>>2), fn_80038870);
@@ -2875,10 +2875,10 @@ void fn_80038870(u32 arg0) {
     u32 result;
 
     interrupts = OSDisableInterrupts();
-    if (*(volatile u32 *)&lbl_8055D848 == 0) {
+    if (*(volatile u32 *)&errorLogCount == 0) {
         *(u32 *)(__ErrorInfo + 0x78) = arg0;
     } else {
-        *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = arg0;
+        *(u32 *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x14) = arg0;
     }
     OSRestoreInterrupts(interrupts);
 
