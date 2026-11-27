@@ -3515,7 +3515,7 @@ extern "C" s32 fn_8015C684(void) {
 extern "C" s32 fn_8015C68C(void) { return 0xD; }
 
 #pragma cplusplus on
-extern "C" void updateBonusTrackerDisplay(void *objPtr) {
+/* Updates the attached adaptor at +0x248 with the object's progress/type; marks it complete when current >= limit. */ extern "C" void updateBonusTrackerDisplay(void *tracker) {
     struct Obj {
         virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4();
         virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void p9();
@@ -3531,22 +3531,22 @@ extern "C" void updateBonusTrackerDisplay(void *objPtr) {
         virtual void a3(int, ...); virtual void clear(); virtual void a5(int);
         virtual void setProgress(int); virtual void a7(); virtual void setState(int); virtual void a9();
     };
-    Obj *obj = (Obj *)objPtr;
+    Obj *obj = (Obj *)tracker;
     int limit, current;
     /* Refresh the bonus popup at +0x248 with the tracker's progress/type and mark it complete when current reaches the limit. */
-    if (*(void **)((char *)objPtr + 0x248) != 0) {
-        (*(Adaptor **)((char *)objPtr + 0x248))->format((int)&lbl_8055A058[0], obj->progress());
-        (*(Adaptor **)((char *)objPtr + 0x248))->setProgress(obj->type());
+    if (*(void **)((char *)tracker + 0x248) != 0) {
+        (*(Adaptor **)((char *)tracker + 0x248))->format((int)&lbl_8055A058[0], obj->progress());
+        (*(Adaptor **)((char *)tracker + 0x248))->setProgress(obj->type());
         obj->noop();
-        (*(Adaptor **)((char *)objPtr + 0x248))->clear();
+        (*(Adaptor **)((char *)tracker + 0x248))->clear();
         limit = obj->lower();
         current = obj->upper();
-        if (current >= limit) (*(Adaptor **)((char *)objPtr + 0x248))->setState(1);
+        if (current >= limit) (*(Adaptor **)((char *)tracker + 0x248))->setState(1);
     }
-    if (*(void **)((char *)objPtr + 0x248) != 0)
-        (*(Adaptor **)((char *)objPtr + 0x248))->format((int)&lbl_8055A058[0], obj->progress());
-    if (*(void **)((char *)objPtr + 0x248) != 0)
-        (*(Adaptor **)((char *)objPtr + 0x248))->format((int)&lbl_8055A058[0], obj->progress());
+    if (*(void **)((char *)tracker + 0x248) != 0)
+        (*(Adaptor **)((char *)tracker + 0x248))->format((int)&lbl_8055A058[0], obj->progress());
+    if (*(void **)((char *)tracker + 0x248) != 0)
+        (*(Adaptor **)((char *)tracker + 0x248))->format((int)&lbl_8055A058[0], obj->progress());
 }
 #pragma cplusplus reset
 
