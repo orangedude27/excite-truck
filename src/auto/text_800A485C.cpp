@@ -21025,27 +21025,27 @@ void homebutton::Controller::clearCallback() {
     m_prevExtensionCb = 0;
 }
 
-extern "C" void copyEntryTransform(void *dst, void *src, s32 copyPos) {
+/* Copy transform/flag fields from the object at src->[0] into dst. */ extern "C" void copyEntryTransform(void *dst, void *src, s32 copyPosition) {
     /* Copy transform/flag fields from src->object (src+0x0) into dst: optionally
        copies position floats to dst+0x8/0xC, copies three s32 fields (obj+4/0/8)
        to dst+0x10/0x14/0x18, then if obj type (obj+0x5C)==2 mirrors selected
        bits from obj+0x60/0x64/0x68 into dst flags (0x10<->0x800, 0x400->0x10,
        0x1000->0x1000, 0x800->0x8000). */
     s32 flagsA, flagsB, flagsC, field0, fb;
-    void *obj, *obj2;
+    void *object, *obj2;
     f32 f0, f1;
 
-    obj = M2C_FIELD(src, void **, 0);
-    if (obj == 0) return;
-    if (copyPos != 0) {
-        if ((u32)M2C_FIELD(obj, u32 *, 0x5C) == 2 &&
+    object = M2C_FIELD(src, void **, 0);
+    if (object == 0) return;
+    if (copyPosition != 0) {
+        if ((u32)M2C_FIELD(object, u32 *, 0x5C) == 2 &&
             (u32)M2C_FIELD(src, u32 *, 0xC) == 2) {
             f1 = M2C_FIELD(src, f32 *, 4);
             f0 = M2C_FIELD(src, f32 *, 8);
             M2C_FIELD(dst, f32 *, 8) = f1;
             M2C_FIELD(dst, f32 *, 0xC) = f0;
         } else {
-            f0 = M2C_FIELD(obj, f32 *, 0x20);
+            f0 = M2C_FIELD(object, f32 *, 0x20);
             fb = (s32)M2C_FIELD(src, s32 *, 0);
             M2C_FIELD(dst, f32 *, 8) = f0;
             M2C_FIELD(dst, f32 *, 0xC) = M2C_FIELD((void *)fb, f32 *, 0x24);
