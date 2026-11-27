@@ -21,7 +21,7 @@ extern void *fn_8012850C(int, const char *);
 extern char lbl_80340108[];
 extern char lbl_80340114[];
 /* A "UITB" text table: rows x columns of strings packed into one character buffer,
-   each cell holding one tag byte and then its text. Cells are written by fn_8022D894
+   each cell holding one tag byte and then its text. Cells are written by UITable_WriteCell
    and read back by fn_8022D850. */
 typedef struct UITable {
     char *text;        /* 0x00 "UITable:buf": every cell's string */
@@ -186,7 +186,7 @@ char *fn_8022D850(void *arg0, int row, int column, int *outTag) {
 
 #pragma scheduling reset
 /* Write a string cell in a fixed-stride table: store the tag byte, copy the text, update the used row count, and bump the modification count. */
-void fn_8022D894(void *arg0, int arg1, int arg2, const char *arg3, signed char arg4) {
+void UITable_WriteCell(void *arg0, int arg1, int arg2, const char *arg3, signed char arg4) {
     char *ptr = fn_8022D82C(arg0, arg1, arg2);
     int next = arg1 + 1;
     int len;

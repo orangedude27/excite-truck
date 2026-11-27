@@ -17,7 +17,7 @@ extern "C" s32 ArtSetGet(const char *);
 extern "C" void *fn_8022D228(void *, s32, s32);
 extern "C" void fn_8022D350(s32, const char *, s32);
 extern "C" void *uiCreateTable(void *, s32, s32, s32 *);
-extern "C" void fn_8022D894(s32, s32, s32, const char *, s32);
+extern "C" void UITable_WriteCell(s32, s32, s32, const char *, s32);
 extern "C" void *fn_8022DB50(void *, const char *, const char *, s32, s32);
 extern "C" void *fn_8022DCC4(void *, s32 *, s32, s32);
 extern "C" s32 fn_80207848(const char *, s32);
@@ -374,7 +374,7 @@ extern "C" void fn_80211690(s32 arg0) {
         lbl_8055EF2C = (s32)p;
         for (i = 0; i < *(s32 *)(lbl_8055EF2C + 0xC); i++) {
             sprintf(buf18, base + 0x1A4, i + 1);
-            fn_8022D894(lbl_8055EF2C, i, 0, buf18, i % 3);
+            UITable_WriteCell(lbl_8055EF2C, i, 0, buf18, i % 3);
         }
         p = fn_801284F8(0x1C, base + 0x1B0);
         if (p != 0) p = fn_8022DB50(p, base + 0xE8, base + 0x108, 8, 0);

@@ -93,7 +93,7 @@ extern int fn_80137C98(int);
 extern int fn_802146BC(int *, int, int, int, int, int, int, int);
 extern void fn_8023DB68(void);
 extern void fn_8023DBCC(void);
-extern void fn_8022D894(void *, int, int, long, int);
+extern void UITable_WriteCell(void *, int, int, long, int);
 #pragma scheduling invalid_target
 void fn_8023D4B8(int arg0)
 {
@@ -680,7 +680,7 @@ void fn_8023E0DC(void *table, int row, int arg2) {
         return;
     col = *(int *)((char *)table + 4);
     while (col-- > 0) {
-        fn_8022D894(table, row, col, fn_8022D850(table, row, col, 0), 1);
+        UITable_WriteCell(table, row, col, fn_8022D850(table, row, col, 0), 1);
     }
 }
 
@@ -695,7 +695,7 @@ void fn_8023E16C(void *arg0, int arg1) {
     }
     var_r31 = *(int *)((char *)arg0 + 4);
     while (var_r31-- > 0) {
-        fn_8022D894(arg0, arg1, var_r31, fn_8022D850(arg0, arg1, var_r31, 0), 0);
+        UITable_WriteCell(arg0, arg1, var_r31, fn_8022D850(arg0, arg1, var_r31, 0), 0);
     }
 }
 
@@ -735,7 +735,7 @@ extern "C" void fn_8023E1FC(void *table) {
     controlEntry = &lbl_802FA190[zero];
     frame.terminator = zero;
     for (row = 0; row < 0x11; row++, controlEntry += 8) {
-        fn_8022D894(table, row, 0, (long)*(char **)fn_8023DC38(*(char **)controlEntry), 0);
+        UITable_WriteCell(table, row, 0, (long)*(char **)fn_8023DC38(*(char **)controlEntry), 0);
         bindingSource = *(Interface **)((char *)table + 0x34);
         fn_801A7974((const char *)&frame.lookupResult, (int)*(char **)controlEntry, (int)bindingSource->query());
         if (frame.lookupResult == 0) {
@@ -757,9 +757,9 @@ extern "C" void fn_8023E1FC(void *table) {
         } else {
             fn_801A7E54(frame.bindingText, 0x14, &frame.lookupResult);
         }
-        fn_8022D894(table, row, 1, (long)frame.bindingText, 0);
+        UITable_WriteCell(table, row, 1, (long)frame.bindingText, 0);
     }
-    fn_8022D894(table, 0x11, 0, (long)lbl_80341BE0, 0);
+    UITable_WriteCell(table, 0x11, 0, (long)lbl_80341BE0, 0);
 }
 #pragma cplusplus reset
 #pragma pop

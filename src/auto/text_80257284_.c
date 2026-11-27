@@ -4,7 +4,7 @@
 void fn_80257A8C();
 void *fn_80257470(void *);
 void *fn_8022D850(void *, int, int, int);
-void fn_8022D894(void *, int, int, void *, int);
+void UITable_WriteCell(void *, int, int, void *, int);
 void fn_80257A6C(int *, int, int);
 void uiCreateTable(int, int, int *);
 void fn_8022D7C4(int, int);
@@ -284,14 +284,14 @@ extern "C" void buildProfileSelectorTable(void *arg0, void *arg1) {
             }
             if (found == 0) {
                 found = self->rowCount;
-                fn_8022D894(&self->table_1c, found, 1, (void *)name, 0);
-                fn_8022D894(&self->table_1c, found, 0, getEventDisplayName(&entry->name), 0);
+                UITable_WriteCell(&self->table_1c, found, 1, (void *)name, 0);
+                UITable_WriteCell(&self->table_1c, found, 0, getEventDisplayName(&entry->name), 0);
             }
         }
         outer++;
     }
     self->modified = 0;
-    fn_8022D894(&self->table_1c, self->modified, 0,
+    UITable_WriteCell(&self->table_1c, self->modified, 0,
                 fn_8022D850(&self->table_1c, 0, 0, 0), 1);
     self->built = 1;
 }
@@ -318,8 +318,8 @@ extern "C" void fn_802576EC(void *arg0) {
                 name = fn_800081BC((*(MatchDispatch **)(entry + 0x20))->fetch((const char *)&lbl_8055C1D8, (char *)fn_80012820(*(int *)(entry + 4)) + 8));
                 if (stricmp(name, key) == 0) {
                     pos = *(int *)(self + 0x5C);
-                    fn_8022D894(self + 0x54, pos, 0, fn_80007FF0(*(void **)(entry + 8)), 0);
-                    fn_8022D894(self + 0x54, pos, 1, fn_80007F90(*(void **)(entry + 8)), 0);
+                    UITable_WriteCell(self + 0x54, pos, 0, fn_80007FF0(*(void **)(entry + 8)), 0);
+                    UITable_WriteCell(self + 0x54, pos, 1, fn_80007F90(*(void **)(entry + 8)), 0);
                     *(int *)(self + pos * 4 + 0x8C) = *(int *)entry;
                 }
             }
@@ -338,10 +338,10 @@ extern "C" void fn_802576EC(void *arg0) {
         *(unsigned char *)(self + 0x88) = 0;
     }
     mode = *(int *)(self + 0x18) == 0 ? 1 : 2;
-    fn_8022D894(self + 0x1C, *(int *)(self + 0x4C), 0, fn_8022D850(self + 0x1C, *(int *)(self + 0x4C), 0, 0), mode);
+    UITable_WriteCell(self + 0x1C, *(int *)(self + 0x4C), 0, fn_8022D850(self + 0x1C, *(int *)(self + 0x4C), 0, 0), mode);
     if (*(int *)(self + 0x5C) > 0) {
         mode = *(int *)(self + 0x18) == 1 ? 1 : 2;
-        fn_8022D894(self + 0x54, *(int *)(self + 0x84), 0, fn_8022D850(self + 0x54, *(int *)(self + 0x84), 0, 0), mode);
+        UITable_WriteCell(self + 0x54, *(int *)(self + 0x84), 0, fn_8022D850(self + 0x54, *(int *)(self + 0x84), 0, 0), mode);
     }
 }
 #pragma scheduling on
@@ -366,7 +366,7 @@ int fn_80257904(void *menu, int eventId) {
         case 0: {
             int increment = (unsigned int)eventId == 0x128u;
             int itemCount;
-            fn_8022D894(self + 0x1C, *(int *)(self + 0x4C), 0,
+            UITable_WriteCell(self + 0x1C, *(int *)(self + 0x4C), 0,
                         fn_8022D850(self + 0x1C, *(int *)(self + 0x4C), 0, 0), 0);
             itemCount = *(int *)(self + 0x24);
             fn_80257A6C((int *)(self + 0x4C), increment ? 1 : -1, itemCount);
@@ -376,7 +376,7 @@ int fn_80257904(void *menu, int eventId) {
         case 1: {
             int increment = (unsigned int)eventId == 0x128u;
             int itemCount;
-            fn_8022D894(self + 0x54, *(int *)(self + 0x84), 0,
+            UITable_WriteCell(self + 0x54, *(int *)(self + 0x84), 0,
                         fn_8022D850(self + 0x54, *(int *)(self + 0x84), 0, 0), 0);
             itemCount = *(int *)(self + 0x5C);
             fn_80257A6C((int *)(self + 0x84), increment ? 1 : -1, itemCount);
@@ -406,7 +406,7 @@ extern char lbl_80344CE4[];
 
 /* A "UITB" text table: rows of strings packed into one character buffer, each
    row rowSize bytes and each column a fixed offset/size inside it.
-   Built by uiCreateTable, cleared by fn_8022D76C, cells written by fn_8022D894
+   Built by uiCreateTable, cleared by fn_8022D76C, cells written by UITable_WriteCell
    and read back by fn_8022D850. */
 struct UITable {
     char *text;               /* 0x00 every cell's string */
@@ -451,12 +451,12 @@ void fn_80257A8C(struct UITable *table) {
     row = 0;
     do {
         record = fn_8001BA74(row + 1);
-        fn_8022D894(table, row, 0, fn_8001BA6C(), 0);
+        UITable_WriteCell(table, row, 0, fn_8001BA6C(), 0);
         fn_8001BC38(&recordValue, fn_8000DA10(), record, table->recordSet, 0);
         if (fn_8001BCF0(&recordValue) != 0) {
-            fn_8022D894(table, row, 1, fn_8001BD38(&recordValue, text, 0x14), 0);
+            UITable_WriteCell(table, row, 1, fn_8001BD38(&recordValue, text, 0x14), 0);
         } else {
-            fn_8022D894(table, row, 1, &lbl_80344CE4, 0);
+            UITable_WriteCell(table, row, 1, &lbl_80344CE4, 0);
         }
         row += 1;
     } while (row < 7);
