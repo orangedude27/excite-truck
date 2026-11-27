@@ -5489,7 +5489,7 @@ void fn_80120084(void *block) {
 void fn_80120834(s32, s32 *, f32 *);
 void fn_80120B6C(s32, s32 *, f32 *);
 void fn_80120CA4(s32, void *, s32, s32, void *);
-void fn_80120E14(s32, void *, s32, s32, void *);
+void fftInverseRadix4Core(s32, void *, s32, s32, void *);
 void fn_801250CC(s32, s32, s32, s32);
 void fn_801252D8(s32, f32 *, s32, f32 *);
 /* Ooura in-place real FFT: sizes twiddle/work tables as needed, runs the forward or inverse stage passes by length, then applies the final two-point combine. */ void fftReal(s32 length, s32 direction, f32 *data, s32 table, s32 work) {
@@ -5534,9 +5534,9 @@ void fn_801252D8(s32, f32 *, s32, f32 *);
     data[0] = temp_f2 - temp_f1;
     if (length > 4) {
         fn_801252D8(length, data, size2, (f32 *)((u8 *)work + size1 * 4));
-        fn_80120E14(length, data, table + 8, size1, (void *)work);
+        fftInverseRadix4Core(length, data, table + 8, size1, (void *)work);
     } else if (length == 4) {
-        fn_80120E14(length, data, table + 8, size1, (void *)work);
+        fftInverseRadix4Core(length, data, table + 8, size1, (void *)work);
     }
 }
 
@@ -5544,7 +5544,7 @@ void fn_801254E4(s32, f32 *, s32, f32 *);
 /* Ooura in-place real FFT/DCT of count floats in data: sign >= 0 is forward,
  * sign < 0 is inverse.  info holds the twiddle/cosine table sizes and a
  * bit-reversal map; work holds the tables.  fn_80120834/fn_80120B6C build them,
- * fn_80120CA4/fn_80120E14 are the complex-FFT stages, and fn_801250CC/
+ * fn_80120CA4/fftInverseRadix4Core are the complex-FFT stages, and fn_801250CC/
  * fn_801252D8/fn_801254E4 are the real-FFT folds; the two-point passes apply
  * the DCT symmetry. */
 /* Ooura in-place real FFT/DCT: size twiddle/cosine tables in info/work, then apply sign-selected DCT symmetry passes over data. */ void fftDct(s32 count, s32 sign, f32 *samples, s32 params, s32 tables) {
@@ -5575,9 +5575,9 @@ void fn_801254E4(s32, f32 *, s32, f32 *);
         samples[0] = first + endValue;
         if (count > 4) {
             fn_801252D8(count, samples, cosLen, (f32 *)tables + twiddleLen);
-            fn_80120E14(count, samples, params + 8, twiddleLen, (void *)tables);
+            fftInverseRadix4Core(count, samples, params + 8, twiddleLen, (void *)tables);
         } else if (count == 4) {
-            fn_80120E14(count, samples, params + 8, twiddleLen, (void *)tables);
+            fftInverseRadix4Core(count, samples, params + 8, twiddleLen, (void *)tables);
         }
     }
     fn_801254E4(count, samples, cosLen, (f32 *)tables + twiddleLen);
@@ -5751,13 +5751,13 @@ void fn_80120CA4(register s32 count, register void *dst, register s32 mode, regi
 
 /* fn_80121400(n, s32 *map, f32 *data) reads its 3rd argument from r4 only:
  * the slot above it (sp+0x10) is never loaded, so callers may pass any type
- * there -- fn_80120E14 hands it the int `mode` and still matches. */
+ * there -- fftInverseRadix4Core hands it the int `mode` and still matches. */
 extern void fn_80121400(s32, s32 *, f32 *);
 extern void reorderFFT32Result(void *);
 extern void fn_80121BF4(void *);
 extern void fn_80125014(void *);
 extern void fn_80122518(s32, u8 *, void *);
-void fn_80120E14(register s32 n, register void *a, register s32 ip, register s32 nw, register void *w) {
+void fftInverseRadix4Core(register s32 n, register void *a, register s32 ip, register s32 nw, register void *w) {
     /* Inverse-direction half of the recursive radix-4 complex FFT (Ooura-style)
      * that ddct/dcdft run on n floats in `a`, i.e. n/2 re/im samples.  `w` is the
      * twiddle table, `nw` its length in floats, `ip` the caller's bit-reversal
