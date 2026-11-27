@@ -2746,7 +2746,7 @@ extern s32 lbl_8055D8B4, lbl_8055D878;
 extern void fn_80038870();
 extern void DVDLowSeekAsync(u32, void *);
 extern void fn_8003B508(u32, u32, void *);
-extern void fn_8003B0B0(void *, void *);
+extern void DVDLowInquiryAsync(void *, void *);
 extern void fn_8003AC24(void *);
 extern void (*lbl_80558E08)(void *, void *);
 #pragma push
@@ -2820,7 +2820,7 @@ extern void (*lbl_80558E08)(void *, void *);
  case 3: DVDLowRawReadAsync(0,0,fn_80038870); break;                                                       /* DVDLowStopMotor */
  case 15: DVDLowRawReadAsync(0,0,fn_80038870); break;                                                      /* DVDLowStopMotor */
  case 13: fn_8003BCDC(0); fn_8003B508(*(u32 *)(blockBytes+0x10),*(u32 *)(blockBytes+0x14),fn_80038870); break; /* DVDLowAudioBufferConfig */
- case 14: fn_8003BCDC(0); *(int *)(blockBytes+0x1c)=0x20; fn_8003B0B0(*(void **)(blockBytes+0x18),fn_80038870); break; /* DVDLowInquiry */
+ case 14: fn_8003BCDC(0); *(int *)(blockBytes+0x1c)=0x20; DVDLowInquiryAsync(*(void **)(blockBytes+0x18),fn_80038870); break; /* DVDLowInquiry */
  case 16: fn_8003BCDC(0); DVDLowRawReadAsync(0,0,fn_80038870); break;                                      /* DVDLowStopMotor */
  case 34: fn_8003B380(1); fn_8003B38C(fn_80038870); break;                                          /* spin up; DVDLowReset */
  case 37:                            /* COMMAND_SET_MAX_ROTATION -> DVDLowUnencryptedRead */
