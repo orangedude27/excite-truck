@@ -1544,7 +1544,7 @@ struct ActionGroup {
 #pragma processor 750
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void fn_801D611C(void *arg0, void *arg1, void *arg2) {
+extern "C" void fireActionSequenceGroup(void *arg0, void *arg1, void *arg2) {
     // Fire an action-sequence group at an object: unless the object's "group_id"
     // parameter is this group's, do nothing; otherwise send one record for every
     // threshold the object's transformed vector is long enough to pass, stopping

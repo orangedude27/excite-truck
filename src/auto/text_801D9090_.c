@@ -95,7 +95,7 @@ extern void *lbl_8055E96C;
 extern float lbl_80562B2C;
 extern void fn_80178DBC(int, float);
 extern void fn_801D9AB8(void *, float);
-extern void fn_801D611C(s32);
+extern void fireActionSequenceGroup(s32);
 extern void fn_801D77E8(s32);
 extern void fn_801D77EC(s32);
 extern void fn_801D7874(s32);
@@ -116,9 +116,9 @@ void *fn_801D9090(void *object, s32 shouldFree) {
     return object;
 }
 
-/* Callback wrapper: forward to fn_801D611C with the pointer backed up to its enclosing structure (userData - 4). */
+/* Callback wrapper: forward to fireActionSequenceGroup with the pointer backed up to its enclosing structure (userData - 4). */
 void fn_801D90E8(s32 userData) {
-    fn_801D611C(userData - 4);
+    fireActionSequenceGroup(userData - 4);
 }
 
 /* Callback wrapper of the action-group operations (like fn_801D90E8 next door):
