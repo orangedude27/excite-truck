@@ -1214,7 +1214,7 @@ void fn_802B6F34(void *arg0, void *arg1, void (*arg2)(s16, s16, u8)) {
 #undef beginSampleOverlay
 #undef endSampleOverlay
 #pragma scheduling invalid_target
-s32 fn_802B7300(s16 x, s16 y, s32 arg2, s32 arg3, f32 farg0) {
+s32 drawTerrainMarker(s16 x, s16 y, s32 arg2, s32 arg3, f32 farg0) {
     extern float lbl_80564C74;
     extern float lbl_80564C78;
     extern float lbl_80564C88;
@@ -1260,10 +1260,10 @@ extern float lbl_80564C94;
 extern s32 paintWaterLayer();
 extern void fn_80204044();
 extern s32 fn_802C21DC();
-extern s32 fn_802B7300(s16, s16, s32, s32, float);
+extern s32 drawTerrainMarker(s16, s16, s32, s32, float);
 void fn_802B7420(s16 x, s16 y, s32 value) {
     /* Render callback: draw a terrain-debug marker at grid cell (x, y) with the default 0.2 scale. */
-    fn_802B7300(x, y, value, -1, lbl_80564C8C);
+    drawTerrainMarker(x, y, value, -1, lbl_80564C8C);
 }
 
 extern s16 lbl_8055FA50[4];
@@ -1325,7 +1325,7 @@ void fn_802B7434(void) {
 #define brushLayer     lbl_8055FA28 /* water layer the viewer paints, from its drop-down */
 #define dirtyBounds    lbl_8055FA50 /* s16[4]: minX, maxX, minY, maxY painted since the last rebuild */
 #define paintLayer     paintWaterLayer  /* blend a value into one cell of a water layer */
-#define drawMarker     fn_802B7300  /* draw a terrain marker at a grid cell */
+#define drawMarker     drawTerrainMarker  /* draw a terrain marker at a grid cell */
 #define plotPixel      fn_802C21DC  /* write one pixel of the road-opacity image */
 #define drawWorldPoint fn_80204044  /* debug-draw hook: empty in this build */
 #define kSampleFull    lbl_80564C90 /* 255.0f: the sample of a fully applied brush stroke */
