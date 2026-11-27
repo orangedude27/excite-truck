@@ -5488,7 +5488,7 @@ void fn_80120084(void *block) {
 
 void fn_80120834(s32, s32 *, f32 *);
 void fn_80120B6C(s32, s32 *, f32 *);
-void fn_80120CA4(s32, void *, s32, s32, void *);
+void fftForwardTransform(s32, void *, s32, s32, void *);
 void fftInverseRadix4Core(s32, void *, s32, s32, void *);
 void fn_801250CC(s32, s32, s32, s32);
 void fn_801252D8(s32, f32 *, s32, f32 *);
@@ -5511,10 +5511,10 @@ void fn_801252D8(s32, f32 *, s32, f32 *);
     }
     if (direction >= 0) {
         if (length > 4) {
-            fn_80120CA4(length, data, table + 8, size1, (void *)work);
+            fftForwardTransform(length, data, table + 8, size1, (void *)work);
             fn_801250CC(length, (s32)data, size2, (s32)((u8 *)work + size1 * 4));
         } else if (length == 4) {
-            fn_80120CA4(length, data, table + 8, size1, (void *)work);
+            fftForwardTransform(length, data, table + 8, size1, (void *)work);
         }
         {
             f32 second;
@@ -5544,7 +5544,7 @@ void fn_801254E4(s32, f32 *, s32, f32 *);
 /* Ooura in-place real FFT/DCT of count floats in data: sign >= 0 is forward,
  * sign < 0 is inverse.  info holds the twiddle/cosine table sizes and a
  * bit-reversal map; work holds the tables.  fn_80120834/fn_80120B6C build them,
- * fn_80120CA4/fftInverseRadix4Core are the complex-FFT stages, and fn_801250CC/
+ * fftForwardTransform/fftInverseRadix4Core are the complex-FFT stages, and fn_801250CC/
  * fn_801252D8/fn_801254E4 are the real-FFT folds; the two-point passes apply
  * the DCT symmetry. */
 /* Ooura in-place real FFT/DCT: size twiddle/cosine tables in info/work, then apply sign-selected DCT symmetry passes over data. */ void fftDct(s32 count, s32 sign, f32 *samples, s32 params, s32 tables) {
@@ -5583,10 +5583,10 @@ void fn_801254E4(s32, f32 *, s32, f32 *);
     fn_801254E4(count, samples, cosLen, (f32 *)tables + twiddleLen);
     if (sign >= 0) {
         if (count > 4) {
-            fn_80120CA4(count, samples, params + 8, twiddleLen, (void *)tables);
+            fftForwardTransform(count, samples, params + 8, twiddleLen, (void *)tables);
             fn_801250CC(count, (s32)samples, cosLen, (s32)((f32 *)tables + twiddleLen));
         } else if (count == 4) {
-            fn_80120CA4(count, samples, params + 8, twiddleLen, (void *)tables);
+            fftForwardTransform(count, samples, params + 8, twiddleLen, (void *)tables);
         }
         endValue = samples[0] - samples[1];
         samples[0] = samples[0] + samples[1];
@@ -5712,7 +5712,7 @@ extern void fn_80124AD8(void *, void *);
 extern void fn_80121BB0(void *);
 extern void fn_80124F90(void *);
 extern void fn_80125098(void *);
-void fn_80120CA4(register s32 count, register void *dst, register s32 mode, register s32 srcIndex, register void *src) {
+void fftForwardTransform(register s32 count, register void *dst, register s32 mode, register s32 srcIndex, register void *src) {
     /* Dispatches to size-specific transform/copy helpers based on element count:
      * for large counts (>0x20) computes a quarter-size, prepares data, runs one
      * of several bulk paths, then finalizes; for medium/small counts uses the
@@ -5761,7 +5761,7 @@ void fftInverseRadix4Core(register s32 n, register void *a, register s32 ip, reg
     /* Inverse-direction half of the recursive radix-4 complex FFT (Ooura-style)
      * that ddct/dcdft run on n floats in `a`, i.e. n/2 re/im samples.  `w` is the
      * twiddle table, `nw` its length in floats, `ip` the caller's bit-reversal
-     * scratch table (ip + 2 of the caller's int array).  fn_80120CA4 is the
+     * scratch table (ip + 2 of the caller's int array).  fftForwardTransform is the
      * forward twin; each helper used here has the forward-sign partner that one
      * calls instead.
      *
