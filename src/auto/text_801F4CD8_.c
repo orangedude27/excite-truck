@@ -1519,34 +1519,35 @@ __declspec(section ".sdata") extern char lbl_8055B1B0[];
 __declspec(section ".sdata") extern char lbl_8055B1B8[];
 __declspec(section ".sdata") extern char lbl_8055B1C0[];
 #pragma cplusplus on
-// Adds a manual (non-uniform) mesh/fabric entry into this object's slot table:
-// validates capacity/type, snapshots setup via snapshotClothSetup, fills slot params (id/state,
-// scaled gravity/wind values) using the object's virtual getters, and increments slot count.
-/* Add a manual fabric entry to the table: check capacity and mesh type, snapshot the cloth setup into the new slot, fill gravity/wind/drag params from the object's getters, and increment the slot count. */ extern "C" void addManualFabric(void *table, void *obj, void *context) {
-    char sp8[0x68];
-    int got;
-    char *slot;
-    int value;
-    int old;
-    DummyObj_801F7280 *object;
+// Add a manual (non-uniform) mesh/fabric entry into this table: validate slot capacity and
+// mesh type, snapshot the cloth setup, fill the slot's id/gravity/wind/drag params from the
+// object's virtual getters, then increment the slot count.
+extern "C" void addManualFabric(void *table, void *obj, void *context) {
+    char setup[0x68];
+    int flags;
+    char *entry;
+    int textureValue;
+    int anchorStyle;
+    DummyObj_801F7280 *fabric;
+
     if (*(int *)((char *)table + 0x120) >= 4) {
         Abend_Panic(lbl_8033AE54);
     }
-    got = fn_801F4ECC(obj);
-    if (got & 1) {
+    flags = fn_801F4ECC(obj);
+    if (flags & 1) {
         Abend_Panic(lbl_8033AE78);
     }
-    slot = (char *)table + *(int *)((char *)table + 0x120) * 0x48;
-    object = (DummyObj_801F7280 *)obj;
-    value = (int)object->d5(lbl_8055B1C0);
-    old = fn_801F4E44(object->d5(lbl_8055B19C));
-    snapshotClothSetup(sp8, obj, context);
-    fn_801F602C(slot, (int)sp8, value, old, got);
-    *(int *)(slot + 0x34) = -1;
-    slot[0x38] = 1;
-    *(float *)(slot + 0x3C) = lbl_80562FE8 * object->d9(lbl_8055B1A8);
-    *(float *)(slot + 0x40) = object->d9(lbl_8055B1B0);
-    *(float *)(slot + 0x44) = object->d9(lbl_8055B1B8);
+    entry = (char *)table + *(int *)((char *)table + 0x120) * 0x48;
+    fabric = (DummyObj_801F7280 *)obj;
+    textureValue = (int)fabric->d5(lbl_8055B1C0);
+    anchorStyle = fn_801F4E44(fabric->d5(lbl_8055B19C));
+    snapshotClothSetup(setup, obj, context);
+    fn_801F602C(entry, (int)setup, textureValue, anchorStyle, flags);
+    *(int *)(entry + 0x34) = -1;
+    entry[0x38] = 1;
+    *(float *)(entry + 0x3C) = lbl_80562FE8 * fabric->d9(lbl_8055B1A8);
+    *(float *)(entry + 0x40) = fabric->d9(lbl_8055B1B0);
+    *(float *)(entry + 0x44) = fabric->d9(lbl_8055B1B8);
     *(int *)((char *)table + 0x120) = *(int *)((char *)table + 0x120) + 1;
 }
 #pragma cplusplus reset
