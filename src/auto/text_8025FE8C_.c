@@ -61,7 +61,7 @@ extern u8 lbl_80345B40[];
 #pragma cplusplus on
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-extern "C" s32 chooseChallengeVehicle(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+/* Choose a vehicle for a challenge: find the record's vehicle_map, wrap its default chassis in a one-entry chassis list, open the selection dialog and return its result. */ extern "C" s32 chooseChallengeVehicle(s32 resultOut, s32 dialogValue, s32 recordId, s32 selector) {
     /* If a global state flag is set, returns success early. Otherwise looks up an
      * object by arg2, queries it for a resource/value (logging errors via
      * Abend_Panic on failure), wraps a valid value in a temporary handle, passes
@@ -115,26 +115,26 @@ extern "C" s32 chooseChallengeVehicle(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     }
 
     fn_800167FC(1);
-    Obj* obj = (Obj*)fn_80012820(arg2);
-    s32 val = 0;
+    Obj* obj = (Obj*)fn_80012820(recordId);
+    s32 defaultChassis = 0;
     s32 check;
     if (obj != 0 && obj->inner != 0 && (check = (s32)obj->inner->vfunc_5c(base + 0x90), ((u32)(-check | check) >> 31) != 0)) {
-        val = obj->inner->vfunc_5c(base + 0x90)->vfunc_18(base + 0xa0, 0);
+        defaultChassis = obj->inner->vfunc_5c(base + 0x90)->vfunc_18(base + 0xa0, 0);
     } else {
         Abend_Panic((void*)(base + 0xb0));
     }
 
     Handle* handle = 0;
-    if (val != 0) {
+    if (defaultChassis != 0) {
         handle = (Handle*)fn_8025007C(1);
-        handle->vfunc_0c(val, 1, 0);
+        handle->vfunc_0c(defaultChassis, 1, 0);
     } else {
         Abend_Panic((void*)(base + 0x104));
     }
 
-    s32 ret = fn_8024DAE0(arg0, arg1, 0, handle, arg3);
+    s32 result = fn_8024DAE0(resultOut, dialogValue, 0, handle, selector);
     delete handle;
-    return ret;
+    return result;
 }
 
 extern "C" void *fn_80016464(int);
