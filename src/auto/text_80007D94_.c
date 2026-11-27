@@ -68,22 +68,20 @@ extern "C" void loadRaceEventTable(void) {
         virtual const char *getValue(const char *);
         virtual void *getString(const char *, const char *);
     };
-    volatile u32 *global;
+    volatile u32 *table;
     char *base;
     void *initialConfig;
-    u32 index;
+    u32 nextEntryIndex;
 
-    /* Load track entries from the "excite_beta_race" config (base+0x68) into
-       gRaceEventTable (gRaceEvents): for each "track" item store {name,
-       display string (base+0x74 key, default ""), environ (default "")} in
-       0xC-byte slots (max 0x28, overflows -> abend base+0x84), then qsort by
-       name with compareRaceEventNames. global[0x78]=count, global[0x79]=config ptr. */
+    /* Load "track" items from the "excite_beta_race" config into gRaceEvents.
+     * Each 0xC-byte slot holds {name, display string, environ}; abort past 0x28
+     * entries, then sort the table by name with compareRaceEventNames. */
     base = lbl_802FB6E0;
     initialConfig = getValueFile(base + 0x68);
-    global = (volatile u32 *)&gRaceEvents;
-    global[0x79] = (u32)initialConfig;
-    index = 0;
-    global[0x78] = 0;
+    table = (volatile u32 *)&gRaceEvents;
+    table[0x79] = (u32)initialConfig;
+    nextEntryIndex = 0;
+    table[0x78] = 0;
 
 loop:
     {
@@ -93,9 +91,9 @@ loop:
         u32 count;
         u32 entryIndex;
 
-        config = (void *)global[0x79];
-        entryIndex = index;
-        index++;
+        config = (void *)table[0x79];
+        entryIndex = nextEntryIndex;
+        nextEntryIndex++;
         entry = (Item *)((Config *)config)->getEntry(entryIndex);
         if (entry == 0) {
             goto done;
@@ -105,16 +103,16 @@ loop:
         }
 
         value = (void *)entry->getValue(lbl_80558980);
-        *(void **)((u8 *)global + global[0x78] * 0xC) = value;
+        *(void **)((u8 *)table + table[0x78] * 0xC) = value;
 
         value = entry->getString(base + 0x74, lbl_80558988);
-        *(void **)((u8 *)global + global[0x78] * 0xC + 4) = value;
+        *(void **)((u8 *)table + table[0x78] * 0xC + 4) = value;
 
         value = entry->getString(lbl_80558990, lbl_80558988);
-        *(void **)((u8 *)global + global[0x78] * 0xC + 8) = value;
+        *(void **)((u8 *)table + table[0x78] * 0xC + 8) = value;
 
-        count = global[0x78] + 1;
-        global[0x78] = count;
+        count = table[0x78] + 1;
+        table[0x78] = count;
         if (count < 0x28) {
             goto loop;
         }
