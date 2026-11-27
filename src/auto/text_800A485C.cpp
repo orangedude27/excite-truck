@@ -21837,7 +21837,7 @@ done:
 extern "C" const char lbl_8031EBF4[];
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...);
 extern "C" void fillDebugRect(s32, s32, s32, s32);
-extern "C" const char *fn_800D3260(s32, s32, const char *, s32);
+extern "C" const char *drawDebugTextLine(s32, s32, const char *, s32);
 extern "C" char *strchr(const char *, int);
 /* Draw multi-line debug/text on screen, optionally drawing a background box per line and handling wrapping. */
 extern "C" void drawDebugTextLines(s32 x, s32 y, const char *str, s32 wrapLongLines, s32 drawBackground) {
@@ -21867,7 +21867,7 @@ extern "C" void drawDebugTextLines(s32 x, s32 y, const char *str, s32 wrapLongLi
             fillDebugRect(x - 6, y - 3, (lineLen + 2) * 6, 13);
         }
 
-        const char *next = fn_800D3260(x, y, str, (maxColumns - x) / 6);
+        const char *next = drawDebugTextLine(x, y, str, (maxColumns - x) / 6);
         s8 ch = *next;
         str = next;
         y += 10;
@@ -21892,7 +21892,7 @@ extern "C" void drawDebugTextLines(s32 x, s32 y, const char *str, s32 wrapLongLi
 
 extern "C" u8 lbl_802F47D8[];
 extern "C" void fn_800D337C(s32,s32,s32);
-extern "C" const char *fn_800D3260(s32 arg0, s32 arg1, const char *arg2, s32 arg3) {
+extern "C" const char *drawDebugTextLine(s32 arg0, s32 arg1, const char *arg2, s32 arg3) {
     s32 count = 0;
     s32 ch;
     u32 base = (u32)lbl_8031EBA0;
