@@ -2153,7 +2153,7 @@ typedef struct StreamPlayer {
  * decoded samples (feedStreamVoices) or, once they are so far ahead that the
  * decoder can never catch up, skip writePos forward over silence and mark the
  * player as resynced.  Always returns 0. */
-s32 updateStreamPlayer(void *arg0) {
+/* Keep the stream's PCM ring ahead of the AX voices: re-sample how far they have read, then either hand over the next decoded block (feedStreamVoices) or skip writePos forward over silence and mark the player resynced when the ring is hopelessly behind. */ s32 updateStreamPlayer(void *arg0) {
     StreamPlayer *player = (StreamPlayer *)arg0;
     s32 now;
     s32 sinceSample;
