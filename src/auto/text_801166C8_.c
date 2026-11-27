@@ -1474,13 +1474,13 @@ extern s32 fn_801190B0(void*, s32);
  * frame's decode time is folded into the running total and the movie is sent to
  * its next frame, wrapping back to the first at the end.  bink +0x11C is the
  * guard that keeps the tick callback out while this runs. */
-void BinkMgr_AdvanceFrame(void* bink) {
+/* Advance a Bink movie one frame on the 20 ms tick: clear pending stream flushes, resync streams that started too late, refill audio buffers, fold in elapsed decode time, and step to the next frame (wrapping at the end), with the shared tick lock held. */ void BinkMgr_AdvanceFrame(void* bink) {
     s32 value;
     s32 var_r4;
     s32 entryOff;
     u32 bufferedFrames;
     u32 frameOrTarget;
-    s32 resync;
+    s32 needsResync;
     u32 index;
     void* stream;
     volatile s32 *inCallback;
@@ -1488,7 +1488,7 @@ void BinkMgr_AdvanceFrame(void* bink) {
 
     inCallback = (volatile s32 *)((u8*)bink + 0x11C);
     streamCount = (volatile u32 *)((u8*)bink + 0x2E8);
-    resync = 0;
+    needsResync = 0;
     if (bink != 0) {
         *inCallback = 1;
         value = 0;
@@ -1504,13 +1504,13 @@ void BinkMgr_AdvanceFrame(void* bink) {
                 if (frameOrTarget > 1) {
                     stream = (u8*)*(void**)((u8*)bink + 0x2F0) + entryOff;
                     if ((s32)frameOrTarget <= *(s32*)((u8*)stream + 0x48))
-                        resync = 1;                      /* it starts at/after us */
+                        needsResync = 1;                      /* it starts at/after us */
                 }
             }
             entryOff += 0x17C;
             index += 1;
         }
-        if (resync != 0) {
+        if (needsResync != 0) {
             value = *(s32*)((u8*)bink + 0x2EC);
             *(s32*)((u8*)bink + 0x2EC) = value + 1;    /* resyncs done so far */
             fn_8011C274(lbl_8055DED4, (u8*)bink + 0x340);   /* lock the Bink tick */
