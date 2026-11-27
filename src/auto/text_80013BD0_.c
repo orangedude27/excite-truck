@@ -663,36 +663,39 @@ extern s32 isLapDisplayReversed(void);
 #pragma push
 #pragma dont_inline on
 #pragma scheduling invalid_target
-/* Updates a UI/progress object's fade state (+0x24) and value (+0x2C) based on reverse/active conditions (isLapDisplayReversed/fn_80014AE4), ramping toward lbl_80560360 (0.0f) or lbl_80560368 (1.0f). */
-void updateLapInfoHudDisplay(void *arg0) {
+/* Drives the lap-info HUD line's fade/visibility state machine on the given overlay:
+ * ramps the fade value at +0x2C toward 1.0 (hidden) or 0.0 (shown) depending on the
+ * reverse and "show lap info" conditions, redraws the timed-lap or lap-info line, and
+ * advances the state at +0x24 between hidden (0), normal (1) and reverse (2). */
+void updateLapInfoHudDisplay(void *hudOverlay) {
     struct Obj {
         u8 pad0[0x24];
         s32 state;
         u8 pad28[4];
         f32 value;
     };
-    struct Obj *obj = (struct Obj *)arg0;
-    s32 state, reverse, result;
+    struct Obj *obj = (struct Obj *)hudOverlay;
+    s32 state, reversed, showLapInfo;
 
-    reverse = isLapDisplayReversed();
-    result = ((s32 (*)(void *))fn_80014AE4)(obj);
+    reversed = isLapDisplayReversed();
+    showLapInfo = ((s32 (*)(void *))fn_80014AE4)(obj);
     state = obj->state;
     if (state == 0) {
-        if (reverse != 0 || result != 0) {
+        if (reversed != 0 || showLapInfo != 0) {
             s32 newState;
             fn_80013CFC(&obj->value);
-            if (reverse != 0) buildTimedLapHudLine(obj);
+            if (reversed != 0) buildTimedLapHudLine(obj);
             else buildLapInfoHudLine(obj);
             if (lbl_80560360 == obj->value) {
                 newState = 1;
-                if (reverse != 0) newState = 2;
+                if (reversed != 0) newState = 2;
                 obj->state = newState;
             }
         } else {
             obj->value = lbl_80560368;
         }
     } else if (state == 2) {
-        if (reverse != 0) {
+        if (reversed != 0) {
             if (obj->value > lbl_80560360) fn_80013CFC(&obj->value);
             buildTimedLapHudLine(obj);
         } else {
@@ -701,7 +704,7 @@ void updateLapInfoHudDisplay(void *arg0) {
             if (lbl_80560368 == obj->value) obj->state = 0;
         }
     } else {
-        if (result != 0) {
+        if (showLapInfo != 0) {
             if (obj->value > lbl_80560360) fn_80013CFC(&obj->value);
             buildLapInfoHudLine(obj);
         } else {
