@@ -1745,42 +1745,42 @@ s32 fn_8016E1A4(s32 *basePtr, s32 index) {
 
 extern void fn_8016A240(void *);
 
-// Builds a formatted state label for this object, applies it via UI helper, resets the
-// selected list entry's runtime fields/child handles when index is valid, and stops its
-// active sound handle if one is set.
-void resetChallengeSetEntry(void *arg0, s32 arg1) {
-    char sp8[0x28];
-    register char *format = lbl_803306D0;
-    s32 value = *(s32 *)((u8 *)arg0 + 0x44);
-    switch (value) {
+// Build the HUD label for this ring-challenge set from its state, deactivate the
+// matching object group, reset the indexed entry's runtime fields and child
+// handles, and release the set's marker handle when one is active.
+void resetChallengeSetEntry(void *set, s32 setIndex) {
+    char label[0x28];
+    register char *labelTable = lbl_803306D0;
+    s32 state = *(s32 *)((u8 *)set + 0x44);
+    switch (state) {
     case 0:
-        fn_801345D8(sp8, 0x1e, format + 0x264, *(s32 *)((u8 *)arg0 + 0x2c));
+        fn_801345D8(label, 0x1e, labelTable + 0x264, *(s32 *)((u8 *)set + 0x2c));
         break;
     case 1:
-        fn_801345D8(sp8, 0x1e, format + 0x270, *(s32 *)((u8 *)arg0 + 0x2c));
+        fn_801345D8(label, 0x1e, labelTable + 0x270, *(s32 *)((u8 *)set + 0x2c));
         break;
     case 2:
-        fn_801345D8(sp8, 0x1e, format + 0x27c, *(s32 *)((u8 *)arg0 + 0x2c));
+        fn_801345D8(label, 0x1e, labelTable + 0x27c, *(s32 *)((u8 *)set + 0x2c));
         break;
     default:
-        Abend_Panic(format + 0x288);
+        Abend_Panic(labelTable + 0x288);
         break;
     }
-    fn_8016A240(sp8);
-    if (arg1 < *(s32 *)((u8 *)arg0 + 0x3c)) {
+    fn_8016A240(label);
+    if (setIndex < *(s32 *)((u8 *)set + 0x3c)) {
         register s32 i;
-        register void **list = *(void ***)((u8 *)arg0 + 0x18);
-        s32 delta = arg1 * 0x14;
+        register void **list = *(void ***)((u8 *)set + 0x18);
+        s32 delta = setIndex * 0x14;
         register u8 *base = (u8 *)*list;
-        register u8 *item = base + delta;
+        register u8 *entry = base + delta;
         s32 offset;
-        *(u8 *)(item + 9) = 0;
+        *(u8 *)(entry + 9) = 0;
         i = 0;
         offset = 0;
-        *(f32 *)(item + 0xc) = lbl_8055E3C8;
-        while (i < *(s32 *)((u8 *)*(void **)item + 4)) {
-            u8 *entries = (u8 *)*(void **)*(void **)item;
-            void *handle = *(void **)(entries + offset + 4);
+        *(f32 *)(entry + 0xc) = lbl_8055E3C8;
+        while (i < *(s32 *)((u8 *)*(void **)entry + 4)) {
+            u8 *children = (u8 *)*(void **)*(void **)entry;
+            void *handle = *(void **)(children + offset + 4);
             if (handle != 0) {
                 fn_802BAF98(handle, 0);
             }
@@ -1788,9 +1788,9 @@ void resetChallengeSetEntry(void *arg0, s32 arg1) {
             i += 1;
         }
     }
-    if (*(s32 *)((u8 *)arg0 + 0x24) != -1) {
-        fn_8001B450(*(s32 *)((u8 *)arg0 + 0x24));
-        *(s32 *)((u8 *)arg0 + 0x24) = -1;
+    if (*(s32 *)((u8 *)set + 0x24) != -1) {
+        fn_8001B450(*(s32 *)((u8 *)set + 0x24));
+        *(s32 *)((u8 *)set + 0x24) = -1;
     }
 }
 
