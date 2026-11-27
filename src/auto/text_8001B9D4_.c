@@ -39,7 +39,7 @@ extern u8 *lbl_8055D5CC;
 extern char lbl_803583C8[];
 extern void __array_delete(void *, void *, s32, s32);
 extern s32 fn_8001BA10(s32, s32);
-extern s32 fn_8001D2E4(s32, s32, s32, s32);
+extern s32 compareStats(s32, s32, s32, s32);
 extern void *lbl_80358658[];
 extern s32 lbl_802ED7B8[];
 extern const char lbl_802FD85C[];
@@ -355,7 +355,7 @@ u32 fn_8001BD6C(const void *recordA, const void *recordB) {
     u32 indexA = *(const u32 *)((const s8 *)recordA + 0xC);
     u32 dataB = *(const u32 *)((const s8 *)recordB + 0x18);
     u32 indexB = *(const u32 *)((const s8 *)recordB + 0xC);
-    u32 cmp = fn_8001D2E4(dataA, indexA, dataB, indexB);
+    u32 cmp = compareStats(dataA, indexA, dataB, indexB);
     return (cmp & 0x80000000) >> 31;
 }
 #pragma scheduling on
@@ -1269,7 +1269,7 @@ void fn_8001D298(s32 contextIndex) {
 extern const char lbl_802FDAAC[];
 extern const char lbl_802FDAD8[];
 /* Compares two 0xC-byte stat entries by index; returns -1/0/1 for sorting. */
-s32 fn_8001D2E4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+s32 compareStats(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     u8 *entryA = (u8 *)(arg0 + arg1 * 0xC);
     u8 *entryB;
     s32 dataType;
