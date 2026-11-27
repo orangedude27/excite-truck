@@ -2571,17 +2571,10 @@ static __inline u8 *ringEntry(void *owner, s32 i)
     }
     return (u8 *) q->items + (((i + q->cap) + q->head) % q->cap) * 12;
 }
-// The pointer stored at +8 of the record at position i, or NULL.
-static __inline void *ringEntryField(void *owner, s32 i)
-{
-    RingVecQueue *q = ringQueue(owner);
-    s32 end = (q->cap + (q->count - q->head)) % q->cap;
-    if (i >= end)
-    {
-        return 0;
-    }
-    return *(void **) ((u8 *) q->items + ((((i + q->cap) + q->head) % q->cap) * 12) + 8);
-}
+// Number of records currently queued in the ring (position just past the last).
+#define ringEntryEnd(owner) ((ringQueue(owner)->cap + (ringQueue(owner)->count - ringQueue(owner)->head)) % ringQueue(owner)->cap)
+// The pointer stored at +8 of the record at position i, or NULL when i is past the queued count.
+#define ringEntryField(owner, i) (((i) < ringEntryEnd(owner)) ? *((void **) ((u8 *) ringQueue(owner)->items + (((((i) + ringQueue(owner)->cap) + ringQueue(owner)->head) % ringQueue(owner)->cap) * 12) + 8)) : (void *) 0)
 // fn_80140D1C: processes array items, flushing buffer to fn_80141558 when item[0x1E] set, or stores to dst
 extern "C" void fn_80140D1C(void *arg0, void *arg1, void *arg2)
 {
