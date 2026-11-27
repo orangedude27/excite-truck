@@ -183,7 +183,7 @@ struct Quad {
 #pragma paired off
 #pragma paired_single off
 /* Draws text (fn_80232BA4) with horizontal scroll/wrap: measures text, wraps X range within margin-expanded screen bounds, and draws an overflow copy when clipped. */
-void fn_802304EC(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
+void drawTextWithXWrap(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
                  f32 farg0, f32 farg1, f32 farg2, f32 farg3,
                  f32 farg4, f32 farg5, f32 farg6, s32 arg_sp0) {
     extern f32 fn_8023293C(s32, s32, f32);

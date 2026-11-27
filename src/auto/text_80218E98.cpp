@@ -123,7 +123,7 @@ extern "C" f32 fn_80214D48(void);
 extern "C" void fn_80228AEC(s32, f32);
 extern "C" void drawPictureScaled(s32, s32, s32, f32, f32, f32, f32, f32);
 extern "C" void drawScrollingOverlayQuad(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
-extern "C" void fn_802304EC(s32, s32, s32, s32, f32, f32, f32, f32, f32, f32, f32);
+extern "C" void drawTextWithXWrap(s32, s32, s32, s32, f32, f32, f32, f32, f32, f32, f32);
 extern "C" void fn_80230650(s32, s32, s32, s32, f32, f32, f32, f32, f32, f32, f32);
 extern "C" void drawTextWithYWrap(s32, s32, s32, s32, f32, f32, f32, f32, f32, f32, f32);
 extern "C" double fn_8002EFB4(double, double);
@@ -1474,7 +1474,7 @@ extern "C" void fn_80219FE0(void *arg0) {
     }
     case 2:
         if (*(s32 *)(self + 0x248) != 0)
-            fn_802304EC(*(s32 *)(self + 0x258), *(s32 *)(self + 0x248), *(s32 *)(self + 0x254), 9, x, y,
+            drawTextWithXWrap(*(s32 *)(self + 0x258), *(s32 *)(self + 0x248), *(s32 *)(self + 0x254), 9, x, y,
                         zero, *(f32 *)(self + 0x27C), (f32)*(s32 *)(self + 0x250), time, lbl_805634C0);
         break;
     case 4:
