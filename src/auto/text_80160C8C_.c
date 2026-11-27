@@ -2880,7 +2880,7 @@ struct NameList_8016464C {
 struct ValueTable_8016464C {
     virtual void *getCollection(void *value);
 };
-/* fn_8016464C's object: the parameter list its names are read out of, and the
+/* buildTutorialValueEntries's object: the parameter list its names are read out of, and the
    (description, value) table it builds from them. */
 struct State_8016464C {
     u8 pad0[4];
@@ -2896,7 +2896,7 @@ struct Entry_8016464C {
     s32 value;
 };
 #pragma cplusplus on
-extern "C" void fn_8016464C(void *state) {
+extern "C" void buildTutorialValueEntries(void *state) {
     /* Build this object's (description, value) table out of the scene's named
      * parameter list.  "desc1", "desc2", ... in the list are the descriptions;
      * their number is found by looking for the first "desc<N>" the list does
