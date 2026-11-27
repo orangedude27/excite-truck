@@ -357,9 +357,6 @@ extern void fn_801B08FC(void *, void *);
         u32 raw[3]; s32 value; f32 weight; s32 limit;
         u8 request[0x20]; u8 pad[0x20]; s16 marker;
     } scratch;
-    /* Build/apply a per-slot request: for PCAR-tagged metadata run slot setup and
-     * source value/weight/limit from payload, otherwise from inline fields; validate
-     * via optional global validator, then process and finalize the request. */
     void *slotTable = lbl_8055E684;
     SlotObject *slot = (SlotObject *)((u8 *)slotTable + (slotIndex << 7));
     void *metadata;
