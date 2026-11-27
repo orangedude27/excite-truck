@@ -758,7 +758,7 @@ extern void fn_802D6B7C(void *);
 extern void buildViewXform(void);
 extern void GXSetupThreeStageTevPipelineAlt(void);
 extern void GXSetupTwoStageTevPipelineNoAlt(void);
-extern void fn_802E050C(void);
+extern void GXSetupAltTextureTevPipeline(void);
 extern void fn_802E0420(void);
 extern void GXSetupThreeStageTevPipeline(void);
 extern void GXSetupModulateAddTevPipeline(void);
@@ -796,7 +796,7 @@ extern "C" void fn_802DC71C(int arg0, int arg1) {
         lbl_8055FEB0 = 0;
     } else {
         if (lbl_8055FEB9 != 0) {
-            if (useAlt != 0) fn_802E050C();
+            if (useAlt != 0) GXSetupAltTextureTevPipeline();
             else fn_802E0420();
             fn_802DC62C();
         } else if (useAlt != 0) GXSetupThreeStageTevPipeline();

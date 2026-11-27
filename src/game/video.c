@@ -574,7 +574,7 @@ void GXSetupThreeStageTevPipelineAlt(void) {
 /* RealName: GXSetupOneStageKColorTevPipeline
  * TEV pipeline for the CPU-light pass when the light texture carries no extra
  * map: fn_802DC71C picks it (with fn_802DC62C) when that texture's S wrap is
- * GX_REPEAT; fn_802E050C is its two-stage twin for the extra-map case and
+ * GX_REPEAT; GXSetupAltTextureTevPipeline is its two-stage twin for the extra-map case and
  * GXSetupModulateAddTevPipeline the variant used when the wrap is not GX_REPEAT.
  * One texture generator: texcoord 0 passes the vertex's texcoord0 through the
  * identity matrix.  The single combiner stage samples texmap 1 with that
@@ -608,7 +608,7 @@ void fn_802E0420(void) {
  *   stage 0 (texmap 1, constant colour K1): rgb = K1 - texC, alpha = 0;
  *   stage 1 (texmap 2, constant alpha K1.a): rgb = the previous stage's rgb,
  *                                            alpha = K1.a - texA. */
-void fn_802E050C(void) {
+void GXSetupAltTextureTevPipeline(void) {
     register u32 texCoordId = GX_TEXCOORD0;
     register u32 texGenType = GX_TG_MTX2x4;
     GXSetTexCoordGen2(texCoordId, texGenType, GX_TG_TEX0, GX_IDENTITY, GX_FALSE,
