@@ -346,7 +346,7 @@ extern "C" void fn_802576EC(void *arg0) {
 
 #pragma cplusplus reset
 
-int handleProfileSelectorEvent(void *menu, int eventId) {
+/* Handle profile/record selector navigation events: 0x125/0x127 switch focus between the profile and record groups, 0x126/0x128 move the highlighted row in the focused group and mark its table modified. */ int handleProfileSelectorEvent(void *menu, int eventId) {
     /* Handle menu navigation/selection events for a two-group selector object. */
     char *self = (char *)menu;
     switch (eventId) {
