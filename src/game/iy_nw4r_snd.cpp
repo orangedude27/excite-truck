@@ -2112,7 +2112,7 @@ extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801D1AB4(
 extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801EEEEC(
     void* this_, s32 flag) {
     if (this_) {
-        fn_801EC9CC(this_, 0);
+        SoundArchiveBaseDestructor(this_, 0);
 
         if (flag > 0) {
             fn_80128668(this_);
