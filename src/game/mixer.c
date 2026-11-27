@@ -165,7 +165,7 @@ void fn_80208AC8(int playerSlot, int event) {
 /* Initialize the sound subsystem: publish the configured sound mode, optionally
  * allocate and register a null mixer backend, load saved mixer settings, register
  * the settings-reload callback, and install the identity-event handler. */
-void fn_80208B8C(int initBackends) {
+void initSoundMixer(int initBackends) {
     int soundMode = (int)ConfigGetSCSoundMode(); /* ConfigGetSoundMode() */
     switch (soundMode) {
     default: /* anything the config block holds besides mono and surround */
@@ -400,7 +400,7 @@ void NullMixerSetSoundMode(void) {
 }
 #undef MIXER_SET_SOUND_MODE_NOOP_MSG
 extern void *lbl_8055B4D8;
-/* Get the configured sound mode (0/1/2, set in fn_80208B8C from config). */
+/* Get the configured sound mode (0/1/2, set in initSoundMixer from config). */
 void* fn_802090CC(void) {
     return lbl_8055B4D8;
 }

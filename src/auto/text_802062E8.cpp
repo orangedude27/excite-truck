@@ -4,7 +4,7 @@ extern "C" void GetSelectedMixerDevice(void);
 extern "C" void *GetMixerDevice(void);
 extern "C" void fn_80208D80(int);
 extern "C" int fn_801284F8(int, void *);
-extern "C" void fn_80208B8C(int);
+extern "C" void initSoundMixer(int);
 extern int lbl_8055ED80;
 extern unsigned char lbl_8055ED84;
 extern "C" void *fn_80207990(void *, void *);
@@ -104,7 +104,7 @@ extern "C" int fn_802062E8(void) {
     void *soundManager;
 
     /* Initialize the sound system and SoundManager; returns 1 on success, 0 on failure. */
-    fn_80208B8C(lbl_8055ED84 == 0);
+    initSoundMixer(lbl_8055ED84 == 0);
     GetSelectedMixerDevice();
     mixerName = ((Service *)GetMixerDevice())->f1();
     fn_802E30C8(lbl_8033BC50, mixerName); /* "using sound mixer %s" */
