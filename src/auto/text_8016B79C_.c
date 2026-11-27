@@ -3509,7 +3509,9 @@ extern "C" u32 fn_80170FDC(const void *self) {
 extern s32 fn_802AE118(void);
 #pragma cplusplus on
 extern "C" s32 handleTimedAction(void *obj, s32 unused, s32 actionId) {
-    /* Handle action 0x58 or advance timed state and trigger child activation near timeout. */
+    /* Handles action 0x58 or advances the object's timed state: when a countdown in
+     * state 1 is near its end, fire the timer callback, activate four child objects
+     * and rewind the start time; reports whether the action was handled. */
     struct Query {
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
         virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
@@ -3519,9 +3521,9 @@ extern "C" s32 handleTimedAction(void *obj, s32 unused, s32 actionId) {
         virtual void f20(); virtual void f21(); virtual void f22(); virtual void f23();
         virtual s32 query();
     };
-    s32 mode;
+    s32 timerState;
     f32 startTime;
-    f32 currentTime;
+    f32 gameTime;
 
     if (((Query *)obj)->query() != 0 && actionId == 0x58) {
         if (*(volatile s32 *)((u8 *)obj + 0xAC) == 2)
@@ -3529,11 +3531,11 @@ extern "C" s32 handleTimedAction(void *obj, s32 unused, s32 actionId) {
         return 1;
     }
     if (*(volatile s32 *)((u8 *)obj + 0xAC) != 0) {
-        currentTime = lbl_8055E3C8;
-        mode = *(volatile s32 *)((u8 *)obj + 0xAC);
-        if (mode == 1 && *(u8 *)((u8 *)obj + 0xBC) == 0) {
+        gameTime = lbl_8055E3C8;
+        timerState = *(volatile s32 *)((u8 *)obj + 0xAC);
+        if (timerState == 1 && *(u8 *)((u8 *)obj + 0xBC) == 0) {
             startTime = *(f32 *)((u8 *)obj + 0xB0);
-            if (startTime > lbl_80561980 && currentTime - startTime < lbl_80561984) {
+            if (startTime > lbl_80561980 && gameTime - startTime < lbl_80561984) {
                 register void *timerHandle;
                 void *child;
                 timerHandle = *(void **)((u8 *)obj + 0xB8);
@@ -3561,14 +3563,14 @@ extern "C" s32 handleTimedAction(void *obj, s32 unused, s32 actionId) {
                     *(u8 *)((u8 *)child + 0x4C) = 0;
                 }
                 {
-                    f32 floorValue;
-                    f32 finalTime;
+                    f32 windowLength;
+                    f32 now;
                     s32 zero;
-                    finalTime = lbl_8055E3C8;
+                    now = lbl_8055E3C8;
                     zero = 0;
-                    floorValue = lbl_80561984;
+                    windowLength = lbl_80561984;
                     if ((*(volatile u8 *)((u8 *)obj + 0xB4) = zero) == 0)
-                        *(f32 *)((u8 *)obj + 0xB0) = finalTime - floorValue;
+                        *(f32 *)((u8 *)obj + 0xB0) = now - windowLength;
                 }
             }
         }
