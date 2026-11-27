@@ -246,7 +246,7 @@ extern "C" inline void *fn_802A1120_getSecond(void) {
    node list is walked to the segment that straddles the plane, and that segment is
    stepped through in 1/40ths until the interpolated point reaches the plane.
    *outPoint gets that crossing point, *outNormal the plane's normal. */
-extern "C" void findDecalTrackCrossing(float *outPoint, float *outNormal) {
+/* Find where the track crosses the decal plane: project the plane onto the path, walk to the straddling segment, then step across it in 1/40ths to write the crossing point and the plane normal. */ extern "C" void findDecalTrackCrossing(float *outPoint, float *outNormal) {
     struct ResourceManager {
         virtual void *getPath(s32);
         virtual void *getStartNode(s32);
