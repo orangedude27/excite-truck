@@ -3912,7 +3912,7 @@ u32 fn_80153AC8(void) {
 #pragma cplusplus on
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-extern "C" s32 updateRaceResultOverlays(void *arg0, s32 arg1) {
+/* Update the race-ending HUD overlays for one player slot: show the "out of time" overlay or apply the active racer's HUD parameters, and when results are showing, display the win/lose ranking banner and the continue prompt. Returns 1 if any player slot's state (+0x454) is not 4 (finished). */ extern "C" s32 updateRaceResultOverlays(void *arg0, s32 arg1) {
     /* Update per-slot UI/state for arg1 based on active flags, optionally trigger setup on
      * a virtual condition, and return 1 if any player slot state (+0x454) is not 4. */
     struct Dummy {
