@@ -89,7 +89,7 @@ s32 VFiPFCACHE_FlushAllCaches(void* p_vol) {
     return err;
 }
 /* ---- VFiPFENT_CalcCheckSum@0x800AA47C ---- */
-extern void fn_800B3A70(u8* buf, u8* short_name, u32 flags);
+extern void VFiPFFAT_FormatShortName(u8* buf, u8* short_name, u32 flags);
 
 u8 VFiPFENT_CalcCheckSum(u8* p_ent) {
     u16 i;
