@@ -3075,7 +3075,7 @@ void fn_80151688(void) {
 /* Resets a particle/effect entry (indexed by the manager's current index): halves its
  * speed, re-queues all active items in the owner's list to the tail, advances its phase,
  * calls the object's reset method, decrements its life count, and zeroes its position. */
-extern "C" void fn_8015168C(s32 arg0, void *arg1) {
+extern "C" void resetParticleEntry(s32 arg0, void *arg1) {
     class VNode {
     public:
         virtual void m0();
