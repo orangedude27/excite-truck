@@ -672,7 +672,8 @@ void drawValueBanner(s32 value, s32 arg1) {
     f32 temp_f1;
     f32 totalIconWidth;
 
-    /* Draw the value text with a shadow, and optional icon/background pieces. */
+    /* Draw the value banner: a centered value string with a black shadow, flanked
+     * by two frames from the interlude-art sheet when that sheet is present. */
     temp_f1 = (f32)fn_80232B70(lbl_8055D4C4);
     textScale = lbl_80560300 / temp_f1;
     baseX = fn_80011E70();
