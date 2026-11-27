@@ -2223,8 +2223,9 @@ extern float lbl_8055E3C8, lbl_80561A40, lbl_80561A44;
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" int handleCrushMasterAction(void *obj, int unused, int actionId) {
-    /* Handles action 0x58 when queried, or advances this object's timed state and triggers cleanup/child activation near timer end. */
+/* Handle the crushmaster's 0x58 action query, or advance its round timer and
+ * wake the round's children as the timer reaches its end. */
+extern "C" int handleCrushMasterAction(void *master, int unused, int action) {
     class Query {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -2236,27 +2237,27 @@ extern "C" int handleCrushMasterAction(void *obj, int unused, int actionId) {
         virtual int query();
     };
     int handled = 0;
-    if (((Query *)obj)->query() != 0 && actionId == 0x58) {
-        if (*(volatile int *)((char *)obj + 0x1AC) == 2)
-            *((unsigned char *)obj + 0x1B5) = 1;
+    if (((Query *)master)->query() != 0 && action == 0x58) {
+        if (*(volatile int *)((char *)master + 0x1AC) == 2)
+            *((unsigned char *)master + 0x1B5) = 1;
         handled = 1;
-    } else if (*(volatile int *)((char *)obj + 0x1AC) != 0) {
+    } else if (*(volatile int *)((char *)master + 0x1AC) != 0) {
         float endTime = lbl_8055E3C8;
-        if (*(volatile int *)((char *)obj + 0x1AC) == 1 &&
-            *((unsigned char *)obj + 0x1BC) == 0) {
-            if (*(float *)((char *)obj + 0x1B0) > lbl_80561A44 &&
-                endTime - *(float *)((char *)obj + 0x1B0) < lbl_80561A40) {
+        if (*(volatile int *)((char *)master + 0x1AC) == 1 &&
+            *((unsigned char *)master + 0x1BC) == 0) {
+            if (*(float *)((char *)master + 0x1B0) > lbl_80561A44 &&
+                endTime - *(float *)((char *)master + 0x1B0) < lbl_80561A40) {
                 void *child;
-                int timerHandle = *(int *)((char *)obj + 0x1B8);
-                *((unsigned char *)obj + 0x1BC) = 1;
+                int timerHandle = *(int *)((char *)master + 0x1B8);
+                *((unsigned char *)master + 0x1BC) = 1;
                 if (timerHandle != 0) fn_802AE118();
-                child = *(void **)((char *)obj + 0x1C0);
+                child = *(void **)((char *)master + 0x1C0);
                 if (child) { *((unsigned char *)child + 0x4A) = 1; *((unsigned char *)child + 0x4C) = 0; }
-                child = *(void **)((char *)obj + 0x1C4);
+                child = *(void **)((char *)master + 0x1C4);
                 if (child) { *((unsigned char *)child + 0x4A) = 1; *((unsigned char *)child + 0x4C) = 0; }
-                child = *(void **)((char *)obj + 0x1D4);
+                child = *(void **)((char *)master + 0x1D4);
                 if (child) { *((unsigned char *)child + 0x4A) = 1; *((unsigned char *)child + 0x4C) = 0; }
-                child = *(void **)((char *)obj + 0x1D8);
+                child = *(void **)((char *)master + 0x1D8);
                 if (child) { *((unsigned char *)child + 0x4A) = 1; *((unsigned char *)child + 0x4C) = 0; }
                 {
                     float finalFloor;
@@ -2265,8 +2266,8 @@ extern "C" int handleCrushMasterAction(void *obj, int unused, int actionId) {
                     finalEnd = lbl_8055E3C8;
                     zero = 0;
                     finalFloor = lbl_80561A40;
-                    if ((*((volatile unsigned char *)obj + 0x1B4) = zero) == 0)
-                        *(float *)((char *)obj + 0x1B0) = finalEnd - finalFloor;
+                    if ((*((volatile unsigned char *)master + 0x1B4) = zero) == 0)
+                        *(float *)((char *)master + 0x1B0) = finalEnd - finalFloor;
                 }
             }
         }
