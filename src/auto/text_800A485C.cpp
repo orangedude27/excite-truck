@@ -21722,7 +21722,7 @@ extern "C" const char sConsoleSourceFile[];
 extern "C" const char lbl_8031EA90[];
 extern "C" const char lbl_8031EA40[];
 extern "C" const char lbl_8031EA4C[];
-extern "C" void fn_800D2E3C(s32, s32, s32, s32);
+extern "C" void fillDebugRect(s32, s32, s32, s32);
 extern "C" void Console_DrawDirectLines(void*, s32);
 extern "C" { DECL_SECTION(".sdata") extern const char sLineFormat[]; }
 extern "C" void CharWriter_Printf(s32, const char *, ...);
@@ -21761,7 +21761,7 @@ extern "C" s32 fn_800D2E14(void) {
     return ready;
 }
 
-void fn_800D2E3C(s32 x, s32 y, s32 width, s32 height) {
+void fillDebugRect(s32 x, s32 y, s32 width, s32 height) {
     s32 right, bottom, startX, startY, row, col;
     u16 *dest;
     u32 w, h;
@@ -21836,7 +21836,7 @@ done:
 
 extern "C" const char lbl_8031EBF4[];
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...);
-extern "C" void fn_800D2E3C(s32, s32, s32, s32);
+extern "C" void fillDebugRect(s32, s32, s32, s32);
 extern "C" const char *fn_800D3260(s32, s32, const char *, s32);
 extern "C" char *strchr(const char *, int);
 /* Draw multi-line debug/text on screen, optionally drawing a background box per line and handling wrapping. */
@@ -21864,7 +21864,7 @@ extern "C" void drawDebugTextLines(s32 x, s32 y, const char *str, s32 wrapLongLi
                     lineLen++;
                 }
             }
-            fn_800D2E3C(x - 6, y - 3, (lineLen + 2) * 6, 13);
+            fillDebugRect(x - 6, y - 3, (lineLen + 2) * 6, 13);
         }
 
         const char *next = fn_800D3260(x, y, str, (maxColumns - x) / 6);
@@ -27134,7 +27134,7 @@ extern "C" void Console_DrawDirect__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHe
     if (fn_800D2E14() != 0) {
         if (((u8 *)head)[0x22] != 0) {
             OSLockMutex(&lbl_804077C0);
-            fn_800D2E3C(*(s16 *)((u8 *)head + 0x1C) - 6, *(s16 *)((u8 *)head + 0x1E) - 3,
+            fillDebugRect(*(s16 *)((u8 *)head + 0x1C) - 6, *(s16 *)((u8 *)head + 0x1E) - 3,
                         (s32)(*(u16 *)((u8 *)head + 4)) * 6 + 12,
                         (s32)(*(u16 *)((u8 *)head + 0x20)) * 0xA + 4);
             Console_DrawDirectLines(head, 0);
