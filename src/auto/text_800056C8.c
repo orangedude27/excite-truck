@@ -1806,7 +1806,7 @@ s32 fn_800077A4(s32 value, s32 count) {
     return value;
 }
 
-extern s32 fn_8000561C(void *, void *);
+extern s32 allPlayersPassGate(void *, void *);
 extern void fn_80276DC8(s32);
 extern void *fn_801E87A8(void);
 extern s32 fn_801CB8FC(void);
@@ -1815,7 +1815,7 @@ void fn_800077E4(void *arg0) {
     void *base = lbl_8055D350;
     void *p = (u8 *)arg0 + ((s32 *)base)[7] * 4;
     *(f32 *)((u8 *)p + 4) = ((f32 *)base)[4];
-    if (fn_8000561C(p, base)) {
+    if (allPlayersPassGate(p, base)) {
         *(f32 *)((u8 *)arg0 + 0x18) = ((f32 *)lbl_8055D350)[4];
         fn_80276DC8(((s32 *)lbl_8055D350)[7]);
     }

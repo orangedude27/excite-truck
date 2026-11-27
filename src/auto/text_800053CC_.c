@@ -97,7 +97,7 @@ s32 fn_80005564(void) {
 }
 
 #pragma dont_inline on
-/* Per-player gate used by fn_8000561C: returns 1 when fn_801B8570 reports 0 for the player's car; otherwise, with mode flag 0x100 set, returns 1 only if the car's live state at +0x30 is 3 or its byte at +0x34 is nonzero; otherwise 0. */
+/* Per-player gate used by allPlayersPassGate: returns 1 when fn_801B8570 reports 0 for the player's car; otherwise, with mode flag 0x100 set, returns 1 only if the car's live state at +0x30 is 3 or its byte at +0x34 is nonzero; otherwise 0. */
 s32 fn_80005580(s32 playerIndex) {
     s32 modeFlags = ((s32 *)fn_801E87A8())[1];
     s32 carIndex = fn_801E86F8(playerIndex);
@@ -127,7 +127,7 @@ extern s32 KERNEL_GetTimeMs(void);
 extern s32 fn_80005580(s32);
 extern u8 *lbl_8055D350;
 /* Iterates through items and returns 1 if all pass fn_80005580. */
-s32 fn_8000561C(void) {
+s32 allPlayersPassGate(void) {
     s32 i = 0;
     while (i < *(s32 *)(lbl_8055D350 + 0x14)) {
         if (fn_80005580(i) == 0) {
