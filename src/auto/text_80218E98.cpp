@@ -1580,7 +1580,7 @@ extern "C" s32 fn_8021A804(void *widget, s32 message) {
  * names the graphic to draw at +0x244 and where to draw it at
  * +0x248/+0x24C/+0x250.  This class adds the binding: +0x254 points at the
  * selection the menu cursor writes and +0x258 is the entry this widget stands
- * for, so fn_8021AA18 draws it full size only while *cursor == cursorId, and
+ * for, so drawCursorIcon draws it full size only while *cursor == cursorId, and
  * dims it while the UI mode byte behind fn_80216708() is clear. */
 struct CursorIconWidget {
     void *vtable;        /* 0x00 */
@@ -1665,7 +1665,7 @@ extern "C" s32 fn_8021A9A4(void *arg0) {
     return temp2 | first;
 }
 #pragma dont_inline off
-extern "C" void fn_8021AA18(void *widget) {
+extern "C" void drawCursorIcon(void *widget) {
     /* Draw a cursor-bound icon: copy the current transform, damp its X
      * translation when the entry is not selected, apply it, then hand the
      * graphic and its box to the drawer callback. */
