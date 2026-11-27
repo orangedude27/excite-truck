@@ -2541,7 +2541,7 @@ extern "C" char lbl_80558DC4[];
  * key sound is suppressed -- or, on 0x126/0x128, ask the screen (+0x2C) for the
  * previous/next page of its list when it holds more than one.  Returns 1 when
  * the message was handled. */
-extern "C" s32 SelectorWidget_handleKey(void *widget, s32 msg) {
+/* Handle navigation keys for a selector widget: step the selector on up/down (muting the key sound at the ends) or page the parent menu group on left/right; returns 1 when the key was handled. */ extern "C" s32 SelectorWidget_handleKey(void *widget, s32 msg) {
     /* the selector at widget+0x2A4: value() is where it stands now, moveNext()
        and movePrev() step it; two destructor slots lead its vtable, so the
        methods below sit at the offsets in the comments */
