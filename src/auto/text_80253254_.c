@@ -2022,7 +2022,7 @@ extern void *DrawList_getCurrentMatrix(void);          /* the current 4x3 model 
 extern void fn_80253004(s32, void *);    /* copy a camera record by index */
 extern void fn_802545C4(void *, s32, s32); /* build the view setup instead */
 extern float fn_802C9744(void);          /* current field of view */
-extern void fn_802C974C(float, float, float); /* projection: near, far, fov */
+extern void setCameraProjection(float, float, float); /* projection: near, far, fov */
 extern void DrawList_loadMatrix(void *);         /* make a 4x3 matrix the current one */
 extern void fn_802C99E8(float);          /* light intensity */
 extern void setDrawListColor(s32);            /* light diffuse colour */
@@ -2073,7 +2073,7 @@ extern float lbl_80563A00, lbl_80563A04, lbl_80563A14, lbl_80563AA4, lbl_8055F33
     }
 
     fov = fn_802C9744();
-    fn_802C974C(lbl_80563A14 /* 1.0f */, lbl_80563A00 /* 2250.0f */, fov);
+    setCameraProjection(lbl_80563A14 /* 1.0f */, lbl_80563A00 /* 2250.0f */, fov);
     DrawList_loadMatrix(model->modelMtx);
     fn_80253258();
     fn_802C99E8(lbl_80563A14);

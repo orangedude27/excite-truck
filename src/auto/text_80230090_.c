@@ -28,7 +28,7 @@ extern void DrawList_setViewport(s32, s32, s32, s32);
 extern void HomeMenu_applySavedFade(s32);
 extern void DrawList_beginFrame(void);
 extern void DrawList_loadMatrix(s32);
-extern void fn_802C974C(f32, f32, f32);
+extern void setCameraProjection(f32, f32, f32);
 /* Initialize the rendering/UI subsystem: set up a default transform matrix, create its context, and run dependent init routines. */
 void fn_80230090(void) {
     extern s32 lbl_8055F028;
@@ -401,7 +401,7 @@ void fn_80230AD8(s32 displayListIndex) {
     HomeMenu_applySavedFade(3);
     DrawList_beginFrame();
     DrawList_loadMatrix(displayListIndex);
-    fn_802C974C(lbl_80563610, lbl_80563640, lbl_80563644);
+    setCameraProjection(lbl_80563610, lbl_80563640, lbl_80563644);
 }
 
 void fn_80230B38(void* alarm) {

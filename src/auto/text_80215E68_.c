@@ -33,7 +33,7 @@ extern void DrawList_loadMatrix(void *);
 extern void fn_802C86E8(u32);
 extern void DrawList_setViewport(s32, s32, s32, s32);
 extern void HomeMenu_applySavedFade(s32);
-extern void fn_802C974C(f32, f32, f32);
+extern void setCameraProjection(f32, f32, f32);
 extern s32 fn_802160AC(void);
 extern s32 fn_80211F54(void);
 extern s32 fn_80019BA8(void);
@@ -197,7 +197,7 @@ void fn_8021605C(void *rect, s32 canvasState) {
 extern s32 fn_8021832C();
 extern void fn_80230B5C(void *);
 extern void DrawList_loadMatrix(void *);
-extern void fn_802C974C(f32, f32, f32);
+extern void setCameraProjection(f32, f32, f32);
 extern void gxDrawPictureAt(s32, s32, f32, f32, f32);
 extern u32 lbl_8055EF80;
 extern u32 lbl_8055EF84;
@@ -231,7 +231,7 @@ s32 fn_802160AC(void)
   {
     goto done;
   }
-  fn_802C974C(lbl_80563468, lbl_8056346C, lbl_80563470);
+  setCameraProjection(lbl_80563468, lbl_8056346C, lbl_80563470);
   fn_80230B5C(scratch);
   DrawList_loadMatrix(scratch);
   a = (f32)(lbl_8055EF80 ^ 0x80000000u);
@@ -306,7 +306,7 @@ s32 fn_80216244(void) {
             obj = (u8 *)*p;
             DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
             fn_80230B5C(matrix);
-            fn_802C974C(lbl_80563468, lbl_8056346C, lbl_80563470);
+            setCameraProjection(lbl_80563468, lbl_8056346C, lbl_80563470);
             raw = *(u32 *)(obj + 0x454);
             x = -(f32)(s32)raw;
             raw = *(u32 *)(obj + 0x458);

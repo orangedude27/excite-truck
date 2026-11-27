@@ -2194,7 +2194,7 @@ extern char lbl_8055FA32;
 extern float lbl_80564CA0, lbl_80564CA4;
 extern char lbl_8034A6C0[];
 extern void fn_802B773C(void), DrawModelInstance(s32), fn_80230B5C(void *), DrawList_loadMatrix(void *);
-extern void fn_802C974C(float,float,float), fn_802B86F8(void), fn_802B676C(void), fn_802B6804(void);
+extern void setCameraProjection(float,float,float), fn_802B86F8(void), fn_802B676C(void), fn_802B6804(void);
 extern void fn_802B7D4C(void), fn_802B69FC(void), fn_802B7D1C(void), fn_802B7CF0(void);
 extern void fn_8001123C(s32), fn_80011A2C(void);
 #pragma cplusplus on
@@ -2216,7 +2216,7 @@ extern "C" void fn_802B8848(void) {
         if ((u32)(viewMode - 2) <= 1U) fn_802B773C();
         if ((u8)lbl_8055FA32 != 0 && lbl_8055FA34 != -1) DrawModelInstance(lbl_8055FA34);
         fn_80230B5C(scratch); DrawList_loadMatrix(scratch);
-        fn_802C974C(lbl_80564CA0, lbl_80564C70, lbl_80564CA4);
+        setCameraProjection(lbl_80564CA0, lbl_80564C70, lbl_80564CA4);
         fn_802B86F8(); fn_802B676C();
         if (viewMode != 2 && viewMode != 3) fn_802B6804();
         switch (viewMode) { case 0: fn_802B7D4C(); break; case 1: fn_802B69FC(); break; case 2: fn_802B7D1C(); break; case 3: fn_802B7CF0(); break; }

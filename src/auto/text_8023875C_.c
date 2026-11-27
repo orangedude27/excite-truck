@@ -18,7 +18,7 @@ __declspec(section ".sdata") extern unsigned int lbl_8055CFF0;
 __declspec(section ".sdata") extern unsigned int lbl_8055CFF4;
 extern int fn_802328D4(void);
 extern int fn_80230B5C(void *);
-extern int fn_802C974C(float, float, float);
+extern int setCameraProjection(float, float, float);
 extern int DrawList_loadMatrix(void *, unsigned int, float);
 extern int fn_8012C33C(int);
 extern int loadFontTexture(int);
@@ -100,7 +100,7 @@ void fn_8023895C(void) {
 #define text_queue_enable fn_802344C4
     float viewMatrix[12];
 
-    fn_802C974C(1.0f, lbl_80563710, lbl_80563714);
+    setCameraProjection(1.0f, lbl_80563710, lbl_80563714);
     fn_80230B5C(&viewMatrix[0]);
     viewMatrix[11] = (float)(-((int)lbl_8055CFF0 / 2)) / lbl_8055FC88;
     ((void (*)(void *))DrawList_loadMatrix)(&viewMatrix[0]);

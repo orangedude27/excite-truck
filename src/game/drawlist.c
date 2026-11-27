@@ -12,7 +12,7 @@ extern void fn_802C5F48(float, int, float *, float, float);
 extern void LoadIntOptionValue(int, void *, int *);
 extern int fn_8013365C(int, int);
 extern int fn_802C9C58(int);
-extern void fn_802C974C(float, float, float);
+extern void setCameraProjection(float, float, float);
 extern float lbl_8055FC6C;
 extern void fn_802D362C(int);
 extern void gxResetDefaultState(void);
@@ -238,7 +238,7 @@ void fn_802C83CC(void) {
     lbl_8055FC6C = temp_f1 / (float)ten;
     fn_802C5F48(temp_f1, ten, (float *)lbl_804C1410, lbl_80564F00, lbl_80564EF8);
     lbl_8055FC34 = 0;
-    fn_802C974C(lbl_80564EF8, lbl_80564F04, lbl_80564F08);
+    setCameraProjection(lbl_80564EF8, lbl_80564F04, lbl_80564F08);
     lbl_8055FC70 = 0;
     fn_802CFFAC(0xC9, 0xC9, 0xEB);
     ((void (*)(void))fn_802C7758)();
@@ -916,7 +916,7 @@ int fn_802C9640(void *position, float tolerance) {
 }
 #pragma dont_inline off
 extern int fn_802C9638(void *, unsigned char *, float);
-extern void fn_802C974C(float, float, float);
+extern void setCameraProjection(float, float, float);
 extern float lbl_8055FC38;
 extern float lbl_8055FC3C;
 extern float lbl_8055FC40;
@@ -947,21 +947,21 @@ void fn_802C9648(float scale) {
     gViewBackup[1] = oldFar;
     gNearClip = newNear;
     gFarClip = newFar;
-    fn_802C974C(newNear, newFar, gViewBackup[2]);
+    setCameraProjection(newNear, newFar, gViewBackup[2]);
 #undef gFarClip
 #undef gNearClip
 #undef gViewBackup
 }
 #pragma scheduling on
 /* Restores the backed-up view/projection parameters by reapplying the saved
- * triple in lbl_804C144C[0..2] through fn_802C974C. */
+ * triple in lbl_804C144C[0..2] through setCameraProjection. */
 void DrawList_reapplyProjection(void) {
     /* Reapply the backed-up near/far/FOV triple to refresh the derived view/projection values. */
-    fn_802C974C(lbl_804C144C[0], lbl_804C144C[1], lbl_804C144C[2]);
+    setCameraProjection(lbl_804C144C[0], lbl_804C144C[1], lbl_804C144C[2]);
 }
 
 /* Save the current near/far planes and field of view into the 3-float vector
- * at out, then apply the caller's new values through fn_802C974C. */
+ * at out, then apply the caller's new values through setCameraProjection. */
 void *DrawList_saveProjection(void *out) {
 #define gNearClip lbl_8055FC38
 #define gFarClip  lbl_8055FC3C
@@ -969,7 +969,7 @@ void *DrawList_saveProjection(void *out) {
     ((float *)out)[0] = gNearClip;
     ((float *)out)[1] = gFarClip;
     ((float *)out)[2] = gFov;
-    ((void (*)())fn_802C974C)(out);
+    ((void (*)())setCameraProjection)(out);
     return out;
 #undef gNearClip
 #undef gFarClip
@@ -979,7 +979,7 @@ void *DrawList_saveProjection(void *out) {
 /* Reapplies the saved near/far/FOV triple and returns the buffer; frees it when freeBuffer is positive. */ void *DrawList_restoreProjection(void *savedParams, int freeBuffer) {
     /* Destructor helper: apply stored projection parameters, then optionally free the object. */
     if (savedParams != 0) {
-        fn_802C974C(((float *)savedParams)[0], ((float *)savedParams)[1], ((float *)savedParams)[2]);
+        setCameraProjection(((float *)savedParams)[0], ((float *)savedParams)[1], ((float *)savedParams)[2]);
         if (freeBuffer > 0) {
             fn_80128668(savedParams);
         }
@@ -987,14 +987,14 @@ void *DrawList_saveProjection(void *out) {
     return savedParams;
 }
 
-/* Effective view/projection angle recomputed by fn_802C974C. */
+/* Effective view/projection angle recomputed by setCameraProjection. */
 #define sViewAngle lbl_8055FC4C
-/* Return the current effective view/projection angle maintained by fn_802C974C. */
+/* Return the current effective view/projection angle maintained by setCameraProjection. */
 float fn_802C973C(void) { return sViewAngle; }
 
-/* Raw field-of-view input last applied through fn_802C974C. */
+/* Raw field-of-view input last applied through setCameraProjection. */
 #define sFov lbl_8055FC40
-/* Return the current field-of-view value last applied through fn_802C974C. */
+/* Return the current field-of-view value last applied through setCameraProjection. */
 float fn_802C9744(void) { return sFov; }
 
 extern float __fabsf(float);
@@ -1002,7 +1002,7 @@ extern double __fabs(double);
 extern int fn_802CC518();
 #pragma push
 #pragma processor 750
-void fn_802C974C(float nearClip, float farClip, float fov) {
+void setCameraProjection(float nearClip, float farClip, float fov) {
 #define gViewBackup  lbl_804C144C
 #define gNearClip    lbl_8055FC38
 #define gFarClip     lbl_8055FC3C
@@ -1094,7 +1094,7 @@ void fn_802C974C(float nearClip, float farClip, float fov) {
 #undef gViewBackup
 }
 #pragma pop
-/* Aliases for the view/projection parameters maintained by fn_802C974C. */
+/* Aliases for the view/projection parameters maintained by setCameraProjection. */
 #define sTangent lbl_8055FC44
 #define sViewX   lbl_8055FC38
 #define sViewY   lbl_8055FC3C
@@ -1254,7 +1254,7 @@ void DrawList_drawLetterboxBars(int drawBars) {
     if ((unsigned char)sLetterboxMode != 0) {
         DrawList_setViewport(0, 0, screenWidth, screenHeight);
         HomeMenu_applySavedFade(2);
-        fn_802C974C(gNearClip, gFarClip, gHalfPi);
+        setCameraProjection(gNearClip, gFarClip, gHalfPi);
     }
     if (((unsigned char)sWidescreenMode != 0 || (unsigned char)sLetterboxMode != 0) && drawBars != 0) {
         horizontalDelta = screenWidth - (int)(gRoundBias + ((float)screenWidth * sScaleX));

@@ -901,7 +901,7 @@ void fn_801ED69C(void *vehicleRender) {
 }
 
 extern float fn_801E8738(int);
-extern void fn_802C974C(float, float, float);
+extern void setCameraProjection(float, float, float);
 extern void HomeMenu_applySavedFade(int);
 extern int fn_801E7E2C(void);
 extern void fn_802C8B98(void *, void *, void *, void *, void *);
@@ -925,7 +925,7 @@ void fn_801ED718(void *arg0) {
     unsigned short idx[6];
     float big[0x3C];
     int i;
-    fn_802C974C(lbl_80562E9C, lbl_80562EA0, fn_801E8738(-1));
+    setCameraProjection(lbl_80562E9C, lbl_80562EA0, fn_801E8738(-1));
     HomeMenu_applySavedFade(2);
     if (fn_801E7E2C() != -1) {
         v[0] = lbl_80562EA4; v[1] = lbl_80562EA8; v[2] = lbl_80562E88; *(int *)&v[3] = -1;

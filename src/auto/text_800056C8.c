@@ -50,7 +50,7 @@ extern f32 lbl_8055D34C;
 extern void fn_80005C20(void);
 extern void fn_80230B5C(void *);
 extern void DrawList_loadMatrix(void *);
-extern void fn_802C974C(f32, f32, f32);
+extern void setCameraProjection(f32, f32, f32);
 extern f32 lbl_80560130;
 extern f32 lbl_80560124;
 extern f32 lbl_8056019C;
@@ -1567,7 +1567,7 @@ void fn_80007238(void) {
     f0 = lbl_80560194;
     f3 = lbl_80560198;
     f3 = (mode > 2) ? f3 : f0;
-    fn_802C974C(lbl_80560130, lbl_80560124, f3);
+    setCameraProjection(lbl_80560130, lbl_80560124, f3);
 
     fn_800057D0();
     fn_80161C18();
@@ -1609,7 +1609,7 @@ extern "C" void fn_80007318(void) {
     fn_80005C20();
     fn_80230B5C(context);
     DrawList_loadMatrix(context);
-    fn_802C974C(lbl_80560130, lbl_80560124, lbl_8056019C);
+    setCameraProjection(lbl_80560130, lbl_80560124, lbl_8056019C);
     state = (u32 *)lbl_8034EE84;
     state[0x1C / 4] = 0;
     state[0x24 / 4] = ((s32 (*)(s32))fn_801E866C)(0);

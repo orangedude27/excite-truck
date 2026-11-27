@@ -110,7 +110,7 @@ extern void DrawList_setViewport(int, int, int, int);
 extern void HomeMenu_applySavedFade(int);
 extern void fn_80230B5C(void *);
 extern void DrawList_loadMatrix(void *);
-extern void fn_802C974C(float, float, float);
+extern void setCameraProjection(float, float, float);
 extern void gxDrawPicture(int, float, float, float, float, float, int);
 extern void fn_802C92D0(void);
 extern void fn_802C92DC(int, int, int, int, int);
@@ -202,7 +202,7 @@ int fn_80245360(int *a, struct Menu *b)
     HomeMenu_applySavedFade(2);
     fn_80230B5C(obj);
     DrawList_loadMatrix(obj);
-    fn_802C974C(lbl_80563834, lbl_80563838, lbl_8056383C);
+    setCameraProjection(lbl_80563834, lbl_80563838, lbl_8056383C);
     w = (float) (screenWidthPx + 1);
     h = (float) (screenHeightPx + 1);
     fw = (float) screenWidthPx;
@@ -399,7 +399,7 @@ void fn_8024590C(int *a, int *b) {
     HomeMenu_applySavedFade(2);
     fn_80230B5C(obj);
     DrawList_loadMatrix(obj);
-    fn_802C974C(lbl_80563834, lbl_80563838, lbl_8056383C);
+    setCameraProjection(lbl_80563834, lbl_80563838, lbl_8056383C);
     w = (float)(screenWidthPx + 1);
     h = (float)(screenHeightPx + 1);
     x0 = lbl_80563840 * (float)screenWidthPx * lbl_80563844 - lbl_80563834;

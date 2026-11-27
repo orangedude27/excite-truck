@@ -20,7 +20,7 @@ extern void HomeMenu_applySavedFade(int);
 extern void fn_802C8BD0(int, unsigned short, unsigned short, unsigned short, unsigned short, unsigned short, float, float);
 extern void DrawList_RestoreNormalMode(void);
 extern void fn_802C8DB8(float*, int, unsigned short*, int);
-extern void fn_802C974C(float, float, float);
+extern void setCameraProjection(float, float, float);
 extern int RegisterTextureByName(void*, int);
 extern void fn_802CAC54(int);
 extern void fn_802E30C8(void*, ...);
@@ -101,7 +101,7 @@ void fn_8024BE04(void) {
         DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
         fn_802C86E8(0xFF7F7F7F);
         HomeMenu_applySavedFade(3);
-        fn_802C974C(lbl_80563914, lbl_80563918, lbl_8056391C);
+        setCameraProjection(lbl_80563914, lbl_80563918, lbl_8056391C);
         mp = m;
         DrawList_loadMatrix(mp);
         p0.x = zero; p0.y = zero; p0.z = zero;

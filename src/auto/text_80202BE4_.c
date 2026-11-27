@@ -48,7 +48,7 @@ extern void Texture_BindRenderTarget(s32);
 extern void fn_802C9294(s32, s32);
 extern void DrawList_loadMatrix(f32 *, f32, f32, f32);
 extern void DrawList_setViewport(s32, s32, s32, s32);
-extern void fn_802C974C(f32, f32, f32);
+extern void setCameraProjection(f32, f32, f32);
 extern void fn_802C86E8(s32);
 extern void HomeMenu_applySavedFade(s32);
 extern s32 lbl_8055ED14;
@@ -288,9 +288,9 @@ void fn_80202F58(const void *arg0, const void *arg1, void *arg2) {
         work[4].f = lbl_805630CC;
         work[5].f = lbl_805630CC;
         work[6].f = lbl_805630D4;
-        work[7].f = work[4].f;
-        work[8].f = work[5].f;
-        work[9].f = work[6].f;
+        work[7].u = work[4].u;
+        work[8].u = work[5].u;
+        work[9].u = work[6].u;
         fn_80202D50((void *)&work[7].f);
         fn_802C8BD0(lbl_8055ED00);
         zero = lbl_805630CC;
@@ -308,7 +308,7 @@ void fn_80202F58(const void *arg0, const void *arg1, void *arg2) {
         (*(f32 *)((u8 *)arg2 + 0x28)) = zero;
         (*(f32 *)((u8 *)arg2 + 0x2C)) = zero;
     }
-    if (beginDrawListPass(4) != 0) {
+    if (((s32 (*)(s32))beginDrawListPass)(4) != 0) {
         temp_r3 = DrawList_getGlobalDrawDirection();
         temp_f0 = (*(f32 *)((u8 *)temp_r3 + 0));
         temp_f2_2 = (*(f32 *)((u8 *)temp_r3 + 8));
@@ -332,7 +332,7 @@ void fn_80202F58(const void *arg0, const void *arg1, void *arg2) {
         temp_f3_4 = (f32)sin(temp_f29);
         temp_f1_5 = ((f32)temp_f31 * temp_f30) - (work[1].f * temp_f3_4);
         work[0].f = temp_f1_5;
-        temp_f3_5 = (temp_f31 * temp_f3_4) + (work[1].f * temp_f30);
+        temp_f3_5 = (temp_f3_4 * temp_f31) + (work[1].f * temp_f30);
         work[1].f = temp_f3_5;
         fn_802C8E00(-1, 0, temp_f1_5, lbl_805630CC, temp_f3_5, lbl_80563104, lbl_80563104);
         temp_f30_2 = (f32)cos(lbl_80563108);
@@ -343,7 +343,7 @@ void fn_80202F58(const void *arg0, const void *arg1, void *arg2) {
         temp_f1_6 = temp_f7 - temp_f6_2;
         work[1].f = temp_f3_6;
         work[0].f = temp_f1_6;
-        ((void (*)(s32, s32, f32, f32, f32, f32, f32, f32, f32))fn_802C8E00)(-1, 0, temp_f1_6, lbl_805630CC, temp_f3_6, lbl_80563110, lbl_80563104, temp_f6_2, temp_f7);
+        fn_802C8E00(-1, 0, temp_f1_6, lbl_805630CC, temp_f3_6, lbl_80563110, lbl_80563104);
         temp_f1_7 = temp_f1_6 * lbl_805630F4;
         temp_f3_7 = work[1].f * lbl_805630F4;
         work[0].f = temp_f1_7;
@@ -414,7 +414,7 @@ void fn_80203380(void *argp) {
     work.heights[1] = second;
     work.heights[2] = third;
     work.heights[3] = fourth;
-    beginDrawListPass(0xA0, third, second, first);
+    fn_802C8DBC(0xA0, third, second, first);
 
     minMag = lbl_805630F8;
     height = (f32 *)work.heights;
@@ -517,8 +517,8 @@ void fn_80203380(void *argp) {
             }
         }
     }
-    DrawList_endMeshPass();
-    DrawList_RestoreNormalMode();
+    fn_802C8E48();
+    fn_802C8D74();
 }
 
 #pragma processor 750
@@ -688,7 +688,7 @@ void fn_80203B20(s32 arg0, s32 arg1, s32 arg2) {
         ((f32 *)(stack + 0x30))[8] = lbl_805630CC;
         DrawList_loadMatrix((f32 *)(stack + 0x30), lbl_805630D4, lbl_80563134, lbl_805630CC);
         DrawList_setViewport(0, 0, 0x100, 0x100);
-        fn_802C974C(lbl_805630D4, lbl_80563138, lbl_8056313C);
+        setCameraProjection(lbl_805630D4, lbl_80563138, lbl_8056313C);
         fn_802C86E8(0xFF00FF00);
         HomeMenu_applySavedFade(-1);
         fn_80202F58((void *)arg1, (void *)arg0, (s32 *)stack);

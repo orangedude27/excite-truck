@@ -14,7 +14,7 @@ extern s32 fn_8000C840(void);
 extern char lbl_80558A7C[];
 extern void fn_80230B5C(void *);
 extern void DrawList_loadMatrix(void *);
-extern void fn_802C974C(f32, f32, f32);
+extern void setCameraProjection(f32, f32, f32);
 extern void fn_800109E4(s32, f32, f32, f32, f32);
 extern void fn_801345D8(void *, s32, const char *, ...);
 extern void fn_80147230(void *, const char *, ...);
@@ -282,7 +282,7 @@ extern "C" void fn_8000D1DC(void) {
     }
     fn_80230B5C(matrix);
     DrawList_loadMatrix(matrix);
-    fn_802C974C(lbl_80560218, lbl_8056021C, lbl_80560220);
+    setCameraProjection(lbl_80560218, lbl_8056021C, lbl_80560220);
     fn_800109E4(0x7F000000, lbl_80560224, lbl_80560228, lbl_8056022C, lbl_80560230);
     if (lbl_8055D407 != 0) {
         fn_8000CD24();
@@ -479,7 +479,7 @@ done:
 
 extern void fn_80230B5C(void *);
 extern void DrawList_loadMatrix(void *);
-extern void fn_802C974C(f32, f32, f32);
+extern void setCameraProjection(f32, f32, f32);
 extern void fn_800109E4(s32, f32, f32, f32, f32);
 extern void fn_801345D8(void *, s32, const char *, ...);
 extern void fn_80147230(void *, const char *, ...);
@@ -515,7 +515,7 @@ register s32 i, selected;
 register s32 *obj;
 fn_80230B5C(matrix);
 DrawList_loadMatrix(matrix);
-fn_802C974C(lbl_80560218, lbl_8056021C, lbl_80560220);
+setCameraProjection(lbl_80560218, lbl_8056021C, lbl_80560220);
 fn_800109E4(0x7F000000, lbl_80560224, lbl_80560228, lbl_8056022C, lbl_80560230);
 if (lbl_8055D414 != 0) {
 labels[0] = lbl_80560210;

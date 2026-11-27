@@ -35,7 +35,7 @@ extern float lbl_80563324, lbl_80563328, lbl_80563330, lbl_80563334, lbl_8056333
 extern float lbl_80563340, lbl_80563344, lbl_80563348, lbl_8056334C, lbl_80563350, lbl_80563354, lbl_80563358, lbl_8056335C;
 extern void fn_80230B5C(void *);
 extern void DrawList_loadMatrix(void *);
-extern void fn_802C974C(float, float, float);
+extern void setCameraProjection(float, float, float);
 extern void fn_800109E4(int, float, float, float, float);
 extern char *fn_80131234(const char *);
 extern void fn_801473F8(int, const char *, const char *, const char *, ...);
@@ -343,7 +343,7 @@ extern "C" void fn_8020D2D4(void)
   }
   fn_80230B5C(buf130);
   DrawList_loadMatrix(buf130);
-  fn_802C974C(lbl_8056331C, lbl_80563324, lbl_80563328);
+  setCameraProjection(lbl_8056331C, lbl_80563324, lbl_80563328);
   f21 = lbl_8056332C * ((float) KERNEL_GetTimeMs());
   fn_800109E4(0x7F000000 & 0xFFu, lbl_80563330, lbl_80563334, lbl_80563338, lbl_8056333C);
   if (lbl_8055EEA0 != 0)

@@ -18,7 +18,7 @@ extern f32 lbl_80562E48;
 extern f32 lbl_80562E4C;
 extern f32 fn_801E8874(void);
 extern f32 fn_801E8894(s32);
-extern int fn_802C974C(f32, f32, f32);
+extern int setCameraProjection(f32, f32, f32);
 extern f32 lbl_80562E58;
 extern f32 lbl_80562E5C;
 extern u8 lbl_8055EB59;
@@ -42,10 +42,10 @@ void fn_801EA210(s32 playerIndex, f32 fov) {
     f32 nearPlane;
     if ((u8)lbl_8055EB58 == 0) {
         nearPlane = fn_801E8874();
-        fn_802C974C(nearPlane, fn_801E8894(playerIndex), fov);
+        setCameraProjection(nearPlane, fn_801E8894(playerIndex), fov);
         return;
     }
-    fn_802C974C(lbl_80562E40, lbl_80562E44, lbl_8055AF68);
+    setCameraProjection(lbl_80562E40, lbl_80562E44, lbl_8055AF68);
 }
 void fn_801EA28C(s32 playerIndex, f32 fov) {
     #pragma scheduling invalid_target
@@ -53,7 +53,7 @@ void fn_801EA28C(s32 playerIndex, f32 fov) {
      * planes (config +0x4C/+0x50) and the supplied FOV value. */
     f32 nearPlane = fn_801E8874();
     f32 farPlane = fn_801E8894(playerIndex);
-    fn_802C974C(nearPlane, farPlane, fov);
+    setCameraProjection(nearPlane, farPlane, fov);
 }
 #pragma dont_inline off
 
@@ -61,7 +61,7 @@ void fn_801EA28C(s32 playerIndex, f32 fov) {
 /* Recompute the derived scale, then refresh the projection/FOV view parameters with the fixed near/far/fov constants. */
 void fn_801EA2E8(void) {
     fn_801EA1FC();
-    fn_802C974C(lbl_80562E40, lbl_80562E48, lbl_80562E4C);
+    setCameraProjection(lbl_80562E40, lbl_80562E48, lbl_80562E4C);
 }
 void fn_801EA318(void) {
     /* Empty stub (returns immediately). */
@@ -87,7 +87,7 @@ void fn_801EA31C(s32 *idPtr) {
     farPlane = *(f32 *)lbl_8055EB60;
     fovAngle = lbl_80562E54;
     ((signed char *)lbl_8055EB60)[4] = (signed char)modeFlag;
-    fn_802C974C(nearPlane, farPlane, fovAngle);
+    setCameraProjection(nearPlane, farPlane, fovAngle);
     lbl_8055EB58 = 0;
     lbl_8055EB59 = 1;
 }

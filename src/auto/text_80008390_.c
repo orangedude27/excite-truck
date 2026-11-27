@@ -97,7 +97,7 @@ extern void fn_8026A1F0(s32, s32, s32);
 extern void updateGameFrame(s32, s32);
 extern void fn_80230B5C(void *);
 extern void DrawList_loadMatrix(void *);
-extern void fn_802C974C(float, float, float);
+extern void setCameraProjection(float, float, float);
 extern void fn_80012624(float);
 extern void DrawList_drawLetterboxBars(s32);
 extern s32 fn_802787F4(void);
@@ -558,7 +558,7 @@ void fn_80008F98(void) {
         DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
         fn_80230B5C((void *)tmp);
         DrawList_loadMatrix((void *)tmp);
-        fn_802C974C(lbl_805601B8, lbl_805601D4, lbl_805601D8);
+        setCameraProjection(lbl_805601B8, lbl_805601D4, lbl_805601D8);
         spC = var_f27;
         sp8 = var_f27;
         fn_80278924(&spC, &sp8);
@@ -931,7 +931,7 @@ skip16:
         DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
         fn_80230B5C(view);
         DrawList_loadMatrix(view);
-        fn_802C974C(lbl_805601B8, lbl_805601D4, lbl_805601D8);
+        setCameraProjection(lbl_805601B8, lbl_805601D4, lbl_805601D8);
         if (var22 != 0) {
             biasedFrames.word.hi = 0x43300000;
             biasedFrames.word.lo = (u32)var21 ^ 0x80000000;

@@ -65,7 +65,7 @@ extern s32 fn_802C86E8(s32); /* set the clear color */
 extern s32 DrawList_setViewport(s32, s32, s32, s32); /* set a screen rectangle */
 extern s32 HomeMenu_applySavedFade(s32); /* set a render mode (-1 resets) */
 extern s32 fn_802C9294(s32, s32); /* select the active texture and draw flags */
-extern s32 fn_802C974C(f32, f32, f32); /* update projection / field-of-view parameters */
+extern s32 setCameraProjection(f32, f32, f32); /* update projection / field-of-view parameters */
 extern s32 Texture_BindRenderTarget(s32); /* bind a render target */
 /* Swlmap transform constants: a runtime intensity scale, then the literal
  * values 1/512, 0, 512, 0.5, 1, -1, 100 and pi/2. */
@@ -118,7 +118,7 @@ void fn_802C276C(void) {
         transform[8] = SWL_ZERO;
         DrawList_loadMatrix(transform, SWL_ONE, halfScale, scale, SWL_ZERO);
         DrawList_setViewport(0, 0, 0x200, 0x200);
-        fn_802C974C(SWL_ONE, SWL_DEPTH + transform[10], SWL_HALF_PI);
+        setCameraProjection(SWL_ONE, SWL_DEPTH + transform[10], SWL_HALF_PI);
         fn_802C86E8(0xFF00FF00);
         HomeMenu_applySavedFade(-1);
         savedState = fn_802C2C00(0);
