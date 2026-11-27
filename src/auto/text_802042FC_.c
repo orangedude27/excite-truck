@@ -5,9 +5,8 @@ extern void fn_8000D838(void *);
 extern int lbl_8055ED20;
 extern int lbl_8055ED28;
 extern int lbl_8055ED2C;
-#pragma scheduling off
 void fn_802042FC(void) {
     fn_8000D838(&lbl_8055ED20);
     lbl_8055ED2C = 0x7f000000;
-    lbl_8055ED28 = 0xffff0000;
+    lbl_8055ED28 = (int) (0xffff0000u + 0);
 }
