@@ -2867,22 +2867,22 @@ extern const char lbl_8055A110, lbl_8055A118;
 #pragma cplusplus on
 /* The scene's named parameter list: hasName (vtable slot 1) says whether a name
    is in it, getValue (slot 3) hands back the object stored under it. */
-struct NameList_8016464C {
+struct TutorialParamNameList {
     virtual void slot0();
     virtual s32 hasName(const char *);
     virtual void slot2();
     virtual void *getValue(const char *);
 };
-/* The "tutcmd.val" table fn_80131810 parses.  Its first virtual turns one of
-   the parameter list's value objects into the collection of items that value
-   names; fn_80146C2C builds a value object out of such a collection for the
-   screen that asked. */
-struct ValueTable_8016464C {
+/* The "tutcmd.val" table loaded by fn_80131810.  Its first virtual turns one
+   of the parameter list's value objects into the collection of items that
+   value names; fn_80146C2C builds a value object out of such a collection for
+   the screen that asked. */
+struct TutorialValueTable {
     virtual void *getCollection(void *value);
 };
-/* buildTutorialValueEntries's object: the parameter list its names are read out of, and the
-   (description, value) table it builds from them. */
-struct State_8016464C {
+/* buildTutorialValueEntries's object: the parameter list its names are read
+   out of, and the (description, value) table it builds from them. */
+struct TutorialEntriesState {
     u8 pad0[4];
     void *list;
     u8 pad8[0x2C];
@@ -2891,7 +2891,7 @@ struct State_8016464C {
 };
 /* One entry of that table: the "desc<N>" object, and the value object its
    "lyt<N>" name resolves to (0 when it has none). */
-struct Entry_8016464C {
+struct TutorialValueEntry {
     void *object;
     s32 value;
 };
@@ -2905,9 +2905,9 @@ extern "C" void buildTutorialValueEntries(void *state) {
      * value table, and the collection it resolves to is turned into a value
      * object owned by the current screen (lbl_8055E2E4) and stored next to the
      * description.  The value table is released again on the way out. */
-    State_8016464C *self = (State_8016464C *)state;
+    TutorialEntriesState *self = (TutorialEntriesState *)state;
     char name[0x10];
-    Entry_8016464C *entry;
+    TutorialValueEntry *entry;
     s32 count;
     void *valueTable;
     s32 i;
@@ -2919,22 +2919,22 @@ extern "C" void buildTutorialValueEntries(void *state) {
         count++;
         /* name = "desc<count>" */
         ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A110, count);
-    } while (((NameList_8016464C *)self->list)->hasName(name) != 0);
+    } while (((TutorialParamNameList *)self->list)->hasName(name) != 0);
 
     i = 0;
     while (i < count - 1) {
         s32 index = i + 1;
-        entry = &((Entry_8016464C *)self->entries)[self->entryCount++];
+        entry = &((TutorialValueEntry *)self->entries)[self->entryCount++];
         /* name = "desc<index>": the entry's description object */
         ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A110, index);
-        entry->object = ((NameList_8016464C *)self->list)->getValue(name);
+        entry->object = ((TutorialParamNameList *)self->list)->getValue(name);
         /* name = "lyt<index>": the name of the value table entry, if any */
         ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A118, index);
         entry->value = 0;
-        if (((NameList_8016464C *)self->list)->hasName(name) != 0) {
-            void *value = ((NameList_8016464C *)self->list)->getValue(name);
+        if (((TutorialParamNameList *)self->list)->hasName(name) != 0) {
+            void *value = ((TutorialParamNameList *)self->list)->getValue(name);
             if (valueTable != 0) {
-                void *collection = ((ValueTable_8016464C *)valueTable)->getCollection(value);
+                void *collection = ((TutorialValueTable *)valueTable)->getCollection(value);
                 if (collection != 0)
                     entry->value = fn_80146C2C(lbl_8055E2E4, (s32)collection);
             }
