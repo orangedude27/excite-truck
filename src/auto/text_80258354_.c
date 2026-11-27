@@ -26,7 +26,7 @@ extern int loadFontTexture(void *); /* gText: font handle for a font name (used 
  *   +0x91C texts:   {char name[0x20]; UITextObject *text} (fn_8025861C adds one)
  *   +0xDA8 sounds:  {char name[0x20]; void *sound; char flags; float scale}
  *                   (fn_802586F0 adds one)
- * fn_802583CC (vtable +8) releases what the tables hold and clears the counts.
+ * destroyUIObjects (vtable +8) releases what the tables hold and clears the counts.
  * The block is tagged "UIObjects_impl"; callers keep what it returns. */
 void *fn_80258354(void) {
 #define Allocate fn_801284F8            /* size, tag -> new block named for the tag */
@@ -71,7 +71,7 @@ void *fn_80258354(void) {
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void *fn_802583CC(void *mgr, int freeManager, int arg2) {
+extern "C" void *destroyUIObjects(void *mgr, int freeManager, int arg2) {
     /* UIObjects destructor: release the objects, texts and sounds held by the
      * three fixed tables, clear their counts, and optionally free the manager. */
     struct Release {
