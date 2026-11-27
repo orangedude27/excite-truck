@@ -44,7 +44,7 @@ void fn_80279488(void);
 void fn_802E30C8(const char*, ...);
 extern const char lbl_802FB7A4[];
 /* qsort comparator for race-event names: compares the two name pointers case-insensitively. */
-void fn_80007D94(const char** lhs, const char** rhs) {
+void compareRaceEventNames(const char** lhs, const char** rhs) {
     stricmp(*lhs, *rhs);
 }
 
@@ -77,7 +77,7 @@ extern "C" void loadRaceEventTable(void) {
        gRaceEventTable (lbl_8034EF38): for each "track" item store {name,
        display string (base+0x74 key, default ""), environ (default "")} in
        0xC-byte slots (max 0x28, overflows -> abend base+0x84), then qsort by
-       name with fn_80007D94. global[0x78]=count, global[0x79]=config ptr. */
+       name with compareRaceEventNames. global[0x78]=count, global[0x79]=config ptr. */
     base = lbl_802FB6E0;
     initialConfig = getValueFile(base + 0x68);
     global = (volatile u32 *)&lbl_8034EF38;
@@ -122,7 +122,7 @@ loop:
     }
 
 done:
-    qsort(&lbl_8034EF38, *(volatile u32 *)((u8 *)&lbl_8034EF38 + 0x1E0), 0xC, (int (*)(const void *, const void *))fn_80007D94);
+    qsort(&lbl_8034EF38, *(volatile u32 *)((u8 *)&lbl_8034EF38 + 0x1E0), 0xC, (int (*)(const void *, const void *))compareRaceEventNames);
 }
 #pragma scheduling on
 #pragma cplusplus reset
