@@ -421,7 +421,7 @@ void GXResetWaterBumpTevPipelineB(void) {
     GXSetTevSwapMode(GX_TEVSTAGE1, GX_TEV_SWAP0, GX_TEV_SWAP0);
 }
 #pragma pop
-void GXSetupCpuLightTevPipeline(void) {
+/* Configure the TEV/blend pipeline for CPU-light drawing: two texgens transform position by texmatrix 0, stage 0 passes the texel colour and vertex alpha through, stage 1 multiplies by the previous colour, and source-alpha blending is enabled. */ void GXSetupCpuLightTevPipeline(void) {
     /* Configures texcoord generation and a two-stage TEV combiner with alpha blending for this renderer path. */
     register u32 texCoordId = 0;
     register u32 texGenType = texCoordId + 1;
