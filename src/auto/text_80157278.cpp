@@ -3517,36 +3517,36 @@ extern "C" s32 fn_8015C68C(void) { return 0xD; }
 #pragma cplusplus on
 extern "C" void updateBonusTrackerDisplay(void *objPtr) {
     struct Obj {
-        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
-        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
-        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
-        virtual void v16(); virtual int v17(); virtual void v18(); virtual int v19();
-        virtual void v20(); virtual int v21(); virtual void v22(); virtual int v23();
-        virtual int v24(); virtual int v25(); virtual int v26(); virtual void v27();
-        virtual void v28(); virtual int v29(); virtual void v30(); virtual int v31();
+        virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4();
+        virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void p9();
+        virtual void p10(); virtual void p11(); virtual void p12(); virtual void p13(); virtual void p14();
+        virtual void p15(); virtual void p16(); virtual s32 lower();
+        virtual void p18(); virtual void p19(); virtual void p20(); virtual s32 upper();
+        virtual void noop(); virtual s32 progress();
+        virtual void p24(); virtual void p25(); virtual void p26(); virtual void p27(); virtual void p28();
+        virtual s32 type(); virtual void p30(); virtual s32 p31();
     };
     struct Adaptor {
-        virtual void v0(); virtual void v1(int, ...); virtual void v2(int, ...);
-        virtual void v3(int, ...); virtual void v4(); virtual void v5(int);
-        virtual void v6(int); virtual void v7(); virtual void v8(int); virtual void v9();
+        virtual void a0(); virtual void a1(int, ...); virtual void format(int, ...);
+        virtual void a3(int, ...); virtual void clear(); virtual void a5(int);
+        virtual void setProgress(int); virtual void a7(); virtual void setState(int); virtual void a9();
     };
     Obj *obj = (Obj *)objPtr;
     int limit, current;
-    /* Updates the attached adaptor at +0x248 with the object's current state/limits when present. */
+    /* Refresh the bonus popup at +0x248 with the tracker's progress/type and mark it complete when current reaches the limit. */
     if (*(void **)((char *)objPtr + 0x248) != 0) {
-        (*(Adaptor **)((char *)objPtr + 0x248))->v2((int)&lbl_8055A058[0], obj->v23());
-        (*(Adaptor **)((char *)objPtr + 0x248))->v6(obj->v29());
-        obj->v22();
-        (*(Adaptor **)((char *)objPtr + 0x248))->v4();
-        limit = obj->v17();
-        current = obj->v21();
-        if (current >= limit) (*(Adaptor **)((char *)objPtr + 0x248))->v8(1);
+        (*(Adaptor **)((char *)objPtr + 0x248))->format((int)&lbl_8055A058[0], obj->progress());
+        (*(Adaptor **)((char *)objPtr + 0x248))->setProgress(obj->type());
+        obj->noop();
+        (*(Adaptor **)((char *)objPtr + 0x248))->clear();
+        limit = obj->lower();
+        current = obj->upper();
+        if (current >= limit) (*(Adaptor **)((char *)objPtr + 0x248))->setState(1);
     }
     if (*(void **)((char *)objPtr + 0x248) != 0)
-        (*(Adaptor **)((char *)objPtr + 0x248))->v2((int)&lbl_8055A058[0], obj->v23());
+        (*(Adaptor **)((char *)objPtr + 0x248))->format((int)&lbl_8055A058[0], obj->progress());
     if (*(void **)((char *)objPtr + 0x248) != 0)
-        (*(Adaptor **)((char *)objPtr + 0x248))->v2((int)&lbl_8055A058[0], obj->v23());
+        (*(Adaptor **)((char *)objPtr + 0x248))->format((int)&lbl_8055A058[0], obj->progress());
 }
 #pragma cplusplus reset
 
