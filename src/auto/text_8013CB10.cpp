@@ -2549,32 +2549,6 @@ struct StageVec {
     s32 idx;
     s32 cap;
 };
-// Ring queue view at owner+0xC0 used by fn_80140D1C.
-struct RingVecQueue {
-    u8 **items;   // 0xC0: array of 12-byte records
-    s32 cap;      // 0xC4
-    s32 count;    // 0xC8
-    s32 head;     // 0xCC
-};
-static inline RingVecQueue *ringQueue(void *owner)
-{
-    return (RingVecQueue *) (((u8 *) owner) + 0xC0);
-}
-// The record at position i, or NULL when i is past the queued count.
-static __inline u8 *ringEntry(void *owner, s32 i)
-{
-    RingVecQueue *q = ringQueue(owner);
-    s32 end = (q->cap + (q->count - q->head)) % q->cap;
-    if (i >= end)
-    {
-        return 0;
-    }
-    return (u8 *) q->items + (((i + q->cap) + q->head) % q->cap) * 12;
-}
-// Number of records currently queued in the ring (position just past the last).
-#define ringEntryEnd(owner) ((ringQueue(owner)->cap + (ringQueue(owner)->count - ringQueue(owner)->head)) % ringQueue(owner)->cap)
-// The pointer stored at +8 of the record at position i, or NULL when i is past the queued count.
-#define ringEntryField(owner, i) (((i) < ringEntryEnd(owner)) ? *((void **) ((u8 *) ringQueue(owner)->items + (((((i) + ringQueue(owner)->cap) + ringQueue(owner)->head) % ringQueue(owner)->cap) * 12) + 8)) : (void *) 0)
 // fn_80140D1C: processes array items, flushing buffer to fn_80141558 when item[0x1E] set, or stores to dst
 extern "C" void fn_80140D1C(void *arg0, void *arg1, void *arg2)
 {
