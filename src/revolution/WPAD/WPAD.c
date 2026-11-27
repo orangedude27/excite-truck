@@ -5399,7 +5399,7 @@ BOOL fn_80063564(WPADCommandQueue* pQueue, s32 format, WPADCallback pCallback) {
 }
 
 #pragma opt_propagation off
-BOOL WPADiSendWriteDataCmd_80063744(WPADCommandQueue *pQueue, u8 value, u32 address, WPADCallback pCallback) {
+/* Appends a WriteData command writing one byte to a Wiimote register to a command queue, returning FALSE when the ring is full (inlined WPADiSendWriteData/WPADiPushCommand copy). */ BOOL WPADiSendWriteDataCmd_80063744(WPADCommandQueue *pQueue, u8 value, u32 address, WPADCallback pCallback) {
     /* WPADiSendWriteDataCmd with WPADiSendWriteData and WPADiPushCommand both
      * inlined (the REXE01 build keeps this second copy): build a WriteData
      * command writing the single byte `value` to the wiimote register
