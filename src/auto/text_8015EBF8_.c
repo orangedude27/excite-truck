@@ -167,7 +167,7 @@ enum {
 #define PARAM_NAME_RIGHT lbl_8032F47C
 
 #pragma use_lmw_stmw off
-extern "C" void fn_8015EE14(void **collection, void *stream) {
+extern "C" void registerCollectionParams(void **collection, void *stream) {
     /* Registers each qualifying collection item as a 0x10-byte parameter entry: copies its
        packed floats and stream-derived index, then classifies left/right arrows by name. */
     class Collection {
@@ -570,7 +570,7 @@ extern int fn_8015F148(void **, int);
 extern int fn_8015ED90(void **);
 extern void fn_8015F320(void **, int, void *);
 extern void fn_8015EF84(void **);
-extern void fn_8015EE14(void **, void *);
+extern void registerCollectionParams(void **, void *);
 extern void fn_8015F3FC(void *);
 extern void *fn_8002F37C(void *, void (*)(void *), void (*)(void *), int, int);
 extern void fn_8015F79C(void);
@@ -619,7 +619,7 @@ extern "C" void fn_8015F670(void **arg0, s32 arg1) {
         lbl_8055E29C = (s32)entryRecord;
         fn_8015F320(arg0, arg1, processContext);
         fn_8015EF84(itemObject);
-        fn_8015EE14(itemObject, processContext);
+        registerCollectionParams(itemObject, processContext);
         fn_8015F3FC(processContext);
     }
 
