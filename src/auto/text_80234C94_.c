@@ -85,7 +85,7 @@ static inline void CatStrC_8023512C(const char *src, int n, char *dst) {
 }
 extern void *fn_801284F8(int, const char *);
 /* One picture of an art set, 0x1C bytes: the six floats of its row in the
- * "gArt" resource table (fn_80234EF4) -- the texture rectangle
+ * "gArt" resource table (ArtSet_loadPictures) -- the texture rectangle
  * (s0,t0)-(s1,t1) and the size to draw it at -- and the next picture. */
 typedef struct ArtPicture {
     float s0, t0;                /* 0x00: top-left of the picture in the texture */
@@ -204,7 +204,7 @@ extern unsigned char lbl_803406B0[];
 extern void fn_80265940(void);
 #pragma scheduling invalid_target
 /* Loads art/texture metadata rows for a named resource into a linked list at obj+0x88, or logs lbl_803406B0 when the resource is unavailable. */
-void fn_80234EF4(void *artObject, const char *resourceName) {
+void ArtSet_loadPictures(void *artObject, const char *resourceName) {
     if (fn_8012C33C(resourceName)) {
         void *source = loadStabResource(resourceName);
         int count = fn_8012F2E8();
@@ -314,7 +314,7 @@ void *ArtSetGet(const char *resourceName) {
     else
         Abend_Panic(tbl + 0x168, tableName);
     CatStrC_8023512C(lbl_8055B9F0, 0x80, tableName);
-    fn_80234EF4(artSet, tableName);
+    ArtSet_loadPictures(artSet, tableName);
     fn_80234D44((int)artSet);
     return artSet;
 }
