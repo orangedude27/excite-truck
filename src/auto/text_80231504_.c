@@ -1746,22 +1746,22 @@ extern f32 lbl_805636A8;
 void queueTextDraw(s32 text, s32 fontSet, s32 color, s32 fontId, f32 x, f32 y, f32 scale) {
     /* Queues an on-screen text draw: copies the string/font-set pair into the next
        slot, records position/scale/color/font, flushes if the queue is full. */
-    s32 resolvedFontSet;
-    s32 resolvedText;
+    s32 fontSetId;
+    s32 textStr;
 
-    resolvedText = text;
-    resolvedFontSet = fontSet;
-    ((void (*)(u8 **, u8 **))fn_80232024)((u8 **)&resolvedText, (u8 **)&resolvedFontSet);
+    textStr = text;
+    fontSetId = fontSet;
+    ((void (*)(u8 **, u8 **))fn_80232024)((u8 **)&textStr, (u8 **)&fontSetId);
     if (*(s32 *)((u8 *)&lbl_8055F058 + 4) >= 0x60)
         fn_802346C8();
 
     {
         register s32 *queueState = (s32 *)&lbl_8055F058;
 
-        strncpy((char *)((u8 *)lbl_8055F06C + queueState[1] * 0x58), (char *)resolvedText, 0x40);
+        strncpy((char *)((u8 *)lbl_8055F06C + queueState[1] * 0x58), (char *)textStr, 0x40);
         *((u8 *)lbl_8055F06C + queueState[1] * 0x58 + 0x3F) = 0;
-        *(s32 *)((u8 *)lbl_8055F06C + queueState[1] * 0x58 + 0x48) = resolvedFontSet;
-        *(s32 *)((u8 *)lbl_8055F06C + queueState[1] * 0x58 + 0x4C) = fn_80231718(resolvedFontSet);
+        *(s32 *)((u8 *)lbl_8055F06C + queueState[1] * 0x58 + 0x48) = fontSetId;
+        *(s32 *)((u8 *)lbl_8055F06C + queueState[1] * 0x58 + 0x4C) = fn_80231718(fontSetId);
         *(f32 *)((u8 *)lbl_8055F06C + queueState[1] * 0x58 + 0x40) = x;
         *(f32 *)((u8 *)lbl_8055F06C + queueState[1] * 0x58 + 0x44) = y;
         *(f32 *)((u8 *)lbl_8055F06C + queueState[1] * 0x58 + 0x50) = scale;
