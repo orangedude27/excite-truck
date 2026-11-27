@@ -5,7 +5,7 @@
 #include "revolution/GX/GXHardware.h"
 extern void GXSetAlphaCompare(int, unsigned char, int, unsigned char, int);
 extern void fn_802CADD0(int, int);
-extern void fn_802DFB30(void);
+extern void GXSetupCpuLightTevPipeline(void);
 extern void *lbl_8055FEB4;
 extern unsigned char lbl_8055FEB0, lbl_8055FEB9, lbl_8055FEBB, gAlphaCompareRef;
 extern unsigned char lbl_804DB480[];
@@ -619,7 +619,7 @@ void fn_802DC3C0(int mode) {
     GXLoadTexObj((unsigned char *)gCpuLightTextures[0] + 0x24, GX_TEXMAP0);
     GXLoadTexObj((unsigned char *)gCpuLightTextures[1] + 0x24, GX_TEXMAP1);
     GXSetAlphaCompare(GX_ALWAYS, 0, GX_AOP_OR, GX_ALWAYS, 0);
-    fn_802DFB30();
+    GXSetupCpuLightTevPipeline();
 }
 
 #pragma pop

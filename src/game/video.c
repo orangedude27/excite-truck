@@ -421,7 +421,7 @@ void GXResetWaterBumpTevPipelineB(void) {
     GXSetTevSwapMode(GX_TEVSTAGE1, GX_TEV_SWAP0, GX_TEV_SWAP0);
 }
 #pragma pop
-void fn_802DFB30(void) {
+void GXSetupCpuLightTevPipeline(void) {
     /* Configures texcoord generation and a two-stage TEV combiner with alpha blending for this renderer path. */
     register u32 texCoordId = 0;
     register u32 texGenType = texCoordId + 1;
