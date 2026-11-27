@@ -203,7 +203,7 @@ void *fn_80257470(void *arg0) {
 int fn_802574E0(int self, int deletingFlag) {
     /* The object's three UITables, by offset; fn_80257470 builds them. */
     enum {
-        PROFILE_TABLE = 0x1C, /* the profiles by name (fn_80257558) */
+        PROFILE_TABLE = 0x1C, /* the profiles by name (buildProfileSelectorTable) */
         RECORD_TABLE = 0x54,  /* the records of the selected profile */
         VALUE_TABLE = 0x18C   /* the selected record's seven values (fn_80257A8C) */
     };
@@ -230,7 +230,7 @@ int fn_802574E0(int self, int deletingFlag) {
 
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void fn_80257558(void *arg0, void *arg1) {
+extern "C" void buildProfileSelectorTable(void *arg0, void *arg1) {
     /* Fill the profile table (+0x1C) of the settings selector.  It walks every
      * registered event record; for each record that carries a contest object
      * matching the "name" key it takes the record's profile name and appends a
