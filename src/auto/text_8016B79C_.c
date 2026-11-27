@@ -804,35 +804,35 @@ extern "C" s32 countAvailableRingSets(void) {
     /* Count consecutive ring sets (set_0_, set_1_, ...) whose "name" field appears in a parsed ring_set source.
      * Walk set indices from zero, stopping at the first one with no matching entry. */
     Manager *manager = *(Manager **)((char *)fn_8000AC38() + 0x20);
-    void *keyResource = getDifficultySettingString(lbl_803307C8);
-    s32 setCount = 0;
+    void *difficultyValue = getDifficultySettingString(lbl_803307C8);
+    s32 ringSetCount = 0;
     char setPrefix[0x1E];
-    if (manager->probe(keyResource) != 0) {
-        s32 foundSet;
+    if (manager->probe(difficultyValue) != 0) {
+        s32 found;
         SourceList *sourceList;
-        manager->release(keyResource);
+        manager->release(difficultyValue);
         sourceList = (SourceList *)fn_80131810();
         if (sourceList != 0) {
             for (;;) {
                 s32 entryIndex;
-                foundSet = 0;
-                fn_801345D8(setPrefix, 0x1E, lbl_8055A218, setCount);
+                found = 0;
+                fn_801345D8(setPrefix, 0x1E, lbl_8055A218, ringSetCount);
                 for (entryIndex = 0; sourceList->at(entryIndex) != 0; entryIndex++) {
                     if (strcmp(((Entry *)sourceList->at(entryIndex))->name(), lbl_803307D8) == 0 &&
                         strstr(((Entry *)sourceList->at(entryIndex))->search(lbl_8055A220), setPrefix) != 0) {
-                        foundSet = 1;
-                        setCount++;
+                        found = 1;
+                        ringSetCount++;
                         break;
                     }
                 }
-                if (foundSet == 0) {
+                if (found == 0) {
                     break;
                 }
             }
             releaseValueFile((s32)sourceList);
         }
     }
-    return setCount;
+    return ringSetCount;
 }
 #pragma cplusplus reset
 
