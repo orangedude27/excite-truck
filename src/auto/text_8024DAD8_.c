@@ -412,10 +412,10 @@ void *fn_8024E920(void *self, s32 shouldDelete) {
 #pragma opt_common_subs off
 #pragma scheduling invalid_target
 /* Update selection-dependent value and label text for a UI/menu entry. */
-void updateMenuEntrySelection(s32 arg0) {
-    s32 base = fn_8001668C(arg0 + 0x60, 0);
-    s32 *secondary;
-    s32 choiceBase;
+/* Update a menu entry's selection value and format its localized label text from the current choice. */ void updateMenuEntrySelection(s32 arg0) {
+    s32 vehicleRecord = fn_8001668C(arg0 + 0x60, 0);
+    s32 *secondaryRecord;
+    s32 choiceRecord;
     s32 selectedIndex;
     register u8 *src;
     register u8 c;
@@ -423,23 +423,23 @@ void updateMenuEntrySelection(s32 arg0) {
     register u8 *dst;
 
     if (lbl_80498C48[4] != 0) {
-        ((s32 *(*)(s32, s32))fn_80016BC8)(base, 0)[0] =
+        ((s32 *(*)(s32, s32))fn_80016BC8)(vehicleRecord, 0)[0] =
             *(s32 *)((u8 *)arg0 + 0x2C);
     } else {
-        ((s32 *(*)(s32, s32))fn_80016BC8)(base, 0)[1] =
+        ((s32 *(*)(s32, s32))fn_80016BC8)(vehicleRecord, 0)[1] =
             *(s32 *)((u8 *)arg0 + 0x2C);
     }
 
     *(s32 *)*(s32 **)((u8 *)arg0 + 0xDC) =
-        *(s32 *)((u8 *)base +
+        *(s32 *)((u8 *)vehicleRecord +
                  *(s32 *)((u8 *)arg0 + 0x2C) * 4 + 0x64);
 
-    secondary = (s32 *)fn_8001668C(arg0 + 0x60, 0);
-    choiceBase = fn_8001668C(arg0 + 0x60, 0);
+    secondaryRecord = (s32 *)fn_8001668C(arg0 + 0x60, 0);
+    choiceRecord = fn_8001668C(arg0 + 0x60, 0);
     if (lbl_80498C48[4] != 0) {
-        selectedIndex = ((s32 *(*)(s32, s32))fn_80016BC8)(choiceBase, 0)[0];
+        selectedIndex = ((s32 *(*)(s32, s32))fn_80016BC8)(choiceRecord, 0)[0];
     } else {
-        selectedIndex = ((s32 *(*)(s32, s32))fn_80016BC8)(choiceBase, 0)[1];
+        selectedIndex = ((s32 *(*)(s32, s32))fn_80016BC8)(choiceRecord, 0)[1];
     }
 
     {
@@ -448,7 +448,7 @@ void updateMenuEntrySelection(s32 arg0) {
                              *(s32 *)((u8 *)arg0 + 0x2C) * 0x14 + 0x10);
         switch (value) {
         case 0:
-            value = *(s32 *)((u8 *)secondary + selectedIndex * 4 + 0x64);
+            value = *(s32 *)((u8 *)secondaryRecord + selectedIndex * 4 + 0x64);
             break;
         default:
             break;
