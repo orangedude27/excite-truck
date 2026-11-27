@@ -999,15 +999,14 @@ extern unsigned char lbl_8055D672, lbl_8055D673;
 extern float lbl_80560554, lbl_80560500, lbl_80560558, lbl_8056055C;
 #pragma dont_inline on
 int updateResultsOverlay(void) {
-    /* Per-frame update of the results overlay shown over the tips box.
-       Does nothing while the overlay is switched off (OVERLAY_ACTIVE).
-       computeOverlayFade() is the overlay's own fade-out: still fully opaque for the
-       first 300 ms of the results screen and gone a second later.  While it is
-       up the "loadback" image is drawn over the box (drawLoadbackPicture) and the box
-       itself gets no fade of its own; afterwards the box follows the race's own
-       0..255 value (fn_801E8838), scaled down to 0..1.  Finally, unless the
-       sound system is muted (fn_8020DE1C), the two "press a button" prompts are
-       drawn under the box. */
+    /* Per-frame update of the results box shown over the tips panel.  Returns
+       immediately while the overlay is inactive.  computeOverlayFade() drives
+       the box's own fade-out (fully opaque for the first 300 ms, gone a second
+       later); while it is up the loadback picture is drawn over the box
+       (drawLoadbackPicture) and the box gets no fade of its own, otherwise the
+       box follows the race's 0..255 overlay fade (fn_801E8838), scaled to 0..1.
+       Finally, when the volume menu is not open (fn_8020DE1C), the two
+       "press a button" prompts are drawn under the box. */
     int fade;
     float boxAlpha;
     unsigned int fontSetId;
