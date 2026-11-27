@@ -365,7 +365,7 @@ void fn_800169F8(const char *source, int entryIndex) {
 }
 
 #pragma dont_inline fn_800167B8
-void fn_80016A48(void *out, int id) {
+void getDriverVehicleTuning(void *out, int id) {
     extern unsigned char lbl_80357C20[];
     extern void *fn_8027953C(void *);
     int found;
