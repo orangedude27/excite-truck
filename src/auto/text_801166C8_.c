@@ -29,7 +29,7 @@ extern u32 fn_8011C1E0(s32, void *);
 extern void *memcpy(void *, const void *, u32);
 
 extern void fn_8011AF94(f32 *, s32, void *, f32 *, s32);
-extern void fn_801200BC(s32, s32, f32 *, s32, s32);
+extern void fftReal(s32, s32, f32 *, s32, s32);
 /* Ooura's real-sequence DCT; the linked symbol stays fftDct. */
 #define oouraDct fftDct
 extern void oouraDct(s32, s32, f32 *, s32, s32);
@@ -3438,7 +3438,7 @@ s32 fn_8011B2AC(s32 size, u32 channels, s32 flags, s32 arg3, s32 arg4, s32 outpu
         }
         fn_8011AF94(p, size, &bits, factors, arg8);
         if (mode) oouraDct(size, 1, p, arg3, arg4);
-        else fn_801200BC(size, -1, p, arg3, arg4);
+        else fftReal(size, -1, p, arg3, arg4);
         p += size;
     }
     if (channels == 1) fn_8011AE68(output, buffer, size, gain);
@@ -5492,7 +5492,7 @@ void fn_80120CA4(s32, void *, s32, s32, void *);
 void fn_80120E14(s32, void *, s32, s32, void *);
 void fn_801250CC(s32, s32, s32, s32);
 void fn_801252D8(s32, f32 *, s32, f32 *);
-void fn_801200BC(s32 length, s32 direction, f32 *data, s32 table, s32 work) {
+void fftReal(s32 length, s32 direction, f32 *data, s32 table, s32 work) {
     /* Dispatch FFT-like forward/inverse passes: ensure twiddle/work sizes, run stage routines by length/direction, and apply final 2-point combine. */
     s32 size1;
     s32 size2;
@@ -8507,9 +8507,9 @@ void fn_801252D8(s32 n, f32 *a, s32 m, f32 *w) {
     u32 count = ((u32)(half - 1)) >> 1;
     register s32 j = 2;
     register s32 i = 0;
-    register s32 step = (m * 2) / half;
     char *b = (char *)a;
     f32 *p = a + 2;
+    register s32 step = (m * 2) / half;
     f32 *q = w;
     f32 one = 0.5f;
     if (half > 2) {
@@ -8518,11 +8518,10 @@ void fn_801252D8(s32 n, f32 *a, s32 m, f32 *w) {
             f32 x, y, t, v, z, c, re, im;
             s32 off;
             i += step;
-            off = (n - j) * 4;
             x = p[0];
+            t = x - *(f32 *)(b + (off = (n - j) * 4));
             y = w[m - i];
             z = one - y;
-            t = x - *(f32 *)(b + off);
             v = p[1] + *(f32 *)(b + off + 4);
             q += step; c = *q;
             re = z * t + c * v; im = z * v - c * t;
@@ -8550,9 +8549,9 @@ void fn_801252D8(s32 n, f32 *a, s32 m, f32 *w) {
             i += step;
             off = (n - j) * 4;
             x = p[0];
+            t = x - *(f32 *)(b + off);
             y = w[m - i];
             z = one - y;
-            t = x - *(f32 *)(b + off);
             v = p[1] + *(f32 *)(b + off + 4);
             q += step; c = *q;
             re = z * t + c * v; im = z * v - c * t;
