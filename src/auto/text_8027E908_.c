@@ -2801,7 +2801,7 @@ extern "C" void *fn_8025007C(int);
 extern "C" int fn_80019664(void);
 extern "C" int fn_800196F0(void);
 extern "C" void buildAndPlaySequenceBuffer(int, int, void *, int);
-extern "C" int fn_80263F30(int, int, int);
+extern "C" int startCredits(int, int, int);
 extern "C" void fn_8027F09C(int);
 extern "C" void *memset(void *, int, unsigned int);
 #pragma cplusplus on
@@ -2941,7 +2941,7 @@ extern "C" int fn_802840FC(int *a0, void *a1, int *a2, void *a3) {
         }
         if ((stateBytes[0] != 0 && node2->state() == 1) ||
             (stateBytes[1] != 0 && node2->state() == 2)) {
-            fn_80263F30(stateBytes[2] == 0, node2->state() == 2, 1);
+            startCredits(stateBytes[2] == 0, node2->state() == 2, 1);
         }
         if (stateBytes[1] != 0) {
             var_r31 = 0;

@@ -81,7 +81,7 @@ struct PropertyReader802640C4 {
  *   +0x02C a 15-word float descriptor (the symbol lbl_80346364, copied by fn_802646D0)
  *   +0x068 "credits.val"   - the value table holding the credits page
  *   +0x074 "credits: failed to push my movie (%s) onto the stack!"
- *   +0x0AC "credits_page"  - the .val entry fn_80263F30 looks for
+ *   +0x0AC "credits_page"  - the .val entry startCredits looks for
  *   +0x0C0 "credits: failed to pop my movie from the stack!"
  *   +0x0F0 "firetext",  +0x0FC "TextWoot"    - item types Credits_BuildItem builds
  *   +0x108 "extra_delay", +0x114 "ExtraDelay"
@@ -128,7 +128,7 @@ extern void *fn_80264968(void *, int);
  * fn_80265940 = "fade_in"), and skip is the flag fn_80265B5C reports the credits as
  * finished on.  Returns nothing; does nothing at all if credits.val is missing.
  */
-extern "C" void fn_80263F30(int fadeOut, unsigned char skip, int fadeIn) {
+extern "C" void startCredits(int fadeOut, unsigned char skip, int fadeIn) {
     struct ValEntry { virtual const char *getName(); };             /* .val item, vtable+0x8 = getName */
     struct ValList { virtual void f0(); virtual void *get(int); };  /* .val list, vtable+0xC = get(index) */
     char timerObj[0x28];  /* sp8:  fade/timer object, vtable lbl_803466D8 */

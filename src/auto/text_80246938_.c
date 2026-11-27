@@ -565,7 +565,7 @@ extern void fn_800169F8(const char *, int);
 extern s32 fn_802E4A10(void);
 extern void fn_80137C84(int, int), fn_8023BCEC(void);
 extern void fn_8025812C(void), fn_8025C054(void), fn_800196FC(void), fn_80161DE4(void);
-extern void fn_8027DE6C(void), fn_80263F30(int,int,int);
+extern void fn_8027DE6C(void), startCredits(int,int,int);
 extern void Abend_Panic(const char *, ...);
 extern s32 lbl_802FA38C[5];
 extern char lbl_803432C0[];
@@ -695,7 +695,7 @@ s32 fn_80246AE8(void) {
             case 11: fn_8025C054(); break;
             case 12: fn_800196FC(); break;   /* ask for a quit/reset */
             case 13: fn_80161DE4(); fn_8027DE6C(); break;
-            case 14: fn_80263F30(1,1,1); break;
+            case 14: startCredits(1,1,1); break;
             case 15: again = 0; break;       /* back out to the attract screen */
             case 16: case 17: break;         /* nothing bound to these entries */
             default: Abend_Panic(messages + 0x168); break;

@@ -333,7 +333,7 @@ void fn_80239F74(void) {
     extern s32 fn_8027B8C0(s32), hasTrackMusicSongs(void), trackMusicSetSlotStates(s32);
     extern s32 fn_802E8D84(void), writeMemCardSaveImage(void);
     extern s32 fn_8027B77C(void), fn_8000DA80(void), fn_8027B690(void);
-    extern s32 fn_8026311C(void), fn_80263F30(s32, s32, s32);
+    extern s32 fn_8026311C(void), startCredits(s32, s32, s32);
     extern s32 fn_80128670(s32), fn_802328D4(s32);
     extern s32 lbl_803410D8, lbl_80341108;
     extern f32 lbl_80563734;
@@ -541,7 +541,7 @@ void fn_80239F74(void) {
             fn_8026311C();
             continue;
         case 18:
-            fn_80263F30(0, 1, 0);
+            startCredits(0, 1, 0);
             break;
         default:
             break;
