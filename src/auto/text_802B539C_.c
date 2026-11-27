@@ -172,7 +172,7 @@ __declspec(section ".sdata") extern const char lbl_8055CE20[];
 #pragma opt_propagation off
 /* Fill one UMatSet from a "unified_material_set" archive item: resolve its name,
  * texture list and four ground/road texture entries, then the model id. */
-extern "C" void fillUMatSet(void *outSet, void *setItem, void *setEntries) {
+/* Fill a UMatSet from a unified_material_set archive item: resolve its name and texture list, load the four ground/road texture slots, then build the model id. */ extern "C" void fillUMatSet(void *outSet, void *setItem, void *setEntries) {
     class Manager {
     public:
         virtual void f0(); virtual void f1(); virtual void f2();
