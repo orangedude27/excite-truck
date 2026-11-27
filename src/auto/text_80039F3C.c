@@ -493,56 +493,56 @@ int DVDLowInit(void) {
 int DVDLowAsyncIoctl(void *buffer, void *callback) {
     #pragma opt_propagation off
     const char *msgBase = lbl_80302848;
-    unsigned char *context;
-    unsigned char *contexts = lbl_8037B820;
+    unsigned char *ctx;
+    unsigned char *contextTable = lbl_8037B820;
     int offsetBytes;
-    int ctxIndex = lbl_8055D8E8;
-    unsigned char *callbackContext;
+    int slotIndex = lbl_8055D8E8;
+    unsigned char *callbackCtx;
     unsigned int one = 1;
     unsigned int inUse;
-    int nextSlot;
-    int ioResult;
+    int nextIndex;
+    int result;
 
-    offsetBytes = ctxIndex * 0x20;
-    context = contexts + offsetBytes;
-    inUse = context[8];
+    offsetBytes = slotIndex * 0x20;
+    ctx = contextTable + offsetBytes;
+    inUse = ctx[8];
     lbl_8055D8E0 = one;
     if (((-inUse) | inUse) >> 31 == 1U)
     {
-        OSReport(msgBase + 0x218, ctxIndex);
+        OSReport(msgBase + 0x218, slotIndex);
         OSReport(msgBase + 0x250);
         for (;;)
         {
         }
     }
-    if (((*((unsigned int *)(context + 0xC))) + 0x01150000U) != 0xDAEDU)
+    if (((*((unsigned int *)(ctx + 0xC))) + 0x01150000U) != 0xDAEDU)
     {
         OSReport(msgBase + 0x280);
         for (;;)
         {
         }
     }
-    ((unsigned int *)contexts)[ctxIndex * 8] = (unsigned int)callback;
-    *((unsigned int *)((contexts + offsetBytes) + 4)) = one;
-    (contexts + offsetBytes)[8] = one;
-    nextSlot = ctxIndex + 1;
-    lbl_8055D8E8 = nextSlot;
-    if (nextSlot >= 4)
+    ((unsigned int *)contextTable)[slotIndex * 8] = (unsigned int)callback;
+    *((unsigned int *)((contextTable + offsetBytes) + 4)) = one;
+    (contextTable + offsetBytes)[8] = one;
+    nextIndex = slotIndex + 1;
+    lbl_8055D8E8 = nextIndex;
+    if (nextIndex >= 4)
     {
         lbl_8055D8E8 = 0;
     }
-    callbackContext = (unsigned char *)&((DVDLowContext *)lbl_8037B820)[ctxIndex];
+    callbackCtx = (unsigned char *)&((DVDLowContext *)lbl_8037B820)[slotIndex];
     if (buffer == 0)
     {
         OSReport(msgBase + 0x2C0);
     }
     nextCommandBuf();
     lbl_8055D8FC[lbl_8055D8E4 * 0x20] = 0x70;
-    ioResult = IOS_IoctlAsync(lbl_80558E18, 0x70, lbl_8055D8FC + (lbl_8055D8E4 * 0x20), 0x20, buffer, 0x20, (void (*)(int, void *))doTransactionCallback, callbackContext);
-    if (ioResult != 0)
+    result = IOS_IoctlAsync(lbl_80558E18, 0x70, lbl_8055D8FC + (lbl_8055D8E4 * 0x20), 0x20, buffer, 0x20, (void (*)(int, void *))doTransactionCallback, callbackCtx);
+    if (result != 0)
     {
-        OSReport(msgBase + 0x2FC, ioResult);
-        callbackContext[8] = 0;
+        OSReport(msgBase + 0x2FC, result);
+        callbackCtx[8] = 0;
         return 0;
     }
     return 1;
