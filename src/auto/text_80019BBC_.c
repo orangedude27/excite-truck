@@ -22,7 +22,7 @@ extern void *fn_80156A40(void);
 extern float lbl_80560418;
 extern float lbl_8056041C;
 extern void fn_80019BBC(void);
-extern void fn_8001B7BC(void*);
+extern void bakeTrackMarkerTexture(void*);
 extern double fn_8002EFB0(float, float);
 extern void *memset(void*, int, unsigned long);
 extern char lbl_802FD618[];
@@ -166,7 +166,7 @@ extern "C" void* fn_80019C68(int arg0) {
  *(int*)(p+4)=fn_802CB128((int)*(float*)(p+28),(int)*(float*)(p+28),0,0x21);
  *(int*)(p+12)=(int)RegisterTextureByName(base+100,0);
  *(int*)(p+8)=(int)RegisterTextureByName(base+112,0);
- DrawList_beginFrame(); fn_8001B7BC(p); DrawList_shutdown();
+ DrawList_beginFrame(); bakeTrackMarkerTexture(p); DrawList_shutdown();
  *(TruckDraw**)(p+16)=new(base+128) TruckDraw;
  *(int*)(p+20)=(int)RegisterTextureByName(base+140,0);
  *(int*)(p+24)=(int)RegisterTextureByName(base+152,0);
@@ -909,7 +909,7 @@ extern void DrawList_restoreProjection(float *, int);
 extern float lbl_80560418, lbl_80560420, lbl_80560424, lbl_80560440, lbl_80560458;
 #pragma scheduling invalid_target
 /* Sets up projection/model-view for rendering an object and draws two passes. */
-void fn_8001B7BC(void *obj) {
+void bakeTrackMarkerTexture(void *obj) {
     struct {
         int viewport[2];
         unsigned char pad[8];
