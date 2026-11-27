@@ -4321,7 +4321,7 @@ extern "C" void *lbl_8033E8FC[];
 #pragma pop
 extern "C" char lbl_80490934[];
 extern "C" void fn_801A7844(s32);
-extern "C" s32 fn_801A7C8C(s32);
+extern "C" s32 getNextTriggeredInput(s32);
 extern "C" void fn_801A7E54(void *, s32, s32);
 extern "C" void fn_802E47E8(void);
 /* A control the player can bind: which kind of input, from which of the four
@@ -4345,7 +4345,7 @@ typedef struct KeyPrompt {
 } KeyPrompt;
 #define gKeyPrompt       lbl_80490934 /* the KeyPrompt record above */
 #define Input_Update     fn_801A7844  /* re-read the devices (1: reset them) and the pointer */
-#define Input_NextKey    fn_801A7C8C  /* next triggered control -> its descriptor */
+#define Input_NextKey    getNextTriggeredInput  /* next triggered control -> its descriptor */
 #define Input_KeyName    fn_801A7E54  /* descriptor -> display name */
 #define KeyHistory_Clear fn_802E47E8  /* drop the typed-key history */
 #pragma push

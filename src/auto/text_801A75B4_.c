@@ -490,7 +490,7 @@ void fn_801A7A5C(void) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma processor 750
-int fn_801A7C8C(void *arg0) {
+int getNextTriggeredInput(void *arg0) {
     /* Scans the initialized table (0x18-byte entries) for the first enabled
      * entry whose input/state passes the type-specific checks, copies its id
      * and fields into arg0, and returns 1; returns 0 if none qualify. */
