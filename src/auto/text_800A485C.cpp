@@ -5537,7 +5537,7 @@ block_21:
 #define VFiPFFAT_GetChainEntryPage VFiPFFAT_GetClusterAtOffset
 /* The same entry of a position of a chain with no page held for it: the walk
  * reads every FAT sector through the volume's own sector I/O. */
-#define VFiPFFAT_GetChainEntry     fn_800ACF20
+#define VFiPFFAT_GetChainEntry     VFiPFFAT_GetChainEntryNoPage
 /* Writing an entry with no page held: the FAT sector is read, the entry
  * changed in it and the sector written back to every FAT copy of the volume
  * (the volume's VFiPFVolume fields, further down, say how many there are). */
@@ -5713,7 +5713,7 @@ extern "C" s32 fn_800ACDF8(void *arg0, s32 arg1)
   return 0;
 }
 #pragma pop
-extern "C" s32 fn_800ACF20(void *fileInfo, u32 clusterIndex, u32 *outCluster, u32 *outFromCache)
+extern "C" s32 VFiPFFAT_GetChainEntryNoPage(void *fileInfo, u32 clusterIndex, u32 *outCluster, u32 *outFromCache)
 {
     volatile s32 end = -1;
     s32 result;
@@ -6637,7 +6637,7 @@ extern "C" s32 fn_800AE108(void *file, s32 cluster, s32 pageIndex, u32 limit, s3
     return 0;
 }
 
-extern "C" s32 fn_800ACF20(void *, u32, u32 *, u32 *);
+extern "C" s32 VFiPFFAT_GetChainEntryNoPage(void *, u32, u32 *, u32 *);
 static inline s32 VFiPFFAT_FindCluster(void *arg0, u32 arg1, u32 arg2, u32 *arg3) {
     u32 sp8;
     s32 spC;
@@ -6671,7 +6671,7 @@ extern "C" s32 VFiPFFAT_GetClusterSpecified(void *fileInfo, u32 startCluster, u3
         *state = *(u32 *)(fatInfo + 0x10);
     }
     if (*(s32 *)((u8 *)fileInfo + 0x1C) != 0 && clusterIndex == 0) {
-        result = fn_800ACF20(fileInfo, startCluster, outCluster, &foundInCache);
+        result = VFiPFFAT_GetChainEntryNoPage(fileInfo, startCluster, outCluster, &foundInCache);
         if (result != 0) return result;
         if (foundInCache == 1) {
             cache[2] = *(u32 *)fileInfo;
