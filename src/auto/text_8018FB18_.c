@@ -1932,7 +1932,7 @@ extern "C" void fn_80191860(void *arg0, void *arg1) {
    the per-state threshold (0.888889 in state 4, else 2.66667) and result() == 0,
    it advances 4 -> 5 and then counts up each frame, wrapping to 3 after 0x1D
    frames or as soon as the dot falls under -1.33333. Any other failure -> 4. */
-extern "C" void fn_80191928(void *ctrl) {
+extern "C" void updateTrackingController(void *ctrl) {
     class Interface {
     public:
         virtual void f0();
@@ -2001,7 +2001,7 @@ int fn_80191A98(void *obj) {
     return (int)((unsigned int)(-bit | bit) >> 31);
 }
 
-extern void fn_80191928(void *);
+extern void updateTrackingController(void *);
 extern char *fn_8018AE5C(void);
 extern f32 PSVECMag(const void *);
 extern f32 PSVECDotProduct(const void *, const void *);
@@ -2213,7 +2213,7 @@ void fn_80191AB4(void *arg0) {
     void *temp_r4_5;
     void *temp_r4_6;
 
-    fn_80191928(arg0);
+    updateTrackingController(arg0);
     lbl_8055E51C = PSVECMag(((char *(*)(void *))fn_8018AE5C)(M2C_FIELD(arg0, void **, 0x34)));
     temp_r4 = M2C_FIELD(arg0, void **, 0x34);
     temp_r3 = M2C_FIELD(arg0, void ***, 0x38);
