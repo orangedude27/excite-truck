@@ -2507,7 +2507,7 @@ static inline int fn_80196C90_signbit(float x) { /* MSL float.h __signbitf() */
      - decay it by the per-instance factor at +0x14C (drawn at random by
        fn_801981A0);
             - when a new best record was just set on either side this frame (+0x9C for
-       the positive side, +0x74 for the negative one, both raised by fn_8019703C
+       the positive side, +0x74 for the negative one, both raised by considerDriverTargetCandidate
        together with the record's signed Y at +0xCC) and that Y has the same sign
        as the shake value, damp the value further by lbl_80562260 (0.81f);
      - when the value has lost magnitude since last frame (+0x148 holds it) and
@@ -2553,7 +2553,7 @@ void fn_80196C90(void *arg0) {
     *(float *)(obj + 0x148) = *(float *)(obj + 0x144);
 }
 #pragma pop
-extern int fn_8019703C(void *, void *);
+extern int considerDriverTargetCandidate(void *, void *);
 extern int fn_8019799C(void *, void *);
 extern int fn_80197FE4(void *, void *);
 extern int fn_80137788(void *, int, float *);
@@ -2619,7 +2619,7 @@ void fn_80196DC4(void *arg0) {
             L.info.b = 0; L.info.w = 0;
         }
         if (*(u8 *)L.info.e != 0) {
-            if (L.cnt.a > 0 && fn_8019703C(arg0, &L.info) != 0) L.cnt.a--;
+            if (L.cnt.a > 0 && considerDriverTargetCandidate(arg0, &L.info) != 0) L.cnt.a--;
         } else {
             if (L.cnt.c > 0 && fn_80197FE4(arg0, &L.info) != 0) L.cnt.c--;
             if (L.cnt.b > 0 && fn_8019799C(arg0, &L.info) != 0) L.cnt.b--;
@@ -2648,7 +2648,7 @@ extern float lbl_80562144, lbl_80562170, lbl_80562194, lbl_8055A488;
    competes for the "ahead" slot at +0xA0 (lowest score wins); negative for the
    "behind" slot at +0x78 (highest score wins). The winner's 7-word record is copied
    in, its valid flag set, y/z/id saved at +0xCC..+0xDC, and a per-sign count bumped. */
-int fn_8019703C(void *driver, void *candidate) {
+int considerDriverTargetCandidate(void *driver, void *candidate) {
     float xLimit;
     float stateValue;
     float candidateZ;
