@@ -2058,7 +2058,7 @@ s32 fn_80163058(void *object) {
 
 #pragma cplusplus on
 /* Dispatches an object action based on arg1 when the object is ready; for case 0, if the indexed table entry (lbl_804348E8[arg2]) has tag 'PCAR' at +0x10 it finalizes and sets a flag at +0x91. */
-extern "C" void handleChallengeAction(void *object, s32 action, s32 index) {
+/* Handle a challenge sub-task action: forward events 1-4 as dispatches, and on action 0 finish the challenge if the selected car is the player car. */ extern "C" void handleChallengeAction(void *object, s32 action, s32 index) {
     class Obj {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
