@@ -490,7 +490,7 @@ void fn_801A7A5C(void) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma processor 750
-int getNextTriggeredInput(void *arg0) {
+/* Scan the enabled input bindings for the first triggered control and write its descriptor (type, device, value, flag) into binding, returning 1; returns 0 when none is active. */ int getNextTriggeredInput(void *binding) {
     /* Scans the initialized table (0x18-byte entries) for the first enabled
      * entry whose input/state passes the type-specific checks, copies its id
      * and fields into arg0, and returns 1; returns 0 if none qualify. */
@@ -523,19 +523,19 @@ int getNextTriggeredInput(void *arg0) {
             if (local.unk0 != 5 && local.unk0 != 6) {
                 if (fn_801A8EE4((unsigned int *)&local) != 0) {
                     if (((int (*)(void *))fn_801A8E38)(&local) != 0 && fn_801A8A10(&local) == 0) {
-                        *(int *)arg0 = local.unk0;
-                        *((int *)arg0 + 1) = local.unk4;
-                        *((int *)arg0 + 2) = local.unk8;
-                        *((unsigned char *)arg0 + 0xC) = local.unkC;
+                        *(int *)binding = local.unk0;
+                        *((int *)binding + 1) = local.unk4;
+                        *((int *)binding + 2) = local.unk8;
+                        *((unsigned char *)binding + 0xC) = local.unkC;
                         return 1;
                     }
                 } else {
                     value = ((float (*)(void *))fn_801A7F98)(&local);
                     if ((float)__fabs(fn_801A85E8(&local)) < lbl_80562460 && value > lbl_80562468) {
-                        *(int *)arg0 = local.unk0;
-                        *((int *)arg0 + 1) = local.unk4;
-                        *((int *)arg0 + 2) = local.unk8;
-                        *((unsigned char *)arg0 + 0xC) = local.unkC;
+                        *(int *)binding = local.unk0;
+                        *((int *)binding + 1) = local.unk4;
+                        *((int *)binding + 2) = local.unk8;
+                        *((unsigned char *)binding + 0xC) = local.unkC;
                         return 1;
                     }
                 }
