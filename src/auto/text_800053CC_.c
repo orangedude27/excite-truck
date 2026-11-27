@@ -126,7 +126,7 @@ extern u8 lbl_8034EC78[];
 extern s32 KERNEL_GetTimeMs(void);
 extern s32 fn_80005580(s32);
 extern u8 *lbl_8055D350;
-/* Iterates through items and returns 1 if all pass fn_80005580. */
+/* Returns 1 when every player passes the per-player gate, 0 if any fails. */
 s32 allPlayersPassGate(void) {
     s32 i = 0;
     while (i < *(s32 *)(lbl_8055D350 + 0x14)) {
