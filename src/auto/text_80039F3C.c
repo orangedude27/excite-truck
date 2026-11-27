@@ -1084,55 +1084,55 @@ int fn_8003B69C(int arg0, void *arg1)
  * Claims the next context slot (fatally reporting a taken/magic-corrupt slot),
  * stores the seek offset in the command buffer, and submits ioctl 0xAB through
  * doTransactionCallback; returns 0 if the submission failed, else 1. */
-int DVDLowSeekAsync(void *offset, void *callback)
+/* Issue an async DVD low-level seek to the given byte offset; returns 0 on failure. */ int DVDLowSeekAsync(void *offset, void *callback)
 {
   const char *msgBase = lbl_80302848;
   unsigned char *contexts = lbl_8037B820;
-  int offsetBytes;
-  int ctxIndex = lbl_8055D8E8;
+  int slotOffset;
+  int slotIndex = lbl_8055D8E8;
+  unsigned char *slot;
   unsigned char *context;
-  unsigned char *callbackContext;
   unsigned int one = 1;
   unsigned int inUse;
-  int nextSlot;
+  int nextSlotIndex;
   int ioResult;
-  offsetBytes = ctxIndex * 0x20;
-  context = contexts + offsetBytes;
-  inUse = context[8];
+  slotOffset = slotIndex * 0x20;
+  slot = contexts + slotOffset;
+  inUse = slot[8];
   lbl_8055D8E0 = one;
   if ((((-inUse) | inUse) >> 31) == 1U)
   {
-    OSReport(msgBase + 0x218, ctxIndex);
+    OSReport(msgBase + 0x218, slotIndex);
     OSReport(msgBase + 0x250);
     for (;;)
     {
     }
   }
-  if (((*((unsigned int *) (context + 0xC))) + 0x01150000U) != 0xDAEDU)
+  if (((*((unsigned int *) (slot + 0xC))) + 0x01150000U) != 0xDAEDU)
   {
     OSReport(msgBase + 0x280);
     for (;;)
     {
     }
   }
-  ((unsigned int *) contexts)[ctxIndex * 8] = (unsigned int) callback;
-  *((unsigned int *) ((contexts + offsetBytes) + 4)) = one;
-  (contexts + offsetBytes)[8] = one;
-  nextSlot = ctxIndex + 1;
-  lbl_8055D8E8 = nextSlot;
-  if (nextSlot >= 4)
+  ((unsigned int *) contexts)[slotIndex * 8] = (unsigned int) callback;
+  *((unsigned int *) ((contexts + slotOffset) + 4)) = one;
+  (contexts + slotOffset)[8] = one;
+  nextSlotIndex = slotIndex + 1;
+  lbl_8055D8E8 = nextSlotIndex;
+  if (nextSlotIndex >= 4)
   {
     lbl_8055D8E8 = 0;
   }
-  callbackContext = (unsigned char *)&((DVDLowContext *)lbl_8037B820)[ctxIndex];
+  context = (unsigned char *)&((DVDLowContext *)lbl_8037B820)[slotIndex];
   nextCommandBuf();
   lbl_8055D8FC[lbl_8055D8E4 * 0x20] = 0xAB;
   *((unsigned int *) ((lbl_8055D8FC + (lbl_8055D8E4 * 0x20)) + 4)) = (unsigned int) offset;
-  ioResult = IOS_IoctlAsync(lbl_80558E18, 0xAB, lbl_8055D8FC + (lbl_8055D8E4 * 0x20), 0x20, 0, 0, (void (*)(int, void *)) doTransactionCallback, callbackContext);
+  ioResult = IOS_IoctlAsync(lbl_80558E18, 0xAB, lbl_8055D8FC + (lbl_8055D8E4 * 0x20), 0x20, 0, 0, (void (*)(int, void *)) doTransactionCallback, context);
   if (ioResult != 0)
   {
     OSReport(msgBase + 0xA80, ioResult);
-    callbackContext[8] = 0;
+    context[8] = 0;
     return 0;
   }
   return 1;
