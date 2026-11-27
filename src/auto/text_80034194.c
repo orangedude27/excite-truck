@@ -1269,14 +1269,14 @@ void DVDInit(void) {
 #pragma push
 #pragma use_lmw_stmw off
 /* Start a DVD read for boot data into the boot info buffer after validating size, and record read metadata in error info. */
-void fn_8003588C(void) {
+void startBootDataReadAsync(void) {
     u32 discOffset;
     u32 readLength;
     s32 interrupts;
     u8 *errorInfoBase;
     u32 tick;
 
-    lbl_8055D8CC = (s32)fn_8003588C;
+    lbl_8055D8CC = (s32)startBootDataReadAsync;
     if (*(u32 *)((u8 *)bootInfo_8055D8C0 + 0x3C) < *(u32 *)(lbl_80376A80 + 8)) {
         ((void (*)(const char *, s32, const char *, ...))OSPanic)(lbl_80558E0C, 0x3F6, lbl_80302120);
     }
@@ -2276,7 +2276,7 @@ void fn_8003727C(u32 status) {
         register u32 discOffset;
 
         lbl_8055D860 = 0;
-        lbl_8055D8CC = (s32)fn_8003588C;
+        lbl_8055D8CC = (s32)startBootDataReadAsync;
         if (*(u32 *)((u8 *)bootInfo_8055D8C0 + 0x3C) < *(u32 *)(lbl_80376A80 + 8)) {
             ((void (*)(const char *, s32, const char *, ...))OSPanic)(lbl_80558E0C, 0x3F6, lbl_80302120);
         }
