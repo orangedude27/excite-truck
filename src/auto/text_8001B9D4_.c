@@ -1269,7 +1269,7 @@ void fn_8001D298(s32 contextIndex) {
 extern const char lbl_802FDAAC[];
 extern const char lbl_802FDAD8[];
 /* Compares two 0xC-byte stat entries by index; returns -1/0/1 for sorting. */
-s32 compareStats(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+/* Compares two ranking-stat entries by their data type and sort direction: -1/0/1 for ascending or descending float/int values, panicking on invalid types. */ s32 compareStats(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     u8 *entryA = (u8 *)(arg0 + arg1 * 0xC);
     u8 *entryB;
     s32 dataType;
