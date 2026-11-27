@@ -5707,7 +5707,7 @@ extern void fn_80122FA4(s32, void *, s32, void *);
 extern void fn_80123CEC(s32, void *, s32, void *);
 extern void fftBitReverse(s32, s32, void *);
 extern void fn_80123E98(void *, void *);
-extern void fn_80121848(void *);
+extern void bitReverseFFTBuffer(void *);
 extern void fn_80124AD8(void *, void *);
 extern void fn_80121BB0(void *);
 extern void fn_80124F90(void *);
@@ -5735,7 +5735,7 @@ extern void fn_80125098(void *);
     } else if (length > 8) {
         if (length == 0x20) {
             fn_80123E98(samples, (u8 *)w + (nw - 8) * 4);
-            fn_80121848(samples);
+            bitReverseFFTBuffer(samples);
         } else {
             fn_80124AD8(samples, w);
             fn_80121BB0(samples);
@@ -5961,7 +5961,7 @@ void fn_80121400(s32 n, s32 *map, f32 *data) {
     }
 }
 #pragma pop
-void fn_80121848(void *values) {
+void bitReverseFFTBuffer(void *values) {
     /* In-place bit-reversal of the 16 complex values in a 32-point FFT buffer;
      * each value is a real/imaginary float pair. */
     f32 *p = (f32 *)values;
