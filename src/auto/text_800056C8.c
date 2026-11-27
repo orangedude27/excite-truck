@@ -1539,7 +1539,7 @@ extern s32 fn_801E85A4(void);
 extern f32 lbl_80560194;
 extern f32 lbl_80560198;
 extern s32 fn_80161C18(void);
-extern s32 fn_80021258(void);
+extern s32 updateResultsOverlay(void);
 extern s32 fn_801DF110(void);
 extern s32 fn_80161A70(void);
 extern s32 drawAllPlayerHuds(void);
@@ -1571,7 +1571,7 @@ void fn_80007238(void) {
 
     fn_800057D0();
     fn_80161C18();
-    if (fn_80021258() != 0) goto done;
+    if (updateResultsOverlay() != 0) goto done;
     if (fn_801DF110() != 0) goto done;
     if (fn_80161A70() != 0) goto done;
     drawAllPlayerHuds();

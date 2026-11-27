@@ -988,7 +988,7 @@ extern char lbl_802FE374[], lbl_802FE398[]; /* those two prompts' "Page:Element"
 #define ALPHA_OPAQUE       255          /* full alpha of the box / of the fade */
 #define ALPHA_TO_UNIT      lbl_80560554 /* 255.0f: turns an 0..255 alpha into 0..1 */
 
-/* What the globals fn_80021258 works on hold.  The game's symbols can't be
+/* What the globals updateResultsOverlay works on hold.  The game's symbols can't be
    renamed yet, so the rest of the file still uses the lbl_ names. */
 #define OVERLAY_ACTIVE  lbl_8055D644 /* the tips/results overlay is being shown */
 #define CONTINUE_MADE   lbl_8055D672 /* the "PRESS_TO_CONTINUE" text was built */
@@ -998,7 +998,7 @@ extern char lbl_802FE374[], lbl_802FE398[]; /* those two prompts' "Page:Element"
 extern unsigned char lbl_8055D672, lbl_8055D673;
 extern float lbl_80560554, lbl_80560500, lbl_80560558, lbl_8056055C;
 #pragma dont_inline on
-int fn_80021258(void) {
+int updateResultsOverlay(void) {
     /* Per-frame update of the results overlay shown over the tips box.
        Does nothing while the overlay is switched off (OVERLAY_ACTIVE).
        fn_80020184() is the overlay's own fade-out: still fully opaque for the
