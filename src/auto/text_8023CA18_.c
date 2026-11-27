@@ -390,8 +390,8 @@ extern void SetSelectedMixerDevice(int);
 extern void fn_8020A5F8(float *, float);
 
 /* Sound-options panel (vtable lbl_803415E8: deleting destructor fn_8023D134,
- * refresh fn_8023D1FC, apply-field fn_8023D304).  Its fields 0..6 are the value
- * pointers fn_8023D1FC registers with fn_80221EA0; fn_8023D304 pushes the field
+ * refresh fn_8023D1FC, apply-field applySoundOptionField).  Its fields 0..6 are the value
+ * pointers fn_8023D1FC registers with fn_80221EA0; applySoundOptionField pushes the field
  * the player changed into the sound code. */
 typedef struct SoundOptions {
     u8 pad00[0x14];
@@ -418,7 +418,7 @@ typedef struct SoundOptions {
  * pushes the value of the field the player moved into the sound code.  Field 2
  * is the sound device: its index is clamped to the device list, selected, and
  * the device's name (or "N/A") is copied into the panel's name buffer. */
-void fn_8023D304(SoundOptions *panel, s32 field) {
+void applySoundOptionField(SoundOptions *panel, s32 field) {
     f32 *value;
     f32 level;
     s32 idx;
