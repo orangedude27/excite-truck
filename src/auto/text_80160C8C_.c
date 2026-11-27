@@ -2896,7 +2896,7 @@ struct TutorialValueEntry {
     s32 value;
 };
 #pragma cplusplus on
-extern "C" void buildTutorialValueEntries(void *state) {
+/* Build a tutorial object's (description, value) table from the scene's named parameters: scan desc<N>/lyt<N> names, resolve each value through the tutcmd.val table, and clamp the table to the entries present. */ extern "C" void buildTutorialValueEntries(void *state) {
     /* Build this object's (description, value) table out of the scene's named
      * parameter list.  "desc1", "desc2", ... in the list are the descriptions;
      * their number is found by looking for the first "desc<N>" the list does
@@ -2906,33 +2906,33 @@ extern "C" void buildTutorialValueEntries(void *state) {
      * object owned by the current screen (lbl_8055E2E4) and stored next to the
      * description.  The value table is released again on the way out. */
     TutorialEntriesState *self = (TutorialEntriesState *)state;
-    char name[0x10];
+    char paramName[0x10];
     TutorialValueEntry *entry;
-    s32 count;
+    s32 descCount;
     void *valueTable;
     s32 i;
 
     self->entryCount = 0;
     valueTable = fn_80131810(tutorialCmdValueFileName); /* "tutcmd.val" */
-    count = 0;
+    descCount = 0;
     do {
-        count++;
+        descCount++;
         /* name = "desc<count>" */
-        ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A110, count);
-    } while (((TutorialParamNameList *)self->list)->hasName(name) != 0);
+        ((void (*)(char *, s32, const char *, ...))fn_801345D8)(paramName, 0x10, (const char *)&lbl_8055A110, descCount);
+    } while (((TutorialParamNameList *)self->list)->hasName(paramName) != 0);
 
     i = 0;
-    while (i < count - 1) {
+    while (i < descCount - 1) {
         s32 index = i + 1;
         entry = &((TutorialValueEntry *)self->entries)[self->entryCount++];
         /* name = "desc<index>": the entry's description object */
-        ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A110, index);
-        entry->object = ((TutorialParamNameList *)self->list)->getValue(name);
+        ((void (*)(char *, s32, const char *, ...))fn_801345D8)(paramName, 0x10, (const char *)&lbl_8055A110, index);
+        entry->object = ((TutorialParamNameList *)self->list)->getValue(paramName);
         /* name = "lyt<index>": the name of the value table entry, if any */
-        ((void (*)(char *, s32, const char *, ...))fn_801345D8)(name, 0x10, (const char *)&lbl_8055A118, index);
+        ((void (*)(char *, s32, const char *, ...))fn_801345D8)(paramName, 0x10, (const char *)&lbl_8055A118, index);
         entry->value = 0;
-        if (((TutorialParamNameList *)self->list)->hasName(name) != 0) {
-            void *value = ((TutorialParamNameList *)self->list)->getValue(name);
+        if (((TutorialParamNameList *)self->list)->hasName(paramName) != 0) {
+            void *value = ((TutorialParamNameList *)self->list)->getValue(paramName);
             if (valueTable != 0) {
                 void *collection = ((TutorialValueTable *)valueTable)->getCollection(value);
                 if (collection != 0)
