@@ -1631,7 +1631,7 @@ extern void fn_8020A634(void);
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_80248E30(MdemoEnding *demo) {
+void updateMdemoEnding(MdemoEnding *demo) {
     /* Run one frame of an mdemo end-of-demo timer.  Over the last 400 ms of the
      * demo window the music is faded out - for the ending types flagged in
      * musicEndings, and only while a tune is playing (fn_8020A640) - and once
