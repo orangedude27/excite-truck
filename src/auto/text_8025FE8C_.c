@@ -61,7 +61,7 @@ extern u8 lbl_80345B40[];
 #pragma cplusplus on
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-extern "C" s32 fn_8025FECC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+extern "C" s32 chooseChallengeVehicle(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     /* If a global state flag is set, returns success early. Otherwise looks up an
      * object by arg2, queries it for a resource/value (logging errors via
      * Abend_Panic on failure), wraps a valid value in a temporary handle, passes
@@ -195,7 +195,7 @@ void fn_8026003C(void) {
     obj = fn_8001285C();
     queryId = *(s32 *)((char *)obj + 4);
     parameter = *(s32 *)(lbl_8055F420 + 0x10);
-    if (fn_8025FECC((s32)&localC, (s32)&local8, queryId, parameter) == 0) return;
+    if (chooseChallengeVehicle((s32)&localC, (s32)&local8, queryId, parameter) == 0) return;
     {
         void *d = fn_80016544((void *)localC);
         if ((*(u32 *)((char *)d + 0xA0) & 0x2) == 0) fn_80019144((char *)d + 0x2C);
