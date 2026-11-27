@@ -1665,7 +1665,7 @@ extern "C" s32 fn_8021A9A4(void *arg0) {
     return temp2 | first;
 }
 #pragma dont_inline off
-extern "C" void drawCursorIcon(void *widget) {
+/* Draw a cursor-bound icon: copy the current UI transform, damp its X translation while the entry is unselected (or the UI mode byte is clear), apply it, then pass the graphic and its box to the widget's drawer callback. */ extern "C" void drawCursorIcon(void *widget) {
     /* Draw a cursor-bound icon: copy the current transform, damp its X
      * translation when the entry is not selected, apply it, then hand the
      * graphic and its box to the drawer callback. */
