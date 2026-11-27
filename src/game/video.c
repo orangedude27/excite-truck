@@ -514,9 +514,12 @@ void GXSetupThreeStageTevPipeline(void) {
     GXSetNumTevStages(3);
 }
 
-/* Configures GX texcoord generation and a 2-stage TEV combiner for this render path. */
+/* Non-alternate 2-stage TEV pipeline selected by fn_802DC71C for material flag
+ * 0x1D when there is no alternate texture (useAlt == 0); its alternate-texture
+ * twin is GXSetupThreeStageTevPipelineAlt. Stage 0 takes TEXMAP1's colour with
+ * alpha = texel alpha + raster alpha, stage 1 adds TEXMAP0's colour on top and
+ * carries that alpha through. */
 void GXSetupTwoStageTevPipelineNoAlt(void) {
-    /* Configures texcoord generation and a two-stage TEV combiner for this render path. */
     register u32 texCoord = 0;
     register u32 texGenType = 1;
     GXSetTexCoordGen2(texCoord, texGenType, GX_TG_TEX1, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
