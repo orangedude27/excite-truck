@@ -768,7 +768,7 @@ loop_3:
  * moves the source origin along with it; each row then steps over the pixels
  * a row does not hold on both sides.  Only RGB565 and RGB1555 sources
  * convert; any other source format only traces "Can't copy from %d to %d". */
-void gxCanvasCopy16to32(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight,
+/* Blit a source rectangle from a 16-bit-pixel canvas into a 4-byte RGBA canvas, clipping to the destination first and converting RGB565/RGB1555 pixels through the matching GX colour expander. */ void gxCanvasCopy16to32(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight,
                   s32 srcBottom, s32 dstCanvas, s32 dstLeft, s32 dstTop) {
     /* Destination corner after clipping, the matching source corner, and the
        size that is left of the requested rectangle. */
