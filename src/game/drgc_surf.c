@@ -400,43 +400,47 @@ void fn_802D4458(void *arg0) {
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_802D479C(void *arg0) {
-    s32 count = *(s32 *)((u8 *)arg0 + 0x1C);
-    u8 *src = *(u8 **)((u8 *)arg0 + 0x20);
-    f32 *base = (f32 *)fn_802CFF64(count * 12);
-    f32 *out;
-    s32 i;
-    u8 *vertex;
-
-    if (base != 0) {
-        f32 *table = gSurfAngleTable;
-        out = base;
-        vertex = src;
-        for (i = 0; i < count; i++) {
-            f32 a[3], b[3];
-            f32 t0 = table[vertex[0x18]];
-            f32 t1 = table[vertex[0x19]];
-            a[1] = 0.0039215686f * (f32)*(s16 *)(vertex + 0xE);
-            a[2] = 0.0039215686f * (f32)*(s16 *)(vertex + 0x10);
-            a[0] = 0.0039215686f * (f32)*(s16 *)(vertex + 0xC);
-            b[0] = 0.0039215686f * (f32)*(s16 *)(vertex + 0x12);
-            b[1] = 0.0039215686f * (f32)*(s16 *)(vertex + 0x14);
-            b[2] = 0.0039215686f * (f32)*(s16 *)(vertex + 0x16);
-            out[0] = *(f32 *)(src + 0) + a[0] * t0;
-            out[1] = *(f32 *)(src + 4) + a[1] * t0;
-            out[2] = *(f32 *)(src + 8) + a[2] * t0;
-            out[0] += b[0] * t1;
-            out[1] += b[1] * t1;
-            out[2] += b[2] * t1;
-            vertex += 0x1C;
-            src += 0x1C;
-            out += 3;
-        }
-        GXSetArray(9, base, 0xC);
-        GXSetArray(0xB, *(void **)((u8 *)arg0 + 0x24), 2);
-        GXSetArray(0xD, *(void **)((u8 *)arg0 + 0x28), 4);
-        GXCallDisplayList(*(void **)((u8 *)arg0 + 0x30), *(u32 *)((u8 *)arg0 + 0x2C));
+void fn_802D479C(const void *arg0)
+{
+  s32 count = *((s32 *) (((u8 *) arg0) + 0x1C));
+  u8 *src = *((u8 **) (((u8 *) arg0) + 0x20));
+  f32 b[3];
+  f32 *base = (f32 *) fn_802CFF64(count * 12);
+  s32 i;
+  u8 *vertex;
+  f32 *out;
+  if (base != 0)
+  {
+    f32 *table = gSurfAngleTable;
+    out = base;
+    vertex = src;
+    for (i = 0; i < count; i++)
+    {
+      f32 a[3];
+      f32 t0 = table[vertex[0x18]];
+      f32 t1 = table[vertex[0x19]];
+      a[1] = 0.0039215686f * ((f32) (*((s16 *) (vertex + 0xE))));
+      a[2] = .0039215686f * ((f32) (*((s16 *) (vertex + 0x10))));
+      a[0] = 0.0039215686f * ((f32) (*((s16 *) (vertex + 0xC))));
+      b[0] = 0.0039215686f * ((f32) (*((s16 *) (vertex + 0x12))));
+      b[1] = 0.0039215686f * ((0, (f32) (*((s16 *) (vertex + 0x14)))));
+      b[2] = 0.0039215686f * ((f32) (*((s16 *) (vertex + 0x16))));
+      out[0] = (*((f32 *) (src + 0))) + (a[0] * t0);
+      out[1] = (*((f32 *) (src + 4))) + (a[1] * t0);
+      out[2] = (*((f32 *) (src + 8))) + (a[2] * t0);
+      out[0] += b[0] * t1;
+      out[1] += ((double) b[1]) * t1;
+      out[2] += b[2] * t1;
+      vertex += 0x1C;
+      src += 0x1C;
+      out += 3;
     }
+
+    GXSetArray(9, base, 0xC);
+    GXSetArray(0xB, *((void **) (((u8 *) arg0) + 0x24)), 2);
+    GXSetArray(0xD, *((void **) (((u8 *) arg0) + 0x28)), 4);
+    GXCallDisplayList(*((void **) (((u8 *) arg0) + 0x30)), *((u32 *) (((u8 *) arg0) + 0x2C)));
+  }
 }
 
 #pragma push
