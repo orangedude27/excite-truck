@@ -116,46 +116,47 @@ int isRaceResultActive(void *entry) {
 
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-/* Fill in race-result points and bonuses: find the highest score (+0x14) among the
- * active RaceResult records (ties included), then give each active record its points
- * from its placing and a +5 bonus for a nonzero score plus another +5 for a top score. */
+/* Assign race-result points and bonuses: find the highest score (+0x14) among the
+ * active result records (recording every tie), then give each active record its
+ * placing-based points from getPointsForPlacing in +0x10, a +5 bonus in +0x12 for a
+ * nonzero score, and another +5 if it is tied for the top score. */
 void assignRaceResultPoints(int context) {
     struct {
-        int count;
+        int numTied;
         int indices[8];
-        int max_val;
+        int bestScore;
     } topScores;
     register int recordIndex;
     register int byteOffset;
     register int scanIndex;
     register char *record;
     register int tieIndex;
-    char *record2;
-    topScores.max_val = -1;
-    topScores.count = 0;
+    char *resultRecord;
+    topScores.bestScore = -1;
+    topScores.numTied = 0;
     for (scanIndex = 0, byteOffset = 0; scanIndex < lbl_80435780[0x3C0 / 4]; byteOffset += 0x1C, scanIndex++) {
         record = (char *)*lbl_8055E624 + byteOffset;
         if (isRaceResultActive(record) != 0) {
-            if (*(short *)(record + 0x14) >= topScores.max_val) {
-                if (*(short *)(record + 0x14) > topScores.max_val) {
-                    topScores.count = 0;
+            if (*(short *)(record + 0x14) >= topScores.bestScore) {
+                if (*(short *)(record + 0x14) > topScores.bestScore) {
+                    topScores.numTied = 0;
                 }
-                topScores.indices[topScores.count++] = scanIndex;
-                topScores.max_val = *(short *)(record + 0x14);
+                topScores.indices[topScores.numTied++] = scanIndex;
+                topScores.bestScore = *(short *)(record + 0x14);
             }
         }
     }
     for (recordIndex = 0, scanIndex = 0; recordIndex < lbl_80435780[0x3C0 / 4]; scanIndex += 0x1C, recordIndex++) {
-        record2 = (char *)*lbl_8055E624 + scanIndex;
-        if (isRaceResultActive(record2) != 0) {
-            *(short *)(record2 + 0x10) = getPointsForPlacing(context, *(short *)(record2 + 0xC));
-            *(short *)(record2 + 0x12) = 0;
-            if (*(short *)(record2 + 0x14) != 0) {
-                *(short *)(record2 + 0x12) += 5;
+        resultRecord = (char *)*lbl_8055E624 + scanIndex;
+        if (isRaceResultActive(resultRecord) != 0) {
+            *(short *)(resultRecord + 0x10) = getPointsForPlacing(context, *(short *)(resultRecord + 0xC));
+            *(short *)(resultRecord + 0x12) = 0;
+            if (*(short *)(resultRecord + 0x14) != 0) {
+                *(short *)(resultRecord + 0x12) += 5;
             }
-            for (tieIndex = 0; tieIndex < topScores.count; tieIndex++) {
+            for (tieIndex = 0; tieIndex < topScores.numTied; tieIndex++) {
                 if (recordIndex == topScores.indices[tieIndex]) {
-                    *(short *)(record2 + 0x12) += 5;
+                    *(short *)(resultRecord + 0x12) += 5;
                 }
             }
         }
