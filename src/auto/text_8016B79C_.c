@@ -2226,7 +2226,7 @@ void fn_8016EA9C(void *arg0)
 #pragma optimize_for_size reset
 extern void fn_802ADE60(s32, s32);
 #pragma cplusplus on
-extern "C" void fn_8016EE34(void *arg0) {
+extern "C" void destroyFreestyleSystem(void *arg0) {
     /* Release owned resources and virtual subobjects held by this object. */
     class VObj { public: virtual void destroy(int); };
     VObj *resource;
