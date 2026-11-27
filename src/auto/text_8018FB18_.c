@@ -1932,7 +1932,7 @@ extern "C" void fn_80191860(void *arg0, void *arg1) {
    the per-state threshold (0.888889 in state 4, else 2.66667) and result() == 0,
    it advances 4 -> 5 and then counts up each frame, wrapping to 3 after 0x1D
    frames or as soon as the dot falls under -1.33333. Any other failure -> 4. */
-extern "C" void updateTrackingController(void *ctrl) {
+/* Per-frame tracking-controller state machine: when the actor's timer is under 1.0 and its speed()/result() interface and the dot of its +0x54/+0x118 vectors say it is aligned, advance the controller state (4 ready -> 5 counting -> 3 loop) and reset to 4 on failure. */ extern "C" void updateTrackingController(void *ctrl) {
     class Interface {
     public:
         virtual void f0();
