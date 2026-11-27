@@ -9640,7 +9640,7 @@ loop_57:
     return (s8)*arg0 != 0;
 }
 #pragma opt_propagation reset
-extern "C" s32 fn_800B6928(s8);
+extern "C" s32 mountDriveByLetter(s8);
 s32 fn_800AE4C0(s32, s32, s32);
 extern "C" s32 fn_800B3754(s32, s32 *, s32);
 extern "C" s32 fn_800AF574(void *);
@@ -11726,7 +11726,7 @@ done:
     return 0;
 }
 #pragma pop
-s32 fn_800B6928(s8 driveLetter) {
+s32 mountDriveByLetter(s8 driveLetter) {
     /* Mount the virtual drive named by a letter: lock the VF table, find the
      * drive's record, skip it when flagged, then mount it and publish the
      * result, clearing the pending flag on failure. */
@@ -12252,10 +12252,10 @@ extern "C" void fn_800B7408(s32* drivers, void* context) {
 #pragma dont_inline on
 extern "C" s32 fn_800B74B8(s8 drive) {
     typedef s32 (*StatusFn)(void);
-    /* Mount the virtual drive named by `drive` (fn_800B6928), then map its FRESULT
+    /* Mount the virtual drive named by `drive` (mountDriveByLetter), then map its FRESULT
        to a success code (fn_800B73BC). The no-arg cast is a trampoline that leaves
        r3, holding the mount result, live for the mapping call. */
-    fn_800B6928(drive);
+    mountDriveByLetter(drive);
     return ((StatusFn)fn_800B73BC)();
 }
 #pragma dont_inline reset
