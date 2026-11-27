@@ -761,7 +761,7 @@ extern void fn_802E009C(void);
 extern void fn_802E050C(void);
 extern void fn_802E0420(void);
 extern void GXSetupThreeStageTevPipeline(void);
-extern void fn_802DFD00(void);
+extern void GXSetupModulateAddTevPipeline(void);
 extern int __cntlzw(unsigned int);
 #pragma scheduling invalid_target
 #pragma push
@@ -800,7 +800,7 @@ extern "C" void fn_802DC71C(int arg0, int arg1) {
             else fn_802E0420();
             fn_802DC62C();
         } else if (useAlt != 0) GXSetupThreeStageTevPipeline();
-        else fn_802DFD00();
+        else GXSetupModulateAddTevPipeline();
         lbl_8055FEB0 = (*(unsigned int *)((unsigned char *)tex1 + 0xE0) >> 3) & 1;
     }
     GXSetAlphaCompare(4, *((unsigned char *)tex1 + 0xE4), 1, 0, 0);

@@ -452,7 +452,7 @@ void GXResetWaterBumpTevPipelineB(void) {
     fn_802D3144();
 }
 #pragma scheduling on
-void fn_802DFD00(void) {
+void GXSetupModulateAddTevPipeline(void) {
     /* Configures texcoord generation and a two-stage TEV combiner: stage 0 modulates
        the raster color by a texture with constant alpha, stage 1 adds the prior color
        and texture, and alpha blending is applied. */
@@ -572,7 +572,7 @@ void GXSetupThreeStageTevPipelineAlt(void) {
  * TEV pipeline for the CPU-light pass when the light texture carries no extra
  * map: fn_802DC71C picks it (with fn_802DC62C) when that texture's S wrap is
  * GX_REPEAT; fn_802E050C is its two-stage twin for the extra-map case and
- * fn_802DFD00 the variant used when the wrap is not GX_REPEAT.
+ * GXSetupModulateAddTevPipeline the variant used when the wrap is not GX_REPEAT.
  * One texture generator: texcoord 0 passes the vertex's texcoord0 through the
  * identity matrix.  The single combiner stage samples texmap 1 with that
  * texcoord, ignores the vertex colour channel and clamps into TEVPREV, reading
