@@ -225,7 +225,7 @@ __declspec(section ".data") extern void *gEntryList;
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 #pragma opt_common_subs off
-void clearEntryList(void) {
+/* Clears the global pool and destroys all entries in gEntryList, releasing nested handles/rows and freeing each object. */ void clearEntryList(void) {
     /* Clears the global pool and destroys all entries in gEntryList, releasing nested handles/rows and freeing each object. */
     extern void __array_delete(void *, void *, int, int);
     extern void fn_802B0690(int *);
@@ -234,7 +234,7 @@ void clearEntryList(void) {
     void *entry;
     int entryOffset;
     int entryIndex;
-    void *table;
+    void *listHeader;
     int rowIndex;
     int itemIndex;
     char *row;
@@ -242,10 +242,10 @@ void clearEntryList(void) {
     int itemOffset;
 
     fn_802B0874();
-    table = &gEntryList;
+    listHeader = &gEntryList;
     entryIndex = 0;
     entryOffset = 0;
-    for (; entryIndex < *(int *)((char *)table + 4); entryOffset += 4, entryIndex++) {
+    for (; entryIndex < *(int *)((char *)listHeader + 4); entryOffset += 4, entryIndex++) {
         entry = *(void **)(*(char **)&gEntryList + entryOffset);
         if (entry != 0) {
             for (rowIndex = 0, rowOffset = 0; rowIndex < *(int *)((char *)entry + 0x10); rowOffset += 0x80, rowIndex++) {
@@ -287,7 +287,7 @@ void clearEntryList(void) {
             fn_80128668(entry);
         }
     }
-    *(int *)((char *)table + 4) = 0;
+    *(int *)((char *)listHeader + 4) = 0;
 }
 #pragma dont_inline reset
 
