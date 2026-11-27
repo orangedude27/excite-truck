@@ -1273,7 +1273,7 @@ s32 *fn_8011770C(void *arg0, s32 arg1) {
     return (s32 *)allocated;
 }
 
-extern signed long fn_801190B0(void*, signed long);
+extern signed long BinkMgr_SetStreamsPlaying(void*, signed long);
 extern signed long fn_80116D30(void);
 extern unsigned long fn_80116BD4(signed long, signed long, signed long);
 extern void fn_80117330(void*);
@@ -1305,8 +1305,8 @@ signed long fn_801186B8(void* arg0) {
     if (*(signed long*)(m + 0x2DC) != 0) {
         *(signed long*)(m + 0x2DC) = 0;
         if (*(signed long*)(m + 0x288) != 0) {
-            fn_801190B0(m, 0);
-            fn_801190B0(m, 1);
+            BinkMgr_SetStreamsPlaying(m, 0);
+            BinkMgr_SetStreamsPlaying(m, 1);
         }
         *(signed long*)(m + 0x268) = 0;
         *(signed long*)(m + 0x330) = 0;
@@ -1458,7 +1458,7 @@ void fn_80118C1C(void *object, s32 endTick) {
     }
 }
 
-extern s32 fn_801190B0(void*, s32);
+extern s32 BinkMgr_SetStreamsPlaying(void*, s32);
 #pragma push
 #pragma opt_loop_invariants off
 #pragma opt_common_subs off
@@ -1514,7 +1514,7 @@ extern s32 fn_801190B0(void*, s32);
             value = *(s32*)((u8*)bink + 0x2EC);
             *(s32*)((u8*)bink + 0x2EC) = value + 1;    /* resyncs done so far */
             fn_8011C274(lbl_8055DED4, (u8*)bink + 0x340);   /* lock the Bink tick */
-            fn_801190B0(bink, 0);                          /* pause its streams */
+            BinkMgr_SetStreamsPlaying(bink, 0);                          /* pause its streams */
             for (;;) {
                 frameOrTarget = *(u32*)((u8*)bink + 0x138);
                 bufferedFrames = *(u32*)((u8*)bink + 0x13C);
@@ -1527,7 +1527,7 @@ extern s32 fn_801190B0(void*, s32);
                 *(s32*)((u8*)bink + 0x268) = 0;        /* decode timing, restarts */
                 *(s32*)((u8*)bink + 0x328) = 0;
                 *(s32*)((u8*)bink + 0x330) = 0;
-                fn_801190B0(bink, 1);                      /* streams running again */
+                BinkMgr_SetStreamsPlaying(bink, 1);                      /* streams running again */
                 fn_8011C2EC(lbl_8055DED4, (u8*)bink + 0x340);
                 break;
             }
@@ -1769,7 +1769,7 @@ s32 fn_80118F78(void *bink, s32 paused) {
  * starts while the flag is down the movie's timing is restarted (timeBase,
  * +0x328 and savedElapsed).  The pass runs under the shared Bink tick lock,
  * taken on the first player that has a callback and released at the end. */
-s32 fn_801190B0(void *mgr, s32 start) {
+s32 BinkMgr_SetStreamsPlaying(void *mgr, s32 start) {
     /* The movie object's fields this touches (see Bink). */
     #define MOVIE_FRAME        (*(u32 *)((u8 *)mgr + 0x0C))  /* frame being shown */
     #define MOVIE_TIME_BASE    (*(s32 *)((u8 *)mgr + 0x268)) /* tick play started on */
