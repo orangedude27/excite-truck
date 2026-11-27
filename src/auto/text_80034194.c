@@ -109,7 +109,7 @@ extern void fn_8003773C(void);
 extern void fn_8003801C(void);
 extern void __DVDHandleMotorError(u32);
 extern s32 lbl_8055D870, lbl_8055D874;
-extern void fn_8003B9CC(u32, void *);
+extern void DVDLowSeekAsync(u32, void *);
 extern void fn_8003A1A0(u32, void (*)(void));
 extern void fn_8003B218();
 extern u32 errorLogCount;
@@ -1636,7 +1636,7 @@ void fn_80035E6C(u32 arg0) {
     if (status == 3) {
         if ((u32)((taskType & 0x00FFFFFF) - 0x00030000) == 0x1100) {
             fn_800356F4(2, *(u32 *)((char *)executing_8055D8C8 + 0x10), 0);
-            fn_8003B9CC(*(u32 *)((char *)executing_8055D8C8 + 0x10), (void *)__DVDHandleError);
+            DVDLowSeekAsync(*(u32 *)((char *)executing_8055D8C8 + 0x10), (void *)__DVDHandleError);
             return;
         }
         ((void (*)(void *))lbl_8055D8CC)((void *)executing_8055D8C8);
@@ -2744,7 +2744,7 @@ extern s32 lbl_8055D8B4, lbl_8055D878;
 #pragma push
 #pragma use_lmw_stmw off
 extern void fn_80038870();
-extern void fn_8003B9CC(u32, void *);
+extern void DVDLowSeekAsync(u32, void *);
 extern void fn_8003B508(u32, u32, void *);
 extern void fn_8003B0B0(void *, void *);
 extern void fn_8003AC24(void *);
@@ -2816,7 +2816,7 @@ extern void (*lbl_80558E08)(void *, void *);
      /* DVDLowRead(addr+transferTotal, transferSize, offset+DVD_LOW_OFFSET(transferTotal), cbForStateBusy) */
      ((int (*)(void *, u32, u32, void *))DVDLowReadAsync)(*(u8 **)(blockBytes+0x18)+*(u32 *)(blockBytes+0x20), *(u32 *)(blockBytes+0x1c), *(u32 *)(blockBytes+0x10)+(*(u32 *)(blockBytes+0x20)>>2), fn_80038870);
    } break;
- case 2: fn_8003BCDC(0); fn_8003B9CC(*(u32 *)(blockBytes+0x10),fn_80038870); break;                  /* clear cover; DVDLowSeek */
+ case 2: fn_8003BCDC(0); DVDLowSeekAsync(*(u32 *)(blockBytes+0x10),fn_80038870); break;                  /* clear cover; DVDLowSeek */
  case 3: DVDLowRawReadAsync(0,0,fn_80038870); break;                                                       /* DVDLowStopMotor */
  case 15: DVDLowRawReadAsync(0,0,fn_80038870); break;                                                      /* DVDLowStopMotor */
  case 13: fn_8003BCDC(0); fn_8003B508(*(u32 *)(blockBytes+0x10),*(u32 *)(blockBytes+0x14),fn_80038870); break; /* DVDLowAudioBufferConfig */

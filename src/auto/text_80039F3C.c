@@ -1084,7 +1084,7 @@ int fn_8003B69C(int arg0, void *arg1)
  * Claims the next context slot (fatally reporting a taken/magic-corrupt slot),
  * stores the seek offset in the command buffer, and submits ioctl 0xAB through
  * doTransactionCallback; returns 0 if the submission failed, else 1. */
-int fn_8003B9CC(void *offset, void *callback)
+int DVDLowSeekAsync(void *offset, void *callback)
 {
   const char *msgBase = lbl_80302848;
   unsigned char *contexts = lbl_8037B820;
