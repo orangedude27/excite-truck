@@ -4706,16 +4706,16 @@ extern "C" void dispatchShapeNodeByType(s32 arg0, void *arg1) {
     extern u8 lbl_8055E5A5;
     extern char lbl_80333448[];
     extern char lbl_8055A4C4[];
-    /* Dispatches collision/shape node handling based on the node's 4CC type tag. */
+    /* Dispatch collision/shape node handling by the 4CC type tag at node+0x18. */
     char *messageBase = lbl_80333448;
     s32 nodeType = *(s32 *)((u8 *)arg1 + 0x18);
     switch (nodeType) {
-    case 0x504F4C59:
+    case 'POLY':
         break;
-    case 0x53504852:
+    case 'SPHR':
         fn_8019C854(arg1, (void *)arg0);
         break;
-    case 0x47525550: {
+    case 'GRUP': {
         u8 *groupEntry = (u8 *)arg1;
         s32 i = 0;
         while (i < *(s32 *)((u8 *)arg1 + 0x174)) {
@@ -4725,19 +4725,19 @@ extern "C" void dispatchShapeNodeByType(s32 arg0, void *arg1) {
         }
         break;
     }
-    case 0x424F5820:
+    case 'BOX ':
         if (!lbl_8055E5A4) {
             lbl_8055E5A4 = 1;
             fn_802E30C8(lbl_8055A4C4, messageBase + 0x22C);
         }
         break;
-    case 0x52414744:
+    case 'RAGD':
         if (!lbl_8055E5A5) {
             lbl_8055E5A5 = 1;
             fn_802E30C8(lbl_8055A4C4, messageBase + 0x254);
         }
         break;
-    case 0x464C5352:
+    case 'FLSR':
         fn_8019D378(arg1, (void *)arg0);
         break;
     default:
