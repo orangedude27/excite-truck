@@ -202,7 +202,7 @@ extern int __cntlzw(unsigned int);
 /* Handle one key for the tunable-parameter screen: arrows select the row and the
  * left/right keys step the selected float parameter (clamped to its range) or
  * flip its boolean, then refresh the timestamp; returns 1 when something changed. */
-int fn_80204870(int key) {
+int handleTuneDashKey(int key) {
     struct Entry {
         int unused;
         int type;

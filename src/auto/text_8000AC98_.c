@@ -66,12 +66,12 @@ void fn_8000ACB0(void) {
 
 int fn_802044E8(void);
 int fn_80007238();
-int fn_80204870(void);
+int handleTuneDashKey(void);
 int fn_800074EC(int);
-/* RealName: unknown (rename_symbol unavailable). Returns 1 if fn_80204870 reports
+/* RealName: unknown (rename_symbol unavailable). Returns 1 if handleTuneDashKey reports
  * a blocking condition, otherwise forwards to fn_800074EC. */
 int fn_8000ACDC(int arg0) {
-#define IsUiInputBlocked fn_80204870
+#define IsUiInputBlocked handleTuneDashKey
 #define ForwardMenuInput fn_800074EC
     if (IsUiInputBlocked() != 0) {
         return 1;
