@@ -5492,7 +5492,7 @@ void fn_80120CA4(s32, void *, s32, s32, void *);
 void fn_80120E14(s32, void *, s32, s32, void *);
 void fn_801250CC(s32, s32, s32, s32);
 void fn_801252D8(s32, f32 *, s32, f32 *);
-void fftReal(s32 length, s32 direction, f32 *data, s32 table, s32 work) {
+/* Ooura in-place real FFT: sizes twiddle/work tables as needed, runs the forward or inverse stage passes by length, then applies the final two-point combine. */ void fftReal(s32 length, s32 direction, f32 *data, s32 table, s32 work) {
     /* Dispatch FFT-like forward/inverse passes: ensure twiddle/work sizes, run stage routines by length/direction, and apply final 2-point combine. */
     s32 size1;
     s32 size2;
