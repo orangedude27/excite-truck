@@ -197,7 +197,7 @@ void fn_8028A664(void) {
     extern void *fn_8028C824(void *, s32);
     extern void *fn_802929D8(s32, void *, s32, s32);
     extern void *fn_802974CC(void *);
-    extern void fn_8028ABE8(void *);
+    extern void initTerrainChunks(void *);
     extern void fn_8028B3CC(void);
     extern void Event_RegisterHandler(s32, s32);
     extern s32 fn_8028B93C(const f32 *);
@@ -219,7 +219,7 @@ void fn_8028A664(void) {
     handle = fn_802974CC("expseq.val");
     *(volatile s32 *)&lbl_8055F700 = (s32)handle;
     *(volatile s32 *)&lbl_804B32B8[0x50] = 0;
-    fn_8028ABE8(handle);
+    initTerrainChunks(handle);
     fn_8028B3CC();
     Event_RegisterHandler((s32)fn_8028B93C, 0);
     Event_RegisterHandler((s32)fn_8028B500, 1);
@@ -407,7 +407,7 @@ void fn_8028AB14(void) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void fn_8028ABE8(void *arg0) {
+extern "C" void initTerrainChunks(void *arg0) {
     /* Initializes the 8 terrain chunk slots by looking up each "terrain_%d"
        object, resolving its "chunk" child, querying texture/skid parameters,
        clamping skid and random chances to [0,100], then registers the update callback. */
