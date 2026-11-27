@@ -408,9 +408,10 @@ void fn_8028AB14(void) {
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void initTerrainChunks(void *arg0) {
-    /* Initializes the 8 terrain chunk slots by looking up each "terrain_%d"
-       object, resolving its "chunk" child, querying texture/skid parameters,
-       clamping skid and random chances to [0,100], then registers the update callback. */
+    /* Initialize the eight terrain chunk slots: for each "terrain_%d" object,
+       resolve its "chunk" child and create a "terchunk" effect chunk with the
+       texture and skid settings it reports, clamping skid and random chances
+       to [0,100]; then register the per-frame update callback. */
     class TerrainChunkQuery {
     public:
         virtual void dummy0();
