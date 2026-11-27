@@ -5341,7 +5341,7 @@ extern "C" void scrollBarOnPress(void *scrollBar, s32 mouseX, s32 mouseY) {
         *(s8 *)(bar + 0x250) = 0;
     }
 }
-extern "C" void fn_802213A4(void *scrollBar, s32 pointerX, s32 pointerY) {
+extern "C" void updateScrollBarDrag(void *scrollBar, s32 pointerX, s32 pointerY) {
     /* While dragging a scroll bar, turn the pointer position into a content
      * offset using the track length and clamp it to [0, total - page size]. */
     void *scrollState;
@@ -5365,7 +5365,7 @@ extern "C" void fn_802213A4(void *scrollBar, s32 pointerX, s32 pointerY) {
 }
 
 extern "C" void fn_80221538(void *scrollBar) {
-    /* End a scroll-bar drag: clear the "dragging" flag checked by fn_802213A4. */
+    /* End a scroll-bar drag: clear the "dragging" flag checked by updateScrollBarDrag. */
     *(u8 *)((u8 *)scrollBar + 0x250) = 0;
 }
 
