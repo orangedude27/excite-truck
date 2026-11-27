@@ -970,59 +970,58 @@ int fn_801F15A8(void **tablePtr, int point) {
 #define WHEELMOD_LOD_TABLE 0x28             /* offsetof(WheelMod, lods) */
 #define WHEELMOD_LOD_SPIN_FLAG 0x3C         /* WHEELMOD_LOD_TABLE + offsetof(WheelModLod, yesFlag) */
 
-/* Draw one wheel of a detached wheel instance: copy its world matrix, roll the
- * model about its X axis when the LOD entry's flag asks for it (backwards on the
- * mirrored wheels), scale that axis to the wheel's width, and submit the result
- * to the model manager as the slow- or fast-spinning model of this side. */
+/* Draw one wheel instance: copy its world matrix, roll the model about X when
+ * the LOD entry asks for it (backwards on mirrored wheels), scale to the wheel's
+ * width, and submit the slow- or fast-spinning model of this side. */
 void drawWheelInstance(void *instance, int lodIndex, float spinAngle) {
     WheelInstance *wheel = (WheelInstance *)instance;
-    int wheelIndex = wheel->wheelIndex;
-    char *lodBase;
+    int wheelSlot = wheel->wheelIndex;
+    char *lodEntry;
     WheelModLod *lod;
-    int useFastRemap;
-    int matrix[12];
-    float rollMtx[9];
-    Vec angles;
-    unsigned int state;
-    int spinsForward = 1;
+    int fastRemap;
+    int worldMatrix[12];
+    float rollMatrix[9];
+    Vec rollAngles;
+    unsigned int drawState;
+    int forwardSpin = 1;
 
-    if (wheelIndex != 0 && wheelIndex != 2)
-        spinsForward = 0;
-    state = wheel->state;
+    if (wheelSlot != 0 && wheelSlot != 2)
+        forwardSpin = 0;
+    drawState = wheel->state;
     /* the record's LOD table starts 0x28 into it, so the index is scaled first */
-    lodBase = (char *)wheel->mod + lodIndex * sizeof(WheelModLod);
-    lod = (WheelModLod *)(lodBase + WHEELMOD_LOD_TABLE);
-    *(MatrixPair *)&matrix[0] = *(MatrixPair *)&wheel->matrix[0];
-    useFastRemap = (state >> 4) & 1;
-    *(MatrixPair *)&matrix[2] = *(MatrixPair *)&wheel->matrix[2];
-    *(MatrixPair *)&matrix[4] = *(MatrixPair *)&wheel->matrix[4];
-    *(MatrixPair *)&matrix[6] = *(MatrixPair *)&wheel->matrix[6];
-    matrix[8] = *(int *)&wheel->matrix[8];
-    *(MatrixPair *)&matrix[9] = *(MatrixPair *)&wheel->matrix[9];
-    matrix[11] = *(int *)&wheel->matrix[11];
-    if (*(unsigned char *)(lodBase + WHEELMOD_LOD_SPIN_FLAG) != 0) {
+    lodEntry = (char *)wheel->mod + lodIndex * sizeof(WheelModLod);
+    lod = (WheelModLod *)(lodEntry + WHEELMOD_LOD_TABLE);
+    *(MatrixPair *)&worldMatrix[0] = *(MatrixPair *)&wheel->matrix[0];
+    fastRemap = (drawState >> 4) & 1;
+    *(MatrixPair *)&worldMatrix[2] = *(MatrixPair *)&wheel->matrix[2];
+    *(MatrixPair *)&worldMatrix[4] = *(MatrixPair *)&wheel->matrix[4];
+    *(MatrixPair *)&worldMatrix[6] = *(MatrixPair *)&wheel->matrix[6];
+    worldMatrix[8] = *(int *)&wheel->matrix[8];
+    *(MatrixPair *)&worldMatrix[9] = *(MatrixPair *)&wheel->matrix[9];
+    worldMatrix[11] = *(int *)&wheel->matrix[11];
+    if (*(unsigned char *)(lodEntry + WHEELMOD_LOD_SPIN_FLAG) != 0) {
         /* the lod entry's 'y' flag: roll the model by the wheel's angle */
-        float direction = (spinsForward != 0) ? wheelmod_spin_forward : wheelmod_spin_reversed;
-        float angle = spinAngle * direction;
-        float zero = wheelmod_angle_zero;
-        angles.x = angle; angles.y = zero; angles.z = zero;
-        fn_80015A20(rollMtx, &angles, angle);
-        fn_80015B20(matrix, rollMtx, matrix);
+        float spinDirection = (forwardSpin != 0) ? wheelmod_spin_forward : wheelmod_spin_reversed;
+        float rollAngle = spinAngle * spinDirection;
+        float zeroAngle = wheelmod_angle_zero;
+        rollAngles.x = rollAngle; rollAngles.y = zeroAngle; rollAngles.z = zeroAngle;
+        fn_80015A20(rollMatrix, &rollAngles, rollAngle);
+        fn_80015B20(worldMatrix, rollMatrix, worldMatrix);
     }
     {
-        float width = wheel->mod->modelScale;
-        *(float *)&matrix[0] *= width; *(float *)&matrix[1] *= width; *(float *)&matrix[2] *= width;
+        float wheelWidth = wheel->mod->modelScale;
+        *(float *)&worldMatrix[0] *= wheelWidth; *(float *)&worldMatrix[1] *= wheelWidth; *(float *)&worldMatrix[2] *= wheelWidth;
     }
     {
-        int modelId;
-        if (useFastRemap != 0) {
-            int side = wheel->side;
-            modelId = lod->fastRemap[side];
+        int modelIndex;
+        if (fastRemap != 0) {
+            int sideIndex = wheel->side;
+            modelIndex = lod->fastRemap[sideIndex];
         } else {
-            int side = wheel->side;
-            modelId = lod->slowRemap[side];
+            int sideIndex = wheel->side;
+            modelIndex = lod->slowRemap[sideIndex];
         }
-        fn_802C70AC(modelId, matrix, 0, fn_801F1978(wheel->state));
+        fn_802C70AC(modelIndex, worldMatrix, 0, fn_801F1978(wheel->state));
     }
 }
 
