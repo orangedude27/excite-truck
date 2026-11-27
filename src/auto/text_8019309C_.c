@@ -1587,59 +1587,59 @@ void fn_801958D8(void *arg0) {
 }
 
 /* Updates a state machine/object step, applying damage/offroad checks and idle tracking. */
-void updateDriverState(void *arg0) {
+/* Update one truck-driver substep: clear a stale countdown, flag an invalid steer value, pick a new target, apply offroad/damage checks through the driver state machine, and track whether the linked vehicle is idle. */ void updateDriverState(void *arg0) {
     extern double __fabs(double);
     extern char lbl_80558DC4[];
     extern float lbl_80562140, lbl_80562144, lbl_805621DC;
     extern char lbl_803332F8[];
     extern char lbl_8055A4B0;
-    unsigned char *self = (unsigned char *)arg0;
-    void *linkedObj;
-    float delta;
-    float stateDifference;
-    int state;
-    int idle;
+    unsigned char *driver = (unsigned char *)arg0;
+    void *vehicle;
+    float speedDelta;
+    float targetGap;
+    int phase;
+    int isIdle;
 
-    if (self[0x2A7]) {
-        linkedObj = *(void **)(self + 0x294);
-        if (*(int *)((char *)linkedObj + 0x2620) > 0) {
-            self[0x2A7] = 0;
-            fn_8018A174(linkedObj);
+    if (driver[0x2A7]) {
+        vehicle = *(void **)(driver + 0x294);
+        if (*(int *)((char *)vehicle + 0x2620) > 0) {
+            driver[0x2A7] = 0;
+            fn_8018A174(vehicle);
         }
     }
 
-    linkedObj = *(void **)(self + 0x294);
-    if (!((float)__fabs((double)*(float *)((char *)linkedObj + 0x2690)) <= *(float *)lbl_80558DC4))
+    vehicle = *(void **)(driver + 0x294);
+    if (!((float)__fabs((double)*(float *)((char *)vehicle + 0x2690)) <= *(float *)lbl_80558DC4))
         ((void (*)(void *, const char *))fn_801961F8)(arg0, lbl_803332F8);
 
     fn_80195B28(arg0, lbl_80562144);
-    delta = *(float *)(self + 0x26C) - *(float *)(self + 0x1F4);
-    fn_801942F0(arg0, delta > lbl_80562140);
+    speedDelta = *(float *)(driver + 0x26C) - *(float *)(driver + 0x1F4);
+    fn_801942F0(arg0, speedDelta > lbl_80562140);
 
-    state = *(int *)(self + 0x260);
-    switch (state) {
+    phase = *(int *)(driver + 0x260);
+    switch (phase) {
     case 1:
-        stateDifference = *(float *)(self + 0x264);
-        stateDifference = *(float *)(self + 0x278) - stateDifference;
-        if ((float)__fabs((double)stateDifference) < lbl_805621DC)
-            *(int *)(self + 0x260) = 2;
+        targetGap = *(float *)(driver + 0x264);
+        targetGap = *(float *)(driver + 0x278) - targetGap;
+        if ((float)__fabs((double)targetGap) < lbl_805621DC)
+            *(int *)(driver + 0x260) = 2;
         break;
     case 2:
-        if (*(float *)(self + 0x270) < lbl_80562208)
+        if (*(float *)(driver + 0x270) < lbl_80562208)
             fn_80193CD4(arg0);
         break;
     }
 
-    if ((float)__fabs((double)*(float *)(self + 0x278)) >
-            lbl_80562140 + *(float *)(self + 0x284) &&
-        !(*(int *)(self + 0x2D0) & 8))
+    if ((float)__fabs((double)*(float *)(driver + 0x278)) >
+            lbl_80562140 + *(float *)(driver + 0x284) &&
+        !(*(int *)(driver + 0x2D0) & 8))
         ((void (*)(void *, const char *))fn_8019416C)(arg0, &lbl_8055A4B0);
 
-    linkedObj = *(void **)(self + 0x294);
-    idle = *(int *)((char *)linkedObj + 0x2620) == 0;
-    if (idle && !self[0x208])
-        *(float *)(self + 0x204) = *(float *)(self + 0x26C);
-    self[0x208] = idle;
+    vehicle = *(void **)(driver + 0x294);
+    isIdle = *(int *)((char *)vehicle + 0x2620) == 0;
+    if (isIdle && !driver[0x208])
+        *(float *)(driver + 0x204) = *(float *)(driver + 0x26C);
+    driver[0x208] = isIdle;
 }
 
 #pragma scheduling on
