@@ -6729,9 +6729,9 @@ extern "C" s32 fn_800AE3A8(void *fileInfo, s32 startCluster, s32 clusterIndex, u
 
 extern "C" s32 VFiPFFAT_GetClusterSpecified(void *, u32, u32, u32 *);
 
-extern "C" s32 VFiPFFAT_GetPhysicalAddress(void *fileInfo, u32 fileOffset, u32 mode, u32 byteCount, s32 *outAddress) {
+/* Resolve a byte offset within a FAT file to its physical storage address, written through *outAddress. */ extern "C" s32 VFiPFFAT_GetPhysicalAddress(void *fileInfo, u32 fileOffset, u32 mode, u32 byteCount, s32 *outAddress) {
     /* Resolve a byte offset within a FAT file to a physical storage address, written through *outAddress. */
-    s32 cluster;
+    s32 resolvedCluster;
     s32 status;
     void *fatInfo;
     u32 *fileState;
@@ -6764,23 +6764,23 @@ extern "C" s32 VFiPFFAT_GetPhysicalAddress(void *fileInfo, u32 fileOffset, u32 m
         u32 clustersNeeded = roundedUnits / unitCount;
         s32 remB = roundedUnits - clustersNeeded * unitCount;
         u32 sectorCount = clustersNeeded + (remB != 0);
-        status = fn_800AE3A8(fileInfo, (s32)shiftedOffset, (s32)sectorCount, (u32 *)&cluster);
+        status = fn_800AE3A8(fileInfo, (s32)shiftedOffset, (s32)sectorCount, (u32 *)&resolvedCluster);
         if (status == 0)
             goto cluster_result;
         return status;
     } else {
-        status = VFiPFFAT_GetClusterSpecified(fileInfo, shiftedOffset, mode, (u32 *)&cluster);
+        status = VFiPFFAT_GetClusterSpecified(fileInfo, shiftedOffset, mode, (u32 *)&resolvedCluster);
         if (status == 0)
             goto cluster_result;
         return status;
     }
 cluster_result:
-    if ((u32)(cluster + 0x10000) == 0xFFFFU) {
+    if ((u32)(resolvedCluster + 0x10000) == 0xFFFFU) {
         *outAddress = -1;
         return 0;
     }
     u32 clusterCount = *(u8 *)((u8 *)fatInfo + 6);
-    u32 clusterIndex = cluster - 2;
+    u32 clusterIndex = resolvedCluster - 2;
     shiftAmount = *(u8 *)((u8 *)fatInfo + 0x21);
     u32 base = *(u32 *)((u8 *)fatInfo + 0x30);
     u32 shiftedCluster = clusterIndex << shiftAmount;
