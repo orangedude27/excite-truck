@@ -91,7 +91,7 @@ extern char lbl_80343780[];
 extern float lbl_8055F264;
 extern unsigned char lbl_8055F268;
 extern char attractMovieName[];
-extern char lbl_80343348[];
+extern char demoIdxParamName[];
 extern char lbl_8034397C[];
 extern char lbl_8055BE98;
 extern float fn_8020A5F0(void);
@@ -508,7 +508,7 @@ extern "C" void runKioskDemoSelection(void) {
 loop_items:
     root = fn_80012820(rootIndex);
     demoSubobject = *(void **)((char *)root + 0x80);
-    candidateDemoIndex = ((DemoResourceNode *)demoSubobject)->find(lbl_80343348, -1);
+    candidateDemoIndex = ((DemoResourceNode *)demoSubobject)->find(demoIdxParamName, -1);
     if (demoIndex == candidateDemoIndex) {
         selectedRootIndex = rootIndex;
         root = fn_80012820(rootIndex);
