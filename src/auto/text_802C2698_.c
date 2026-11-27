@@ -58,7 +58,7 @@ void fn_802C26F0(void) {
     sSwlMapTargetSlot = targetSlot;
 }
 
-extern s32 fn_801D9B58(void); /* draw the current scene */
+extern s32 drawMorphMapScene(void); /* draw the current scene */
 extern s32 fn_802C2C00(s32); /* save/restore the depth-test state word */
 extern s32 DrawList_loadMatrix(f32 *, f32, f32, f32, f32); /* set a transform matrix and scale */
 extern s32 fn_802C86E8(s32); /* set the clear color */
@@ -122,7 +122,7 @@ void fn_802C276C(void) {
         fn_802C86E8(0xFF00FF00);
         HomeMenu_applySavedFade(-1);
         savedState = fn_802C2C00(0);
-        fn_801D9B58();
+        drawMorphMapScene();
         fn_802C2C00(savedState);
         fn_802C9294(-1, 0);
     }

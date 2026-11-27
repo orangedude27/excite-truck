@@ -41,7 +41,7 @@ extern int buildMorphRegions(void *, void *, const char *, int);
 
 #pragma cplusplus on
 // One "morph_group" item of the mmorph.val DTB, built by fn_801D9394 and linked
-// into the list at lbl_8055E96C; fn_801D9B58 walks the same nodes.
+// into the list at lbl_8055E96C; drawMorphMapScene walks the same nodes.
 struct MorphGroup {
     char name[0x20];         // 0x00 the item's "name", copied in when the node is built
     float weight;            // 0x20 blend weight; fn_801D9AB8 applies it to the morph regions
@@ -655,7 +655,7 @@ int fn_801D9B28(void *group, int regionId) {
    as its alpha, never quite invisible thanks to morphMinAlpha. A set is drawn
    once and switched off again, so this only costs work while a morph group is
    actually fading in or out. */
-void fn_801D9B58(void) {
+void drawMorphMapScene(void) {
     float blend[4];
     int childOffset;
     struct MorphGroup *group;
