@@ -1331,7 +1331,7 @@ void fn_802B7434(void) {
 #define kSampleFull    lbl_80564C90 /* 255.0f: the sample of a fully applied brush stroke */
 #define kMarkerSize    lbl_80564C94 /* 3.0f: size of the marker for a refused cell */
 #define kGridStep      lbl_80564C58 /* 2.0f: world units per grid cell */
-void applyBrushSample(s16 x, s16 y, s32 sample) {
+/* Apply one sampled brush cell according to the current terrain debug-viewer mode. */ void applyBrushSample(s16 x, s16 y, s32 sample) {
     switch (viewMode) {
     case 2:
         if (sample != 0) {
