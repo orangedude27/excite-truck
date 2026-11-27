@@ -343,10 +343,10 @@ extern "C" int fn_801F52BC(void *self, int sourceId, int outBuf, int outMax) {
         Abend_Panic(base + 0xE8);
     }
 
-    fn_801F4F9C(setupOut, object->get(lbl_8055B18C), context);
-    fn_801F4F9C((char *)setupOut + 0x18, object->get(lbl_8055B190), context);
-    fn_801F4F9C((char *)setupOut + 0x30, object->get(lbl_8055B194), context);
-    fn_801F4F9C((char *)setupOut + 0x48, object->get(lbl_8055B198), context);
+    ((void (*)(Vertex_801F4F9C *, DummyObj_801F4F9C *, const float *))fn_801F4F9C)((Vertex_801F4F9C *)setupOut, (DummyObj_801F4F9C *)object->get(lbl_8055B18C), (const float *)context);
+    ((void (*)(Vertex_801F4F9C *, DummyObj_801F4F9C *, const float *))fn_801F4F9C)((Vertex_801F4F9C *)((char *)setupOut + 0x18), (DummyObj_801F4F9C *)object->get(lbl_8055B190), (const float *)context);
+    ((void (*)(Vertex_801F4F9C *, DummyObj_801F4F9C *, const float *))fn_801F4F9C)((Vertex_801F4F9C *)((char *)setupOut + 0x30), (DummyObj_801F4F9C *)object->get(lbl_8055B194), (const float *)context);
+    ((void (*)(Vertex_801F4F9C *, DummyObj_801F4F9C *, const float *))fn_801F4F9C)((Vertex_801F4F9C *)((char *)setupOut + 0x48), (DummyObj_801F4F9C *)object->get(lbl_8055B198), (const float *)context);
 
     if (((int (*)(void *, int, void *, int))fn_801F52BC)(
             getterObject, (int)(base + 0x114), (char *)setupOut + 0x60, 4) == 0) {
