@@ -199,7 +199,7 @@ extern char lbl_803493B4[];
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 #pragma cplusplus on
-/* Builds an FXSequence from the "seq" nodes of a parsed value file: counts matching nodes, allocates the header and 0x18-byte node array, fills each entry via fn_80297354, caches the maximum end time, and frees everything if an entry fails. */ extern "C" void *createFXSequence(void *path) {
+/* Builds an FXSequence from the "seq" nodes of a parsed value file: counts matching nodes, allocates the header and 0x18-byte node array, fills each entry, caches the maximum end time, and frees everything if any entry fails. */ /* Builds an FXSequence from the "seq" nodes of a parsed value file: counts matching nodes, allocates the header and 0x18-byte node array, fills each entry via fn_80297354, caches the maximum end time, and frees everything if an entry fails. */ extern "C" void *createFXSequence(void *path) {
     class Iterator {
     public:
         virtual void v0();
