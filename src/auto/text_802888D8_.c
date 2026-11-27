@@ -1377,14 +1377,8 @@ typedef struct RadiatorSmokeTrack {
 #define kAttrDir      ((const char *)&lbl_8055C898)
 #pragma push
 #pragma scheduling invalid_target
+/* Build the radiator smoke-track table: for each car-effect slot, copy the radiator object's nozzle count and each nozzle's "arm" position and "dir" direction into a row; non-radiator slots get an empty row. */
 int buildRadiatorSmokeTracks(int smokeMan) {
-    /* Build the "smoke car tab" table the radiator smoke man keeps at +0: one
-     * RadiatorSmokeTrack row per slot of the per-car effect table (fn_80287B14
-     * counts the slots, fn_80288208 gives the i-th).  A slot whose object
-     * answers to the name "radiator" contributes its smoke nozzles: how many it
-     * has (its "count" attribute) and, for each child object, the "arm"
-     * position and "dir" direction it sits at.  A slot holding anything else
-     * gets an empty row. */
     RadiatorArm *cursor;
     int i;
     RadiatorSmokeTrack *track;
