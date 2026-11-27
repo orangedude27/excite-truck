@@ -7924,7 +7924,7 @@ extern "C" s32 fn_800B0488(void *arg0, u32 arg1, u32 arg2, void *arg3, s32 arg4)
  * (0x1000) runs the volume's retry handler, which may ask for the next FAT copy
  * instead, up to the number of copies.  The entry is byte-swapped out of the
  * FAT's little-endian order and masked to its 28 cluster bits. */
-extern "C" s32 VFiPFFAT_GetEntry32Page(void *volume, s32 cluster, u32 *outEntry, void *page) {
+/* Read a 28-bit FAT32 entry for a cluster from a cache page the caller holds, moving the page to the entry's sector (and writing back any dirty sector to all FAT copies) first; retry through the volume's error callback on transient device errors. */ extern "C" s32 VFiPFFAT_GetEntry32Page(void *volume, s32 cluster, u32 *outEntry, void *page) {
     /* sector and scaled are taken through one-word cells: the compiler has to
      * keep them in memory, as the retry loop rewrites sector and jumps back. */
     struct SectorCell { u32 v; } sectorCell;
