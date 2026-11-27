@@ -14815,7 +14815,7 @@ extern "C" s32 lbl_8055DD6C;
 extern "C" s32 *lbl_8055DD70;
 extern "C" u8 lbl_80407560[0x18];
 extern "C" const char lbl_8031B838[];
-extern "C" s32 fn_800BC2EC(void *, s32 *);
+extern "C" s32 readSdCardScr(void *, s32 *);
 extern "C" s32 IOS_Ioctl(s32, s32, void *, s32, void *, s32);
 
 extern "C" void fn_800BBCB4(void* ctx) {
@@ -14946,7 +14946,7 @@ extern "C" s32 fn_800BBEA4(IosDevice *dev, s32 arg1, s32 *arg2, s32 arg3) {
                     r30 = 3;
                     break;
                 case 0x33:
-                    res = fn_800BC2EC(dev, out);
+                    res = readSdCardScr(dev, out);
                     lbl_8055DD6C = 0;
                     goto end;
                 case 0x29:
@@ -15018,7 +15018,7 @@ extern "C" s32 fn_800BACC4(void *, s32, s32 *, s32);
     return result;
 }
 
-s32 fn_800BC2EC(void *device, s32 *outData) {
+s32 readSdCardScr(void *device, s32 *outData) {
     /* Issues a sequence of SD card ioctl commands via runSdCardCommand to query data
        into outData (and logs progress/results via OSReport strings in lbl_8031B838).
        Returns 0 on success or an error/status code (0xC1000000 if outData is NULL). */
@@ -17777,54 +17777,62 @@ extern "C" void fn_800C21D8(s32* arg0, s32* arg1) {
 #pragma pop
 extern "C" s32 lbl_8031D670[];
 #pragma push
-extern "C" void fn_800C2590(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3)
-{
-  s32 *t = (s32 *) lbl_8031D670;
-  s32 a0 = arg0[0];
-  s32 c0 = *(t++);
-  s32 c1 = *(t++);
-  arg2[0] = (char) (arg1[0] + ((s32) ((((s64) a0) * c0) >> 20)));
-  arg3[0] = arg1[17] + ((s32) ((((s64) a0) * c1) >> 20));
-  s32 a1 = arg0[1];
-  s32 d0 = *(t++);
-  s32 d1 = *(t++);
-  arg2[64] = arg1[1] + ((s32) ((((s64) a1) * d0) >> 20));
-  arg3[-64] = arg1[16] + ((s32) ((((s64) arg0[1]) * d1) >> 20));
-  s32 a2 = arg0[2];
-  s32 e0 = *(t++);
-  s32 e1 = *(t++);
-  arg2[128] = arg1[2] + ((s32) ((((s64) a2) * e0) >> 20));
-  arg3[-128] = arg1[15] + ((s32) ((((s64) arg0[2]) * e1) >> 20));
-  s32 a3 = arg0[3];
-  volatile int f1 = *(t++);
-  s32 f0 = *(t++);
-  arg2[192] = arg1[3] + ((s32) ((((s64) a3) * f0) >> 20));
-  arg3[-192] = arg1[14] + ((s32) ((((s64) arg0[3]) * f1) >> 20));
-  s32 a4 = arg0[4];
-  s32 g0 = *(t++);
-  s32 g1 = *(t++);
-  arg2[256] = arg1[4] + ((s32) ((((s64) a4) * g0) >> 20));
-  arg3[-256] = arg1[13] + ((s32) ((((s64) a4) * g1) >> 20));
-  s32 a5 = arg0[5];
-  s32 h0 = *(t++);
-  s32 h1 = *(t++);
-  arg2[320] = arg1[5] + ((s32) ((((s64) a5) * h0) >> 20));
-  arg3[-320] = arg1[12] + ((s32) ((((s64) a5) * h1) >> 20));
-  s32 a6 = arg0[6];
-  s32 i0 = *(t++);
-  s32 i1 = *(t++);
-  arg2[384] = arg1[6] + ((s32) ((((s64) a6) * i0) >> 20));
-  arg3[-384] = arg1[11] + ((s32) ((((s64) a6) * i1) >> 20));
-  s32 a7 = arg0[7];
-  s32 j0 = *(t++);
-  s32 j1 = *(t++);
-  arg2[448] = arg1[7] + ((s32) ((((s64) a7) * j0) >> 20));
-  arg3[-448] = arg1[10] + ((s32) ((((s64) a7) * j1) >> 20));
-  s32 a8 = arg0[8];
-  s32 k0 = *(t++);
-  s32 k1 = *(t++);
-  arg2[512] = arg1[8] + ((s32) ((((s64) a8) * k0) >> 20));
-  arg3[-512] = arg1[9] + ((s32) ((((s64) a8) * k1) >> 20));
+extern "C" void fn_800C2590(s32 *a0, s32 *a1, s32 *o2, s32 *o3) {
+    s32 *t = (s32 *)lbl_8031D670;
+    s32 x0 = a0[0]; s32 c0 = *t++;
+    s32 p0 = (s32)(((s64)x0 * c0) >> 20);
+    s32 c1 = *t++;
+    o2[0] = p0 + a1[0];
+    s32 q0 = (s32)(((s64)x0 * c1) >> 20);
+    o3[0] = q0 + a1[17];
+    s32 x1 = a0[1]; s32 d0 = *t++;
+    s32 p1 = (s32)(((s64)x1 * d0) >> 20);
+    s32 d1 = *t++;
+    o2[64] = p1 + a1[1];
+    s32 q1 = (s32)(((s64)x1 * d1) >> 20);
+    o3[-64] = q1 + a1[16];
+    s32 x2 = a0[2]; s32 e0 = *t++;
+    s32 p2 = (s32)(((s64)x2 * e0) >> 20);
+    s32 e1 = *t++;
+    o2[128] = p2 + a1[2];
+    s32 q2 = (s32)(((s64)x2 * e1) >> 20);
+    o3[-128] = q2 + a1[15];
+    s32 x3 = a0[3]; s32 f0 = *t++;
+    s32 p3 = (s32)(((s64)x3 * f0) >> 20);
+    s32 f1 = *t++;
+    o2[192] = p3 + a1[3];
+    s32 q3 = (s32)(((s64)x3 * f1) >> 20);
+    o3[-192] = q3 + a1[14];
+    s32 x4 = a0[4]; s32 g0 = *t++;
+    s32 p4 = (s32)(((s64)x4 * g0) >> 20);
+    s32 g1 = *t++;
+    o2[256] = p4 + a1[4];
+    s32 q4 = (s32)(((s64)x4 * g1) >> 20);
+    o3[-256] = q4 + a1[13];
+    s32 x5 = a0[5]; s32 h0 = *t++;
+    s32 p5 = (s32)(((s64)x5 * h0) >> 20);
+    s32 h1 = *t++;
+    o2[320] = p5 + a1[5];
+    s32 q5 = (s32)(((s64)x5 * h1) >> 20);
+    o3[-320] = q5 + a1[12];
+    s32 x6 = a0[6]; s32 i0 = *t++;
+    s32 p6 = (s32)(((s64)x6 * i0) >> 20);
+    s32 i1 = *t++;
+    o2[384] = p6 + a1[6];
+    s32 q6 = (s32)(((s64)x6 * i1) >> 20);
+    o3[-384] = q6 + a1[11];
+    s32 x7 = a0[7]; s32 j0 = *t++;
+    s32 p7 = (s32)(((s64)x7 * j0) >> 20);
+    s32 j1 = *t++;
+    o2[448] = p7 + a1[7];
+    s32 q7 = (s32)(((s64)x7 * j1) >> 20);
+    o3[-448] = q7 + a1[10];
+    s32 x8 = a0[8]; s32 k0 = *t++;
+    s32 p8 = (s32)(((s64)x8 * k0) >> 20);
+    s32 k1 = *t++;
+    o2[512] = p8 + a1[8];
+    s32 q8 = (s32)(((s64)x8 * k1) >> 20);
+    o3[-512] = q8 + a1[9];
 }
 #pragma pop
 extern u32 lbl_8031D6B8[];
