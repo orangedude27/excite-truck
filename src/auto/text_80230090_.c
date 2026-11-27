@@ -287,38 +287,38 @@ void drawTextWithYWrap(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
     extern s32 fn_80232B70(s32);
     extern void fn_80232BA4(s32, s32, s32, s32, f32, f32, f32, f32, f32);
     extern f32 lbl_80563620, lbl_80563624;
-    f32 spC, sp8;
-    f32 temp_f1, temp_f3, temp_f4;
-    f32 temp_f31, temp_f28, temp_f27, temp_f26;
-    f32 var_f2;
-    s32 var_r0;
+    f32 clampedY, wrappedBaseY;
+    f32 temp_f1, textOffsetY, wrappedOffset;
+    f32 heightScale, heightOffset, minY, maxY;
+    f32 wrappedY;
+    s32 needsWrap;
     (void)arg_sp0;
-    temp_f31 = farg3;
+    heightScale = farg3;
     temp_f1 = (f32)fn_80232B70(arg1);
-    temp_f3 = farg5 * farg4;
-    temp_f28 = temp_f31 * temp_f1;
-    temp_f27 = lbl_80563620 - farg6;
-    temp_f1 = farg1 + temp_f3;
-    temp_f26 = lbl_80563624 + farg6;
-    temp_f4 = temp_f1 - temp_f28;
-    spC = temp_f1;
-    sp8 = temp_f4;
-    fn_80230C9C(&sp8, &spC, temp_f27, temp_f26, -temp_f27 + temp_f26);
-    var_r0 = 0;
-    var_f2 = lbl_80563620;
-    if (sp8 < temp_f27) {
-        var_r0 = 1;
-        temp_f4 = sp8 + (-temp_f27 + temp_f26);
-        var_f2 = temp_f4 + temp_f28;
+    textOffsetY = farg5 * farg4;
+    heightOffset = heightScale * temp_f1;
+    minY = lbl_80563620 - farg6;
+    temp_f1 = farg1 + textOffsetY;
+    maxY = lbl_80563624 + farg6;
+    wrappedOffset = temp_f1 - heightOffset;
+    clampedY = temp_f1;
+    wrappedBaseY = wrappedOffset;
+    fn_80230C9C(&wrappedBaseY, &clampedY, minY, maxY, -minY + maxY);
+    needsWrap = 0;
+    wrappedY = lbl_80563620;
+    if (wrappedBaseY < minY) {
+        needsWrap = 1;
+        wrappedOffset = wrappedBaseY + (-minY + maxY);
+        wrappedY = wrappedOffset + heightOffset;
     }
-    if (spC > temp_f26) {
-        var_r0 = 1;
-        var_f2 = spC - (-temp_f27 + temp_f26);
+    if (clampedY > maxY) {
+        needsWrap = 1;
+        wrappedY = clampedY - (-minY + maxY);
     }
-    if (var_r0 != 0) {
-        fn_80232BA4(arg0, arg1, arg2, arg3, farg0, var_f2, farg3, farg2, lbl_80563610);
+    if (needsWrap != 0) {
+        fn_80232BA4(arg0, arg1, arg2, arg3, farg0, wrappedY, farg3, farg2, lbl_80563610);
     }
-    fn_80232BA4(arg0, arg1, arg2, arg3, farg0, spC, farg3, farg2, lbl_80563610);
+    fn_80232BA4(arg0, arg1, arg2, arg3, farg0, clampedY, farg3, farg2, lbl_80563610);
 }
 #pragma processor gekko
 #pragma use_lmw_stmw on
