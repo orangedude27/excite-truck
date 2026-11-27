@@ -1522,32 +1522,32 @@ __declspec(section ".sdata") extern char lbl_8055B1C0[];
 // Adds a manual (non-uniform) mesh/fabric entry into this object's slot table:
 // validates capacity/type, snapshots setup via snapshotClothSetup, fills slot params (id/state,
 // scaled gravity/wind values) using the object's virtual getters, and increments slot count.
-extern "C" void addManualFabric(void *arg0, void *arg1, void *arg2) {
+/* Add a manual fabric entry to the table: check capacity and mesh type, snapshot the cloth setup into the new slot, fill gravity/wind/drag params from the object's getters, and increment the slot count. */ extern "C" void addManualFabric(void *table, void *obj, void *context) {
     char sp8[0x68];
     int got;
     char *slot;
     int value;
     int old;
     DummyObj_801F7280 *object;
-    if (*(int *)((char *)arg0 + 0x120) >= 4) {
+    if (*(int *)((char *)table + 0x120) >= 4) {
         Abend_Panic(lbl_8033AE54);
     }
-    got = fn_801F4ECC(arg1);
+    got = fn_801F4ECC(obj);
     if (got & 1) {
         Abend_Panic(lbl_8033AE78);
     }
-    slot = (char *)arg0 + *(int *)((char *)arg0 + 0x120) * 0x48;
-    object = (DummyObj_801F7280 *)arg1;
+    slot = (char *)table + *(int *)((char *)table + 0x120) * 0x48;
+    object = (DummyObj_801F7280 *)obj;
     value = (int)object->d5(lbl_8055B1C0);
     old = fn_801F4E44(object->d5(lbl_8055B19C));
-    snapshotClothSetup(sp8, arg1, arg2);
+    snapshotClothSetup(sp8, obj, context);
     fn_801F602C(slot, (int)sp8, value, old, got);
     *(int *)(slot + 0x34) = -1;
     slot[0x38] = 1;
     *(float *)(slot + 0x3C) = lbl_80562FE8 * object->d9(lbl_8055B1A8);
     *(float *)(slot + 0x40) = object->d9(lbl_8055B1B0);
     *(float *)(slot + 0x44) = object->d9(lbl_8055B1B8);
-    *(int *)((char *)arg0 + 0x120) = *(int *)((char *)arg0 + 0x120) + 1;
+    *(int *)((char *)table + 0x120) = *(int *)((char *)table + 0x120) + 1;
 }
 #pragma cplusplus reset
 extern void fn_801F6A98();
