@@ -2818,7 +2818,7 @@ void fn_802D2B0C(void) {
     extern void GXResetTevSwapMode0(void);
     extern void GXSetupTevPipelineMode5(void);
     extern void fn_802E0B68(void);
-    extern void fn_802DF300(void);
+    extern void GXSetupTevPipelineMode2(void);
     extern void fn_802DF46C(void);
     extern void GXSetupIndirectTevPipeline(void);
     extern void GXResetIndirectTevPipeline(void);
@@ -2856,7 +2856,7 @@ void fn_802D2B0C(void) {
             case 2:
                 lbl_8055FD70 = 1;
                 if (gRenderRequest[0xA] != 0) {
-                    fn_802DF300();
+                    GXSetupTevPipelineMode2();
                     lbl_8055FD80 = fn_802DF46C;
                 } else {
                     GXSetupIndirectTevPipeline();
