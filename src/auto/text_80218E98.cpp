@@ -4110,27 +4110,27 @@ extern "C" void gxCanvasResetClipRect(s32);
 extern "C" s32 lbl_8055FBF8;
 // Renders entity onto canvas: sets the canvas clip rect from the entity's position and vtable size,
 // runs its per-frame hook and optional marker, then draws its textured quad when flag 0x19 is set.
-extern "C" void drawTextBoxOnCanvas(void* entity, s32 canvas) {
+/* Draw a text box onto the given canvas: clip to the box, run its layout hook, draw the optional slider image and text, then a short caret bar while the box is being edited. */ extern "C" void drawTextBoxOnCanvas(void* box, s32 canvas) {
     s32 outX, outY;
     s32 posY, posX, posX_2, posY_2, posX_3, posY_3, drawX, drawY;
     gxCanvasSwitch(canvas);
-    posX = *(s32*)((u8*)entity+4);
-    posY = *(s32*)((u8*)entity+8);
-    gxCanvasSetClipRect(canvas, posX, posY, posX + ((Vf78*)entity)->get(), *(s32*)((u8*)entity+0x10));
-    ((void(*)(void*,s32))fn_802192A0)(entity,canvas);
-    if (*(s32*)((u8*)entity+0xA60)) {
-        posY_2 = *(s32*)((u8*)entity+8);
-        posX_2 = *(s32*)((u8*)entity+4);
-        fn_80228DC4(canvas, *(s32*)((u8*)entity+0xA60), posX_2, posY_2, ((Vf78*)entity)->get(), 0);
+    posX = *(s32*)((u8*)box+4);
+    posY = *(s32*)((u8*)box+8);
+    gxCanvasSetClipRect(canvas, posX, posY, posX + ((Vf78*)box)->get(), *(s32*)((u8*)box+0x10));
+    ((void(*)(void*,s32))fn_802192A0)(box,canvas);
+    if (*(s32*)((u8*)box+0xA60)) {
+        posY_2 = *(s32*)((u8*)box+8);
+        posX_2 = *(s32*)((u8*)box+4);
+        fn_80228DC4(canvas, *(s32*)((u8*)box+0xA60), posX_2, posY_2, ((Vf78*)box)->get(), 0);
     }
-    posX_3 = *(s32*)((u8*)entity+4);
-    posY_3 = *(s32*)((u8*)entity+8);
-    gxCanvasSetClipRect(canvas, posX_3, posY_3, posX_3 + ((Vf78*)entity)->get(), *(s32*)((u8*)entity+0x10));
-    UIStyle_drawText(*(s32*)((u8*)entity+0xA58),*(s32*)((u8*)entity+4),*(s32*)((u8*)entity+8),*(s32*)((u8*)entity+0xA54),(*(u8*)((u8*)entity+0x19)!=0));
-    if (*(u8*)((u8*)entity+0x19)) {
-        fn_8022B390(*(s32*)((u8*)entity+0xA58),*(s32*)((u8*)entity+0xA54),*(s32*)((u8*)entity+0x250),&outX,&outY);
-        drawY = outY + *(s32*)((u8*)entity+8);
-        drawX = outX + *(s32*)((u8*)entity+4);
+    posX_3 = *(s32*)((u8*)box+4);
+    posY_3 = *(s32*)((u8*)box+8);
+    gxCanvasSetClipRect(canvas, posX_3, posY_3, posX_3 + ((Vf78*)box)->get(), *(s32*)((u8*)box+0x10));
+    UIStyle_drawText(*(s32*)((u8*)box+0xA58),*(s32*)((u8*)box+4),*(s32*)((u8*)box+8),*(s32*)((u8*)box+0xA54),(*(u8*)((u8*)box+0x19)!=0));
+    if (*(u8*)((u8*)box+0x19)) {
+        fn_8022B390(*(s32*)((u8*)box+0xA58),*(s32*)((u8*)box+0xA54),*(s32*)((u8*)box+0x250),&outX,&outY);
+        drawY = outY + *(s32*)((u8*)box+8);
+        drawX = outX + *(s32*)((u8*)box+4);
         ((void(*)(s32,s32,s32,s32,s32))gxDrawLine)(drawX,drawY+2,drawX,drawY+0xC,lbl_8055FBF8);
     }
     gxCanvasResetClipRect(canvas);
