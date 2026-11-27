@@ -97,7 +97,7 @@ void fn_802556BC(void *, s32);
 void *fn_802410F8(void *, s32, s32 *, s32);
 void *MRollContainer_init(void *);
 void *fn_80240BA4(void *, s32, void *, void *, void *, void *);
-void *fn_80240A1C(void *, int *, void *);
+void *MRollMenuItem_constructor(void *, int *, void *);
 void MRollMenuItem_addEntry(void *, s32);
 void fn_802E317C(char *, s32);
 void fn_802409A4(void *, s32);
@@ -194,7 +194,7 @@ struct MRollPlayerData {
         fn_802410F8(&carIcon, (s32)(slot + 0xC), &value, (s32)this);
         MRollContainer_init(&container);
         fn_80240BA4(&recordOpt, (s32)(slot + 4), slot + 8, &carIcon, &container, this);
-        fn_80240A1C(&menuItem, (int *)slot, this);
+        MRollMenuItem_constructor(&menuItem, (int *)slot, this);
         MRollMenuItem_addEntry(&menuItem, (s32)&recordOpt);
         MRollMenuItem_addEntry(&menuItem, (s32)&carIcon);
         fn_802409A4(&container, arg0);
@@ -203,7 +203,7 @@ struct MRollPlayerData {
         fn_802410F8(&carIcon, (s32)(slot + 0xC), &value, (s32)this);
         MRollContainer_init(&container);
         fn_80240BA4(&recordOpt, (s32)(slot + 4), slot + 8, &carIcon, &container, this);
-        fn_80240A1C(&menuItem, (int *)slot, this);
+        MRollMenuItem_constructor(&menuItem, (int *)slot, this);
         MRollMenuItem_addEntry(&menuItem, (s32)&recordOpt);
         MRollMenuItem_addEntry(&menuItem, (s32)&carIcon);
         fn_802409A4(&container, arg0);
@@ -213,7 +213,7 @@ struct MRollPlayerData {
         fn_802410F8(&carIcon, (s32)(slot + 0xC), &value, (s32)this);
         MRollContainer_init(&container);
         fn_80240BA4(&recordOpt, (s32)(slot + 4), slot + 8, &carIcon, &container, this);
-        fn_80240A1C(&menuItem, (int *)slot, this);
+        MRollMenuItem_constructor(&menuItem, (int *)slot, this);
         MRollMenuItem_addEntry(&menuItem, (s32)&recordOpt);
         MRollMenuItem_addEntry(&menuItem, (s32)&carIcon);
         fn_802409A4(&container, arg0);
@@ -587,7 +587,7 @@ void MRollMenuItem_addEntry(void *menu, s32 entryId) {
 }
 
 #pragma scheduling invalid_target
-void *fn_80240A1C(void *menuItemOut, int *valuePtr, void *ownerObj) {
+void *MRollMenuItem_constructor(void *menuItemOut, int *valuePtr, void *ownerObj) {
     extern unsigned char *fn_802E85B8(int);
     extern char lbl_80342650[];
     extern char lbl_8055BD60;
