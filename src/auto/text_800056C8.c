@@ -24,7 +24,7 @@ extern s32 fn_8000C630(s32, s32);
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern s32 fn_80128668(void);
-extern s32 fn_80005564(void); /* nonzero while the arena overlay is active */
+extern s32 hasArenaOverlay(void); /* nonzero while the arena overlay is active */
 extern void *fn_801B83A0(void); /* the global arena-event master object */
 extern void *lbl_8055D350; /* session state: [7] player index, +0x10 time window, +0x30 HUD object */
 extern f32 lbl_8056011C; /* zero, pooled as a read-only float constant */
@@ -132,7 +132,7 @@ typedef struct SessionState { /* lbl_8034EE84, what lbl_8055D350 points at */
 #define Player_getCarSlot fn_801E866C
 #define Car_getEntry fn_801EA9A0
 #define Hud_queryPlayerFlags fn_801B84D8
-#define OverlayMgr_hasArenaOverlay fn_80005564
+#define OverlayMgr_hasArenaOverlay hasArenaOverlay
 #define Hud_checkArenaCar fn_801B8570
 
 enum {
@@ -672,14 +672,14 @@ extern "C" void fn_80006110(void *playerData) {
     playerValue = *(f32 *)((s8 *)playerData + playerIndex * 4 + 4);
     inWindow = playerValue >= zero && (*(f32 *)(gameState + 4) - playerValue) > zero;
     if (!inWindow) {
-        if (fn_80005564() == 0) {
+        if (hasArenaOverlay() == 0) {
             void **arenaObjects = (void **)lbl_8034EEB8;
             s32 playerIdx = ((s32 *)lbl_8055D350)[7];
             void *overlay = arenaObjects[playerIdx * 4 + 7];
             ((VTable *)overlay)->v7();
         }
     } else {
-        if (fn_80005564() != 0) {
+        if (hasArenaOverlay() != 0) {
             VTable *master = (VTable *)fn_801B83A0();
             s32 queryResult = master->v23();
             if (queryResult != 0) {
@@ -725,7 +725,7 @@ extern "C" void fn_80006254(s32 playerData, s32 eventParam) {
     f32 zero = 0.0f;
     f32 playerValue = *(f32 *)((s8 *)playerData + ((s32 *)lbl_8055D350)[7] * 4 + 4);
     inWindow = playerValue >= zero && ((f32 *)lbl_8055D350)[4] - playerValue > zero;
-    if (inWindow && fn_80005564()) {
+    if (inWindow && hasArenaOverlay()) {
         struct MasterVTable {
             virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
             virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
