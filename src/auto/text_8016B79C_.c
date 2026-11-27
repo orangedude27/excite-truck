@@ -1164,7 +1164,7 @@ void fn_8016D278(void *list) {
  * (lbl_803306D0 + 0x20).  Its ring-set controller sub-object starts at +0x30
  * (constructed by constructRingSetController), so the fields below are that sub-object's
  * +0x18 .. +0x44; the same sub-object is what refreshRingSetMapMarker / fn_8016DFB8 /
- * fn_8016E06C / fn_8016E1B4 are handed directly.
+ * fn_8016E06C / resetChallengeSetEntry are handed directly.
  *   +0x48  ring-set list: pointer to the array of 0x14-byte ring-set entries
  *   +0x50  map "mapgems.art" object the marker is drawn on
  *   +0x54  queue slot of the pending map marker, -1 when none (fn_8001B308 /
@@ -1463,7 +1463,7 @@ extern void refreshRingSetMapMarker(void *);
 extern void fn_8016E118(void *);
 extern void fn_8016E15C(void *);
 extern s32 fn_8016E1A4(s32 *, s32);
-extern void fn_8016E1B4(void *, s32);
+extern void resetChallengeSetEntry(void *, s32);
 extern void fn_8016E314(void *);
 extern void fn_80144C54(s32);
 extern void fn_8016A0D4(void);
@@ -1509,7 +1509,7 @@ extern void fn_8016E15C();
         fn_802E30C8(lbl_80330AA4);
     fn_8016E314((u8 *) obj + 0x38);
     for (j = 0; j < M2C_FIELD(obj, s32 *, 0x68); j++)
-        fn_8016E1B4((u8 *) obj + 0x30, j);
+        resetChallengeSetEntry((u8 *) obj + 0x30, j);
     for (j = 0; j < M2C_FIELD(obj, s32 *, 0x6C); j++)
         fn_8016E15C((void *) fn_8016E1A4((s32 *) M2C_FIELD(obj, s32 *, 0x48), j));
     fn_8016E118((u8 *) obj + 0x30);
@@ -1748,7 +1748,7 @@ extern void fn_8016A240(void *);
 // Builds a formatted state label for this object, applies it via UI helper, resets the
 // selected list entry's runtime fields/child handles when index is valid, and stops its
 // active sound handle if one is set.
-void fn_8016E1B4(void *arg0, s32 arg1) {
+void resetChallengeSetEntry(void *arg0, s32 arg1) {
     char sp8[0x28];
     register char *format = lbl_803306D0;
     s32 value = *(s32 *)((u8 *)arg0 + 0x44);
@@ -2931,7 +2931,7 @@ extern "C" s32 fn_8016A30C(void);
 extern "C" s32 fn_8016A780(void *, s32);
 extern "C" s32 fn_8016A878(void *);
 extern "C" void refreshRingSetMapMarker(void *);
-extern "C" void fn_8016E1B4(void *, s32);
+extern "C" void resetChallengeSetEntry(void *, s32);
 extern "C" f32 fn_8016FD58(void);
 extern "C" void fn_80170E98(void *, void *, s32);
 extern "C" s32 fn_80179650(void);
@@ -3079,7 +3079,7 @@ loop_83:
                     if (((temp_r23_2 > 0) || (temp_r3_3 == fn_8016A878(&sp8)) || ((temp_r3_3 > 0) && (fn_8015A404(temp_r22) > 1))) && ((s32) M2C_FIELD(arg0, u8 *, 0x7A) != 0)) {
                         temp_f30_2 = fn_8016FD58();
                         *(f32 *)(fn_8016DE10(M2C_FIELD(arg0, s32 **, 0x4C), M2C_FIELD(arg0, s32 *, 0x5C)) + 2) = temp_f30_2;
-                        fn_8016E1B4((u8 *)arg0 + 0x30, M2C_FIELD(arg0, s32 *, 0x5C));
+                        resetChallengeSetEntry((u8 *)arg0 + 0x30, M2C_FIELD(arg0, s32 *, 0x5C));
                         if (temp_r23_2 > 0) {
                             *(s8 *)fn_8016DE10(M2C_FIELD(arg0, s32 **, 0x4C), M2C_FIELD(arg0, s32 *, 0x5C)) = 1;
                             M2C_FIELD(arg0, s32 *, 0x64) = (s32) M2C_FIELD(arg0, s32 *, 0x60);
