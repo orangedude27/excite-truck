@@ -402,7 +402,7 @@ void fn_80005B70(void) {
     extern s32 fn_80019B54(void);
     extern s32 *__AXFXGetLfoSinTable_801769CC(void);
     extern void *fn_8001285C(s32);
-    extern void fn_800105A0(const char *, s32);
+    extern void drawUiLabel(const char *, s32);
     extern f32 lbl_80560120;
     char message[0x20];
     f32 targetTime, currentTime;
@@ -414,10 +414,10 @@ void fn_80005B70(void) {
         currentTime = *(f32 *)((u8 *)lbl_8055D350 + 0x10);
         if (currentTime > targetTime) {
             if (currentTime - targetTime < lbl_80560120)
-                fn_800105A0((char *)base + 0x38, 0);
+                drawUiLabel((char *)base + 0x38, 0);
         } else {
             sprintf(message, (char *)base + 0x4C, targetTime - currentTime);
-            fn_800105A0(message, 0);
+            drawUiLabel(message, 0);
         }
     }
 }

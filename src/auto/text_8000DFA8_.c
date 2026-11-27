@@ -893,7 +893,7 @@ void fn_800104B0(s32 color, s32 lineHeight, const char *fmt, f32 scale, f32 x, f
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 /* Draw a highlighted UI label/text element: computes position/size offsets based on UI mode and renders a box and text. */
-void fn_800105A0(s32 text, s32 layoutId, s32 unused) {
+void drawUiLabel(s32 text, s32 layoutId, s32 unused) {
     extern s32 fn_80137C74(void);
     extern f32 fn_800108C8(f32, s32);
     extern f32 fn_80011E04(s32);
