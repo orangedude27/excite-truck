@@ -78,10 +78,10 @@ extern s32 fn_80007554(s32, s32, s32);
  * lbl_8034EEB8 is the game's one static HUD overlay manager.  fn_80005C88
  * fills it with the overlay objects it builds by name (the names are the
  * strings in the table at lbl_802FB0C8: "IntroOverlay", "RacingOverlay",
- * ...), fn_800057D0 picks each frame which overlay every player's HUD shows
+ * ...), selectPlayerHudOverlays picks each frame which overlay every player's HUD shows
  * and drawAllPlayerHuds updates the ones it picked.  Every overlay answers slot
  * 0x38 of its vtable with a "this overlay is finished" byte, which is what
- * fn_800057D0 asks the scene overlays before letting go of them.
+ * selectPlayerHudOverlays asks the scene overlays before letting go of them.
  * lbl_8055D350 points at the per-session state block at lbl_8034EE84.
  * The overlays' own vtables (lbl_802FB2DC .. lbl_802FB520, one per class) answer
  * slot 0x14 with "take the screen", 0x18 with "give it back", 0x1C with the init
@@ -95,7 +95,7 @@ typedef struct OverlayEntry { /* manager + 0x10, one per player */
     void *fallback;   /* 0x0C: "ArenaOverlay" in arena mode, else racing */
 } OverlayEntry;
 
-/* fn_800057D0 walks the players by advancing the manager's own address 0x10
+/* selectPlayerHudOverlays walks the players by advancing the manager's own address 0x10
  * bytes at a time, so the player it is looking at has its entry at +0x1C. */
 typedef struct OverlayCursor {
     u8 pad[0x1C];
@@ -204,7 +204,7 @@ void fn_800057BC(void) {
  * 0x38 answers its "I'm done" byte), otherwise each player's own overlay -
  * or the race's ClosureOverlay for the players already out of it.  drawAllPlayerHuds
  * then updates the overlays picked here. */
-extern "C" void fn_800057D0(void) {
+extern "C" void selectPlayerHudOverlays(void) {
     struct Overlay {
         virtual s32 v0() = 0;
         virtual s32 v1() = 0;
@@ -266,7 +266,7 @@ extern "C" void fn_800057D0(void) {
 /* Draws one frame of every player's HUD.
  *
  * First pass, per player: bind the session to that player (fn_80005740), and if the
- * overlay fn_800057D0 picked for it this frame is not the one its HUD showed last frame,
+ * overlay selectPlayerHudOverlays picked for it this frame is not the one its HUD showed last frame,
  * have the old one give the screen back (slot 0x18) and the new one take it (slot 0x14).
  * The overlay is then run inside its own rectangle -- the whole screen while it owns the
  * screen (its state byte, slot 0x28), the player's own split-screen viewport otherwise --
@@ -1468,7 +1468,7 @@ extern "C" void resetSessionModeFlags(void);
  * hands a freshly built overlay its vtable - on the intro overlay, the race's Results- and
  * ClosureOverlay, and on the Arena-, PreRace- and PostRaceOverlay when this mode has them.
  * It then does the same for every player's own RacingOverlay and, as it goes, forgets which
- * overlay that player was showing (its OverlayEntry::active), so fn_800057D0 picks a fresh
+ * overlay that player was showing (its OverlayEntry::active), so selectPlayerHudOverlays picks a fresh
  * one next frame.  The "dashboard" sound group (lbl_8055D354, registered by name from
  * lbl_802FB0C8 + 0x1F8) is brought back to full volume first; fn_8001DEA8 resets the six
  * screen managers, fn_80011A50 the message/text state and resetSessionModeFlags the session's mode
@@ -1569,7 +1569,7 @@ void fn_80007238(void) {
     f3 = (mode > 2) ? f3 : f0;
     setCameraProjection(lbl_80560130, lbl_80560124, f3);
 
-    fn_800057D0();
+    selectPlayerHudOverlays();
     fn_80161C18();
     if (updateResultsOverlay() != 0) goto done;
     if (fn_801DF110() != 0) goto done;
