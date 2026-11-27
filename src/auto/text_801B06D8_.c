@@ -343,7 +343,7 @@ extern void fn_801B0BB0(void *, void *);
 extern void fn_801B07B4(void *, void *);
 extern void fn_801B08FC(void *, void *);
 #pragma cplusplus on
-extern "C" void fn_801B0C78(s32 slotIndex) {
+extern "C" void Deity_submitSlotRequest(s32 slotIndex) {
     struct SlotObject {
         virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
         virtual void d4(); virtual void *getPayload(); virtual void *getMetadata();

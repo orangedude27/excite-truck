@@ -761,10 +761,10 @@ extern "C" int fn_801B8A44(void *obj) {
 }
 #pragma cplusplus off
 /* Callback adapter: ignores the owner/context pointer and forwards the slot index
- * to fn_801B0C78, which builds and submits the request for that slot. */
+ * to Deity_submitSlotRequest, which builds and submits the request for that slot. */
 void fn_801B8A68(void *owner, int slotIndex) {
-    extern void fn_801B0C78(void *);
-    fn_801B0C78((void *)slotIndex);
+    extern void Deity_submitSlotRequest(void *);
+    Deity_submitSlotRequest((void *)slotIndex);
 }
 
 /* Callback adapter: ignores the context pointer and forwards (item index, payload)

@@ -3588,7 +3588,7 @@ s32 fn_801711F8(void *obj) {
 
 /* Member callback: ignores the object and forwards the slot index to the per-slot request builder. */
 void fn_80171208(void *self, s32 slotIndex) {
-    fn_801B0C78((void *)slotIndex);
+    Deity_submitSlotRequest((void *)slotIndex);
 }
 
 extern void fn_801B8060(void *, void *);
