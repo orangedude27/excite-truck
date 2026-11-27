@@ -149,12 +149,12 @@ int fn_8020403C(void) {
  * coordinates scaled by 2.0), inside the overlay begun by fn_80204048() and
  * closed by fn_8020404C().  The overlay draws nothing in this build, so this
  * hook ignores all three arguments. */
-void fn_80204044(s32 sample, f32 worldX, f32 worldY) {
+void drawDebugWorldPoint(s32 sample, f32 worldX, f32 worldY) {
 
 }
 
 /* "tedash.val" terrain debug viewer, view mode 5: open the world-space overlay
- * that the sampled cells are reported to (fn_80204044) and closed by
+ * that the sampled cells are reported to (drawDebugWorldPoint) and closed by
  * fn_8020404C().  fn_802B6F34() hands it the two opposite corners of the brush
  * area in world units -- corner0 (x,y) at grid cell (0,0) and corner1 (x,y) at
  * (width-1,height-1), each a pair of floats -- plus the far corner's unscaled
@@ -165,7 +165,7 @@ void fn_80204048(f32 *corner0, f32 *corner1, f32 farGridX) {
 
 /* "tedash.val" terrain debug viewer, view mode 5: close the world-space overlay
  * fn_80204048() opened for one brush pass.  fn_802B6F34() calls it once every
- * sampled cell of the brush area has been reported to fn_80204044(), so this is
+ * sampled cell of the brush area has been reported to drawDebugWorldPoint(), so this is
  * where the overlay would be flushed to the screen -- and, like the other two
  * hooks of that pass, it draws nothing in this build. */
 void fn_8020404C(void) {
@@ -313,7 +313,7 @@ s32 fn_80204054(Vec *outPos, Vec *outNormal, s16 *context, f32 *m, s32 screenX, 
  * screen-ray ground probe fn_80204054.  Its neighbours here are the no-op
  * handlers this module supplies where a caller expects a function: fn_80204014
  * (the scratch handler the resource loader forwards to), fn_80204018 (empty
- * stage-object handler) and fn_80204044 (debug world-point draw, empty in this
+ * stage-object handler) and drawDebugWorldPoint (debug world-point draw, empty in this
  * build).  No function in the game calls fn_80204004, so this one is never even
  * reached; it does nothing either way. */
 void fn_80204004(void) {

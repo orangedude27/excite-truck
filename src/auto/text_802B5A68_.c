@@ -1258,7 +1258,7 @@ extern double lbl_80564C80;
 extern float lbl_80564C90;
 extern float lbl_80564C94;
 extern s32 paintWaterLayer();
-extern void fn_80204044();
+extern void drawDebugWorldPoint();
 extern s32 plotRoadOpacityPixel();
 extern s32 drawTerrainMarker(s16, s16, s32, s32, float);
 void fn_802B7420(s16 x, s16 y, s32 value) {
@@ -1327,7 +1327,7 @@ void fn_802B7434(void) {
 #define paintLayer     paintWaterLayer  /* blend a value into one cell of a water layer */
 #define drawMarker     drawTerrainMarker  /* draw a terrain marker at a grid cell */
 #define plotPixel      plotRoadOpacityPixel  /* write one pixel of the road-opacity image */
-#define drawWorldPoint fn_80204044  /* debug-draw hook: empty in this build */
+#define drawWorldPoint drawDebugWorldPoint  /* debug-draw hook: empty in this build */
 #define kSampleFull    lbl_80564C90 /* 255.0f: the sample of a fully applied brush stroke */
 #define kMarkerSize    lbl_80564C94 /* 3.0f: size of the marker for a refused cell */
 #define kGridStep      lbl_80564C58 /* 2.0f: world units per grid cell */
