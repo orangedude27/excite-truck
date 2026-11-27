@@ -517,6 +517,7 @@ extern "C" void claimWallContact(void *contactPtr, unsigned int wallKey, void *c
 #define slot        ((WallContact *)contactPtr)
 #define wallRec     ((WallRecord *)wallKey)
 #define heldContact ((WallContact *)heldPtr)
+#define signedPlaneDistance fn_801A5A7C
 #define kZero       lbl_805623C8 /* 0.0f */
 #define kSpeedMax   lbl_805623EC /* 17.7778: most of a closing speed that counts */
 #define kSpeedMin   lbl_80562400 /* 0.888889: least of it that counts */
@@ -554,7 +555,7 @@ extern "C" void claimWallContact(void *contactPtr, unsigned int wallKey, void *c
             }
         }
 
-        slot->planeDistance = fn_801A5A7C(contactPtr, lagPoint, wallRec->plane->origin);
+        slot->planeDistance = signedPlaneDistance(contactPtr, lagPoint, wallRec->plane->origin);
 
         dot = PSVECDotProduct(car->velocity, (float *)contactPtr);
         speed = kSpeedMax;
@@ -576,6 +577,7 @@ extern "C" void claimWallContact(void *contactPtr, unsigned int wallKey, void *c
 #undef slot
 #undef wallRec
 #undef heldContact
+#undef signedPlaneDistance
 #undef kZero
 #undef kSpeedMax
 #undef kSpeedMin
