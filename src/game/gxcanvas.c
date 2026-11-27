@@ -7,7 +7,7 @@ extern const char lbl_8034B078[];
 extern const char lbl_8034B0E4[];
 extern void gxCanvasCopy16to16(s32,s32,s32,s32,s32,s32,s32,s32);
 extern void fn_802C3C68(s32,s32,s32,s32,s32,s32,s32,s32);
-extern void fn_802C3D74(s32,s32,s32,s32,s32,s32,s32,s32);
+extern void gxCanvasCopy16to32(s32,s32,s32,s32,s32,s32,s32,s32);
 extern void fn_802C3F00(s32,s32,s32,s32,s32,s32,s32,s32);
 
 extern u8 gDefaultPixelFormat;
@@ -71,7 +71,7 @@ extern void gxCanvasFillRectRGBA4444(s32, s32, s32, s32, u32);
 #pragma peephole off
 /* Expand one RGB1555 (canvas format 3) pixel into a GX RGBA word: R5/G5/B5 into the colour channels and alpha forced to 0xFF. */ s32 gxCanvasConvert1555ToRGBA(s32 rgb1555) {
     /* Convert a 16-bit packed pixel from a format-3 canvas into a 32-bit GX
-       RGBA color word for blitting into a 4-byte-per-pixel canvas (fn_802C3D74). */
+       RGBA color word for blitting into a 4-byte-per-pixel canvas (gxCanvasCopy16to32). */
     unsigned int rgbaHigh = __rlwinm(rgb1555, 9, 8, 12);
     unsigned int rgbaLow;
     rgbaHigh |= 0xFF000000;
@@ -85,7 +85,7 @@ extern void gxCanvasFillRectRGBA4444(s32, s32, s32, s32, u32);
 /* Expand one RGB565 (canvas format 4) pixel into a GX RGBA word: R5/G6/B5 scaled into the colour channels and alpha forced to 0xFF. */
 s32 gxCanvasConvert565ToRGBA(s32 rgb565) {
     /* Convert a 16-bit packed pixel from a format-4 canvas into a 32-bit GX
-       RGBA color word for blitting into a 4-byte-per-pixel canvas (fn_802C3D74). */
+       RGBA color word for blitting into a 4-byte-per-pixel canvas (gxCanvasCopy16to32). */
     unsigned int rgbaLow = (rgb565 << 3) & 0xF8;
     return (s32)(rgbaLow | __rlwimi(__rlwinm(rgb565, 8, 8, 12) | 0xFF000000, rgb565, 5, 16, 21));
 }
@@ -493,7 +493,7 @@ void fn_802C3754(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight, s32 srcBo
     is16Bit = 0;
     if ((s8)srcFormat != CANVAS_FORMAT_RGBA && (s8)srcFormat != CANVAS_FORMAT_NONE) is16Bit = 1;
     if (is16Bit && (s32)*(u8 *)dstCanvas == CANVAS_FORMAT_RGBA) {
-        fn_802C3D74(srcCanvas,srcLeft,srcTop,srcRight,srcBottom,dstCanvas,dstLeft,dstTop); /* 16-bit -> 4-byte */
+        gxCanvasCopy16to32(srcCanvas,srcLeft,srcTop,srcRight,srcBottom,dstCanvas,dstLeft,dstTop); /* 16-bit -> 4-byte */
         return;
     }
     if ((s8)srcFormat == CANVAS_FORMAT_RGBA) {
@@ -768,7 +768,7 @@ loop_3:
  * moves the source origin along with it; each row then steps over the pixels
  * a row does not hold on both sides.  Only RGB565 and RGB1555 sources
  * convert; any other source format only traces "Can't copy from %d to %d". */
-void fn_802C3D74(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight,
+void gxCanvasCopy16to32(s32 srcCanvas, s32 srcLeft, s32 srcTop, s32 srcRight,
                   s32 srcBottom, s32 dstCanvas, s32 dstLeft, s32 dstTop) {
     /* Destination corner after clipping, the matching source corner, and the
        size that is left of the requested rectangle. */
@@ -1425,7 +1425,7 @@ extern void fn_802C3850();
 extern const char lbl_8034B078[];
 extern void gxCanvasCopy16to16(s32,s32,s32,s32,s32,s32,s32,s32);
 extern void fn_802C3C68(s32,s32,s32,s32,s32,s32,s32,s32);
-extern void fn_802C3D74(s32,s32,s32,s32,s32,s32,s32,s32);
+extern void gxCanvasCopy16to32(s32,s32,s32,s32,s32,s32,s32,s32);
 extern void fn_802C3F00(s32,s32,s32,s32,s32,s32,s32,s32);
 extern void fn_802DB2C8(void);
 extern void gxCanvasFillRect16(s32, s32, s32, s32, u32);
