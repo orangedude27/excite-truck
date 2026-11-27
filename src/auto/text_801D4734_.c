@@ -1544,7 +1544,7 @@ struct ActionGroup {
 #pragma processor 750
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void fireActionSequenceGroup(void *arg0, void *arg1, void *arg2) {
+/* Fire an action-sequence group at an object: only if the object carries the group's id, send one 32-byte record per squared-length threshold its transformed vector reaches. */ extern "C" void fireActionSequenceGroup(void *group, void *object, void *inputVector) {
     // Fire an action-sequence group at an object: unless the object's "group_id"
     // parameter is this group's, do nothing; otherwise send one record for every
     // threshold the object's transformed vector is long enough to pass, stopping
@@ -1587,29 +1587,29 @@ extern "C" void fireActionSequenceGroup(void *arg0, void *arg1, void *arg2) {
     void *params;
     float *transformed;
 
-    if (((struct ActionGroup *)arg0)->count <= 0) return;
-    params = ((struct ActionObject *)arg1)->get();
-    if (((struct ActionGroup *)arg0)->groupId < 0) goto is_invalid;
+    if (((struct ActionGroup *)group)->count <= 0) return;
+    params = ((struct ActionObject *)object)->get();
+    if (((struct ActionGroup *)group)->groupId < 0) goto is_invalid;
     if (params == 0) goto is_invalid;
     groupId = ((struct ParameterSet *)params)->find(lbl_803385D0, -1);
-    if (groupId != ((struct ActionGroup *)arg0)->groupId) goto is_invalid;
+    if (groupId != ((struct ActionGroup *)group)->groupId) goto is_invalid;
     valid = 1;
     goto check_valid;
 is_invalid:
     valid = 0;
 check_valid:
     if (valid == 0) return;
-    inX = ((float *)arg2)[0];
-    inY = ((float *)arg2)[1];
-    inZ = ((float *)arg2)[2];
+    inX = ((float *)inputVector)[0];
+    inY = ((float *)inputVector)[1];
+    inZ = ((float *)inputVector)[2];
     record.input[0] = inX;
     record.input[1] = inY;
     record.input[2] = inZ;
-    transformed = (float *)((struct ActionObject *)arg1)->transform();
+    transformed = (float *)((struct ActionObject *)object)->transform();
     record.output[0] = transformed[0];
     record.output[1] = transformed[1];
     record.output[2] = transformed[2];
-    record.index = ((struct ActionObject *)arg1)->index();
+    record.index = ((struct ActionObject *)object)->index();
     length = PSVECDotProduct(record.output, record.output);
     sent = 0;
     offset = 0;
@@ -1617,7 +1617,7 @@ check_valid:
 threshold_loop:
     {
         struct ActionThreshold *step = (struct ActionThreshold *)
-            ((char *)((struct ActionGroup *)arg0)->thresholds + offset);
+            ((char *)((struct ActionGroup *)group)->thresholds + offset);
         if (length < step->limit) return;  // the object is not moving fast enough
         record.value = step->value;
         fn_801796CC(10, &record, 32);
@@ -1625,7 +1625,7 @@ threshold_loop:
     offset += 8;
     sent += 1;
 threshold_test:
-    if (sent < ((struct ActionGroup *)arg0)->count) goto threshold_loop;
+    if (sent < ((struct ActionGroup *)group)->count) goto threshold_loop;
 }
 #pragma pop
 
