@@ -1012,7 +1012,7 @@ void fn_802D5F88(s32 arg0) {
 #pragma dont_inline on
 #pragma push
 #pragma opt_lifetimes off
-/* Dispatches surface drawing to the routine for the descriptor's vertex layout byte (+8, numbered from 10), warning on unsupported layouts. */ void drDrawSurfByLayout(void *arg0) {
+/* Dispatch a surface to the drawer for its vertex layout byte (+8, numbered from 10); unsupported layouts raise a panic. */ /* Dispatches surface drawing to the routine for the descriptor's vertex layout byte (+8, numbered from 10), warning on unsupported layouts. */ void drDrawSurfByLayout(void *arg0) {
     /* Dispatch display-list surface drawing by the surface descriptor's vertex format
        (byte at +8, numbered from 10); some formats fall back to conventional handling. */
     register void *surface = arg0;
