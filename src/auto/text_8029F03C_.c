@@ -213,14 +213,14 @@ void fn_8029F124(void) {
 #define gEffectAllocator lbl_804B9B7C
 
 #pragma use_lmw_stmw off
-void updateEffectRecords(void) {
+/* Per-frame update of each 0x34-byte effect record: derive its velocity from the attached object's movement plus a base velocity and snap the record's position onto that object, then dispatch a spawn (fn_802A0794) for flagged records while physics is off. Warns at most once every five frames when particle adds are disabled. */ void updateEffectRecords(void) {
     /* Refreshes each effect's velocity from its attached object and advances its position,
        then dispatches spawn requests for flagged effects when particle adds are enabled. */
     unsigned char *effect;
-    float timeStep;
-    void *allocator;
-    int entryOffset;
-    int index;
+    float dt;
+    void *table;
+    int byteOffset;
+    int entryIndex;
 
     if (gAllowParticleAdd != 1) {
         if (gWarnCounter == 0) {
@@ -228,27 +228,27 @@ void updateEffectRecords(void) {
         }
         gWarnCounter = (gWarnCounter + 1) % 5;
     }
-    timeStep = gTimeStep;
-    allocator = gEffectAllocator;
-    index = 0;
-    entryOffset = 0;
-    for (; index < *(int *)((char *)allocator + 4); entryOffset += EFFECT_STRIDE, index++) {
+    dt = gTimeStep;
+    table = gEffectAllocator;
+    entryIndex = 0;
+    byteOffset = 0;
+    for (; entryIndex < *(int *)((char *)table + 4); byteOffset += EFFECT_STRIDE, entryIndex++) {
         unsigned char *object;
-        effect = *(unsigned char **)gEffectAllocator + entryOffset;
+        effect = *(unsigned char **)gEffectAllocator + byteOffset;
         object = *(unsigned char **)(effect + EFFECT_OBJECT);
         if (object != 0) {
-            float dx = *(float *)(object + 0x60) - *(float *)(effect + EFFECT_POS_X);
-            float dy;
-            float dz;
-            *(float *)(effect + EFFECT_VEL_X) = dx;
-            dy = *(float *)(object + 0x64) - *(float *)(effect + EFFECT_POS_Y);
-            *(float *)(effect + EFFECT_VEL_Y) = dy;
-            dz = *(float *)(object + 0x68) - *(float *)(effect + EFFECT_POS_Z);
-            *(float *)(effect + EFFECT_VEL_X) = dx * timeStep;
+            float deltaX = *(float *)(object + 0x60) - *(float *)(effect + EFFECT_POS_X);
+            float deltaY;
+            float deltaZ;
+            *(float *)(effect + EFFECT_VEL_X) = deltaX;
+            deltaY = *(float *)(object + 0x64) - *(float *)(effect + EFFECT_POS_Y);
+            *(float *)(effect + EFFECT_VEL_Y) = deltaY;
+            deltaZ = *(float *)(object + 0x68) - *(float *)(effect + EFFECT_POS_Z);
+            *(float *)(effect + EFFECT_VEL_X) = deltaX * dt;
             *(float *)(effect + EFFECT_VEL_X) += *(float *)(effect + EFFECT_BASE_X);
-            *(float *)(effect + EFFECT_VEL_Y) = dy * timeStep;
+            *(float *)(effect + EFFECT_VEL_Y) = deltaY * dt;
             *(float *)(effect + EFFECT_VEL_Y) += *(float *)(effect + EFFECT_BASE_Y);
-            *(float *)(effect + EFFECT_VEL_Z) = dz * timeStep;
+            *(float *)(effect + EFFECT_VEL_Z) = deltaZ * dt;
             *(float *)(effect + EFFECT_VEL_Z) += *(float *)(effect + EFFECT_BASE_Z);
             *(float *)(effect + EFFECT_POS_X) = *(float *)(object + 0x60);
             *(float *)(effect + EFFECT_POS_Y) = *(float *)(object + 0x64);
