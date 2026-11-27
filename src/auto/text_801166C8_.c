@@ -5712,39 +5712,39 @@ extern void fn_80124AD8(void *, void *);
 extern void fn_80121BB0(void *);
 extern void fn_80124F90(void *);
 extern void fn_80125098(void *);
-void fftForwardTransform(register s32 count, register void *dst, register s32 mode, register s32 srcIndex, register void *src) {
+/* Run the forward radix-4 complex FFT over `length` floats in `samples` (in place): prepare twiddles, pick a bulk or fixed-size stage path by length, then bit-reverse the result through scratch table `ip`. */ void fftForwardTransform(register s32 length, register void *samples, register s32 ip, register s32 nw, register void *w) {
     /* Dispatches to size-specific transform/copy helpers based on element count:
      * for large counts (>0x20) computes a quarter-size, prepares data, runs one
      * of several bulk paths, then finalizes; for medium/small counts uses the
      * corresponding fixed-size helpers. */
-    register s32 n;
-    if (count > 0x20) {
-        n = count >> 2;
-        fn_80121C68(count, dst, (u8 *)src + (srcIndex - n) * 4);
-        if (count > 0x200) {
-            fn_80122E08(n, dst, srcIndex, src);
-            fn_80122ED8(n, (u8 *)dst + n * 4, srcIndex, src);
-            fn_80122E08(n, (u8 *)dst + n * 8, srcIndex, src);
-            fn_80122E08(n, (u8 *)dst + ((n * 3) << 2), srcIndex, src);
-        } else if (n > 0x20) {
-            fn_80122FA4(count, dst, srcIndex, src);
+    register s32 quarter;
+    if (length > 0x20) {
+        quarter = length >> 2;
+        fn_80121C68(length, samples, (u8 *)w + (nw - quarter) * 4);
+        if (length > 0x200) {
+            fn_80122E08(quarter, samples, nw, w);
+            fn_80122ED8(quarter, (u8 *)samples + quarter * 4, nw, w);
+            fn_80122E08(quarter, (u8 *)samples + quarter * 8, nw, w);
+            fn_80122E08(quarter, (u8 *)samples + ((quarter * 3) << 2), nw, w);
+        } else if (quarter > 0x20) {
+            fn_80122FA4(length, samples, nw, w);
         } else {
-            fn_80123CEC(count, dst, srcIndex, src);
+            fn_80123CEC(length, samples, nw, w);
         }
-        fftBitReverse(count, mode, dst);
-    } else if (count > 8) {
-        if (count == 0x20) {
-            fn_80123E98(dst, (u8 *)src + (srcIndex - 8) * 4);
-            fn_80121848(dst);
+        fftBitReverse(length, ip, samples);
+    } else if (length > 8) {
+        if (length == 0x20) {
+            fn_80123E98(samples, (u8 *)w + (nw - 8) * 4);
+            fn_80121848(samples);
         } else {
-            fn_80124AD8(dst, src);
-            fn_80121BB0(dst);
+            fn_80124AD8(samples, w);
+            fn_80121BB0(samples);
         }
     } else {
-        if (count == 8) {
-            fn_80124F90(dst);
-        } else if (count == 4) {
-            fn_80125098(dst);
+        if (length == 8) {
+            fn_80124F90(samples);
+        } else if (length == 4) {
+            fn_80125098(samples);
         }
     }
 }
