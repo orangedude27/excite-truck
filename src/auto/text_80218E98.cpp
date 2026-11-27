@@ -8225,7 +8225,7 @@ extern "C" void fn_80227044(void *arg0, f32 x, f32 y, f32 z) {
  *   +0x26C         f32  texture scroll offset
  *   +0x270         u8   scroll direction, from the descriptor's flag at +0xB0
  * fn_802272D4 is the draw/update handler that animates these. */
-extern "C" void *fn_802270DC(void *widgetMem, void *descriptor) {
+extern "C" void *ColorBackgroundCtor(void *widgetMem, void *descriptor) {
 #define Widget_ctor              fn_80218F80
 #define ColorBackground_vtable   lbl_8033DFB4
 #define Screen_toCentre          fn_80230C30

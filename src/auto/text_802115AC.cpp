@@ -785,7 +785,7 @@ extern void *fn_80224B54(s32, void *);
 extern void *fn_8022553C(s32, void *);
 extern void *fn_802269A8(void *, void *);
 extern void *fn_80226CBC(void *, void *);
-extern void *fn_802270DC(void *, void *);
+extern void *ColorBackgroundCtor(void *, void *);
 extern void *fn_80227E84(void *, s32, void *, s32);
 extern void *fn_80227D00(void *, void *);
 extern void *fn_80228418(void *, void *, s32);
@@ -1433,7 +1433,7 @@ extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
     }
     case 47: {
         void *node = fn_801284F8(0x274, strings + 0x558);
-        if (node != 0) node = (void *)fn_802270DC(node, arg1);
+        if (node != 0) node = (void *)ColorBackgroundCtor(node, arg1);
         results[0] = node; count = 1; break;
     }
     case 48: {
