@@ -416,12 +416,14 @@ void SplineCursor_Reset(void *cursor) {
     *(float *)((char *)cursor + 8) = limit;
     *(float *)((char *)cursor + 0xC) = scale;
 }
-/* Update an eased animation state from a new input value, integrating the delta into an accumulator and evaluating a clamped cubic curve. */
-void SplineCursor_Advance(void *state, int value, int hardReset, int resetScaleFlag, float scaleFactor)
+/* Advance a camera spline cursor: optionally reset its value and scale from the
+ * new time value, accumulate the time delta into its accumulator, then evaluate
+ * a clamped cubic curve into the eased output at +0xC. */
+void SplineCursor_Advance(void *cursor, int timeValue, int hardReset, int resetScaleFlag, float scaleFactor)
 {
   float norm;
   float output;
-  char *statePtr;
+  char *cursorPtr;
   float curveX;
   float scaled;
   long oldAccum;
@@ -434,26 +436,26 @@ void SplineCursor_Advance(void *state, int value, int hardReset, int resetScaleF
   {
     register float reset_scale;
     register float reset_limit;
-    *((int *) (((char *) state) + 0)) = value;
-    *((int *) (((char *) state) + 4)) = 0;
+    *((int *) (((char *) cursor) + 0)) = timeValue;
+    *((int *) (((char *) cursor) + 4)) = 0;
     reset_scale = lbl_8055C4BC;
     reset_limit = lbl_8055C4C0;
     scaled = reset_scale * scaleFactor;
     scaled = (scaled < reset_limit) ? (scaled) : (reset_limit);
-    *((float *) (((char *) state) + 8)) = scaled;
+    *((float *) (((char *) cursor) + 8)) = scaled;
   }
   if (hardReset != 0)
   {
-    *((int *) (((char *) state) + 0)) = value;
+    *((int *) (((char *) cursor) + 0)) = timeValue;
     return;
   }
-  newAccum = *((int *) (((char *) state) + 0));
-  oldAccum = *((int *) (((char *) state) + 4));
-  newAccum = value - newAccum;
-  statePtr = ((char *) state) + 0;
-  *((int *) statePtr) = value;
+  newAccum = *((int *) (((char *) cursor) + 0));
+  oldAccum = *((int *) (((char *) cursor) + 4));
+  newAccum = timeValue - newAccum;
+  cursorPtr = ((char *) cursor) + 0;
+  *((int *) cursorPtr) = timeValue;
   newAccum = oldAccum + newAccum;
-  *((int *) (((char *) state) + 4)) = newAccum;
+  *((int *) (((char *) cursor) + 4)) = newAccum;
   accumFloat = (float) newAccum;
   rangeMax = (float) lbl_8055C4B8;
   rangeMin = (float) lbl_8055C4B4;
@@ -485,7 +487,7 @@ void SplineCursor_Advance(void *state, int value, int hardReset, int resetScaleF
     p *= curveX;
     output = curveX * p - ((3.0f * curveX) * curveX);
   }
-  *((float *) (((char *) state) + 0xC)) = output;
+  *((float *) (((char *) cursor) + 0xC)) = output;
 }
 
 void fn_802662D8(float *params, float *outPoint, float *basePoint, float *direction, int count) {
