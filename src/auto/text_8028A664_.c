@@ -437,7 +437,7 @@ extern "C" void initTerrainChunks(void *arg0) {
         virtual TerrainChunkQuery *v21(void *);
     };
     extern char terrainEffectConfig[];
-    extern char chunkParamName, lbl_8055C8B0, lbl_8055C8B8;
+    extern char chunkParamName, textureParamName, lbl_8055C8B8;
     extern f32 lbl_80564330;
     extern void fn_801345D8(void *, s32, void *, ...);
     extern void *fn_802AE414(void *);
@@ -458,7 +458,7 @@ extern "C" void initTerrainChunks(void *arg0) {
         }
         if (terrainObj != 0) {
             chunkEntry[0] = (s32)fn_802929D8(2, terrainData + 0x44, foundCount,
-                                             ((TerrainChunkQuery *)terrainObj)->v4(&lbl_8055C8B0, &lbl_8055C8B8));
+                                             ((TerrainChunkQuery *)terrainObj)->v4(&textureParamName, &lbl_8055C8B8));
             *(f32 *)&chunkEntry[1] = ((TerrainChunkQuery *)terrainObj)->v8(terrainData + 0x50, lbl_80564330);
             {
                 s32 value = ((TerrainChunkQuery *)terrainObj)->v6(terrainData + 0x5C, 0x14);
