@@ -734,66 +734,66 @@ void fn_801D3FA4(void *arg0, int arg1, int arg2, void *arg3, void *arg4, void *a
 }
 
 #pragma push
-void resetPhobMotionState(void *actor) {
+/* Lighter reset of a mut_phob object's motion state: signal its attached object, clear motion and scratch floats, rebuild the identity transform (z = -1000) at +0x1F4, copy it to +0x3C, and refresh per-frame/child state. The full resetPhobObject additionally reinitializes the SPHR sphere. */ void resetPhobMotionState(void *actor) {
     /* Reset an actor's motion state: signal its associated object, clear the motion and
        scratch floats, build the default matrix at +0x1F4 and copy it to +0x3C, then reset
        the state/flags. */
-    register char *base = (char *)actor;
+    register char *self = (char *)actor;
     float sp8;
     float sp10;
     float spc;
-    if (*(int *)(base + 0x230) == 2 && *(void **)(base + 0x228) != 0) {
-        fn_801A4868(*(void **)(base + 0x228), 1);
+    if (*(int *)(self + 0x230) == 2 && *(void **)(self + 0x228) != 0) {
+        fn_801A4868(*(void **)(self + 0x228), 1);
     }
     {
-        register float neg1000;
+        register float defaultZ;
         register float one;
         register float zero;
         zero = lbl_80562AB8;
         one = lbl_80562AAC;
-        *(volatile float *)(base + 0x220) = zero;
-        neg1000 = lbl_80562ABC;
-        *(volatile float *)(base + 0x118) = zero;
-        *(volatile float *)(base + 0x11C) = zero;
-        *(volatile float *)(base + 0x120) = zero;
-        *(volatile float *)(base + 0x124) = zero;
-        *(volatile float *)(base + 0x128) = zero;
-        *(volatile float *)(base + 0x12C) = zero;
-        *(volatile float *)(base + 0x130) = zero;
-        *(volatile float *)(base + 0x134) = zero;
-        *(volatile float *)(base + 0x138) = zero;
-        *(volatile float *)(base + 0x13C) = zero;
-        *(volatile float *)(base + 0x140) = zero;
-        *(volatile float *)(base + 0x144) = zero;
-        *(volatile float *)(base + 0x16C) = zero;
-        *(volatile float *)(base + 0x170) = zero;
-        *(volatile float *)(base + 0x174) = zero;
-        *(volatile float *)(base + 0x178) = zero;
-        *(volatile float *)(base + 0x17C) = zero;
-        *(volatile float *)(base + 0x180) = zero;
-        *(volatile float *)(base + 0x1F4) = one;
-        *(volatile float *)(base + 0x1F8) = zero;
-        *(volatile float *)(base + 0x1FC) = zero;
-        *(volatile float *)(base + 0x200) = zero;
-        *(volatile float *)(base + 0x204) = one;
-        *(volatile float *)(base + 0x208) = zero;
-        *(volatile float *)(base + 0x20C) = zero;
-        *(volatile float *)(base + 0x210) = zero;
-        *(volatile float *)(base + 0x214) = one;
-        *(volatile float *)(base + 0x218) = zero;
-        *(volatile float *)(base + 0x21C) = neg1000;
-        *(volatile float *)(base + 0x220) = zero;
+        *(volatile float *)(self + 0x220) = zero;
+        defaultZ = lbl_80562ABC;
+        *(volatile float *)(self + 0x118) = zero;
+        *(volatile float *)(self + 0x11C) = zero;
+        *(volatile float *)(self + 0x120) = zero;
+        *(volatile float *)(self + 0x124) = zero;
+        *(volatile float *)(self + 0x128) = zero;
+        *(volatile float *)(self + 0x12C) = zero;
+        *(volatile float *)(self + 0x130) = zero;
+        *(volatile float *)(self + 0x134) = zero;
+        *(volatile float *)(self + 0x138) = zero;
+        *(volatile float *)(self + 0x13C) = zero;
+        *(volatile float *)(self + 0x140) = zero;
+        *(volatile float *)(self + 0x144) = zero;
+        *(volatile float *)(self + 0x16C) = zero;
+        *(volatile float *)(self + 0x170) = zero;
+        *(volatile float *)(self + 0x174) = zero;
+        *(volatile float *)(self + 0x178) = zero;
+        *(volatile float *)(self + 0x17C) = zero;
+        *(volatile float *)(self + 0x180) = zero;
+        *(volatile float *)(self + 0x1F4) = one;
+        *(volatile float *)(self + 0x1F8) = zero;
+        *(volatile float *)(self + 0x1FC) = zero;
+        *(volatile float *)(self + 0x200) = zero;
+        *(volatile float *)(self + 0x204) = one;
+        *(volatile float *)(self + 0x208) = zero;
+        *(volatile float *)(self + 0x20C) = zero;
+        *(volatile float *)(self + 0x210) = zero;
+        *(volatile float *)(self + 0x214) = one;
+        *(volatile float *)(self + 0x218) = zero;
+        *(volatile float *)(self + 0x21C) = defaultZ;
+        *(volatile float *)(self + 0x220) = zero;
         *(volatile float *)&spc = zero;
         *(volatile float *)&sp10 = zero;
         *(volatile float *)&sp8 = zero;
-        *(volatile float *)(base + 0x30) = zero;
-        *(volatile float *)(base + 0x34) = zero;
-        *(volatile float *)(base + 0x38) = zero;
+        *(volatile float *)(self + 0x30) = zero;
+        *(volatile float *)(self + 0x34) = zero;
+        *(volatile float *)(self + 0x38) = zero;
         fn_8017A57C(actor);
-        *(struct Mtx48 *)(base + 0x3C) = *(struct Mtx48 *)(base + 0x1F4);
+        *(struct Mtx48 *)(self + 0x3C) = *(struct Mtx48 *)(self + 0x1F4);
         fn_8017A580(actor);
-        *(int *)(base + 0x24) = 0;
-        *(int *)(base + 0x1EC) = -1;
+        *(int *)(self + 0x24) = 0;
+        *(int *)(self + 0x1EC) = -1;
     }
 }
 #pragma pop
