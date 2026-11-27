@@ -2716,7 +2716,9 @@ extern u8 lbl_80562376;
 extern u8 lbl_80562377;
 extern u8 lbl_80562378;
 extern "C" void dispatchShapeInfluence(s32 context, void *shape) {
-    /* Dispatch collision handling for a shape based on its 4-char type tag. */
+    /* Dispatch a collision-influence pass from the shape's 4-char type tag at
+     * +0x18: FLSR floor, SPHR sphere, TUBE, BOX, GRUP/POLY virtual Call, RING;
+     * RAGD is ignored and an unknown tag raises an error with its text. */
     u32 shapeType = *(u32 *)((u8 *)shape + 0x18);
     switch (shapeType) {
     case 'FLSR':
