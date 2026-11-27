@@ -379,7 +379,7 @@ void fn_8017DA8C(void *body) {
 }
 
 extern void fn_8017D404(float *, int, float, float, int);
-void fn_8017DB34(void *arg0, int arg1, int arg2, int arg3, int arg4) {
+void handleBallBodyImpact(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     extern int lbl_8055D430;
     extern float lbl_80561BF4, lbl_80561C10, lbl_80561C14;
     extern void fn_801796EC(int, void *, int);
