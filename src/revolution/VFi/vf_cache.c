@@ -117,7 +117,7 @@ s32 VFiPFFAT_TraceClustersChain(void* p_ffd, u32 start_clst, u32 size,
 
     switch (*(u32*)&((u8*)p_ffd)[0x1C]) {
     case 0:
-        err = readFat12Entry(p_ffd, (u16)start_clst);
+        err = readFat12ClusterEntry(p_ffd, (u16)start_clst);
         break;
     case 1:
         err = fn_800AFE14(p_ffd);
