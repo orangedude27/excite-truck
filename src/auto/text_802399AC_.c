@@ -331,7 +331,7 @@ void fn_80239F74(void) {
     extern void fn_8013323C(s32, void *, f32);
     extern void fn_80133348(s32, void *, s32);
     extern s32 fn_8027B8C0(s32), hasTrackMusicSongs(void), trackMusicSetSlotStates(s32);
-    extern s32 fn_802E8D84(void), fn_802E6FBC(void);
+    extern s32 fn_802E8D84(void), writeMemCardSaveImage(void);
     extern s32 fn_8027B77C(void), fn_8000DA80(void), fn_8027B690(void);
     extern s32 fn_8026311C(void), fn_80263F30(s32, s32, s32);
     extern s32 fn_80128670(s32), fn_802328D4(s32);
@@ -513,7 +513,7 @@ void fn_80239F74(void) {
             fn_80133348(t + 0xc, base + 0x1E8, p[8]);
             if (hasTrackMusicSongs() != 0) {
                 trackMusicSetSlotStates(p[6]);
-                if (fn_802E8D84() != 0) fn_802E6FBC();
+                if (fn_802E8D84() != 0) writeMemCardSaveImage();
             }
             flag = 0;
             lbl_8055F10C = 0;

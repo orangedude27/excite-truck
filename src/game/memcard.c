@@ -12,7 +12,7 @@ extern int lbl_8055FFC0;
 extern unsigned char lbl_8055FFC4;
 extern unsigned char lbl_8055FFC5;
 extern void *memset(void *, int, unsigned long);
-extern void *fn_802E6FBC(void);
+extern void *writeMemCardSaveImage(void);
 extern int fn_802E30C8(const char *, ...);
 extern char lbl_8034D678[];
 extern int lbl_8055D200;
@@ -229,7 +229,7 @@ second_check:
         if (readError == 0) {
             fn_802E30C8(messages + 0xF8);
         } else {
-            fn_802E6FBC();
+            writeMemCardSaveImage();
         }
     }
     return 0;
@@ -239,7 +239,7 @@ extern char lbl_8034D784[];
 #pragma push
 #pragma use_lmw_stmw off
 /* Builds a memory card save image (MCSH) from registered save entries and writes it. */
-/* Build a memory-card save image in MCSH format from the registered 0x14-byte save entries (lbl_804FC8B0), compute its header checksum, write it through the NAND save helper, and free the buffer. */ void *fn_802E6FBC(void) {
+/* Build a memory-card save image in MCSH format from the registered 0x14-byte save entries (lbl_804FC8B0), compute its header checksum, write it through the NAND save helper, and free the buffer. */ void *writeMemCardSaveImage(void) {
     register unsigned char *saveEntry;
     register unsigned char *descriptor;
     register int entryIndex;
@@ -291,8 +291,8 @@ loop_check:
 #pragma pop
 
 /* Public "save now" entry point: builds the MCSH memory-card image from the
- * registered save records and writes it to the card (fn_802E6FBC). */
-void fn_802E7128(void) { fn_802E6FBC(); }
+ * registered save records and writes it to the card (writeMemCardSaveImage). */
+void fn_802E7128(void) { writeMemCardSaveImage(); }
 
 /* Hook run before every read of the save image from the memory card (with
  * fn_802E6CA8) and once during bootstrap: there is nothing to flush or cancel

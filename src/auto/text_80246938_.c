@@ -559,7 +559,7 @@ extern void fn_801312EC(void *, const char *), fn_80131318(void *);
 extern void fn_80214FD8(void *, void *), fn_80239F74(void);
 extern s32 fn_8000DA10(void);
 extern int fn_8000DBAC(void);
-extern void fn_802E6FBC(void), fn_80137C78(int);
+extern void writeMemCardSaveImage(void), fn_80137C78(int);
 extern char *fn_8000DC70(int);
 extern void fn_800169F8(const char *, int);
 extern s32 fn_802E4A10(void);
@@ -684,8 +684,8 @@ s32 fn_80246AE8(void) {
             case 7: /* a profile screen: save and leave the demo once the current
                      * profile slot reports itself unloaded */
                 fn_80239F74(); fn_8000DA10();
-                if (fn_8000DBAC()) { fn_802E6FBC(); again = 0; } break;
-            case 8: fn_802E6FBC(); break;    /* write the memory-card save */
+                if (fn_8000DBAC()) { writeMemCardSaveImage(); again = 0; } break;
+            case 8: writeMemCardSaveImage(); break;    /* write the memory-card save */
             case 9: /* hand the current profile slot over to player 1 */
                 saved = gMenuFlag; menuFlag = saved & 1; gMenuFlag = saved | 1;
                 fn_800169F8(fn_8000DC70(0), 0); fn_80137C78(1);

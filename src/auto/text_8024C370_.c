@@ -116,7 +116,7 @@ int fn_8024C524(void) {
     return 0;
 }
 #pragma dont_inline reset
-void fn_802E6FBC(void);
+void writeMemCardSaveImage(void);
 void fn_8000DA80(void);
 int fn_8023FAD4(void *, int);
 extern int lbl_8055F2C4;
@@ -127,7 +127,7 @@ int fn_80215214(void *, void *, int);
 #pragma dont_inline on
 int fn_8024C550(void) {
     /* Menu "save" action: write the save image to the memory card, then rebuild the per-slot name/state arrays shown in the menu. */
-    fn_802E6FBC();
+    writeMemCardSaveImage();
     fn_8024C464();
     return 0;
 }
@@ -147,7 +147,7 @@ int fn_8024C578(int slot) {
             fn_8000D984(slot);
             fn_8000DA80();
             fn_8000DA1C(&s);
-            fn_802E6FBC();
+            writeMemCardSaveImage();
             fn_8024C464();
             result = 1;
         } else {

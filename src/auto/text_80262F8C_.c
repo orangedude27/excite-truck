@@ -137,7 +137,7 @@ void fn_8026311C(void) {
     extern s32 fn_802146BC(s32 *, s32, s32, s32, s32, s32, s32, s32);
     extern void *loadFontTexture(void *);
     extern s32 Abend_Panic(void *, ...);
-    extern void fn_802E6FBC(void);
+    extern void writeMemCardSaveImage(void);
     extern void fn_802E8518(s32);
     extern s32 fn_802E8D84(void);
     extern const u8 lbl_802FA6E8[];
@@ -318,7 +318,7 @@ void fn_8026311C(void) {
             v29b += 0x34;
         } while (k < 2);
         if (fn_802E8D84() != 0) {
-            fn_802E6FBC();
+            writeMemCardSaveImage();
         }
         i = 0;
         while (i < fn_80129890()) {
