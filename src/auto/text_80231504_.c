@@ -1166,14 +1166,14 @@ void fn_80232D3C(u8 *text, s32 font, s32 color, s32 x, s32 flags, f32 y, f32 sca
 }
 #pragma pop
 extern u8 fn_80232B70(void *);
-extern void fn_802344CC(s32, s32, s32, s32, f32, f32, f32);
+extern void queueTextDraw(s32, s32, s32, s32, f32, f32, f32);
 extern f32 fn_8023293C(s32, char *, f32);
 /* Readable aliases for the pieces Text_drawWordWrapped wraps text with; the game's own
  * symbols keep their placeholder names. */
 #define gTextFontHeight fn_80232B70   /* the font's line height, one byte into the font */
 #define gTextMeasureWidth fn_8023293C /* pixel width of a string in a font, plus extra spacing */
 #define gTextDrawLine fn_80232BA4     /* draw one line of text now */
-#define gTextQueueDraw fn_802344CC    /* queue one line of text to be drawn */
+#define gTextQueueDraw queueTextDraw    /* queue one line of text to be drawn */
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
@@ -1616,7 +1616,7 @@ char_test:
 
 /* ---- Text draw queue: entry layout and alignment flags for the layout pass ----
  * gActiveFont points at the active font; gTextQueue is the base of the array of
- * 0x58-byte text entries that fn_802344CC fills. */
+ * 0x58-byte text entries that queueTextDraw fills. */
 #define gActiveFont lbl_8055F058
 #define gTextQueue lbl_8055F06C
 #define gHalf lbl_80563688 /* 0.5f */
@@ -1743,7 +1743,7 @@ extern f32 lbl_805636A8;
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma dont_inline on
-void fn_802344CC(s32 text, s32 fontSet, s32 color, s32 fontId, f32 x, f32 y, f32 scale) {
+void queueTextDraw(s32 text, s32 fontSet, s32 color, s32 fontId, f32 x, f32 y, f32 scale) {
     /* Queues an on-screen text draw: copies the string/font-set pair into the next
        slot, records position/scale/color/font, flushes if the queue is full. */
     s32 resolvedFontSet;

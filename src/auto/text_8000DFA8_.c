@@ -28,7 +28,7 @@ extern f32 lbl_80350ED8[];
 extern s32 lbl_8055D490;
 extern s32 lbl_80558A90;
 extern f32 lbl_805602C8;
-extern void fn_802344CC(char *, s32, s32, s32, f32, f32, f32);
+extern void queueTextDraw(char *, s32, s32, s32, f32, f32, f32);
 extern f64 lbl_80560268;
 extern f64 lbl_805602D8;
 extern s32 fn_8023441C(void);
@@ -784,16 +784,16 @@ void fn_8000FF88(s32 arg0, s32 arg1, const char *fmt, f32 farg0, f32 farg1, f32 
     char buffer[0x200];
     va_list args;
 
-    /* Format a printf-style string and draw it with fn_802344CC, scaling text by lbl_805602C8 (0.733333). */
+    /* Format a printf-style string and draw it with queueTextDraw, scaling text by lbl_805602C8 (0.733333). */
     va_start(args, farg2);
     vsprintf(buffer, fmt, args);
-    fn_802344CC(buffer, arg0, arg1, 0, farg1, farg2, lbl_805602C8 * farg0);
+    queueTextDraw(buffer, arg0, arg1, 0, farg1, farg2, lbl_805602C8 * farg0);
 }
 #pragma pop
 
 #pragma scheduling on
 extern f32 lbl_805602B0;
-extern void fn_802344CC(char *, s32, s32, s32, f32, f32, f32);
+extern void queueTextDraw(char *, s32, s32, s32, f32, f32, f32);
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
@@ -803,9 +803,9 @@ void fn_80010074(s32 arg0, s32 arg1, const char *fmt, f32 farg0, f32 farg1, f32 
     va_list args;
     va_start(args, farg2);
     vsprintf(textBuffer, fmt, args);
-    fn_802344CC(textBuffer, arg0 & 0xFF000000, arg1, 0,
+    queueTextDraw(textBuffer, arg0 & 0xFF000000, arg1, 0,
                 lbl_805602B0 + farg1, farg2 - lbl_805602B0, lbl_805602C8 * farg0);
-    fn_802344CC(textBuffer, arg0, arg1, 0, farg1, farg2, lbl_805602C8 * farg0);
+    queueTextDraw(textBuffer, arg0, arg1, 0, farg1, farg2, lbl_805602C8 * farg0);
 }
 #pragma scheduling on
 #pragma pop
