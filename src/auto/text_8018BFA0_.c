@@ -331,19 +331,15 @@ typedef struct { float a, b; int c, d; unsigned char e0, e1, e2, e3, e4, e5, e6,
 extern float lbl_80561F78, lbl_80561F7C, lbl_80561F80, lbl_80561F84;
 extern double lbl_80562048;
 typedef union { struct { unsigned int hi, lo; } word; double value; } Bits8018;
-static inline float U8ToF_8018F2C0(unsigned char v) {
-    Bits8018 cvt;
-    cvt.word.lo = v;
-    cvt.word.hi = 0x43300000;
-    return (float) (cvt.value - lbl_80562048);
-}
 static inline float Chan_8018F2C0(unsigned char v) {
     const float zero = lbl_80561F74;
     const float one = lbl_80561F88;
-    float x = (U8ToF_8018F2C0(v) - zero) / lbl_80562038;
-    float t = (one < x) ? one : ((U8ToF_8018F2C0(v) - zero) / lbl_80562038);
+    const float div = lbl_80562038;
+    const float scale = lbl_80562040;
+    const float bias = lbl_8056203C;
+    float t = (one < (((float)v - zero) / div)) ? one : (((float)v - zero) / div);
     t = (t > zero) ? t : zero;
-    return lbl_8056203C + t * lbl_80562040;
+    return bias + t * scale;
 }
 
 static inline float Chan2_8018F2C0(unsigned char v, float zero, float one, float div, float scale, float bias) {
