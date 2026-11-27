@@ -2226,30 +2226,30 @@ void fn_8016EA9C(void *arg0)
 #pragma optimize_for_size reset
 extern void fn_802ADE60(s32, s32);
 #pragma cplusplus on
-extern "C" void destroyFreestyleSystem(void *arg0) {
+/* Destroy the freestyle system: release the ArtAnim manager at +0xB8, destroy the six virtual subobjects at +0xC0..+0xD8 and clear their slots, then destroy the loaded config at +0x98. */ extern "C" void destroyFreestyleSystem(void *owner) {
     /* Release owned resources and virtual subobjects held by this object. */
     class VObj { public: virtual void destroy(int); };
     VObj *resource;
-    s32 handle;
+    s32 artAnimManager;
 
-    handle = *(s32 *)((u8 *)arg0 + 0xB8);
-    if (handle != 0) {
-        fn_802ADE60(handle, 1);
-        *(s32 *)((u8 *)arg0 + 0xB8) = 0;
+    artAnimManager = *(s32 *)((u8 *)owner + 0xB8);
+    if (artAnimManager != 0) {
+        fn_802ADE60(artAnimManager, 1);
+        *(s32 *)((u8 *)owner + 0xB8) = 0;
     }
-    resource = *(VObj **)((u8 *)arg0 + 0xC0);
-    if (resource != 0) { if (resource != 0) resource->destroy(1); *(VObj **)((u8 *)arg0 + 0xC0) = 0; }
-    resource = *(VObj **)((u8 *)arg0 + 0xC4);
-    if (resource != 0) { if (resource != 0) resource->destroy(1); *(VObj **)((u8 *)arg0 + 0xC4) = 0; }
-    resource = *(VObj **)((u8 *)arg0 + 0xC8);
-    if (resource != 0) { if (resource != 0) resource->destroy(1); *(VObj **)((u8 *)arg0 + 0xC8) = 0; }
-    resource = *(VObj **)((u8 *)arg0 + 0xD0);
-    if (resource != 0) { if (resource != 0) resource->destroy(1); *(VObj **)((u8 *)arg0 + 0xD0) = 0; }
-    resource = *(VObj **)((u8 *)arg0 + 0xD4);
-    if (resource != 0) { if (resource != 0) resource->destroy(1); *(VObj **)((u8 *)arg0 + 0xD4) = 0; }
-    resource = *(VObj **)((u8 *)arg0 + 0xD8);
-    if (resource != 0) { if (resource != 0) resource->destroy(1); *(VObj **)((u8 *)arg0 + 0xD8) = 0; }
-    resource = *(VObj **)((u8 *)arg0 + 0x98);
+    resource = *(VObj **)((u8 *)owner + 0xC0);
+    if (resource != 0) { if (resource != 0) resource->destroy(1); *(VObj **)((u8 *)owner + 0xC0) = 0; }
+    resource = *(VObj **)((u8 *)owner + 0xC4);
+    if (resource != 0) { if (resource != 0) resource->destroy(1); *(VObj **)((u8 *)owner + 0xC4) = 0; }
+    resource = *(VObj **)((u8 *)owner + 0xC8);
+    if (resource != 0) { if (resource != 0) resource->destroy(1); *(VObj **)((u8 *)owner + 0xC8) = 0; }
+    resource = *(VObj **)((u8 *)owner + 0xD0);
+    if (resource != 0) { if (resource != 0) resource->destroy(1); *(VObj **)((u8 *)owner + 0xD0) = 0; }
+    resource = *(VObj **)((u8 *)owner + 0xD4);
+    if (resource != 0) { if (resource != 0) resource->destroy(1); *(VObj **)((u8 *)owner + 0xD4) = 0; }
+    resource = *(VObj **)((u8 *)owner + 0xD8);
+    if (resource != 0) { if (resource != 0) resource->destroy(1); *(VObj **)((u8 *)owner + 0xD8) = 0; }
+    resource = *(VObj **)((u8 *)owner + 0x98);
     if (resource != 0) resource->destroy(1);
 }
 
