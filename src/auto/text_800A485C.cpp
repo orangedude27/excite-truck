@@ -15018,7 +15018,7 @@ extern "C" s32 fn_800BACC4(void *, s32, s32 *, s32);
     return result;
 }
 
-s32 readSdCardScr(void *device, s32 *outData) {
+/* Read the SD card's SCR register into outData: set a 4-byte block length, send CMD55 then ACMD51, log the result, and restore the 512-byte block length. Returns 0 on success or an error code. */ s32 readSdCardScr(void *device, s32 *outData) {
     /* Issues a sequence of SD card ioctl commands via runSdCardCommand to query data
        into outData (and logs progress/results via OSReport strings in lbl_8031B838).
        Returns 0 on success or an error/status code (0xC1000000 if outData is NULL). */
