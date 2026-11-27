@@ -21840,7 +21840,7 @@ extern "C" void fillDebugRect(s32, s32, s32, s32);
 extern "C" const char *drawDebugTextLine(s32, s32, const char *, s32);
 extern "C" char *strchr(const char *, int);
 /* Draw multi-line debug/text on screen, optionally drawing a background box per line and handling wrapping. */
-extern "C" void drawDebugTextLines(s32 x, s32 y, const char *str, s32 wrapLongLines, s32 drawBackground) {
+/* Draw a multi-line debug string at x,y, wrapping long lines and optionally boxing each line. */ extern "C" void drawDebugTextLines(s32 x, s32 y, const char *str, s32 wrapLongLines, s32 drawBackground) {
     s32 startX = x;
     u16 screenWidth = *(u16 *)((u8 *)lbl_80407BD8 + 8);
     s32 charScale = screenWidth < 400 ? 1 : 2;
