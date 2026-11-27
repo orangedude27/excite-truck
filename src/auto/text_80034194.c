@@ -1303,8 +1303,8 @@ void fn_8003588C(void) {
                 (s32)onBootDataReadComplete);
 }
 #pragma dont_inline on
-/* Completion callback of the boot read started by fn_8003588C(); `result` is the
- * state the drive finished the read with.
+/* Completion callback of the boot-data read started by startBootDataRead(); `result` is
+ * the state the drive finished the read with.
  *
  * The state goes into the driver's error log first (dvderror.h's DVDErrorInfo at
  * __ErrorInfo: the dicr word of the entry the log count errorLogCount points at, or
@@ -1322,16 +1322,16 @@ void fn_8003588C(void) {
  */
 void onBootDataReadComplete(u32 result) {
     register s32 interrupts;
-    s32 enabled;
+    s32 savedInterrupts;
     s32 *block;
     void (*callback)(s32);
 
-    enabled = OSDisableInterrupts();
+    savedInterrupts = OSDisableInterrupts();
     if (*(volatile u32 *)&errorLogCount == 0)
         *(u32 *)(__ErrorInfo + 0x78) = result;
     else
         *(u32 *)(__ErrorInfo + *(volatile u32 *)&errorLogCount * 0x14 + 0x14) = result;
-    OSRestoreInterrupts(enabled);
+    OSRestoreInterrupts(savedInterrupts);
 
     if (result == 0x10) {
         fn_8003A1A0(0x1234568, fn_80035C78); /* save the error log to NAND */
@@ -1350,7 +1350,7 @@ void onBootDataReadComplete(u32 result) {
         callback = *(void (**)(s32))((u8 *)block + 0x28); /* block->callback */
         if (callback != 0)
             callback(0);                    /* DVD_RESULT_GOOD */
-        __DVDStateReady();                      /* start the next queued command */
+        __DVDStateReady();                  /* start the next queued command */
         return;
     }
 
