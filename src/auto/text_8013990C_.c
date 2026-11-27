@@ -77,40 +77,40 @@ extern "C" void *readNumberedIntPairs(void *namedObject) {
     };
     char nameBuffer[12];
     void *result;
-    int *write;
-    int count;
+    int *writePair;
+    int pairCount;
     char *valueText;
     Object *obj = (Object *)namedObject;
-    count = fn_8013990C(namedObject);
-    result = fn_801284E8(&lbl_8032C108, count * 8 + 8);
-    *(int *)((char *)result + 4) = count;
-    *(int *)result = count;
-    write = (int *)((char *)result + 8);
-    count = 0;
+    pairCount = fn_8013990C(namedObject);
+    result = fn_801284E8(&lbl_8032C108, pairCount * 8 + 8);
+    *(int *)((char *)result + 4) = pairCount;
+    *(int *)result = pairCount;
+    writePair = (int *)((char *)result + 8);
+    pairCount = 0;
     do {
-        sprintf(nameBuffer, lbl_80559C40, count);
+        sprintf(nameBuffer, lbl_80559C40, pairCount);
         valueText = obj->check(nameBuffer, 0);
         if (valueText != 0) {
-            if (sscanf(valueText, lbl_80559C48, write, write + 1) == 2) {
-                write += 2;
-                count++;
+            if (sscanf(valueText, lbl_80559C48, writePair, writePair + 1) == 2) {
+                writePair += 2;
+                pairCount++;
             } else {
                 fn_802E30C8(lbl_8032C064, obj->getName(), valueText);
                 break;
             }
         }
     } while (valueText != 0);
-    if (count < 3) {
+    if (pairCount < 3) {
         fn_802E30C8(lbl_8032C090, obj->getName(), *(int *)result);
-        count = 0;
+        pairCount = 0;
     }
     {
         char *oldEnd = (char *)result + (*(int *)result * 8 + 8);
-        char *newEnd = (char *)result + (count * 8 + 8);
+        char *newEnd = (char *)result + (pairCount * 8 + 8);
         fn_801286A0(result, oldEnd - newEnd);
     }
-    *(int *)((char *)result + 4) = count;
-    *(int *)result = count;
+    *(int *)((char *)result + 4) = pairCount;
+    *(int *)result = pairCount;
     return result;
 }
 
