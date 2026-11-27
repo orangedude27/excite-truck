@@ -1635,7 +1635,7 @@ float getModelInstanceTolerance(int instanceId) {
 }
 
 #pragma scheduling on
-/* Register `recordCount` 0x2C-byte model resource name-override records from `records` into the name-override table gModelNameOverrideTable ({used count, capacity, base} of 0x2C-byte entries). Each record holds a 16-byte lookup name at +0, an id at +0x10, a 16-byte replacement name at +0x14, and a back-reference pointer at +0x28 that is cleared to -1 on copy. The next free entry is taken for each record; bytes are moved individually so the copy is safe even if the source overlaps the table. */ void mrModelRegisterNameOverrides(void *records, s32 recordCount)
+/* Copy model name-override records into the override table, clearing each record's back-reference. */ /* Register `recordCount` 0x2C-byte model resource name-override records from `records` into the name-override table gModelNameOverrideTable ({used count, capacity, base} of 0x2C-byte entries). Each record holds a 16-byte lookup name at +0, an id at +0x10, a 16-byte replacement name at +0x14, and a back-reference pointer at +0x28 that is cleared to -1 on copy. The next free entry is taken for each record; bytes are moved individually so the copy is safe even if the source overlaps the table. */ void mrModelRegisterNameOverrides(void *records, s32 recordCount)
 {
   /* Copy `count` 0x2C-byte model records from `src` into the model-entry pool
    * gModelNameOverrideTable (used-count at +0, capacity at +4, base at +8), taking the next
