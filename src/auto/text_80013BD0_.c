@@ -1,6 +1,6 @@
 #include "types.h"
 typedef struct { f32 x, y, z; } Vec3_80015A20;
-extern s32 fn_80014ADC(void);
+extern s32 isLapDisplayReversed(void);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -584,7 +584,7 @@ extern f32 lbl_805603B0;
             displayMode = 0;
         }
     }
-    if (((s32 (*)(void *))fn_80014ADC)(hudOverlay) != 0) {
+    if (((s32 (*)(void *))isLapDisplayReversed)(hudOverlay) != 0) {
         if (((struct HudState *)lbl_8055D350)->info->kind == 3)
             value1 = ((struct HudState *)lbl_8055D350)->info->last;
         else
@@ -619,7 +619,7 @@ void fn_80014A98(void *obj) {
 }
 
 /* Reverse-direction condition check for the timer/progress display: this build never runs in reverse, so it always reports false (0). */
-s32 fn_80014ADC(void) { return 0; }
+s32 isLapDisplayReversed(void) { return 0; }
 
 s32 fn_80014AE4(void) {
     s32 var_r6;
@@ -659,11 +659,11 @@ extern void fn_80013C98(f32 *);
 extern void fn_80013CFC(f32 *);
 extern void buildLapInfoHudLine(void *);
 extern void fn_80014A98(void *);
-extern s32 fn_80014ADC(void);
+extern s32 isLapDisplayReversed(void);
 #pragma push
 #pragma dont_inline on
 #pragma scheduling invalid_target
-/* Updates a UI/progress object's fade state (+0x24) and value (+0x2C) based on reverse/active conditions (fn_80014ADC/fn_80014AE4), ramping toward lbl_80560360 (0.0f) or lbl_80560368 (1.0f). */
+/* Updates a UI/progress object's fade state (+0x24) and value (+0x2C) based on reverse/active conditions (isLapDisplayReversed/fn_80014AE4), ramping toward lbl_80560360 (0.0f) or lbl_80560368 (1.0f). */
 void updateLapInfoHudDisplay(void *arg0) {
     struct Obj {
         u8 pad0[0x24];
@@ -674,7 +674,7 @@ void updateLapInfoHudDisplay(void *arg0) {
     struct Obj *obj = (struct Obj *)arg0;
     s32 state, reverse, result;
 
-    reverse = fn_80014ADC();
+    reverse = isLapDisplayReversed();
     result = ((s32 (*)(void *))fn_80014AE4)(obj);
     state = obj->state;
     if (state == 0) {
