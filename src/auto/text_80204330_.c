@@ -211,8 +211,8 @@ int handleTuneDashKey(int key) {
         float hi;
         float step;
     };
-    int index;
-    struct Entry *rec;
+    int row;
+    struct Entry *entry;
     if (fn_8020437C() != 0) {
         if (key == 0x127)
             goto edit_record;
@@ -228,36 +228,36 @@ int handleTuneDashKey(int key) {
             goto increment;
         goto return_zero;
     decrement:
-        index = lbl_8055ED40 - 1;
-        lbl_8055ED40 = index & ~(index >> 31);
+        row = lbl_8055ED40 - 1;
+        lbl_8055ED40 = row & ~(row >> 31);
         goto update;
     increment: {
-        int limit = lbl_8055ED3C - 1;
-        index = lbl_8055ED40 + 1;
-        if (limit >= index)
+        int maxRow = lbl_8055ED3C - 1;
+        row = lbl_8055ED40 + 1;
+        if (maxRow >= row)
             goto increment_store;
-        index = limit;
+        row = maxRow;
     increment_store:
-        lbl_8055ED40 = index;
+        lbl_8055ED40 = row;
         goto update;
     }
     edit_record:
-        index = lbl_8055ED40;
-        if (index < 0 || index >= lbl_8055ED3C)
+        row = lbl_8055ED40;
+        if (row < 0 || row >= lbl_8055ED3C)
             goto update;
-        rec = (struct Entry *)lbl_80488BD0 + index;
-        switch (rec->type) {
+        entry = (struct Entry *)lbl_80488BD0 + row;
+        switch (entry->type) {
         case 1:
             if ((unsigned int)key == 0x127u) {
-                float candidate = *rec->value + rec->step;
-                *rec->value = (rec->hi < candidate) ? rec->hi : candidate;
+                float candidate = *entry->value + entry->step;
+                *entry->value = (entry->hi < candidate) ? entry->hi : candidate;
             } else {
-                float candidate = *rec->value - rec->step;
-                *rec->value = (rec->lo > candidate) ? rec->lo : candidate;
+                float candidate = *entry->value - entry->step;
+                *entry->value = (entry->lo > candidate) ? entry->lo : candidate;
             }
             goto update;
         case 0:
-            *(signed char *)rec->value = !*(unsigned char *)rec->value;
+            *(signed char *)entry->value = !*(unsigned char *)entry->value;
             goto update;
         default:
             goto update;
