@@ -587,7 +587,7 @@ void MRollMenuItem_addEntry(void *menu, s32 entryId) {
 }
 
 #pragma scheduling invalid_target
-void *MRollMenuItem_constructor(void *menuItemOut, int *valuePtr, void *ownerObj) {
+/* Construct an MRoll menu item: bind its vtable, owner and followed value, copy the empty or controller-socket name, then refresh every entry's selected flag and displayed value. */ void *MRollMenuItem_constructor(void *menuItemOut, int *valuePtr, void *ownerObj) {
     extern unsigned char *fn_802E85B8(int);
     extern char lbl_80342650[];
     extern char lbl_8055BD60;
