@@ -717,7 +717,7 @@ extern "C" long fn_8027BAB8(void *list) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" long sumPlayerGroupResourceSizes(long arg0, long arg1, long arg2, long arg3) {
+/* Sum loaded resource sizes for a player group's items, optionally clamping each to its declared size; write the sum and total to outSum/outTotal. */ extern "C" long sumPlayerGroupResourceSizes(long slotIndex, long outSum, long outTotal, long clampToSize) {
     /* Sum resource sizes for items in a two-level list: arg3 clamps each to loaded size (+4),
      * outputs accumulated sum to *arg1 and total item size to *arg2 when non-null. */
     class OuterList {
@@ -761,7 +761,7 @@ extern "C" long sumPlayerGroupResourceSizes(long arg0, long arg1, long arg2, lon
 
     sum = 0;
     total = 0;
-    outer = (OuterList *)fn_8027B834((void *)arg0);
+    outer = (OuterList *)fn_8027B834((void *)slotIndex);
     outerIndex = 0;
     while (outerIndex < outer->count()) {
         inner = (InnerList *)outer->item(outerIndex);
@@ -769,9 +769,9 @@ extern "C" long sumPlayerGroupResourceSizes(long arg0, long arg1, long arg2, lon
         while (innerIndex < inner->count()) {
             item = (Item *)inner->item(innerIndex);
             key = item->id();
-            resource = fn_8001BB58(fn_8000DA10(), key, arg0, 0);
+            resource = fn_8001BB58(fn_8000DA10(), key, slotIndex, 0);
             if (resource != 0) {
-                if (arg3 != 0) {
+                if (clampToSize != 0) {
                     size = ((SizedItem *)item)->size();
                     limit = *(long *)((char *)resource + 4);
                     if (size < limit) limit = size;
@@ -785,8 +785,8 @@ extern "C" long sumPlayerGroupResourceSizes(long arg0, long arg1, long arg2, lon
         }
         outerIndex++;
     }
-    if (arg1 != 0) *(long *)arg1 = sum;
-    if (arg2 != 0) *(long *)arg2 = total;
+    if (outSum != 0) *(long *)outSum = sum;
+    if (outTotal != 0) *(long *)outTotal = total;
 }
 #pragma cplusplus reset
 #pragma use_lmw_stmw on
