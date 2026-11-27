@@ -25,7 +25,7 @@ extern void fn_80236914(void);
 int fn_80012818(void);
 void *fn_80012820(int);
 void *fn_80012870(int, int);
-char *fn_800081BC(void *);
+char *getEventEnvironName(void *);
 char *getEventDisplayName(void *);
 extern int stricmp(const char *, const char *);
 extern char lbl_8055C1F8[4];
@@ -272,7 +272,7 @@ extern "C" void buildProfileSelectorTable(void *arg0, void *arg1) {
             inner++;
         }
         if (found != 0) {
-            name = (int)fn_800081BC(&entry->name);
+            name = (int)getEventEnvironName(&entry->name);
             found = 0;
             index = 0;
             while (found == 0 && index < self->rowCount) {
@@ -315,7 +315,7 @@ extern "C" void fn_802576EC(void *arg0) {
             entry = (char *)fn_8001285C(i);
             obj = *(MatchDispatch **)(entry + 0x20);
             if (obj->matches(lbl_8055C1F8) != 0) {
-                name = fn_800081BC((*(MatchDispatch **)(entry + 0x20))->fetch((const char *)&lbl_8055C1D8, (char *)fn_80012820(*(int *)(entry + 4)) + 8));
+                name = getEventEnvironName((*(MatchDispatch **)(entry + 0x20))->fetch((const char *)&lbl_8055C1D8, (char *)fn_80012820(*(int *)(entry + 4)) + 8));
                 if (stricmp(name, key) == 0) {
                     pos = *(int *)(self + 0x5C);
                     UITable_WriteCell(self + 0x54, pos, 0, fn_80007FF0(*(void **)(entry + 8)), 0);

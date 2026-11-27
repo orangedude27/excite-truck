@@ -6,7 +6,7 @@ extern signed char lbl_8055D647;
 extern struct lbl_8035BAD8_t { float f0; int f4; int f8; } lbl_8035BAD8;
 extern char lbl_8035BB18[];
 extern int fn_80012820(int);
-extern void fn_800081BC(int);
+extern void getEventEnvironName(int);
 extern int getEventDisplayName(void);
 extern int fn_80012910(int);
 typedef struct KObj KObj;
@@ -1076,7 +1076,7 @@ void fn_80021464(KArg *a, int arg1) {
     char *base = lbl_802FE138;
     lbl_8055D62C = 1;
     fn_8001FEE8();
-    fn_800081BC(fn_80012820(a->f4) + 8);
+    getEventEnvironName(fn_80012820(a->f4) + 8);
     lbl_8055D660 = getEventDisplayName();
     vhh = fn_80012910(a->f0);
     lbl_8055D664 = a->obj->vt->f18(a->obj, base + 0x284, vhh);

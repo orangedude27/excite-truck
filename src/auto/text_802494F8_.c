@@ -307,7 +307,7 @@ void fn_8024A304(void *arg0, void **arg1, int arg2, int arg3) {
         offset = zero;
         goto outer_check;
 outer_body:
-        if (stricmp((char *)fn_800081BC(
+        if (stricmp((char *)getEventEnvironName(
                         *(void **)((char *)*(void **)*list + offset)),
                     *(char **)((char *)object + 0x1C)) == 0) {
             void *header = *list;

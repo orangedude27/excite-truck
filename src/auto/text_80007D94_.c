@@ -5,7 +5,7 @@
 // shutdownRaceEvents (fn_80007F68), getEventName (fn_80007F90), getEventTypeName
 // (fn_80007FF0), getEventId (fn_80008050), getRaceEventCount (fn_800080D8),
 // findRaceEventIndex (fn_800080E8), getRaceEventName (fn_80008158),
-// getRaceEventDisplayString (getEventDisplayName), getRaceEventEnviron (fn_800081BC),
+// getRaceEventDisplayString (getEventDisplayName), getRaceEventEnviron (getEventEnvironName),
 // clearContestRef (fn_8000822C), initContestRef (fn_8000824C).
 #include <types.h>
 #include <macros.h>
@@ -236,7 +236,7 @@ const char* getEventDisplayName(void) {
 
 /* Returns the "environ" field (offset 8) of the race-event table entry whose name
  * matches; the caller's name argument is forwarded in r3 to the lookup fn_800080E8. */
-s32 fn_800081BC(void) {
+s32 getEventEnvironName(void) {
     return *(s32 *)((u8 *)&lbl_8034EF38 + fn_800080E8() * 0xC + 8);
 }
 
