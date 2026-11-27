@@ -65,7 +65,7 @@ extern void fn_80147230(void *, void *, ...);
 extern void fn_80130978(void *, s32, f32);
 typedef struct { char pad0[4]; int f4; char pad8[4]; void *fC; char pad10[0x20]; void *f30; } State148;
 f32 fn_80013D60(f32);
-void fn_80014B9C(void *);
+void updateLapInfoHudDisplay(void *);
 s32 fn_800151DC(void *);
 void drawRaceStandings(void);
 void fn_80015658(void *);
@@ -664,7 +664,7 @@ extern s32 fn_80014ADC(void);
 #pragma dont_inline on
 #pragma scheduling invalid_target
 /* Updates a UI/progress object's fade state (+0x24) and value (+0x2C) based on reverse/active conditions (fn_80014ADC/fn_80014AE4), ramping toward lbl_80560360 (0.0f) or lbl_80560368 (1.0f). */
-void fn_80014B9C(void *arg0) {
+void updateLapInfoHudDisplay(void *arg0) {
     struct Obj {
         u8 pad0[0x24];
         s32 state;
@@ -737,7 +737,7 @@ typedef struct RaceSession {
 #define HUD_SPEED     0x0008 /* speed needle and the boost gauge */
 #define HUD_DAMAGE    0x0010 /* off-screen marker for this player's damage */
 #define HUD_INCIDENTS 0x0020 /* markers for the four arena incidents */
-#define HUD_LAPINFO   0x0040 /* the lap-info line (fn_80014B9C) */
+#define HUD_LAPINFO   0x0040 /* the lap-info line (updateLapInfoHudDisplay) */
 #define HUD_LAPWARN   0x0200 /* lap warning (fn_800151DC) */
 #define HUD_RESETWARN 0x0400 /* "wrong way" / reset warning (fn_800151DC) */
 #define HUD_TRACKMAP  0x1000 /* this player's mark on the track map */
@@ -927,7 +927,7 @@ extern s32 fn_8027AA48(void *, f32, f32);
                 } while (i < 4);
             }
             if ((gSession->hudMask & HUD_LAPINFO) && gSession->mode < 3) {
-                fn_80014B9C(overlay);
+                updateLapInfoHudDisplay(overlay);
             }
             {
                 /* The speed warning of fn_80016214 only runs while no lap or reset
@@ -1198,14 +1198,14 @@ void fn_80015770(void *arg0, f64 x, f64 y, f32 a, f32 b, f32 c) {
     f32 z;
     f32 ox, oy, oz;
     f32 k1, k2;
-    ox = x;
-    oy = y;
+    ox = (f32)x;
+    oy = (f32)y;
     vec[0] = lbl_80560360;
     vec[1] = lbl_80560360;
     vec[2] = c;
     fn_80015A20(mtx, vec);
     z = lbl_80560360;
-    oz = z;
+    oz = (f32)z;
     mtx[9] = x;
     mtx[10] = y;
     mtx[11] = z;
@@ -1220,28 +1220,28 @@ void fn_80015770(void *arg0, f64 x, f64 y, f32 a, f32 b, f32 c) {
         if (p == q) {
             f32 vx = p[0], vy = p[1], vz = p[2];
             f32 m0 = mtx[0], m1 = mtx[1], m2 = mtx[2];
-            f32 m3 = mtx[3], m4 = mtx[4], m5 = mtx[5];
             f32 m6 = mtx[6], m7 = mtx[7], m8 = mtx[8];
-            p[0] = vx * m0 + vy * m3 + vz * m6;
+            f32 m3 = mtx[3], m4 = mtx[4], m5 = mtx[5];
             p[1] = vx * m1 + vy * m4 + vz * m7;
+            p[0] = vx * m0 + vy * m3 + vz * m6;
             p[2] = vx * m2 + vy * m5 + vz * m8;
         } else {
             f32 vx = p[0], vy = p[1], vz = p[2];
             f32 m0 = mtx[0], m1 = mtx[1], m2 = mtx[2];
             f32 m3 = mtx[3], m4 = mtx[4], m5 = mtx[5];
             f32 m6 = mtx[6], m7 = mtx[7], m8 = mtx[8];
-            q[0] = vx * m0 + vy * m3 + vz * m6;
-            q[1] = q[0] * m1 + vy * m4 + vz * m7;
-            q[2] = q[1] * m2 + vy * m5 + vz * m8;
+            p[0] = vx * m0 + vy * m3 + vz * m6;
+            p[1] = p[0] * m1 + vy * m4 + vz * m7;
+            p[2] = p[1] * m2 + vy * m5 + vz * m8;
         }
-        q += 3;
         p[0] = p[0] + ox;
         p[1] = p[1] + oy;
         p[2] = p[2] + oz;
+        q += 3;
         p += 3;
     }
     fn_802C8BD0(*(s32 *)((u8 *)arg0 + 0x44));
-    beginMeshPass(4);
+    fn_801E4F20(4);
     p = verts[0];
     for (i = 0; i < 4; i++) {
         fn_801E4F3C(-1, i > 1, p[0], p[1], p[2],
@@ -1249,8 +1249,8 @@ void fn_80015770(void *arg0, f64 x, f64 y, f32 a, f32 b, f32 c) {
                     (i < 2) ? lbl_805603F4 : lbl_80560368);
         p += 3;
     }
-    endMeshPass();
-    DrawList_RestoreNormalMode();
+    fn_801E4FF4();
+    fn_802C8D74();
 }
 #pragma pop
 void fn_80015AA0(void *, f32);
