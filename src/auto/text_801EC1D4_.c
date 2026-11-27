@@ -404,59 +404,59 @@ extern void fn_8020095C(long);
 extern void fn_802792EC(long);
 extern long __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448(long, long);
 #pragma dont_inline on
-void *destroyVehicleRenderObject(void *arg0, int arg1) {
-    int i;
+/* Destroy a vehicle render object: release owned resources and, when shouldDelete > 0, delete the object. */ void *destroyVehicleRenderObject(void *renderObject, int shouldDelete) {
+    int index;
     char *entry;
     long value;
 
     /* Destructor-like cleanup: release owned resources/subobjects and optionally delete storage. */
-    if (arg0 != 0) {
-        *(void **)arg0 = lbl_8033A300;
-        fn_801EEC68(arg0);
+    if (renderObject != 0) {
+        *(void **)renderObject = lbl_8033A300;
+        fn_801EEC68(renderObject);
 
-        entry = arg0;
-        for (i = 0; i < *(int *)((char *)arg0 + 0x148); i++) {
+        entry = renderObject;
+        for (index = 0; index < *(int *)((char *)renderObject + 0x148); index++) {
             *(int *)(entry + 0x84) = -1;
             fn_802C6CF8(*(long *)(entry + 0x44));
             entry += 4;
         }
 
-        entry = arg0;
-        for (i = 0; i < *(int *)((char *)arg0 + 0x480); i++) {
+        entry = renderObject;
+        for (index = 0; index < *(int *)((char *)renderObject + 0x480); index++) {
             fn_802C6CF8(*(long *)(entry + 0x400));
             entry += 8;
         }
 
-        fn_802C6CF8(*(long *)((char *)arg0 + 0x178));
-        ((void (*)(long))fn_801E323C)(*(long *)((char *)arg0 + 0x17C));
-        ((void (*)(long))fn_801E323C)(*(long *)((char *)arg0 + 0x180));
-        fn_8020095C(*(long *)((char *)arg0 + 0x184));
+        fn_802C6CF8(*(long *)((char *)renderObject + 0x178));
+        ((void (*)(long))fn_801E323C)(*(long *)((char *)renderObject + 0x17C));
+        ((void (*)(long))fn_801E323C)(*(long *)((char *)renderObject + 0x180));
+        fn_8020095C(*(long *)((char *)renderObject + 0x184));
 
-        entry = arg0;
-        for (i = 0; i < 4; i++) {
+        entry = renderObject;
+        for (index = 0; index < 4; index++) {
             value = *(long *)(entry + 0x4D4);
             fn_801EFFF8(value);
             *(long *)(entry + 0x4D4) = 0;
             entry += 4;
         }
 
-        lbl_80488648[*(long *)((char *)arg0 + 0x40)] = 0;
-        fn_801EF428(*(long *)((char *)arg0 + 0x3F0), 1);
-        fn_802792EC(*(long *)((char *)arg0 + 0x188));
-        *(long *)((char *)arg0 + 0x188) = 0;
-        if (lbl_8055EBC8 == (unsigned int)arg0) lbl_8055EBC8 = 0;
+        lbl_80488648[*(long *)((char *)renderObject + 0x40)] = 0;
+        fn_801EF428(*(long *)((char *)renderObject + 0x3F0), 1);
+        fn_802792EC(*(long *)((char *)renderObject + 0x188));
+        *(long *)((char *)renderObject + 0x188) = 0;
+        if (lbl_8055EBC8 == (unsigned int)renderObject) lbl_8055EBC8 = 0;
 
-        __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)arg0 + 0x384), -1);
-        __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)arg0 + 0x330), -1);
-        __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)arg0 + 0x2DC), -1);
-        __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)arg0 + 0x288), -1);
-        __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)arg0 + 0x234), -1);
-        __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)arg0 + 0x1E0), -1);
-        __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)arg0 + 0x18C), -1);
+        __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)renderObject + 0x384), -1);
+        __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)renderObject + 0x330), -1);
+        __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)renderObject + 0x2DC), -1);
+        __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)renderObject + 0x288), -1);
+        __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)renderObject + 0x234), -1);
+        __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)renderObject + 0x1E0), -1);
+        __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448((long)((char *)renderObject + 0x18C), -1);
 
-        if (arg1 > 0) fn_80128668(arg0);
+        if (shouldDelete > 0) fn_80128668(renderObject);
     }
-    return arg0;
+    return renderObject;
 }
 
 /* 1 when the vehicle render object's owner data (+0x3C) still has its +0x2D4
