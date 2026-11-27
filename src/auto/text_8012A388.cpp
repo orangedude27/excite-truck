@@ -149,7 +149,7 @@ extern "C" u32 fn_8012D3D0(void);
 /* fn_8012CC24: two args (object*, char* path list), returns s32. */
 extern "C" void fn_8012D33C(u32 *, u32 *);
 extern "C" void fn_8012D1A8(s32 arg0);
-extern "C" s32 fn_8012D024(void *, s32, s32);
+extern "C" s32 loadResourceFromNameList(void *, s32, s32);
 
 #pragma use_lmw_stmw off
 /* Byte-swap the five little-endian u32 fields of a resource-table entry in place
@@ -1659,7 +1659,7 @@ extern "C" s32 fn_8012CC24(void *arg0, void *arg1) {
             ((void (*)(void *))fn_8012B324)(self + 0x24);
             value = *(s32 *)(self + 0xBC);
             *(s32 *)(self + 0xBC) = value + 1;
-            fn_8012D024(arg0, (s32)(self + 4), value);
+            loadResourceFromNameList(arg0, (s32)(self + 4), value);
         }
     }
     switch (*(s32 *)(self + 0xB8)) {
@@ -1797,7 +1797,7 @@ func_exit:
     return done;
 }
 
-/* Resource request fields used by fn_8012D024 (offsets into the request). */
+/* Resource request fields used by loadResourceFromNameList (offsets into the request). */
 #define LOAD_REQ_NAME_INDEX 0xBC
 #define LOAD_REQ_STATUS 0xB8
 #define LOAD_REQ_HANDLE 0xB4
@@ -1807,7 +1807,7 @@ func_exit:
 #define LOAD_REQ_NAME 0x4
 #define LOAD_REQ_PATH 0x24
 
-extern "C" s32 fn_8012D024(void *request, s32 nameList, s32 arg2) {
+extern "C" s32 loadResourceFromNameList(void *request, s32 nameList, s32 arg2) {
     /* Tries each candidate name in nameList, opening the first record that resolves to
        a stream; on success copies its name/path into the request, initializes it and
        sets an expiry time. Returns 1 on success, 0 when the list runs out; arg2 is unused. */
@@ -2850,7 +2850,7 @@ extern "C" void *fn_8012E3D4(void *queue) {
  * at +0x4C.  Runs the request's state machine once (fn_8012D40C), releases
  * whatever it holds right now (fn_8012D1A8), rewinds its cursor into the
  * candidate-name list (+0xBC) and starts loading from nameList again
- * (fn_8012D024), which opens the first candidate that resolves.  The loader
+ * (loadResourceFromNameList), which opens the first candidate that resolves.  The loader
  * calls this for a request whose status (fn_8012D838) is 0, i.e. one that never
  * got going. */
 extern "C" void fn_8012E40C(void *request, s32 nameList) {
@@ -2859,9 +2859,9 @@ extern "C" void fn_8012E40C(void *request, s32 nameList) {
     fn_8012D40C((s32)self);
     fn_8012D1A8((s32)self);
     *(s32 *)((u8 *)self + REQ_NAME_INDEX) = 0;
-    /* fn_8012D024 is prototyped with a third, unused argument; called with the
+    /* loadResourceFromNameList is prototyped with a third, unused argument; called with the
      * two it uses. */
-    ((void (*)(void *, s32))fn_8012D024)(self, nameList);
+    ((void (*)(void *, s32))loadResourceFromNameList)(self, nameList);
 #undef REQ_NAME_INDEX
 }
 
