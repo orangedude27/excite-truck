@@ -18,7 +18,7 @@ extern void VideoObject_OpenMovie(void *);
 extern char lbl_8034CBC4[];
 __declspec(section ".sdata") extern char lbl_8055D168[];
 extern int fn_801186B8(void *);
-extern void fn_80118C44(void *);
+extern void BinkMgr_AdvanceFrame(void *);
 extern void videoRingFlushSlot(void *);
 extern void fn_802E27B8(void *);
 extern u8 fn_802ECC10(void);
@@ -1124,7 +1124,7 @@ void fn_802E12DC(void) {
         }
         if (nowMs - movie->frameTimerMs > 0x1E) {
             if (((s32 (*)(void))fn_802ECC10)() == 0)
-                fn_80118C44((void *)movie->binkHandle);
+                BinkMgr_AdvanceFrame((void *)movie->binkHandle);
             movie->frameTimerMs += 0x20;
         }
         videoRingFlushSlot(movie->videoRing);

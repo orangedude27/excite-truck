@@ -1474,7 +1474,7 @@ extern s32 fn_801190B0(void*, s32);
  * frame's decode time is folded into the running total and the movie is sent to
  * its next frame, wrapping back to the first at the end.  bink +0x11C is the
  * guard that keeps the tick callback out while this runs. */
-void fn_80118C44(void* bink) {
+void BinkMgr_AdvanceFrame(void* bink) {
     s32 value;
     s32 var_r4;
     s32 entryOff;
