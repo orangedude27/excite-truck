@@ -119,7 +119,7 @@ int fn_801AE620(void *entry) {
 /* Fill in race-result points and bonuses: find the highest score (+0x14) among the
  * active RaceResult records (ties included), then give each active record its points
  * from its placing and a +5 bonus for a nonzero score plus another +5 for a top score. */
-void fn_801AE628(int context) {
+void assignRaceResultPoints(int context) {
     struct {
         int count;
         int indices[8];
@@ -776,7 +776,7 @@ void fn_801AF6FC(void) {
         }
     }
     fn_801AEBD0();
-    fn_801AE628((int)fn_80137C4C());
+    assignRaceResultPoints((int)fn_80137C4C());
     if (notTwo == 0) {
         ((void (*)(int, int, int))fn_801AFAB8)(lbl_8055E628, lbl_8055E624[0], lbl_8055E624[1]);
     }
@@ -916,7 +916,7 @@ void fn_801AFABC(int recordMgr, int rank) {
 /* Stubbed RecordMgr callback.  The end-of-race pass (fn_801AF6FC) fires it as
  * (gRecordMgr, records = gRaceResultTable[0], count = gRaceResultTable[1]) once
  * the RaceResult records have been ranked and reported (fn_801AEBD0 /
- * fn_801AE628), when mode == 2; this build ignores all three arguments. */
+ * assignRaceResultPoints), when mode == 2; this build ignores all three arguments. */
 void fn_801AFAB8(void) {
 
 }
