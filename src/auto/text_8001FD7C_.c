@@ -341,7 +341,7 @@ void fn_8002017C(void) {
     fn_8000B3DC(0);
 }
 
-int fn_80020184(void) {
+int computeOverlayFade(void) {
     /* Return a fade alpha (0xFF down to 0x00) based on time since lbl_8055D63C,
        starting 0x12C ticks after it and ramping over ~1000 ticks. */
     s32 clamped;
@@ -962,7 +962,7 @@ void fn_800209A0(int arg0, float arg1)
 
 #pragma pop
 
-extern int fn_80020184(void);
+extern int computeOverlayFade(void);
 extern int fn_801E8838(void);
 extern int fn_8020DE1C(void);
 /* One of the module's lazily-created UI text objects.  fn_801312EC starts one
@@ -1001,7 +1001,7 @@ extern float lbl_80560554, lbl_80560500, lbl_80560558, lbl_8056055C;
 int updateResultsOverlay(void) {
     /* Per-frame update of the results overlay shown over the tips box.
        Does nothing while the overlay is switched off (OVERLAY_ACTIVE).
-       fn_80020184() is the overlay's own fade-out: still fully opaque for the
+       computeOverlayFade() is the overlay's own fade-out: still fully opaque for the
        first 300 ms of the results screen and gone a second later.  While it is
        up the "loadback" image is drawn over the box (fn_80020860) and the box
        itself gets no fade of its own; afterwards the box follows the race's own
@@ -1012,7 +1012,7 @@ int updateResultsOverlay(void) {
     float boxAlpha;
     unsigned int fontSetId;
     if (!OVERLAY_ACTIVE) return 0;
-    fade = fn_80020184();
+    fade = computeOverlayFade();
     if (fade > 0) fn_80020860(fade);
     if (fade > 0) boxAlpha = lbl_805604B4; /* 0.0f */
     else boxAlpha = (float)fn_801E8838() / ALPHA_TO_UNIT;
@@ -1181,9 +1181,9 @@ unsigned char fn_800216F4(void) {
 }
 
 int fn_800216FC(void) {
-    /* Nonzero while the results/tips overlay is up and its fade-out (fn_80020184) has not finished. */
+    /* Nonzero while the results/tips overlay is up and its fade-out (computeOverlayFade) has not finished. */
     if (OVERLAY_ACTIVE != 0)
-        return fn_80020184() > 0;
+        return computeOverlayFade() > 0;
     return 0;
 }
 
