@@ -6729,7 +6729,7 @@ extern "C" s32 fn_800AE3A8(void *fileInfo, s32 startCluster, s32 clusterIndex, u
 
 extern "C" s32 VFiPFFAT_GetClusterSpecified(void *, u32, u32, u32 *);
 
-extern "C" s32 fn_800AE4C0(void *fileInfo, u32 fileOffset, u32 mode, u32 byteCount, s32 *outAddress) {
+extern "C" s32 VFiPFFAT_GetPhysicalAddress(void *fileInfo, u32 fileOffset, u32 mode, u32 byteCount, s32 *outAddress) {
     /* Resolve a byte offset within a FAT file to a physical storage address, written through *outAddress. */
     s32 cluster;
     s32 status;
@@ -6798,7 +6798,7 @@ extern "C" s32 fn_800AE620(s32 fileInfo, s32 sector, s32 modeFlag, s32 outSector
      * as a nonzero lookup mode and a zero byte count to the address resolver, then
      * return its status (0 on success). */
     u32 mode = ((u32)(-(modeFlag) | (modeFlag))) >> 31;
-    s32 status = fn_800AE4C0((void *)fileInfo, (u32)sector, mode, 0, (s32 *)outSector);
+    s32 status = VFiPFFAT_GetPhysicalAddress((void *)fileInfo, (u32)sector, mode, 0, (s32 *)outSector);
     switch (status) {
     case 0: return 0;
     default: return status;
@@ -6815,7 +6815,7 @@ extern "C" s32 fn_800AE664(void *arg0, u32 arg1, u32 arg2, s32 *clusterOffset, s
         clusterIndex = ((u32)(offset - *(s32 *)((u8 *)volume + 0x30)) >>
                  *(u8 *)((u8 *)volume + 0x21)) + 2;
     } else {
-        s32 result = fn_800AE4C0(arg0, arg1, 0, 0, clusterOffset);
+        s32 result = VFiPFFAT_GetPhysicalAddress(arg0, arg1, 0, 0, clusterOffset);
         result &= (-result | result) >> 31;
         if (result != 0)
             return result;
@@ -9641,7 +9641,7 @@ loop_57:
 }
 #pragma opt_propagation reset
 extern "C" s32 mountDriveByLetter(s8);
-s32 fn_800AE4C0(s32, s32, s32);
+s32 VFiPFFAT_GetPhysicalAddress(s32, s32, s32);
 extern "C" s32 fn_800B3754(s32, s32 *, s32);
 extern "C" s32 fn_800AF574(void *);
 extern "C" s32 fn_800B5618(void *, void *, u32, u16, s32);
