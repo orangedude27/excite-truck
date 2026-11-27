@@ -91,7 +91,7 @@ s32 getMenuTableEntryCount(s32 group) {
  * entryIndex-1 in the given menu-table group (see MenuTableEntry/MENU_TABLE above).
  * MenuList_MoveCursor uses it to keep the cursor at the same offset when it moves
  * to another group. */
-s32 fn_80243528(s32 entryIndex, s32 group) {
+s32 getMenuTableEntryOffset(s32 entryIndex, s32 group) {
     s32 *entries = (s32 *)lbl_803428B0 + group * 48;
     s32 offset = 0;
     s32 i;
@@ -138,7 +138,7 @@ __declspec(section ".sdata") extern s32 lbl_8055BE10; /* s_cursorHoldEntry */
 #define s_cursorHoldGroup lbl_8055BE0C
 #define s_cursorHoldEntry lbl_8055BE10
 extern s32 fn_80230E90(s32);
-extern s32 fn_80243528(s32, s32);
+extern s32 getMenuTableEntryOffset(s32, s32);
 extern s32 fn_8024360C(s32, s32);
 extern s32 fn_80243710(s32, s32);
 #pragma push
@@ -159,7 +159,7 @@ s32 moveMenuCursor(s32 *entryIndex, volatile s32 *groupIndex, s32 entryDelta, s3
     else if (newGroup > 4) *groupIndex = 0;
     if (*groupIndex != oldGroup) {
         /* the entry widths the cursor covered in the old group choose its entry here */
-        entry = fn_8024360C(fn_80243528(*entryIndex, oldGroup), *groupIndex);
+        entry = fn_8024360C(getMenuTableEntryOffset(*entryIndex, oldGroup), *groupIndex);
         newCount = getMenuTableEntryCount(*groupIndex);
         oldCount = getMenuTableEntryCount(oldGroup);
         if (oldCount != newCount) {
