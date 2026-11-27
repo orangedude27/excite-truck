@@ -248,26 +248,28 @@ void GXResetTevSwapMode0(void) {
 }
 
 void *gxGetSceneTexObj(void);
-/* Configures GX TEV/texture state for a 2-stage textured blend setup. */
-/* Configure the 2-stage TEV pipeline for render mode 2's non-indirect branch: stage 0 uses the rasterized color, stage 1 samples the texture from gxGetSceneTexObj() loaded into GX_TEXMAP7. */ void GXSetupTevPipelineMode2(void) {
-    register u32 texCoordId = 0;
-    register u32 texGenType = 1;
-    GXSetTexCoordGen2(texCoordId, texGenType, 0, 0x2D, 0, 0x7D);
+/* Configure the render-mode 2 two-stage TEV pipeline: one position-derived
+ * texcoord generator, stage 0 passes the rasterized colour through, and stage 1
+ * blends in the scene texture loaded into GX_TEXMAP7. */
+void GXSetupTevPipelineMode2(void) {
+    register u32 texCoordId = GX_TEXCOORD0;
+    register u32 texGenType = GX_TG_MTX2x4;
+    GXSetTexCoordGen2(texCoordId, texGenType, GX_TG_POS, GX_TEXMTX5, GX_FALSE, GX_PTIDENTITY);
     GXSetNumTexGens(1);
-    GXSetTevOrder(0, 0xFF, 0xFF, 4);
-    GXSetTevOrder(1, 0, 7, 0xFF);
-    GXSetTevSwapMode(0, 0, 0);
-    GXSetTevSwapMode(1, 0, 0);
-    GXSetTevColorIn(0, 0xF, 0xA, 6, 0xF);
-    GXSetTevColorOp(0, 0, 0, 0, 1, 0);
-    GXSetTevAlphaIn(0, 7, 7, 7, 7);
-    GXSetTevAlphaOp(0, 0, 1, 1, 1, 0);
-    GXSetTevColorIn(1, 0, 8, 9, 0xF);
-    GXSetTevColorOp(1, 0, 0, 0, 1, 0);
-    GXSetTevAlphaIn(1, 7, 7, 7, 0);
-    GXSetTevAlphaOp(1, 0, 0, 0, 1, 0);
+    GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD_NULL, GX_TEXMAP_NULL, GX_COLOR0A0);
+    GXSetTevOrder(GX_TEVSTAGE1, GX_TEXCOORD0, GX_TEXMAP7, GX_COLOR_NULL);
+    GXSetTevSwapMode(GX_TEVSTAGE0, GX_TEV_SWAP0, GX_TEV_SWAP0);
+    GXSetTevSwapMode(GX_TEVSTAGE1, GX_TEV_SWAP0, GX_TEV_SWAP0);
+    GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_RASC, GX_CC_C2, GX_CC_ZERO);
+    GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+    GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO);
+    GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ADDHALF, GX_CS_SCALE_2, GX_TRUE, GX_TEVPREV);
+    GXSetTevColorIn(GX_TEVSTAGE1, GX_CC_CPREV, GX_CC_TEXC, GX_CC_TEXA, GX_CC_ZERO);
+    GXSetTevColorOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+    GXSetTevAlphaIn(GX_TEVSTAGE1, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_APREV);
+    GXSetTevAlphaOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
     GXSetNumTevStages(2);
-    GXLoadTexObj(gxGetSceneTexObj(), 7);
+    GXLoadTexObj(gxGetSceneTexObj(), GX_TEXMAP7);
 }
 
 #pragma push
