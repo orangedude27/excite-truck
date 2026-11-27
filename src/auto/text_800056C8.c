@@ -220,8 +220,8 @@ extern "C" void selectPlayerHudOverlays(void) {
         virtual s32 v11() = 0;
         virtual s32 isDone() = 0; /* the overlays' finished byte */
     };
-    OverlayManager *mgr;
-    OverlayCursor *cursor;
+    OverlayManager *overlayManager;
+    OverlayCursor *entryCursor;
     s32 playerCount, player;
     if (fn_801769A8() & 0x4000) { /* physics asks for an interlude */
         fn_800056E0((s32)OVERLAY_MGR->interlude);
@@ -246,14 +246,14 @@ extern "C" void selectPlayerHudOverlays(void) {
         return;
     }
     playerCount = SESSION->playerCount;
-    cursor = (OverlayCursor *)OVERLAY_MGR;
-    mgr = (OverlayManager *)cursor;
+    entryCursor = (OverlayCursor *)OVERLAY_MGR;
+    overlayManager = (OverlayManager *)entryCursor;
     for (player = 0; player < playerCount;
-         cursor = (OverlayCursor *)((u8 *)cursor + sizeof(OverlayEntry)), player++) {
+         entryCursor = (OverlayCursor *)((u8 *)entryCursor + sizeof(OverlayEntry)), player++) {
         if (fn_80005580(player) != 0) { /* this player is out of the race */
-            fn_800056C8(player, (s32)mgr->closure);
+            fn_800056C8(player, (s32)overlayManager->closure);
         } else {
-            fn_800056C8(player, (s32)cursor->fallback);
+            fn_800056C8(player, (s32)entryCursor->fallback);
         }
     }
 }
