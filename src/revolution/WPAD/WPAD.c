@@ -5455,7 +5455,7 @@ BOOL fn_80063744(WPADCommandQueue *pQueue, u8 value, u32 address, WPADCallback p
     return TRUE;
 }
 #pragma opt_propagation reset
-BOOL fn_800638C8(u8* queue, const void* src, u32 len, u32 val1, u32 val2) {
+BOOL WPADiEnqueueCommand(u8* queue, const void* src, u32 len, u32 val1, u32 val2) {
     /* Enqueues a 0x30-byte WPAD command packet into a ring buffer (fields at +0/+1
        indices, +4 buffer base, +8 capacity). Returns FALSE if the queue is full. */
     u8 buf[0x60] ALIGN(8);
@@ -5916,9 +5916,9 @@ void fn_80064B1C(s32 chan, void* data) {
             fn_80063564(q, *(s32*)(p + 0x7f8), (void*)0);
             fn_80063744(q, 0xaa, 0x4A400F0, fn_80064A80);
             fn_800684D0(channel);
-            fn_800638C8((u8*)q, p + 0x854, 6, 0x4A40040, (u32)fn_80064A80);
-            fn_800638C8((u8*)q, p + 0x85a, 6, 0x4A40046, (u32)fn_80064A80);
-            fn_800638C8((u8*)q, p + 0x860, 4, 0x4A4004C, (u32)fn_80064A80);
+            WPADiEnqueueCommand((u8*)q, p + 0x854, 6, 0x4A40040, (u32)fn_80064A80);
+            WPADiEnqueueCommand((u8*)q, p + 0x85a, 6, 0x4A40046, (u32)fn_80064A80);
+            WPADiEnqueueCommand((u8*)q, p + 0x860, 4, 0x4A4004C, (u32)fn_80064A80);
             fn_80063A50((u8*)q, (u32)(p + 0x874), 2, 0x4A400FE, (u32)fn_80064A80);
             fn_80063A50((u8*)q, (u32)(p + 0x874), 0x20, 0x4A40020, (u32)cbk);
             p[0x851] = 0;
