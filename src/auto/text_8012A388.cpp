@@ -1123,14 +1123,15 @@ static inline s32 LoadEntryDataBody(struct ResManager *manager, s32 entryIndex) 
 #pragma push
 #pragma dont_inline off
 #pragma auto_inline off
-/* LoadEntryData: make entry `entryIndex` of the resource set `manager` resident.
- * Unless it is loaded already, allocate the entry's data behind an 0x80-byte
- * block header, open the set's archive, seek to the entry's place in it, read
- * the data and check it against the entry's CRC: on success the entry keeps the
- * header and the allocation, gains RES_ENTRY_ALLOCATED|RES_ENTRY_LOADED and the
- * load is logged with the time it took, on failure the CRC message is logged and
- * the allocation handed back. Returns the entry's RES_ENTRY_LOADED bit, which
- * tells ResourceGet (ResourceGetEntry) whether it can hand out the entry's data. */
+/* LoadResourceEntryData: make entry `entryIndex` of the resource set `manager`
+ * resident. Unless it is loaded already, allocate the entry's data behind an
+ * 0x80-byte block header, open the set's archive, seek to the entry's place in
+ * it, read the data and check it against the entry's CRC: on success the entry
+ * keeps the header and the allocation, gains RES_ENTRY_ALLOCATED|RES_ENTRY_LOADED
+ * and the load is logged with the time it took; on failure the CRC message is
+ * logged and the allocation handed back. Returns the entry's RES_ENTRY_LOADED
+ * bit, which tells ResourceGet (ResourceGetEntry) whether it can hand out the
+ * entry's data. The real work is inlined from LoadEntryDataBody. */
 extern "C" s32 LoadResourceEntryData(struct ResManager *manager, s32 entryIndex) {
     return LoadEntryDataBody(manager, entryIndex);
 }
