@@ -139,7 +139,7 @@ extern "C" void startCredits(int fadeOut, unsigned char skip, int fadeIn) {
     register void *entry asm("r28");
     register int keepGoing asm("r27");
     register int fadeOutOrIndex asm("r26") = fadeOut; /* the .val walk index takes over below */
-    register int r_fadeIn asm("r25") = fadeIn;
+    register int doFadeIn asm("r25") = fadeIn;
     lbl_8055F450 = skip;
     prevSong = fn_8020A69C();
     musicRequestSong(1);
@@ -171,7 +171,7 @@ extern "C" void startCredits(int fadeOut, unsigned char skip, int fadeIn) {
         fn_80264538((int)timerObj, -1);
         fn_80264968(pageObj, -1);
     }
-    if (r_fadeIn != 0) {
+    if (doFadeIn != 0) {
         fn_80265940();
     }
     musicRequestSong(prevSong);
