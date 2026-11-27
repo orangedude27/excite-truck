@@ -5399,7 +5399,7 @@ BOOL fn_80063564(WPADCommandQueue* pQueue, s32 format, WPADCallback pCallback) {
 }
 
 #pragma opt_propagation off
-BOOL fn_80063744(WPADCommandQueue *pQueue, u8 value, u32 address, WPADCallback pCallback) {
+BOOL WPADiSendWriteDataCmd_80063744(WPADCommandQueue *pQueue, u8 value, u32 address, WPADCallback pCallback) {
     /* WPADiSendWriteDataCmd with WPADiSendWriteData and WPADiPushCommand both
      * inlined (the REXE01 build keeps this second copy): build a WriteData
      * command writing the single byte `value` to the wiimote register
@@ -5914,7 +5914,7 @@ void fn_80064B1C(s32 chan, void* data) {
             q = (WPADCommandQueue*)(p + 0x5ec);
             cbk = *(WPADCallback*)(p + 0x7e0);
             fn_80063564(q, *(s32*)(p + 0x7f8), (void*)0);
-            fn_80063744(q, 0xaa, 0x4A400F0, fn_80064A80);
+            WPADiSendWriteDataCmd_80063744(q, 0xaa, 0x4A400F0, fn_80064A80);
             fn_800684D0(channel);
             WPADiEnqueueCommand((u8*)q, p + 0x854, 6, 0x4A40040, (u32)fn_80064A80);
             WPADiEnqueueCommand((u8*)q, p + 0x85a, 6, 0x4A40046, (u32)fn_80064A80);
