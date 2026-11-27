@@ -162,13 +162,12 @@ void fn_80208AC8(int playerSlot, int event) {
 
 #pragma push
 #pragma inline_depth(0)
-/* Initialize the sound subsystem: publish the configured sound mode, optionally
- * allocate and register a null mixer backend, load saved mixer settings, register
- * the settings-reload callback, and install the identity-event handler. */
+/* Publish the configured sound mode, optionally register the null and voice
+ * mixer backends, then load saved mixer settings and install the hooks. */
 void initSoundMixer(int initBackends) {
-    int soundMode = (int)ConfigGetSCSoundMode(); /* ConfigGetSoundMode() */
+    int soundMode = (int)ConfigGetSCSoundMode();
     switch (soundMode) {
-    default: /* anything the config block holds besides mono and surround */
+    default:
     case SC_SND_STEREO:
         gSoundMode = SC_SND_STEREO;
         break;
@@ -179,10 +178,10 @@ void initSoundMixer(int initBackends) {
         gSoundMode = SC_SND_MONO;
         break;
     }
-    MIXER_VOLUME_HANDLE_COUNT = 0; /* no volume handles yet */
+    MIXER_VOLUME_HANDLE_COUNT = 0;
     if (initBackends != 0) {
         void *nullMixer;
-        int *registry; /* devices[MIXER_DEVICE_MAX], count, selected index */
+        int *registry;
         int count;
 
         memset((void *)MIXER_DEVICES, 0, 0x20);
@@ -195,7 +194,7 @@ void initSoundMixer(int initBackends) {
         registry[registry[MIXER_DEVICE_MAX]] = (int)nullMixer;
         count = registry[MIXER_DEVICE_MAX];
         registry[MIXER_DEVICE_MAX] = count + 1;
-        fn_8020A72C(); /* create the voice mixer and register it */
+        fn_8020A72C();
     }
     {
         int *registry = (int *)MIXER_DEVICES;
@@ -205,7 +204,7 @@ void initSoundMixer(int initBackends) {
                     (char *)registry + MIXER_SELECTED_OFFSET);
         selected = registry[MIXER_DEVICE_MAX + 1];
         if (selected < 0 || selected >= registry[MIXER_DEVICE_MAX])
-            *(int *)((char *)MIXER_DEVICES + MIXER_SELECTED_OFFSET) = 0; /* null mixer */
+            *(int *)((char *)MIXER_DEVICES + MIXER_SELECTED_OFFSET) = 0;
     }
     fn_8013323C(OPTIONS_SECTION_SOUND, CONFIG_KEY_EFFECTS_VOLUME, DEFAULT_EFFECTS_VOLUME);
     ReloadMixerSettings();
