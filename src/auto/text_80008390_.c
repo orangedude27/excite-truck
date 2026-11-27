@@ -220,7 +220,7 @@ extern f32 lbl_805601BC;
 extern f32 lbl_805601D0;
 #pragma dont_inline on
 #pragma optimization_level 2
-s32 fn_80008C5C(void) {
+s32 updateUiModeFromPad(void) {
     unsigned char sp[0x68];
     s32 old = *(volatile s32 *)&lbl_805589EC;
     u32 input;
@@ -920,7 +920,7 @@ skip16:
                 fn_80012158();
         }
     after_first:
-        var15 = fn_80008C5C();
+        var15 = updateUiModeFromPad();
         DrawList_beginFrame();
         DrawList_setViewport(0, 0, lbl_8055CFF0, lbl_8055CFF4);
         fn_801E7E48();
