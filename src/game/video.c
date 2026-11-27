@@ -706,7 +706,7 @@ void GXSetupFiveStageTevPipelineB(void) {
  *   stage 1 (texmap 0, colour0/alpha0):    rgb = raster + previous - texC,
  *           alpha = the previous stage's alpha.
  * Both stages clamp and write TEVPREV. */
-void GXSetupTevPipelineMode5(void) {
+/* Configure the render-mode 5 two-stage TEV pipeline: texcoord generators, texture/color orders, swap modes, and both combiners. */ void GXSetupTevPipelineMode5(void) {
     register u32 texCoordId = GX_TEXCOORD0;
     register u32 texGenType = GX_TG_MTX2x4;
     GXSetTexCoordGen2(texCoordId, texGenType, GX_TG_TEX0, GX_IDENTITY, GX_FALSE,
