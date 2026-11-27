@@ -784,7 +784,7 @@ void DrawList_endOverlayPass(void) {
 }
 
 #pragma processor 750
-/* Draw a screen-space textured quad: begin a mesh pass, emit the four corners as two triangles with the given UVs and packed RGBA `color`, then end the pass. */ void fn_802C9124(float u0, float v0, float u1, float v1, int left, int top, int right, int bottom, int color) {
+/* Draw a screen-space textured quad: begin a mesh pass, emit the four corners as two triangles with the given UVs and packed RGBA `color`, then end the pass. */ void drawTexturedScreenQuad(float u0, float v0, float u1, float v1, int left, int top, int right, int bottom, int color) {
     /* Submit a screen-space textured quad with the given UVs when the draw primitive can be started. */
     if (((int (*)(int))beginMeshPass)(4) != 0) {
         ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(color, 0, (float)right, (float)top, 0.0f, u1, v0);
