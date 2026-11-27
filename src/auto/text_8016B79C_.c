@@ -30,7 +30,7 @@ extern "C" void fn_80235380(void *, char *);
 extern "C" void fn_802C2930(void *, s32);
 extern "C" void *fn_8000AC38(void);
 extern "C" void *fn_80131810(void);
-extern "C" s32 fn_8016C5F0(void);
+extern "C" s32 countAvailableRingSets(void);
 extern "C" void fn_8016C55C(void *, void *);
 extern "C" void *fn_8016C598(void *, int, int);
 extern "C" s8 fn_8016C768(void *, void *, void *);
@@ -726,7 +726,7 @@ get:
         fn_801345D8(buf, 0x1E, base + 0xD8, *(s32 *)((u8 *)arg0 + 0x3C));
     }
     *(s32 *)((u8 *)arg0 + 0x3C) = fn_8016C760(*(void **)((u8 *)arg0 + 0x18));
-    *(s32 *)((u8 *)arg0 + 0x38) = ((s32 (*)(void *))fn_8016C5F0)(arg0);
+    *(s32 *)((u8 *)arg0 + 0x38) = ((s32 (*)(void *))countAvailableRingSets)(arg0);
     obj = (void *)fn_801284F8(0x10, base + 0xE8);
     if (obj) {
         obj = fn_8016C598(obj, *(s32 *)((u8 *)arg0 + 0x38), (int)(base + 0xE8));
@@ -782,7 +782,7 @@ extern "C" char lbl_803307C8[];
 extern "C" char lbl_803307D8[];
 extern "C" __declspec(section ".sdata") char lbl_8055A218[];
 extern "C" __declspec(section ".sdata") char lbl_8055A220[];
-extern "C" s32 fn_8016C5F0(void) {
+extern "C" s32 countAvailableRingSets(void) {
     #pragma use_lmw_stmw off
     #pragma scheduling invalid_target
     struct Manager {
