@@ -417,7 +417,7 @@ void SplineCursor_Reset(void *cursor) {
     *(float *)((char *)cursor + 0xC) = scale;
 }
 /* Update an eased animation state from a new input value, integrating the delta into an accumulator and evaluating a clamped cubic curve. */
-void fn_80266170(void *state, int value, int hardReset, int resetScaleFlag, float scaleFactor)
+void SplineCursor_Advance(void *state, int value, int hardReset, int resetScaleFlag, float scaleFactor)
 {
   float norm;
   float output;
@@ -1663,66 +1663,62 @@ struct InputVec {
 };
 #pragma push
 #pragma processor 750
-void fn_80268BD4(void *out, int arg1, float t, float angle) {
-    float *inp = (float *)arg1;
-    float *b = *(float **)((char *)inp + 0x14);
-    float vec[4];
-    float rot[2];
-    float x;
-    float y;
-    float z;
-    float w;
-    float sumSq;
-    float scale;
-    float xScaled;
-    float yScaled;
-    float rotation;
-    float cosine;
-    float sine;
-    float d2, d3, d0, d1;
-
-    d2 = b[2] - inp[2];
-    d3 = b[3] - inp[3];
-    d0 = b[0] - inp[0];
-    d1 = b[1] - inp[1];
-    x = inp[2] + t * d2;
-    y = inp[3] + t * d3;
-    z = inp[0] + t * d0;
-    w = inp[1] + t * d1;
-    sumSq = x * x + y * y;
-    vec[0] = x;
-    vec[1] = y;
-    vec[2] = z;
-    vec[3] = w;
-
-    scale = lbl_80563C2C /
-        (float)((double (*)(void *, float, float, float, float, float, float, float, float))fn_8002F234)(
-            out, sumSq, x * x, t * d1, z, inp[0], inp[1], y, x);
-    xScaled = vec[0] * scale;
-    yScaled = vec[1] * scale;
-    vec[0] = yScaled;
-    vec[1] = -xScaled;
-
-    *(float *)((char *)out + 0x28) = lbl_80563C20;
-    rotation = lbl_80563C8C * inp[10] - lbl_80563C90;
-    rot[0] = vec[2] + yScaled * rotation;
-    rot[1] = vec[3] + vec[1] * rotation;
-    *(float *)((char *)out + 0x24) = rot[0];
-    *(float *)((char *)out + 0x2C) = rot[1];
-    fn_801EA140((char *)out + 0x24, vec[3],
-                vec[2] + yScaled * rotation, yScaled * rotation,
-                rotation, vec[1], yScaled, xScaled);
-    *(float *)((char *)out + 0x28) += lbl_80563C94;
-
-    cosine = (float)cos(angle);
-    sine = (float)sin(angle);
-    *(float *)((char *)out + 0xC) = lbl_80563C20;
-    *(float *)((char *)out + 0x10) = lbl_80563C2C;
-    *(float *)((char *)out + 0x14) = lbl_80563C20;
-    *(float *)((char *)out + 0x18) = yScaled * cosine - vec[1] * sine;
-    *(float *)((char *)out + 0x1C) = lbl_80563C20;
-    *(float *)((char *)out + 0x20) = yScaled * sine + vec[1] * cosine;
-    PSVECCrossProduct((char *)out + 0xC, (char *)out + 0x18, out);
+void fn_80268BD4(void *out, int arg1, float t, float angle)
+{
+  float *inp = (float *) arg1;
+  float *b = *((float **) (((char *) inp) + 0x14));
+  float vec[4];
+  float rot[2];
+  float x;
+  float y;
+  float z;
+  float w;
+  float sumSq;
+  float scale;
+  float xScaled;
+  float yScaled;
+  float rotation;
+  float cosine;
+  float sine;
+  float d2;
+  float d3;
+  float d0;
+  float d1;
+  d2 = b[2] - inp[2];
+  d3 = b[3] - inp[3];
+  d0 = b[0] - inp[0];
+  d1 = b[1] - inp[1];
+  x = inp[2] + (t * d2);
+  y = inp[3] + (t * d3);
+  z = inp[0] + (t * d0);
+  w = inp[1] + (t * d1);
+  sumSq = (x * x) + (y * y);
+  vec[0] = x;
+  vec[1] = y;
+  vec[2] = z;
+  vec[3] = w;
+  scale = lbl_80563C2C / ((float) ((double (*)(void *, float, float, float, float, float, float, float, float)) fn_8002F234)(out, sumSq, x * x, t * d1, z, inp[0], inp[1], y, x));
+  xScaled = vec[0] * scale;
+  yScaled = vec[1] * scale;
+  vec[0] = yScaled;
+  vec[1] = -xScaled;
+  rotation = (lbl_80563C8C * inp[10]) - lbl_80563C90;
+  *((float *) (((char *) out) + 0x28)) = lbl_80563C20;
+  rot[0] = vec[2] + (yScaled * rotation);
+  rot[1] = vec[3] + (vec[1] * rotation);
+  *((float *) (((char *) out) + 0x24)) = rot[0];
+  *((float *) (((char *) out) + 0x2C)) = rot[1];
+  fn_801EA140(((char *) out) + (0x24 & 0xFFFFFFFFu), vec[3], vec[2] + (yScaled * rotation), yScaled * rotation, rotation, vec[1], yScaled, xScaled);
+  *((float *) (((char *) out) + 0x28)) += lbl_80563C94;
+  cosine = (float) cos(angle);
+  sine = (float) sin(angle);
+  *((float *) (((char *) out) + 0xC)) = lbl_80563C20;
+  *((float *) (((char *) out) + 0x10)) = lbl_80563C2C;
+  *((float *) (((char *) out) + 0x14)) = lbl_80563C20;
+  *((float *) (((char *) out) + 0x18)) = (yScaled * cosine) - (vec[1] * sine);
+  *((float *) (((char *) out) + 0x1C)) = lbl_80563C20;
+  *((float *) (((char *) out) + 0x20)) = (yScaled * sine) + (vec[1] * cosine);
+  PSVECCrossProduct(((char *) out) + 0xC, ((char *) out) + 0x18, out);
 }
 #pragma pop
 /* Initialize a temporary object, apply fn_80268BD4 using lbl_80499920 and the context value at +0x1C

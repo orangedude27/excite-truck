@@ -673,7 +673,7 @@ extern "C" int lbl_80499050[12];
 extern "C" void *fn_801769F8(void);
 extern "C" void NoiseWalk_Advance(void *, int, void *);
 extern "C" void fn_80266070(void *, void *, void *, void *);
-extern "C" void fn_80266170(void *, int, void *, int, float);
+extern "C" void SplineCursor_Advance(void *, int, void *, int, float);
 extern "C" void fn_802662D8(void *, void *, void *, void *, void *);
 extern "C" void fn_80266388(void *, void *, void *, void *, void *);
 extern "C" void fn_801E9DC4(void *);
@@ -858,7 +858,7 @@ extern "C" void fn_80271624(int mode, void *arg1)
             if (e->flags & 1) {
                 void *s = fn_801769F8();
                 float v;
-                fn_80266170(o + 0x178, KERNEL_GetTimeMs(), s, changed, *(float *)(o + 0xBC));
+                SplineCursor_Advance(o + 0x178, KERNEL_GetTimeMs(), s, changed, *(float *)(o + 0xBC));
                 v = *(float *)(o + 0x180) + *(float *)(o + 0x184) * (*(float *)(o + 0xBC) - *(float *)(o + 0x180));
                 *(float *)(o + 0x194) = v;
                 *(float *)(o + 0xBC) = v;
