@@ -608,7 +608,7 @@ void fn_802E0420(void) {
  *   stage 0 (texmap 1, constant colour K1): rgb = K1 - texC, alpha = 0;
  *   stage 1 (texmap 2, constant alpha K1.a): rgb = the previous stage's rgb,
  *                                            alpha = K1.a - texA. */
-void GXSetupAltTextureTevPipeline(void) {
+/* Set up the alt-texture TEV pipeline: one texcoord generator feeding two K-color combiner stages (texmap 1 K1 colour, texmap 2 K1 alpha), both clamped into TEVPREV. */ void GXSetupAltTextureTevPipeline(void) {
     register u32 texCoordId = GX_TEXCOORD0;
     register u32 texGenType = GX_TG_MTX2x4;
     GXSetTexCoordGen2(texCoordId, texGenType, GX_TG_TEX0, GX_IDENTITY, GX_FALSE,
