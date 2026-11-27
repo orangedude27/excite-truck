@@ -2223,7 +2223,7 @@ extern float lbl_8055E3C8, lbl_80561A40, lbl_80561A44;
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" int fn_801758CC(void *obj, int unused, int actionId) {
+extern "C" int handleCrushMasterAction(void *obj, int unused, int actionId) {
     /* Handles action 0x58 when queried, or advances this object's timed state and triggers cleanup/child activation near timer end. */
     class Query {
     public:
