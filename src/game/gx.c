@@ -2816,7 +2816,7 @@ void fn_802D2B0C(void) {
     extern int memcmp(const void *, const void *, unsigned long);
     extern void fn_802DF21C(void);
     extern void GXResetTevSwapMode0(void);
-    extern void fn_802E09EC(void);
+    extern void GXSetupTevPipelineMode5(void);
     extern void fn_802E0B68(void);
     extern void fn_802DF300(void);
     extern void fn_802DF46C(void);
@@ -2850,7 +2850,7 @@ void fn_802D2B0C(void) {
                 break;
             case 5:
                 lbl_8055FD70 = 1;
-                fn_802E09EC();
+                GXSetupTevPipelineMode5();
                 lbl_8055FD80 = fn_802E0B68;
                 break;
             case 2:
@@ -3454,50 +3454,58 @@ typedef struct { FifoVec3 pos; unsigned int color; float u, v; } FifoVtx;
 extern void drawFifoTriangles(FifoVtx *, int, unsigned short *, int);
 #pragma push
 #pragma processor 750
-void fn_802D3BB4(float *arg0, float *arg1, float *arg2, float *arg3, unsigned int arg4, float scale, unsigned int arg_sp0) {
-    FifoVtx verts[4];
-    unsigned short indices[6];
-    float p0 = arg1[0], p1 = arg1[1], p2 = arg1[2];
-    float a0 = arg2[0], a1 = arg2[1], a2 = arg2[2];
-    float b0 = arg3[0], b1 = arg3[1], b2 = arg3[2];
-    unsigned int alpha = (arg4 & 0xFFFFFF) | ((unsigned int)(int)(arg0[5] * (float)(arg4 >> 24)) << 24);
-    float neg = -scale;
-
-    indices[0] = lbl_802FACC8[0];
+void fn_802D3BB4(float *arg0, float *arg1, float *arg2, float *arg3, unsigned int arg4, float scale, unsigned int arg_sp0)
+{
+  float p0 = arg1[0];
+  FifoVtx verts[4];
+  unsigned short indices[6];
+  float p2 = arg1[2];
+  float p1 = arg1[1];
+  float b2 = arg3[2];
+  float a1 = arg2[1];
+  float a2 = arg2[2];
+  float b0 = arg3[0];
+  float b1 = arg3[1];
+  unsigned int alpha = (((short) arg4) & 0xFFFFFF) | (((unsigned int) ((int) (arg0[5] * ((float) ((arg4 >> 9) >> 15))))) << 24);
+  float neg;
+  float a0 = arg2[0];
+  indices[0] = lbl_802FACC8[0];
+  if (1)
+  {
     indices[1] = lbl_802FACC8[1];
     indices[2] = lbl_802FACC8[2];
     indices[3] = lbl_802FACC8[3];
     indices[4] = lbl_802FACC8[4];
     indices[5] = lbl_802FACC8[5];
-
-    verts[0].pos.x = p0 + a0 * scale;
-    verts[0].pos.y = p1 + a1 * scale;
-    verts[0].pos.z = p2 + a2 * scale;
-    verts[1].pos.x = p0 + b0 * scale;
-    verts[1].pos.y = p1 + b1 * scale;
-    verts[1].pos.z = p2 + b2 * scale;
-    verts[2].pos.x = p0 + b0 * neg;
-    verts[2].pos.y = p1 + b1 * neg;
-    verts[2].pos.z = p2 + b2 * neg;
-    verts[3].pos.x = p0 + a0 * neg;
-    verts[3].pos.y = p1 + a1 * neg;
-    verts[3].pos.z = p2 + a2 * neg;
-
-    verts[3].color = alpha;
-    verts[2].color = alpha;
-    verts[1].color = alpha;
-    verts[0].color = alpha;
-
-    verts[2].u = lbl_80564F88;
-    verts[0].u = lbl_80564F88;
-    verts[3].u = lbl_80564F8C;
-    verts[1].u = lbl_80564F8C;
-    verts[1].v = lbl_80564F88;
-    verts[0].v = lbl_80564F88;
+    verts[0].pos.x = p0 + (a0 * scale);
+    verts[0].pos.y = p1 + (a1 * scale);
+    verts[0].pos.z = p2 + (a2 * scale);
+    if (1)
+    {
+      verts[1].pos.x = p0 + (b0 * scale);
+      verts[1].pos.y = p1 + (b1 * scale);
+      verts[1].pos.z = p2 + (b2 * scale);
+      verts[2].pos.x = p0 + (b0 * (-scale));
+      verts[2].pos.y = p1 + ((0, b1 * (-scale)));
+      verts[2].pos.z = p2 + (b2 * (-scale));
+      verts[3].pos.x = p0 + (a0 * (-scale));
+      verts[3].pos.y = p1 + ((-scale) * a1);
+      verts[3].pos.z = p2 + ((0, a2 * (-scale)));
+      verts[3].color = (unsigned long long) alpha;
+      verts[2].color = alpha;
+      verts[1].color = alpha;
+      verts[0].color = alpha;
+      verts[2].u = lbl_80564F88;
+      verts[0].u = lbl_80564F88;
+      verts[3].u = lbl_80564F8C;
+      verts[1].u = lbl_80564F8C;
+      verts[1].v = lbl_80564F88;
+      verts[0].v = lbl_80564F88;
+    }
     verts[3].v = lbl_80564F8C;
     verts[2].v = lbl_80564F8C;
-
-    drawFifoTriangles(verts, 4, indices, 6);
+  }
+  fn_802D68C4(verts, 4, indices);
 }
 #pragma pop
 
