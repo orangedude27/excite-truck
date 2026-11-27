@@ -413,7 +413,7 @@ int fn_80292BA8(float *arg0, float *arg1, float *__restrict arg2, float *arg3) {
 }
 extern void *fn_802C6B44(void);
 extern void MRModel_ReleaseResource(void *);
-extern int fn_802C7888(void *, int);
+extern int mrModelRegisterNameOverrides(void *, int);
 extern char *ResourceEntry_GetName(int);
 extern void *memset(void *, int, unsigned int);
 #pragma scheduling invalid_target
@@ -464,7 +464,7 @@ copy_entry:
     *nameDst++ = ch;
     if ((signed char)ch != 0) goto count_entry;
 copied_entry:
-    fn_802C7888(record, 1);
+    mrModelRegisterNameOverrides(record, 1);
     entryOffset += 0x10;
     indexOrId++;
 check_list:

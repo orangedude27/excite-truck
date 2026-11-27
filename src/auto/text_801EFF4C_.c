@@ -107,7 +107,7 @@ extern char lbl_8033A410[];
 extern int lbl_8055B0C0;
 extern void *fn_802C6B44(void);
 extern int MRModel_ReleaseResource(void *);
-extern int fn_802C7888(void *, int);
+extern int mrModelRegisterNameOverrides(void *, int);
 extern int ResourceEntry_GetName(int);
 extern int memset(void *, int, unsigned int);
 extern char *strncpy(char *, const char *, unsigned int);
@@ -145,7 +145,7 @@ extern "C" void fn_801F004C(int unused, int recordId, void *provider) {
             strncpy(record + 0x14, (char *)entryObject, 0x10);
             record[0x23] = terminator;
             *(int *)(record + 0x10) = recordId;
-            fn_802C7888(record, 1);
+            mrModelRegisterNameOverrides(record, 1);
         }
         entryOffset += 0x10;
         index++;
