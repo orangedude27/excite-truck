@@ -1,7 +1,7 @@
 // Symbol guide (the project cannot rename game symbols yet): closeTextureHandle
 // (fn_802B539C), releaseTextureSlot (fn_802B5404), isIncludeItem (fn_802B5448),
 // isGlobalParameters (fn_802B5488), isUnifiedMaterialSet (fn_802B54CC), loadArchives
-// (fn_802B5510), callThunk (fn_802B561C), fillMaterialSet (fn_802B562C),
+// (fn_802B5510), callThunk (fn_802B561C), fillMaterialSet (fillUMatSet),
 // loadUMat (fn_802B57B8), shutdownUMat (fn_802B5808), collectMaterialSets
 // (fn_802B58E0), getMaterialSet (fn_802B59A4), getGlobalParameters (fn_802B59CC).
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -31,7 +31,7 @@ struct UMatList { void *entries; unsigned int count; };
 #define UMatSetList    lbl_804BE4AC /* struct UMatList of material sets */
 #define sGlobalParameters lbl_8055F9E8 /* the archive's "global_parameters" item */
 
-/* One "unified_material_set" item, filled in by fn_802B562C. */
+/* One "unified_material_set" item, filled in by fillUMatSet. */
 struct UMatSet {
     const char *name;   /* 0x00: the set's own "name" */
     void *texList;      /* 0x04: texture list of that name */
@@ -172,7 +172,7 @@ __declspec(section ".sdata") extern const char lbl_8055CE20[];
 #pragma opt_propagation off
 /* Fill one UMatSet from a "unified_material_set" archive item: resolve its name,
  * texture list and four ground/road texture entries, then the model id. */
-extern "C" void fn_802B562C(void *outSet, void *setItem, void *setEntries) {
+extern "C" void fillUMatSet(void *outSet, void *setItem, void *setEntries) {
     class Manager {
     public:
         virtual void f0(); virtual void f1(); virtual void f2();
@@ -292,7 +292,7 @@ archive_loop:
     UMatSetList.count = 0;
     sGlobalParameters = 0;
 }
-extern "C" void fn_802B562C(void *, void *, void *);
+extern "C" void fillUMatSet(void *, void *, void *);
 #pragma cplusplus on
 #pragma dont_inline on
 #pragma push
@@ -324,7 +324,7 @@ item_body:
         setCount = UMatSetList.count;
         setEntries = UMatSetList.entries;
         UMatSetList.count = setCount + 1;
-        fn_802B562C((char *)setEntries + setCount * 0x30, item, setEntries);
+        fillUMatSet((char *)setEntries + setCount * 0x30, item, setEntries);
     }
     itemIndex++;
 item_fetch:
