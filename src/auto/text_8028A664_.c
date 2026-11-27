@@ -436,7 +436,7 @@ extern "C" void initTerrainChunks(void *arg0) {
         virtual void dummy20();
         virtual TerrainChunkQuery *v21(void *);
     };
-    extern char lbl_80348B98[];
+    extern char terrainEffectConfig[];
     extern char lbl_8055C8A8, lbl_8055C8B0, lbl_8055C8B8;
     extern f32 lbl_80564330;
     extern void fn_801345D8(void *, s32, void *, ...);
@@ -445,7 +445,7 @@ extern "C" void initTerrainChunks(void *arg0) {
     extern void fn_80287B38(void (*)(void));
     extern void fn_8028ADF4(void *, s32);
     u8 nameBuffer[0x20];
-    char *terrainData = lbl_80348B98;
+    char *terrainData = terrainEffectConfig;
     s32 *chunkEntry = (s32 *)terrainChunkTable;
     s32 foundCount = 0;
     s32 i = 0;
