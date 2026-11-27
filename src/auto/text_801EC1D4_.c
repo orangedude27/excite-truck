@@ -404,27 +404,27 @@ extern void fn_8020095C(long);
 extern void fn_802792EC(long);
 extern long __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448(long, long);
 #pragma dont_inline on
-/* Destroy a vehicle render object: release owned resources and, when shouldDelete > 0, delete the object. */ void *destroyVehicleRenderObject(void *renderObject, int shouldDelete) {
+/* Destroy a vehicle render object: release its owned handles and subobjects, clear it from the global slot table, and free the object itself when shouldDelete > 0. */
+void *destroyVehicleRenderObject(void *renderObject, int shouldDelete) {
     int index;
-    char *entry;
-    long value;
+    char *cursor;
+    long wheelHandle;
 
-    /* Destructor-like cleanup: release owned resources/subobjects and optionally delete storage. */
     if (renderObject != 0) {
         *(void **)renderObject = lbl_8033A300;
         fn_801EEC68(renderObject);
 
-        entry = renderObject;
+        cursor = renderObject;
         for (index = 0; index < *(int *)((char *)renderObject + 0x148); index++) {
-            *(int *)(entry + 0x84) = -1;
-            fn_802C6CF8(*(long *)(entry + 0x44));
-            entry += 4;
+            *(int *)(cursor + 0x84) = -1;
+            fn_802C6CF8(*(long *)(cursor + 0x44));
+            cursor += 4;
         }
 
-        entry = renderObject;
+        cursor = renderObject;
         for (index = 0; index < *(int *)((char *)renderObject + 0x480); index++) {
-            fn_802C6CF8(*(long *)(entry + 0x400));
-            entry += 8;
+            fn_802C6CF8(*(long *)(cursor + 0x400));
+            cursor += 8;
         }
 
         fn_802C6CF8(*(long *)((char *)renderObject + 0x178));
@@ -432,12 +432,12 @@ extern long __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448(long, long);
         ((void (*)(long))fn_801E323C)(*(long *)((char *)renderObject + 0x180));
         fn_8020095C(*(long *)((char *)renderObject + 0x184));
 
-        entry = renderObject;
+        cursor = renderObject;
         for (index = 0; index < 4; index++) {
-            value = *(long *)(entry + 0x4D4);
-            fn_801EFFF8(value);
-            *(long *)(entry + 0x4D4) = 0;
-            entry += 4;
+            wheelHandle = *(long *)(cursor + 0x4D4);
+            fn_801EFFF8(wheelHandle);
+            *(long *)(cursor + 0x4D4) = 0;
+            cursor += 4;
         }
 
         lbl_80488648[*(long *)((char *)renderObject + 0x40)] = 0;
