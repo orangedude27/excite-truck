@@ -490,7 +490,7 @@ int DVDLowInit(void) {
  * reporting a taken/magic-corrupt slot) and warns on a null buffer, then
  * submits the ioctl through doTransactionCallback; frees the claimed slot if
  * submission fails. Returns 0 on failure, else 1. */
-int fn_8003A834(void *buffer, void *callback) {
+int DVDLowAsyncIoctl(void *buffer, void *callback) {
     #pragma opt_propagation off
     const char *msgBase = lbl_80302848;
     unsigned char *context;

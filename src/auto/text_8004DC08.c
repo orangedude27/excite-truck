@@ -96,7 +96,7 @@ extern void *lbl_8055DA34;
 extern unsigned int *lbl_8055DA38, *lbl_8055DA3C, *lbl_8055DA40;
 extern int fn_8003AC24(void *callback, ...);
 extern int DVDLowUnencryptedReadAsync(void *buffer, int length, int input, void *callback);
-extern int fn_8003A834(void *buffer, void *callback);
+extern int DVDLowAsyncIoctl(void *buffer, void *callback);
 extern void DVDLowOpenPartition(unsigned int partition, int arg1, int arg2, int arg3, void *buffer, void *callback);
 extern void DVDLowInit(void);
 extern int IOS_Open(const char *path, int mode);
@@ -229,7 +229,7 @@ void fn_8004DDFC(void) {
         state.fd = -1;
     DVDLowInit();
     lbl_8055DA2C = 0;
-    fn_8003A834(base + 0x740, (void *)fn_8004DDF4);
+    DVDLowAsyncIoctl(base + 0x740, (void *)fn_8004DDF4);
     if (lbl_8055DA2C != 0) {
         if (lbl_8055DA2C != (void *)1) {
             const char *format = lbl_803049C0;

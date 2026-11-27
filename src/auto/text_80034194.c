@@ -131,7 +131,7 @@ extern char lbl_80376B00[];
 extern u8 lbl_80376AD0[0x30];
 extern void fn_80037CEC(void);
 extern void fn_80037DBC(u32);
-extern void fn_8003A834(void *, void *);
+extern void DVDLowAsyncIoctl(void *, void *);
 extern void fn_8003B69C(u32, void *);
 extern void __DVDRecordStatusEvent(u32);
 
@@ -2369,7 +2369,7 @@ void fn_8003773C(void) {
         *(volatile u32 *)&lbl_8055D848 =
             *(volatile u32 *)&lbl_8055D848 + 1;
         OSRestoreInterrupts(savedInterrupts);
-        fn_8003A834(lbl_80376B00, fn_80037DBC);
+        DVDLowAsyncIoctl(lbl_80376B00, fn_80037DBC);
     }
 }
 
@@ -2470,7 +2470,7 @@ void __DVDRecordStatusEvent(u32 status_code) {
         *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
         *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
         OSRestoreInterrupts(saved_interrupts_async);
-        fn_8003A834(lbl_80376B00, fn_80037DBC);
+        DVDLowAsyncIoctl(lbl_80376B00, fn_80037DBC);
         return;
     }
 
@@ -2479,7 +2479,7 @@ void __DVDRecordStatusEvent(u32 status_code) {
 }
 #pragma pop
 
-extern void fn_8003A834(void *, void *);
+extern void DVDLowAsyncIoctl(void *, void *);
 extern char lbl_80376B00[];
 extern void fn_80037DBC(u32);
 /* Schedules an async DVD error info read by recording an error entry and starting the read callback chain. */
@@ -2497,7 +2497,7 @@ void fn_80037CEC(void) {
     *(s32 *)(base + (*(volatile u32 *)&lbl_8055D848) * 0x14 + 0x2C) = OSGetTick();
     lbl_8055D848 = (*(volatile u32 *)&lbl_8055D848) + 1;
     OSRestoreInterrupts(enabled);
-    fn_8003A834(lbl_80376B00, fn_80037DBC);
+    DVDLowAsyncIoctl(lbl_80376B00, fn_80037DBC);
 }
 
 #pragma push
@@ -2783,7 +2783,7 @@ extern void (*lbl_80558E08)(void *, void *);
  case 5:                             /* COMMAND_READID -> DVDLowReadDiskID */
    fn_8003BCDC(0);                   /* DVDLowClearCoverInterrupt(NULL) */
    *(int *)(blockBytes+0x1c) = 0x20; /* transferSize = sizeof(DVDDiskID) */
-   fn_8003A834(*(void **)(blockBytes+0x18),fn_80038870); break;
+   DVDLowAsyncIoctl(*(void **)(blockBytes+0x18),fn_80038870); break;
  case 1: case 4:                     /* COMMAND_READ / COMMAND_BSREAD */
    if (*(int *)(blockBytes+0x14) == 0) {
      u8 *previousBlock = (u8 *)executing_8055D8C8;
