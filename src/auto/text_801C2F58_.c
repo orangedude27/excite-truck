@@ -3790,7 +3790,7 @@ void fn_801C9514(void);
 }
 
 
-extern void fn_8000FC8C(const char*);
+extern void drawValueBanner(const char*);
 extern void drawInterludeBanner(const char*);
 extern f32 fn_801C3B6C(void);
 
@@ -3817,7 +3817,7 @@ void fn_801C6B70(void) {
         }
         name1 = (const char *)lbl_80437E24[1];
         if (strlen(name1) != 0) {
-            fn_8000FC8C(name1);
+            drawValueBanner(name1);
         }
         name0 = (const char *)lbl_80437E24[0];
         if (strlen(name0) != 0) {

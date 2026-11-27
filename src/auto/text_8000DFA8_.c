@@ -227,7 +227,7 @@ void fn_8000F2EC(void) {
 }
 
 /* Load the resources the two bottom-of-screen banners are drawn from, the same
- * ones fn_8000F384 releases again: the sprite sheet fn_8000FC8C and drawInterludeBanner
+ * ones fn_8000F384 releases again: the sprite sheet drawValueBanner and drawInterludeBanner
  * draw as their end caps, opened as a refcounted archive file handle
  * (ArtSetGet; getPictureWidth / getPictureHeight give one of its frames' size), and the
  * gText font taken twice, once per banner, so each holds a reference of its own
@@ -238,7 +238,7 @@ void fn_8000F2EC(void) {
  * DashHelper_LoadBannerResources only lives in this comment.) */
 void fn_8000F330(const char *artName, const char *fontName, s32 otherFontName) {
 #define INTERLUDE_ART lbl_8055D4C0 /* the "interlude.art" file handle */
-#define VALUE_FONT lbl_8055D4C4 /* font of the value banner fn_8000FC8C */
+#define VALUE_FONT lbl_8055D4C4 /* font of the value banner drawValueBanner */
 #define INTERLUDE_FONT lbl_8055D4C8 /* font of the interlude banner drawInterludeBanner */
     INTERLUDE_ART = ArtSetGet(artName);
     VALUE_FONT = loadFontTexture((s32)fontName);
@@ -652,7 +652,7 @@ void fn_8000FBE8(f32 arg0, f32 arg1, f32 arg2) {
 #pragma push
 #pragma processor 750
 #pragma paired_single off
-void fn_8000FC8C(s32 value, s32 arg1) {
+void drawValueBanner(s32 value, s32 arg1) {
     extern s32 fn_80232B70(s32);
     extern f32 fn_80011E54(void);
     extern f32 fn_80011E70(void);
