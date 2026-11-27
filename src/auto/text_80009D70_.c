@@ -64,7 +64,7 @@ extern void fn_80206518(void);
 extern u32 lbl_8055D3B0;
 extern u32 lbl_8055D3B8;
 extern u8 lbl_802FBC7C[];
-extern void fn_8000A8C4();
+extern void loadTrackResources();
 extern void musicPreRaceSetup(void*);
 extern void fn_802103B8(void*);
 void fn_8000A644(void* arg0, void* arg1) DECOMP_DONT_INLINE;
@@ -342,7 +342,7 @@ void fn_8000AB48(void* arg0, s32 arg1) {
     /* Sets up per-entry UI/resource state from arg1, runs per-slot init callbacks, then loads overlays and initializes pre-race/track music for arg0. */
     char* p;
     s32 i;
-    fn_8000A8C4();
+    loadTrackResources();
     fn_8000AADC(arg0);
     fn_8000A644(arg0, (void*)arg1);
     p = (char*)arg0 + 0x64;
@@ -383,7 +383,7 @@ u32 fn_8000AC38(void) {
 #undef sGlobalRoot
 }
 
-// Enters a track: queues the track effect sets whose names fn_8000A8C4 built in
+// Enters a track: queues the track effect sets whose names loadTrackResources built in
 // the block at lbl_8034F4C8 (+0x18 always, +0x58 while lbl_8055D3B4, +0x98 while
 // lbl_8055D3B5); fn_8012DDA8 loads one by name.  fn_801DCDA0 is an empty stub.
 void fn_8000A7A8(void) {
@@ -399,7 +399,7 @@ void fn_8000A7A8(void) {
 }
 
 // Leaves a track: shuts the ground down and releases the three track effect
-// sets whose names fn_8000A8C4 built in the block at lbl_8034F4C8.
+// sets whose names loadTrackResources built in the block at lbl_8034F4C8.
 void fn_8000A808(void) {
     /* fn_801DCDA4 frees the ground heightmap block lbl_80446F08 and clears the
      * ground update callback; fn_8012E498 releases one effect set by name and
@@ -443,7 +443,7 @@ void fn_8000A868(void) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_8000A8C4(void* arg0) {
+void loadTrackResources(void* arg0) {
     /* Load/setup track-related resources for arg0: build paths/names, query resource
      * items and weather name, set flags/strings, init subsystems, and cache "speech" id. */
     extern void fn_802E3D00(void);

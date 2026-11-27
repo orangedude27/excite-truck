@@ -511,7 +511,7 @@ extern "C" void FileFind_Close(s32 findHandle) {
 #pragma cplusplus off
 
 #pragma cplusplus off
-/* No-op engine file-API hook: called at track-resource load (fn_8000A8C4) and
+/* No-op engine file-API hook: called at track-resource load (loadTrackResources) and
  * world teardown; this build needs no action. */
 void fn_802E3D00(void) {
 }
