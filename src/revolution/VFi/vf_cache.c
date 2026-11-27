@@ -96,7 +96,7 @@ u8 VFiPFENT_CalcCheckSum(u8* p_ent) {
     u8 sum;
     u8 buf[13];
 
-    VFiPFFAT_FormatShortName(buf, &p_ent[0x20E], 0);
+    VFiPFFAT_FormatShortNameField(buf, &p_ent[0x20E], 0);
     sum = 0;
 
     for (i = 0; i < 0xB; i++) {
