@@ -163,7 +163,7 @@ extern s32 lbl_8055D85C;
 extern u8 lbl_8037B580;
 #pragma small_data on
 extern s32 fn_8003BE40(void);
-extern void fn_80037E94(void);
+extern void __DVDHandleCoverRegister(void);
 extern void fn_8003BB58(void (*callback)(void));
 extern void fn_8003B380(s32);
 extern void fn_8003B38C(void *);
@@ -287,7 +287,7 @@ enum { MOTOR_STATE_WORKING, MOTOR_STATE_PENDING_STOP, MOTOR_STATE_STOPPED };
 
  // Cover-register read helpers used by the poll alarm and its callback.
  #define DVDLowPrepareCoverRegister fn_8003BB58 // queue a cover-register read with the given callback
- #define cbForCoverReg              fn_80037E94 // called when that cover-register read lands
+ #define cbForCoverReg              __DVDHandleCoverRegister // called when that cover-register read lands
 
 
 // The __ErrorInfo ring (dvderror.h): the next free entry of its info[] array,
@@ -1414,7 +1414,7 @@ extern __declspec(section ".data") u8 lbl_8037B580;
 #pragma small_data on
 extern s32 fn_8003BE40(void);
 extern s32 lbl_8055D880;
-extern void fn_80037E94(void);
+extern void __DVDHandleCoverRegister(void);
 extern void fn_8003BB58(void (*callback)(void));
 extern void fn_8003B380(s32);
 extern void fn_8003B38C(void *);
@@ -2540,7 +2540,7 @@ extern void OSCancelAlarm(void *);
 // on the cover interrupt and the cover is now open it stops that wait and
 // re-enters the motor-standby path; if the cover just closed it hands over from
 // the timeout alarm to waiting on the cover interrupt.
-void fn_80037E94(void) {
+void __DVDHandleCoverRegister(void) {
     s32 zero = 0;
     *(volatile s32 *)&CoverRegPending = zero;
     if (*(volatile s32 *)&AlarmInfo != 0) {
