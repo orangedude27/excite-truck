@@ -1160,17 +1160,17 @@ int fn_80289D94(void *effectSlots) {
         (int *)&frame.sp20, lbl_80348B58 /* "large fire smoke" */, lbl_8055C880 /* "smoke.tex" */);
 }
 
-extern int fn_8028A1A4(int);
+extern int buildRadiatorSmokeTracks(int);
 int fn_80289EA0(int manager) {
     /* Construct the "radiator smoke man" fn_802888D8 allocates 8 bytes for (its
      * name is the string at lbl_80348A90+0x44).  fn_8028A084 creates the
      * radiator smoke effect and keeps its handle at +4 - it is written to take
-     * no argument but still builds it for the manager left in r3; fn_8028A1A4
+     * no argument but still builds it for the manager left in r3; buildRadiatorSmokeTracks
      * allocates the per-track table of emitter positions kept at +0; and
      * fn_80289F54 clears the +0x64 field of every entry of that table.
      * fn_80289EE0 is the matching destructor. */
     fn_8028A084();
-    fn_8028A1A4(manager);
+    buildRadiatorSmokeTracks(manager);
     fn_80289F54(manager);
     return manager;
 }
@@ -1377,7 +1377,7 @@ typedef struct RadiatorSmokeTrack {
 #define kAttrDir      ((const char *)&lbl_8055C898)
 #pragma push
 #pragma scheduling invalid_target
-int fn_8028A1A4(int smokeMan) {
+int buildRadiatorSmokeTracks(int smokeMan) {
     /* Build the "smoke car tab" table the radiator smoke man keeps at +0: one
      * RadiatorSmokeTrack row per slot of the per-car effect table (fn_80287B14
      * counts the slots, fn_80288208 gives the i-th).  A slot whose object
