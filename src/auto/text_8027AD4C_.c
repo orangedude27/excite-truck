@@ -1425,7 +1425,7 @@ long fn_8027C8B0(void) { return 1; }
 
 extern void fn_801345D8(void *, int, const char *, ...);
 #pragma cplusplus on
-extern "C" void fn_8027C8B8(void *obj, unsigned char *outText, int maxLen) {
+extern "C" void formatEventGoalStatus(void *obj, unsigned char *outText, int maxLen) {
     char formatBuffer[0x64];
     Fn8027C8B8Formatter *formatter;
     /* Copy a bounded event-goal status/format string into outText. */
@@ -1833,7 +1833,7 @@ extern "C" void fn_8027D158(long contestName, char *outText, long maxLen) {
     long pathType = *entry;
     switch (pathType) {
     case 0:
-        fn_8027C8B8(entry, (unsigned char *)outText, maxLen);
+        formatEventGoalStatus(entry, (unsigned char *)outText, maxLen);
         break;
     case 1:
         fn_8027CBF8((long)entry, outText, maxLen);
