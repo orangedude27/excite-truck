@@ -379,76 +379,76 @@ void fn_8017DA8C(void *body) {
 }
 
 extern void fn_8017D404(float *, int, float, float, int);
-void handleBallBodyImpact(void *arg0, int arg1, int arg2, int arg3, int arg4) {
+/* On a ball-body impact, validate placement/enabled state and game flags, record the body's position and velocity in an EFX event, apply a radial blast near the body, update the attached effect objects, then detach the body for repositioning and forward the event to the base handler. */ void handleBallBodyImpact(void *body, int arg1, int arg2, int impactType, int sourceId) {
     extern int lbl_8055D430;
     extern float lbl_80561BF4, lbl_80561C10, lbl_80561C14;
     extern void fn_801796EC(int, void *, int);
     extern void fn_8017D2C8(void *, int, int, int, int);
-    float savedPos[6];
+    float savedState[6];
     float z, x, y;
-    int allow;
-    int flags;
-    void *node;
-    void *node2;
-    volatile float *values;
-    unsigned char *object = (unsigned char *)arg0;
+    int allowed;
+    int gameFlags;
+    void *effect;
+    void *effectAgain;
+    volatile float *position;
+    unsigned char *bodyBytes = (unsigned char *)body;
 
     /* If active, optionally update position-related state based on global flags/arg3, sync linked nodes, then always forward to fn_8017D2C8. */
-    if (object[0x1FE] == 0)
+    if (bodyBytes[0x1FE] == 0)
         goto done;
-    if (object[0x1FD] == 0)
+    if (bodyBytes[0x1FD] == 0)
         goto done;
-    if (arg3 < 100) {
-        flags = lbl_8055D430;
-        allow = 0;
-        if (flags & 1) {
-            if (flags & 0x90)
-                allow = 1;
+    if (impactType < 100) {
+        gameFlags = lbl_8055D430;
+        allowed = 0;
+        if (gameFlags & 1) {
+            if (gameFlags & 0x90)
+                allowed = 1;
         }
-        if (allow == 0)
+        if (allowed == 0)
             goto done;
     }
-    if (arg3 >= 1000)
+    if (impactType >= 1000)
         goto done;
 
-    savedPos[0] = *(float *)(object + 0x60);
-    savedPos[1] = *(float *)(object + 0x64);
-    savedPos[2] = *(float *)(object + 0x68);
-    savedPos[3] = *(float *)(object + 0x118);
-    savedPos[4] = *(float *)(object + 0x11C);
-    savedPos[5] = *(float *)(object + 0x120);
-    fn_801796EC(8, savedPos, 0x18);
-    fn_8017D404((float *)(object + 0x60), arg4,
-                lbl_80561C10, lbl_80561C14, *(int *)(object + 0x1F8));
+    savedState[0] = *(float *)(bodyBytes + 0x60);
+    savedState[1] = *(float *)(bodyBytes + 0x64);
+    savedState[2] = *(float *)(bodyBytes + 0x68);
+    savedState[3] = *(float *)(bodyBytes + 0x118);
+    savedState[4] = *(float *)(bodyBytes + 0x11C);
+    savedState[5] = *(float *)(bodyBytes + 0x120);
+    fn_801796EC(8, savedState, 0x18);
+    fn_8017D404((float *)(bodyBytes + 0x60), sourceId,
+                lbl_80561C10, lbl_80561C14, *(int *)(bodyBytes + 0x1F8));
 
-    node = *(void **)(object + 0x21C);
-    if (node != 0) {
-        *((unsigned char *)node + 0x4A) = 1;
-        *((unsigned char *)node + 0x4C) = 0;
+    effect = *(void **)(bodyBytes + 0x21C);
+    if (effect != 0) {
+        *((unsigned char *)effect + 0x4A) = 1;
+        *((unsigned char *)effect + 0x4C) = 0;
     }
-    node = *(void **)(object + 0x220);
-    if (node != 0) {
-        values = (volatile float *)(object + 0x60);
-        x = values[0];
-        y = values[1];
-        z = values[2];
-        *(volatile float *)(object + 0x20C) = x;
+    effect = *(void **)(bodyBytes + 0x220);
+    if (effect != 0) {
+        position = (volatile float *)(bodyBytes + 0x60);
+        x = position[0];
+        y = position[1];
+        z = position[2];
+        *(volatile float *)(bodyBytes + 0x20C) = x;
         x = lbl_80561BF4;
-        *(volatile float *)(object + 0x210) = y;
-        *(volatile float *)(object + 0x214) = z;
-        if (x != *(float *)((char *)node + 8)) {
-            *((unsigned char *)node + 0x4D) = 1;
-            *(float *)((char *)node + 8) = x;
+        *(volatile float *)(bodyBytes + 0x210) = y;
+        *(volatile float *)(bodyBytes + 0x214) = z;
+        if (x != *(float *)((char *)effect + 8)) {
+            *((unsigned char *)effect + 0x4D) = 1;
+            *(float *)((char *)effect + 8) = x;
         }
-        node2 = *(void * volatile *)(object + 0x220);
-        *((unsigned char *)node2 + 0x49) = 1;
-        *((unsigned char *)node2 + 0x4B) = 0;
-        *((unsigned char *)node2 + 0x4A) = 0;
+        effectAgain = *(void * volatile *)(bodyBytes + 0x220);
+        *((unsigned char *)effectAgain + 0x49) = 1;
+        *((unsigned char *)effectAgain + 0x4B) = 0;
+        *((unsigned char *)effectAgain + 0x4A) = 0;
     }
-    object[0x1FE] = 0;
-    object[0x1FC] = 1;
+    bodyBytes[0x1FE] = 0;
+    bodyBytes[0x1FC] = 1;
 done:
-    fn_8017D2C8(arg0, arg1, arg2, arg3, arg4);
+    fn_8017D2C8(body, arg1, arg2, impactType, sourceId);
 }
 
 #pragma push
