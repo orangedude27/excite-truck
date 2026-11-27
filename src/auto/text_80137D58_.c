@@ -669,7 +669,7 @@ extern char lbl_8032BF70[];
  * check its version and header words, byte-swap it in place when needed, file
  * its name in the object cache and store the resulting handle at +0x28.
  * On any failed check the resource is released and 0 is returned. */
-void *loadIdealLineResource(int resourceName) {
+/* Load and validate the named 'ILIN' ideal-line resource: check version and header sizes, byte-swap in place when needed, cache its name/handle at +0x28, or release it and return 0 on any failed check. */ void *loadIdealLineResource(int resourceName) {
     IdealResLoadInfo info;
     void *res;
     int accepted;
