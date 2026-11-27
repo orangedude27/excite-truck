@@ -32,9 +32,9 @@ typedef struct OverlayQuad {
     s32 width;        /* 0x84: corners span -width..width (0x2D0 = 720 on NTSC) */
     s32 height;       /* 0x88: corners span -height..height (0x1E0 = 480) */
     /* 0x8C..0xB0: scroll/drift state, walked every frame by updateOverlayQuadWander and
-     * applied by fn_8022FD9C; the defaults come from .sdata2 in fn_8022F638. */
+     * applied by applyOverlayQuadScrollDrift; the defaults come from .sdata2 in fn_8022F638. */
     f32 scrollOffset; /* 0x8C: random-walk offset, kept inside +-scrollLimit;
-                       * fn_8022FD9C turns the quad about Z by scrollOffset * dt */
+                       * applyOverlayQuadScrollDrift turns the quad about Z by scrollOffset * dt */
     f32 unused90;     /* 0x90: only ever copied from and to the current quad */
     f32 driftVelX;    /* 0x94: drift velocity x, kept inside +-driftLimit */
     f32 driftVelY;    /* 0x98: drift velocity y, kept inside +-driftLimit */
@@ -506,7 +506,7 @@ extern void fn_80015B20(void *, void *, void *);
  * Multiplying basis rows around like that lets them drift out of true, so the
  * last step re-orthonormalises them (y comes from x and z, z again from x
  * and y) and writes the three back. */
-void fn_8022FD9C(OverlayQuad *quad, float dt) {
+void applyOverlayQuadScrollDrift(OverlayQuad *quad, float dt) {
     float rot[9];      /* the scroll rotation fn_8022FF10 builds */
     float eulers[3];   /* x, y, z turn; only the z scroll is set here */
     float step[3];     /* this frame's drift, added to the translation row */
@@ -599,7 +599,7 @@ void fn_8022FF90(void *quad) {
 void fn_8022FFE8(int quad) {
 #define wanderScrollDrift updateOverlayQuadWander
 #define frameScale fn_80214D48
-#define applyScrollDrift fn_8022FD9C
+#define applyScrollDrift applyOverlayQuadScrollDrift
     /* Update one OverlayQuad for a frame: wander its scroll/drift values, then apply them with the global frame scale and re-orthonormalize its basis. */
     float scale;
     wanderScrollDrift((void *)quad);
