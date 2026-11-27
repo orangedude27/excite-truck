@@ -149,7 +149,7 @@ extern s32 fn_80243710(s32, s32);
  * the new group and swaps s_cursorHoldGroup/s_cursorHoldEntry so that stepping
  * back restores the entry it left.  Returns 1 (and marks the list for a
  * redraw through fn_80230E90) when the cursor moved. */
-s32 fn_80243764(s32 *entryIndex, volatile s32 *groupIndex, s32 entryDelta, s32 groupDelta) {
+s32 moveMenuCursor(s32 *entryIndex, volatile s32 *groupIndex, s32 entryDelta, s32 groupDelta) {
     s32 oldEntry = *entryIndex;
     s32 oldGroup = *groupIndex;
     s32 newGroup = oldGroup + groupDelta;
@@ -667,10 +667,10 @@ struct Dummy_80244440 {
 extern "C" s32 fn_80244440(void *object, s32 inputCode) {
     /* Dispatch input codes to movement/action/cancel handlers. */
     switch (inputCode) {
-          case 0x125: fn_80243764(&((MenuListObject *)object)->entryIndex, &((MenuListObject *)object)->groupIndex, -1, 0); goto handled;
-      case 0x127: fn_80243764(&((MenuListObject *)object)->entryIndex, &((MenuListObject *)object)->groupIndex, 1, 0); goto handled;
-      case 0x126: fn_80243764(&((MenuListObject *)object)->entryIndex, &((MenuListObject *)object)->groupIndex, 0, -1); goto handled;
-      case 0x128: fn_80243764(&((MenuListObject *)object)->entryIndex, &((MenuListObject *)object)->groupIndex, 0, 1); goto handled;
+          case 0x125: moveMenuCursor(&((MenuListObject *)object)->entryIndex, &((MenuListObject *)object)->groupIndex, -1, 0); goto handled;
+      case 0x127: moveMenuCursor(&((MenuListObject *)object)->entryIndex, &((MenuListObject *)object)->groupIndex, 1, 0); goto handled;
+      case 0x126: moveMenuCursor(&((MenuListObject *)object)->entryIndex, &((MenuListObject *)object)->groupIndex, 0, -1); goto handled;
+      case 0x128: moveMenuCursor(&((MenuListObject *)object)->entryIndex, &((MenuListObject *)object)->groupIndex, 0, 1); goto handled;
     case 0xD:
         ((Dummy_80244440 *)object)->f22();
         goto handled;
