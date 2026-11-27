@@ -1808,19 +1808,19 @@ func_exit:
 #define LOAD_REQ_PATH 0x24
 
 extern "C" s32 loadResourceFromNameList(void *request, s32 nameList, s32 arg2) {
-    /* Tries each candidate name in nameList, opening the first record that resolves to
-       a stream; on success copies its name/path into the request, initializes it and
-       sets an expiry time. Returns 1 on success, 0 when the list runs out; arg2 is unused. */
+    /* Walk the candidate-name list until one name resolves to a stream, then open it
+     * and fill in the resource request (name, path, handle, status, expiry).  Returns
+     * 1 once a stream has been opened and 0 if the list is exhausted; arg2 is unused. */
     s32 loaded = 0;
-    s32 temp;
+    s32 startSector;
     u8 *req = (u8 *)request;
-    u8 byte;
-    u8 *source;
-    s32 limit;
-    u8 *destination;
-    u8 byte2;
-    s32 limit2;
-    u8 *destination2;
+    u8 ch;
+    u8 *src;
+    s32 remaining;
+    u8 *dst;
+    u8 ch2;
+    s32 pathRemaining;
+    u8 *pathDst;
     u8 parseBuffer[0x40];
     s32 size;
     u8 *parser;
@@ -1830,46 +1830,46 @@ extern "C" s32 loadResourceFromNameList(void *request, s32 nameList, s32 arg2) {
         if (!parser)
             goto func_exit;
         loaded = 0;
-        temp = ((s32 (*)(void *, s32 *))fn_8012AC28)(parser, &size);
-        if (temp != -1) {
+        startSector = ((s32 (*)(void *, s32 *))fn_8012AC28)(parser, &size);
+        if (startSector != -1) {
             s32 timestamp = *(s32 *)(req + LOAD_REQ_TIMESTAMP);
             *(s32 *)(req + LOAD_REQ_LOADED_VALUE) = timestamp;
             if (timestamp > *(s32 *)(req + LOAD_REQ_LOADED_VALUE))
                 goto parse_next;
-            s32 handle = ((s32 (*)(s32, void *, s32))fn_802E748C)(temp, *(void **)(req + LOAD_REQ_DIRECTORY), timestamp);
+            s32 handle = ((s32 (*)(s32, void *, s32))fn_802E748C)(startSector, *(void **)(req + LOAD_REQ_DIRECTORY), timestamp);
             *(s32 *)(req + LOAD_REQ_HANDLE) = handle;
             if (handle != -1) {
                 *(s32 *)(req + LOAD_REQ_STATUS) = 2;
-                source = (u8 *)nameList;
-                destination = req + LOAD_REQ_NAME;
-                limit = 32;
+                src = (u8 *)nameList;
+                dst = req + LOAD_REQ_NAME;
+                remaining = 32;
                 goto copy_name_body;
             copy_name_limit:
-                limit--;
-                if (limit > 0)
+                remaining--;
+                if (remaining > 0)
                     goto copy_name_body;
-                destination[-1] = 0;
+                dst[-1] = 0;
                 goto copy_name_done;
             copy_name_body:
-                byte = *source++;
-                *destination++ = byte;
-                if ((s8)byte != 0)
+                ch = *src++;
+                *dst++ = ch;
+                if ((s8)ch != 0)
                     goto copy_name_limit;
             copy_name_done:
-                source = (u8 *)parser;
-                destination2 = req + LOAD_REQ_PATH;
-                limit2 = 64;
+                src = (u8 *)parser;
+                pathDst = req + LOAD_REQ_PATH;
+                pathRemaining = 64;
                 goto copy_path_body;
             copy_path_limit:
-                limit2--;
-                if (limit2 > 0)
+                pathRemaining--;
+                if (pathRemaining > 0)
                     goto copy_path_body;
-                destination2[-1] = 0;
+                pathDst[-1] = 0;
                 goto copy_path_done;
             copy_path_body:
-                byte2 = *source++;
-                *destination2++ = byte2;
-                if ((s8)byte2 != 0)
+                ch2 = *src++;
+                *pathDst++ = ch2;
+                if ((s8)ch2 != 0)
                     goto copy_path_limit;
             copy_path_done:
                 *(s32 *)(req + 0xAC) = 0;
@@ -1878,7 +1878,7 @@ extern "C" s32 loadResourceFromNameList(void *request, s32 nameList, s32 arg2) {
                 *(s32 *)(req + 0xA0) = 1;
                 loaded = 1;
                 *(s32 *)(req + 0xA4) = 0;
-                *(s32 *)(req + 0xA8) = temp;
+                *(s32 *)(req + 0xA8) = startSector;
                 *(u8 *)(req + 0xB0) = 1;
                 *(s32 *)(req + 0x68) = 0;
                 *(u8 *)(req + 0xB1) = 0;
