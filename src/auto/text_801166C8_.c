@@ -1782,51 +1782,51 @@ s32 BinkMgr_SetStreamsPlaying(void *mgr, s32 start) {
     #define PLAYER_AT(i)       (MOVIE_PLAYERS + (i))         /* player at byte i */
     #define PLAYER_SETPLAY(i)  (*(s32 *)(PLAYER_AT(i) + 0x18)) /* fn_80119C0C */
 
-    s32 entryOff;
+    s32 playerOffset;
     s32 anyPlaying;
-    s32 locked;
+    s32 lockHeld;
     u32 frame;
     s32 playing;
-    u32 index;
+    u32 playerIndex;
     s32 zero;
     s32 one;
 
     anyPlaying = 0;
     if (mgr != 0) {
-        locked = 0;
-        index = 0;
-        entryOff = 0;
+        lockHeld = 0;
+        playerIndex = 0;
+        playerOffset = 0;
         zero = 0;
         one = 1;
         goto loop_check;
     loop_body:
-        if (PLAYER_SETPLAY(entryOff) != 0) {
-            if (locked == 0) {
-                locked = 1;
+        if (PLAYER_SETPLAY(playerOffset) != 0) {
+            if (lockHeld == 0) {
+                lockHeld = 1;
                 fn_8011C274(lbl_8055DED4,
                     (void *)((s32)mgr + 0x340));
             }
             playing = (*(s32 (**)(void *, s32))(
-                PLAYER_AT(entryOff) + 0x18))(
-                    PLAYER_AT(entryOff),
+                PLAYER_AT(playerOffset) + 0x18))(
+                    PLAYER_AT(playerOffset),
                     start ? 1 : 0);
             if (playing) {
                 anyPlaying = 1;
             }
             if (playing == 0 && MOVIE_STREAMS_ON != 0) {
                 /* the stream went idle: rewind its source ring */
-                *(s32 *)(PLAYER_AT(entryOff) + 0x34) =
-                    *(s32 *)(PLAYER_AT(entryOff) + 0x2C);
-                *(s32 *)(PLAYER_AT(entryOff) + 0x38) =
-                    *(s32 *)(PLAYER_AT(entryOff) + 0x2C);
-                *(s32 *)(PLAYER_AT(entryOff) + 0x40) =
+                *(s32 *)(PLAYER_AT(playerOffset) + 0x34) =
+                    *(s32 *)(PLAYER_AT(playerOffset) + 0x2C);
+                *(s32 *)(PLAYER_AT(playerOffset) + 0x38) =
+                    *(s32 *)(PLAYER_AT(playerOffset) + 0x2C);
+                *(s32 *)(PLAYER_AT(playerOffset) + 0x40) =
                     zero;
                 frame = MOVIE_FRAME;
                 if (frame == 1 &&
                     MOVIE_TICK_FRAME != frame) {
                     /* first frame of a seeked movie: nothing to drain */
                 } else {
-                    fn_80116F8C(PLAYER_AT(entryOff));
+                    fn_80116F8C(PLAYER_AT(playerOffset));
                 }
                 MOVIE_STREAMS_ON = zero;
             } else if (playing != 0 &&
@@ -1838,13 +1838,13 @@ s32 BinkMgr_SetStreamsPlaying(void *mgr, s32 start) {
                 MOVIE_SAVED_MS = zero;
             }
         }
-        entryOff += 0x17C;
-        index++;
+        playerOffset += 0x17C;
+        playerIndex++;
     loop_check:
-        if (index < MOVIE_PLAYER_COUNT) {
+        if (playerIndex < MOVIE_PLAYER_COUNT) {
             goto loop_body;
         }
-        if (locked != 0) {
+        if (lockHeld != 0) {
             fn_8011C2EC(lbl_8055DED4, (u8 *)mgr + 0x340);
         }
     }
