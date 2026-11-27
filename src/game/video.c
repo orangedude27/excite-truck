@@ -452,7 +452,7 @@ void GXResetWaterBumpTevPipelineB(void) {
     fn_802D3144();
 }
 #pragma scheduling on
-void GXSetupModulateAddTevPipeline(void) {
+/* Configure texcoord generation and a two-stage TEV combiner that modulates by a texture with constant alpha, then adds the previous color and texture. */ void GXSetupModulateAddTevPipeline(void) {
     /* Configures texcoord generation and a two-stage TEV combiner: stage 0 modulates
        the raster color by a texture with constant alpha, stage 1 adds the prior color
        and texture, and alpha blending is applied. */
