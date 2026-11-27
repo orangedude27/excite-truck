@@ -549,7 +549,7 @@ extern "C" void fn_801EB9A4(s32 *arg0) {
     }
     *(ThreadObject **)arg0 = 0;
 }
-extern "C" s32 loadEBResource(void *resourceMgr) {
+/* Load the Simple Model EB (FRAG) resource through the resource manager, build its object/material lists and optional extra setup, then open its parameter and sound archives and record their handles and default scale. */ extern "C" s32 loadEBResource(void *resourceMgr) {
     /* Load the "Simple Model" EB resource (FARG, version 0x15), build its object
        and material lists, then open its parameter/sound archives and record their handles. */
     u8 hasExtraSetup;
