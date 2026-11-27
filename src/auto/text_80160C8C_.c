@@ -995,7 +995,7 @@ extern "C" s32 fn_80161A70(void) {
         virtual void m34();
         virtual void m38();
         virtual void m3C();
-        virtual void m40();  /* fn_8016306C: dispatch(action, index, ...) */
+        virtual void m40();  /* handleChallengeAction: dispatch(action, index, ...) */
         virtual s32 draw(s32);  /* the running view: timer / level list */
         virtual s32 drawResults(s32);  /* the results banner; the menu draws nothing */
     };
@@ -2058,7 +2058,7 @@ s32 fn_80163058(void *object) {
 
 #pragma cplusplus on
 /* Dispatches an object action based on arg1 when the object is ready; for case 0, if the indexed table entry (lbl_804348E8[arg2]) has tag 'PCAR' at +0x10 it finalizes and sets a flag at +0x91. */
-extern "C" void fn_8016306C(void *object, s32 action, s32 index) {
+extern "C" void handleChallengeAction(void *object, s32 action, s32 index) {
     class Obj {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
