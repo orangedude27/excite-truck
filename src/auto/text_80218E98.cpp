@@ -5341,26 +5341,26 @@ extern "C" void scrollBarOnPress(void *scrollBar, s32 mouseX, s32 mouseY) {
         *(s8 *)(bar + 0x250) = 0;
     }
 }
-extern "C" void updateScrollBarDrag(void *scrollBar, s32 pointerX, s32 pointerY) {
+/* While dragging a scroll bar, map the pointer position along the track to a content offset and clamp it to [0, total - page size]. */ extern "C" void updateScrollBarDrag(void *scrollBar, s32 pointerX, s32 pointerY) {
     /* While dragging a scroll bar, turn the pointer position into a content
      * offset using the track length and clamp it to [0, total - page size]. */
-    void *scrollState;
-    s32 newOffset;
+    void *scrollData;
+    s32 contentOffset;
     if (*(u8 *)((u8 *)scrollBar + 0x250) == 0) return;
     if (*(s32 *)((u8 *)scrollBar + 0x254) == 0) {
-        scrollState = *(void **)((u8 *)scrollBar + 0x244);
-        newOffset = (s32)(((f32)*(s32 *)scrollState / (f32)(*(s32 *)((u8 *)scrollBar + 0x10) - *(s32 *)((u8 *)scrollBar + 8))) * (f32)(pointerY + *(s32 *)((u8 *)scrollBar + 0x25C)));
-        *(s32 *)((u8 *)scrollState + 8) = newOffset;
-        if (newOffset > *(s32 *)scrollState - *(s32 *)((u8 *)scrollState + 4)) *(s32 *)((u8 *)scrollState + 8) = *(s32 *)scrollState - *(s32 *)((u8 *)scrollState + 4);
-        if (*(s32 *)((u8 *)scrollState + 8) < 0) *(s32 *)((u8 *)scrollState + 8) = 0;
+        scrollData = *(void **)((u8 *)scrollBar + 0x244);
+        contentOffset = (s32)(((f32)*(s32 *)scrollData / (f32)(*(s32 *)((u8 *)scrollBar + 0x10) - *(s32 *)((u8 *)scrollBar + 8))) * (f32)(pointerY + *(s32 *)((u8 *)scrollBar + 0x25C)));
+        *(s32 *)((u8 *)scrollData + 8) = contentOffset;
+        if (contentOffset > *(s32 *)scrollData - *(s32 *)((u8 *)scrollData + 4)) *(s32 *)((u8 *)scrollData + 8) = *(s32 *)scrollData - *(s32 *)((u8 *)scrollData + 4);
+        if (*(s32 *)((u8 *)scrollData + 8) < 0) *(s32 *)((u8 *)scrollData + 8) = 0;
     } else {
         s32 totalSize = *(s32 *)(*(void **)((u8 *)scrollBar + 0x244));
         f32 unitsPerPixel = (f32)totalSize / (f32)((Vf78 *)scrollBar)->get();
-        newOffset = (s32)(unitsPerPixel * (f32)(pointerX + *(s32 *)((u8 *)scrollBar + 0x258)));
-        scrollState = *(void **)((u8 *)scrollBar + 0x244);
-        *(s32 *)((u8 *)scrollState + 8) = newOffset;
-        if (newOffset > *(s32 *)scrollState - *(s32 *)((u8 *)scrollState + 4)) *(s32 *)((u8 *)scrollState + 8) = *(s32 *)scrollState - *(s32 *)((u8 *)scrollState + 4);
-        if (*(s32 *)((u8 *)scrollState + 8) < 0) *(s32 *)((u8 *)scrollState + 8) = 0;
+        contentOffset = (s32)(unitsPerPixel * (f32)(pointerX + *(s32 *)((u8 *)scrollBar + 0x258)));
+        scrollData = *(void **)((u8 *)scrollBar + 0x244);
+        *(s32 *)((u8 *)scrollData + 8) = contentOffset;
+        if (contentOffset > *(s32 *)scrollData - *(s32 *)((u8 *)scrollData + 4)) *(s32 *)((u8 *)scrollData + 8) = *(s32 *)scrollData - *(s32 *)((u8 *)scrollData + 4);
+        if (*(s32 *)((u8 *)scrollData + 8) < 0) *(s32 *)((u8 *)scrollData + 8) = 0;
     }
 }
 
