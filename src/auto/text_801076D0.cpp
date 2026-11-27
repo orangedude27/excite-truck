@@ -1917,27 +1917,34 @@ extern "C" s32 fn_8010D4B0(const void *self, void *arg0, s32 arg1, void *arg2) {
 
 extern "C" f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(s32);
 extern "C" s32 GetFont__Q36nw4hbm2ut10CharWriterCFv(s32);
+/* nw4hbm::ut::CharWriter (ut_TextWriterBase.cpp): return the line height — the
+ * writer's +0x50 spacing plus the font's cell height scaled by the writer's
+ * horizontal scale.  First asserts, via TWB_CHECK_THIS at line 0xF1, that the
+ * this pointer lies in one of the Wii's mapped memory windows. */
 extern "C" f32 GetLineHeight__Q36nw4hbm2ut10CharWriterCFv(s32 writer) {
-    /* Check the CharWriter handle's NW4HBM pointer tag, then return its stored
-     * spacing plus the font's cell height scaled by the writer's horizontal
-     * scale. */
-    s32 tagOk5 = 1, tagOk4 = 1, tagOk3 = 1, tagOk2 = 1, tagOk1 = 1, tagOk0 = 1;
-    u32 tagByte;
+    s32 inE00000 = 1, inD00000 = 1, inC100000 = 1, inC00000 = 1, in9000000 = 1, in800081 = 1;
+    u32 writerTopByte;
     s32 cellHeight, font;
-    tagByte = (u32)(writer & 0xFF000000);
-    if (tagByte != 0x80000000 && ((u32)(writer & 0xFF800000)) != 0x81000000) tagOk0 = 0;
-    if (tagOk0 == 0 && ((u32)(writer & 0xF8000000)) != 0x90000000) tagOk1 = 0;
-    if (tagOk1 == 0 && tagByte != 0xC0000000) tagOk2 = 0;
-    if (tagOk2 == 0 && ((u32)(writer & 0xFF800000)) != 0xC1000000) tagOk3 = 0;
-    if (tagOk3 == 0 && ((u32)(writer & 0xF8000000)) != 0xD0000000) tagOk4 = 0;
-    if (tagOk4 == 0 && ((u32)(writer & 0xFFFFC000)) != 0xE0000000) tagOk5 = 0;
-    if (tagOk5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560, 0xF1, lbl_80329578, writer);
+    writerTopByte = (u32)(writer & 0xFF000000);
+    if (writerTopByte != 0x80000000 && ((u32)(writer & 0xFF800000)) != 0x81000000) in800081 = 0;
+    if (in800081 == 0 && ((u32)(writer & 0xF8000000)) != 0x90000000) in9000000 = 0;
+    if (in9000000 == 0 && writerTopByte != 0xC0000000) inC00000 = 0;
+    if (inC00000 == 0 && ((u32)(writer & 0xFF800000)) != 0xC1000000) inC100000 = 0;
+    if (inC100000 == 0 && ((u32)(writer & 0xF8000000)) != 0xD0000000) inD00000 = 0;
+    if (inD00000 == 0 && ((u32)(writer & 0xFFFFC000)) != 0xE0000000) inE00000 = 0;
+    if (inE00000 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560, 0xF1, lbl_80329578, writer);
     font = GetFont__Q36nw4hbm2ut10CharWriterCFv(writer);
     if (font) {
-        struct V { virtual int a0()=0; virtual int a1()=0; virtual int a2()=0; virtual int a3()=0; virtual int a4()=0; virtual int a5()=0; virtual int a6()=0; virtual int a7()=0; virtual int a8()=0; virtual int a9()=0; virtual int a10()=0; virtual int a11()=0; virtual int a12()=0; };
-        cellHeight = ((V*)font)->a11();
+        struct FontHeightIface {
+            virtual int v0() = 0; virtual int v1() = 0; virtual int v2() = 0;
+            virtual int v3() = 0; virtual int v4() = 0; virtual int v5() = 0;
+            virtual int v6() = 0; virtual int v7() = 0; virtual int v8() = 0;
+            virtual int v9() = 0; virtual int v10() = 0; virtual int getCellHeight() = 0;
+            virtual int v12() = 0;
+        };
+        cellHeight = ((FontHeightIface *)font)->getCellHeight();
     } else cellHeight = 0;
-    return *(f32*)(writer + 0x50) + (f32)cellHeight * GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(writer);
+    return *(f32 *)(writer + 0x50) + (f32)cellHeight * GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(writer);
 }
 
 extern "C" const char lbl_80329560[];
