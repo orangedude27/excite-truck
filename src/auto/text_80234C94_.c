@@ -204,26 +204,26 @@ extern unsigned char lbl_803406B0[];
 extern void fn_80265940(void);
 #pragma scheduling invalid_target
 /* Loads art/texture metadata rows for a named resource into a linked list at obj+0x88, or logs lbl_803406B0 when the resource is unavailable. */
-void ArtSet_loadPictures(void *artObject, const char *resourceName) {
+/* Load the STAB table named by resourceName into artSet's linked list of ArtPicture rectangles at +0x88 (texture rect columns 0-3, width from column 4, height from column 5); panic with lbl_803406B0 if the resource is not registered. */ void ArtSet_loadPictures(void *artSet, const char *resourceName) {
     if (fn_8012C33C(resourceName)) {
-        void *source = loadStabResource(resourceName);
-        int count = fn_8012F2E8();
-        void *last = 0;
-        int i;
-        for (i = 0; i < count; i++) {
-            void *item = fn_801284F8(0x1c, lbl_8055B9E0);
-            *(float *)item = (float)atof(fn_8012F2F0(source, i, 0));
-            *(float *)((char *)item + 4) = (float)atof(fn_8012F2F0(source, i, 1));
-            *(float *)((char *)item + 8) = (float)atof(fn_8012F2F0(source, i, 2));
-            *(float *)((char *)item + 0xc) = (float)atof(fn_8012F2F0(source, i, 3));
-            *(float *)((char *)item + 0x14) = (float)atof(fn_8012F2F0(source, i, 4));
-            *(float *)((char *)item + 0x10) = (float)atof(fn_8012F2F0(source, i, 5));
-            if (!last) *(void **)((char *)artObject + 0x88) = item;
-            else *(void **)((char *)last + 0x18) = item;
-            last = item;
+        void *table = loadStabResource(resourceName);
+        int rowCount = fn_8012F2E8();
+        void *lastPicture = 0;
+        int row;
+        for (row = 0; row < rowCount; row++) {
+            void *picture = fn_801284F8(0x1c, lbl_8055B9E0);
+            *(float *)picture = (float)atof(fn_8012F2F0(table, row, 0));
+            *(float *)((char *)picture + 4) = (float)atof(fn_8012F2F0(table, row, 1));
+            *(float *)((char *)picture + 8) = (float)atof(fn_8012F2F0(table, row, 2));
+            *(float *)((char *)picture + 0xc) = (float)atof(fn_8012F2F0(table, row, 3));
+            *(float *)((char *)picture + 0x14) = (float)atof(fn_8012F2F0(table, row, 4));
+            *(float *)((char *)picture + 0x10) = (float)atof(fn_8012F2F0(table, row, 5));
+            if (!lastPicture) *(void **)((char *)artSet + 0x88) = picture;
+            else *(void **)((char *)lastPicture + 0x18) = picture;
+            lastPicture = picture;
         }
-        fn_8012F2E4(source);
-        *(void **)((char *)last + 0x18) = 0;
+        fn_8012F2E4(table);
+        *(void **)((char *)lastPicture + 0x18) = 0;
     } else {
         Abend_Panic((const char *)lbl_803406B0, resourceName);
     }
