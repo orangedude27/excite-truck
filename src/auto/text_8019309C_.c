@@ -1587,7 +1587,7 @@ void fn_801958D8(void *arg0) {
 }
 
 /* Updates a state machine/object step, applying damage/offroad checks and idle tracking. */
-void fn_801959AC(void *arg0) {
+void updateDriverState(void *arg0) {
     extern double __fabs(double);
     extern char lbl_80558DC4[];
     extern float lbl_80562140, lbl_80562144, lbl_805621DC;
@@ -2082,7 +2082,7 @@ void fn_801963A0(void *state) {
     lbl_8055E57C += delta;
     ((void (*)(int, int, int, float, float))fn_80136E8C)(lbl_8055E0D0, *(int *)((char *)state + 0x290), 1, delta, value);
     fn_801958C4(state);
-    fn_801959AC(state);
+    updateDriverState(state);
     fn_80195CA8(state);
 }
 #pragma dont_inline reset
