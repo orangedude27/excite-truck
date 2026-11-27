@@ -125,7 +125,7 @@ s32 getMenuTableEntryAtOffset(s32 offset, s32 group) {
 /* MenuTable_IsEntryIndexValid: whether entryIndex names an entry of the menu
  * table's group -- 0 through the group's entry count inclusive, so the index
  * one past the group's last entry passes as well. */
-s32 fn_80243710(s32 entryIndex, s32 group) {
+s32 isMenuTableEntryIndexValid(s32 entryIndex, s32 group) {
     s32 result = 0;
     if (entryIndex >= 0 && entryIndex <= getMenuTableEntryCount(group)) result = 1;
     return result;
@@ -140,7 +140,7 @@ __declspec(section ".sdata") extern s32 lbl_8055BE10; /* s_cursorHoldEntry */
 extern s32 fn_80230E90(s32);
 extern s32 getMenuTableEntryOffset(s32, s32);
 extern s32 getMenuTableEntryAtOffset(s32, s32);
-extern s32 fn_80243710(s32, s32);
+extern s32 isMenuTableEntryIndexValid(s32, s32);
 #pragma push
 #pragma use_lmw_stmw off
 /* Move the menu cursor: entryDelta steps through the entries of the current
@@ -163,7 +163,7 @@ s32 moveMenuCursor(s32 *entryIndex, volatile s32 *groupIndex, s32 entryDelta, s3
         newCount = getMenuTableEntryCount(*groupIndex);
         oldCount = getMenuTableEntryCount(oldGroup);
         if (oldCount != newCount) {
-            if (fn_80243710(s_cursorHoldGroup, *groupIndex) && *entryIndex == s_cursorHoldEntry) {
+            if (isMenuTableEntryIndexValid(s_cursorHoldGroup, *groupIndex) && *entryIndex == s_cursorHoldEntry) {
                 /* take the entry saved for this group and leave ours behind */
                 entry = s_cursorHoldGroup;
                 s_cursorHoldGroup = s_cursorHoldEntry;
