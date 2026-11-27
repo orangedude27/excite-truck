@@ -918,7 +918,7 @@ void fn_8000BD98(void) {
 }
 
 /* Handles a command/value lookup for this module. For command 0, it treats *outValue as an element in a ring buffer (lbl_8034F5D8, count lbl_8055D3E0) and replaces it with the next element; specific command IDs map to fixed output values and report handled. */
-int handleSettingCommand(int arg0, int command, int outPtr) {
+/* Resolve a setting command into a value written through outPtr: command 0 cycles the allowed-value ring, other commands return fixed values. */ int handleSettingCommand(int arg0, int command, int outPtr) {
     int *entry;
     int count, found, i;
     int *outValue = (int *)outPtr;
