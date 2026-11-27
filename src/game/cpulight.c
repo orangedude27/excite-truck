@@ -757,7 +757,7 @@ extern void fn_802D6B78(void *);
 extern void fn_802D6B7C(void *);
 extern void buildViewXform(void);
 extern void GXSetupThreeStageTevPipelineAlt(void);
-extern void fn_802E009C(void);
+extern void GXSetupTwoStageTevPipelineNoAlt(void);
 extern void fn_802E050C(void);
 extern void fn_802E0420(void);
 extern void GXSetupThreeStageTevPipeline(void);
@@ -792,7 +792,7 @@ extern "C" void fn_802DC71C(int arg0, int arg1) {
     if (useAlt != 0) GXLoadTexObj((unsigned char *)tex1 + 0x78, 2);
     if (lbl_8055FEBB != 0) {
         if (useAlt != 0) GXSetupThreeStageTevPipelineAlt();
-        else fn_802E009C();
+        else GXSetupTwoStageTevPipelineNoAlt();
         lbl_8055FEB0 = 0;
     } else {
         if (lbl_8055FEB9 != 0) {

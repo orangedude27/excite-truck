@@ -515,7 +515,7 @@ void GXSetupThreeStageTevPipeline(void) {
 }
 
 /* Configures GX texcoord generation and a 2-stage TEV combiner for this render path. */
-void fn_802E009C(void) {
+void GXSetupTwoStageTevPipelineNoAlt(void) {
     /* Configures texcoord generation and a two-stage TEV combiner for this render path. */
     register u32 texCoord = 0;
     register u32 texGenType = 1;
@@ -540,7 +540,7 @@ void fn_802E009C(void) {
 /* Three-stage TEV pipeline for a material flagged 0x1D that has an alternate
  * texture (loaded into map 2 by fn_802DC71C): texcoord 0 samples map 1, texcoord
  * 1 samples map 0, and the combiner blends both into the final stage 2.  The
- * non-alternate twin is fn_802E009C. */
+ * non-alternate twin is GXSetupTwoStageTevPipelineNoAlt. */
 void GXSetupThreeStageTevPipelineAlt(void) {
     register u32 texCoord = 0;
     GXSetTexCoordGen2(texCoord, 1, 5, 0x3C, 0, 0x7D);
