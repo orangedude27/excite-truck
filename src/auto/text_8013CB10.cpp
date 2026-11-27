@@ -2549,57 +2549,100 @@ struct StageVec {
     s32 idx;
     s32 cap;
 };
+// Ring queue view at owner+0xC0 used by fn_80140D1C.
+struct RingVecQueue {
+    u8 **items;   // 0xC0: array of 12-byte records
+    s32 cap;      // 0xC4
+    s32 count;    // 0xC8
+    s32 head;     // 0xCC
+};
+static inline RingVecQueue *ringQueue(void *owner)
+{
+    return (RingVecQueue *) (((u8 *) owner) + 0xC0);
+}
+// The record at position i, or NULL when i is past the queued count.
+static inline u8 *ringEntry(void *owner, s32 i)
+{
+    RingVecQueue *q = ringQueue(owner);
+    s32 end = (q->cap + (q->count - q->head)) % q->cap;
+    if (i >= end)
+    {
+        return 0;
+    }
+    return (u8 *) q->items + (((i + q->cap) + q->head) % q->cap) * 12;
+}
+// The pointer stored at +8 of the record at position i, or NULL.
+static inline void *ringEntryField(void *owner, s32 i)
+{
+    RingVecQueue *q = ringQueue(owner);
+    s32 end = (q->cap + (q->count - q->head)) % q->cap;
+    if (i >= end)
+    {
+        return 0;
+    }
+    return *(void **) ((u8 *) q->items + ((((i + q->cap) + q->head) % q->cap) * 12) + 8);
+}
 // fn_80140D1C: processes array items, flushing buffer to fn_80141558 when item[0x1E] set, or stores to dst
-extern "C" void fn_80140D1C(void *arg0, void *arg1, void *arg2) {
-    f32 buffer[96];
-    StageVec st;
-    s32 count, i, cap, head, end, j;
-    u8 *item;
-    f32 *p;
-    u8 **arr;
-    fn_8013EB30(arg0);
-    count = *(s32 *)((u8 *)arg1 + 4) - 1;
-    arr = (u8 **)*(void **)arg1;
-    st.buf = buffer;
-    st.idx = 0;
-    st.cap = 32;
-    while (count >= 0) {
-        item = *(u8 **)((char *)arr + count * 8);
-        if (item[0x1E]) {
-            if (st.idx > 0) {
-                fn_80141558((u8 *)arg0 + 0x280, (s32)st.buf, st.idx, *(s32 *)((u8 *)arg0 + 0x288));
-                st.idx = 0;
-            }
-            fn_80140B98(arg0, *(void **)((char *)arr + count * 8), 2);
-        } else {
-            j = st.idx++;
-            p = &st.buf[j * 3];
-            p[0] = *(f32 *)item;
-            p[1] = *(f32 *)(item + 4);
-            p[2] = *(f32 *)(item + 8);
-            j = st.idx++;
-            p = &st.buf[j * 3];
-            p[0] = *(f32 *)(item + 0xC);
-            p[1] = *(f32 *)(item + 0x10);
-            p[2] = *(f32 *)(item + 0x14);
-        }
-        count--;
-    }
-    if (st.idx > 0) {
-        fn_80141558((u8 *)arg0 + 0x280, (s32)st.buf, st.idx, *(s32 *)((u8 *)arg0 + 0x288));
+extern "C" void fn_80140D1C(void *arg0, void *arg1, void *arg2)
+{
+  f32 buffer[96];
+  StageVec st;
+  s32 count;
+  u8 *item;
+  s32 i;
+  f32 *dst;
+
+  fn_8013EB30(arg0);
+  st.buf = buffer;
+  st.cap = 32;
+  st.idx = 0;
+  for (count = (*((s32 *) (((u8 *) arg1) + 4))) - 1; count >= 0; count--)
+  {
+    item = *((u8 **) (((u8 *) (*((void **) arg1))) + (count * 8)));
+    if (item[0x1E])
+    {
+      if (st.idx > 0)
+      {
+        fn_80141558(((u8 *) arg0) + 0x280, (s32) st.buf, st.idx, *((s32 *) (((u8 *) arg0) + 0x288)));
         st.idx = 0;
+      }
+      fn_80140B98(arg0, *((u8 **) (((u8 *) (*((void **) arg1))) + (count * 8))), 2);
     }
-    i = 0;
-    do {
-        cap = *(s32 *)((u8 *)arg0 + 0xC4);
-        head = *(s32 *)((u8 *)arg0 + 0xCC);
-        end = (cap + (*(s32 *)((u8 *)arg0 + 0xC8) - head)) % cap;
-        if (i >= end) break;
-        item = *(u8 **)((u8 *)arg0 + 0xC0);
-        fn_80140B98(arg0, *(void **)(item + ((i + cap + head) % cap) * 12 + 8), 4);
-        i++;
-    } while (1);
-    memset(&st, 0, sizeof(st));
+    else
+    {
+      dst = &st.buf[st.idx++ * 3];
+      dst[0] = *((f32 *) item);
+      dst[1] = *((f32 *) (item + 4));
+      dst[2] = *((f32 *) (item + 8));
+      item = *((u8 **) (((u8 *) (*((void **) arg1))) + (count * 8)));
+      dst = &st.buf[st.idx++ * 3];
+      dst[0] = *((f32 *) (item + 0xC));
+      dst[1] = *((f32 *) (item + 0x10));
+      dst[2] = *((f32 *) (item + 0x14));
+    }
+  }
+
+  if (st.idx > 0)
+  {
+    fn_80141558(((u8 *) arg0) + 0x280, (s32) st.buf, st.idx, *((s32 *) (((u8 *) arg0) + 0x288)));
+    st.idx = 0;
+  }
+  i = 0;
+  do
+  {
+    s32 cap = *((s32 *) (((u8 *) arg0) + 0xC4));
+    s32 head = *((s32 *) (((u8 *) arg0) + 0xCC));
+    s32 end = (cap + ((*((s32 *) (((u8 *) arg0) + 0xC8))) - head)) % cap;
+    if (i >= end)
+    {
+      break;
+    }
+    item = *((u8 **) (((u8 *) arg0) + 0xC0));
+    fn_80140B98(arg0, *((void **) ((item + ((((i + cap) + (*((s32 *) (((u8 *) arg0) + 0xCC)))) % cap) * 12)) + 8)), 4);
+    i++;
+  }
+  while (1);
+  memset(&st, 0, sizeof(st));
 }
 
 #pragma push
