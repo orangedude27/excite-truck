@@ -11726,10 +11726,13 @@ done:
     return 0;
 }
 #pragma pop
+/* Mount the VFiPF volume for a drive letter: resolve the letter to its volume
+ * slot under the instance lock, refuse a slot that is already mounted or has no
+ * device attached, run the device mount step, then publish its result to the
+ * instance and volume.  On failure clear the slot's in-use flag and decrement
+ * the instance's mount count.
+ */
 s32 mountDriveByLetter(s8 driveLetter) {
-    /* Mount the virtual drive named by a letter: lock the VF table, find the
-     * drive's record, skip it when flagged, then mount it and publish the
-     * result, clearing the pending flag on failure. */
     struct Entry {
         u8 pad0[0x1F80];
         s32 result;
@@ -11737,62 +11740,62 @@ s32 mountDriveByLetter(s8 driveLetter) {
         u16 flags;
     };
     u8 *vf;
-    u8 *successVf;
-    u32 record;
+    u8 *vfOut;
+    u32 volumeSlot;
     s16 driveIndex = fn_800A485C(driveLetter) - 0x41;
-    Entry *drive;
-    u16 flags;
+    Entry *volume;
+    u16 volFlags;
     s32 result;
     s32 mountResult;
-    u8 *tail;
+    u8 *vfState;
 
     vf = (u8 *)lbl_803D2140;
     fn_800B77C0(vf + 0x64);
     if (driveIndex < 0 || driveIndex >= 0x1A) {
         fn_800B783C((u8 *)lbl_803D2140 + 0x64);
-        drive = 0;
+        volume = 0;
     } else {
         fn_800B783C(vf + 0x64);
-        record = (u32)vf + driveIndex * 0x1FC8;
-        drive = (Entry *)(record + 0xA0);
+        volumeSlot = (u32)vf + driveIndex * 0x1FC8;
+        volume = (Entry *)(volumeSlot + 0xA0);
     }
-    flags = drive->flags;
-    if (flags & 8) {
+    volFlags = volume->flags;
+    if (volFlags & 8) {
         *(s32 *)((u8 *)lbl_803D2140 + 0x40) = 10;
-        drive->result = 10;
+        volume->result = 10;
         return 10;
     }
-    if (!(flags & 1)) {
+    if (!(volFlags & 1)) {
         *(s32 *)((u8 *)lbl_803D2140 + 0x40) = 10;
-        drive->result = 10;
+        volume->result = 10;
         return 10;
     }
     fn_800B77C0((u8 *)lbl_803D2140 + 0x64);
-    result = fn_800A54AC(drive);
+    result = fn_800A54AC(volume);
     if (result == 0) {
         goto no_result;
     }
     mountResult = result;
     goto check_result;
 no_result:
-    fn_800B777C((u8 *)drive + 0x1F90);
+    fn_800B777C((u8 *)volume + 0x1F90);
     mountResult = 0;
 check_result:
     if (mountResult == 0) {
         goto clear_flags;
     }
-    successVf = (u8 *)lbl_803D2140;
-    fn_800B783C(successVf + 0x64);
-    *(s32 *)(successVf + 0x40) = mountResult;
+    vfOut = (u8 *)lbl_803D2140;
+    fn_800B783C(vfOut + 0x64);
+    *(s32 *)(vfOut + 0x40) = mountResult;
     result = mountResult;
-    drive->result = mountResult;
+    volume->result = mountResult;
     return result;
 clear_flags:
-    drive->flags &= 0xFFFE;
-    tail = (u8 *)lbl_803D2140;
-    result = *(s32 *)(tail + 0x30);
-    *(s32 *)(tail + 0x30) = result - 1;
-    fn_800B783C(tail + 0x64);
+    volume->flags &= 0xFFFE;
+    vfState = (u8 *)lbl_803D2140;
+    result = *(s32 *)(vfState + 0x30);
+    *(s32 *)(vfState + 0x30) = result - 1;
+    fn_800B783C(vfState + 0x64);
     return 0;
 }
 
