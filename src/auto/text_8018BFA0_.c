@@ -329,11 +329,21 @@ extern char lbl_80332758[];
 typedef struct { char b[0x290]; } Blob290_8018;
 typedef struct { float a, b; int c, d; unsigned char e0, e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17; } Blob22_8018;
 extern float lbl_80561F78, lbl_80561F7C, lbl_80561F80, lbl_80561F84;
+extern double lbl_80562048;
+typedef union { struct { unsigned int hi, lo; } word; double value; } Bits8018;
+static inline float U8ToF_8018F2C0(unsigned char v) {
+    Bits8018 cvt;
+    cvt.word.lo = v;
+    cvt.word.hi = 0x43300000;
+    return (float) (cvt.value - lbl_80562048);
+}
 static inline float Chan_8018F2C0(unsigned char v) {
     const float zero = lbl_80561F74;
-    float t = (1.0f < (((float)v - zero) / 255.0f)) ? 1.0f : (((float)v - zero) / 255.0f);
+    const float one = lbl_80561F88;
+    float x = (U8ToF_8018F2C0(v) - zero) / lbl_80562038;
+    float t = (one < x) ? one : ((U8ToF_8018F2C0(v) - zero) / lbl_80562038);
     t = (t > zero) ? t : zero;
-    return -0.508f + t * 1.016f;
+    return lbl_8056203C + t * lbl_80562040;
 }
 
 static inline float Chan2_8018F2C0(unsigned char v, float zero, float one, float div, float scale, float bias) {
