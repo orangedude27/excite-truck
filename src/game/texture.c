@@ -24,7 +24,7 @@ void fn_802CAC54(int);
 void fn_802CB6B4(void);
 int fn_80128670(int);
 int fn_802CA2A8(void *, int, int);
-int fn_8012C5B8(void *, int, int *);
+int openResourceStream(void *, int, int *);
 int fn_8012C6F0(void);
 int fn_8012C958(int);
 
@@ -156,7 +156,7 @@ extern char lbl_8055D048;              /* ".tm0": suffix of a texture archive me
 /* Get the size of the "TEX " resource for the named texture, or 0 if absent. */
 int getTextureResourceSize(int textureName) {
 #define BuildTextureArchiveName fn_802CA2A8
-#define OpenResource fn_8012C5B8
+#define OpenResource openResourceStream
 #define GetResourceSize fn_8012C6F0
 #define CloseResource fn_8012C958
     char archiveName[0x20];
@@ -1466,7 +1466,7 @@ void fn_802CC03C(int **listHead, int *record, int texId) {
     /* Set up a texture record for texId: build its ".tm0" name, load the TEX
        resource (version to version), store texId and drgc-tex context, report
        load/version errors, then link the record into the list. */
-    record[0] = fn_8012C5B8((char *)fn_802CA2A8(nameBuf, 0x20, (int)((char *)gTextureSlotTable + entryOffset + 4)), 0x54455820, &version);
+    record[0] = openResourceStream((char *)fn_802CA2A8(nameBuf, 0x20, (int)((char *)gTextureSlotTable + entryOffset + 4)), 0x54455820, &version);
     record[1] = texId;
     record[3] = fn_802D9154();
     if (record[0] == 0)
@@ -1988,7 +1988,7 @@ void fn_802CAC54(int);
 void fn_802CB6B4(void);
 int fn_80128670(int);
 int fn_802CA2A8(void *, int, int);
-int fn_8012C5B8(void *, int, int *);
+int openResourceStream(void *, int, int *);
 int fn_8012C6F0(void);
 int fn_8012C958(int);
 extern char lbl_8034B538[];

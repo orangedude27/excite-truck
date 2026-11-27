@@ -45,7 +45,7 @@ struct ResManager {
 };
 
 /* The 0x18-byte async read request popped from the "AsyncResource" pool
- * (lbl_8032ABF8) and returned by fn_8012C5B8. The code accesses it as a flat
+ * (lbl_8032ABF8) and returned by openResourceStream. The code accesses it as a flat
  * volatile s32 array; this enum names the slots it writes. */
 enum AsyncRequestField {
     ASYNC_REQ_MAGIC = 0,   /* 0x00: signature stamp */
@@ -3282,7 +3282,7 @@ extern "C" void fn_8012ED20(void *object) {
     fn_80128668(object);
 }
 
-extern "C" s32 fn_8012C5B8(s32, s32, s32);
+extern "C" s32 openResourceStream(s32, s32, s32);
 extern "C" s32 fn_8012C6F0(void *);
 extern "C" void fn_8012EE80(void *);
 extern "C" s32 fn_8012EDA8(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
@@ -3304,7 +3304,7 @@ extern "C" s32 fn_8012EDA8(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     }
     *(s32 *)((char *)arg0 + 0x28) = 0;
     for (slotIndex = 0; slotIndex < 2; slotIndex++, slots += 4) {
-        handle = fn_8012C5B8(arg1, arg2, arg3);
+        handle = openResourceStream(arg1, arg2, arg3);
         slots[1] = handle;
         if (!handle) return 0;
         *(s32 *)((char *)arg0 + 0x24) = fn_8012C6F0((void *)handle);
@@ -3500,7 +3500,7 @@ extern "C" const char lbl_8032AC08[];
 /* Open an async resource stream: find path's entry with the requested type tag,
  * write its id to *outId and return an "AsyncResource" request holding the entry
  * and its manager; on a tag mismatch log "ResourceGetStream" and return 0. */
-extern "C" s32 fn_8012C5B8(s32 path, s32 typeTag, s32 outId) {
+extern "C" s32 openResourceStream(s32 path, s32 typeTag, s32 outId) {
     long index;
     long result = 0;
     struct ResManager *manager;
