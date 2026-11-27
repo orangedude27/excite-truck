@@ -182,7 +182,10 @@ struct Quad {
 #pragma scheduling invalid_target
 #pragma paired off
 #pragma paired_single off
-/* Draws text (fn_80232BA4) with horizontal scroll/wrap: measures text, wraps X range within margin-expanded screen bounds, and draws an overflow copy when clipped. */
+/* Draw text with horizontal scroll/wrap: measure its width, wrap the drawn X
+ * range into the margin-expanded screen bounds, and draw an overflow copy on
+ * the opposite side when the text is clipped.
+ */
 void drawTextWithXWrap(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
                  f32 farg0, f32 farg1, f32 farg2, f32 farg3,
                  f32 farg4, f32 farg5, f32 farg6, s32 arg_sp0) {
@@ -190,38 +193,38 @@ void drawTextWithXWrap(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
     extern void fn_80230C9C(f32 *, f32 *, f32, f32, f32);
     extern void fn_80232BA4(s32, s32, s32, s32, f32, f32, f32, f32, f32);
     extern f32 lbl_80563610, lbl_80563618, lbl_8056361C;
-    f32 spC, sp8;
-    f32 temp_f1, temp_f3, temp_f4;
-    f32 temp_f31, temp_f28, temp_f27, temp_f26;
-    f32 var_f1;
-    s32 var_r0;
+    f32 clampedX, wrappedBaseX;
+    f32 temp, charOffsetX, wrappedOffset;
+    f32 widthScale, widthOffset, minX, maxX;
+    f32 wrappedX;
+    s32 needsWrap;
 
     (void)arg_sp0;
-    temp_f31 = farg3;
-    temp_f1 = fn_8023293C(arg1, arg0, lbl_80563610);
-    temp_f3 = farg5 * farg4;
-    temp_f28 = temp_f31 * temp_f1;
-    temp_f27 = lbl_80563618 - farg6;
-    temp_f1 = farg0 + temp_f3;
-    temp_f26 = lbl_8056361C + farg6;
-    temp_f4 = temp_f1 + temp_f28;
-    spC = temp_f1;
-    sp8 = temp_f4;
-    fn_80230C9C(&spC, &sp8, temp_f27, temp_f26, -temp_f27 + temp_f26);
-    var_r0 = 0;
-    var_f1 = lbl_80563618;
-    if (spC < temp_f27) {
-        var_r0 = 1;
-        var_f1 = spC + (-temp_f27 + temp_f26);
+    widthScale = farg3;
+    temp = fn_8023293C(arg1, arg0, lbl_80563610);
+    charOffsetX = farg5 * farg4;
+    widthOffset = widthScale * temp;
+    minX = lbl_80563618 - farg6;
+    temp = farg0 + charOffsetX;
+    maxX = lbl_8056361C + farg6;
+    wrappedOffset = temp + widthOffset;
+    clampedX = temp;
+    wrappedBaseX = wrappedOffset;
+    fn_80230C9C(&clampedX, &wrappedBaseX, minX, maxX, -minX + maxX);
+    needsWrap = 0;
+    wrappedX = lbl_80563618;
+    if (clampedX < minX) {
+        needsWrap = 1;
+        wrappedX = clampedX + (-minX + maxX);
     }
-    if (sp8 > temp_f26) {
-        var_r0 = 1;
-        var_f1 = (sp8 - (-temp_f27 + temp_f26)) - temp_f28;
+    if (wrappedBaseX > maxX) {
+        needsWrap = 1;
+        wrappedX = (wrappedBaseX - (-minX + maxX)) - widthOffset;
     }
-    if (var_r0 != 0) {
-        fn_80232BA4(arg0, arg1, arg2, arg3, var_f1, farg1, farg3, farg2, lbl_80563610);
+    if (needsWrap != 0) {
+        fn_80232BA4(arg0, arg1, arg2, arg3, wrappedX, farg1, farg3, farg2, lbl_80563610);
     }
-    fn_80232BA4(arg0, arg1, arg2, arg3, spC, farg1, farg3, farg2, lbl_80563610);
+    fn_80232BA4(arg0, arg1, arg2, arg3, clampedX, farg1, farg3, farg2, lbl_80563610);
 }
 #pragma pop
 
