@@ -91,7 +91,7 @@ void fn_800054E0(void) {
     *(s32 *)(lbl_8034EC78 + 0x204) = KERNEL_GetTimeMs();
     *(s32 *)(lbl_8034EC78 + 0x208) = 0;
 }
-/* Returns non-zero if field at offset 0x50 in lbl_8034EEB8 is non-zero. */
+/* Nonzero while the arena overlay is active (state flag at offset 0x50). */
 s32 hasArenaOverlay(void) {
     return lbl_8034EEB8[0x50 / 4] != 0;
 }
