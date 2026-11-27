@@ -2861,7 +2861,7 @@ extern void *fn_80131810(void *);
 extern void releaseValueFile(void *);
 extern void fn_801345D8(char *, s32, const char *, s32);
 extern s32 fn_80146C2C(s32, s32);
-extern char lbl_8032FB90[];
+extern char tutorialCmdValueFileName[];
 extern const char lbl_8055A110, lbl_8055A118;
 
 #pragma cplusplus on
@@ -2913,7 +2913,7 @@ extern "C" void buildTutorialValueEntries(void *state) {
     s32 i;
 
     self->entryCount = 0;
-    valueTable = fn_80131810(lbl_8032FB90); /* "tutcmd.val" */
+    valueTable = fn_80131810(tutorialCmdValueFileName); /* "tutcmd.val" */
     count = 0;
     do {
         count++;
