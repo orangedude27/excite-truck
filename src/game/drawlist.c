@@ -1002,7 +1002,7 @@ extern double __fabs(double);
 extern int fn_802CC518();
 #pragma push
 #pragma processor 750
-void setCameraProjection(float nearClip, float farClip, float fov) {
+/* Apply near/far/FOV inputs and recompute derived camera projection angles and slopes. */ void setCameraProjection(float nearClip, float farClip, float fov) {
 #define gViewBackup  lbl_804C144C
 #define gNearClip    lbl_8055FC38
 #define gFarClip     lbl_8055FC3C
@@ -1027,7 +1027,7 @@ void setCameraProjection(float nearClip, float farClip, float fov) {
 #define gDisplayObj  lbl_8055FC64
     float *view = gViewBackup;
     register float angle = fov;
-    float f4;
+    float aspectWidth;
     register float sine, theta, tangent;
     float cosine;
     float denom_angle, denom_sine, atan_value, ratio, depth;
@@ -1063,12 +1063,12 @@ void setCameraProjection(float nearClip, float farClip, float fov) {
     atan_value = (float)atan(ratio);
     theta = gRadInv * atan_value;
     sine = (float)sin(gHalfPi - theta * gRadPerDeg);
-    f4 = gOne;
-    gUpSlack = f4 / sine;
+    aspectWidth = gOne;
+    gUpSlack = aspectWidth / sine;
     switch (mode) {
-    case 0: f4 = gFarValue / gNearValue; break;
+    case 0: aspectWidth = gFarValue / gNearValue; break;
     }
-    fn_802D0368(gNearClip, gFarClip, angle, f4);
+    fn_802D0368(gNearClip, gFarClip, angle, aspectWidth);
     fn_802CC518((int)gDisplayObj, gRightSlope);
 #undef gDisplayObj
 #undef gTanDivisor
