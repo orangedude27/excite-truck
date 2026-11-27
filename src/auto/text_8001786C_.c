@@ -322,7 +322,7 @@ extern void fn_800178BC(void *, s32, s32);
 extern void fn_80016928(s32, s32);
 #pragma scheduling invalid_target
 /* Build track route lists by sampling from three descriptor lists according to arg1 entries */
-void fn_80017DD4(s32 *arg0, s32 arg1, s32 *arg2) {
+void BuildEntryPairs(s32 *arg0, s32 arg1, s32 *arg2) {
     struct { s32 *items; s32 count; s32 capacity; s32 buf[50]; } a, b, c;
     s32 i, x, y, z;
     *(s32 *)((char *)arg0 + 0x24) = 0;
@@ -516,14 +516,14 @@ void fn_80018318(void* outList, s32 contextId) {
     s32 extraCount;
     extern void fn_80013C804(void);
     extern s32 fn_80017F6C(s32);
-    extern void fn_80017DD4(s32*, s32, s32*);
+    extern void BuildEntryPairs(s32*, s32, s32*);
     extern void fn_80018030(void*, s32);
     extern void applyCarNameOverrides(void*, s32);
     extern void fn_8013C8B8(void);
     fn_8013C804();
     fn_80017944(&baseList);
     extraCount = fn_80017F6C(contextId) - baseList.driverCount;
-    fn_80017DD4((s32 *)&selectedList, extraCount & ~(extraCount >> 31), (s32 *)&baseList);
+    BuildEntryPairs((s32 *)&selectedList, extraCount & ~(extraCount >> 31), (s32 *)&baseList);
     memset(outList, 0, 0x48);
     fn_800182A0(outList, &selectedList);
     fn_800182A0(outList, &baseList);
