@@ -582,7 +582,7 @@ extern float lbl_805604FC;
 extern int drawPictureScaled(int, int, s32, f32, f32, f32, f32, f32);
 #pragma push
 #pragma dont_inline on
-void fn_80020860(int arg0) {
+void drawLoadbackPicture(int arg0) {
     f32 t4;
     f32 t5;
 
@@ -1003,7 +1003,7 @@ int updateResultsOverlay(void) {
        Does nothing while the overlay is switched off (OVERLAY_ACTIVE).
        computeOverlayFade() is the overlay's own fade-out: still fully opaque for the
        first 300 ms of the results screen and gone a second later.  While it is
-       up the "loadback" image is drawn over the box (fn_80020860) and the box
+       up the "loadback" image is drawn over the box (drawLoadbackPicture) and the box
        itself gets no fade of its own; afterwards the box follows the race's own
        0..255 value (fn_801E8838), scaled down to 0..1.  Finally, unless the
        sound system is muted (fn_8020DE1C), the two "press a button" prompts are
@@ -1013,7 +1013,7 @@ int updateResultsOverlay(void) {
     unsigned int fontSetId;
     if (!OVERLAY_ACTIVE) return 0;
     fade = computeOverlayFade();
-    if (fade > 0) fn_80020860(fade);
+    if (fade > 0) drawLoadbackPicture(fade);
     if (fade > 0) boxAlpha = lbl_805604B4; /* 0.0f */
     else boxAlpha = (float)fn_801E8838() / ALPHA_TO_UNIT;
     fn_800209A0(ALPHA_OPAQUE, boxAlpha);
@@ -1137,7 +1137,7 @@ void fn_8002167C(void) {
 
 void fn_80021680(void) {
     /* Audio-DSP case 1: redraw the loading/tips overlay — opaque white art, the overlay effect/message pass, then the "Tips:LOADING" text. */
-    fn_80020860(0xFF);
+    drawLoadbackPicture(0xFF);
     fn_800209A0(0xFF, lbl_805604B4);
     fn_8001FF34(-1);
 }
@@ -1229,7 +1229,7 @@ int fn_800217AC(void) {
 
 extern float lbl_80560560, lbl_80560564, lbl_805604B8, lbl_805604B4, lbl_80560568, lbl_80560554, lbl_805604FC;
 extern int KERNEL_GetTimeMs(void);
-extern void fn_80020860(int);
+extern void drawLoadbackPicture(int);
 void fn_800217E4(void) {
     /* While active, updates a time-based value from elapsed ticks and applies it for up to 1500 ticks. */
     float computedValue;
@@ -1254,7 +1254,7 @@ void fn_800217E4(void) {
             }
             amount = (int)convertedValue;
             if (amount > 0) {
-                fn_80020860(amount);
+                drawLoadbackPicture(amount);
                 fn_800209A0(amount, lbl_805604B4);
             }
         } else {
