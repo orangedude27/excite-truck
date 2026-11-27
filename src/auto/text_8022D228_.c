@@ -22,7 +22,7 @@ extern char lbl_80340108[];
 extern char lbl_80340114[];
 /* A "UITB" text table: rows x columns of strings packed into one character buffer,
    each cell holding one tag byte and then its text. Cells are written by UITable_WriteCell
-   and read back by fn_8022D850. */
+   and read back by UITable_ReadCellText. */
 typedef struct UITable {
     char *text;        /* 0x00 "UITable:buf": every cell's string */
     int columns;       /* 0x04 */
@@ -178,7 +178,7 @@ char *fn_8022D82C(void *table, int row, int column) {
  * Returns a pointer to the text of a UITable cell (after the tag byte) and,
  * if outTag is non-null, stores the cell's signed tag byte there.
  */
-char *fn_8022D850(void *arg0, int row, int column, int *outTag) {
+char *UITable_ReadCellText(void *arg0, int row, int column, int *outTag) {
     char *cell = fn_8022D82C(arg0, row, column);
     if (outTag != 0) *outTag = (signed char)*cell;
     return cell + 1;

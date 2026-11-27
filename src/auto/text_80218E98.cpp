@@ -2276,7 +2276,7 @@ extern "C" void *fn_8021BBA0(void *object, s32 shouldDelete) {
     return object;
 }
 #pragma pop
-extern "C" s32 fn_8022D850(void *, s32, s32, s32 *); /* read a grid cell and its tag */
+extern "C" s32 UITable_ReadCellText(void *, s32, s32, s32 *); /* read a grid cell and its tag */
 extern f32 lbl_805634FC; /* 25.0f, icon width/height */
   #pragma push
  #pragma scheduling invalid_target
@@ -2305,7 +2305,7 @@ extern "C" void fn_8021BC20(void *widget, void *unused) {
 
     for (; cellIndex < lastCell; cellIndex++, cellX += *(s32 *)((u8 *)widget + 0x250)) {
         tag = zero;
-        s32 glyph = fn_8022D850(*(void **)((u8 *)widget + 0x254),
+        s32 glyph = UITable_ReadCellText(*(void **)((u8 *)widget + 0x254),
             cellIndex, *(s32 *)((u8 *)widget + 0x25C), &tag);
         if (tag > 2) {
             tag -= 3;

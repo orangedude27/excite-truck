@@ -452,7 +452,7 @@ extern int lbl_8055BC88;
 extern int lbl_8055BC90;
 extern int lbl_8055B860;
 extern int fn_802146BC(int *, int, int, int, int, int, int, int);
-extern long fn_8022D850(void *, int, int, int *);
+extern long UITable_ReadCellText(void *, int, int, int *);
 extern void fn_801A7A08(const char *, int, int);
 extern void fn_801808DC(void);
 extern void *fn_8023E440(void *, void *);
@@ -508,7 +508,7 @@ extern "C" int fn_8023DD80(void) {
     config = (char *)local + 0x38;
 
     *(volatile int *)((char *)local + 0x68) =
-        (int)fn_8022D850(lbl_8055F190, lbl_8055F194, 0, 0);
+        (int)UITable_ReadCellText(lbl_8055F190, lbl_8055F194, 0, 0);
 
     options = (volatile int *)lbl_802FA26C;
     arg0 = *options++;
@@ -680,7 +680,7 @@ void fn_8023E0DC(void *table, int row, int arg2) {
         return;
     col = *(int *)((char *)table + 4);
     while (col-- > 0) {
-        UITable_WriteCell(table, row, col, fn_8022D850(table, row, col, 0), 1);
+        UITable_WriteCell(table, row, col, UITable_ReadCellText(table, row, col, 0), 1);
     }
 }
 
@@ -695,7 +695,7 @@ void fn_8023E16C(void *arg0, int arg1) {
     }
     var_r31 = *(int *)((char *)arg0 + 4);
     while (var_r31-- > 0) {
-        UITable_WriteCell(arg0, arg1, var_r31, fn_8022D850(arg0, arg1, var_r31, 0), 0);
+        UITable_WriteCell(arg0, arg1, var_r31, UITable_ReadCellText(arg0, arg1, var_r31, 0), 0);
     }
 }
 
