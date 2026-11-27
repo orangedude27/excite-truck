@@ -25,7 +25,7 @@ typedef struct {
     const char *displayName;
 } EventNameEntry;
 
-extern RaceEventTable lbl_8034EF38;   /* global race-event table */
+extern RaceEventTable gRaceEvents;   /* global race-event table */
 extern EventNameEntry lbl_802FB70C[]; /* event-id/name table */
 extern const char lbl_802FB77C[];
 extern const char lbl_80558998[1];
@@ -74,13 +74,13 @@ extern "C" void loadRaceEventTable(void) {
     u32 index;
 
     /* Load track entries from the "excite_beta_race" config (base+0x68) into
-       gRaceEventTable (lbl_8034EF38): for each "track" item store {name,
+       gRaceEventTable (gRaceEvents): for each "track" item store {name,
        display string (base+0x74 key, default ""), environ (default "")} in
        0xC-byte slots (max 0x28, overflows -> abend base+0x84), then qsort by
        name with compareRaceEventNames. global[0x78]=count, global[0x79]=config ptr. */
     base = lbl_802FB6E0;
     initialConfig = getValueFile(base + 0x68);
-    global = (volatile u32 *)&lbl_8034EF38;
+    global = (volatile u32 *)&gRaceEvents;
     global[0x79] = (u32)initialConfig;
     index = 0;
     global[0x78] = 0;
@@ -122,7 +122,7 @@ loop:
     }
 
 done:
-    qsort(&lbl_8034EF38, *(volatile u32 *)((u8 *)&lbl_8034EF38 + 0x1E0), 0xC, (int (*)(const void *, const void *))compareRaceEventNames);
+    qsort(&gRaceEvents, *(volatile u32 *)((u8 *)&gRaceEvents + 0x1E0), 0xC, (int (*)(const void *, const void *))compareRaceEventNames);
 }
 #pragma scheduling on
 #pragma cplusplus reset
@@ -131,7 +131,7 @@ done:
 /* Tear down the parsed "excite_beta_race" config: release the config object
  * held at offset 0x1E4 of the global race-event table and clear the pointer. */
 void fn_80007F04(void) {
-    RaceEventTable *raceTable = &lbl_8034EF38;
+    RaceEventTable *raceTable = &gRaceEvents;
     releaseValueFile(raceTable->config);
     raceTable->config = 0;
 }
@@ -191,11 +191,11 @@ u32 fn_80008050(const char* eventName) {
 #pragma scheduling on
 /* Returns the number of populated race-event entries in the global event table. */
 u32 fn_800080D8(void) {
-    return lbl_8034EF38.count;
+    return gRaceEvents.count;
 }
 
 #pragma dont_inline on
-/* Returns the index of the named entry in the lbl_8034EF38 table, or -1 if not found. */
+/* Returns the index of the named entry in the gRaceEvents table, or -1 if not found. */
 s32 fn_800080E8(arg0)
 const char* arg0;
 {
@@ -220,10 +220,10 @@ const char* fn_80008158(s32 index) {
     if (index < 0) {
         goto done;
     }
-    if (index >= *(s32 *)((u8 *)&lbl_8034EF38 + 0x1E0)) {
+    if (index >= *(s32 *)((u8 *)&gRaceEvents + 0x1E0)) {
         goto done;
     }
-    return *(const char **)((u8 *)&lbl_8034EF38 + index * 0xC);
+    return *(const char **)((u8 *)&gRaceEvents + index * 0xC);
 
 done:
     return lbl_805589A8;
@@ -231,13 +231,13 @@ done:
 
 /* Returns the display-string field (offset 4) of the race-event table entry selected by the caller's name lookup. */
 const char* getEventDisplayName(void) {
-    return *(const char**)((u8*)&lbl_8034EF38 + fn_800080E8() * 0xC + 4);
+    return *(const char**)((u8*)&gRaceEvents + fn_800080E8() * 0xC + 4);
 }
 
 /* Returns the "environ" field (offset 8) of the race-event table entry whose name
  * matches; the caller's name argument is forwarded in r3 to the lookup fn_800080E8. */
 s32 getEventEnvironName(void) {
-    return *(s32 *)((u8 *)&lbl_8034EF38 + fn_800080E8() * 0xC + 8);
+    return *(s32 *)((u8 *)&gRaceEvents + fn_800080E8() * 0xC + 8);
 }
 
 s32 fn_800081F0(void *arg0) {
