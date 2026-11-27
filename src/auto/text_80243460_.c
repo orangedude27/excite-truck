@@ -104,7 +104,7 @@ s32 getMenuTableEntryOffset(s32 entryIndex, s32 group) {
  * entry widths before the cursor, from MenuTable_OffsetOfEntry) within a menu
  * group, find the entry whose width range contains it, falling back to the
  * last entry that has a nonzero width. */
-s32 fn_8024360C(s32 offset, s32 group) {
+s32 getMenuTableEntryAtOffset(s32 offset, s32 group) {
 #pragma scheduling invalid_target
     s32 width;
     s32 startOffset = 0;
@@ -139,7 +139,7 @@ __declspec(section ".sdata") extern s32 lbl_8055BE10; /* s_cursorHoldEntry */
 #define s_cursorHoldEntry lbl_8055BE10
 extern s32 fn_80230E90(s32);
 extern s32 getMenuTableEntryOffset(s32, s32);
-extern s32 fn_8024360C(s32, s32);
+extern s32 getMenuTableEntryAtOffset(s32, s32);
 extern s32 fn_80243710(s32, s32);
 #pragma push
 #pragma use_lmw_stmw off
@@ -159,7 +159,7 @@ s32 moveMenuCursor(s32 *entryIndex, volatile s32 *groupIndex, s32 entryDelta, s3
     else if (newGroup > 4) *groupIndex = 0;
     if (*groupIndex != oldGroup) {
         /* the entry widths the cursor covered in the old group choose its entry here */
-        entry = fn_8024360C(getMenuTableEntryOffset(*entryIndex, oldGroup), *groupIndex);
+        entry = getMenuTableEntryAtOffset(getMenuTableEntryOffset(*entryIndex, oldGroup), *groupIndex);
         newCount = getMenuTableEntryCount(*groupIndex);
         oldCount = getMenuTableEntryCount(oldGroup);
         if (oldCount != newCount) {
