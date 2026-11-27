@@ -62,7 +62,7 @@ extern void fn_801F7160(void *);
 extern void fn_801F7220(void *);
 extern void *fn_802AE414(void);
 extern void Abend_Panic(const char *, ...);
-extern void fn_801F7280(void *, void *, void *);
+extern void addManualFabric(void *, void *, void *);
 extern char lbl_8033AE54[], lbl_8033AE78[];
 extern char lbl_8055B1C0[];
 typedef int (*GetterI)(void *, const char *);
@@ -127,13 +127,13 @@ void fn_801F4DCC(void) {
 
 #pragma scheduling invalid_target
 void fn_801F4DD4(void *arg0, void *arg1) {
-    /* Register the current mesh table (fn_802AE414) into lbl_8055EC18 via fn_801F7280; log if missing. */
+    /* Register the current mesh table (fn_802AE414) into lbl_8055EC18 via addManualFabric; log if missing. */
     void *temp_r3;
     temp_r3 = fn_802AE414();
     if (temp_r3 == 0) {
         Abend_Panic(lbl_8033ACE8, arg0);
     }
-    fn_801F7280(lbl_8055EC18, temp_r3, arg1);
+    addManualFabric(lbl_8055EC18, temp_r3, arg1);
 }
 #pragma scheduling on
 extern void *fn_801284F8(int, void *);
@@ -305,6 +305,96 @@ extern "C" int fn_801F4ECC(void *arg0) {
     if ((result & 1) && (result & 4)) Abend_Panic(lbl_8033AD34);
     return result;
 }
+
+#pragma cplusplus on
+#pragma scheduling on
+extern "C" void fn_801F4F9C(Vertex_801F4F9C *out, DummyObj_801F4F9C *obj, const float *mtx) {
+    Vec3_801F4F9C offset;
+    Vec3_801F4F9C color;
+    Vec3_801F4F9C temp_offset;
+    Vec3_801F4F9C temp_color;
+    Vec3_801F4F9C defColor;
+    Vec2_801F4F9C uv;
+    Vec2_801F4F9C temp_uv;
+    int b, g, r, clamped, scaled;
+
+    temp_offset = obj->d11(lbl_8055B178);
+    offset = temp_offset;
+
+    uv = obj->d13(lbl_8055B180);
+
+    defColor.x = lbl_80562FB0;
+    defColor.y = lbl_80562FB0;
+    defColor.z = lbl_80562FB0;
+
+    temp_color = obj->d12(lbl_8055B184, defColor);
+    color = temp_color;
+
+    if (out == (Vertex_801F4F9C *)&offset) {
+        float x, y, z;
+        float m0, m3, m6, m1, m4, m7, m2, m5, m8;
+        m3 = mtx[3];
+        m4 = mtx[4];
+        m5 = mtx[5];
+        m0 = mtx[0];
+        m1 = mtx[1];
+        m2 = mtx[2];
+        m6 = mtx[6];
+        m7 = mtx[7];
+        m8 = mtx[8];
+        x = offset.x;
+        y = offset.y;
+        z = offset.z;
+        out->pos.x = z * m6 + (x * m0 + y * m3);
+        out->pos.y = z * m7 + (x * m1 + y * m4);
+        out->pos.z = z * m8 + (x * m2 + y * m5);
+    } else {
+        float m10, m20, m00, m11, m01, m21, m12, m02, m22;
+        m10 = mtx[3];
+        m00 = mtx[0];
+        m20 = mtx[6];
+        m11 = mtx[4];
+        m01 = mtx[1];
+        m21 = mtx[7];
+        m02 = mtx[2];
+        m12 = mtx[5];
+        m22 = mtx[8];
+        out->pos.x = offset.z * m20 + (offset.x * m00 + offset.y * m10);
+        out->pos.y = offset.z * m21 + (offset.x * m01 + offset.y * m11);
+        out->pos.z = offset.z * m22 + (offset.x * m02 + offset.y * m12);
+    }
+
+    {
+        float tx = out->pos.x + mtx[9];
+        float ty = out->pos.y + mtx[10];
+        float tz = out->pos.z + mtx[11];
+        out->pos.x = tx;
+        out->pos.y = ty;
+        out->pos.z = tz;
+    }
+
+    out->uv.x = uv.x;
+    out->uv.y = uv.y;
+
+    scaled = (int)(lbl_80562FB4 * color.z);
+    clamped = scaled & ((-scaled & ~scaled) >> 31);
+    b = clamped < 255 ? clamped : 255;
+
+    scaled = (int)(lbl_80562FB4 * color.y);
+    clamped = scaled & ((-scaled & ~scaled) >> 31);
+    g = clamped < 255 ? clamped : 255;
+
+    if ((int)(lbl_80562FB4 * color.x) > 0) {
+        r = (int)(lbl_80562FB4 * color.x);
+    } else {
+        r = 0;
+    }
+    r = r < 255 ? r : 255;
+
+    out->color = ((r & 255) << 16) | 0xff000000 | ((g & 255) << 8) | (b & 255);
+}
+#pragma cplusplus off
+
 #pragma cplusplus off
 typedef int (*F0)(void);
 typedef void *(*F2)(void *, void *);
@@ -1432,7 +1522,7 @@ __declspec(section ".sdata") extern char lbl_8055B1C0[];
 // Adds a manual (non-uniform) mesh/fabric entry into this object's slot table:
 // validates capacity/type, snapshots setup via snapshotClothSetup, fills slot params (id/state,
 // scaled gravity/wind values) using the object's virtual getters, and increments slot count.
-extern "C" void fn_801F7280(void *arg0, void *arg1, void *arg2) {
+extern "C" void addManualFabric(void *arg0, void *arg1, void *arg2) {
     char sp8[0x68];
     int got;
     char *slot;
