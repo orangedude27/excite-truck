@@ -6280,7 +6280,7 @@ extern s32 fn_800B5618(void *, s32, s32, s32, u16);
 #pragma use_lmw_stmw off
 #pragma pop
 #pragma dont_inline VFiPFUpdateFSInfo
-extern "C" s32 VFiPFUpdateFSInfo(void *volume) {
+/* If the FAT32 volume's FSInfo is dirty, reload its cached sector, write back the free-cluster count, and flush it. */ extern "C" s32 VFiPFUpdateFSInfo(void *volume) {
     /* If the volume has a dirty FS info/cache sector, reload it, update the FS info field, and write it back. */
     void *pageHandle;
     s32 pageIndex;
