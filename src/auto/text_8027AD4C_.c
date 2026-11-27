@@ -717,7 +717,7 @@ extern "C" long fn_8027BAB8(void *list) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" long fn_8027BB4C(long arg0, long arg1, long arg2, long arg3) {
+extern "C" long sumPlayerGroupResourceSizes(long arg0, long arg1, long arg2, long arg3) {
     /* Sum resource sizes for items in a two-level list: arg3 clamps each to loaded size (+4),
      * outputs accumulated sum to *arg1 and total item size to *arg2 when non-null. */
     class OuterList {
@@ -792,17 +792,17 @@ extern "C" long fn_8027BB4C(long arg0, long arg1, long arg2, long arg3) {
 #pragma use_lmw_stmw on
 #pragma pop
 
-long fn_8027BB4C(long, long, long, long);
+long sumPlayerGroupResourceSizes(long, long, long, long);
 void fn_8027BCC0(long root, long outSum, long outTotal) {
     /* Sum each item's full loaded resource size in the two-level list rooted at root;
      * write the accumulated sum to *outSum and total item size to *outTotal (either may be null). */
-    fn_8027BB4C(root, outSum, outTotal, 0);
+    sumPlayerGroupResourceSizes(root, outSum, outTotal, 0);
 }
 
 void fn_8027BCC8(long root, long outSum, long outTotal) {
     /* As fn_8027BCC0, but counting each item only up to the size its loaded resource
-     * actually has (fn_8027BB4C's clamp flag), so unloaded parts are not charged. */
-    fn_8027BB4C(root, outSum, outTotal, 1);
+     * actually has (sumPlayerGroupResourceSizes's clamp flag), so unloaded parts are not charged. */
+    sumPlayerGroupResourceSizes(root, outSum, outTotal, 1);
 }
 
 #pragma push
