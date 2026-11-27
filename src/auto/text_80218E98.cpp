@@ -4108,8 +4108,6 @@ extern "C" void fn_8022B390(s32, s32, s32, s32*, s32*);
 extern "C" void gxDrawLine(s32, s32, s32, s32, s32, s32);
 extern "C" void gxCanvasResetClipRect(s32);
 extern "C" s32 lbl_8055FBF8;
-// Renders entity onto canvas: sets the canvas clip rect from the entity's position and vtable size,
-// runs its per-frame hook and optional marker, then draws its textured quad when flag 0x19 is set.
 /* Draw a text box onto the given canvas: clip to the box, run its layout hook, draw the optional slider image and text, then a short caret bar while the box is being edited. */ extern "C" void drawTextBoxOnCanvas(void* box, s32 canvas) {
     s32 outX, outY;
     s32 posY, posX, posX_2, posY_2, posX_3, posY_3, drawX, drawY;
