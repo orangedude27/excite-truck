@@ -506,7 +506,7 @@ extern void fn_80015B20(void *, void *, void *);
  * Multiplying basis rows around like that lets them drift out of true, so the
  * last step re-orthonormalises them (y comes from x and z, z again from x
  * and y) and writes the three back. */
-void applyOverlayQuadScrollDrift(OverlayQuad *quad, float dt) {
+/* Apply a frame of scroll rotation and drift to an overlay quad's transform and re-orthonormalise its basis rows. */ void applyOverlayQuadScrollDrift(OverlayQuad *quad, float dt) {
     float rot[9];      /* the scroll rotation fn_8022FF10 builds */
     float eulers[3];   /* x, y, z turn; only the z scroll is set here */
     float step[3];     /* this frame's drift, added to the translation row */
