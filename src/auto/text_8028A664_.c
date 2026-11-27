@@ -88,7 +88,7 @@ struct Spark {
 /* Front of a spark emitter object ("short sparks" / "long sparks", both made
    by fn_8028A664 through fn_8028BB68; 0xDC bytes in all).  What follows these
    fields is the per-viewpoint transform snapshot fn_8028BC88 clears and
-   fn_8028BD60 refreshes every frame. */
+   refreshSplatEmitterTransform refreshes every frame. */
 struct SparkSystem {
     struct Spark *spark; /* +0x00 pool of sparks, from the "sparks" heap tag */
     s32 spawned;         /* +0x04 sparks written so far; bound of the draw loop */
@@ -156,7 +156,7 @@ extern s32 lbl_8055F6F4;
 extern s32 lbl_8055F6F8;
 extern void *lbl_8055F6FC;
 extern struct Obj8028 { void **vtable; } *terrainChunkTable[];
-extern void fn_8028BD60(s32);
+extern void refreshSplatEmitterTransform(s32);
 extern void fn_8028CA70(s32);
 extern void fn_8028AB14(void);
 
@@ -166,7 +166,7 @@ extern void fn_8028AB14(void);
 #define gPaintEmitterA   lbl_8055F6F0
 #define gPaintEmitterB   lbl_8055F6F4
 #define gTrailEmitter    lbl_8055F6F8
-#define drawSplatEmitter fn_8028BD60
+#define drawSplatEmitter refreshSplatEmitterTransform
 #define drawTrailEmitter fn_8028CA70
 #define updateSpawnQueue fn_8028AB14
 extern void fn_8028BD5C(s32);
@@ -1051,7 +1051,7 @@ extern f32 fn_802C9A4C(f32);
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_8028BD60(s32 arg0) {
+void refreshSplatEmitterTransform(s32 arg0) {
     /* Copies the current 0x30-byte transform snapshot into the caller's slot for
      * the active index, optionally running fn_8028C11C against the saved or
      * current snapshot while temporarily swapping render state. */
