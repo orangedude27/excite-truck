@@ -440,9 +440,9 @@ void fn_80247174(void)
 #pragma dont_inline on
 #pragma cplusplus on
 extern "C" void runKioskDemoSelection(void) {
-    /* Runs the kiosk/demo selection flow: initializes demo state, waits for a valid
-       demo selection (retrying and showing "attract.avi" on -0xEA), resolves the
-       selected item's resource by "demo_idx"/"song_id", then enters the game. */
+    /* Kiosk/demo selection flow: initialize demo state, wait for a valid demo
+       selection (retrying and showing attract.avi on -0xEA), locate the chosen
+       demo's "demo_idx" and "song_id" resource values, then start the demo. */
     struct DemoResourceNode {
         virtual void v0() = 0;
         virtual void v1() = 0;
