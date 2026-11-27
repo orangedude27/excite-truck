@@ -2093,21 +2093,21 @@ void fn_80036D24(u32 arg0) {
 }
 
 extern void onDiscHeaderReadComplete(u32);
-/* Record DVD error status into the global error info ring and dispatch the corresponding recovery path. */
+/* DVD low-level open-partition status callback: log the status in the error-info ring and dispatch the matching recovery path. */
 void handleDvdPartitionStatus(u32 errorCode) {
     register u32 status = errorCode;
-    s32 interrupts;
-    u8 *info;
-    u32 tick;
+    s32 savedInterrupts;
+    u8 *errorInfo;
+    u32 timestamp;
 
-    interrupts = OSDisableInterrupts();
+    savedInterrupts = OSDisableInterrupts();
     if (*(volatile u32 *)&lbl_8055D848 == 0) {
         *(u32 *)(__ErrorInfo + 0x78) = status;
     } else {
         *(u32 *)(__ErrorInfo + 0x28 +
                  (*(volatile u32 *)&lbl_8055D848 - 1) * 0x14) = status;
     }
-    OSRestoreInterrupts(interrupts);
+    OSRestoreInterrupts(savedInterrupts);
 
     if (status == 0x10) {
         fn_8003A1A0(0x1234568, fn_80035C78);
@@ -2116,17 +2116,17 @@ void handleDvdPartitionStatus(u32 errorCode) {
     } else if (status & 1) {
         lbl_8055D860 = 0;
         fn_8003BCDC(0);
-        interrupts = OSDisableInterrupts();
+        savedInterrupts = OSDisableInterrupts();
         if (*(volatile u32 *)&lbl_8055D848 >= 5)
             *(volatile u32 *)&lbl_8055D848 = 0;
-        info = (u8 *)__ErrorInfo;
-        *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 1;
-        *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0x108;
-        *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0x20;
-        tick = OSGetTick();
-        *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;
+        errorInfo = (u8 *)__ErrorInfo;
+        *(s32 *)(errorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 1;
+        *(s32 *)(errorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0x108;
+        *(s32 *)(errorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0x20;
+        timestamp = OSGetTick();
+        *(s32 *)(errorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = timestamp;
         *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
-        OSRestoreInterrupts(interrupts);
+        OSRestoreInterrupts(savedInterrupts);
         DVDLowReadAsync(lbl_80376A80, 0x20, 0x108, (s32)onDiscHeaderReadComplete);
     } else {
         fn_800356F4(0x27, 0, 0);
