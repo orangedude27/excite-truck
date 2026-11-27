@@ -1681,7 +1681,7 @@ extern "C" int fn_801D6320(void *out, void *object) {
     extern char lbl_80338460;
     extern char lbl_8055ACB0, lbl_8055ACB8, lbl_8055ACC0, lbl_8055ACC8;
     extern float lbl_80562ADC, lbl_80562AE4, lbl_80562B0C;
-    extern int fn_801399FC(void);
+    extern int readNumberedIntPairs(void);
     extern void fn_802E30C8(const char *, const char *);
     char *messages = &lbl_80338460;
     float a;
@@ -1701,7 +1701,7 @@ extern "C" int fn_801D6320(void *out, void *object) {
     *(float *)((char *)out + 0x10) = b;
     if ((float)b < lbl_80562ADC) { LOG(messages + 0x2E8, (float)b); return 0; }
     *(int *)((char *)out + 0x14) = 0;
-    if (o->getBool2(&lbl_8055ACC8)) *(int *)((char *)out + 0x14) = fn_801399FC();
+    if (o->getBool2(&lbl_8055ACC8)) *(int *)((char *)out + 0x14) = readNumberedIntPairs();
     *(signed char *)((char *)out + 0x18) = o->getS8(messages + 0x338, 0);
     *(int *)((char *)out + 4) = 1;
     return 1;
@@ -3151,7 +3151,7 @@ struct PhysPathAse {
  * parameters out of the action-sequence value table -- its "path" (the cue is
  * refused, with a diagnostic, when the table has none) and its "object" (the
  * name "*" when the table names none) into the two 20-byte name fields, the
- * "kill_bound" flag as the parsed value list fn_801399FC builds, and its
+ * "kill_bound" flag as the parsed value list readNumberedIntPairs builds, and its
  * "delay" in seconds as a tick count at 59.94 ticks per second -- then mark the
  * cue ready (state 1) and report what it was bound to. */
 #pragma push
@@ -3176,7 +3176,7 @@ struct PhysPathAse {
         virtual int getInt(char *);                /* 0x5C */
     };
     extern void fn_802E30C8(const char *, ...);
-    extern int fn_801399FC(void);
+    extern int readNumberedIntPairs(void);
     extern char lbl_80338460;
     extern char lbl_8055AD20; /* "path" */
     extern char lbl_8055AD28; /* "object" */
@@ -3232,7 +3232,7 @@ copy_object_body:
         goto copy_object_limit;
 copy_object_done:
     killBound = table->getInt(KEY_KILL_BOUND);
-    effect->killBound = killBound == 0 ? 0 : (void *)fn_801399FC();
+    effect->killBound = killBound == 0 ? 0 : (void *)readNumberedIntPairs();
     delaySeconds = table->getFloat(0.0f, &lbl_8055ACB8);
     ticksPerSecond = TICKS_PER_SECOND;
     effect->direction = 0;

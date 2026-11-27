@@ -2599,7 +2599,7 @@ unsigned char fn_80163F74(void *hud) {
 extern void fn_802E30C8(const char *, const char *);
 extern void MRModel_GetBoundingBoxArray(s32, f32 *);
 extern s32 fn_80207848(void *, s32);
-extern void *fn_801399FC(void);
+extern void *readNumberedIntPairs(void);
 extern void PSVECNormalize(f32 *, f32 *);
 extern void PSVECCrossProduct(f32 *, f32 *, f32 *);
 extern int sscanf(const char *, const char *, ...);
@@ -2659,7 +2659,7 @@ extern "C" void fn_80163F7C(void *arg0) {
             out = (u8 *)(*(u8 **)(self + 0xE0) + entryIndex * 0x48);
             *(s32 *)(self + 0xE4) = entryIndex + 1;
             ((Dummy_80163F7C_VT3 *)obj)->f21((const char *)lbl_8055A10C, entryIndex, *(void **)(self + 0xE0));
-            table = (f32 *)fn_801399FC();
+            table = (f32 *)readNumberedIntPairs();
             *(f32 **)(out + 0x34) = table;
             register s32 i;
             register s32 bestIndex;

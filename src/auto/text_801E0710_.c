@@ -256,7 +256,7 @@ static inline void List_801E0890_Remove(List_801E0890 *l, s32 idx) {
 extern void *fn_8001285C(s32);
 extern void *fn_80131810();
 extern void releaseValueFile(void *);
-extern Poly_801E0890 *fn_801399FC(void *);
+extern Poly_801E0890 *readNumberedIntPairs(void *);
 extern Vec2_801E0890 fn_80139C5C(void *);
 extern Vec2_801E0890 fn_8014C770(Vec2_801E0890 *, Vec2_801E0890 *, f32);
 extern f32 fn_80160BE0(Vec2_801E0890 *, Vec2_801E0890 *);
@@ -382,7 +382,7 @@ void fn_801E0890(void *arg0) {
         k3 = lbl_80562C88;
         for (idx = 0; (item = ((void *(*)(void *, s32))(*(void ***)it)[3])(it, idx)) != 0; idx++) {
             rec = &obj->recs[obj->count++];
-            poly = fn_801399FC(item);
+            poly = readNumberedIntPairs(item);
             ok = 0;
             if (poly->n == 3) {
                 best = -1;

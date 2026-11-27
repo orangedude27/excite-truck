@@ -214,7 +214,7 @@ void fn_80171A4C(void *triggerMaster) {
 #pragma cplusplus on
 extern "C" s32 *__AXFXGetLfoSinTable_801769CC(void);
 extern "C" void *fn_8001285C(s32);
-extern "C" void *fn_801399FC(void);
+extern "C" void *readNumberedIntPairs(void);
 extern "C" s32 fn_801D4888(void);
 extern "C" void fn_801E9DC4(void *);
 extern "C" void fn_801E9E30(void *, void *);
@@ -304,7 +304,7 @@ extern "C" void fn_80171A80(void *arg0) {
             *(char *)(e + 0x25) = node->m10(lbl_80330F18, 1);
             *(int *)(e + 0x20) = node->m6(lbl_8055A290, 0);
             node->m21(lbl_8055A294);
-            p = (f32 *)fn_801399FC();
+            p = (f32 *)readNumberedIntPairs();
             *(f32 **)(e + 0x18) = p;
             k = 2;
             *(char *)(e + 0x24) = 0;

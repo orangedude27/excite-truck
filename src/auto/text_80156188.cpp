@@ -264,7 +264,7 @@ s32 fn_801563BC(s32 nameArg, void *provider) {
 extern "C" void *fn_801284F8(s32, const char *);
 extern "C" void fn_8012E81C(void *);
 extern "C" void Abend_Panic(const char *, ...);
-extern "C" void *fn_801399FC(void *);
+extern "C" void *readNumberedIntPairs(void *);
 extern "C" u8 lbl_8032E238[];
 extern "C" u8 lbl_8032E424[];
 extern "C" u8 lbl_8032E3F8[];
@@ -418,7 +418,7 @@ extern "C" void fn_801564B0(void) {
                 while ((item = list->get(index)) != 0 &&
                        resource->objectCount + 1 <= resource->objectCapacity) {
                     resource->objects[resource->objectCount++] =
-                        ((void *(*)(void *))fn_801399FC)(item);
+                        ((void *(*)(void *))readNumberedIntPairs)(item);
                     index++;
                 }
             }

@@ -156,7 +156,7 @@ extern f32 lbl_80561938;
 extern f32 lbl_80561950;
 extern double lbl_80561930;
 extern char lbl_80330000[];
-extern s32 *fn_801399FC(DummyArg1 *);
+extern s32 *readNumberedIntPairs(DummyArg1 *);
 extern s32 fn_80128658(s32 *);
 extern void fn_802E30C8(const char *, ...);
 extern int stricmp(const char *, const char *);
@@ -721,53 +721,52 @@ void fn_801683F4(void *arg0, s32 arg1) {
     extern s32 lbl_8055E354;
     extern f32 lbl_80561924;
     extern f32 lbl_80561950;
-    extern void *getRegisteredObject(s32);
     extern f64 fn_8002F234(f32);
-    s32 num;
-    s32 i;
-    s32 j;
-    s32 offset;
-    s32 index;
-    s32 tableIndex;
-    void *object;
-    void *bounds;
+    extern void *fn_8017960C(s32);
+    s32 counts[7];
+    unsigned offset;
     void *resource;
-    void *entry;
+    register u32 j;
+    s32 num;
     void *record;
+    s32 tableIndex;
+    s32 i;
+    register void *bounds;
+    void *object;
+    void *entry;
+    unsigned int index;
     void *recordObject;
     volatile f32 x;
     volatile f32 z;
     volatile f32 minX;
-    volatile f32 maxX;
     volatile f32 minZ;
+    volatile f32 maxX;
     volatile f32 maxZ;
     volatile f32 ty;
     f32 dx;
     f32 dy;
     f32 dz;
     f32 tx;
-    f32 tz;
+    register f32 tz;
     f32 radius;
-    s32 counts[7];
     memset(counts, 0, 0x18);
-    object = getRegisteredObject(arg1);
+    object = fn_8017960C(arg1);
     tableIndex = arg1 * 4;
-    if (lbl_80430260[tableIndex] == lbl_8055E3C4 - 1) {
-        num = 0;
+    if (lbl_80430260[tableIndex] == (u32)lbl_8055E3C4 - 1) {
         x = *(f32 *)((u8 *)object + 0x60);
+        num = 0;
         z = *(f32 *)((u8 *)object + 0x68);
         minX = lbl_80561924;
         maxX = lbl_80561924;
-        minZ = lbl_80561924;
         maxZ = lbl_80561924;
+        minZ = lbl_80561924;
         ty = lbl_80561924;
         radius = lbl_80561924;
         bounds = *(s32 *)((u8 *)object + 0x24) > 0 ? *(void **)((u8 *)object + 0x14) : 0;
-        if (bounds != 0) {
-            dx = *(f32 *)((u8 *)lbl_80430260 + tableIndex * 4 + 4) - x;
+        if (bounds) {
+            dx = *(f32 *)((u8 *)lbl_80430260 + tableIndex * 4 + 4) - *(f32 *)((u8 *)object + 0x60);
             dy = *(f32 *)((u8 *)lbl_80430260 + tableIndex * 4 + 8) - *(f32 *)((u8 *)object + 0x64);
-            dz = *(f32 *)((u8 *)lbl_80430260 + tableIndex * 4 + 0xC) - z;
-            tx = dz * *(f32 *)((u8 *)object + 0x44)
+            tx = (dz = *(f32 *)((u8 *)lbl_80430260 + (arg1 * 4) * 4 + 0xC) - *(f32 *)((u8 *)object + 0x68)) * *(f32 *)((u8 *)object + 0x44)
                + (dx * *(f32 *)((u8 *)object + 0x3C)
                + dy * *(f32 *)((u8 *)object + 0x40));
             tz = dz * *(f32 *)((u8 *)object + 0x5C)
@@ -791,10 +790,10 @@ void fn_801683F4(void *arg0, s32 arg1) {
         }
         i = 0;
         offset = 0;
-        while (i < *(s32 *)((u8 *)(u32)lbl_8055E354 + 0x1D4D0)) {
-            entry = (u8 *)*(void **)((u8 *)(u32)lbl_8055E354 + 0x1D4CC) + offset;
+        while (i < *(s32 *)((u8 *)lbl_8055E354 + 0x1D4D0)) {
+            entry = (u8 *)*(void **)((u8 *)lbl_8055E354 + 0x1D4CC) + offset;
             if (*(u8 *)((u8 *)entry + 0x1D) != 0) {
-                num++;
+                ++num;
             } else if (*(u8 *)((u8 *)entry + 4) != 0 &&
                 (*(u8 *)((u8 *)entry + 0x1C) == 0 ||
                  (f32)fn_8002F234(
@@ -809,9 +808,9 @@ void fn_801683F4(void *arg0, s32 arg1) {
                     if (recordObject != 0 &&
                         *(s32 *)((u8 *)recordObject + 0x10) != 0 &&
                         *(u8 *)((u8 *)record + 0x14) == 0) {
-                        dx = *(f32 *)((u8 *)record + 4) - x;
+                        dx = *(f32 *)((u8 *)record + 4) - *(f32 *)((u8 *)object + 0x60);
                         dy = *(f32 *)((u8 *)record + 8) - *(f32 *)((u8 *)object + 0x64);
-                        dz = *(f32 *)((u8 *)record + 0xC) - z;
+                        dz = *(f32 *)((u8 *)record + 0xC) - *(f32 *)((u8 *)object + 0x68);
                         tx = dz * *(f32 *)((u8 *)object + 0x44)
                            + (dx * *(f32 *)((u8 *)object + 0x3C)
                            + dy * *(f32 *)((u8 *)object + 0x40));
@@ -829,21 +828,21 @@ void fn_801683F4(void *arg0, s32 arg1) {
                             counts[index]++;
                         }
                     }
-                    j++;
+                    ++j;
                 }
             }
             offset += 0x20;
-            i++;
+            i += 1;
         }
     }
     *(f32 *)((u8 *)lbl_80430260 + tableIndex * 4 + 4) = *(f32 *)((u8 *)object + 0x60);
     *(f32 *)((u8 *)lbl_80430260 + tableIndex * 4 + 8) = *(f32 *)((u8 *)object + 0x64);
     *(f32 *)((u8 *)lbl_80430260 + tableIndex * 4 + 0xC) = *(f32 *)((u8 *)object + 0x68);
     lbl_80430260[tableIndex] = lbl_8055E3C4;
-    ((s32 *)arg0)[0] = counts[0];
     ((s32 *)arg0)[1] = counts[1];
-    ((s32 *)arg0)[2] = counts[2];
+    ((s32 *)arg0)[0] = counts[0];
     ((s32 *)arg0)[3] = counts[3];
+    ((s32 *)arg0)[2] = counts[2];
     ((s32 *)arg0)[4] = counts[4];
     ((s32 *)arg0)[5] = num;
 }
@@ -965,7 +964,7 @@ extern "C" s32 fn_8016899C(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 
         fn_802E30C8(strBase + 0x298, arg1->getName());
         return 0;
     }
-    values = fn_801399FC(arg1);
+    values = readNumberedIntPairs(arg1);
     if (*values < 2) {
         fn_802E30C8(strBase + 0x2D0, arg1->getName());
         fn_80128658(values);
@@ -1173,7 +1172,7 @@ extern "C" s32 fn_80169160(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 
         fn_802E30C8(strBase + 0x370, arg1->getName());
         return 0;
     }
-    values = fn_801399FC(arg1);
+    values = readNumberedIntPairs(arg1);
     if (*values < 4 || *values > 4) {
         fn_802E30C8(strBase + 0x3A4, arg1->getName(), *values);
         fn_80128658(values);
@@ -1356,7 +1355,7 @@ s32 fn_80169978(s32 unused, s32 name) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" s32 *fn_801399FC(DummyArg1 *);
+extern "C" s32 *readNumberedIntPairs(DummyArg1 *);
 extern "C" s32 fn_80128658(s32 *);
 extern "C" void fn_802E30C8(const char *, ...);
 extern "C" char lbl_8055A1A8, lbl_8055A1B0;
@@ -1400,7 +1399,7 @@ extern "C" char lbl_803303EC[], lbl_80330420[];
         sscanf(table->getName(), (const char *)&lbl_8055A1B0, &tableIndex);
     }
 
-    placements = fn_801399FC(table);
+    placements = readNumberedIntPairs(table);
     groupId = tableIndex;
     group = &manager->entries[manager->entryCount++];
     zero = 0.0f;

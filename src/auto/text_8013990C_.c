@@ -66,7 +66,7 @@ extern "C" __declspec(section ".sdata") const char lbl_80559C48[];
    each slot name that parses as two numbers is appended as a pair, malformed
    entries are warned about and skipped, and fewer than three pairs resets the
    result. The array is then trimmed to the used length and returned. */
-extern "C" void *fn_801399FC(void *namedObject) {
+extern "C" void *readNumberedIntPairs(void *namedObject) {
     class Object {
     public:
         virtual char *getName(void);
@@ -204,7 +204,7 @@ unsigned long long fn_80139C5C(void *arg0) {
 #pragma scheduling on
 void *fn_80131810(void); /* opens a table from a path in r3; the prototype stays arg-less because fn_80139D4C calls it with no argument, so fn_80139F5C casts at the call */
 void *fn_801284F8(int, const char *);
-void *fn_801399FC();
+void *readNumberedIntPairs();
 extern const char lbl_8032C0C8[];
 #define kBoundSetTag lbl_8032C0C8  // "bound_set", the allocation tag for the list
 #pragma scheduling invalid_target
@@ -237,7 +237,7 @@ extern "C" void *fn_80139D4C(void) {
             *(void **)list = table;
             index = 0;
             while (((Source *)table)->next(index) != 0) {
-                boundSet = fn_801399FC();
+                boundSet = readNumberedIntPairs();
                 size = *(int *)((char *)list + 8);
                 index++;
                 entries = *(void ***)((char *)list + 4);
