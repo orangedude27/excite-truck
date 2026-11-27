@@ -155,7 +155,7 @@ extern s32 lbl_8055F6F0;
 extern s32 lbl_8055F6F4;
 extern s32 lbl_8055F6F8;
 extern void *lbl_8055F6FC;
-extern struct Obj8028 { void **vtable; } *lbl_804B3238[];
+extern struct Obj8028 { void **vtable; } *terrainChunkTable[];
 extern void fn_8028BD60(s32);
 extern void fn_8028CA70(s32);
 extern void fn_8028AB14(void);
@@ -286,7 +286,7 @@ extern "C" void fn_8028A89C(void) {
     fn_8028BC88(lbl_8055F6F4);
     fn_8028C92C((void *)lbl_8055F6F8);
     ((Dummy *)lbl_8055F6FC)->v1();
-    void **slot = (void **)lbl_804B3238;
+    void **slot = (void **)terrainChunkTable;
     s32 i = 0;
     do {
         void *obj = *slot;
@@ -305,7 +305,7 @@ extern "C" void fn_8028A92C(void) {
     fn_8028BD5C(lbl_8055F6F4);
     fn_8028C938(lbl_8055F6F8);
     ((Dummy *)lbl_8055F6FC)->v2();
-    void **slot = (void **)lbl_804B3238;
+    void **slot = (void **)terrainChunkTable;
     s32 i = 0;
     do {
         void *obj = *slot;
@@ -339,7 +339,7 @@ extern "C" void fn_8028A9F4(void) {
 
     ((Dummy *)lbl_8055F6FC)->v3();
 
-    void **slot = (void **)lbl_804B3238;
+    void **slot = (void **)terrainChunkTable;
     s32 slotIndex = 0;
     do {
         void *entry = *slot;
@@ -446,7 +446,7 @@ extern "C" void initTerrainChunks(void *arg0) {
     extern void fn_8028ADF4(void *, s32);
     u8 nameBuffer[0x20];
     char *terrainData = lbl_80348B98;
-    s32 *chunkEntry = (s32 *)lbl_804B3238;
+    s32 *chunkEntry = (s32 *)terrainChunkTable;
     s32 foundCount = 0;
     s32 i = 0;
     do {
@@ -486,7 +486,7 @@ extern "C" void initTerrainChunks(void *arg0) {
 #pragma pop
 
 #pragma cplusplus on
-/* Shutdown: walks the 8 effect-spawn groups kept at lbl_804B3238 (one 0x10-byte slot
+/* Shutdown: walks the 8 effect-spawn groups kept at terrainChunkTable (one 0x10-byte slot
  * per group type: the object pointer at +0x00, then its parameters), deletes each live
  * object through its virtual destructor and clears the slot, so the update and spawn
  * passes (fn_8028A89C, fn_8028ADF4, ...) stop seeing them. */
@@ -502,7 +502,7 @@ extern "C" void fn_8028AD78(void) {
     register struct Slot *slot;
     register s32 index;
     register s32 nullPtr = 0;
-    slot = (struct Slot *)lbl_804B3238;
+    slot = (struct Slot *)terrainChunkTable;
     index = 0;
     goto loop;
 loop:
@@ -549,7 +549,7 @@ extern "C" void fn_8028ADF4(void *arg0, s32 arg1) {
     n = arg1;
     if ((f32)__fabs(fn_801E7E24()) <= lbl_80558DC4[0]) return;
     pv = &a2;
-    tbl_base = (u8 *)lbl_804B3238;
+    tbl_base = (u8 *)terrainChunkTable;
     k23 = lbl_80564334;
     k24 = lbl_80564344;
     k25 = lbl_80564348;
@@ -785,7 +785,7 @@ extern "C" s32 fn_8028B500(void *arg0) {
     }
     kind = *(s32 *)((u8 *)arg0 + 0x34);
     if (kind >= 0 && kind < 8) {
-        emitter = *(Emitter **)((u8 *)lbl_804B3238 + kind * 0x10);
+        emitter = *(Emitter **)((u8 *)terrainChunkTable + kind * 0x10);
         if (emitter) {
             s32 i, n;
             register f32 zero2, spread2;
