@@ -573,75 +573,72 @@ void fn_8022B390(const char *unusedLabel, const char *text, int maxChars, int *o
 
 #pragma push
 #pragma processor 750
-/* Computes the X offset for drawing text with the given style and string.
- * Measures the text width (using the font or bitmap font), applies the style's
- * horizontal alignment (left/right/center) within the canvas width, and returns
- * the pixel offset. If no string is given, returns the canvas width directly. */
-int UIStyle_getTextOffsetX(int unused, const char *arg1)
+/* Compute the X draw offset for a styled string: measure its width, apply the style's horizontal alignment inside the canvas, and fall back to the canvas width when no string is given. */
+int UIStyle_getTextOffsetX(int unused, const char *text)
 {
     struct Holder { int m; } h;
-    int *max = &h.m;
-    register void *ctx;
+    int *maxWidth = &h.m;
+    register void *style;
     int value;
 
-    ctx = fn_8022CA2C();
-    value = *(int *)((char *)ctx + 0x64);
-    *max = 0;
+    style = fn_8022CA2C();
+    value = *(int *)((char *)style + 0x64);
+    *maxWidth = 0;
     if (value != 0) {
-        *max = stampGetWidth(value);
+        *maxWidth = stampGetWidth(value);
     } else {
-        int sub = *(int *)((char *)ctx + 0x68);
-        if (sub != 0) {
-            *max = gxGetImageWidth(sub);
+        int image = *(int *)((char *)style + 0x68);
+        if (image != 0) {
+            *maxWidth = gxGetImageWidth(image);
         }
     }
 
-    if (arg1 != 0) {
-        int width = 0;
-        int flags;
-        int height = 0;
-        int result = 0;
-        void *font = *(void **)((char *)ctx + 4);
+    if (text != 0) {
+        int xOffset = 0;
+        int alignFlags;
+        int yOffset = 0;
+        int textWidth = 0;
+        void *font = *(void **)((char *)style + 4);
 
         if (font != 0) {
-            result = fn_801E4A6C(font, arg1);
+            textWidth = fn_801E4A6C(font, text);
         }
-        if (*(void **)((char *)ctx + 8) != 0) {
+        if (*(void **)((char *)style + 8) != 0) {
             float scale;
-            if (*(float *)((char *)ctx + 0x34) < lbl_80563588) {
+            if (*(float *)((char *)style + 0x34) < lbl_80563588) {
                 scale = lbl_80563588;
             } else {
-                scale = *(float *)((char *)ctx + 0x34) / (float)fn_80232B70(*(int *)((char *)ctx + 8));
+                scale = *(float *)((char *)style + 0x34) / (float)fn_80232B70(*(int *)((char *)style + 8));
             }
-            result = (int)(scale * ((float (*)(void *, const char *, float))fn_8023293C)(*(void **)((char *)ctx + 8), arg1, lbl_80563588));
+            textWidth = (int)(scale * ((float (*)(void *, const char *, float))fn_8023293C)(*(void **)((char *)style + 8), text, lbl_80563588));
         }
 
-        flags = *(int *)((char *)ctx + 0x38);
-        if (flags & 2) {
-            width = -result;
-        } else if (flags & 4) {
-            width = (-result) / 2;
+        alignFlags = *(int *)((char *)style + 0x38);
+        if (alignFlags & 2) {
+            xOffset = -textWidth;
+        } else if (alignFlags & 4) {
+            xOffset = (-textWidth) / 2;
         }
 
-        if (flags & 1) {
-            height = result;
-        } else if (flags & 4) {
-            height = result / 2;
+        if (alignFlags & 1) {
+            yOffset = textWidth;
+        } else if (alignFlags & 4) {
+            yOffset = textWidth / 2;
         }
 
-        value = *(int *)((char *)ctx + 0x4C);
-        if (*(int *)((char *)ctx + 0x44) > value) {
-            value = *(int *)((char *)ctx + 0x44);
+        value = *(int *)((char *)style + 0x4C);
+        if (*(int *)((char *)style + 0x44) > value) {
+            value = *(int *)((char *)style + 0x44);
         }
 
-        value = (height + value) - width;
-        if (*max > value) {
-            value = *max;
+        value = (yOffset + value) - xOffset;
+        if (*maxWidth > value) {
+            value = *maxWidth;
         }
         return value;
     }
 
-    return *max;
+    return *maxWidth;
 }
 #pragma pop
 /* One of the 0x100 UI text styles of lbl_80490968, read from styles.val;
