@@ -3508,7 +3508,7 @@ extern "C" u32 fn_80170FDC(const void *self) {
 
 extern s32 fn_802AE118(void);
 #pragma cplusplus on
-extern "C" s32 fn_80171094(void *obj, s32 unused, s32 actionId) {
+extern "C" s32 handleTimedAction(void *obj, s32 unused, s32 actionId) {
     /* Handle action 0x58 or advance timed state and trigger child activation near timeout. */
     struct Query {
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
