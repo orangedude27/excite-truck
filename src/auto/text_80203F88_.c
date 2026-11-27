@@ -144,7 +144,7 @@ int fn_8020403C(void) {
 
 /* "tedash.val" terrain debug viewer, view mode 5: draw one sampled grid cell in
  * world space.  fn_802B6F34() walks the brush area and calls the viewer's brush
- * callback fn_802B7518() for every bilinearly sampled cell; in mode 5 that
+ * callback applyBrushSample() for every bilinearly sampled cell; in mode 5 that
  * callback reports the sample here with the cell's world position (its grid
  * coordinates scaled by 2.0), inside the overlay begun by fn_80204048() and
  * closed by fn_8020404C().  The overlay draws nothing in this build, so this

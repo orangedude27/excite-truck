@@ -1111,7 +1111,7 @@ s16 fn_802B6ED8(s32 base, s32 index, u32 count) {
 extern void fn_80204048();
 extern void fn_8020404C(void);
 /* The terrain viewer's mode-5 overlay, drawn around each brush pass and empty
- * in this build (see fn_802B7518, which reports the sampled cells to it). */
+ * in this build (see applyBrushSample, which reports the sampled cells to it). */
 #define beginSampleOverlay fn_80204048 /* open it on the area's world corners */
 #define endSampleOverlay   fn_8020404C /* flush it once the pass is done */
 #pragma push
@@ -1331,7 +1331,7 @@ void fn_802B7434(void) {
 #define kSampleFull    lbl_80564C90 /* 255.0f: the sample of a fully applied brush stroke */
 #define kMarkerSize    lbl_80564C94 /* 3.0f: size of the marker for a refused cell */
 #define kGridStep      lbl_80564C58 /* 2.0f: world units per grid cell */
-void fn_802B7518(s16 x, s16 y, s32 sample) {
+void applyBrushSample(s16 x, s16 y, s32 sample) {
     switch (viewMode) {
     case 2:
         if (sample != 0) {
@@ -1438,7 +1438,7 @@ void fn_802B773C(void) {
         lbl_8055FA50[1] = -0x400;
         fn_802B6F34(sp8,
                     (u8 *)(lbl_804BE7D8 + lbl_8055FA2C * 0x128),
-                    (void (*)(s16, s16, u8))fn_802B7518);
+                    (void (*)(s16, s16, u8))applyBrushSample);
         fn_802B7434();
     } else if ((state->f3 & 2) == 0) {
         fn_802B6F34(sp8,
