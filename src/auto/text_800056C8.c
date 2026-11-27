@@ -1543,7 +1543,7 @@ extern s32 updateResultsOverlay(void);
 extern s32 fn_801DF110(void);
 extern s32 fn_80161A70(void);
 extern s32 drawAllPlayerHuds(void);
-extern s32 fn_8000545C(void);
+extern s32 reservedNoOp0(void);
 extern s32 fn_80005460(void);
 extern s32 getControlScheme(void);
 extern s32 fn_800053CC(void);
@@ -1579,7 +1579,7 @@ void fn_80007238(void) {
 done:
     fn_80005B6C();
     ((void (*)(s32))fn_80005B70)(0);
-    fn_8000545C();
+    reservedNoOp0();
     fn_80005460();
     if (getControlScheme() == 3) {
         fn_800053CC();

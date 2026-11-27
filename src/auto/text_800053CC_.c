@@ -48,7 +48,7 @@ void fn_800053CC(void) {
 }
 #pragma pop
 /* No-op placeholder. */
-/* No-op placeholder: reserved function slot with an empty body; retained so call sites and vtable slots keep their indices. */ /* No-op stub. */ void fn_8000545C(void) {
+/* No-op placeholder: reserved function slot with an empty body; retained so call sites and vtable slots keep their indices. */ /* No-op stub. */ void reservedNoOp0(void) {
     return;
 }
 
