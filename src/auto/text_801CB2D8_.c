@@ -1638,58 +1638,58 @@ extern void fn_8001EFC4(int, void *, int);
 extern char lbl_80337D5C[];
 extern void fn_8001EFC4();
 /* Handles an award/grade push for an object, storing ids/data and starting playback if idle. */
-void pushAward(int arg0, int arg1, int arg2) {
-    unsigned char *awardsBase;
-    unsigned char *object;
-    int slotIndex;
-    int slotStatus;
-    void *objectData;
-    int current;
+/* Push an award/grade for an object: store newCount/newEntry, start playback if idle, then rank the contest score if the prior entry is stale. */ void pushAward(int playerIndex, int newCount, int newEntry) {
+    unsigned char *awardsState;
+    unsigned char *entry;
+    int entrySlot;
+    int entryStatus;
+    void *statData;
+    int currentSlot;
 
     if (fn_801CE898() != 0)
         return;
-    awardsBase = (unsigned char *)lbl_8055E884;
-    if (awardsBase[0x10] != 0)
+    awardsState = (unsigned char *)lbl_8055E884;
+    if (awardsState[0x10] != 0)
         return;
 
-    object = ((unsigned char *(*)(int))fn_801EA9A0)(arg0);
-    if (object[0] != 0)
-        slotIndex = object[0xB4] & 3;
+    entry = ((unsigned char *(*)(int))fn_801EA9A0)(playerIndex);
+    if (entry[0] != 0)
+        entrySlot = entry[0xB4] & 3;
     else
-        slotIndex = -1;
-    if (slotIndex >= 0)
-        slotStatus = (awardsBase + slotIndex)[0x11];
+        entrySlot = -1;
+    if (entrySlot >= 0)
+        entryStatus = (awardsState + entrySlot)[0x11];
     else
-        slotStatus = 1;
-    if (slotStatus != 0)
+        entryStatus = 1;
+    if (entryStatus != 0)
         return;
 
-    object = ((unsigned char *(*)(int))fn_801EA9A0)(arg0);
-    if (object[0] == 0)
+    entry = ((unsigned char *(*)(int))fn_801EA9A0)(playerIndex);
+    if (entry[0] == 0)
         return;
-    if (*(int *)(awardsBase + 0x2AC) != 0)
+    if (*(int *)(awardsState + 0x2AC) != 0)
         goto warning;
 
-    *(int *)(awardsBase + 0x2AC) = arg1;
-    *(int *)(awardsBase + 0x2B0) = arg2;
-    fn_8001EF5C(0, arg1);
-    if (*(int *)(awardsBase + 0x2B0) == 0)
+    *(int *)(awardsState + 0x2AC) = newCount;
+    *(int *)(awardsState + 0x2B0) = newEntry;
+    fn_8001EF5C(0, newCount);
+    if (*(int *)(awardsState + 0x2B0) == 0)
         fn_8001EF5C(2, 1);
 
-    object = ((unsigned char *(*)(int))fn_801EA9A0)(arg0);
-    objectData = object + 0x88;
-    ((void (*)(int, void *, int))fn_8001EFC4)(0, objectData, 1);
-    if (arg2 == 0)
-        ((void (*)(int, void *, int))fn_8001EFC4)(1, objectData, 1);
+    entry = ((unsigned char *(*)(int))fn_801EA9A0)(playerIndex);
+    statData = entry + 0x88;
+    ((void (*)(int, void *, int))fn_8001EFC4)(0, statData, 1);
+    if (newEntry == 0)
+        ((void (*)(int, void *, int))fn_8001EFC4)(1, statData, 1);
 
-    if (*(int *)(awardsBase + 0x2B4) < 0 && awardsBase[0x2BC] != 0) {
-        slotIndex = *(int *)(awardsBase + 0x2AC);
-        if (slotIndex >= 0) {
-            current = fn_8000DA10();
-            *(int *)(awardsBase + 0x2B4) =
+    if (*(int *)(awardsState + 0x2B4) < 0 && awardsState[0x2BC] != 0) {
+        entrySlot = *(int *)(awardsState + 0x2AC);
+        if (entrySlot >= 0) {
+            currentSlot = fn_8000DA10();
+            *(int *)(awardsState + 0x2B4) =
                 ((int (*)(int, int, int, int, float))fn_8001BBB8)(
-                    current, *(int *)awardsBase, *((int *)awardsBase + 1), slotIndex,
-                    *(float *)(awardsBase + 0x2B8));
+                    currentSlot, *(int *)awardsState, *((int *)awardsState + 1), entrySlot,
+                    *(float *)(awardsState + 0x2B8));
         }
     }
     goto done;
