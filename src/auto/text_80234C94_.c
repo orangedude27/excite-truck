@@ -203,7 +203,6 @@ extern char lbl_8055B9E0[5];
 extern unsigned char lbl_803406B0[];
 extern void fn_80265940(void);
 #pragma scheduling invalid_target
-/* Loads art/texture metadata rows for a named resource into a linked list at obj+0x88, or logs lbl_803406B0 when the resource is unavailable. */
 /* Load the STAB table named by resourceName into artSet's linked list of ArtPicture rectangles at +0x88 (texture rect columns 0-3, width from column 4, height from column 5); panic with lbl_803406B0 if the resource is not registered. */ void ArtSet_loadPictures(void *artSet, const char *resourceName) {
     if (fn_8012C33C(resourceName)) {
         void *table = loadStabResource(resourceName);
