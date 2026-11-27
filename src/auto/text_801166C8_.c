@@ -5961,28 +5961,28 @@ void fn_80121400(s32 n, s32 *map, f32 *data) {
     }
 }
 #pragma pop
-void bitReverseFFTBuffer(void *values) {
-    /* In-place bit-reversal of the 16 complex values in a 32-point FFT buffer;
-     * each value is a real/imaginary float pair. */
-    f32 *p = (f32 *)values;
-    f32 c1re = p[2], c1im = p[3], c2re = p[4], c2im = p[5];
-    f32 c3re = p[6], c3im = p[7], c4re = p[8], c4im = p[9];
-    f32 c5re = p[10], c5im = p[11], c7re = p[14], c7im = p[15];
-    f32 c8re = p[16], c8im = p[17], c10re = p[20], c10im = p[21];
-    f32 c11re = p[22], c11im = p[23], c12re = p[24], c12im = p[25];
-    f32 c13re = p[26], c13im = p[27], c14re = p[28], c14im = p[29];
-    p[2] = c8re; p[3] = c8im;
-    p[4] = c4re; p[5] = c4im;
-    p[6] = c12re; p[7] = c12im;
-    p[8] = c2re; p[9] = c2im;
-    p[10] = c10re; p[11] = c10im;
-    p[14] = c14re; p[15] = c14im;
-    p[16] = c1re; p[17] = c1im;
-    p[20] = c5re; p[21] = c5im;
-    p[22] = c13re; p[23] = c13im;
-    p[24] = c3re; p[25] = c3im;
-    p[26] = c11re; p[27] = c11im;
-    p[28] = c7re; p[29] = c7im;
+/* In-place bit-reversal of the 16 complex values in a 32-point FFT buffer;
+ * each value is a real/imaginary float pair. */
+void bitReverseFFTBuffer(void *buffer) {
+    f32 *buf = (f32 *)buffer;
+    f32 c1re = buf[2], c1im = buf[3], c2re = buf[4], c2im = buf[5];
+    f32 c3re = buf[6], c3im = buf[7], c4re = buf[8], c4im = buf[9];
+    f32 c5re = buf[10], c5im = buf[11], c7re = buf[14], c7im = buf[15];
+    f32 c8re = buf[16], c8im = buf[17], c10re = buf[20], c10im = buf[21];
+    f32 c11re = buf[22], c11im = buf[23], c12re = buf[24], c12im = buf[25];
+    f32 c13re = buf[26], c13im = buf[27], c14re = buf[28], c14im = buf[29];
+    buf[2] = c8re; buf[3] = c8im;
+    buf[4] = c4re; buf[5] = c4im;
+    buf[6] = c12re; buf[7] = c12im;
+    buf[8] = c2re; buf[9] = c2im;
+    buf[10] = c10re; buf[11] = c10im;
+    buf[14] = c14re; buf[15] = c14im;
+    buf[16] = c1re; buf[17] = c1im;
+    buf[20] = c5re; buf[21] = c5im;
+    buf[22] = c13re; buf[23] = c13im;
+    buf[24] = c3re; buf[25] = c3im;
+    buf[26] = c11re; buf[27] = c11im;
+    buf[28] = c7re; buf[29] = c7im;
 }
 
 // Fixed output-ordering permutation for the n == 32 inverse-FFT butterfly
