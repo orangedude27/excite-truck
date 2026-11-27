@@ -3283,7 +3283,7 @@ extern "C" void fn_8012ED20(void *object) {
 }
 
 extern "C" s32 openResourceStream(s32, s32, s32);
-extern "C" s32 fn_8012C6F0(void *);
+extern "C" s32 getResourceSizeAligned(void *);
 extern "C" void fn_8012EE80(void *);
 extern "C" s32 fn_8012EDA8(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     s32 *slot;
@@ -3307,7 +3307,7 @@ extern "C" s32 fn_8012EDA8(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         handle = openResourceStream(arg1, arg2, arg3);
         slots[1] = handle;
         if (!handle) return 0;
-        *(s32 *)((char *)arg0 + 0x24) = fn_8012C6F0((void *)handle);
+        *(s32 *)((char *)arg0 + 0x24) = getResourceSizeAligned((void *)handle);
     }
     fn_8012EE80(arg0);
     return 1;
@@ -3551,7 +3551,7 @@ extern "C" s32 openResourceStream(s32 path, s32 typeTag, s32 outId) {
     return result;
 }
 /* Return the 0x800-aligned size of an open resource: round_up(base + size) - round_down(base). */
-extern "C" s32 fn_8012C6F0(void *handle) {
+extern "C" s32 getResourceSizeAligned(void *handle) {
 #define ALIGN_UP 0x7FF        /* round-up addend */
 #define ALIGN_MASK 0xFFFFF800 /* ~0x7FF */
     s32 base;

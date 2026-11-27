@@ -25,7 +25,7 @@ void fn_802CB6B4(void);
 int fn_80128670(int);
 int fn_802CA2A8(void *, int, int);
 int openResourceStream(void *, int, int *);
-int fn_8012C6F0(void);
+int getResourceSizeAligned(void);
 int fn_8012C958(int);
 
 #pragma push
@@ -157,7 +157,7 @@ extern char lbl_8055D048;              /* ".tm0": suffix of a texture archive me
 int getTextureResourceSize(int textureName) {
 #define BuildTextureArchiveName fn_802CA2A8
 #define OpenResource openResourceStream
-#define GetResourceSize fn_8012C6F0
+#define GetResourceSize getResourceSizeAligned
 #define CloseResource fn_8012C958
     char archiveName[0x20];
     int resourceHandleOut;
@@ -1989,7 +1989,7 @@ void fn_802CB6B4(void);
 int fn_80128670(int);
 int fn_802CA2A8(void *, int, int);
 int openResourceStream(void *, int, int *);
-int fn_8012C6F0(void);
+int getResourceSizeAligned(void);
 int fn_8012C958(int);
 extern char lbl_8034B538[];
 extern char textureNullName[];

@@ -105,7 +105,7 @@ void fn_8013436C(LoadPool *pool, s32 unused) {
 }
 #pragma use_lmw_stmw reset
 s32 openResourceStream(s32, s32, s32); /* open a resource stream (path, tag, size) */
-s32 fn_8012C6F0(void *); /* query a stream's resource size */
+s32 getResourceSizeAligned(void *); /* query a stream's resource size */
 void fn_8012C720(void *, s32, s32, s32); /* start a stream transfer */
 void Abend_Panic(const char *, ...); /* formatted log/warning */
 #pragma use_lmw_stmw off
@@ -149,7 +149,7 @@ s32 loadPoolStartRequest(LoadPool *pool, s32 path, s32 dataTag, s32 outSize, s32
             if (entry->obj == 0) Abend_Panic(p.msgBase + 0x30, p.path);
             entry->cb = (void (*)(void *, void *, void *))p.callback;
             entry->unk10 = (void *)p.userData;
-            dataSize = fn_8012C6F0(entry->obj);
+            dataSize = getResourceSizeAligned(entry->obj);
             if (byteCount <= 0) byteCount = dataSize;
             if (byteCount > p.pool->stride) Abend_Panic(p.msgBase + 0x48, p.path, byteCount, p.pool->stride);
             if (p.sourceOffset + byteCount > dataSize) Abend_Panic(p.msgBase + 0x70, dataSize, p.sourceOffset, byteCount);
