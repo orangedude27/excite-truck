@@ -3083,67 +3083,67 @@ extern "C" void resetParticleEntry(s32 arg0, void *arg1) {
         virtual void m2();
     };
     struct Holder { u8 *p; } ownerHolder;
-    u8 *entry;
+    u8 *particle;
     u8 **owner = &ownerHolder.p;
-    u8 *cur;
-    u8 *next;
-    u8 *link;
-    u8 *obj;
-    f32 factor;
-    f32 delta;
+    u8 *node;
+    u8 *nextNode;
+    u8 *linkNode;
+    u8 *resetObj;
+    f32 halfSpeed;
+    f32 zeroDelta;
     f32 zero;
     s32 zeroInt;
-    s32 count;
-    s32 value;
-    entry = (u8 *)(arg0 + *(s32 *)((u8 *)arg1 + 0x1EC) * 0xC0 + 0x9E4);
-    if (entry != 0) {
-        delta = lbl_80561648;
+    s32 lifeCount;
+    s32 remainingLife;
+    particle = (u8 *)(arg0 + *(s32 *)((u8 *)arg1 + 0x1EC) * 0xC0 + 0x9E4);
+    if (particle != 0) {
+        zeroDelta = lbl_80561648;
         zeroInt = 0;
-        factor = lbl_8056163C;
-        *(volatile f32 *)(entry + 0x3C) = delta;
-        *(f32 *)(entry + 0x1C) = factor * *(f32 *)(entry + 0x1C);
-        *(s32 *)(entry + 0xA4) = zeroInt;
-        *owner = *(u8 **)(entry + 8);
-        cur = *(u8 **)(*owner + 0x124C);
-        next = cur != 0 ? *(u8 **)(cur + 0x11C) : 0;
-        while (cur != 0) {
-            if (*(u8 *)(cur + 4) != 0) {
-                link = *(u8 **)(cur + 0x120);
-                if (link != 0)
-                    *(u8 **)(link + 0x11C) = *(u8 **)(cur + 0x11C);
+        halfSpeed = lbl_8056163C;
+        *(volatile f32 *)(particle + 0x3C) = zeroDelta;
+        *(f32 *)(particle + 0x1C) = halfSpeed * *(f32 *)(particle + 0x1C);
+        *(s32 *)(particle + 0xA4) = zeroInt;
+        *owner = *(u8 **)(particle + 8);
+        node = *(u8 **)(*owner + 0x124C);
+        nextNode = node != 0 ? *(u8 **)(node + 0x11C) : 0;
+        while (node != 0) {
+            if (*(u8 *)(node + 4) != 0) {
+                linkNode = *(u8 **)(node + 0x120);
+                if (linkNode != 0)
+                    *(u8 **)(linkNode + 0x11C) = *(u8 **)(node + 0x11C);
                 else
-                    *(u8 **)(*owner + 0x124C) = *(u8 **)(cur + 0x11C);
-                link = *(u8 **)(cur + 0x11C);
-                if (link != 0)
-                    *(u8 **)(link + 0x120) = *(u8 **)(cur + 0x120);
+                    *(u8 **)(*owner + 0x124C) = *(u8 **)(node + 0x11C);
+                linkNode = *(u8 **)(node + 0x11C);
+                if (linkNode != 0)
+                    *(u8 **)(linkNode + 0x120) = *(u8 **)(node + 0x120);
                 else
-                    *(u8 **)(*owner + 0x1250) = *(u8 **)(cur + 0x120);
-                *(u8 **)(cur + 0x120) = 0;
-                *(u8 **)(cur + 0x11C) = 0;
-                *(u8 **)(cur + 0x120) = *(u8 **)(*owner + 0x1248);
-                link = *(u8 **)(*owner + 0x1248);
-                if (link != 0)
-                    *(u8 **)(link + 0x11C) = cur;
-                *(u8 **)(*owner + 0x1248) = cur;
+                    *(u8 **)(*owner + 0x1250) = *(u8 **)(node + 0x120);
+                *(u8 **)(node + 0x120) = 0;
+                *(u8 **)(node + 0x11C) = 0;
+                *(u8 **)(node + 0x120) = *(u8 **)(*owner + 0x1248);
+                linkNode = *(u8 **)(*owner + 0x1248);
+                if (linkNode != 0)
+                    *(u8 **)(linkNode + 0x11C) = node;
+                *(u8 **)(*owner + 0x1248) = node;
                 if (*(u8 **)(*owner + 0x1244) == 0)
-                    *(u8 **)(*owner + 0x1244) = cur;
+                    *(u8 **)(*owner + 0x1244) = node;
             }
-            cur = next;
-            next = cur != 0 ? *(u8 **)(cur + 0x11C) : 0;
+            node = nextNode;
+            nextNode = node != 0 ? *(u8 **)(node + 0x11C) : 0;
         }
-        *(f32 *)(entry + 0x14) += delta;
-        obj = *(u8 **)(entry + 0x10);
-        ((VNode *)obj)->m2();
-        if (*(s32 *)(entry + 0x34) > 1)
-            *(f32 *)(entry + 0x40) = lbl_80561688;
-        count = *(s32 *)(entry + 0x34) - 1;
-        value = count > 1 ? count : 1;
-        *(s32 *)(entry + 0x34) = value;
+        *(f32 *)(particle + 0x14) += zeroDelta;
+        resetObj = *(u8 **)(particle + 0x10);
+        ((VNode *)resetObj)->m2();
+        if (*(s32 *)(particle + 0x34) > 1)
+            *(f32 *)(particle + 0x40) = lbl_80561688;
+        lifeCount = *(s32 *)(particle + 0x34) - 1;
+        remainingLife = lifeCount > 1 ? lifeCount : 1;
+        *(s32 *)(particle + 0x34) = remainingLife;
         zero = lbl_80561648;
-        *(f32 *)(entry + 0x50) = zero;
-        *(f32 *)(entry + 0x4C) = zero;
-        *(f32 *)(entry + 0x48) = zero;
-        *(f32 *)(entry + 0x44) = zero;
+        *(f32 *)(particle + 0x50) = zero;
+        *(f32 *)(particle + 0x4C) = zero;
+        *(f32 *)(particle + 0x48) = zero;
+        *(f32 *)(particle + 0x44) = zero;
     }
 }
 #pragma cplusplus off
