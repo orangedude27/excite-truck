@@ -2480,7 +2480,7 @@ extern "C" void fn_80215444(void *widget) {
 /* Base widget class (vtable lbl_8033FB38) default for vtable slot 0x3C: the
  * "the pointer was pressed on me at (x, y)" hook, just after the pair that set
  * and clear the flag byte at +0x19.  The base widget ignores the press.
- * Widgets that react to it override it: the slider's fn_8021CD04 drags the
+ * Widgets that react to it override it: the slider's updateSliderFromPoint drags the
  * value driven through +0x248 to wherever x falls along the track (restoring
  * the saved value when the point is outside the box grown by 32 pixels), and
  * fn_80229628 raises its busy flag at +0x254 before running the widget's

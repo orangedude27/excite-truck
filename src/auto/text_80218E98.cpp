@@ -3000,7 +3000,7 @@ extern "C" void fn_8021CBBC(void *widget) {
  * value back, and a point on the box sets the target to where the point sits
  * along the tab's travel -- (x - left - tabSize/2) / (width - tabSize), clamped
  * to [0,1] -- so dragging across the slider scrubs the value. */
-extern "C" void fn_8021CD04(void *widget, s32 x, s32 y) {
+extern "C" void updateSliderFromPoint(void *widget, s32 x, s32 y) {
     #define FLOAT_ONE  lbl_805634A4 /* 1.0f: the slider's far end */
     #define FLOAT_ZERO lbl_805634A8 /* 0.0f: its near end */
     /* The value this slider drives (+0x248): get() at vtable +0x24, set() at
