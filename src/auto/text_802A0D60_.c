@@ -42,6 +42,9 @@ void fn_802A0D60(s32 arg0, float *arg1, float *arg2, float *arg3, s32 arg4, floa
     u32 color;
     s32 n;
     float zero;
+    float temp;
+    float temp2;
+    float temp3;
     if (arg4 != 0 && !((float)__fabs(farg1) <= lbl_80558DC4[0])) {
         v = lbl_805646E8 * farg1;
         if (v < lbl_805646F0)
@@ -56,7 +59,7 @@ void fn_802A0D60(s32 arg0, float *arg1, float *arg2, float *arg3, s32 arg4, floa
         n = -arg4;
         {
             u32 lo, hi;
-            lo = __rlwinm(n, 0, 24, 31);
+            lo = __rlwinm((-arg4), 0, 24, 31);
             lo = __rlwimi(lo, n, 8, 16, 23);
             hi = __rlwinm(n, 24, 8, 15);
             hi = __rlwimi(hi, c, 24, 0, 7);
@@ -71,8 +74,11 @@ void fn_802A0D60(s32 arg0, float *arg1, float *arg2, float *arg3, s32 arg4, floa
             u32 b1 = (((u32)i >> 1) & 1) ^ 1;
             u32 b2 = b == 0;
             float x, y, u, w;
-            x = arg1[0] + arg2[0] * (farg0 * (float)a1) + arg3[0] * (farg0 * (float)b1);
-            y = arg1[1] + arg2[1] * (farg0 * (float)a2) + arg3[1] * (farg0 * (float)b2);
+            temp = arg2[0];
+            temp2 = arg2[1];
+            temp3 = arg1[1];
+            y = temp3 + temp2 * (farg0 * (float)a2) + arg3[1] * (farg0 * (float)b2);
+            x = arg1[0] + temp * (farg0 * (float)a1) + arg3[0] * (farg0 * (float)b1);
             sp10[2] = x;
             sp10[3] = zero;
             sp10[4] = y;
@@ -240,7 +246,7 @@ extern "C" inline void *fn_802A1120_getSecond(void) {
    node list is walked to the segment that straddles the plane, and that segment is
    stepped through in 1/40ths until the interpolated point reaches the plane.
    *outPoint gets that crossing point, *outNormal the plane's normal. */
-extern "C" void fn_802A1120(float *outPoint, float *outNormal) {
+extern "C" void findDecalTrackCrossing(float *outPoint, float *outNormal) {
     struct ResourceManager {
         virtual void *getPath(s32);
         virtual void *getStartNode(s32);
@@ -293,7 +299,7 @@ extern double fn_8002F208(double);
 extern double fn_8002F234(double);
 extern void fn_801E9DC4(void *);
 extern s32 fn_802A0FBC(void);
-extern void fn_802A1120(float *, float *);
+extern void findDecalTrackCrossing(float *, float *);
 extern void fn_802A92CC(void);
 extern s32 DrawListWrapper_create(s32);
 extern s32 RegisterTextureByName(void *, s32);
@@ -321,7 +327,7 @@ void fn_802A1290(void) {
         sz = lbl_80564708 * (float)n;
         lbl_8055F840 = DrawListWrapper_create(n * 12 / 2);
         lbl_8055F848 = (float)fn_8002F208(lbl_80564710);
-        fn_802A1120(lbl_8055F850, lbl_8055F858);
+        findDecalTrackCrossing(lbl_8055F850, lbl_8055F858);
         lbl_8055F860[0] = lbl_8055F858[0];
         lbl_8055F860[1] = lbl_8055F858[1];
         lbl_8055F860[0] = lbl_8055F858[1];

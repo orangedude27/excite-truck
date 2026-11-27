@@ -170,7 +170,7 @@ extern volatile f32 lbl_8055F900[2];
 extern volatile f32 lbl_8055F908[2];
 extern char lbl_80349D88[];
 extern s32 fn_8012C33C(s32);
-extern void fn_802A1120(void *, void *);
+extern void findDecalTrackCrossing(void *, void *);
 extern void fn_802A9090();
 extern s32 fn_802C6FC0(s32, s32, s32);
 extern s32 RegisterTextureByName(void *, s32);
@@ -187,7 +187,7 @@ void fn_802A92CC(void) {
     result = (u8)fn_802A9048();
     lbl_8055F8F0 = result;
     if (result != 0) {
-        fn_802A1120(&lbl_8055F8F8, (void *)lbl_8055F908);
+        findDecalTrackCrossing(&lbl_8055F8F8, (void *)lbl_8055F908);
         value0 = lbl_8055F908[0];
         value1 = lbl_8055F908[1];
         lbl_8055F900[0] = value0;

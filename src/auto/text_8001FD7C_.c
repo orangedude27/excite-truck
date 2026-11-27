@@ -123,7 +123,7 @@ extern float lbl_805604D4;
 extern float lbl_805604D8;
 extern float lbl_805604DC;
 extern float lbl_805604E0;
-extern void fn_802A1120(float*, float*, float);
+extern void findDecalTrackCrossing(float*, float*, float);
 extern double cos(double);
 extern float fn_801EA0E8(float, float, float, float, float, float, float);
 extern void fn_8026E22C(float*, void*, void*, float);
@@ -480,7 +480,7 @@ int fn_80020434(void* arg0, float* arg1) {
     mat[9] = 0.0f;
     mat[10] = 0.0f;
     mat[11] = 0.0f;
-    fn_802A1120(out1, out2, lbl_805604B8);
+    findDecalTrackCrossing(out1, out2, lbl_805604B8);
     mat[9] = out1[0];
     mat[10] = lbl_805604B4;
     mat[11] = out1[1];

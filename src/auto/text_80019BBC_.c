@@ -37,7 +37,7 @@ extern float lbl_80560420, lbl_80560424;
 extern float lbl_80560428, lbl_8056042C, lbl_80560430, lbl_80560434, lbl_80560438;
 extern void *fn_801284F8(int, void*);
 extern void* ArtSetGet(void*);
-extern void fn_802A1120(void*, float*);
+extern void findDecalTrackCrossing(void*, float*);
 extern int fn_8012C33C(void*);
 extern void* getValueFile(void*);
 extern void releaseValueFile(void*);
@@ -92,7 +92,7 @@ struct TrackMarker {
     TrackMarker() {
         float v[2];
         type = (int)ArtSetGet(lbl_802FD6CC);
-        fn_802A1120(dir, v);
+        findDecalTrackCrossing(dir, v);
         { float x = v[0]; v[0] = v[1]; v[1] = -x; }
         unk4 = 0;
         unk10 = 0.0f;
@@ -884,7 +884,7 @@ extern float lbl_80560434;
 extern float lbl_80560438;
 extern void* fn_801284F8(int, void*);
 extern void* ArtSetGet(void*);
-extern void fn_802A1120(void*, float*);
+extern void findDecalTrackCrossing(void*, float*);
 extern int fn_8012C33C(void*);
 extern void* getValueFile(void*);
 extern void releaseValueFile(void*);
