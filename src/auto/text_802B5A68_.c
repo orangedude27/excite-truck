@@ -1257,7 +1257,7 @@ extern float lbl_80564C8C;
 extern double lbl_80564C80;
 extern float lbl_80564C90;
 extern float lbl_80564C94;
-extern s32 fn_802BC09C();
+extern s32 paintWaterLayer();
 extern void fn_80204044();
 extern s32 fn_802C21DC();
 extern s32 fn_802B7300(s16, s16, s32, s32, float);
@@ -1324,7 +1324,7 @@ void fn_802B7434(void) {
 #define viewMode       lbl_8055FA38 /* 0 "Objects", 1 "Advanced", 2 "Material-Map", 3 "Road-Opacity" */
 #define brushLayer     lbl_8055FA28 /* water layer the viewer paints, from its drop-down */
 #define dirtyBounds    lbl_8055FA50 /* s16[4]: minX, maxX, minY, maxY painted since the last rebuild */
-#define paintLayer     fn_802BC09C  /* blend a value into one cell of a water layer */
+#define paintLayer     paintWaterLayer  /* blend a value into one cell of a water layer */
 #define drawMarker     fn_802B7300  /* draw a terrain marker at a grid cell */
 #define plotPixel      fn_802C21DC  /* write one pixel of the road-opacity image */
 #define drawWorldPoint fn_80204044  /* debug-draw hook: empty in this build */

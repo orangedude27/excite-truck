@@ -495,7 +495,7 @@ extern double lbl_80564D08;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-int fn_802BC09C(short arg0, int arg1, int arg2, signed char arg3, float farg0) {
+int paintWaterLayer(short arg0, int arg1, int arg2, signed char arg3, float farg0) {
     unsigned char sp10[6];
     unsigned char sp8[6];
     int cur;
