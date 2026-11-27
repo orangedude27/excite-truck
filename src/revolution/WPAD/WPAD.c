@@ -5502,7 +5502,7 @@ BOOL WPADiEnqueueCommand(u8* queue, const void* src, u32 len, u32 val1, u32 val2
     return TRUE;
 }
 
-BOOL fn_80063A50(u8* queue, u32 value, u16 halfword, u32 word, u32 last) {
+BOOL WPADiSendReadDataCmd_80063A50(u8* queue, u32 value, u16 halfword, u32 word, u32 last) {
     /* Build and enqueue a 0x30-byte WPAD command packet into the ring buffer at queue (indices at +0/+1, buffer base at +4, capacity at +8). Returns FALSE if full. */
     u8 buf[0x68] ALIGN(8);
     s8 diff;
@@ -5919,8 +5919,8 @@ void fn_80064B1C(s32 chan, void* data) {
             WPADiEnqueueCommand((u8*)q, p + 0x854, 6, 0x4A40040, (u32)fn_80064A80);
             WPADiEnqueueCommand((u8*)q, p + 0x85a, 6, 0x4A40046, (u32)fn_80064A80);
             WPADiEnqueueCommand((u8*)q, p + 0x860, 4, 0x4A4004C, (u32)fn_80064A80);
-            fn_80063A50((u8*)q, (u32)(p + 0x874), 2, 0x4A400FE, (u32)fn_80064A80);
-            fn_80063A50((u8*)q, (u32)(p + 0x874), 0x20, 0x4A40020, (u32)cbk);
+            WPADiSendReadDataCmd_80063A50((u8*)q, (u32)(p + 0x874), 2, 0x4A400FE, (u32)fn_80064A80);
+            WPADiSendReadDataCmd_80063A50((u8*)q, (u32)(p + 0x874), 0x20, 0x4A40020, (u32)cbk);
             p[0x851] = 0;
             p[0x801] = 0xff;
             p[0x802] = 0;
