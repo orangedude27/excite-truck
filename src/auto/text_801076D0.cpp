@@ -1801,7 +1801,7 @@ extern "C" s32 fn_8010D130(s32 arg0, s32 arg1, void *arg2) {
     extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80105C2C(s32);
     extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(s32);
     extern f32 GetFontWidth__Q36nw4hbm2ut10CharWriterCFv(s32);
-    extern f32 fn_80111C10(s32);
+    extern f32 GetGlyphWidth__Q36nw4hbm2ut10CharWriterCFv(s32);
     extern s32 GetFont__Q36nw4hbm2ut10CharWriterCFv_801120E8(s32);
     extern s32 IsWidthFixed__Q36nw4hbm2ut10CharWriterCFv(s32);
     extern void SetCursor__Q36nw4hbm2ut10CharWriterFff(s32, f32, f32);
@@ -1830,7 +1830,7 @@ extern "C" s32 fn_8010D130(s32 arg0, s32 arg1, void *arg2) {
         {
             s32 obj = *(s32 *)p;
             f32 y = *(f32 *)(p + 8);
-            SetCursor__Q36nw4hbm2ut10CharWriterFff(obj, y, fn_80111C10(obj) + GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(obj));
+            SetCursor__Q36nw4hbm2ut10CharWriterFff(obj, y, GetGlyphWidth__Q36nw4hbm2ut10CharWriterCFv(obj) + GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(obj));
         }
         return 3;
     }
@@ -1862,7 +1862,7 @@ extern "C" s32 fn_8010D130(s32 arg0, s32 arg1, void *arg2) {
 extern "C" s32 fn_8010D4B0(const void *self, void *arg0, s32 arg1, void *arg2) {
  extern const char lbl_80329458[];
  extern void Panic__Q26nw4hbm2dbFPCciPCce(const char*,int,const char*,...);
- extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(s32), GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80105C2C(s32), GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(s32), GetFontWidth__Q36nw4hbm2ut10CharWriterCFv(s32), GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801056A4(s32), fn_80111C10(s32);
+ extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(s32), GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80105C2C(s32), GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(s32), GetFontWidth__Q36nw4hbm2ut10CharWriterCFv(s32), GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801056A4(s32), GetGlyphWidth__Q36nw4hbm2ut10CharWriterCFv(s32);
  extern s32 GetFont__Q36nw4hbm2ut10CharWriterCFv_801120E8(s32), IsWidthFixed__Q36nw4hbm2ut10CharWriterCFv(s32);
  extern void SetCursor__Q36nw4hbm2ut10CharWriterFff(s32,f32,f32); extern void SetCursorX__Q36nw4hbm2ut10CharWriterFf(s32,f32);
  const char *base=lbl_80329458;
@@ -1893,7 +1893,7 @@ extern "C" s32 fn_8010D4B0(const void *self, void *arg0, s32 arg1, void *arg2) {
   *(f32*)((char*)arg0+4)=GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(obj);
   r5=0; if(qi==0x80000000U || (q&0xFF800000)==0x81000000U || (q&0xF8000000)==0x90000000U || qi==0xC0000000U || (q&0xFF800000)==0xC1000000U || (q&0xF8000000)==0xD0000000U || (q&0xFFFFC000)==0xE0000000U) r5=1;
   if(!r5) Panic__Q26nw4hbm2dbFPCciPCce(base,0xC3,base+0x40,arg2);
-  s32 o=*(s32*)q; f32 y=*(f32*)(q+8), w=fn_80111C10(o); SetCursor__Q36nw4hbm2ut10CharWriterFff(o,y,GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(o)+w);
+  s32 o=*(s32*)q; f32 y=*(f32*)(q+8), w=GetGlyphWidth__Q36nw4hbm2ut10CharWriterCFv(o); SetCursor__Q36nw4hbm2ut10CharWriterFff(o,y,GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(o)+w);
   f32 left=GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(obj);
   *(f32*)arg0=left; f32 right=GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(obj)+GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801056A4(*(s32*)q);
   f32 t=*(f32*)((char*)arg0+4), b=*(f32*)((char*)arg0+8), x=right-t, z=b-left;
@@ -5887,7 +5887,7 @@ extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80111BB8(void* this_,
     return this_;
 }
 
-extern "C" f32 fn_80111C10(s32 writer) {
+extern "C" f32 GetGlyphWidth__Q36nw4hbm2ut10CharWriterCFv(s32 writer) {
     /* nw4hbm::ut::CharWriter (TextWriter copy): return the current glyph's
      * advance in the font plus the writer's +0x50 spacing.  First asserts the
      * this pointer lies in one of the Wii's mapped memory windows (the
