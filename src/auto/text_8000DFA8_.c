@@ -892,8 +892,10 @@ void fn_800104B0(s32 color, s32 lineHeight, const char *fmt, f32 scale, f32 x, f
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-/* Draw a highlighted UI label/text element: computes position/size offsets based on UI mode and renders a box and text. */
-void drawUiLabel(s32 text, s32 layoutId, s32 unused) {
+/* Draw a message inside a label box at a layout region: an entry count of three
+ * or more selects the highlighted style, then the panel, its border strips and
+ * the scaled text are drawn. */
+void drawUiLabel(s32 message, s32 regionId, s32 unused) {
     extern s32 fn_80137C74(void);
     extern f32 fn_800108C8(f32, s32);
     extern f32 fn_80011E04(s32);
@@ -908,10 +910,10 @@ void drawUiLabel(s32 text, s32 layoutId, s32 unused) {
     extern f32 lbl_805602F8;
     extern f32 lbl_80560314;
     extern f32 lbl_80560318;
-    s32 mode;
+    s32 entryCount;
     s32 temp;
     s32 mask;
-    s32 amount;
+    s32 textOffset;
     s32 isHighlighted;
     f32 boxHeight;
     f32 textScale;
@@ -920,31 +922,31 @@ void drawUiLabel(s32 text, s32 layoutId, s32 unused) {
     f32 baseX;
     f32 textY;
 
-    mode = fn_80137C74();
-    temp = mode ^ 2;
+    entryCount = fn_80137C74();
+    temp = entryCount ^ 2;
     mask = temp >> 1;
-    temp &= mode;
+    temp &= entryCount;
     temp = mask - temp;
     isHighlighted = ((u32)temp) >> 31;
     if (isHighlighted != 0)
         textScale = lbl_80560264;
     else
         textScale = lbl_80560318;
-    boxWidth = lbl_805602F8 + fn_800108C8(textScale, text);
+    boxWidth = lbl_805602F8 + fn_800108C8(textScale, message);
     if (isHighlighted != 0)
         boxHeight = lbl_805602EC;
     else
         boxHeight = lbl_80560314;
-    boxX = (-boxWidth * lbl_8056025C) + fn_80011E04(layoutId);
-    baseX = fn_80011E04(layoutId);
-    amount = (isHighlighted != 0) ? 0 : -0x28;
-    textY = (f32)amount + fn_80011E1C(layoutId);
+    boxX = (-boxWidth * lbl_8056025C) + fn_80011E04(regionId);
+    baseX = fn_80011E04(regionId);
+    textOffset = (isHighlighted != 0) ? 0 : -0x28;
+    textY = (f32)textOffset + fn_80011E1C(regionId);
     fn_80010B80(0x90000000, boxX, textY, boxWidth, boxHeight);
     fn_80010C74(boxX, lbl_80560264 + textY, lbl_80560264 + boxWidth);
     fn_80010D88(boxX + boxWidth, textY, boxHeight);
     fn_80010C74(boxX, textY - boxHeight, lbl_80560264 + boxWidth);
     fn_80010D88(boxX, textY, boxHeight);
-    fn_8000FF88(-1, 0xC, (const char *)text, textScale, baseX, textY);
+    fn_8000FF88(-1, 0xC, (const char *)message, textScale, baseX, textY);
 }
 #pragma scheduling on
 #pragma use_lmw_stmw reset
