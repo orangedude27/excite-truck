@@ -19508,7 +19508,7 @@ extern "C" s32 fn_800C65CC(s32 updateArg) {
 extern "C" void *lbl_8055DD98;
 extern "C" f32 lbl_80560DC0;
 extern "C" f32 lbl_80560DC4;
-extern "C" void fn_800CEDE8(void);
+extern "C" void setupUntexturedGxState(void);
 extern "C" void GXSetTevColor(u32, void *);
 extern "C" void GXBegin(u8, u8, u16);
 extern "C" void fn_800C6610(void) {
@@ -19536,7 +19536,7 @@ extern "C" void fn_800C6610(void) {
     s32 value = *(s32 *)(base + 0x3FC);
     s32 numerator = (value << 8) - value;
     i = (numerator / *(s32 *)(base + 0x400)) & 0xFF;
-    fn_800CEDE8();
+    setupUntexturedGxState();
 
     u8 color[4];
     u32 packed;
@@ -26278,7 +26278,7 @@ extern "C" void GXSetAlphaCompare(u32, u32, u32, u32, u32);
 extern "C" void GXSetBlendMode(u32, u32, u32, u32);
 extern "C" void GXSetAlphaUpdate(u32);
 extern "C" void GXSetZMode(u32, u32, u32);
-extern "C" void fn_800CEDE8(void) {
+extern "C" void setupUntexturedGxState(void) {
     /* Set up GX state for drawing an untextured, position-only primitive with a constant TEV color and alpha blending. */
     f32 identityMtx[3][4];
     PSMTXIdentity(identityMtx);
