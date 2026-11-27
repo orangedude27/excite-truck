@@ -668,7 +668,7 @@ done:
 
 #pragma scheduling on
 extern int fn_80007554(int, int);
-extern int fn_8000BD9C(int, int, int);
+extern int handleSettingCommand(int, int, int);
 extern int fn_801E7DF0(int);
 extern int fn_801E7E04(int, int);
 extern int fn_801E85A4(void);
@@ -704,7 +704,7 @@ loop:
         case 0:
             fn_801E86F8(slot);
             if (*(int *)((char *)fn_801EA9A0() + 0x30) != 3)
-                fn_8000BD9C(slot, 0, (int)slotData);
+                handleSettingCommand(slot, 0, (int)slotData);
             break;
         default:
             ((int (*)(int, int, int))fn_80007554)(slot, eventType, eventParam);
@@ -918,7 +918,7 @@ void fn_8000BD98(void) {
 }
 
 /* Handles a command/value lookup for this module. For command 0, it treats *outValue as an element in a ring buffer (lbl_8034F5D8, count lbl_8055D3E0) and replaces it with the next element; specific command IDs map to fixed output values and report handled. */
-int fn_8000BD9C(int arg0, int command, int outPtr) {
+int handleSettingCommand(int arg0, int command, int outPtr) {
     int *entry;
     int count, found, i;
     int *outValue = (int *)outPtr;
@@ -952,8 +952,8 @@ int fn_8000BD9C(int arg0, int command, int outPtr) {
     return 0;
 }
 
-/* Forward a command to the dispatcher fn_8000BD9C with slot 0, writing its result through outPtr. */
-void fn_8000BF10(int command, int outPtr) { fn_8000BD9C(0, command, outPtr); }
+/* Forward a command to the dispatcher handleSettingCommand with slot 0, writing its result through outPtr. */
+void fn_8000BF10(int command, int outPtr) { handleSettingCommand(0, command, outPtr); }
 
 extern char lbl_802FC02C[];
 extern float lbl_8055D0B4;
@@ -1118,7 +1118,7 @@ void fn_8000C5CC(void) {
 }
 
 #pragma scheduling on
-int fn_8000BD9C(int, int, int);
+int handleSettingCommand(int, int, int);
 extern float lbl_805601FC, lbl_80560204;
 int fn_80230B5C(int *);
 int DrawList_loadMatrix(int *);
