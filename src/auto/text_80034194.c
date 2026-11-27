@@ -2540,7 +2540,7 @@ extern void OSCancelAlarm(void *);
 // on the cover interrupt and the cover is now open it stops that wait and
 // re-enters the motor-standby path; if the cover just closed it hands over from
 // the timeout alarm to waiting on the cover interrupt.
-void __DVDHandleCoverRegister(void) {
+/* Callback for the cover-register read: inspects cover/motor status and moves the DVD state machine between the cover-interrupt wait and the timeout alarm. */ void __DVDHandleCoverRegister(void) {
     s32 zero = 0;
     *(volatile s32 *)&CoverRegPending = zero;
     if (*(volatile s32 *)&AlarmInfo != 0) {
