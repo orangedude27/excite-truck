@@ -282,7 +282,7 @@ __declspec(section ".sdata") extern char lbl_8055B184[];
  __declspec(section ".sdata") extern char lbl_8055B198[];
  extern float lbl_80562FB0;
  extern float lbl_80562FB8;
- extern void fn_801F4F9C(void *, void *, void *);
+ extern void fn_801F4F9C(Vertex_801F4F9C *, DummyObj_801F4F9C *, const float *);
 extern float lbl_80562FB4;
 }
 #pragma cplusplus off
