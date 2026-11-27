@@ -4015,7 +4015,7 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021E884(void *this_,
     return this_;
 }
 
-extern "C" void fn_8021E8DC(void *widget, s32 drawContext) {
+extern "C" void drawLabeledWidget(void *widget, s32 drawContext) {
     /* Draws a labeled UI widget: optionally performs inner layout/content passes
        when enabled, then draws the frame and renders "width label" text. */
     char labelBuffer[0x58];
