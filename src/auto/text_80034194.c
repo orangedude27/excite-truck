@@ -2134,7 +2134,10 @@ void handleDvdPartitionStatus(u32 errorCode) {
     }
 }
 
-/* Handles a DVD DI/drive status value: records it in __ErrorInfo, then either starts error-report/reset flows (0x10/0x20/bit0) or issues a stop-motor/reset command sequence. */
+/* DVDLowOpenPartition status callback (reset variant). Logs the DI status in the
+ * __ErrorInfo ring, then dispatches: 0x10/0x20 start NAND error-report creation;
+ * bit 0 cancels the executing command (or marks it busy) to reset the drive;
+ * anything else reports a generic drive error. */
 void handleDvdPartitionStatusReset(u32 status) {
     register u32 diStatus = status;
     s32 interrupts = OSDisableInterrupts();
