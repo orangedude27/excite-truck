@@ -225,7 +225,7 @@ __declspec(section ".data") extern void *gEntryList;
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 #pragma opt_common_subs off
-void fn_802B0954(void) {
+void clearEntryList(void) {
     /* Clears the global pool and destroys all entries in gEntryList, releasing nested handles/rows and freeing each object. */
     extern void __array_delete(void *, void *, int, int);
     extern void fn_802B0690(int *);

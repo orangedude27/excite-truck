@@ -154,7 +154,7 @@ extern void fn_802B5808(void);
 extern void fn_802C217C(void);
 extern void fn_802B1FD4(void);
 extern void fn_802C2874(void);
-extern void fn_802B0954(void);
+extern void clearEntryList(void);
 extern void fn_802B4BDC(void);
 extern void fn_802BBCC4(void);
 extern void fn_802BE840(void);
@@ -352,7 +352,7 @@ void fn_802AE9D0(void) {
     fn_802C217C();
     fn_802B1FD4();
     fn_802C2874();
-    fn_802B0954();
+    clearEntryList();
     fn_802B4BDC();
     fn_802BBCC4();
     fn_802BE840();
