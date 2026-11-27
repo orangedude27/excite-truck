@@ -8225,7 +8225,7 @@ extern "C" void fn_80227044(void *arg0, f32 x, f32 y, f32 z) {
  *   +0x26C         f32  texture scroll offset
  *   +0x270         u8   scroll direction, from the descriptor's flag at +0xB0
  * fn_802272D4 is the draw/update handler that animates these. */
-extern "C" void *ColorBackgroundCtor(void *widgetMem, void *descriptor) {
+/* Constructs a ColorBackground widget: runs the base widget constructor, installs the ColorBackground vtable, and caches the widget box as a screen-centre position/size plus a texture slot, fade timing, alpha and scroll state. */ extern "C" void *ColorBackgroundCtor(void *widgetMem, void *descriptor) {
 #define Widget_ctor              fn_80218F80
 #define ColorBackground_vtable   lbl_8033DFB4
 #define Screen_toCentre          fn_80230C30
@@ -8236,7 +8236,7 @@ extern "C" void *ColorBackgroundCtor(void *widgetMem, void *descriptor) {
 #define Time_inSeconds           fn_8023659C
 #define UiMatrix_identity        fn_8022EE9C
     u8 *self = (u8 *)widgetMem;
-    u8 *desc = (u8 *)descriptor;
+    u8 *widgetDesc = (u8 *)descriptor;
 
     ((void (*)(void *, void *))Widget_ctor)(widgetMem, descriptor);
     *(void **)self = ColorBackground_vtable;
@@ -8249,27 +8249,27 @@ extern "C" void *ColorBackgroundCtor(void *widgetMem, void *descriptor) {
     *(f32 *)(self + 0x24c) = (f32)((VfObj *)self)->vf28();
 
     *(s32 *)(self + 0x254) = -1;
-    if (desc + 0x40 != 0)
-        *(s32 *)(self + 0x254) = LoadTexture((void *)(desc + 0x40), 0);
+    if (widgetDesc + 0x40 != 0)
+        *(s32 *)(self + 0x254) = LoadTexture((void *)(widgetDesc + 0x40), 0);
 
-    s32 texture = *(s32 *)(self + 0x254);
-    if (texture == -2)
+    s32 textureSlot = *(s32 *)(self + 0x254);
+    if (textureSlot == -2)
         goto report;
-    if (texture == -1)
+    if (textureSlot == -1)
         goto report;
     goto next;
 report:
     ReportError(NoTextureMsg);
 next:
-    u32 count = *(u32 *)(desc + 0x9c);
-    *(f32 *)(self + 0x258) = (f32)count / FadeTime_divisor;
+    u32 fadeFrameCount = *(u32 *)(widgetDesc + 0x9c);
+    *(f32 *)(self + 0x258) = (f32)fadeFrameCount / FadeTime_divisor;
     *(f32 *)(self + 0x25c) = Time_inSeconds();
     *(void **)(self + 0x260) = UiMatrix_identity();
     *(u8 *)(self + 0x264) = 1;
     register f32 zero = 0.0f;
     *(f32 *)(self + 0x268) = zero;
     *(f32 *)(self + 0x26c) = zero;
-    if (*(s32 *)(desc + 0xb0) != 0)
+    if (*(s32 *)(widgetDesc + 0xb0) != 0)
         *(u8 *)(self + 0x270) = 1;
     else
         *(u8 *)(self + 0x270) = 0;
