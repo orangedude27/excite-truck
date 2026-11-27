@@ -124,7 +124,7 @@ extern float PSVECSquareDistance(void *, void *);
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-void fn_801B54B0(s32 listHead) {
+void linkNearbyBpxObjects(s32 listHead) {
     Vec start;
     Vec end;
     Vec otherStart;
@@ -480,7 +480,7 @@ void *fn_801B5D30(s32 *arg0)
   s32 count;
   void *q;
   fn_801B5AE4();
-  fn_801B54B0(*arg0);
+  linkNearbyBpxObjects(*arg0);
   count = fn_801B5D10((void *) (*arg0));
   size = count * 4;
   buf = fn_8012850C(size, lbl_80335EC8);
