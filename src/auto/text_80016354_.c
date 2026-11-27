@@ -365,52 +365,52 @@ void fn_800169F8(const char *source, int entryIndex) {
 }
 
 #pragma dont_inline fn_800167B8
-void getDriverVehicleTuning(void *out, int id) {
+/* Copy a driver's saved vehicle-tuning record into out (enabled flag plus 24 floats), or fill out with the default vehicle tuning when no saved record exists for the driver id. */ void getDriverVehicleTuning(void *tuning, int driverId) {
     extern unsigned char lbl_80357C20[];
     extern void *fn_8027953C(void *);
-    int found;
-    int index;
+    int recordIndex;
+    int driverIndex;
 
     /* Find a matching active record in the 0x68-byte table lbl_80357C20 by id; copy its fields to out, or fall back to fn_8027953C. */
-    found = -1;
-    for (index = 0; index < *(int *)&lbl_8055D554 && found == -1; index++) {
-        if (id == *(int *)((unsigned char *)fn_80016510(*(int *)((unsigned char *)fn_800167B8(index) + 0x4C)) + 4))
-            found = index;
+    recordIndex = -1;
+    for (driverIndex = 0; driverIndex < *(int *)&lbl_8055D554 && recordIndex == -1; driverIndex++) {
+        if (driverId == *(int *)((unsigned char *)fn_80016510(*(int *)((unsigned char *)fn_800167B8(driverIndex) + 0x4C)) + 4))
+            recordIndex = driverIndex;
     }
-    if (found != -1) {
+    if (recordIndex != -1) {
         unsigned char *base = lbl_80357C20;
-        int offset = found * 0x68;
+        int offset = recordIndex * 0x68;
         if (base[offset] != 0) {
             unsigned char *record = base + offset;
-            *(unsigned char *)out = record[4];
-            *(float *)((unsigned char *)out + 4) = *(float *)(record + 8);
-            *(float *)((unsigned char *)out + 8) = *(float *)(record + 0xC);
-            *(float *)((unsigned char *)out + 0xC) = *(float *)(record + 0x10);
-            *(float *)((unsigned char *)out + 0x10) = *(float *)(record + 0x14);
-            *(float *)((unsigned char *)out + 0x14) = *(float *)(record + 0x18);
-            *(float *)((unsigned char *)out + 0x18) = *(float *)(record + 0x1C);
-            *(float *)((unsigned char *)out + 0x1C) = *(float *)(record + 0x20);
-            *(float *)((unsigned char *)out + 0x20) = *(float *)(record + 0x24);
-            *(float *)((unsigned char *)out + 0x24) = *(float *)(record + 0x28);
-            *(float *)((unsigned char *)out + 0x28) = *(float *)(record + 0x2C);
-            *(float *)((unsigned char *)out + 0x2C) = *(float *)(record + 0x30);
-            *(float *)((unsigned char *)out + 0x30) = *(float *)(record + 0x34);
-            *(float *)((unsigned char *)out + 0x34) = *(float *)(record + 0x38);
-            *(float *)((unsigned char *)out + 0x38) = *(float *)(record + 0x3C);
-            *(float *)((unsigned char *)out + 0x3C) = *(float *)(record + 0x40);
-            *(float *)((unsigned char *)out + 0x40) = *(float *)(record + 0x44);
-            *(float *)((unsigned char *)out + 0x44) = *(float *)(record + 0x48);
-            *(float *)((unsigned char *)out + 0x48) = *(float *)(record + 0x4C);
-            *(float *)((unsigned char *)out + 0x4C) = *(float *)(record + 0x50);
-            *(float *)((unsigned char *)out + 0x50) = *(float *)(record + 0x54);
-            *(float *)((unsigned char *)out + 0x54) = *(float *)(record + 0x58);
-            *(float *)((unsigned char *)out + 0x58) = *(float *)(record + 0x5C);
-            *(float *)((unsigned char *)out + 0x5C) = *(float *)(record + 0x60);
-            *(float *)((unsigned char *)out + 0x60) = *(float *)(record + 0x64);
+            *(unsigned char *)tuning = record[4];
+            *(float *)((unsigned char *)tuning + 4) = *(float *)(record + 8);
+            *(float *)((unsigned char *)tuning + 8) = *(float *)(record + 0xC);
+            *(float *)((unsigned char *)tuning + 0xC) = *(float *)(record + 0x10);
+            *(float *)((unsigned char *)tuning + 0x10) = *(float *)(record + 0x14);
+            *(float *)((unsigned char *)tuning + 0x14) = *(float *)(record + 0x18);
+            *(float *)((unsigned char *)tuning + 0x18) = *(float *)(record + 0x1C);
+            *(float *)((unsigned char *)tuning + 0x1C) = *(float *)(record + 0x20);
+            *(float *)((unsigned char *)tuning + 0x20) = *(float *)(record + 0x24);
+            *(float *)((unsigned char *)tuning + 0x24) = *(float *)(record + 0x28);
+            *(float *)((unsigned char *)tuning + 0x28) = *(float *)(record + 0x2C);
+            *(float *)((unsigned char *)tuning + 0x2C) = *(float *)(record + 0x30);
+            *(float *)((unsigned char *)tuning + 0x30) = *(float *)(record + 0x34);
+            *(float *)((unsigned char *)tuning + 0x34) = *(float *)(record + 0x38);
+            *(float *)((unsigned char *)tuning + 0x38) = *(float *)(record + 0x3C);
+            *(float *)((unsigned char *)tuning + 0x3C) = *(float *)(record + 0x40);
+            *(float *)((unsigned char *)tuning + 0x40) = *(float *)(record + 0x44);
+            *(float *)((unsigned char *)tuning + 0x44) = *(float *)(record + 0x48);
+            *(float *)((unsigned char *)tuning + 0x48) = *(float *)(record + 0x4C);
+            *(float *)((unsigned char *)tuning + 0x4C) = *(float *)(record + 0x50);
+            *(float *)((unsigned char *)tuning + 0x50) = *(float *)(record + 0x54);
+            *(float *)((unsigned char *)tuning + 0x54) = *(float *)(record + 0x58);
+            *(float *)((unsigned char *)tuning + 0x58) = *(float *)(record + 0x5C);
+            *(float *)((unsigned char *)tuning + 0x5C) = *(float *)(record + 0x60);
+            *(float *)((unsigned char *)tuning + 0x60) = *(float *)(record + 0x64);
             return;
         }
     }
-    fn_8027953C(out);
+    fn_8027953C(tuning);
 }
 /* Address of the 12-byte record the 'Drvr' resource (fn_800177B8) keeps for the
  * vehicle `entry` in slot group `slot` (0..3).  A vehicle that borrows another
