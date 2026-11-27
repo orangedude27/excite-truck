@@ -2572,7 +2572,7 @@ static __inline u8 *ringEntry(void *owner, s32 i)
     return (u8 *) q->items + (((i + q->cap) + q->head) % q->cap) * 12;
 }
 // The pointer stored at +8 of the record at position i, or NULL.
-static inline void *ringEntryField(void *owner, s32 i)
+static __inline void *ringEntryField(void *owner, s32 i)
 {
     RingVecQueue *q = ringQueue(owner);
     s32 end = (q->cap + (q->count - q->head)) % q->cap;
