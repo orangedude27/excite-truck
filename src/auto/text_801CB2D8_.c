@@ -1637,7 +1637,6 @@ extern int fn_8001BBB8(int, int, int, float);
 extern void fn_8001EFC4(int, void *, int);
 extern char lbl_80337D5C[];
 extern void fn_8001EFC4();
-/* Handles an award/grade push for an object, storing ids/data and starting playback if idle. */
 /* Push an award/grade for an object: store newCount/newEntry, start playback if idle, then rank the contest score if the prior entry is stale. */ void pushAward(int playerIndex, int newCount, int newEntry) {
     unsigned char *awardsState;
     unsigned char *entry;
