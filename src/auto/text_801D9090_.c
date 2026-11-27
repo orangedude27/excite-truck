@@ -12,10 +12,10 @@ extern unsigned int lbl_8055AD90;
 extern const char lbl_803391EC[];
 extern int strcmp(const char *, const char *);
 extern void *fn_801284F8(int, const char *);
-extern int fn_801D94DC(void *, void *, const char *, int);
+extern int buildMorphRegions(void *, void *, const char *, int);
 
 #define dtbNameKey lbl_8055AD90     /* "name": a DTB item's own name field */
-#define morphRegionKey lbl_803391EC /* "morph_region": the sub-table fn_801D94DC reads */
+#define morphRegionKey lbl_803391EC /* "morph_region": the sub-table buildMorphRegions reads */
 #define dtbZeroWeight lbl_80562B2C   /* 0.0f: the weight every morph group starts at */
 #define morphUnitWeight lbl_80562B28 /* 1.0f: the weight fn_801D9120 splits over the groups */
 #define morphMinAlpha lbl_80562B30   /* 1/255: the smallest alpha a drawn variant gets */
@@ -45,7 +45,7 @@ extern int fn_801D94DC(void *, void *, const char *, int);
 struct MorphGroup {
     char name[0x20];         // 0x00 the item's "name", copied in when the node is built
     float weight;            // 0x20 blend weight; fn_801D9AB8 applies it to the morph regions
-    void *morphRegions;      // 0x24 head of the "morph_region" list fn_801D94DC builds
+    void *morphRegions;      // 0x24 head of the "morph_region" list buildMorphRegions builds
     void **children;         // 0x28 the oml_list nodes using this group; points at childrenInline
     int childCount;          // 0x2C
     int childLimit;          // 0x30 room in the inline array
@@ -334,7 +334,7 @@ copy_check:
                 }
 copy_done:
                 group->morphRegions = 0;
-                fn_801D94DC(&group->morphRegions, item, morphRegionKey, regionTable);
+                buildMorphRegions(&group->morphRegions, item, morphRegionKey, regionTable);
                 group->next = 0;
                 group->weight = zeroWeight;
             }
@@ -386,7 +386,7 @@ struct Node1D94DC {
     Node1D94DC *next;
 };
 #pragma use_lmw_stmw off
-extern "C" int fn_801D94DC(void *head, void *list, const char *name, int object) {
+extern "C" int buildMorphRegions(void *head, void *list, const char *name, int object) {
     /* Build a linked list of morph entries matching name from the DTB list, resolving each terr_region against the region database. */
     Node1D94DC *node;
     DtbItem801D94DC *item;
