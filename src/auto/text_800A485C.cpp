@@ -26279,10 +26279,12 @@ extern "C" void GXSetBlendMode(u32, u32, u32, u32);
 extern "C" void GXSetAlphaUpdate(u32);
 extern "C" void GXSetZMode(u32, u32, u32);
 extern "C" void setupUntexturedGxState(void) {
-    /* Set up GX state for drawing an untextured, position-only primitive with a constant TEV color and alpha blending. */
-    f32 identityMtx[3][4];
-    PSMTXIdentity(identityMtx);
-    GXLoadPosMtxImm((const f32 *)identityMtx, 0);
+    /* Configure GX for an untextured, position-only primitive: identity position
+     * matrix, one colour channel with lighting off, a constant TEV colour/alpha,
+     * and alpha blending with depth testing disabled. */
+    f32 identityMatrix[3][4];
+    PSMTXIdentity(identityMatrix);
+    GXLoadPosMtxImm((const f32 *)identityMatrix, 0);
     GXSetCurrentMtx(0);
     GXClearVtxDesc();
     GXSetVtxDesc(9, 1);
