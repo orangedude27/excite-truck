@@ -549,7 +549,7 @@ extern "C" void fn_801EB9A4(s32 *arg0) {
     }
     *(ThreadObject **)arg0 = 0;
 }
-extern "C" s32 fn_801EB9FC(void *resourceMgr) {
+extern "C" s32 loadEBResource(void *resourceMgr) {
     /* Load the "Simple Model" EB resource (FARG, version 0x15), build its object
        and material lists, then open its parameter/sound archives and record their handles. */
     u8 hasExtraSetup;
@@ -916,7 +916,7 @@ extern f32 lbl_8055EBA4;
 extern f32 fn_801EC114(void);
 #define gEBDefaultValue lbl_8055EBA4
 /* Read the EB ("Simple Model") subsystem's scale parameter: 0.5 unless the
- * parameter archive loaded by fn_801EB9FC supplies another value. The sun /
+ * parameter archive loaded by loadEBResource supplies another value. The sun /
  * lens-flare mover scales its offset by it (fn_8029231C) and the weather draw
  * shrinks the model translation by 1 - it (drawWeatherLayer). */
 f32 fn_801EC114(void) {

@@ -5,14 +5,14 @@ extern void fn_801EBBB4(void);
 extern void fn_801EBD70(void);
 extern void fn_801EBDCC(void);
 extern void fn_801EBEF4(float);
-extern void fn_801EB9FC(void *);
+extern void loadEBResource(void *);
 extern const float lbl_80563028;
 extern char lbl_8033B5C8[];
 #pragma scheduling on
 /* Initialize the track.grf resource by setting its default EB scale to 2.0 and loading "track.grf". */
 void fn_801FC8A8(void) {
     fn_801EBEF4(lbl_80563028);
-    fn_801EB9FC(lbl_8033B5C8);
+    loadEBResource(lbl_8033B5C8);
 }
 
 /* Shut the "track.grf" EB resource down: tail-call the shared EB teardown

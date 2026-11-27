@@ -270,7 +270,7 @@ void fn_802AE7C0(void) {
 #pragma push
 #pragma processor 750
 /* Default start-up of the world grid / water subsystems, used when the 'FRAG'
- * resource is missing (see fn_801EB9FC).  It remembers whether the "swlmap.tex"
+ * resource is missing (see loadEBResource).  It remembers whether the "swlmap.tex"
  * texture is in the archive (lbl_8055F980, read back by fn_802B05E4), builds the
  * grid pyramid's per-level offsets and allocates its buffer (fn_802AE5E0),
  * starts the subsystems, then takes the "water_layer" handle from the game
