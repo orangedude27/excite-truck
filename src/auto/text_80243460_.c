@@ -147,8 +147,8 @@ extern s32 isMenuTableEntryIndexValid(s32, s32);
  * group and groupDelta between the menu table's five groups, both wrapping.
  * Entering another group keeps the cursor at the same horizontal offset of
  * the new group and swaps s_cursorHoldGroup/s_cursorHoldEntry so that stepping
- * back restores the entry it left.  Returns 1 (and marks the list for a
- * redraw through fn_80230E90) when the cursor moved. */
+ * back restores the entry it left.  Returns 1 (and refreshes the menu timer
+ * through fn_80230E90) when the cursor moved. */
 s32 moveMenuCursor(s32 *entryIndex, volatile s32 *groupIndex, s32 entryDelta, s32 groupDelta) {
     s32 oldEntry = *entryIndex;
     s32 oldGroup = *groupIndex;
