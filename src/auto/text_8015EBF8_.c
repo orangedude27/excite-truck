@@ -167,7 +167,7 @@ enum {
 #define PARAM_NAME_RIGHT lbl_8032F47C
 
 #pragma use_lmw_stmw off
-extern "C" void registerCollectionParams(void **collection, void *stream) {
+/* Register qualifying collection items as 0x10-byte parameter entries, classifying left/right arrows by name. */ extern "C" void registerCollectionParams(void **collection, void *stream) {
     /* Registers each qualifying collection item as a 0x10-byte parameter entry: copies its
        packed floats and stream-derived index, then classifies left/right arrows by name. */
     class Collection {
