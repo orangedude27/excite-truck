@@ -19,7 +19,7 @@ extern char lbl_8033A51C[];
 extern void Abend_Panic(const char *, ...);
 extern char lbl_8033A578[];
 int fn_801F196C(int, int);
-extern void fn_801F163C(void *, int, float);
+extern void drawWheelInstance(void *, int, float);
 // split_file divides it into the game's real files (file_status shows its range).
 
 typedef struct {
@@ -224,7 +224,7 @@ typedef struct WheelMod {
 /* One wheel of a car, as the module above attaches it (0x4C bytes, fn_801EFF94
  * allocates them).  fn_801F0DC0 and fn_801F0E88 fill one in for a car's wheel
  * slot, fn_801F1878 registers it in the (car, wheel) table lbl_80488798, and
- * fn_801F0F78 writes its world matrix and spin angle every frame; fn_801F163C
+ * fn_801F0F78 writes its world matrix and spin angle every frame; drawWheelInstance
  * below hands the model to the model manager. */
 typedef struct WheelInstance {
     /* 0x00 */ WheelMod *mod;            /* the wheel record, looked up by name */
@@ -846,14 +846,14 @@ void fn_801F131C(int instance, int forceNearestLod) {
         int lodIndex;
         if (forceNearestLod != 0) lodIndex = 0;
         else lodIndex = fn_801F15A8(instance, instance + 0x3C);
-        fn_801F163C((void *)instance, lodIndex, *(float *)(instance + 0x48));
+        drawWheelInstance((void *)instance, lodIndex, *(float *)(instance + 0x48));
     }
 }
 
 /* Draw a detached wheel with its nearest (lod0) model, unless state 3 hides the wheel. */
 void fn_801F1378(WheelInstance *wheel) {
     if (wheel->state != 3)
-        fn_801F163C(wheel, 0, wheel->spinAngle);
+        drawWheelInstance(wheel, 0, wheel->spinAngle);
 }
 
 #pragma push
@@ -974,7 +974,7 @@ int fn_801F15A8(void **tablePtr, int point) {
  * model about its X axis when the LOD entry's flag asks for it (backwards on the
  * mirrored wheels), scale that axis to the wheel's width, and submit the result
  * to the model manager as the slow- or fast-spinning model of this side. */
-void fn_801F163C(void *instance, int lodIndex, float spinAngle) {
+void drawWheelInstance(void *instance, int lodIndex, float spinAngle) {
     WheelInstance *wheel = (WheelInstance *)instance;
     int wheelIndex = wheel->wheelIndex;
     char *lodBase;
