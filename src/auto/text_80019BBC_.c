@@ -908,8 +908,16 @@ extern void DrawList_restoreViewport(int *, int);
 extern void DrawList_restoreProjection(float *, int);
 extern float lbl_80560418, lbl_80560420, lbl_80560424, lbl_80560440, lbl_80560458;
 #pragma scheduling invalid_target
-/* Sets up projection/model-view for rendering an object and draws two passes. */
+/* Bakes a TrackMarker into its render-target texture: bind the target, set up a
+ * square viewport and projection from the marker's parameters, then draw the
+ * marker's shape twice with its two registered textures in a saved GX state. */
 void bakeTrackMarkerTexture(void *obj) {
+    #define MARKER_ZERO     lbl_80560418   /* 0.0f */
+    #define MARKER_HALF     lbl_80560420   /* 0.5f */
+    #define MARKER_ONE      lbl_80560424   /* 1.0f */
+    #define MARKER_NEG_ONE  lbl_80560440   /* -1.0f */
+    #define MARKER_FOV      lbl_80560458   /* marker field of view (radians) */
+
     struct {
         int viewport[2];
         unsigned char pad[8];
@@ -922,19 +930,19 @@ void bakeTrackMarkerTexture(void *obj) {
     int savedState;
     Texture_BindRenderTarget(*(int *)((char *)obj + 4));
     fn_802C9294(*(int *)((char *)obj + 4), 0);
-    angleRad = lbl_80560458;
-    tanHalf = (float)fn_8002EF30((float)angleRad * lbl_80560420);
-    aspectRatio = (lbl_80560420 * *(float *)((char *)obj + 0x28)) / tanHalf;
-    DrawList_saveProjection(frame.projParams, aspectRatio - lbl_80560424, lbl_80560424 + aspectRatio, (float)angleRad, tanHalf);
+    angleRad = MARKER_FOV;
+    tanHalf = (float)fn_8002EF30((float)angleRad * MARKER_HALF);
+    aspectRatio = (MARKER_HALF * *(float *)((char *)obj + 0x28)) / tanHalf;
+    DrawList_saveProjection(frame.projParams, aspectRatio - MARKER_ONE, MARKER_ONE + aspectRatio, (float)angleRad, tanHalf);
     tanHalf = *(float *)((char *)obj + 0x1C);
     DrawList_saveViewport(frame.viewport, 0, 0, (int)tanHalf, (int)tanHalf);
     fn_802C88CC(0xFFFFFF);
     savedState = fn_802C2C00(0);
-    frame.modelMtx[9] = lbl_80560418; frame.modelMtx[10] = aspectRatio; frame.modelMtx[11] = lbl_80560418;
-    frame.modelMtx[0] = lbl_80560424; frame.modelMtx[1] = lbl_80560418; frame.modelMtx[2] = lbl_80560418;
-    frame.modelMtx[3] = lbl_80560418; frame.modelMtx[4] = lbl_80560418; frame.modelMtx[5] = lbl_80560424;
-    frame.modelMtx[6] = lbl_80560418; frame.modelMtx[7] = lbl_80560440; frame.modelMtx[8] = lbl_80560418;
-    DrawList_loadMatrix(frame.modelMtx, lbl_80560424, lbl_80560418);
+    frame.modelMtx[9] = MARKER_ZERO; frame.modelMtx[10] = aspectRatio; frame.modelMtx[11] = MARKER_ZERO;
+    frame.modelMtx[0] = MARKER_ONE; frame.modelMtx[1] = MARKER_ZERO; frame.modelMtx[2] = MARKER_ZERO;
+    frame.modelMtx[3] = MARKER_ZERO; frame.modelMtx[4] = MARKER_ZERO; frame.modelMtx[5] = MARKER_ONE;
+    frame.modelMtx[6] = MARKER_ZERO; frame.modelMtx[7] = MARKER_NEG_ONE; frame.modelMtx[8] = MARKER_ZERO;
+    DrawList_loadMatrix(frame.modelMtx, MARKER_ONE, MARKER_ZERO);
     fn_802C8BD0(*(int *)((char *)obj + 0xC));
     fn_8001B754(*(float *)((char *)obj + 0x3C)); DrawList_RestoreNormalMode();
     ((void (*)(int))fn_8001B7B8)(0);
@@ -943,6 +951,12 @@ void bakeTrackMarkerTexture(void *obj) {
     ((void (*)(int))fn_8001B7B8)(1);
     fn_802C2C00(savedState); fn_802C9294(-2, 0);
     DrawList_restoreViewport(frame.viewport, -1); DrawList_restoreProjection(frame.projParams, -1);
+
+    #undef MARKER_ZERO
+    #undef MARKER_HALF
+    #undef MARKER_ONE
+    #undef MARKER_NEG_ONE
+    #undef MARKER_FOV
 }
 #pragma scheduling on
 
