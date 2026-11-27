@@ -196,7 +196,7 @@ void fn_8028A664(void) {
     extern void *fn_8028BB68(void *, s32, f32);
     extern void *fn_8028C824(void *, s32);
     extern void *fn_802929D8(s32, void *, s32, s32);
-    extern void *fn_802974CC(void *);
+    extern void *createFXSequence(void *);
     extern void initTerrainChunks(void *);
     extern void fn_8028B3CC(void);
     extern void Event_RegisterHandler(s32, s32);
@@ -216,7 +216,7 @@ void fn_8028A664(void) {
     if (handle != 0) handle = fn_8028C824(handle, 0x60);
     lbl_8055F6F8 = (s32)handle;
     lbl_8055F6FC = fn_802929D8(1, &lbl_8055C8A0, 0, 0);
-    handle = fn_802974CC("expseq.val");
+    handle = createFXSequence("expseq.val");
     *(volatile s32 *)&lbl_8055F700 = (s32)handle;
     *(volatile s32 *)&lbl_804B32B8[0x50] = 0;
     initTerrainChunks(handle);

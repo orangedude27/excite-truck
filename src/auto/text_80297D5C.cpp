@@ -53,7 +53,7 @@ extern "C" u32 lbl_8055CA9C;
 extern "C" float lbl_8056459C;
 extern "C" float lbl_805645B8;
 extern "C" void fn_802991BC(void*);
-extern "C" void* fn_802974CC(char*);
+extern "C" void* createFXSequence(char*);
 extern "C" int Event_RegisterHandler(void*, int);
 extern "C" int fn_8029AEE8(void*);
 extern "C" float lbl_805645C8;
@@ -2562,7 +2562,7 @@ extern "C" void fn_8029A890(void*, void*);
 extern "C" void fn_8029BA94(void*, void*);
 extern "C" int fn_8029C024(int*);
 extern "C" int fn_8029C054(int*);
-extern "C" void* fn_802974CC(char*);
+extern "C" void* createFXSequence(char*);
 extern "C" void fn_8029BE54(void*, void*);
 #pragma scheduling invalid_target
 void fn_8029BE54(void* arg0, void* arg1) {
@@ -2823,7 +2823,7 @@ extern "C" void* fn_802988A4(void* arg0) {
         *(float*)((char*)*(void**)arg0 + off + 0x1C) = f31v;
     }
     fn_802991BC(arg0);
-    *(void**)((char*)arg0 + 8) = fn_802974CC((char*)&lbl_803494B8);
+    *(void**)((char*)arg0 + 8) = createFXSequence((char*)&lbl_803494B8);
     return arg0;
 }
 #pragma pop
