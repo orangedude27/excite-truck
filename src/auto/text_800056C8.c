@@ -1544,7 +1544,7 @@ extern s32 fn_801DF110(void);
 extern s32 fn_80161A70(void);
 extern s32 drawAllPlayerHuds(void);
 extern s32 reservedNoOp0(void);
-extern s32 fn_80005460(void);
+extern s32 reservedNoOp1(void);
 extern s32 getControlScheme(void);
 extern s32 fn_800053CC(void);
 extern s32 fn_800217E4(void);
@@ -1580,7 +1580,7 @@ done:
     fn_80005B6C();
     ((void (*)(s32))fn_80005B70)(0);
     reservedNoOp0();
-    fn_80005460();
+    reservedNoOp1();
     if (getControlScheme() == 3) {
         fn_800053CC();
     }
