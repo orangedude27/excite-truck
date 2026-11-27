@@ -731,7 +731,7 @@ int fn_8003AC24(void *arg0) {
  * whose 0x20-byte result goes to the caller's buffer.  Claims the next context
  * slot (fatally reporting a taken/magic-corrupt slot), then submits the ioctl
  * through doTransactionCallback; returns 0 if submission failed, else 1. */
-int DVDLowInquiryAsync(void *buffer, void *callback) {
+/* Issue the DVD low-level INQUIRY ioctl (0x12) asynchronously: claim the next DVDLow context slot (fatally reporting a taken or magic-corrupt one), write the 0x20-byte drive-info result to buffer through doTransactionCallback, and free the slot on submission failure. Returns 0 on failure, else 1. */ int DVDLowInquiryAsync(void *buffer, void *callback) {
     const char *msgBase = lbl_80302848;
     unsigned char *contexts = lbl_8037B820;
     int offsetBytes;
