@@ -52,8 +52,8 @@ void reservedNoOp0(void) {
     return;
 }
 
-/* Does nothing. */
-/* No-op default callback slot; intentionally does nothing in this build. */ /* No-op default callback slot; intentionally does nothing in this build. */ /* No-op default callback slot; intentionally does nothing. */ /* No-op default callback slot; intentionally does nothing. */ void reservedNoOp1(void) {
+/* Reserved no-op slot: intentionally does nothing in this build. */
+void reservedNoOp1(void) {
     return;
 }
 
