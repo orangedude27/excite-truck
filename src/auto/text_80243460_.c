@@ -33,7 +33,7 @@ typedef struct MenuListObject {
     /* 0x34 */ s32 field_34;
 } MenuListObject;
 extern char lbl_80342CEC[];
-s32 fn_80243478(s32);
+s32 getMenuTableEntryCount(s32);
 extern s32 MenuList_GetTextLength(void *);
 extern void fn_80230C30(float *, float *, int, int);
 extern void fn_80230F78(signed char *, float *, long, long);
@@ -72,7 +72,7 @@ void fn_80243470(void* child) {
 #pragma dont_inline on
 /* MenuTable entry count: number of used entries in a menu-table group, i.e.
  * the entries up to (but not including) the first one with a null label. */
-s32 fn_80243478(s32 group) {
+s32 getMenuTableEntryCount(s32 group) {
     #pragma scheduling invalid_target
     MenuTableEntry *entry = MENU_TABLE[group];
     s32 count = 0;
@@ -127,7 +127,7 @@ s32 fn_8024360C(s32 offset, s32 group) {
  * one past the group's last entry passes as well. */
 s32 fn_80243710(s32 entryIndex, s32 group) {
     s32 result = 0;
-    if (entryIndex >= 0 && entryIndex <= fn_80243478(group)) result = 1;
+    if (entryIndex >= 0 && entryIndex <= getMenuTableEntryCount(group)) result = 1;
     return result;
 }
 
@@ -160,8 +160,8 @@ s32 moveMenuCursor(s32 *entryIndex, volatile s32 *groupIndex, s32 entryDelta, s3
     if (*groupIndex != oldGroup) {
         /* the entry widths the cursor covered in the old group choose its entry here */
         entry = fn_8024360C(fn_80243528(*entryIndex, oldGroup), *groupIndex);
-        newCount = fn_80243478(*groupIndex);
-        oldCount = fn_80243478(oldGroup);
+        newCount = getMenuTableEntryCount(*groupIndex);
+        oldCount = getMenuTableEntryCount(oldGroup);
         if (oldCount != newCount) {
             if (fn_80243710(s_cursorHoldGroup, *groupIndex) && *entryIndex == s_cursorHoldEntry) {
                 /* take the entry saved for this group and leave ours behind */
@@ -182,8 +182,8 @@ s32 moveMenuCursor(s32 *entryIndex, volatile s32 *groupIndex, s32 entryDelta, s3
     }
     current = *entryIndex + entryDelta;
     *entryIndex = current;
-    if (current < 0) *entryIndex = fn_80243478(*groupIndex) - 1;
-    else if (*entryIndex > fn_80243478(*groupIndex) - 1) *entryIndex = 0;
+    if (current < 0) *entryIndex = getMenuTableEntryCount(*groupIndex) - 1;
+    else if (*entryIndex > getMenuTableEntryCount(*groupIndex) - 1) *entryIndex = 0;
     if (*entryIndex != s_cursorHoldEntry) {
         s_cursorHoldGroup = -1;
         s_cursorHoldEntry = -1;
@@ -293,7 +293,7 @@ void fn_80243A38(void *arg0) {
     do {
         entry = base;
         i = 0;
-        while (i < fn_80243478(group)) {
+        while (i < getMenuTableEntryCount(group)) {
             switch (entry[2]) {
             case 3:
                 if (entry[0] == 0 || strlen((char *)entry[0]) < 1)
