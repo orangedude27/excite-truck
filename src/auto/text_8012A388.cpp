@@ -1067,7 +1067,7 @@ static inline void *AllocAligned80(void *owner, s32 size) {
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 #pragma scheduling on
-/* fn_8012B6FC's body; the pragmas below inline it into that function only. */
+/* LoadResourceEntryData's body; the pragmas below inline it into that function only. */
 static inline s32 LoadEntryDataBody(struct ResManager *manager, s32 entryIndex) {
     struct ResEntry *entry;
     u8 *header;
@@ -1119,7 +1119,7 @@ static inline s32 LoadEntryDataBody(struct ResManager *manager, s32 entryIndex) 
     return (flags >> 3) & 1; /* RES_ENTRY_LOADED */
 }
 
-/* The inline helpers above must be inlined into fn_8012B6FC only. */
+/* The inline helpers above must be inlined into LoadResourceEntryData only. */
 #pragma push
 #pragma dont_inline off
 #pragma auto_inline off
@@ -1131,7 +1131,7 @@ static inline s32 LoadEntryDataBody(struct ResManager *manager, s32 entryIndex) 
  * load is logged with the time it took, on failure the CRC message is logged and
  * the allocation handed back. Returns the entry's RES_ENTRY_LOADED bit, which
  * tells ResourceGet (ResourceGetEntry) whether it can hand out the entry's data. */
-extern "C" s32 fn_8012B6FC(struct ResManager *manager, s32 entryIndex) {
+extern "C" s32 LoadResourceEntryData(struct ResManager *manager, s32 entryIndex) {
     return LoadEntryDataBody(manager, entryIndex);
 }
 #pragma pop
@@ -1162,7 +1162,7 @@ extern "C" s32 fn_8012B6FC(struct ResManager *manager, s32 entryIndex) {
     u8 *result = 0;
     manager = (struct ResManager *)((struct ResManager *(*)(s32, s32 *, s32))findResourceEntry)(path, &index, 0);
     if (manager != 0) {
-        if (fn_8012B6FC(manager, index) != 0) {
+        if (LoadResourceEntryData(manager, index) != 0) {
             struct ResEntry *entry = (struct ResEntry *)(manager->entries + index * 0x44);
             if ((u32)dataTag == entry->dataTag) {
                 s32 count;
