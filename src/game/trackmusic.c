@@ -90,7 +90,7 @@ extern long gSngPathFormat;
 }
 
 #pragma dont_inline on
-void TrackMusic_loadSongs(void) {
+/* Load and register the three track-music song resource paths once each, logging the path used when a song is first set up. */ void TrackMusic_loadSongs(void) {
 #define gSongLoaded0 gTrackMusicSongLoaded0
 #define gSongLoaded1 gTrackMusicSongLoaded1
 #define gSongLoaded2 gTrackMusicSongLoaded2
