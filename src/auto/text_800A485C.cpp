@@ -21025,7 +21025,7 @@ void homebutton::Controller::clearCallback() {
     m_prevExtensionCb = 0;
 }
 
-extern "C" void fn_800D1054(void *dst, void *src, s32 copyPos) {
+extern "C" void copyEntryTransform(void *dst, void *src, s32 copyPos) {
     /* Copy transform/flag fields from src->object (src+0x0) into dst: optionally
        copies position floats to dst+0x8/0xC, copies three s32 fields (obj+4/0/8)
        to dst+0x10/0x14/0x18, then if obj type (obj+0x5C)==2 mirrors selected
@@ -24347,7 +24347,7 @@ extern "C" void fn_800CA264(void *arg0, void *arg1) {
                         } else {
                             j = 1;
                         }
-                        fn_800D1054(*(void **)(s + 0x254), in + i * 0x10, j);
+                        copyEntryTransform(*(void **)(s + 0x254), in + i * 0x10, j);
                         if (*(s32 *)(SYS + 0x20) == 0) {
                             pane = V3(s, transPaneName, 1);
                             ((u8 *)pane)[0xCF] = (((u8 *)pane)[0xCF] & 0xFE) | 1;
