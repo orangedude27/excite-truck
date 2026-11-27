@@ -70,7 +70,7 @@ void fn_8024DADC(void) {
 
 extern void *memset(void *, int, unsigned int);
 extern void *fn_8024F17C(void *arg0, void **arg1, s32 *arg2, s32 *arg3, void *arg4, void *arg5);
-extern void fn_8024EA1C(s32 arg0);
+extern void updateMenuEntrySelection(s32 arg0);
 extern s32 fn_8024EB94(void *object);
 extern s32 fn_8024EB9C(void *obj, s32 index);
 extern void fn_8024EBAC(void *arg0, s32 arg1, s32 arg2);
@@ -100,7 +100,7 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
     extern void fn_802556BC(void *, s32);
     extern s32 fn_802E4A10(void);
     extern void fn_8002F53C(void *, void *, void *, s32, s32);
-    extern void __array_delete(void *, void *, s32, s32);
+    extern void fn_8002F634(void *, void *, s32, s32);
     extern void fn_80255758(void *, s32);
     extern void fn_80018B24(void);
     extern void fn_8013C8B8(void);
@@ -111,13 +111,14 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
     extern s32 fn_80128670(s32);
     extern s32 fn_80235380(s32);
     extern s32 fn_802CAC54(s32);
-    extern s32 MRollStatLabel_init(void);
-    extern s32 MRollStatLabel_deletingDestructor(void);
+    extern void fn_8024ECD4(void);
+    extern s32 fn_80241098(void);
+    extern s32 fn_80240928(void);
     struct {
+        Tbl3 tbl1;
+        unsigned int pad;
         s32 pad0;
         Tbl3 tbl2;
-        Tbl3 tbl1;
-        s32 pad;
         s32 info2[4];
         s32 info1[4];
         Dlg dlg2;
@@ -131,23 +132,23 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
         u8 res[0xc8];
         char names[5][0x64];
     } m;
-    register u8 *g = lbl_80498C30;
+    u8 *g = lbl_80498C30;
     u8 *slots;
     s32 *p;
-    const void *label;
     s32 result;
+    const void *label;
     s32 r;
-    s32 v;
+    int v;
     s32 i;
     s32 off;
-    u8 *rec;
+    register u8 *rec;
     void **list;
     void **owned;
     u8 *e;
     s32 *pA, *pB;
 
     v = fn_8000DA10();
-    if (*(s32 *)(g + 0x18) != v) {
+    if (*(s32 *)(g + 0x18) != (unsigned)v) {
         *(s32 *)(g + 0x18) = v;
         p = (s32 *)(g + 0x18);
         p[4] = 0; p[2] = 0; p[5] = 2; p[3] = 2;
@@ -162,7 +163,7 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
     result = -1;
     fn_802556BC(m.work, 0);
     *(s32 *)(m.work + 0xd8) = fn_802E4A10();
-    fn_8002F53C(m.res, MRollStatLabel_init, MRollStatLabel_deletingDestructor, 0x28, 5);
+    fn_8002F53C(m.res, fn_80241098, fn_80240928, 0x28, 5);
     memset(m.opts, 0, 0x2c);
     m.names[0][0] = 0;
     m.names[1][0] = 0;
@@ -172,8 +173,8 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
     pA = slots[4] ? (s32 *)(slots + idx * 16 + 0x14) : (s32 *)(slots + idx * 16 + 0xc);
     pB = slots[4] ? (s32 *)(slots + idx * 16 + 0x10) : (s32 *)(slots + idx * 16 + 0x8);
     fn_8024F17C(m.screen, obj, pA, pB, m.opts, m.work);
-    *(void **)m.screen = lbl_80344474;
     lbl_8055F2EC = (unsigned int)m.screen;
+    *(void **)m.screen = lbl_80344474;
 
     for (;;) {
         if (slots[4] == 0) {
@@ -198,7 +199,7 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
             m.items1[17].label = &lbl_80344170[0x114]; m.items1[17].type = 3; m.items1[17].value = m.screen + 0x3c; m.items1[17].lo = 0; m.items1[17].hi = 0;
             m.items1[18].label = &lbl_8055C0B8; m.items1[18].type = 3; m.items1[18].value = m.screen + 0x50; m.items1[18].lo = 0; m.items1[18].hi = 0;
             m.items1[19].label = 0; m.items1[19].type = 5; m.items1[19].value = m.screen; m.items1[19].lo = 0; m.items1[19].hi = 0;
-            m.items1[20].label = &lbl_8055B860; m.items1[20].type = 6; m.items1[20].value = (void *)updateEntryInfo; m.items1[20].lo = 0; m.items1[20].hi = 0x72;
+            m.items1[20].label = &lbl_8055B860; m.items1[20].type = 6; m.items1[20].value = (void *)fn_8024ECD4; m.items1[20].lo = 0; m.items1[20].hi = 0x72;
             m.items1[21].label = &lbl_8055B860; m.items1[21].type = 6; m.items1[21].value = 0; m.items1[21].lo = -1; m.items1[21].hi = 0x1b;
             m.items1[22].label = &lbl_8055B860; m.items1[22].type = 6; m.items1[22].value = (void *)fn_8024EC3C; m.items1[22].lo = -2; m.items1[22].hi = 0xd;
             m.items1[23] = *(Item *)g;
@@ -207,8 +208,8 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
                 label = &lbl_80344170[0x120];
             }
             m.dlg1 = lbl_802FA56C;
-            m.dlg1.label = label;
             m.dlg1.items = m.items1;
+            m.dlg1.label = label;
             m.info1[0] = (s32)&lbl_80344170[0x148];
             m.info1[1] = fn_80128314(0);
             m.info1[2] = fn_80128314(1);
@@ -233,10 +234,10 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
             fn_8024EBAC(m.sub, fn_8024EBE4((s32)m.sub), 1);
             fn_8024EB9C(m.sub, 0);
             for (i = 0, off = 0; i < fn_8024EB94(m.sub); i++, off += 4) {
-                e = (u8 *)fn_8024EB9C(m.sub, i);
                 *(s32 *)(e + 0x10) = *(s32 *)(*(u8 **)(e + 8) + off + 0x64);
+                e = (u8 *)fn_8024EB9C(m.sub, i);
             }
-            fn_8024EA1C((s32)m.sub);
+            updateMenuEntrySelection((s32)m.sub);
             m.tbl2 = lbl_802FA560;
             m.dlg2 = lbl_802FA580;
             m.items2[0].label = 0; m.items2[0].type = 5; m.items2[0].value = m.sub; m.items2[0].lo = 0; m.items2[0].hi = 0;
@@ -276,7 +277,7 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
             }
             owned = *(void ***)(m.sub + 0xd4);
             *(void **)m.sub = lbl_80344410;
-            if (owned != 0) {
+            if (owned) {
                 ((void (*)(void *, s32))(*(void ***)owned)[2])(owned, 1);
             }
             *(void **)m.sub = lbl_803444D8;
@@ -307,7 +308,7 @@ unsigned int fn_8024DAE0(s32 *out, s32 arg1, s32 idx, void **obj, s32 sel) {
     fn_80128670(*(s32 *)(m.screen + 0x18));
     fn_80235380(*(s32 *)(m.screen + 0x24));
     fn_802CAC54(*(s32 *)(m.screen + 0x20));
-    __array_delete(m.res, MRollStatLabel_deletingDestructor, 0x28, 5);
+    fn_8002F634(m.res, fn_80240928, 0x28, 5);
     fn_80255758(m.work, -1);
     fn_80018B24();
     fn_8013C8B8();
@@ -411,7 +412,7 @@ void *fn_8024E920(void *self, s32 shouldDelete) {
 #pragma opt_common_subs off
 #pragma scheduling invalid_target
 /* Update selection-dependent value and label text for a UI/menu entry. */
-void fn_8024EA1C(s32 arg0) {
+void updateMenuEntrySelection(s32 arg0) {
     s32 base = fn_8001668C(arg0 + 0x60, 0);
     s32 *secondary;
     s32 choiceBase;
@@ -2014,13 +2015,13 @@ extern "C" void fn_80251B04(void *arg0) {
         s = lbl_805639A8 * a;
         c = *(f32 *)((char *)arg0 + 0x28);
         arg3 = lbl_805639AC * ((f32)i - c) - lbl_805639B0;
-        y = f27 - lbl_80563980 * ((lbl_80563964 - a) * lbl_805639A8);
+        y = f27 - lbl_80563980 * (lbl_805639A8 * (lbl_80563964 - a));
         b = (f32)__fabs(c - (f32)i);
         if (lbl_80563964 < b) {
             b = lbl_80563964;
         }
-        f23 = lbl_80563960;
-        b = b > f23 ? b : f23;
+        f32 z0 = lbl_80563960;
+        b = b > z0 ? b : z0;
         arg7 = lbl_80563964 - b;
         arg4 = y + lbl_805639B4 * a;
         arg6 = s + lbl_805639A4 * a;
