@@ -443,9 +443,10 @@ void fn_8000A868(void) {
 
 #pragma push
 #pragma scheduling invalid_target
-void loadTrackResources(void* arg0) {
-    /* Load/setup track-related resources for arg0: build paths/names, query resource
-     * items and weather name, set flags/strings, init subsystems, and cache "speech" id. */
+/* Load/setup track-related resources for `track`: build paths/names, query resource
+ * items and weather name, set flags/strings, init subsystems, and cache the speech id. */
+void loadTrackResources(void* track)
+{
     extern void fn_802E3D00(void);
     extern void* fn_8001285C(void*);
     extern void fn_800124DC(void*, s32, s32, f32);
@@ -459,17 +460,17 @@ void loadTrackResources(void* arg0) {
     char* base = lbl_8034F4C8;
     char* db = lbl_802FBC08;
     void* resource;
-    void* object;
+    void* manager;
     void* item;
-    char* originalName;
+    char* weatherName;
     s32 compareResult;
     u32 differs;
 
     fn_802E3D00();
-    ((void (*)(void*, s32, void*, ...))fn_801345D8)(base + 0x18, 0x40, &lbl_80558A34, arg0);
-    resource = fn_8001285C(*(void**)((u8*)arg0 + 0x3E4));
+    ((void (*)(void*, s32, void*, ...))fn_801345D8)(base + 0x18, 0x40, &lbl_80558A34, track);
+    resource = fn_8001285C(*(void**)((u8*)track + 0x3E4));
     lbl_8055D3B8 = (u32)resource;
-    object = *(void**)((u8*)resource + 0x20);
+    manager = *(void**)((u8*)resource + 0x20);
 #pragma cplusplus on
     struct ResourceView {
         virtual void unused0();
@@ -478,16 +479,16 @@ void loadTrackResources(void* arg0) {
         virtual void unused3();
         virtual void* getItem(const char*, s32);
     };
-    item = ((ResourceView*)object)->getItem(db + 0x40, 0);
+    item = ((ResourceView*)manager)->getItem(db + 0x40, 0);
 #pragma cplusplus reset
     if (item != 0) {
         lbl_8055D3B4 = 1;
-        ((void (*)(void*, s32, void*, ...))fn_801345D8)(base + 0x58, 0x40, db + 0x4C, arg0, (s32)item);
+        ((void (*)(void*, s32, void*, ...))fn_801345D8)(base + 0x58, 0x40, db + 0x4C, track, (s32)item);
     } else {
         lbl_8055D3B4 = 0;
-        ((void (*)(void*, s32, void*, ...))fn_801345D8)(base + 0x58, 0x40, &lbl_80558A34, arg0);
+        ((void (*)(void*, s32, void*, ...))fn_801345D8)(base + 0x58, 0x40, &lbl_80558A34, track);
     }
-    object = *(void**)((u8*)lbl_8055D3B8 + 0x20);
+    manager = *(void**)((u8*)lbl_8055D3B8 + 0x20);
 #pragma cplusplus on
     struct ManagerView {
         virtual void unused0();
@@ -495,13 +496,13 @@ void loadTrackResources(void* arg0) {
         virtual void unused2();
         virtual const char* getName(const char*);
     };
-    originalName = (char*)((ManagerView*)object)->getName((const char*)&lbl_80558A20);
+    weatherName = (char*)((ManagerView*)manager)->getName((const char*)&lbl_80558A20);
 #pragma cplusplus reset
-    compareResult = stricmp(originalName, (const char*)&lbl_80558A28);
+    compareResult = stricmp(weatherName, (const char*)&lbl_80558A28);
     differs = (u32)(-compareResult | compareResult) >> 31;
     lbl_8055D3B5 = (u8)differs;
     if (differs != 0) {
-        ((void (*)(void*, s32, void*, ...))fn_801345D8)(base + 0x98, 0x40, db + 0x4C, arg0, (s32)originalName);
+        ((void (*)(void*, s32, void*, ...))fn_801345D8)(base + 0x98, 0x40, db + 0x4C, track, (s32)weatherName);
     } else {
         base[0x98] = 0;
     }
