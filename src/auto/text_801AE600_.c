@@ -67,7 +67,7 @@ typedef struct {              /* one RaceResultTable record, 0x1C bytes */
     f32 lapTime;              /* 0x08 the value the placing is sorted by */
     s16 rank;                 /* 0x0C placing; 1 = first, 0 = unplaced */
     u16 flags;                /* 0x0E & 1 took part, & 8 disqualified */
-    s16 points;               /* 0x10 for the placing (fn_801AE610, stubbed) */
+    s16 points;               /* 0x10 for the placing (getPointsForPlacing, stubbed) */
     s16 bonus;                /* 0x12 */
     s16 score;                /* 0x14 shared out by fn_801AEBD0 */
     s16 f16;                  /* 0x16 first sort key of fn_801AEAA4 */
@@ -96,7 +96,7 @@ int fn_801AE600(int competitorId) {
 /* Stub: awards race points for a finishing placing, but always returns 0.
    context is a race/result context passed in as an int; placing is the rank
    (RaceResult.rank, 1 = first) whose points are written to RaceResult.points. */
-short fn_801AE610(int context, short placing) {
+short getPointsForPlacing(int context, short placing) {
     return 0;
 }
 
@@ -148,7 +148,7 @@ void fn_801AE628(int context) {
     for (recordIndex = 0, scanIndex = 0; recordIndex < lbl_80435780[0x3C0 / 4]; scanIndex += 0x1C, recordIndex++) {
         record2 = (char *)*lbl_8055E624 + scanIndex;
         if (fn_801AE620(record2) != 0) {
-            *(short *)(record2 + 0x10) = fn_801AE610(context, *(short *)(record2 + 0xC));
+            *(short *)(record2 + 0x10) = getPointsForPlacing(context, *(short *)(record2 + 0xC));
             *(short *)(record2 + 0x12) = 0;
             if (*(short *)(record2 + 0x14) != 0) {
                 *(short *)(record2 + 0x12) += 5;
