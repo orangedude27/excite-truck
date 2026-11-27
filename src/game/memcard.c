@@ -238,8 +238,10 @@ extern char lbl_8034D6B8[];
 extern char lbl_8034D784[];
 #pragma push
 #pragma use_lmw_stmw off
-/* Builds a memory card save image (MCSH) from registered save entries and writes it. */
-/* Build a memory-card save image in MCSH format from the registered 0x14-byte save entries (lbl_804FC8B0), compute its header checksum, write it through the NAND save helper, and free the buffer. */ void *writeMemCardSaveImage(void) {
+/* Build a memory-card save image in MCSH format from the registered 0x14-byte save
+ * entries (lbl_804FC8B0): lay out the header, copy each chunk's payload, compute the
+ * header checksum, write the image through the NAND save helper, then free it. */
+void *writeMemCardSaveImage(void) {
     register unsigned char *saveEntry;
     register unsigned char *descriptor;
     register int entryIndex;
