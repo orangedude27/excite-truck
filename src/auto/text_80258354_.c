@@ -72,85 +72,86 @@ void *fn_80258354(void) {
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void *destroyUIObjects(void *mgr, int freeManager, int arg2) {
-    /* UIObjects destructor: release the objects, texts and sounds held by the
-     * three fixed tables, clear their counts, and optionally free the manager. */
+    /* UIObjects destructor: release the art sets, texts and sounds held by the
+     * manager's three fixed tables, clear their counts and table headers, and
+     * free the manager itself when freeManager is positive. */
     struct Release {
         virtual void release(int);
     };
-    char *p = (char *)mgr;
+    char *base = (char *)mgr;
     int zero;
-    int byteOffset;
+    int offset;
     int entry;
-    int textCount;
-    int soundCount;
-    void *sound;
+    int textIndex;
+    int soundIndex;
+    void *soundObj;
 
     if (mgr) {
-        *(void **)p = &lbl_80344D98;
+        *(void **)base = &lbl_80344D98;
         entry = 0;
-        byteOffset = 0;
+        offset = 0;
         goto L_check1;
 L_loop1:
-        fn_80235380(*(int *)(*(char **)(p + 4) + byteOffset + 0x40));
-        byteOffset += 0x48;
+        fn_80235380(*(int *)(*(char **)(base + 4) + offset + 0x40));
+        offset += 0x48;
         entry += 1;
 L_check1:
-        if (entry < *(int *)(p + 8))
+        if (entry < *(int *)(base + 8))
             goto L_loop1;
         zero = 0;
-        *(int *)(p + 8) = zero;
+        *(int *)(base + 8) = zero;
 
-        textCount = 0;
-        byteOffset = 0;
+        textIndex = 0;
+        offset = 0;
         goto L_check2;
 L_loop2:
-        entry = *(int *)(*(char **)(p + 0x910) + byteOffset + 0x20);
+        entry = *(int *)(*(char **)(base + 0x910) + offset + 0x20);
         if (entry != 0) {
             fn_802328D4(*(int *)entry);
             *(int *)entry = zero;
             fn_80128668((void *)entry);
         }
-        byteOffset += 0x24;
-        textCount++;
+        offset += 0x24;
+        textIndex++;
 L_check2:
-        if (textCount < *(int *)(p + 0x914))
+        if (textIndex < *(int *)(base + 0x914))
             goto L_loop2;
         zero = 0;
-        *(int *)(p + 0x914) = zero;
+        *(int *)(base + 0x914) = zero;
 
-        soundCount = 0;
-        byteOffset = 0;
+        soundIndex = 0;
+        offset = 0;
         goto L_check3;
 L_loop3:
-        sound = *(void **)(*(char **)(p + 0xd9c) + byteOffset + 0x20);
-        if (sound != 0)
-            ((Release *)sound)->release(1);
-        byteOffset += 0x2c;
-        soundCount++;
+        soundObj = *(void **)(*(char **)(base + 0xd9c) + offset + 0x20);
+        if (soundObj != 0)
+            ((Release *)soundObj)->release(1);
+        offset += 0x2c;
+        soundIndex++;
 L_check3:
-        if (soundCount < *(int *)(p + 0xda0))
+        if (soundIndex < *(int *)(base + 0xda0))
             goto L_loop3;
         zero = 0;
-        *(int *)(p + 0xda0) = zero;
-        if ((char *)p + 0xd9c != 0) {
-            if ((char *)p + (unsigned)0xd9c != 0) {
-                *(int *)(p + 0xd9c) = 0;
-                *(int *)(p + 0xda0) = 0;
-                *(int *)(p + 0xda4) = 0;
+        *(int *)(base + 0xda0) = zero;
+        if ((char *)base + 0xd9c != 0) {
+            if ((char *)base + (unsigned)0xd9c != 0) {
+                *(int *)(base + 0xd9c) = 0;
+                *(int *)(base + 0xda0) = 0;
+                *(int *)(base + 0xda4) = 0;
             }
         }
-        if ((char *)p + 0x910 != 0) {
-            if ((char *)p + 0x910 != 0) {
-                *(int *)(p + 0x910) = zero;
-                *(int *)(p + 0x914) = zero;
-                *(int *)(p + 0x918) = zero;
+        if ((char *)base + 0x910 != 0) {
+            if ((char *)base + 0x910 != 0) {
+                *(int *)(base + 0x910) = zero;
+                *(int *)(base + 0x914) = zero;
+                *(int *)(base + 0x918) = zero;
             }
         }
-        if ((char *)p + 4 != 0) {
-            if ((char *)p + 4 != 0) {
-                *(int *)(p + 4) = zero;
-                *(int *)(p + 8) = zero;
-                *(int *)(p + 0xc) = zero;
+        if ((char *)base + 4 != 0) {
+            if ((char *)base + 4 != 0) {
+                *(int *)(base + 4) = zero;
+                *(int *)(base + 8) = zero;
+                *(int *)(base + 0xc) = zero;
             }
         }
         if (freeManager > 0)
