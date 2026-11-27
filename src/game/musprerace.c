@@ -494,7 +494,7 @@ void fn_8020C918(s32 muteRequested) {
 }
 
 /* Pre-race music module entry point, empty in this build.  The kiosk/demo
- * selection fn_80247210 calls it with the "song_id" resource index of the
+ * selection runKioskDemoSelection calls it with the "song_id" resource index of the
  * demo it picked (found through the demo node's find(), see lbl_8055BE98),
  * just before stopping the global music with fn_8020A634 and entering that
  * demo, and again with the -1 "no song" sentinel once the demo is running.

@@ -439,7 +439,7 @@ void fn_80247174(void)
 #pragma scheduling invalid_target
 #pragma dont_inline on
 #pragma cplusplus on
-extern "C" void fn_80247210(void) {
+extern "C" void runKioskDemoSelection(void) {
     /* Runs the kiosk/demo selection flow: initializes demo state, waits for a valid
        demo selection (retrying and showing "attract.avi" on -0xEA), resolves the
        selected item's resource by "demo_idx"/"song_id", then enters the game. */
@@ -724,7 +724,7 @@ s32 fn_80246AE8(void) {
 #pragma pop
 char fn_80247624(void) {
     /* Returns lbl_8055F260, the flag raised by the attract/demo (kiosk)
-     * selection flow fn_80247210 while it runs; callers test it to take
+     * selection flow runKioskDemoSelection while it runs; callers test it to take
      * demo-specific paths. */
     return lbl_8055F260;
 }

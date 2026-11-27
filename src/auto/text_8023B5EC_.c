@@ -30,7 +30,7 @@ extern int fn_802E30C8(const char *, ...);
 extern void runAttractMenu(void);
 extern void fn_80012794(void);
 extern void fn_80012788(void);
-extern void fn_80247210(void);
+extern void runKioskDemoSelection(void);
 extern void fn_80012778(void);
 extern void fn_80129AEC(int);
 extern void fn_802E47E8(void);
@@ -60,7 +60,7 @@ void fn_8023B670(void) {
     fn_802E30C8(lbl_803412EC);
     fn_80012794();
     fn_80012788();
-    fn_80247210();
+    runKioskDemoSelection();
     fn_80012794();
     fn_80012778();
 }
