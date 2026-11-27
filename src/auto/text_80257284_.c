@@ -230,7 +230,7 @@ int fn_802574E0(int self, int deletingFlag) {
 
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void buildProfileSelectorTable(void *arg0, void *arg1) {
+/* Build the profile-name table (+0x1C) of a settings selector: for every registered event that carries a contest matching the "name" key, append its profile name unless already present, then select the first row and mark the table built. */ extern "C" void buildProfileSelectorTable(void *arg0, void *arg1) {
     /* Fill the profile table (+0x1C) of the settings selector.  It walks every
      * registered event record; for each record that carries a contest object
      * matching the "name" key it takes the record's profile name and appends a
