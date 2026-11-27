@@ -3763,7 +3763,7 @@ void fn_801C9514(void);
  * 0.1 s, the cursor keys step the menu selection, '[' and ']' scroll the
  * selected timeline entry while its list is shown, and Enter runs the selected
  * menu entry.  Returns the line editor's result, or 0. */
-s32 fn_801CB114(s32 key) {
+s32 handleInterludeDebugKey(s32 key) {
     if ((u8)sTextInputActive != 0) return console_text_key(key);
     if (key == 'h') sOverlayHidden = (u8)sOverlayHidden == 0;
     if ((u8)sOverlayHidden != 0) return 0;
