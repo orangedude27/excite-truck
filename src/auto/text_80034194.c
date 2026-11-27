@@ -1967,7 +1967,7 @@ extern u32 *lbl_8055D894;
 extern u8 *lbl_8055D898;
 extern u32 *lbl_8055D89C;
 extern void handleDvdPartitionStatus(u32);
-extern void fn_8003727C(u32);
+extern void handleDvdPartitionStatusReset(u32);
 extern void fn_8003801C(void);
 extern void DVDLowOpenPartition(u32, u32, u32, u32, void *, void (*)(u32));
 #pragma dont_inline on
@@ -2048,7 +2048,7 @@ void fn_80036D24(u32 arg0) {
                     *(s32 *)(logBase + *(volatile u32 *)&errorLogCount * 0x14 + 0x2C) = OSGetTick();
                     errorLogCount = *(volatile u32 *)&errorLogCount + 1;
                     OSRestoreInterrupts(localEnabled);
-                    DVDLowOpenPartition(*lbl_8055D894, 0, 0, 0, base + 0x100, fn_8003727C);
+                    DVDLowOpenPartition(*lbl_8055D894, 0, 0, 0, base + 0x100, handleDvdPartitionStatusReset);
                 }
                 return;
             }
@@ -2135,7 +2135,7 @@ void handleDvdPartitionStatus(u32 errorCode) {
 }
 
 /* Handles a DVD DI/drive status value: records it in __ErrorInfo, then either starts error-report/reset flows (0x10/0x20/bit0) or issues a stop-motor/reset command sequence. */
-void fn_8003727C(u32 status) {
+void handleDvdPartitionStatusReset(u32 status) {
     register u32 diStatus = status;
     s32 interrupts = OSDisableInterrupts();
     s32 resetHandled;
