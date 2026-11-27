@@ -1180,7 +1180,7 @@ extern "C" s32 fn_8019B08C(void* arg0, const Vec* arg1, void* arg2, f32 farg0) {
     const Vec* point = arg1;
     void* objB = arg2;
     f32* m = *(f32**)((u8*)objB + 0xC);
-    Vec local, tmp, worldPoint, normal, worldNormal, copy;
+    Vec local, tmp, worldPoint, worldNormal, normal, copy;
     f32 dx = point->x - m[9];
     f32 dy = point->y - m[10];
     f32 dz = point->z - m[11];
@@ -1199,19 +1199,20 @@ extern "C" s32 fn_8019B08C(void* arg0, const Vec* arg1, void* arg2, f32 farg0) {
                 tmp.y = local.y * scale;
                 tmp.z = local.z;
                 {
+                    f32* mw = *(f32**)((u8*)objB + 0xC);
                     f32* dst = &worldPoint.x;
                     f32* src = &tmp.x;
                     if (dst == src) {
                         f32 x = src[0], y = src[1], z = src[2];
-                        dst[0] = (y*m[3]+x*m[0]) + z*m[6];
-                        dst[1] = (y*m[4]+x*m[1]) + z*m[7];
-                        dst[2] = (y*m[5]+x*m[2]) + z*m[8];
+                        dst[0] = (y*mw[3]+x*mw[0]) + z*mw[6];
+                        dst[1] = (y*mw[4]+x*mw[1]) + z*mw[7];
+                        dst[2] = (y*mw[5]+x*mw[2]) + z*mw[8];
                     } else {
-                        dst[0] = (src[1]*m[3]+src[0]*m[0]) + src[2]*m[6];
-                        dst[1] = (src[1]*m[4]+src[0]*m[1]) + src[2]*m[7];
-                        dst[2] = (src[1]*m[5]+src[0]*m[2]) + src[2]*m[8];
+                        dst[0] = (src[1]*mw[3]+src[0]*mw[0]) + src[2]*mw[6];
+                        dst[1] = (src[1]*mw[4]+src[0]*mw[1]) + src[2]*mw[7];
+                        dst[2] = (src[1]*mw[5]+src[0]*mw[2]) + src[2]*mw[8];
                     }
-                    dst[0] += m[9]; dst[1] += m[10]; dst[2] += m[11];
+                    dst[0] += mw[9]; dst[1] += mw[10]; dst[2] += mw[11];
                 }
                 normal.x = local.x; normal.y = local.y; normal.z = lbl_805622D0;
                 PSVECNormalize(&normal, &normal);
@@ -1524,7 +1525,7 @@ void fn_8019CE3C(void *shapeNode, s32 object) {
 }
 
 /* Collision objects the influence/collision handlers in this file work on.
-   fn_8019F064 and fn_8019F26C choose a handler from the four-character shape tag
+   fn_8019F064 and dispatchShapeInfluence choose a handler from the four-character shape tag
    at +0x18 ('SPHR' sphere, 'TUBE', 'BOX ', 'FLSR' floor, 'RING', 'POLY', 'GRUP'). */
 struct CollisionObject {
     u32 flags;             /* 0x00: which side fn_8019AA34 reports the hit against */
@@ -2714,7 +2715,7 @@ extern u8 lbl_80562375;
 extern u8 lbl_80562376;
 extern u8 lbl_80562377;
 extern u8 lbl_80562378;
-extern "C" void fn_8019F26C(s32 context, void *shape) {
+extern "C" void dispatchShapeInfluence(s32 context, void *shape) {
     /* Dispatch collision handling for a shape based on its 4-char type tag. */
     u32 shapeType = *(u32 *)((u8 *)shape + 0x18);
     switch (shapeType) {
