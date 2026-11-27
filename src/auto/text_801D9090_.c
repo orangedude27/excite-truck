@@ -386,23 +386,23 @@ struct Node1D94DC {
     Node1D94DC *next;
 };
 #pragma use_lmw_stmw off
-extern "C" int buildMorphRegions(void *head, void *list, const char *name, int object) {
+/* Build the linked list of morph entries matching `name` from the DTB sub-table, resolving each terr_region against the region database. */ extern "C" int buildMorphRegions(void *head, void *subTable, const char *name, int regionTable) {
     /* Build a linked list of morph entries matching name from the DTB list, resolving each terr_region against the region database. */
     Node1D94DC *node;
     DtbItem801D94DC *item;
     int index = 0;
-    const char *found;
-    while ((item = (DtbItem801D94DC *)((DtbManager801D9394 *)list)->getAt(index)) != 0) {
+    const char *regionName;
+    while ((item = (DtbItem801D94DC *)((DtbManager801D9394 *)subTable)->getAt(index)) != 0) {
         if (strcmp(item->getName(), name) == 0) {
             node = (Node1D94DC *)fn_801284F8(0x10, name);
             if (node != 0) {
                 node->field0 = item->getFloat(&lbl_8055AD68);
                 node->field4 = item->getFloat(&lbl_8055AD70);
-                found = (const char *)item->find(lbl_803391A8);
-                if (((DtbObject801D94DC *)object)->check((void *)found) == 0) {
-                    Abend_Panic(lbl_803391B4, found);
+                regionName = (const char *)item->find(lbl_803391A8);
+                if (((DtbObject801D94DC *)regionTable)->check((void *)regionName) == 0) {
+                    Abend_Panic(lbl_803391B4, regionName);
                 }
-                node->field8 = ((DtbObject801D94DC *)object)->get((void *)found)->getInt(&lbl_8055AD78);
+                node->field8 = ((DtbObject801D94DC *)regionTable)->get((void *)regionName)->getInt(&lbl_8055AD78);
                 node->next = 0;
             }
             node->next = *(Node1D94DC **)head;
