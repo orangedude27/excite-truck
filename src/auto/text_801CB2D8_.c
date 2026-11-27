@@ -206,11 +206,11 @@ void fn_801CB55C(int playerIndex, int param) {
 
 extern void resetAwardHandler(void);
 extern void fn_801CC470(void);
-extern void fn_801CD5B4(int, int, int);
+extern void pushAward(int, int, int);
 #pragma scheduling invalid_target
 // fn_801CB5DC matches with invalid_target scheduling to preserve argument-copy order.
 void fn_801CB5DC(int arg0, int arg1, int arg2) {
-    /* If not blocked and in state 0, forward (arg0, arg1, arg2) to fn_801CD5B4. */
+    /* If not blocked and in state 0, forward (arg0, arg1, arg2) to pushAward. */
     if (fn_80019BA8() != 0) goto done;
     switch (fn_80161C38()) {
     case 0:
@@ -219,7 +219,7 @@ void fn_801CB5DC(int arg0, int arg1, int arg2) {
         goto done;
     }
 action:
-    fn_801CD5B4(arg0, arg1, arg2);
+    pushAward(arg0, arg1, arg2);
 done:
     return;
 }
@@ -1638,7 +1638,7 @@ extern void fn_8001EFC4(int, void *, int);
 extern char lbl_80337D5C[];
 extern void fn_8001EFC4();
 /* Handles an award/grade push for an object, storing ids/data and starting playback if idle. */
-void fn_801CD5B4(int arg0, int arg1, int arg2) {
+void pushAward(int arg0, int arg1, int arg2) {
     unsigned char *awardsBase;
     unsigned char *object;
     int slotIndex;
