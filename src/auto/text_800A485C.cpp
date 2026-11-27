@@ -10021,7 +10021,7 @@ var_r31 = VFiPFPATH_DoMatchFileNameWithPattern(var_r31_2, (s32 *)&frame.sp20, r5
 return var_r31;
 }
 
-/* Format a FAT 8.3 short name into an 11-byte space-padded name field for the VFi file system: copy up to eight base characters (two when the base is empty), pad the base, append the extension unless flag 8 suppresses the separator, then pad the field to eleven bytes. */ extern "C" s32 VFiPFFAT_FormatShortNameField(void *nameField, void *name, s32 flags) {
+/* Format a FAT 8.3 short name into an 11-byte space-padded name field, optionally leaving the name and extension unpadded. */ /* Format a FAT 8.3 short name into an 11-byte space-padded name field for the VFi file system: copy up to eight base characters (two when the base is empty), pad the base, append the extension unless flag 8 suppresses the separator, then pad the field to eleven bytes. */ extern "C" s32 VFiPFFAT_FormatShortNameField(void *nameField, void *name, s32 flags) {
     /* Format a FAT 8.3 short name into an 11-byte space-padded name field (VFi short-name formatting). */
     char *dst = (char *)nameField;
     const char *src = (const char *)name;
