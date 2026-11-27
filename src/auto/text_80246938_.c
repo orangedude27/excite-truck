@@ -90,7 +90,7 @@ extern void fn_80246CB8(void *);
 extern char lbl_80343780[];
 extern float lbl_8055F264;
 extern unsigned char lbl_8055F268;
-extern char lbl_8034333C[];
+extern char attractMovieName[];
 extern char lbl_80343348[];
 extern char lbl_8034397C[];
 extern char lbl_8055BE98;
@@ -482,7 +482,7 @@ extern "C" void runKioskDemoSelection(void) {
         }
         selectResult = ((s32 (*)(void))fn_80248668)();
         if (selectResult == -0xEA) {
-            if (fn_80278A1C(lbl_8034333C) == 0) {
+            if (fn_80278A1C(attractMovieName) == 0) {
                 demoIndex = 1;
             }
             if (demoIndex == 0) {
