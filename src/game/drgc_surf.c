@@ -85,7 +85,7 @@ typedef struct { FifoVec3 pos; u32 color; f32 u, v; } FifoVtx;
 /* Writing a value here sends it to the GX FIFO. */
 #define GX_FIFO_ADDR 0xCC008000
 /* The per-surface draw record every drawer in this file is handed.  Byte +0x08
- * selects the vertex layout (fn_802D5FE4 dispatches on it); +0x1C counts the
+ * selects the vertex layout (drDrawSurfByLayout dispatches on it); +0x1C counts the
  * vertices of the layouts that rebuild an array, and +0x20..+0x28 are the three
  * vertex arrays the drawer binds -- which GX attribute each one becomes depends
  * on the layout, and each array has its own stride.  +0x2C/+0x30 are the size
@@ -220,7 +220,7 @@ void drDrawSurfLayout10(void *surface) {
     GXCallDisplayList(*(void **)((char *)surface + 0x30), *(u32 *)((char *)surface + 0x2C));
 }
 #pragma pop
-/* Draw vertex layout 30 (fn_802D5FE4 case 20): bind this textured surface's 12-byte position records as GX_VA_POS and its 4-byte texcoords as GX_VA_TEX0, then submit the prebuilt display list that supplies the lighting and color state. */
+/* Draw vertex layout 30 (drDrawSurfByLayout case 20): bind this textured surface's 12-byte position records as GX_VA_POS and its 4-byte texcoords as GX_VA_TEX0, then submit the prebuilt display list that supplies the lighting and color state. */
 void drDrawSurfLayout30(struct SurfDraw *surface) {
     GXSetArray(GX_VA_POS, surface->positions, 0xC); /* stride of the position records */
     GXSetArray(GX_VA_TEX0, surface->colors, 4);     /* stride of the texture coordinates */
@@ -337,7 +337,7 @@ void fn_802D4458(void *arg0) {
 }
 #pragma opt_propagation reset
 #pragma opt_unroll_loops off
-/* Format-16 surface drawer (fn_802D5FE4 case 16): build a fresh position array by
+/* Format-16 surface drawer (drDrawSurfByLayout case 16): build a fresh position array by
  * displacing each weighted source vertex along the shared offset direction, queue
  * that transform for the next frame's streaming pass when there is room (or do it
  * inline when the queue is full), then bind the arrays and submit the prebuilt list. */
@@ -1012,7 +1012,7 @@ void fn_802D5F88(s32 arg0) {
 #pragma dont_inline on
 #pragma push
 #pragma opt_lifetimes off
-/* Dispatches surface drawing to the routine for the descriptor's vertex layout byte (+8, numbered from 10), warning on unsupported layouts. */ void fn_802D5FE4(void *arg0) {
+/* Dispatches surface drawing to the routine for the descriptor's vertex layout byte (+8, numbered from 10), warning on unsupported layouts. */ void drDrawSurfByLayout(void *arg0) {
     /* Dispatch display-list surface drawing by the surface descriptor's vertex format
        (byte at +8, numbered from 10); some formats fall back to conventional handling. */
     register void *surface = arg0;
@@ -1049,7 +1049,7 @@ extern void fn_802D0E48(int);
 /* Draw a CPU-lit surface: set transparent draw state, rebuild its vertex format, switch to opaque state, then submit its prebuilt display list. */
 void fn_802D6170(struct SurfDraw *surface) {
     fn_802D0E48(0);
-    fn_802D5FE4(surface);
+    drDrawSurfByLayout(surface);
     fn_802D0E48(1);
     GXCallDisplayList(surface->displayList, surface->listSize);
 }
@@ -1389,7 +1389,7 @@ void fn_802D6B08(void *surface) {
         fn_802D6170(surface);
         return;
     }
-    fn_802D5FE4(surface);
+    drDrawSurfByLayout(surface);
 }
 
 #pragma pop
@@ -1403,9 +1403,9 @@ void drUpdateDisplayList(void *displayList) {
 
 extern s32 gxRenderStateFlags;
 /* Default (non-CPU-lighting) surface redraw callback: forwards the surface
- * descriptor to fn_802D5FE4, which dispatches drawing by its vertex format. */
+ * descriptor to drDrawSurfByLayout, which dispatches drawing by its vertex format. */
 void fn_802D6B78(void *surface) {
-    fn_802D5FE4(surface);
+    drDrawSurfByLayout(surface);
 }
 
 /* CPU-lighting callback thunk: forwards to fn_802D6170 to rebuild and draw
@@ -1778,7 +1778,7 @@ extern u8 gCachedVertexMode;
 extern s32 gTotalYmorphVerts;
 extern const char sVertexFormatDlLogMsg[];
 extern const char sTotalYmorphVertsLogMsg[];
-extern void fn_802D5FE4(void *);
+extern void drDrawSurfByLayout(void *);
 extern void fn_802E30C8(const char *, ...);
 extern void fn_80128670(s32);
 
