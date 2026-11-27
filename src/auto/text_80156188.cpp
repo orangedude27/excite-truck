@@ -224,7 +224,7 @@ done:
 #pragma pop
 extern s32 fn_801562BC(void*, s32, s32, s32);
 extern s32 fn_80156248(void*, s32);
-extern s32 fn_80138968(void*);
+extern s32 loadIdealLineResource(void*);
 extern void fn_802E30C8(const char*, ...);
 extern s32 fn_80138BA0(s32, s32);
 extern char lbl_8032E270[];
@@ -245,15 +245,15 @@ s32 fn_801563BC(s32 nameArg, void *provider) {
     s32 resource;
 
     fn_801562BC(path, 0x40, nameArg, 0);
-    resource = fn_80138968(path);
+    resource = loadIdealLineResource(path);
     if (resource == 0) {
         fn_802E30C8(lbl_8032E270, path);
         fn_801562BC(path, 0x40, nameArg, 1);
-        resource = fn_80138968(path);
+        resource = loadIdealLineResource(path);
     }
     if (resource == 0) {
         fn_802E30C8(lbl_8032E2AC, path);
-        resource = fn_80138968((void *)fn_80156248(path, 0x40));
+        resource = loadIdealLineResource((void *)fn_80156248(path, 0x40));
     } else {
         s32 value = ((Obj *)provider)->get(0);
         fn_80138BA0(resource, value);
@@ -330,7 +330,7 @@ extern "C" void fn_801564B0(void) {
     helper = fn_801284F8(8, (const char *)&lbl_80559FD0);
     if (helper != 0) {
         *(void **)helper = lbl_8032E46C;
-        s32 helperId = fn_80138968((void *)fn_80156248(path, 0x40));
+        s32 helperId = loadIdealLineResource((void *)fn_80156248(path, 0x40));
         *(s32 *)((u8 *)helper + 4) = helperId;
         if (helperId == 0)
             Abend_Panic((const char *)base + 0xBC, path);
