@@ -116,7 +116,7 @@ struct Fn800BD710Obj {
 };
 extern "C" s32 VFiPFDIR_CheckEntry(u8 *, u8 *, s32, s32, u32, s32, s32 *, s32);
 extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *, void *);
-extern "C" s32 fn_800B3A70(void *, void *, s32);
+extern "C" s32 VFiPFFAT_FormatShortNameField(void *, void *, s32);
 extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *, u8 *);
 extern "C" s32 VFiPFPATH_transformInUnicode(s16 *, s32, s32);
 extern "C" void VFiPFPATH_getLongNameformShortName(void *, void *, s32);
@@ -144,7 +144,7 @@ extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32
   VFiPFPATH_getLongNameformShortName((void *)((u32)object+0x20e),name,it[0x58]);
   len=((s32 (*)(s16 *,s32))VFiPFPATH_transformInUnicode)((s16 *)object,(s32)name);
   ((u8 *)object)[0x20a]=len/13+(len%13!=0);
-  fn_800B3A70(buf,&((u8 *)object)[0x20e],0);
+  VFiPFFAT_FormatShortNameField(buf,&((u8 *)object)[0x20e],0);
   sum=0;
   for (i=0;i<11;i++) { next=((sum&0xfe)>>1)+((sum&1)?0x80:0)+buf[i]; sum=next&0xff; }
   ((u8 *)object)[0x20c]=sum;
@@ -3796,7 +3796,7 @@ extern "C" void *fn_800A9B0C(void *fileArg) {
 }
 #pragma pop
 #pragma dont_inline reset
-extern "C" s32 fn_800B3A70(void *, void *, s32);
+extern "C" s32 VFiPFFAT_FormatShortNameField(void *, void *, s32);
 #define RET_fn_800B3BEC s32
 extern "C" RET_fn_800B3BEC fn_800B3BEC(u8 *, u8 *, u8);
 extern "C" s32 fn_800B317C(s32, s32);
@@ -3823,7 +3823,7 @@ extern "C" s32 VFiPFDIR_CheckEntry(u8 *candidate, u8 *fatEntry, s32 searchKey, s
  fn_800B3BEC(&candidate[0x20e], (u8*)fatEntry, *(u8*)((u8*)fatEntry + 0xb));
  if (*(s8*)(&candidate[0x20e]) == 5) *(s8*)(&candidate[0x20e]) = -27;
  if (*(u8*)(&candidate[0x20a]) && *(u8*)(&candidate[0x20b]) == 1) {
-  fn_800B3A70(shortName, &candidate[0x20e], 0);
+  VFiPFFAT_FormatShortNameField(shortName, &candidate[0x20e], 0);
   checksum = 0;
   for (i = 0; i < 11; i++) {
   next = ((checksum & 0xfe) >> 1) + ((checksum & 1) ? 0x80 : 0) + shortName[i];
@@ -3905,11 +3905,11 @@ windowCheck:
 }
 #pragma pop
 
-extern "C" s32 fn_800B3A70(void *buf, void *short_name, s32 flags);
+extern "C" s32 VFiPFFAT_FormatShortNameField(void *buf, void *short_name, s32 flags);
 extern "C" RET_fn_800B3BEC fn_800B3BEC(u8 *buf, u8 *src, u8 flags);
 extern "C" u8 VFiPFENT_CalcCheckSum(u8 *p_ent) {
     /* Compute the checksum byte for a VF file entry from its short name at offset 0x20E. */
-    #define VFiPFPATH_FormatShortName fn_800B3A70
+    #define VFiPFPATH_FormatShortName VFiPFFAT_FormatShortNameField
     u8 shortName[13];
     u32 sum;
     u32 next;
@@ -4412,7 +4412,7 @@ extern "C" s32 fn_800AB0C0(u8 *p_ent, u32 arg1)
   {
     p_ent[0x21C] |= 0x20;
   }
-  fn_800B3A70(buf, p_ent + 0x20E, p_ent[0x21C]);
+  VFiPFFAT_FormatShortNameField(buf, p_ent + 0x20E, p_ent[0x21C]);
   if (buf[0] == 0xE5)
   {
     buf[0] = 5;
@@ -10021,7 +10021,7 @@ var_r31 = VFiPFPATH_DoMatchFileNameWithPattern(var_r31_2, (s32 *)&frame.sp20, r5
 return var_r31;
 }
 
-extern "C" s32 fn_800B3A70(void *outBuf, void *shortName, s32 flags) {
+extern "C" s32 VFiPFFAT_FormatShortNameField(void *outBuf, void *shortName, s32 flags) {
     /* Format a FAT 8.3 short name into an 11-byte space-padded name field (VFi short-name formatting). */
     char *dst = (char *)outBuf;
     const char *src = (const char *)shortName;
