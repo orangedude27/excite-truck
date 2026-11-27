@@ -1966,7 +1966,7 @@ extern s32 lbl_8055D858, lbl_8055D870, lbl_8055D874;
 extern u32 *lbl_8055D894;
 extern u8 *lbl_8055D898;
 extern u32 *lbl_8055D89C;
-extern void fn_800370F4(u32);
+extern void handleDvdPartitionStatus(u32);
 extern void fn_8003727C(u32);
 extern void fn_8003801C(void);
 extern void DVDLowOpenPartition(u32, u32, u32, u32, void *, void (*)(u32));
@@ -2028,7 +2028,7 @@ void fn_80036D24(u32 arg0) {
                     *(s32 *)(logBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
                     lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
                     OSRestoreInterrupts(localEnabled);
-                    DVDLowOpenPartition(*lbl_8055D894, 0, 0, 0, base + 0x100, fn_800370F4);
+                    DVDLowOpenPartition(*lbl_8055D894, 0, 0, 0, base + 0x100, handleDvdPartitionStatus);
                 }
                 return;
             default:
@@ -2094,7 +2094,7 @@ void fn_80036D24(u32 arg0) {
 
 extern void onDiscHeaderReadComplete(u32);
 /* Record DVD error status into the global error info ring and dispatch the corresponding recovery path. */
-void fn_800370F4(u32 errorCode) {
+void handleDvdPartitionStatus(u32 errorCode) {
     register u32 status = errorCode;
     s32 interrupts;
     u8 *info;
@@ -2252,7 +2252,7 @@ void fn_8003727C(u32 status) {
     register u32 status = statusCode;
     s32 interrupts;
 
-    /* Completion callback for the small disc-header read issued by fn_800370F4:
+    /* Completion callback for the small disc-header read issued by handleDvdPartitionStatus:
      * log the drive status in the error ring, then on a cancel/odd status re-issue
      * the boot-data read (its offset and length come from the header) and finish
      * through fn_80035A04; otherwise log a fatal error and queue a drive reset. */
