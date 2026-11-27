@@ -221,12 +221,12 @@ void fn_802B0914(void) {
 }
 #pragma scheduling on
 extern void *fn_802B0AC0(void *, int);
-__declspec(section ".data") extern void *lbl_804BE104;
+__declspec(section ".data") extern void *gEntryList;
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 #pragma opt_common_subs off
 void fn_802B0954(void) {
-    /* Clears the global pool and destroys all entries in lbl_804BE104, releasing nested handles/rows and freeing each object. */
+    /* Clears the global pool and destroys all entries in gEntryList, releasing nested handles/rows and freeing each object. */
     extern void __array_delete(void *, void *, int, int);
     extern void fn_802B0690(int *);
     extern void fn_802B0874(void);
@@ -242,11 +242,11 @@ void fn_802B0954(void) {
     int itemOffset;
 
     fn_802B0874();
-    table = &lbl_804BE104;
+    table = &gEntryList;
     entryIndex = 0;
     entryOffset = 0;
     for (; entryIndex < *(int *)((char *)table + 4); entryOffset += 4, entryIndex++) {
-        entry = *(void **)(*(char **)&lbl_804BE104 + entryOffset);
+        entry = *(void **)(*(char **)&gEntryList + entryOffset);
         if (entry != 0) {
             for (rowIndex = 0, rowOffset = 0; rowIndex < *(int *)((char *)entry + 0x10); rowOffset += 0x80, rowIndex++) {
                 row = *(char **)((char *)entry + 0xc) + rowOffset;
@@ -309,7 +309,7 @@ void *fn_802B0AC0(void *object, int shouldDelete) {
 
 void fn_802B0B20(void *arg0, void *arg1) {
     char *sbase = lbl_8034A078;
-    int *tbl = (int *)&lbl_804BE104;
+    int *tbl = (int *)&gEntryList;
     if (tbl[1] + 1 <= tbl[2]) {
         char *obj = (char *)fn_801284F8(0xA40, sbase + 0x5C);
         if (obj != 0) {
@@ -419,7 +419,7 @@ void fn_802B0B20(void *arg0, void *arg1) {
     }
 }
 
-extern void *lbl_804BE104;
+extern void *gEntryList;
 extern char lbl_8055F980;
 char fn_802B05E4(void);
 char fn_802B05EC(void);
@@ -445,9 +445,9 @@ void fn_802B111C(void *object) {
     ((int *)object)[2] = 0;
 }
 #pragma scheduling on
-__declspec(section ".data") extern void *lbl_804BE104;
+__declspec(section ".data") extern void *gEntryList;
 #pragma use_lmw_stmw off
-/* Find an entry in lbl_804BE104 by case-insensitively matching name against its field at 0xa3c. */
+/* Find an entry in gEntryList by case-insensitively matching name against its field at 0xa3c. */
 void *fn_802B1138(const char *name) {
     int entryOffset;
     void *foundEntry;
@@ -455,8 +455,8 @@ void *fn_802B1138(const char *name) {
     foundEntry = 0;
     index = 0;
     entryOffset = 0;
-    while (index < *(int *)((char *)&lbl_804BE104 + 4)) {
-        void **entries = *(void ***)&lbl_804BE104;
+    while (index < *(int *)((char *)&gEntryList + 4)) {
+        void **entries = *(void ***)&gEntryList;
         void *entry = *(void **)((char *)entries + entryOffset);
         if (stricmp(name, *(const char **)((char *)entry + 0xa3c)) == 0) {
             foundEntry = entry;

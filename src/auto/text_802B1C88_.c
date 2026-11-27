@@ -6,7 +6,7 @@
 extern void fn_8000D838(void *);
 extern void __register_global_object(void *, void *, void *);
 extern int lbl_8055F990;
-extern int lbl_804BE104[];
+extern int gEntryList[];
 extern int lbl_804BE0F8[];
 extern void fn_802B1CE0(void);
 void fn_802B1C88(void);
@@ -20,10 +20,10 @@ DECL_SECTION(".ctors") funcptr_t D_802ED550 = fn_802B1C88;
 /* Initializes this module's global object record and registers its static destructor. */
 void fn_802B1C88(void) {
     fn_8000D838(&lbl_8055F990);
-    lbl_804BE104[0] = (int)((char *)lbl_804BE104 + 12);
-    lbl_804BE104[2] = 0x20;
-    lbl_804BE104[1] = 0;
-    __register_global_object((void *)lbl_804BE104, (void *)fn_802B1CE0, (void *)&lbl_804BE0F8[0]);
+    gEntryList[0] = (int)((char *)gEntryList + 12);
+    gEntryList[2] = 0x20;
+    gEntryList[1] = 0;
+    __register_global_object((void *)gEntryList, (void *)fn_802B1CE0, (void *)&lbl_804BE0F8[0]);
 }
 #pragma opt_dead_assignments reset
 #pragma opt_propagation reset
