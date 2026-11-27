@@ -30,7 +30,7 @@ extern void DSPSendMailToDSP(u32);
 #include "revolution/DSP/dsp_task_types.h"
 #include "revolution/DSP/dsp_task_types.h"
 extern void __DVDStateBusy(void *);
-extern void fn_80035A04(u32);
+extern void onBootDataReadComplete(u32);
 extern s32 DVDLowReadAsync(void *, s32, s32, s32);
 extern s32 lbl_8055D8CC;
 extern u8 lbl_80376A80[];
@@ -1300,7 +1300,7 @@ void fn_8003588C(void) {
     DVDLowReadAsync(*(void **)((u8 *)bootInfo_8055D8C0 + 0x38),
                 ((*(u32 *)(lbl_80376A80 + 8) << (~(*(volatile u32 *)&__DVDLayoutFormat) & 2)) + 0x1F) & ~0x1F,
                 *(u32 *)(lbl_80376A80 + 4) >> *(volatile u32 *)&__DVDLayoutFormat,
-                (s32)fn_80035A04);
+                (s32)onBootDataReadComplete);
 }
 #pragma dont_inline on
 /* Completion callback of the boot read started by fn_8003588C(); `result` is the
@@ -1320,7 +1320,7 @@ void fn_8003588C(void) {
  *   anything else - log a fatal entry (0x27) and queue a drive reset transaction,
  *     which reports back through fn_80035E6C().
  */
-void fn_80035A04(u32 result) {
+void onBootDataReadComplete(u32 result) {
     register s32 interrupts;
     s32 enabled;
     s32 *block;
@@ -2255,7 +2255,7 @@ void fn_8003727C(u32 status) {
     /* Completion callback for the small disc-header read issued by handleDvdPartitionStatus:
      * log the drive status in the error ring, then on a cancel/odd status re-issue
      * the boot-data read (its offset and length come from the header) and finish
-     * through fn_80035A04; otherwise log a fatal error and queue a drive reset. */
+     * through onBootDataReadComplete; otherwise log a fatal error and queue a drive reset. */
     interrupts = OSDisableInterrupts();
     if (*(volatile u32 *)&lbl_8055D848 == 0) {
         *(u32 *)(__ErrorInfo + 0x78) = status;
@@ -2287,7 +2287,7 @@ void fn_8003727C(u32 status) {
         discOffset = rawLength >> layoutShift;
         readLength = (shiftedLength + 0x1F) & (~0x1F);
         ((void (*)(s32, s32, s32, u32, u32)) fn_800356F4)(1, (unsigned long long) discOffset, readLength, layoutShift, rawLength);
-        DVDLowReadAsync(*((void **) (((u8 *) bootInfo_8055D8C0) + 0x38)), (((*((u32 *) (lbl_80376A80 + 8))) << ((~(*((volatile u32 *) (&__DVDLayoutFormat)))) & 2)) + 0x1F) & (~0x1F), (*((u32 *) (lbl_80376A80 + 4))) >> (*((volatile u32 *) (&__DVDLayoutFormat))), (s32) fn_80035A04);
+        DVDLowReadAsync(*((void **) (((u8 *) bootInfo_8055D8C0) + 0x38)), (((*((u32 *) (lbl_80376A80 + 8))) << ((~(*((volatile u32 *) (&__DVDLayoutFormat)))) & 2)) + 0x1F) & (~0x1F), (*((u32 *) (lbl_80376A80 + 4))) >> (*((volatile u32 *) (&__DVDLayoutFormat))), (s32) onBootDataReadComplete);
     } else {
         fn_800356F4(0x27, 0, 0);
         fn_8003B218(fn_80035E6C);
