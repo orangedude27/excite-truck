@@ -4425,7 +4425,7 @@ extern "C" s32 fn_801A2434(s32 object, s32 shouldDestroy) {
 
 #pragma dont_inline off
 /* Transform input by the cached matrix (3x3 linear part plus translation) into output; preload all coefficients when input and output alias. */
-extern "C" void cacheMatrixAndTransformVec(void *obj) {
+/* Copies the object's 3x3 matrix into its cache, then transforms input by that matrix's linear part plus translation into output, preloading coefficients when input and output alias. */ extern "C" void cacheMatrixAndTransformVec(void *obj) {
     struct Row { f32 v[3]; };
     struct MatrixVecTransform {
         char pad0[0xC];
