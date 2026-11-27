@@ -2648,8 +2648,8 @@ extern float lbl_80562144, lbl_80562170, lbl_80562194, lbl_8055A488;
    competes for the "ahead" slot at +0xA0 (lowest score wins); negative for the
    "behind" slot at +0x78 (highest score wins). The winner's 7-word record is copied
    in, its valid flag set, y/z/id saved at +0xCC..+0xDC, and a per-sign count bumped. */
-int considerDriverTargetCandidate(void *driver, void *candidate) {
-    float xLimit;
+/* Consider a sensed candidate for an AI driver's best ahead/behind target slots; copy the winner's 7-word record and bump its per-sign count. */ int considerDriverTargetCandidate(void *driver, void *candidate) {
+    float minStateValue;
     float stateValue;
     float candidateZ;
     float candidateY;
@@ -2662,25 +2662,25 @@ int considerDriverTargetCandidate(void *driver, void *candidate) {
     unsigned int byte5;
     unsigned int word4, word3, word2, word1, word0;
     unsigned int candidateId;
-    int recordUpdated;
-    int stateValid;
-    int candidateInRange;
+    int updated;
+    int stateOk;
+    int withinRange;
     int driveFlags;
 
     stateValue = *(float *)((char *)driver + 0x270);
-    recordUpdated = 0;
-    xLimit = lbl_80562170;
+    updated = 0;
+    minStateValue = lbl_80562170;
     candidateZ = *(float *)((char *)candidate + 8);
     candidateY = *(float *)((char *)candidate + 4);
-    stateValid = stateValue > xLimit;
+    stateOk = stateValue > minStateValue;
     coefficient = lbl_80562194;
     base = lbl_8055A488;
     absoluteY = (float)__fabs((double)candidateY);
     threshold = base + coefficient * base;
-    candidateInRange = absoluteY < threshold;
+    withinRange = absoluteY < threshold;
     driveFlags = *(unsigned int *)((char *)driver + 0x2D0);
 
-    if ((driveFlags & 1) == 0 && stateValid != 0 && candidateInRange != 0) {
+    if ((driveFlags & 1) == 0 && stateOk != 0 && withinRange != 0) {
         if (candidateY > lbl_80562144) {
             score = *(float *)((char *)driver + 0x278) + candidateY;
             if (score < *(float *)((char *)driver + 0xBC)) {
@@ -2700,7 +2700,7 @@ int considerDriverTargetCandidate(void *driver, void *candidate) {
                 *(unsigned char *)((char *)driver + 0xB4) = byte5;
                 *(unsigned int *)((char *)driver + 0xB8) = word6;
                 *(unsigned char *)((char *)driver + 0x9C) = 1;
-                recordUpdated = 1;
+                updated = 1;
             }
         } else {
             score = *(float *)((char *)driver + 0x278) + candidateY;
@@ -2721,11 +2721,11 @@ int considerDriverTargetCandidate(void *driver, void *candidate) {
                 *(unsigned char *)((char *)driver + 0x8C) = word1;
                 *(unsigned int *)((char *)driver + 0x90) = word0;
                 *(unsigned char *)((char *)driver + 0x74) = 1;
-                recordUpdated = 1;
+                updated = 1;
             }
         }
     }
-    if (recordUpdated) {
+    if (updated) {
         candidateId = *(unsigned int *)((char *)candidate + 0x18);
         *(float *)((char *)driver + 0xCC) = candidateY;
         *(float *)((char *)driver + 0xD8) = candidateZ;
