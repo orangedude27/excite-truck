@@ -17777,8 +17777,6 @@ extern "C" void fn_800C21D8(s32* arg0, s32* arg1) {
 #pragma pop
 extern "C" s32 lbl_8031D670[];
 #pragma push
-#pragma scheduling invalid_target
-#pragma optimization_level 3
 extern "C" void fn_800C2590(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3)
 {
   s32 *t = (s32 *) lbl_8031D670;
