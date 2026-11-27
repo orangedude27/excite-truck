@@ -1180,7 +1180,7 @@ extern void fn_80011F64(void);
 extern s32 fn_80137C74(void);
 extern s32 fn_802090D4(void *);
 extern void LoadFloatOption(s32 kind, void *name, f32 *value); /* the saved float setting `name`, or *value as its default */
-extern void fn_80005464(void);
+extern void resetSessionModeFlags(void);
 extern void fn_8001DB54(void);
 extern f32 lbl_8055892C; /* the "effects_volume" setting; startup reads it with 1.0 as the default */
 #pragma push
@@ -1195,7 +1195,7 @@ extern f32 lbl_8055892C; /* the "effects_volume" setting; startup reads it with 
  * number of players this session has, registers the "dashboard" sound group by
  * name (its handle is lbl_8055D354, which fn_800070DC brings back to full
  * volume), reads the saved "effects_volume" with 1.0 as its default, clears the
- * mode flags (fn_80005464) and builds the HUD overlay managers (fn_80005C88)
+ * mode flags (resetSessionModeFlags) and builds the HUD overlay managers (fn_80005C88)
  * that fn_800070DC then resets to their starting state.  The current mode's
  * master object gets its slot-0xF8 hook, the same one shutdownGameManagers calls on the
  * way out.
@@ -1241,7 +1241,7 @@ extern "C" void fn_80006D9C(void) {
     ((SessionState *)session)->playerCount = fn_80137C74();
     lbl_8055D354 = fn_802090D4((u8 *)names + 0x1F8);     /* the "dashboard" sound group */
     LoadFloatOption(4, (u8 *)names + 0x204, &lbl_8055892C);  /* saved "effects_volume", else 1.0 */
-    fn_80005464();                        /* the session's mode flags off */
+    resetSessionModeFlags();                        /* the session's mode flags off */
     fn_80005C88();                        /* build the HUD overlay managers */
     fn_80011A5C(SESSION->playerCount);    /* the count shutdownGameManagers walks later */
     fn_8001DB54();
@@ -1461,7 +1461,7 @@ void fn_800070D8(void) {
 extern "C" void fn_80209190(s32, f32);
 extern "C" void fn_8001DEA8(void);
 extern "C" void fn_80011A50(void);
-extern "C" void fn_80005464(void);
+extern "C" void resetSessionModeFlags(void);
 /* Puts the HUD overlays back the way fn_80005C88 built them.
  *
  * Runs every overlay's init - vtable slot 0x1C, the one fn_80005C88 calls right after it
@@ -1471,7 +1471,7 @@ extern "C" void fn_80005464(void);
  * overlay that player was showing (its OverlayEntry::active), so fn_800057D0 picks a fresh
  * one next frame.  The "dashboard" sound group (lbl_8055D354, registered by name from
  * lbl_802FB0C8 + 0x1F8) is brought back to full volume first; fn_8001DEA8 resets the six
- * screen managers, fn_80011A50 the message/text state and fn_80005464 the session's mode
+ * screen managers, fn_80011A50 the message/text state and resetSessionModeFlags the session's mode
  * flags.  Called once startup finishes (fn_80006D9C), on a mode change (fn_8000AEC4) and
  * from fn_80007210.
  */
@@ -1518,7 +1518,7 @@ extern "C" void fn_800070DC(void) {
     }
     fn_8001DEA8();
     fn_80011A50();
-    fn_80005464();
+    resetSessionModeFlags();
 }
 #pragma cplusplus reset
 /* Reset the HUD: rebuild every overlay's initial state, then rebase the HUD
