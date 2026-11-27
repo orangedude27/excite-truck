@@ -19,7 +19,7 @@ extern float lbl_805623C8, lbl_805623EC, lbl_805623F4, lbl_805623F8, lbl_805623F
 extern int lbl_8055E3C4;
 extern char lbl_80333C20[];
 extern int lbl_80435050[];
-extern void fn_801A5AD0(void *, unsigned int, void *, void *);
+extern void claimWallContact(void *, unsigned int, void *, void *);
 extern void fn_802E30C8(const char *, ...);
 int fn_801E9E30(void *, int *, int *);
 void *fn_801B83A0(void);
@@ -340,7 +340,7 @@ extern "C" float fn_801A5A7C(void *, float *, float *);
 #pragma opt_dead_assignments off
 extern "C" void applyWallContactImpulse(void *contactPtr, void *carPtr, float *pointVelocity) {
     /* Apply one frame of a spring-wall contact impulse.  contactPtr is one of the
-       car's eight WallContact slots (filled by fn_801A5AD0), carPtr is the car and
+       car's eight WallContact slots (filled by claimWallContact), carPtr is the car and
        pointVelocity its velocity at the contact point; the slot's wall normal
        drives a separation/restitution impulse added to pointVelocity and sent as
        a force at a point to fn_8017B3A8.  The contact timer is advanced and the
@@ -457,7 +457,7 @@ extern "C" void applyWallContactImpulse(void *contactPtr, void *carPtr, float *p
 
 /* Signed distance of a world point from a contact plane: dot(normal, point - origin).
    `contact` is a contact record whose first three floats are its world-space normal
-   (see fn_801A5AD0, which fills it at +0x00 and stores this result at +0x14). */
+   (see claimWallContact, which fills it at +0x00 and stores this result at +0x14). */
 extern "C" float fn_801A5A7C(void * __restrict contact, float * __restrict point, float * __restrict origin) {
     float diff[3];
     diff[0] = point[0] - origin[0];
@@ -467,7 +467,7 @@ extern "C" float fn_801A5A7C(void * __restrict contact, float * __restrict point
 }
 
 /* One of the eight spring-wall contacts a car carries from +0x2724, 0x24 apart.
- * fn_801A5C4C() picks the slot a wall may use, fn_801A5AD0() fills it in and
+ * fn_801A5C4C() picks the slot a wall may use, claimWallContact() fills it in and
  * applyWallContactImpulse() turns it into an impulse every frame until it is released. */
 typedef struct WallContact {
     float normal[3];           /* 0x00 wall normal; the impulse pushes along it */
@@ -513,7 +513,7 @@ typedef struct VehicleState {
  * impulse speed the contact eases up to over WallContact.duration.  A slot the
  * same wall already owns only has its contact timer restarted; a slot held by
  * another wall is left alone. */
-extern "C" void fn_801A5AD0(void *contactPtr, unsigned int wallKey, void *carPtr, void *heldPtr) {
+extern "C" void claimWallContact(void *contactPtr, unsigned int wallKey, void *carPtr, void *heldPtr) {
 #define slot        ((WallContact *)contactPtr)
 #define wallRec     ((WallRecord *)wallKey)
 #define heldContact ((WallContact *)heldPtr)
@@ -617,7 +617,7 @@ extern "C" void fn_801A5C4C(void *arg0, unsigned int key) {
     }
 
     if (candidate != 0) {
-        fn_801A5AD0(candidate, key, arg0, other);
+        claimWallContact(candidate, key, arg0, other);
     } else {
         fn_802E30C8(lbl_80333C20, lbl_8055E3C4);
     }
