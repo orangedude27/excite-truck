@@ -223,7 +223,7 @@ __declspec(section ".sdata") extern char lbl_8055C3A4[], lbl_8055C3A8[], lbl_805
 __declspec(section ".sdata") extern char lbl_8055C3B8[], lbl_8055C3C0[], lbl_8055C3C8[], lbl_8055C3D0[], lbl_8055C3D8[];
 
 extern int __AXGetStackHead(int);
-extern int fn_80008188(int);
+extern int getEventDisplayName(int);
 extern int fn_8000DA10(void);
 extern char *fn_80012820(int);
 extern void *fn_8001285C(int);
@@ -426,9 +426,9 @@ void fn_8025C204(int arg0, int arg1) {
     }
     trackEntry = fn_8001285C(arg0);
     if (((int (*)(void *, char *))(*(void ***)*(void **)((char *)trackEntry + 0x20))[3])(*(void **)((char *)trackEntry + 0x20), lbl_8055C3A8) != 0) {
-        trackName = (char *)fn_80008188(((int (*)(void *, char *))(*(void ***)*(void **)((char *)trackEntry + 0x20))[5])(*(void **)((char *)trackEntry + 0x20), lbl_8055C3A8));
+        trackName = (char *)getEventDisplayName(((int (*)(void *, char *))(*(void ***)*(void **)((char *)trackEntry + 0x20))[5])(*(void **)((char *)trackEntry + 0x20), lbl_8055C3A8));
     } else {
-        trackName = (char *)fn_80008188((int)(fn_80012820(*(int *)((char *)trackEntry + 4)) + 8));
+        trackName = (char *)getEventDisplayName((int)(fn_80012820(*(int *)((char *)trackEntry + 4)) + 8));
     }
     subName = ((char *(*)(void *, char *))(*(void ***)*(void **)((char *)trackEntry + 0x20))[5])(*(void **)((char *)trackEntry + 0x20), base + 0x3C);
     fn_801345D8(title, 0x3E8, lbl_8055C3B0, trackName, subName + 1);

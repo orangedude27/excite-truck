@@ -335,7 +335,7 @@ extern int fn_8001BCF0(void *);
 extern int fn_8001BD6C(void *, void *);
 extern void fn_8001BD38(void *, void *, int);
 extern void fn_8001BD54(void *, void *);
-extern char *fn_80008188(void *);
+extern char *getEventDisplayName(void *);
 extern char *fn_801345D8(char *, int, const char *, ...);
 extern int stricmp(const char *, const char *);
 static inline int FindRecord8025(const char *name, char *table) {
@@ -401,9 +401,9 @@ copy2:      *dst++=*src++; } while(dst[-1]);
         fn_8001BD38(selected,obj+4,0x14);
         entry=(char *)fn_8001285C(best_i);
         if((*(Source **)(entry+0x20))->has(&lbl_8055C3EC))
-            *(char **)(obj+0x18)=fn_80008188((*(Source **)(entry+0x20))->get(&lbl_8055C3EC));
+            *(char **)(obj+0x18)=getEventDisplayName((*(Source **)(entry+0x20))->get(&lbl_8055C3EC));
         else
-            *(char **)(obj+0x18)=fn_80008188((void *)(fn_80012820(*(void **)(entry+4))+8));
+            *(char **)(obj+0x18)=getEventDisplayName((void *)(fn_80012820(*(void **)(entry+4))+8));
         value=(*(Source **)(entry+0x20))->get(lbl_803456A4);
         *(char **)(obj+0x1c)=value;
         fn_801345D8(obj+0x20,0x3e8,&lbl_8055C3F8,*(char **)(obj+0x18),value+1);
@@ -476,4 +476,4 @@ check:
         goto loop;
 }
 #pragma pop
-extern void *fn_8000DA10(void); extern int fn_80012854(void); extern void *fn_8001285C(int); extern int fn_80012820(void *); extern void *fn_80016510(int); extern int fn_8001BA6C(void *); extern void fn_8001BC38(void *, void *, void *, int, int); extern int fn_8001BCF0(void *); extern int fn_8001BD6C(void *, void *); extern void fn_8001BD38(void *, void *, int); extern void fn_8001BD54(void *, void *); extern char *fn_80008188(void *); extern char *fn_801345D8(char *, int, const char *, ...); extern int stricmp(const char *, const char *); extern char lbl_8055C3E4, lbl_8055C3E8, lbl_8055C3EC, lbl_8055C3F8; extern char lbl_803456A4[];
+extern void *fn_8000DA10(void); extern int fn_80012854(void); extern void *fn_8001285C(int); extern int fn_80012820(void *); extern void *fn_80016510(int); extern int fn_8001BA6C(void *); extern void fn_8001BC38(void *, void *, void *, int, int); extern int fn_8001BCF0(void *); extern int fn_8001BD6C(void *, void *); extern void fn_8001BD38(void *, void *, int); extern void fn_8001BD54(void *, void *); extern char *getEventDisplayName(void *); extern char *fn_801345D8(char *, int, const char *, ...); extern int stricmp(const char *, const char *); extern char lbl_8055C3E4, lbl_8055C3E8, lbl_8055C3EC, lbl_8055C3F8; extern char lbl_803456A4[];

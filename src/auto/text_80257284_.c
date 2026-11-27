@@ -26,7 +26,7 @@ int fn_80012818(void);
 void *fn_80012820(int);
 void *fn_80012870(int, int);
 char *fn_800081BC(void *);
-char *fn_80008188(void *);
+char *getEventDisplayName(void *);
 extern int stricmp(const char *, const char *);
 extern char lbl_8055C1F8[4];
 int fn_80012854(void);
@@ -285,7 +285,7 @@ extern "C" void buildProfileSelectorTable(void *arg0, void *arg1) {
             if (found == 0) {
                 found = self->rowCount;
                 fn_8022D894(&self->table_1c, found, 1, (void *)name, 0);
-                fn_8022D894(&self->table_1c, found, 0, fn_80008188(&entry->name), 0);
+                fn_8022D894(&self->table_1c, found, 0, getEventDisplayName(&entry->name), 0);
             }
         }
         outer++;

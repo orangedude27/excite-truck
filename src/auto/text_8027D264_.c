@@ -11,7 +11,7 @@ extern int lbl_8055C784;
 extern int lbl_8055C77C;
 extern int lbl_8055C774;
 extern int fn_80012820(int);
-extern void fn_80008188(int);
+extern void getEventDisplayName(int);
 extern void fn_8000DBC8(void *);
 extern char lbl_804B2FD8[];
 extern void fn_8027D96C(int);
@@ -252,7 +252,7 @@ int fn_8027D6BC(int object, int deleteFlag) {
 extern "C" void fn_8027D6FC(void *__restrict arg0) {
 #define getEntry fn_8001285C
 #define getRecord fn_80012820
-#define localize fn_80008188
+#define localize getEventDisplayName
 #define kTrackFlagKey lbl_8055C77C
 #define kTrackValueKey lbl_8055C774
     /* Choose the localized track/record name for a selection entry: ask the entry's
@@ -553,7 +553,7 @@ extern int lbl_8055C784;
 extern int lbl_8055C77C;
 extern int lbl_8055C774;
 extern int fn_80012820(int);
-extern void fn_80008188(int);
+extern void getEventDisplayName(int);
 extern void fn_802E6BD8(int, int, void *, int, void *);
 extern void fn_8000DBC8(void *);
 extern void fn_8027D96C(int);
