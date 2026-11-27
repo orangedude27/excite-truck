@@ -1051,7 +1051,7 @@ extern f32 fn_802C9A4C(f32);
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void refreshSplatEmitterTransform(s32 arg0) {
+/* Refresh the emitter's per-player 0x30-byte transform snapshot: copy the active player's transform, optionally run the spark transform pass under swapped render state, and store the result into this player's slot. */ void refreshSplatEmitterTransform(s32 emitter) {
     /* Copies the current 0x30-byte transform snapshot into the caller's slot for
      * the active index, optionally running fn_8028C11C against the saved or
      * current snapshot while temporarily swapping render state. */
@@ -1062,38 +1062,38 @@ void refreshSplatEmitterTransform(s32 arg0) {
         struct Pair p5;
         s32 p6;
     };
-    s32 index = fn_801E85B4();
-    struct State *src = (struct State *)fn_801E8718();
-    struct State copy;
-    struct Pair *dest;
+    s32 playerIndex = fn_801E85B4();
+    struct State *player = (struct State *)fn_801E8718();
+    struct State transform;
+    struct Pair *slot;
 
-    copy.p0 = src->p0;
-    copy.p1 = src->p1;
-    copy.p2 = src->p2;
-    copy.p3 = src->p3;
-    copy.p4 = src->p4;
-    copy.p5 = src->p5;
-    copy.p6 = src->p6;
+    transform.p0 = player->p0;
+    transform.p1 = player->p1;
+    transform.p2 = player->p2;
+    transform.p3 = player->p3;
+    transform.p4 = player->p4;
+    transform.p5 = player->p5;
+    transform.p6 = player->p6;
 
-    if (*(s32 *)(arg0 + 4) > 0) {
-        f32 saved = fn_802C9A4C(*(f32 *)(arg0 + 0x18));
-        fn_802C8BD0(*(s32 *)(arg0 + 0x14));
-        if (fn_801E8758(index) == 0)
-            fn_8028C11C((void *)arg0, (s32 *)&copy, (s32 *)(arg0 + index * 0x30 + 0x1C));
+    if (*(s32 *)(emitter + 4) > 0) {
+        f32 saved = fn_802C9A4C(*(f32 *)(emitter + 0x18));
+        fn_802C8BD0(*(s32 *)(emitter + 0x14));
+        if (fn_801E8758(playerIndex) == 0)
+            fn_8028C11C((void *)emitter, (s32 *)&transform, (s32 *)(emitter + playerIndex * 0x30 + 0x1C));
         else
-            fn_8028C11C((void *)arg0, (s32 *)&copy, (s32 *)&copy);
+            fn_8028C11C((void *)emitter, (s32 *)&transform, (s32 *)&transform);
         DrawList_RestoreNormalMode();
         fn_802C9A4C(saved);
     }
 
-    dest = (struct Pair *)(arg0 + index * 0x30 + 0x1C);
-    dest[0] = copy.p0;
-    dest[1] = copy.p1;
-    dest[2] = copy.p2;
-    dest[3] = copy.p3;
-    ((s32 *)dest)[8] = copy.p4;
-    *(struct Pair *)((s32 *)dest + 9) = copy.p5;
-    ((s32 *)dest)[11] = copy.p6;
+    slot = (struct Pair *)(emitter + playerIndex * 0x30 + 0x1C);
+    slot[0] = transform.p0;
+    slot[1] = transform.p1;
+    slot[2] = transform.p2;
+    slot[3] = transform.p3;
+    ((s32 *)slot)[8] = transform.p4;
+    *(struct Pair *)((s32 *)slot + 9) = transform.p5;
+    ((s32 *)slot)[11] = transform.p6;
 }
 #pragma pop
 
