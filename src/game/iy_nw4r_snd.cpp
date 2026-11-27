@@ -1855,7 +1855,7 @@ extern "C" void fn_80179EE8(void* this_, u32 a);
 extern "C" void fn_802066C8(void* this_, u32 a);
 extern "C" void fn_80206C70(void* this_);
 extern "C" void fn_801D1008(void* this_, u32 a);
-typedef void (*SoundArchiveBaseDtorFn)(void *, u32);
+extern "C" void destroyVehicleRenderObject(void* this_, u32 a);
 extern "C" void fn_8012A260(void* this_, u32 a);
 extern "C" void fn_801CBD04(void* this_);
 extern "C" void fn_801D0DFC(void* this_);
