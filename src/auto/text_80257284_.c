@@ -230,13 +230,11 @@ int fn_802574E0(int self, int deletingFlag) {
 
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-/* Build the profile-name table (+0x1C) of a settings selector: for every registered event that carries a contest matching the "name" key, append its profile name unless already present, then select the first row and mark the table built. */ extern "C" void buildProfileSelectorTable(void *arg0, void *arg1) {
-    /* Fill the profile table (+0x1C) of the settings selector.  It walks every
-     * registered event record; for each record that carries a contest object
-     * matching the "name" key it takes the record's profile name and appends a
-     * row to the table (key column then name column) if that name is not
-     * already there.  Finally the first name is selected and the table is
-     * marked as built. */
+/* Build the profile-name table (+0x1C) of a settings selector: for every
+ * registered event that carries a contest matching the "name" key, append its
+ * profile name as a new row (key column then display column) unless that name is
+ * already present; then select the first row and mark the table built. */
+extern "C" void buildProfileSelectorTable(void *arg0, void *arg1) {
     typedef struct {
         char pad0[0x18];
         int selectedIndex;
@@ -250,50 +248,50 @@ int fn_802574E0(int self, int deletingFlag) {
         char pad[8];
         char name[8];
     } Entry;
-    Selector *self = (Selector *)arg0;
-    int found;
-    int outer;
-    int inner;
-    int name;
-    int index;
-    Entry *entry;
-    char *candidate;
+    Selector *selector = (Selector *)arg0;
+    int matched;
+    int eventIndex;
+    int contestIndex;
+    int profileName;
+    int rowIndex;
+    Entry *eventRecord;
+    char *existingName;
 
-    self->selectedIndex = 0;
-    outer = 0;
-    while (outer < fn_80012818()) {
-        entry = (Entry *)fn_80012820(outer);
-        found = 0;
-        inner = 0;
-        while (found == 0 && inner < *(int *)((char *)entry + 0x70)) {
-            if (((MatchDispatch *)*(void **)((char *)fn_80012870(outer, inner) + 0x20))->matches(lbl_8055C1F8) != 0) {
-                found = 1;
+    selector->selectedIndex = 0;
+    eventIndex = 0;
+    while (eventIndex < fn_80012818()) {
+        eventRecord = (Entry *)fn_80012820(eventIndex);
+        matched = 0;
+        contestIndex = 0;
+        while (matched == 0 && contestIndex < *(int *)((char *)eventRecord + 0x70)) {
+            if (((MatchDispatch *)*(void **)((char *)fn_80012870(eventIndex, contestIndex) + 0x20))->matches(lbl_8055C1F8) != 0) {
+                matched = 1;
             }
-            inner++;
+            contestIndex++;
         }
-        if (found != 0) {
-            name = (int)getEventEnvironName(&entry->name);
-            found = 0;
-            index = 0;
-            while (found == 0 && index < self->rowCount) {
-                candidate = (char *)UITable_ReadCellText(&self->table_1c, index, 1, 0);
-                if (stricmp((char *)name, candidate) == 0) {
-                    found = 1;
+        if (matched != 0) {
+            profileName = (int)getEventEnvironName(&eventRecord->name);
+            matched = 0;
+            rowIndex = 0;
+            while (matched == 0 && rowIndex < selector->rowCount) {
+                existingName = (char *)UITable_ReadCellText(&selector->table_1c, rowIndex, 1, 0);
+                if (stricmp((char *)profileName, existingName) == 0) {
+                    matched = 1;
                 }
-                index++;
+                rowIndex++;
             }
-            if (found == 0) {
-                found = self->rowCount;
-                UITable_WriteCell(&self->table_1c, found, 1, (void *)name, 0);
-                UITable_WriteCell(&self->table_1c, found, 0, getEventDisplayName(&entry->name), 0);
+            if (matched == 0) {
+                matched = selector->rowCount;
+                UITable_WriteCell(&selector->table_1c, matched, 1, (void *)profileName, 0);
+                UITable_WriteCell(&selector->table_1c, matched, 0, getEventDisplayName(&eventRecord->name), 0);
             }
         }
-        outer++;
+        eventIndex++;
     }
-    self->modified = 0;
-    UITable_WriteCell(&self->table_1c, self->modified, 0,
-                UITable_ReadCellText(&self->table_1c, 0, 0, 0), 1);
-    self->built = 1;
+    selector->modified = 0;
+    UITable_WriteCell(&selector->table_1c, selector->modified, 0,
+                      UITable_ReadCellText(&selector->table_1c, 0, 0, 0), 1);
+    selector->built = 1;
 }
 
 #pragma scheduling invalid_target
