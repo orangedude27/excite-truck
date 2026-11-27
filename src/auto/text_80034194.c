@@ -1269,7 +1269,7 @@ void DVDInit(void) {
 #pragma push
 #pragma use_lmw_stmw off
 /* Start a DVD read for boot data into the boot info buffer after validating size, and record read metadata in error info. */
-void startBootDataReadAsync(void) {
+/* Validate the FST boot-data size, then start an async low-level DVD read into the boot info buffer and log the read in the driver's error info. */ void startBootDataReadAsync(void) {
     u32 discOffset;
     u32 readLength;
     s32 interrupts;
