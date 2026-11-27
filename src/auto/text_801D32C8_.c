@@ -208,7 +208,7 @@ extern "C" void fn_801D3610(void *outConfig, int configName) {
 }
 #pragma scheduling on
 #pragma cplusplus reset
-extern void fn_801D411C(void *);
+extern void resetPhobMotionState(void *);
 extern void *lbl_804421D8[];
 #pragma push
 #pragma processor 750
@@ -256,7 +256,7 @@ loop:
 check_loop:
     if (index < *(int *)&lbl_8055E940)
         goto loop;
-    fn_801D411C(best);
+    resetPhobMotionState(best);
     return (int)best;
 }
 #pragma pop
@@ -491,7 +491,7 @@ extern float lbl_80562AC0;
  * Updates this object's damping/scale state based on its current mode.
  * Mode 2 applies the cached global value through fn_801D4598; otherwise, if the
  * cached value is below the threshold at +0x224/+0x234, the six scale values at
- * +0x118 are damped by lbl_80562AC0. If neither case applies, fn_801D411C
+ * +0x118 are damped by lbl_80562AC0. If neither case applies, resetPhobMotionState
  * resets the object and clears the field at +0x1E4.
  */
 extern "C" void fn_801D3BF0(void *arg0) {
@@ -518,7 +518,7 @@ extern "C" void fn_801D3BF0(void *arg0) {
         scaleValues[5] *= dampingFactor;
         return;
     }
-    fn_801D411C(arg0);
+    resetPhobMotionState(arg0);
     *(int *)((char *)arg0 + 0x1E4) = 0;
 }
 #pragma cplusplus reset
@@ -734,7 +734,7 @@ void fn_801D3FA4(void *arg0, int arg1, int arg2, void *arg3, void *arg4, void *a
 }
 
 #pragma push
-void fn_801D411C(void *actor) {
+void resetPhobMotionState(void *actor) {
     /* Reset an actor's motion state: signal its associated object, clear the motion and
        scratch floats, build the default matrix at +0x1F4 and copy it to +0x3C, then reset
        the state/flags. */
@@ -1017,7 +1017,7 @@ void fn_801D4598(void *arg0, float farg0) {
             *(float *)(p + 0x12C) = f5;
         }
         fn_8017A580(arg0);
-    } else fn_801D411C(arg0);
+    } else resetPhobMotionState(arg0);
 }
 #pragma pop
 
