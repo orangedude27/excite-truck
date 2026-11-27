@@ -193,7 +193,7 @@ void fn_8029F124(void) {
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-/* Effect entry layout (0x34 bytes) and globals used by fn_8029F188. */
+/* Effect entry layout (0x34 bytes) and globals used by updateEffectRecords. */
 #define EFFECT_POS_X 0x4
 #define EFFECT_POS_Y 0x8
 #define EFFECT_POS_Z 0xc
@@ -213,7 +213,7 @@ void fn_8029F124(void) {
 #define gEffectAllocator lbl_804B9B7C
 
 #pragma use_lmw_stmw off
-void fn_8029F188(void) {
+void updateEffectRecords(void) {
     /* Refreshes each effect's velocity from its attached object and advances its position,
        then dispatches spawn requests for flagged effects when particle adds are enabled. */
     unsigned char *effect;
