@@ -3515,7 +3515,7 @@ extern "C" s32 fn_8015C684(void) {
 extern "C" s32 fn_8015C68C(void) { return 0xD; }
 
 #pragma cplusplus on
-extern "C" void fn_8015C694(void *objPtr) {
+extern "C" void updateBonusTrackerDisplay(void *objPtr) {
     struct Obj {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
