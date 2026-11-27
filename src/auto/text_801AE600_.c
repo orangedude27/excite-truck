@@ -110,7 +110,7 @@ int fn_801AE618(int flags) {
 #pragma dont_inline on
 /* Test bit 0 of the 16-bit flag field at offset +0xE of a 0x1C-byte entry:
  * fn_801AE618 masks off the low bit, so this marks the entry as active/valid. */
-int fn_801AE620(void *entry) {
+int isRaceResultActive(void *entry) {
     return fn_801AE618(*(unsigned short *)((char *)entry + 0xE));
 }
 
@@ -135,7 +135,7 @@ void assignRaceResultPoints(int context) {
     topScores.count = 0;
     for (scanIndex = 0, byteOffset = 0; scanIndex < lbl_80435780[0x3C0 / 4]; byteOffset += 0x1C, scanIndex++) {
         record = (char *)*lbl_8055E624 + byteOffset;
-        if (fn_801AE620(record) != 0) {
+        if (isRaceResultActive(record) != 0) {
             if (*(short *)(record + 0x14) >= topScores.max_val) {
                 if (*(short *)(record + 0x14) > topScores.max_val) {
                     topScores.count = 0;
@@ -147,7 +147,7 @@ void assignRaceResultPoints(int context) {
     }
     for (recordIndex = 0, scanIndex = 0; recordIndex < lbl_80435780[0x3C0 / 4]; scanIndex += 0x1C, recordIndex++) {
         record2 = (char *)*lbl_8055E624 + scanIndex;
-        if (fn_801AE620(record2) != 0) {
+        if (isRaceResultActive(record2) != 0) {
             *(short *)(record2 + 0x10) = getPointsForPlacing(context, *(short *)(record2 + 0xC));
             *(short *)(record2 + 0x12) = 0;
             if (*(short *)(record2 + 0x14) != 0) {
@@ -245,7 +245,7 @@ void fn_801AE928(void) {
     while (index < count) {
         if (index < lbl_8055E624[1]) {
             entry = (char *)lbl_8055E624[0] + offset;
-            if (!fn_801AE620(entry)) {
+            if (!isRaceResultActive(entry)) {
                 fn_801AE874((unsigned short *)(entry + 0xE), 1);
                 *(unsigned short *)(entry + 0xE) |= 8;
                 *(float *)entry = duration;
@@ -264,7 +264,7 @@ float fn_801AE9E0(int competitorIndex, float *outValue) {
     char *entry;
     if (outValue != 0) *outValue = lbl_80562560;
     entry = (char *)lbl_8055E624[0] + competitorIndex * 0x1C;
-    if (fn_801AE620(entry)) {
+    if (isRaceResultActive(entry)) {
         if (outValue != 0) *outValue = lbl_8055E630 / *(float *)(entry + 8);
         return *(float *)(entry + 8);
     }
@@ -708,7 +708,7 @@ void fn_801AF65C(void) {
 
     while (index < tableBase[0x3C0 / 4]) {
         char *entry = (char *)lbl_8055E624[0] + entryOffset;
-        if (fn_801AE620(entry) && *fn_801EA9A0(index)) {
+        if (isRaceResultActive(entry) && *fn_801EA9A0(index)) {
             *(unsigned short *)(entry + 0xE) |= 2;
         }
         entryOffset += 0x1C;
@@ -801,7 +801,7 @@ void *fn_801AF8D0(int index) {
 
     if (index < lbl_8055E624[1]) {
         entry = (char *)lbl_8055E624[0] + index * 0x1C;
-        if (!fn_801AE620(entry)) {
+        if (!isRaceResultActive(entry)) {
             entry = 0;
         }
     }
