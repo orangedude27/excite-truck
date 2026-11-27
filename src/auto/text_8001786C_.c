@@ -321,30 +321,35 @@ extern void fn_80017A2C(void *, s32);
 extern void fn_800178BC(void *, s32, s32);
 extern void fn_80016928(s32, s32);
 #pragma scheduling invalid_target
-/* Build track route lists by sampling from three descriptor lists according to arg1 entries */
-/* Populate pairList with numPairs driver/vehicle pairs, picking each entry round-robin from shuffled candidate lists of eligible drivers, vehicles and alternate vehicles; exclusions filters the candidates used by those builders. */ void BuildEntryPairs(s32 *pairList, s32 numPairs, s32 *exclusions) {
-    struct { s32 *items; s32 count; s32 capacity; s32 buf[50]; } a, b, c;
-    s32 i, x, y, z;
+/* Populate pairList with numPairs driver/vehicle pairs, picking each entry
+ * round-robin from shuffled lists of eligible drivers, vehicles and alternate
+ * vehicles; exclusions filters the candidates used by those builders. */
+void BuildEntryPairs(s32 *pairList, s32 numPairs, s32 *exclusions) {
+    struct { s32 *items; s32 count; s32 capacity; s32 buf[50]; } drivers, vehicles, altVehicles;
+    s32 pairIndex;
+    s32 driverNumber;
+    s32 vehicleNumber;
+    s32 altVehicleNumber;
     *(s32 *)((char *)pairList + 0x24) = 0;
     *pairList = 0;
     if (numPairs > 0) {
-        a.items = a.buf; a.count = 0; a.capacity = 50;
-        fn_80017A2C(&a, (s32)exclusions);
-        b.capacity = 50; b.items = b.buf; b.count = 0;
-        fn_80017B40(&b, (s32)exclusions);
-        c.capacity = 50; c.items = c.buf; c.count = 0;
-        fn_80017C18(&c, exclusions);
-        for (i = 0; i < numPairs; i++) {
-            x = a.items[i % a.count];
-            y = b.items[i % b.count];
-            z = c.items[i % c.count];
-            fn_800178BC(pairList, x, y);
-            if (fn_800178F0()) fn_800178F8(x, y);
-            else fn_80016928(x, z);
+        drivers.items = drivers.buf; drivers.count = 0; drivers.capacity = 50;
+        fn_80017A2C(&drivers, (s32)exclusions);
+        vehicles.capacity = 50; vehicles.items = vehicles.buf; vehicles.count = 0;
+        fn_80017B40(&vehicles, (s32)exclusions);
+        altVehicles.capacity = 50; altVehicles.items = altVehicles.buf; altVehicles.count = 0;
+        fn_80017C18(&altVehicles, exclusions);
+        for (pairIndex = 0; pairIndex < numPairs; pairIndex++) {
+            driverNumber = drivers.items[pairIndex % drivers.count];
+            vehicleNumber = vehicles.items[pairIndex % vehicles.count];
+            altVehicleNumber = altVehicles.items[pairIndex % altVehicles.count];
+            AddDriverVehiclePair(pairList, driverNumber, vehicleNumber);
+            if (VehicleOverrideEnabled()) SetDriverVehicleFromTable(driverNumber, vehicleNumber);
+            else fn_80016928(driverNumber, altVehicleNumber);
         }
-        c.items = 0; c.count = 0; c.capacity = 0;
-        b.items = 0; b.count = 0; b.capacity = 0;
-        a.items = 0; a.count = 0; a.capacity = 0;
+        altVehicles.items = 0; altVehicles.count = 0; altVehicles.capacity = 0;
+        vehicles.items = 0; vehicles.count = 0; vehicles.capacity = 0;
+        drivers.items = 0; drivers.count = 0; drivers.capacity = 0;
     }
 }
 #pragma scheduling reset
