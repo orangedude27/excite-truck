@@ -2110,7 +2110,7 @@ typedef struct VoicePair {
    feedStreamVoices copies decoded samples into the voice buffers as a ring of
    voices.length bytes, and bytesToPlay counts what is left to hand over. */
 typedef struct StreamPlayer {
-    void *tick;         /* 0x00 fn_80119824, called every frame while playing */
+    void *tick;         /* 0x00 updateStreamPlayer, called every frame while playing */
     void *field_04;     /* 0x04 */
     void *field_08;     /* 0x08 */
     void *setVolume;    /* 0x0C fn_80119AB0 */
@@ -2153,7 +2153,7 @@ typedef struct StreamPlayer {
  * decoded samples (feedStreamVoices) or, once they are so far ahead that the
  * decoder can never catch up, skip writePos forward over silence and mark the
  * player as resynced.  Always returns 0. */
-s32 fn_80119824(void *arg0) {
+s32 updateStreamPlayer(void *arg0) {
     StreamPlayer *player = (StreamPlayer *)arg0;
     s32 now;
     s32 sinceSample;
@@ -2327,7 +2327,7 @@ extern s32 fn_801199A4(void *, s32);
    into this block, to +0x34, +0x38, +0x48 and +0x50: those are the owning
    StreamPlayer's looping, paused, readPos and readPosTime, which the player
    fields below alias. */
-/* The pair of AX voices and the StreamPlayer are described above fn_80119824. */
+/* The pair of AX voices and the StreamPlayer are described above updateStreamPlayer. */
 
 #pragma optimization_level 4
 /* Start (start != 0) or stop the stream player and return the new playing flag.
@@ -2426,7 +2426,7 @@ s32 fn_80119DD0(void *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4, void *arg5) 
     extern s32 lbl_8055DEE0;
     extern s32 lbl_8055DEE8;
     extern void TRKGetFreeBuffer(void *);
-    extern s32 fn_80119824(void *);
+    extern s32 updateStreamPlayer(void *);
     extern void fn_80119D40();
      u8 *ctx = (u8 *)arg0;
     register u32 sampleRate = arg1;
@@ -2511,7 +2511,7 @@ s32 fn_80119DD0(void *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4, void *arg5) 
     *(u32 *)(ctx + 0xBC) = frames;
     *(u32 *)(ctx + 0xB4) = 0;
     *(u32 *)(ctx + 0x64) = 1;
-    *(void **)(ctx + 0x00) = fn_80119824;
+    *(void **)(ctx + 0x00) = updateStreamPlayer;
     *(void **)(ctx + 0x04) = fn_80119994;
     *(void **)(ctx + 0x08) = fn_8011999C;
     *(void **)(ctx + 0x0C) = fn_80119AB0;
