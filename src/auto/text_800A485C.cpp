@@ -21804,7 +21804,7 @@ extern "C" void fn_800D2FC8(void) {
 
 extern "C" const char lbl_8031EBA0[];
 extern "C" const char lbl_8031EBB4[];
-extern "C" void fn_800D30E8(s32, s32, const char *, s32, s32);
+extern "C" void drawDebugTextLines(s32, s32, const char *, s32, s32);
 extern "C" void db_DirectPrint(void *arg0, void *arg1, s32 arg2, const char *fmt, ...) {
     /* Format a debug/direct-print message into a stack buffer and, when the debug print
        system is enabled, forward it to the text drawing routine. Panics if formatting is
@@ -21828,7 +21828,7 @@ format:
         goto done;
     }
 
-    fn_800D30E8((s32)arg0, (s32)arg1, formatted, (s32)arg2, 0);
+    drawDebugTextLines((s32)arg0, (s32)arg1, formatted, (s32)arg2, 0);
 
 done:
     va_end(fmtArgs);
@@ -21840,7 +21840,7 @@ extern "C" void fn_800D2E3C(s32, s32, s32, s32);
 extern "C" const char *fn_800D3260(s32, s32, const char *, s32);
 extern "C" char *strchr(const char *, int);
 /* Draw multi-line debug/text on screen, optionally drawing a background box per line and handling wrapping. */
-extern "C" void fn_800D30E8(s32 x, s32 y, const char *str, s32 wrapLongLines, s32 drawBackground) {
+extern "C" void drawDebugTextLines(s32 x, s32 y, const char *str, s32 wrapLongLines, s32 drawBackground) {
     s32 startX = x;
     u16 screenWidth = *(u16 *)((u8 *)lbl_80407BD8 + 8);
     s32 charScale = screenWidth < 400 ? 1 : 2;
