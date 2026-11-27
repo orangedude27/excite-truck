@@ -1425,14 +1425,17 @@ long fn_8027C8B0(void) { return 1; }
 
 extern void fn_801345D8(void *, int, const char *, ...);
 #pragma cplusplus on
-extern "C" void formatEventGoalStatus(void *obj, unsigned char *outText, int maxLen) {
+/* Write a contest's event-goal status text into outText (at most maxLen bytes):
+ * the all-goals-cleared string when its path is complete, the previous-bracket
+ * string when that bracket is cleared, otherwise the formatter's formatted
+ * progress string from the event-goal locale table. */
+extern "C" void formatEventGoalStatus(void *record, unsigned char *outText, int maxLen) {
     char formatBuffer[0x64];
     Fn8027C8B8Formatter *formatter;
-    /* Copy a bounded event-goal status/format string into outText. */
     register char *eventGoalBase = lbl_80347A50;
     register int remaining = maxLen;
     char *dest = (char *)outText;
-    register void *object = obj;
+    register void *object = record;
     char *source;
 
     if (fn_8027C788(object) != 0) {
