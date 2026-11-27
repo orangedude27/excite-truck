@@ -1259,7 +1259,7 @@ extern float lbl_80564C90;
 extern float lbl_80564C94;
 extern s32 paintWaterLayer();
 extern void fn_80204044();
-extern s32 fn_802C21DC();
+extern s32 plotRoadOpacityPixel();
 extern s32 drawTerrainMarker(s16, s16, s32, s32, float);
 void fn_802B7420(s16 x, s16 y, s32 value) {
     /* Render callback: draw a terrain-debug marker at grid cell (x, y) with the default 0.2 scale. */
@@ -1326,7 +1326,7 @@ void fn_802B7434(void) {
 #define dirtyBounds    lbl_8055FA50 /* s16[4]: minX, maxX, minY, maxY painted since the last rebuild */
 #define paintLayer     paintWaterLayer  /* blend a value into one cell of a water layer */
 #define drawMarker     drawTerrainMarker  /* draw a terrain marker at a grid cell */
-#define plotPixel      fn_802C21DC  /* write one pixel of the road-opacity image */
+#define plotPixel      plotRoadOpacityPixel  /* write one pixel of the road-opacity image */
 #define drawWorldPoint fn_80204044  /* debug-draw hook: empty in this build */
 #define kSampleFull    lbl_80564C90 /* 255.0f: the sample of a fully applied brush stroke */
 #define kMarkerSize    lbl_80564C94 /* 3.0f: size of the marker for a refused cell */

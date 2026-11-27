@@ -267,7 +267,7 @@ void fn_802C21C0(void) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma dont_inline on
-void fn_802C21DC(int worldX, int worldY, unsigned int value) {
+void plotRoadOpacityPixel(int worldX, int worldY, unsigned int value) {
 #define roadOpacityTexHandle lbl_8055FB50
 #define roadOpacityTexture   lbl_8055FB54
     /* Plot one pixel of the road-opacity image: replicate value's low byte into a
