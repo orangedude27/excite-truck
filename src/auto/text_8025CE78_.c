@@ -15,7 +15,7 @@ extern double lbl_80563B68;
 extern float lbl_80563B58, lbl_80563B5C, lbl_80563B60;
 extern void fn_80230C30(float *, float *, int, int);
 extern void drawPictureScaled(int, unsigned char, int, float, float, float, float, float);
-extern void fn_80231220(int, int, float, float, float, float, float, float, float, float);
+extern void drawTexturedQuad(int, int, float, float, float, float, float, float, float, float);
 extern int fn_80012810(void);
 extern void fn_80012794(void);
 extern void fn_80012790(int);
@@ -447,7 +447,7 @@ extern "C" void fn_8025DDD0(void *arg0, int arg1) {
     f28 = *(float *)(item + 0x30);
     f29 = *(float *)(item + 0x34);
     color = *(unsigned int *)((char *)arg0 + 0x24);
-    fn_80231220(*(int *)(item + 0x20), -1, outC, out8, f25, f24, f26, f27, f28, f29);
+    drawTexturedQuad(*(int *)(item + 0x20), -1, outC, out8, f25, f24, f26, f27, f28, f29);
     blue = (color & 255) * 65025;
     blue = (blue / 256) / 256;
     green = ((color >> 8) & 255) * 65025;
@@ -458,7 +458,7 @@ extern "C" void fn_8025DDD0(void *arg0, int arg1) {
     packed |= 0xFF000000;
     packed = (packed & 0xFFFF00FF) | ((green & 255) << 8);
     packed = (packed & 0xFFFFFF00) | (blue & 255);
-    fn_80231220(*(int *)(item + 0x24), packed,
+    drawTexturedQuad(*(int *)(item + 0x24), packed,
         outC, out8, f25, f24, f26, f27, f28, f29);
 }
 extern "C" void fn_8025DF80(void *arg0) {

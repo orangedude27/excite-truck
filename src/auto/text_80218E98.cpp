@@ -401,7 +401,7 @@ extern "C" s32 fn_8022EDC4(void);
 extern "C" void UIContext_combine(void *, s32, s32);
 extern "C" void fn_8022ED00(void *);
 extern "C" void fn_8022EDB8(void);
-extern "C" void fn_80231220(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
+extern "C" void drawTexturedQuad(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
 
 #pragma always_inline on
 static inline void Rot3Vec(f32 *m, f32 *src, f32 *dst) {
@@ -8370,10 +8370,10 @@ extern "C" void fn_802272D4(void *arg0) {
         m[9] += t.x; m[10] += t.y; m[11] += t.z;
         *(f32 *)(*(u8 **)(p + 0x260) + 0x30) = lbl_805634E8 + lbl_80563560 * *(f32 *)(p + 0x268);
         fn_8022ED00(*(void **)(p + 0x260));
-        fn_80231220(*(s32 *)(p + 0x254), -1, *(f32 *)(p + 0x244), *(f32 *)(p + 0x248), *(f32 *)(p + 0x24C), *(f32 *)(p + 0x250), 0.0f, 0.0f, 1.0f, 1.0f);
-        fn_80231220(*(s32 *)(p + 0x254), -1, *(f32 *)(p + 0x244) - (f32)screenWidthPx, *(f32 *)(p + 0x248), *(f32 *)(p + 0x24C), *(f32 *)(p + 0x250), 0.0f, 0.0f, 1.0f, 1.0f);
-        fn_80231220(*(s32 *)(p + 0x254), -1, *(f32 *)(p + 0x244), *(f32 *)(p + 0x248) - (lbl_805634E4 + (f32)screenHeightPx), *(f32 *)(p + 0x24C), *(f32 *)(p + 0x250), 0.0f, 0.0f, 1.0f, 1.0f);
-        fn_80231220(*(s32 *)(p + 0x254), -1, *(f32 *)(p + 0x244) - (f32)screenWidthPx, *(f32 *)(p + 0x248) - (lbl_805634E4 + (f32)screenHeightPx), *(f32 *)(p + 0x24C), *(f32 *)(p + 0x250), 0.0f, 0.0f, 1.0f, 1.0f);
+        drawTexturedQuad(*(s32 *)(p + 0x254), -1, *(f32 *)(p + 0x244), *(f32 *)(p + 0x248), *(f32 *)(p + 0x24C), *(f32 *)(p + 0x250), 0.0f, 0.0f, 1.0f, 1.0f);
+        drawTexturedQuad(*(s32 *)(p + 0x254), -1, *(f32 *)(p + 0x244) - (f32)screenWidthPx, *(f32 *)(p + 0x248), *(f32 *)(p + 0x24C), *(f32 *)(p + 0x250), 0.0f, 0.0f, 1.0f, 1.0f);
+        drawTexturedQuad(*(s32 *)(p + 0x254), -1, *(f32 *)(p + 0x244), *(f32 *)(p + 0x248) - (lbl_805634E4 + (f32)screenHeightPx), *(f32 *)(p + 0x24C), *(f32 *)(p + 0x250), 0.0f, 0.0f, 1.0f, 1.0f);
+        drawTexturedQuad(*(s32 *)(p + 0x254), -1, *(f32 *)(p + 0x244) - (f32)screenWidthPx, *(f32 *)(p + 0x248) - (lbl_805634E4 + (f32)screenHeightPx), *(f32 *)(p + 0x24C), *(f32 *)(p + 0x250), 0.0f, 0.0f, 1.0f, 1.0f);
         fn_8022EDB8();
     }
     *(f32 *)(p + 0x25C) = now;

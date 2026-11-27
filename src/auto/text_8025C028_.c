@@ -62,7 +62,7 @@ void* __dt__Q28PSSystem7SeqHeapFv_8025CC14(void* self, int shouldDelete) {
 
 extern void fn_80230C30(float*, float*, int, int);
 extern void drawPictureScaled(int, unsigned char, int, float, float, float, float, float);
-extern void fn_80231220(int, int, float, float, float, float, float, float, float, float);
+extern void drawTexturedQuad(int, int, float, float, float, float, float, float, float, float);
 extern float lbl_80563B40, lbl_80563B44, lbl_80563B48;
 extern double lbl_80563B50;
 #pragma scheduling invalid_target
@@ -92,7 +92,7 @@ void fn_8025CC78(void* p, int arg1) {
     f28 = *(float*)(item + 0x30);
     f29 = *(float*)(item + 0x34);
     color = *(unsigned int*)((char*)p + 0x24);
-    fn_80231220(*(int*)(item + 0x20), -1, outC, out8, f25, f24, f26, f27, f28, f29);
+    drawTexturedQuad(*(int*)(item + 0x20), -1, outC, out8, f25, f24, f26, f27, f28, f29);
     blue = (color & 255) * 65025;
     blue = (blue / 256) / 256;
     green = ((color >> 8) & 255) * 65025;
@@ -103,7 +103,7 @@ void fn_8025CC78(void* p, int arg1) {
     packed |= 0xFF000000;
     packed = (packed & 0xFFFF00FF) | ((green & 255) << 8);
     packed = (packed & 0xFFFFFF00) | (blue & 255);
-    fn_80231220(*(int*)(item + 0x24), packed,
+    drawTexturedQuad(*(int*)(item + 0x24), packed,
         outC, out8, f25, f24, f26, f27, f28, f29);
 }
 #pragma scheduling on

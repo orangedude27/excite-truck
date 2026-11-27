@@ -784,17 +784,17 @@ void *fn_8024F17C(void *arg0, void **arg1, s32 *arg2, s32 *arg3, void *arg4, voi
     extern unsigned char lbl_80344750[];
     extern unsigned char lbl_80344760[];
     extern unsigned char lbl_8055C0C0;
-    extern unsigned char lbl_8055C0C8[];
-    extern unsigned char lbl_8055C0D0[];
-    extern unsigned char lbl_8055C0EC[];
-    extern unsigned char lbl_8055C0F0[];
-    extern unsigned char lbl_8055C0F4[];
-    extern unsigned char lbl_8055C0F8[];
-    extern unsigned char lbl_8055C0FC[];
-    extern unsigned char lbl_8055C100[];
-    extern unsigned char lbl_8055C108[];
-    extern unsigned char lbl_8055C10C[];
-    extern unsigned char lbl_8055C114[];
+    extern unsigned char lbl_8055C0C8;
+    extern unsigned char lbl_8055C0D0;
+    extern unsigned char lbl_8055C0EC;
+    extern unsigned char lbl_8055C0F0;
+    extern unsigned char lbl_8055C0F4;
+    extern unsigned char lbl_8055C0F8;
+    extern unsigned char lbl_8055C0FC;
+    extern unsigned char lbl_8055C100;
+    extern unsigned char lbl_8055C108;
+    extern unsigned char lbl_8055C10C;
+    extern unsigned char lbl_8055C114;
     extern void *fn_80016544(void *);
     extern void *fn_80018A8C(void *, void *);
     extern s32 fn_80019258(void *, s32 *, s32 *);
@@ -817,7 +817,7 @@ void *fn_8024F17C(void *arg0, void **arg1, s32 *arg2, s32 *arg3, void *arg4, voi
     s32 *v_arg3 = arg3;
     void *v_arg4 = arg4;
     void *v_arg5 = arg5;
-    const unsigned char *base_4170 = lbl_80344170;
+    unsigned char *const base_4170 = lbl_80344170;
     const char *s; void *t7; s32 spC; s32 sp8; void *var_r3_2; void *var_r3_3; f32 temp_f31;
     void *temp_r21; s32 *temp_r4_2; void *var_r17; s32 temp_r0; s32 temp_r3; s32 temp_r5;
     s32 temp_r5_2; void *temp_r6; s32 var_r0; s32 var_r14; s32 var_r16; s32 var_r17_2;
@@ -838,7 +838,7 @@ void *fn_8024F17C(void *arg0, void **arg1, s32 *arg2, s32 *arg3, void *arg4, voi
     M2C_FIELD(this_obj, s32, 0x1C) = temp_r3;
     M2C_FIELD(this_obj, void *, 0) = lbl_8034453C;
     M2C_FIELD(this_obj, s32, 0x14) = 0;
-    M2C_FIELD(this_obj, void *, 0x18) = fn_8012850C(temp_r3 * 0xC, lbl_8055C0C8);
+    M2C_FIELD(this_obj, void *, 0x18) = fn_8012850C(temp_r3 * 0xC, &lbl_8055C0C8);
     for (var_r4 = 0, var_r5 = 0; var_r4 < M2C_FIELD(this_obj, s32, 0x1C); var_r4++, var_r5 += 0xC) {
         temp_r0 = (s32)M2C_FIELD(this_obj, void *, 0x18);
         temp_r3_2 = (void *)(temp_r0 + var_r5);
@@ -852,24 +852,24 @@ void *fn_8024F17C(void *arg0, void **arg1, s32 *arg2, s32 *arg3, void *arg4, voi
     M2C_FIELD(this_obj, void *, 0) = lbl_803444D8;
     M2C_FIELD(this_obj, f32, 0x28) = 0.0f;
     if (lbl_8055F2E8 == 0) {
-        temp_r3_3 = fn_801284F8(8, lbl_8055C114);
+        temp_r3_3 = fn_801284F8(8, &lbl_8055C114);
         if (temp_r3_3 != 0) {
             temp_r3_4 = (void **)getValueFile(lbl_80344760);
             M2C_FIELD(temp_r3_3, s32, 4) = 0;
-            M2C_FIELD(temp_r3_3, void *, 0) = fn_8012850C(0xAF0, lbl_8055C10C);
+            M2C_FIELD(temp_r3_3, void *, 0) = fn_8012850C(0xAF0, &lbl_8055C10C);
             var_r22 = 0;
 loop_27:
             temp_r3_5 = ((void **(*)(void *, s32))temp_r3_4[3])(temp_r3_4, var_r22);
             if (temp_r3_5 != 0) {
                 s = ((const char *(*)(void *))temp_r3_5[2])(temp_r3_5);
-                if (strcmp(s, (const char *)lbl_8055C108) == 0) {
+                if (strcmp(s, (const char *)&lbl_8055C108) == 0) {
                     var_r23 = 0;
                     do {
                         temp_r5 = M2C_FIELD(temp_r3_3, s32, 4);
                         temp_r6 = M2C_FIELD(temp_r3_3, void *, 0);
                         M2C_FIELD(temp_r3_3, s32, 4) = temp_r5 + 1;
                         temp_r24 = (u8 *)temp_r6 + (temp_r5 * 0x38);
-                        var_r3 = ((u8 *(*)(void *, void *))temp_r3_5[5])(temp_r3_5, lbl_8055C100);
+                        var_r3 = ((u8 *(*)(void *, void *))temp_r3_5[5])(temp_r3_5, &lbl_8055C100);
                         var_r6 = temp_r24; var_r5_2 = 0x20;
 loop_11:
                         temp_r4 = *var_r3; var_r3 += 1; *var_r6 = temp_r4; var_r6 += 1;
@@ -882,7 +882,7 @@ loop_11:
 loop_15:
                             if ((s8) *var_r6_2 != 0) { var_r5_3 -= 1; var_r6_2 += 1; goto loop_15; }
                             if (var_r5_3 > 0) {
-                                var_r4_2 = lbl_8055C0FC;
+                                var_r4_2 = &lbl_8055C0FC;
 loop_20:
                                 temp_r3_6 = *var_r4_2; var_r4_2 += 1; *var_r6_2 = temp_r3_6; var_r6_2 += 1;
                                 if ((s8) temp_r3_6 != 0) {
@@ -897,11 +897,11 @@ loop_20:
                         var_r3_3 = lbl_80344720;
                         if (var_r23 != 0) { var_r3_3 = lbl_80344730; }
                         M2C_FIELD(temp_r24, s32, 0x24) = RegisterTextureByName(var_r3_3, 0);
-                        M2C_FIELD(temp_r24, f32, 0x28) = ((f32 (*)(void *, void *))temp_r3_5[9])(temp_r3_5, lbl_8055C0F8);
-                        M2C_FIELD(temp_r24, f32, 0x2C) = ((f32 (*)(void *, void *))temp_r3_5[9])(temp_r3_5, lbl_8055C0F4);
-                        M2C_FIELD(temp_r24, f32, 0x30) = ((f32 (*)(void *, void *))temp_r3_5[9])(temp_r3_5, lbl_8055C0F0);
+                        M2C_FIELD(temp_r24, f32, 0x28) = ((f32 (*)(void *, void *))temp_r3_5[9])(temp_r3_5, &lbl_8055C0F8);
+                        M2C_FIELD(temp_r24, f32, 0x2C) = ((f32 (*)(void *, void *))temp_r3_5[9])(temp_r3_5, &lbl_8055C0F4);
+                        M2C_FIELD(temp_r24, f32, 0x30) = ((f32 (*)(void *, void *))temp_r3_5[9])(temp_r3_5, &lbl_8055C0F0);
                         var_r23 += 1;
-                        M2C_FIELD(temp_r24, f32, 0x34) = ((f32 (*)(void *, void *))temp_r3_5[9])(temp_r3_5, lbl_8055C0EC);
+                        M2C_FIELD(temp_r24, f32, 0x34) = ((f32 (*)(void *, void *))temp_r3_5[9])(temp_r3_5, &lbl_8055C0EC);
                     } while (var_r23 < 2);
                 }
                 var_r22 += 1; goto loop_27;
@@ -918,7 +918,7 @@ loop_20:
     M2C_FIELD(this_obj, void *, 0x38) = v_arg4;
     M2C_FIELD(this_obj, void *, 0x4C) = v_arg5;
     M2C_FIELD(this_obj, s8, 0x80) = 0;
-    M2C_FIELD(this_obj, void *, 0xCC) = fn_8012850C(M2C_FIELD(this_obj, s32, 0x1C) * 0x14, lbl_8055C0D0);
+    M2C_FIELD(this_obj, void *, 0xCC) = fn_8012850C(M2C_FIELD(this_obj, s32, 0x1C) * 0x14, &lbl_8055C0D0);
     temp_f31 = lbl_80563960;
     temp_r18 = getValueFile((void *)(base_4170 + 0x1A8));
     var_r23_2 = 0; var_r19 = 0; var_r14 = 0; var_r16 = 0;
@@ -929,7 +929,7 @@ loop_54:
         t7 = ((void *(*)(void *, s32))temp_r3_7[6])(temp_r3_7, var_r19);
         temp_r3_8 = (void *)fn_8001668C((s32)t7, 0);
         M2C_FIELD(temp_r21, void *, 8) = temp_r3_8;
-        if (M2C_FIELD(temp_r3_8, s32, 4) == *v_arg3) { var_r23_2 = var_r19; }
+        if (M2C_FIELD(temp_r3_8, s32, 4) == *M2C_FIELD(this_obj, s32 *, 0x34)) { var_r23_2 = var_r19; }
         temp_r3_9 = M2C_FIELD(this_obj, void **, 0xD0);
         M2C_FIELD(temp_r21, u8, 0xC) = (u8)((s32 (*)(void *, s32))temp_r3_9[9])(temp_r3_9, var_r19);
         var_r17 = temp_r21; var_r22_2 = 0;
@@ -1615,7 +1615,7 @@ extern "C" void fn_80251078(void *arg0, s32 index, s32 selected, f32 x, f32 y, f
     extern f32 getPictureWidth(s32, s32);
     extern f32 getPictureHeight(s32, s32);
     extern void drawPictureScaled(s32, s32, s32, f32, f32, f32, f32, f32);
-    extern void fn_80231220(s32, s32, u32, f32, f32, f32, f32, f32, f32, f32, f32);
+    extern void drawTexturedQuad(s32, s32, u32, f32, f32, f32, f32, f32, f32, f32, f32);
     class Control {
     public:
         virtual void a(); virtual void b(); virtual void c(); virtual void d(); virtual void e();
@@ -1701,8 +1701,8 @@ extern "C" void fn_80251078(void *arg0, s32 index, s32 selected, f32 x, f32 y, f
         green = (mg * mg * (s32)((color >> 8) & 0xff)) / 256 / 256;
         red = (ma * mr * (s32)((color >> 16) & 0xff)) / 256 / 256;
         mixed = 0xFF000000 | ((red & 0xff) << 16) | ((green & 0xff) << 8) | (blue & 0xff);
-        ((void (*)(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32))fn_80231220)(*(s32 *)(item + 0x24), mixed, x + lbl_80563980 * (w - lbl_80563988 * w), y - lbl_80563980 * (h - lbl_80563988 * h), lbl_80563988 * w, lbl_80563988 * h, u0, v0, u1, v1);
-        ((void (*)(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32))fn_80231220)(*(s32 *)(item + 0x20), mask, x + lbl_80563980 * (w - lbl_80563988 * w), y - lbl_80563980 * (h - lbl_80563988 * h), lbl_80563988 * w, lbl_80563988 * h, u0, v0, u1, v1);
+        ((void (*)(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32))drawTexturedQuad)(*(s32 *)(item + 0x24), mixed, x + lbl_80563980 * (w - lbl_80563988 * w), y - lbl_80563980 * (h - lbl_80563988 * h), lbl_80563988 * w, lbl_80563988 * h, u0, v0, u1, v1);
+        ((void (*)(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32))drawTexturedQuad)(*(s32 *)(item + 0x20), mask, x + lbl_80563980 * (w - lbl_80563988 * w), y - lbl_80563980 * (h - lbl_80563988 * h), lbl_80563988 * w, lbl_80563988 * h, u0, v0, u1, v1);
     }
 }
 #pragma pop
@@ -1712,7 +1712,7 @@ extern "C" void fn_80251078(void *arg0, s32 index, s32 selected, f32 x, f32 y, f
 extern f32 lbl_80563960;
 extern void drawPictureScaled(s32, s32, s32, f32, f32, f32, f32, f32);
 extern f32 fn_80216CB4(void);
-extern void fn_80231220(s32, s32, u32, f32, f32, f32, f32, f32, f32, f32, f32);
+extern void drawTexturedQuad(s32, s32, u32, f32, f32, f32, f32, f32, f32, f32, f32);
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
@@ -1981,7 +1981,7 @@ extern "C" void fn_801345D8(void *, s32, void *, ...);
 extern s32 lbl_8055CFF0;
 extern u32 lbl_8055CFF4;
 extern const f32 lbl_80563964, lbl_80563980, lbl_8056398C, lbl_80563990, lbl_80563994, lbl_80563998, lbl_8056399C, lbl_805639A0, lbl_805639A4, lbl_805639A8, lbl_805639AC, lbl_805639B0, lbl_805639B4, lbl_805639B8, lbl_805639BC;
-extern void fn_80231220(s32, s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
+extern void drawTexturedQuad(s32, s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
 extern "C" s32 lbl_8055CFF0;
 extern "C" u32 lbl_8055CFF4;
 extern "C" const f32 lbl_80563964, lbl_80563980, lbl_8056398C, lbl_80563990, lbl_80563994, lbl_80563998, lbl_8056399C, lbl_805639A0, lbl_805639A4, lbl_805639A8, lbl_805639AC, lbl_805639B0, lbl_805639B4, lbl_805639B8, lbl_805639BC;
@@ -2000,7 +2000,7 @@ extern "C" void fn_80251B04(void *arg0) {
     temp_f10 = (f32)((s32)lbl_8055CFF4 / 2);
     temp_f3 = (lbl_80563990 * (f32)lbl_8055CFF0) / lbl_80563994;
     f27 = temp_f10 - lbl_8056398C;
-    fn_80231220(*(s32 *)((char *)arg0 + 0x20), -1, lbl_8055CFF4,
+    drawTexturedQuad(*(s32 *)((char *)arg0 + 0x20), -1, lbl_8055CFF4,
                 lbl_80563998 * temp_f3, lbl_8056399C, temp_f3, lbl_805639A0,
                 lbl_80563960, lbl_80563960, lbl_805639A4, lbl_80563964);
     f26 = fn_80216CB4();

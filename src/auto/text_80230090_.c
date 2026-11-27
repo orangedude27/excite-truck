@@ -676,7 +676,7 @@ void fn_80231094(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
 #pragma processor 750
 // Draws a textured axis-aligned quad: builds four vertices (x/y/w/h with uv corners
 // u0,v0,u1,v1 and z = 0), copies the standard quad index list, submits them, then ends draw.
-void fn_80231220(void *drawCtx, s32 texParam, f32 x, f32 y, f32 w, f32 h, f32 u0, f32 v0, f32 u1, f32 v1) {
+void drawTexturedQuad(void *drawCtx, s32 texParam, f32 x, f32 y, f32 w, f32 h, f32 u0, f32 v0, f32 u1, f32 v1) {
     extern void fn_802C8B98(s32, s32);
     extern void DrawList_RestoreNormalMode(void);
     extern void fn_802C8DB8(void *, s32, u16 *, s32);

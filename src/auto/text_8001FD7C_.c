@@ -635,7 +635,7 @@ loop_body:
 }
 
 extern int fn_802C9A58(void);
-extern void fn_80231220(int, int, float, float, float, float, float, float, float, float);
+extern void drawTexturedQuad(int, int, float, float, float, float, float, float, float, float);
 extern int lbl_8055CFF4, lbl_8055D66C;
 extern unsigned char lbl_8055D646;
 extern float lbl_805604B8, lbl_805604F8, lbl_805604FC, lbl_80560500, lbl_80560504;
@@ -706,10 +706,10 @@ void fn_800209A0(int arg0, float arg1)
   {
     color2 = 0;
   }
-  fn_80231220(lbl_80558D80, color2, f25, f27, f26 - f25, f27 - f28, lbl_805604B4, lbl_805604B4, lbl_805604B8, lbl_805604B8);
-  fn_80231220(lbl_80558D84, color2, f25, f28, f26 - f25, f28 - f29, lbl_805604B4, lbl_805604B4, (float) lbl_805604B8, lbl_805604B8);
-  fn_80231220(lbl_80558D78, color, f25, f27, f26 - f25, f27 - f28, lbl_805604B4, lbl_805604B4, lbl_805604B8, lbl_805604B8);
-  fn_80231220(lbl_80558D7C, color, f25, f28, f26 - f25, f28 - f29, lbl_805604B4, lbl_805604B4, lbl_805604B8, lbl_805604B8);
+  drawTexturedQuad(lbl_80558D80, color2, f25, f27, f26 - f25, f27 - f28, lbl_805604B4, lbl_805604B4, lbl_805604B8, lbl_805604B8);
+  drawTexturedQuad(lbl_80558D84, color2, f25, f28, f26 - f25, f28 - f29, lbl_805604B4, lbl_805604B4, (float) lbl_805604B8, lbl_805604B8);
+  drawTexturedQuad(lbl_80558D78, color, f25, f27, f26 - f25, f27 - f28, lbl_805604B4, lbl_805604B4, lbl_805604B8, lbl_805604B8);
+  drawTexturedQuad(lbl_80558D7C, color, f25, f28, f26 - f25, f28 - f29, lbl_805604B4, lbl_805604B4, lbl_805604B8, lbl_805604B8);
   fn_80148134(lbl_80560508, lbl_8056050C, &outA, &outB, 2);
   fn_80148134(lbl_80560508, lbl_80560510, &outC, &outD, 2);
   fn_80232BA4(lbl_8055D660, lbl_8055D64C, color, 9, outA, outB, lbl_80560514, lbl_805604B4, lbl_805604B8);
