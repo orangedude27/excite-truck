@@ -2561,7 +2561,7 @@ static inline RingVecQueue *ringQueue(void *owner)
     return (RingVecQueue *) (((u8 *) owner) + 0xC0);
 }
 // The record at position i, or NULL when i is past the queued count.
-static inline u8 *ringEntry(void *owner, s32 i)
+static __inline u8 *ringEntry(void *owner, s32 i)
 {
     RingVecQueue *q = ringQueue(owner);
     s32 end = (q->cap + (q->count - q->head)) % q->cap;
