@@ -4844,7 +4844,7 @@ extern "C" void fn_802200AC(void *arg0) {
     }
 }
 #pragma pop
-extern "C" s32 fn_802205AC(void *arg0, s32 arg1) {
+extern "C" s32 handleValueSliderKey(void *arg0, s32 arg1) {
     /* Key handler of the continuous-value slider built by fn_8021FF34 (vtable
      * lbl_8033E7F4). While its cached selection entry (+0x258) still matches the
      * id at +0x25C: LEFT/RIGHT step the value at *+0x244 by +0x250 within the
