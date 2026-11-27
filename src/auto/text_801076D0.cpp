@@ -5887,7 +5887,7 @@ extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80111BB8(void* this_,
     return this_;
 }
 
-extern "C" f32 GetGlyphWidth__Q36nw4hbm2ut10CharWriterCFv(s32 writer) {
+/* Return the CharWriter's spacing plus the current font glyph's advance scaled by the horizontal scale. */ extern "C" f32 GetGlyphWidth__Q36nw4hbm2ut10CharWriterCFv(s32 writer) {
     /* nw4hbm::ut::CharWriter (TextWriter copy): return the current glyph's
      * advance in the font plus the writer's +0x50 spacing.  First asserts the
      * this pointer lies in one of the Wii's mapped memory windows (the
