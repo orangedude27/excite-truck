@@ -5458,47 +5458,47 @@ BOOL fn_80063744(WPADCommandQueue *pQueue, u8 value, u32 address, WPADCallback p
 BOOL WPADiEnqueueCommand(u8* queue, const void* src, u32 len, u32 val1, u32 val2) {
     /* Enqueues a 0x30-byte WPAD command packet into a ring buffer (fields at +0/+1
        indices, +4 buffer base, +8 capacity). Returns FALSE if the queue is full. */
-    u8 buf[0x60] ALIGN(8);
+    u8 packet[0x60] ALIGN(8);
     u8 lenMask;
-    s8 diff;
-    BOOL enabled;
-    BOOL innerEnabled;
-    s8 index;
-    s32 lastIndex;
-    s32 wrapMask;
+    s8 usedSlots;
+    BOOL irqState;
+    BOOL innerIrqState;
+    s8 writeIndex;
+    s32 maxIndex;
+    s32 wrapAdjust;
 
     lenMask = len & 0x1F;
-    *(u32*)&buf[0x30] = 0x16;
-    *(u16*)&buf[0x4A] = 0x15;
-    *(u32*)&buf[0x5C] = val2;
-    memcpy(&buf[0x34], &val1, 4);
-    memcpy(&buf[0x38], &lenMask, 1);
-    memcpy(&buf[0x39], src, len);
-    *(double*)&buf[0] = *(double*)&buf[0x30];
-    *(double*)&buf[8] = *(double*)&buf[0x38];
-    *(double*)&buf[0x10] = *(double*)&buf[0x40];
-    *(double*)&buf[0x18] = *(double*)&buf[0x48];
-    *(double*)&buf[0x20] = *(double*)&buf[0x50];
-    *(double*)&buf[0x28] = *(double*)&buf[0x58];
+    *(u32*)&packet[0x30] = 0x16;
+    *(u16*)&packet[0x4A] = 0x15;
+    *(u32*)&packet[0x5C] = val2;
+    memcpy(&packet[0x34], &val1, 4);
+    memcpy(&packet[0x38], &lenMask, 1);
+    memcpy(&packet[0x39], src, len);
+    *(double*)&packet[0] = *(double*)&packet[0x30];
+    *(double*)&packet[8] = *(double*)&packet[0x38];
+    *(double*)&packet[0x10] = *(double*)&packet[0x40];
+    *(double*)&packet[0x18] = *(double*)&packet[0x48];
+    *(double*)&packet[0x20] = *(double*)&packet[0x50];
+    *(double*)&packet[0x28] = *(double*)&packet[0x58];
 
-    enabled = OSDisableInterrupts();
-    innerEnabled = OSDisableInterrupts();
-    diff = (s8)(queue[1] - queue[0]);
-    if (diff < 0)
-        diff = (s8)(diff + *(u32*)(queue + 8));
-    OSRestoreInterrupts(innerEnabled);
+    irqState = OSDisableInterrupts();
+    innerIrqState = OSDisableInterrupts();
+    usedSlots = (s8)(queue[1] - queue[0]);
+    if (usedSlots < 0)
+        usedSlots = (s8)(usedSlots + *(u32*)(queue + 8));
+    OSRestoreInterrupts(innerIrqState);
 
-    if (*(u32*)(queue + 8) - 1 == (u32)diff) {
-        OSRestoreInterrupts(enabled);
+    if (*(u32*)(queue + 8) - 1 == (u32)usedSlots) {
+        OSRestoreInterrupts(irqState);
         return FALSE;
     }
     memset(*(u8**)(queue + 4) + (s8)queue[1] * 0x30, 0, 0x30);
-    memcpy(*(u8**)(queue + 4) + (s8)queue[1] * 0x30, buf, 0x30);
-    index = (s8)queue[1];
-    lastIndex = *(u32*)(queue + 8) - 1;
-    wrapMask = ~(((s32)index - lastIndex) | (lastIndex - (s32)index)) >> 31;
-    queue[1] = (index + 1) & ~wrapMask;
-    OSRestoreInterrupts(enabled);
+    memcpy(*(u8**)(queue + 4) + (s8)queue[1] * 0x30, packet, 0x30);
+    writeIndex = (s8)queue[1];
+    maxIndex = *(u32*)(queue + 8) - 1;
+    wrapAdjust = ~(((s32)writeIndex - maxIndex) | (maxIndex - (s32)writeIndex)) >> 31;
+    queue[1] = (writeIndex + 1) & ~wrapAdjust;
+    OSRestoreInterrupts(irqState);
     return TRUE;
 }
 
