@@ -4057,7 +4057,7 @@ extern "C" s32 fn_800AC1B4(void *, s32);
 extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(void *);
 extern "C" s32 VFiPFENT_ITER_Advance(void *, s32);
 extern "C" s32 fn_800A9DC0(void *, void *, s32, s32, s32, s32 *);
-extern "C" s32 fn_800B5070(s32, s32 *);
+extern "C" s32 VFiPFFSTR_ParsePathNumber(s32, s32 *);
 #pragma push
 #pragma use_lmw_stmw off
 #pragma opt_common_subs off
@@ -4067,7 +4067,7 @@ extern "C" s32 findVFiPDirectoryEntry(void *dir, void *entryInfo, s32 entryName,
      * return its value/index; failures report 3 with 0xF423F sentinels in both outputs. */
     #define SEEK_ENTRY     fn_800AC1B4
     #define LOAD_ENTRY     fn_800A9DC0
-    #define PARSE_PATH_NUM fn_800B5070
+    #define PARSE_PATH_NUM VFiPFFSTR_ParsePathNumber
     #define FLAGS_WORD     lbl_803D2140[0x60 / 4]
     #define PATH_MODE_BIT  2
     #define ENTRY_STATE    iter[0x4C]
@@ -4604,7 +4604,7 @@ extern "C" s32 fn_800AB528(void *arg0, void *arg1, s32 arg2, u8 arg3, s32 arg4, 
     extern s32 VFiPFENT_ITER_seek(void *, s32);
     extern s32 fn_800AC4AC(void *, s32);
     extern s32 fn_800B3754(s32, s32 *, s32);
-    extern s32 fn_800B5070(s32, s32 *);
+    extern s32 VFiPFFSTR_ParsePathNumber(s32, s32 *);
     extern s32 readVolumeData(void *, u8 *, u32, u32, u32, u32 *, s32);
     extern const char lbl_805591F0[];
     extern const char lbl_805591F4[];
@@ -4638,7 +4638,7 @@ extern "C" s32 fn_800AB528(void *arg0, void *arg1, s32 arg2, u8 arg3, s32 arg4, 
     ((u8 *)arg1)[0x20C] = 0;
     *(s16 *)arg1 = 0;
     if ((*(u32 *)((const u8 *)lbl_803D2140 + 0x60) & 2) == 2) {
-        var_r23 = fn_800B5070(arg2, &sp14);
+        var_r23 = VFiPFFSTR_ParsePathNumber(arg2, &sp14);
     }
     if (var_r23 == 1) {
         vol = *(void **)(self + 0x3C);
@@ -10694,7 +10694,7 @@ extern "C" const u8 lbl_80560D9C;
 extern "C" const u8 lbl_80560D9D;
 #pragma push
 #pragma scheduling on
-extern "C" s32 fn_800B5070(s32 path, s32 *outValue) {
+extern "C" s32 VFiPFFSTR_ParsePathNumber(s32 path, s32 *outValue) {
     /* VFi PFSTR path parser: after the two-character 0x01/0x02 marker, read six
      * decimal digits, require '/', '\' or end-of-string at index 8, and return
      * the accumulated number through *outValue (1 on success, 0 otherwise).
