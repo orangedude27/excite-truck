@@ -114,7 +114,7 @@ void Abend_Panic(const char *, ...); /* formatted log/warning */
  * openResourceStream, set its callback/user data, validate the requested byte count
  * against the pool's slot stride and the resource size, and start the transfer.
  * Returns the slot index, or -1 if none is available. */
-s32 loadPoolStartRequest(LoadPool *pool, s32 path, s32 dataTag, s32 outSize, s32 callback, s32 userData, s32 sourceOffset, s32 byteCount, s32 arg8) {
+s32 loadPoolStartRequest(LoadPool *pool, s32 path, s32 dataTag, s32 outId, s32 callback, s32 userData, s32 sourceOffset, s32 byteCount, s32 arg8) {
     struct Params {
         s32 sourceOffset;
         s32 userData;
@@ -145,7 +145,7 @@ s32 loadPoolStartRequest(LoadPool *pool, s32 path, s32 dataTag, s32 outSize, s32
         entry = (LoadPoolEntry *)((char *)p.pool->entries + slot * 0x18);
         if (entry->state == 0) {
             entry->state = 1;
-            entry->obj = (void *)openResourceStream(p.path, dataTag, outSize);
+            entry->obj = (void *)openResourceStream(p.path, dataTag, outId);
             if (entry->obj == 0) Abend_Panic(p.msgBase + 0x30, p.path);
             entry->cb = (void (*)(void *, void *, void *))p.callback;
             entry->unk10 = (void *)p.userData;
