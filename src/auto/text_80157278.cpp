@@ -4354,7 +4354,7 @@ extern "C" s32 fn_80161C4C(void);
 #pragma push
 #pragma use_lmw_stmw off
 #pragma processor 750
-extern "C" f32 BonusGroup_scoreRacer(void* manager, void* racer) {
+/* Sum the eligible bonus trackers' contributions for a racer while the group is active and the challenge is in progress, then advance the group's counter-sound indicator to its next state. */ extern "C" f32 BonusGroup_scoreRacer(void* manager, void* racer) {
     /* Sum the items' score contributions for a racer while its truck slot is eligible and the
      * challenge is active, then advance the manager's indicator subobject (+0x50) one state. */
     #define TRUCK_SLOT_DONE   fn_801B2F2C
