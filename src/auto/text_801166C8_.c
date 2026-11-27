@@ -5757,7 +5757,7 @@ extern void reorderFFT32Result(void *);
 extern void fn_80121BF4(void *);
 extern void fn_80125014(void *);
 extern void fn_80122518(s32, u8 *, void *);
-void fftInverseRadix4Core(register s32 n, register void *a, register s32 ip, register s32 nw, register void *w) {
+/* Run one inverse radix-4 complex FFT stage over count floats, recursing or using fixed-size butterflies, then permute into natural order. */ void fftInverseRadix4Core(register s32 count, register void *data, register s32 bitReverseTable, register s32 twiddleLen, register void *twiddles) {
     /* Inverse-direction half of the recursive radix-4 complex FFT (Ooura-style)
      * that ddct/dcdft run on n floats in `a`, i.e. n/2 re/im samples.  `w` is the
      * twiddle table, `nw` its length in floats, `ip` the caller's bit-reversal
@@ -5777,33 +5777,33 @@ void fftInverseRadix4Core(register s32 n, register void *a, register s32 ip, reg
      * n == 8 and n == 4: a single stage of four (fn_80125014) or two
      * (fn_80125098) samples. */
     register s32 m;
-    if (n > 0x20) {
-        m = n >> 2;
-        fn_80122518(n, (u8 *)a, (u8 *)w + (nw - m) * 4);
-        if (n > 0x200) {
-            fn_80122E08(m, a, nw, w);
-            fn_80122ED8(m, (u8 *)a + m * 4, nw, w);
-            fn_80122E08(m, (u8 *)a + m * 8, nw, w);
-            fn_80122E08(m, (u8 *)a + ((m * 3) << 2), nw, w);
+    if (count > 0x20) {
+        m = count >> 2;
+        fn_80122518(count, (u8 *)data, (u8 *)twiddles + (twiddleLen - m) * 4);
+        if (count > 0x200) {
+            fn_80122E08(m, data, twiddleLen, twiddles);
+            fn_80122ED8(m, (u8 *)data + m * 4, twiddleLen, twiddles);
+            fn_80122E08(m, (u8 *)data + m * 8, twiddleLen, twiddles);
+            fn_80122E08(m, (u8 *)data + ((m * 3) << 2), twiddleLen, twiddles);
         } else if (m > 0x20) {
-            fn_80122FA4(n, a, nw, w);
+            fn_80122FA4(count, data, twiddleLen, twiddles);
         } else {
-            fn_80123CEC(n, a, nw, w);
+            fn_80123CEC(count, data, twiddleLen, twiddles);
         }
-        fn_80121400(n, (s32 *)ip, (f32 *)a);
-    } else if (n > 8) {
-        if (n == 0x20) {
-            fn_80123E98(a, (u8 *)w + (nw - 8) * 4);
-            reorderFFT32Result(a);
+        fn_80121400(count, (s32 *)bitReverseTable, (f32 *)data);
+    } else if (count > 8) {
+        if (count == 0x20) {
+            fn_80123E98(data, (u8 *)twiddles + (twiddleLen - 8) * 4);
+            reorderFFT32Result(data);
         } else {
-            fn_80124AD8(a, w);
-            fn_80121BF4(a);
+            fn_80124AD8(data, twiddles);
+            fn_80121BF4(data);
         }
     } else {
-        if (n == 8) {
-            fn_80125014(a);
-        } else if (n == 4) {
-            fn_80125098(a);
+        if (count == 8) {
+            fn_80125014(data);
+        } else if (count == 4) {
+            fn_80125098(data);
         }
     }
 }
