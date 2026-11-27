@@ -353,7 +353,7 @@ extern "C" s32 fn_800B5260(void *, void *, u32, u32, s32);
 extern "C" s32 fn_800ACA5C(void *, void *, u32);
 extern "C" s32 fn_800AFBA8(void *, u16, u32 *, void *);
 extern "C" s32 fn_800B5618(void *, void *, u32, u16, s32);
-extern "C" s32 fn_800B05C8(void *, s32, u32 *, void *);
+extern "C" s32 VFiPFFAT_GetEntry32Page(void *, s32, u32 *, void *);
 extern "C" s32 fn_800B00E8(void *, s32, u32 *, void *);
 class Fn800C6610Dispatch { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7(); virtual void d8(); virtual void d9(); virtual void d10(void *); };
 class PaneDrawDispatch { public:
@@ -5528,7 +5528,7 @@ block_21:
 #define VFiPFFAT_ReadClusterSector fn_800ACA5C   /* read the FAT sector holding a cluster into a page */
 #define VFiPFFAT_GetEntry12        fn_800AFBA8   /* FAT12: the 12-bit entry of a cluster */
 #define VFiPFFAT_GetEntry16        fn_800B00E8   /* FAT16: the 16-bit entry of a cluster */
-#define VFiPFFAT_GetEntry32        fn_800B05C8   /* FAT32: the 28-bit entry of a cluster */
+#define VFiPFFAT_GetEntry32        VFiPFFAT_GetEntry32Page   /* FAT32: the 28-bit entry of a cluster */
 #define VFiPFFAT_SetEntry12        VFiPFFAT_SetEntry12Page   /* FAT12: write a 12-bit entry through a page */
 #define VFiPFFAT_SetEntry16        fn_800AFFE0   /* FAT16: write a 16-bit entry through a page */
 #define VFiPFFAT_SetEntry32        fn_800B0488   /* FAT32: write a 28-bit entry through a page */
@@ -5835,7 +5835,7 @@ loop_body:
         result = fn_800B00E8(context, current, (u32 *)&end, userData);
         break;
     case 2:
-        result = fn_800B05C8(context, current, (u32 *)&end, userData);
+        result = VFiPFFAT_GetEntry32Page(context, current, (u32 *)&end, userData);
         break;
     default:
         result = 0xF;
@@ -5956,7 +5956,7 @@ extern "C" s32 VFiPFFAT_ReadClusterPage(void *arg0, u32 arg1, s32 arg2, s32 *arg
             result = fn_800B00E8(*(void **)(p + 0x34), arg1, (u32 *)arg3, arg5);
             break;
         case 2:
-            result = fn_800B05C8(*(void **)(p + 0x34), arg1, (u32 *)arg3, arg5);
+            result = VFiPFFAT_GetEntry32Page(*(void **)(p + 0x34), arg1, (u32 *)arg3, arg5);
             break;
         default:
             result = 0xF;
@@ -7019,7 +7019,7 @@ extern "C" s32 fn_800AE664(void *arg0, u32 arg1, u32 arg2, s32 *clusterOffset, s
 extern "C" s32 fn_800A8D08(s32, void **, s32 *, s32, s32 *);
 extern "C" s32 fn_800AFBA8(void *, u16, u32 *, void *);
 extern "C" s32 fn_800B00E8(void *, s32, u32 *, void *);
-extern "C" s32 fn_800B05C8(void *, s32, u32 *, void *);
+extern "C" s32 VFiPFFAT_GetEntry32Page(void *, s32, u32 *, void *);
 extern "C" s32 fn_800AEBA0(void *arg0, u32 arg1, u32 arg2, u32 *arg3, s32 arg_sp0) {
     u32 value;
     void *page;
@@ -7058,7 +7058,7 @@ dispatch:
         result = fn_800B00E8(object, arg1, &value, pageForRead);
         break;
     case 2:
-        result = ((Fn800B05C8C *)fn_800B05C8)(object, arg1, &value);
+        result = ((Fn800B05C8C *)VFiPFFAT_GetEntry32Page)(object, arg1, &value);
         break;
     default:
         result = 0xF;
@@ -7924,7 +7924,7 @@ extern "C" s32 fn_800B0488(void *arg0, u32 arg1, u32 arg2, void *arg3, s32 arg4)
  * (0x1000) runs the volume's retry handler, which may ask for the next FAT copy
  * instead, up to the number of copies.  The entry is byte-swapped out of the
  * FAT's little-endian order and masked to its 28 cluster bits. */
-extern "C" s32 fn_800B05C8(void *volume, s32 cluster, u32 *outEntry, void *page) {
+extern "C" s32 VFiPFFAT_GetEntry32Page(void *volume, s32 cluster, u32 *outEntry, void *page) {
     /* sector and scaled are taken through one-word cells: the compiler has to
      * keep them in memory, as the retry loop rewrites sector and jumps back. */
     struct SectorCell { u32 v; } sectorCell;
