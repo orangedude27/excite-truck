@@ -343,7 +343,7 @@ extern void fn_801B0BB0(void *, void *);
 extern void fn_801B07B4(void *, void *);
 extern void fn_801B08FC(void *, void *);
 #pragma cplusplus on
-extern "C" void Deity_submitSlotRequest(s32 slotIndex) {
+/* Build and dispatch a request for the deity (AI-truck) slot at slotIndex: for PCAR-tagged metadata run slot setup and take node/weight/limit from the payload, otherwise from inline slot fields; optionally reject via the arena master's validator, then process the request and finalize it. */ extern "C" void Deity_submitSlotRequest(s32 slotIndex) {
     struct SlotObject {
         virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
         virtual void d4(); virtual void *getPayload(); virtual void *getMetadata();
