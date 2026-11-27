@@ -346,7 +346,7 @@ extern "C" void fn_802576EC(void *arg0) {
 
 #pragma cplusplus reset
 
-int fn_80257904(void *menu, int eventId) {
+int handleProfileSelectorEvent(void *menu, int eventId) {
     /* Handle menu navigation/selection events for a two-group selector object. */
     char *self = (char *)menu;
     switch (eventId) {
