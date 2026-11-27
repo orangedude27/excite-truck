@@ -1248,7 +1248,7 @@ void TexRequestUnlink(register int **link, int *node, int *scan) {
 }
 
 #pragma use_lmw_stmw off
-extern void fn_8012C720(void *, int, int, int);
+extern void startStreamTransfer(void *, int, int, int);
 extern char lbl_8034BA28[];
 extern char lbl_8055D088;
 extern void texMoveNode(void **, void **, void *);
@@ -1278,7 +1278,7 @@ inspect:
         *(int *)(childResource + 0x10) = refCount;
         if (refCount == 0) {
             *(int *)(childResource + 0x10) = minusOne;
-            fn_8012C720(*(void **)childResource, *(int *)(childResource + 8),
+            startStreamTransfer(*(void **)childResource, *(int *)(childResource + 8),
                         *(int *)((char *)gTextureSlotTable +
                             *(int *)(childResource + 4) * 0x4C + 0x3C), 0);
             ((void (*)(void *, const char *))fn_802CB3F8)(
@@ -1451,7 +1451,7 @@ void TexClearRequestRefs(void *texMgr, unsigned int request) {
 void startTextureRequestRead(void *mgr, void *request) {
     extern char lbl_8055D088;
     *(int *)((char *)request + 0x10) = -1;
-    ((void (*)(int, int, int, int))fn_8012C720)(*(int *)((char *)request + 0), *(int *)((char *)request + 8), *(int *)((char *)gTextureSlotTable + *(int *)((char *)request + 4) * 0x4C + 0x3C), 0);
+    ((void (*)(int, int, int, int))startStreamTransfer)(*(int *)((char *)request + 0), *(int *)((char *)request + 8), *(int *)((char *)gTextureSlotTable + *(int *)((char *)request + 4) * 0x4C + 0x3C), 0);
     ((void (*)(void *, void *))fn_802CB3F8)((char *)gTextureSlotTable + *(int *)((char *)request + 4) * 0x4C + 4, &lbl_8055D088);
 }
 

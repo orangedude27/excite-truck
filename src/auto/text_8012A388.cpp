@@ -3213,7 +3213,7 @@ mount_test:
 // One prefetch slot of a ResourceStream, 0x10 bytes.
 struct ResourceStreamEntry {
     s32 buffer;              // +0x00 where the chunk lands in the stream's buffer
-    void *request;           // +0x04 async read of the chunk (fn_8012C720/fn_8012C7FC)
+    void *request;           // +0x04 async read of the chunk (startStreamTransfer/fn_8012C7FC)
     s32 position;            // +0x08 file offset the chunk was read from
     s32 state;               // +0x0C StreamSlotState
 };
@@ -3319,7 +3319,7 @@ extern "C" s32 fn_8012EE78(void *arg0) {
 }
 
 extern "C" s32 fn_8012C7FC(void *, s32 *);
-extern "C" void fn_8012C720(void *, s32, s32, s32);
+extern "C" void startStreamTransfer(void *, s32, s32, s32);
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_8012EE80(void *arg0) {
@@ -3372,7 +3372,7 @@ fill_slot:
         if (pos + len > stream->limit)
             request = stream->limit - pos;  // the last chunk is short
         if (request > 0) {
-            fn_8012C720(slot->request, slot->buffer, request, pos);
+            startStreamTransfer(slot->request, slot->buffer, request, pos);
             slot->state = STREAM_SLOT_READING;
         } else {
             slot->state = (s32)scan;  // nothing left to read: the slot goes free
@@ -3567,7 +3567,7 @@ extern "C" s32 getResourceSizeAligned(void *handle) {
 
 extern "C" s32 fn_802E748C(s32, s32, void *);
 extern "C" const char lbl_8032AC34[];
-extern "C" void fn_8012C720(void *request, s32 buffer, s32 size, s32 fileOffset) {
+extern "C" void startStreamTransfer(void *request, s32 buffer, s32 size, s32 fileOffset) {
     /* Start or satisfy a stream read request: queue a disc read unless the file is resident, then copy resident data. */
     void *context;
     void *file = *(void * volatile *)((u8 *)request + 4);
@@ -3619,7 +3619,7 @@ extern "C" s32 fn_8012C7FC(void *request, s32 *outValue) {
             if (outValue) *outValue = *(s32 *)((char *)resource + 0x28);
         } else {
             fn_802E30C8(lbl_8032AC68, resource);
-            fn_8012C720(request, *(s32 *)((char *)request + 0x10) -
+            startStreamTransfer(request, *(s32 *)((char *)request + 0x10) -
                 ((*(s32 *)((char *)*(void **)((char *)request + 4) + 0x2C) +
                   *(s32 *)((char *)*(void **)((char *)request + 8) + 0x80)) & 0x7FF),
                 *(s32 *)((char *)request + 0x14), 0);
